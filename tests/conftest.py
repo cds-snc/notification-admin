@@ -971,6 +971,11 @@ def mock_create_service_template(mocker, fake_uuid):
 
 
 @pytest.fixture(scope="function")
+def mock_send_other_category_to_freshdesk(mocker):
+    return mocker.patch("app.user_api_client.send_new_template_category_request")
+
+
+@pytest.fixture(scope="function")
 def mock_update_service_template(mocker):
     def _update(
         id_,
