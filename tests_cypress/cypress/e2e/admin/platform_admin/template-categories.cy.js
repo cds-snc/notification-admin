@@ -13,23 +13,23 @@ describe("Template Categories", () => {
     cy.visit(`/template-categories`);
   });
 
-  //   describe("Template Category list", () => {
-  //     it("Loads template categories page", () => {
-  //       cy.contains("h1", "Template categories").should("be.visible");
-  //     });
+  describe("Template Category list", () => {
+    it("Loads template categories page", () => {
+      cy.contains("h1", "Template categories").should("be.visible");
+    });
 
-  //     it("Navigates to template-category when clicking a category name link", () => {
-  //       TemplateCategoriesPage.Components.TemplateCategoriesTable().within(() => {
-  //         cy.get("a").first().click();
-  //       });
-  //       cy.contains("h1", "Update category").should("be.visible");
-  //     });
+    it("Navigates to template-category when clicking a category name link", () => {
+      TemplateCategoriesPage.Components.TemplateCategoriesTable().within(() => {
+        cy.get("a").first().click();
+      });
+      cy.contains("h1", "Update category").should("be.visible");
+    });
 
-  //     it("Navigates to template-category when clicking the 'New Category' button", () => {
-  //       TemplateCategoriesPage.CreateTemplateCategory();
-  //       cy.contains("h1", "Create category").should("be.visible");
-  //     });
-  //   });
+    it("Navigates to template-category when clicking the 'New Category' button", () => {
+      TemplateCategoriesPage.CreateTemplateCategory();
+      cy.contains("h1", "Create category").should("be.visible");
+    });
+  });
 
   describe(
     "Manage Template Categories",
@@ -43,6 +43,12 @@ describe("Template Categories", () => {
       });
 
       beforeEach(() => {
+        Admin.DeleteTemplateCategory({
+          id: Cypress.env("TEMPLATE_CATEGORY_ID"),
+        });
+      });
+
+      after(() => {
         Admin.DeleteTemplateCategory({
           id: Cypress.env("TEMPLATE_CATEGORY_ID"),
         });
@@ -67,6 +73,27 @@ describe("Template Categories", () => {
         TemplateCategoriesPage.Components.ConfirmationBanner().should(
           "be.visible",
         );
+      });
+
+      it("Deletes a template category", () => {
+        Admin.CreateTemplateCategory({
+          id: Cypress.env("TEMPLATE_CATEGORY_ID"),
+          name_en: "Delete me",
+          name_fr: "Supprimez-moi",
+          desc_en: "Dying to be deleted",
+          desc_fr: "Mourir pour être supprimé",
+          hidden: true,
+          email_priority: "bulk",
+          sms_priority: "bulk",
+          sms_sending_vehicle: "long_code",
+        }).then((resp) => {
+          cy.visit(`/template-category/${resp.body.template_category.id}`);
+          ManageTemplateCategoryPage.DeleteTemplateCategory();
+          cy.contains("Are you sure you want to delete").should("be.visible");
+          ManageTemplateCategoryPage.ConfirmDeleteTemplateCategory();
+          cy.contains("h1", "Template categories").should("be.visible");
+          cy.contains("Delete me").should("not.exist");
+        });
       });
 
       it("Updates an existing template category", () => {
@@ -100,27 +127,6 @@ describe("Template Categories", () => {
               cy.contains("Hide").should("be.visible");
             },
           );
-        });
-      });
-
-      it("Deletes a template category", () => {
-        Admin.CreateTemplateCategory({
-          id: Cypress.env("TEMPLATE_CATEGORY_ID"),
-          name_en: "Delete me",
-          name_fr: "Supprimez-moi",
-          desc_en: "Dying to be deleted",
-          desc_fr: "Mourir pour être supprimé",
-          hidden: true,
-          email_priority: "bulk",
-          sms_priority: "bulk",
-          sms_sending_vehicle: "long_code",
-        }).then((resp) => {
-          cy.visit(`/template-category/${resp.body.template_category.id}`);
-          ManageTemplateCategoryPage.DeleteTemplateCategory();
-          cy.contains("Are you sure you want to delete").should("be.visible");
-          ManageTemplateCategoryPage.ConfirmDeleteTemplateCategory();
-          cy.contains("h1", "Template categories").should("be.visible");
-          cy.contains("Delete me").should("not.exist");
         });
       });
     },
