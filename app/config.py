@@ -228,6 +228,8 @@ class Test(Development):
 
 
 class Production(Config):
+    CHECK_PROXY_HEADER = False
+    HTTP_PROTOCOL = "https"
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
     ANTIVIRUS_API_HOST = "https://test-antivirus"
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
