@@ -1,6 +1,13 @@
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
+TEMPLATE_TYPES = {
+    "email": _l("Email template"),
+    "sms": _l("Text message template"),
+    "letter": _l("Letter template"),
+}
+TEMPLATE_TYPES_NO_LETTER = filtered_template_types = {key: value for key, value in TEMPLATE_TYPES.items() if key != "letter"}
+
 
 class TemplateList:
     def __init__(
@@ -99,6 +106,7 @@ class TemplateListItem:
         self.id = template_or_folder["id"]
         self.name = template_or_folder["name"]
         self.ancestors = ancestors
+        self.template_category = template_or_folder.get("template_category", None)
 
 
 class TemplateListTemplate(TemplateListItem):
@@ -112,11 +120,7 @@ class TemplateListTemplate(TemplateListItem):
     ):
         super().__init__(template, ancestors)
         self.service_id = service_id
-        self.hint = {
-            "email": _l("Email template"),
-            "sms": _l("Text message template"),
-            "letter": _l("Letter template"),
-        }.get(template["template_type"])
+        self.hint = TEMPLATE_TYPES.get(template["template_type"])
 
 
 class TemplateListFolder(TemplateListItem):

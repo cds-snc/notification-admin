@@ -61,7 +61,7 @@
       {% endif %}
       
       {% if current_user.platform_admin %}
-        {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
+        {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
       {% endif %}
       {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>

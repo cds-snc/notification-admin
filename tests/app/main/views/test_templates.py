@@ -285,16 +285,21 @@ def test_should_show_page_for_choosing_a_template(
     fake_uuid,
     user,
     expected_page_title,
+    app_,
 ):
-    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"].append("letter")
     client_request.login(user)
 
     page = client_request.get("main.choose_template", service_id=service_one["id"], **extra_args)
 
-    assert normalize_spaces(page.select_one("h1").text) == expected_page_title
+    if app_.config["FF_TEMPLATE_CATEGORY"]:
+        expected_nav_links = ["All", "Email template", "Text message template", "All"]
+        links_in_page = page.select('nav[data-testid="filter-content"] a')
+    else:
+        expected_nav_links = ["All", "Email", "Text message", "Letter"]
+        links_in_page = page.select(".pill a")
 
-    links_in_page = page.select(".pill a")
+    assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
     assert len(links_in_page) == len(expected_nav_links)
 
