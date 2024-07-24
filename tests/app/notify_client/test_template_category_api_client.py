@@ -58,7 +58,7 @@ def test_get_template_category(template_category_client, mocker, fake_uuid):
     )
 
 
-def test_get_all_template_categories(template_category_client, mocker, fake_uuid):
+def test_get_all_template_categories(app_, template_category_client, mocker, fake_uuid):
     mock_get = mocker.patch(
         "app.notify_client.template_category_api_client.TemplateCategoryClient.get",
         return_value={"template_categories": [1, 2, 3]},
