@@ -399,7 +399,7 @@ def test_can_create_email_template_with_parent_folder(
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
-        data["template_category_id"] #if app_.config["FF_TEMPLATE_CATEGORY"] else None,
+        data["template_category_id"],  # if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
