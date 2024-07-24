@@ -215,6 +215,16 @@ class Test(Development):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+
+    FF_SALESFORCE_CONTACT = True
+    FF_SPIKE_SMS_DAILY_LIMIT = True
+    FF_SMS_PARTS_UI = False
+    FF_BOUNCE_RATE_V1 = True
+    FF_BOUNCE_RATE_V15 = True
+    FF_BOUNCE_RATE_BACKEND = True
+    FF_ABTEST_SERVICE_ID = ""
+    FF_NEW_BRANDING = True
+    FF_TOU = True
     FF_TEMPLATE_CATEGORY = True
 
 
@@ -225,6 +235,16 @@ class Production(Config):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
+    FF_SALESFORCE_CONTACT = True
+    FF_SPIKE_SMS_DAILY_LIMIT = True
+    FF_SMS_PARTS_UI = False
+    FF_BOUNCE_RATE_V1 = True
+    FF_BOUNCE_RATE_V15 = True
+    FF_BOUNCE_RATE_BACKEND = True
+    FF_ABTEST_SERVICE_ID = ""
+    FF_NEW_BRANDING = True
+    FF_TOU = False
+    FF_TEMPLATE_CATEGORY = False
 
 
 class Staging(Production):

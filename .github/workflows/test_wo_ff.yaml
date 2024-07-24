@@ -37,7 +37,7 @@ jobs:
     - name: Check for missing translations
       run: make test-translations
     - name: Modify FF_TEMPLATE_CATEGORY in config.py
-      run: sed -i 's/FF_TEMPLATE_CATEGORY = True/FF_TEMPLATE_CATEGORY = False/' app/config.py
+      run: sed -i 's/NOTIFY_ENVIRONMENT=test/NOTIFY_ENVIRONMENT=production/' pytest.ini
     - name: Echo contents of config.py
       run: cat app/config.py
     - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
