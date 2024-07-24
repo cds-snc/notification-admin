@@ -60,7 +60,11 @@ from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
-from app.models.template_list import TemplateList, TemplateLists
+from app.models.template_list import (
+    TEMPLATE_TYPES_NO_LETTER,
+    TemplateList,
+    TemplateLists,
+)
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -309,12 +313,19 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     sending_view = request.args.get("view") == "sending"
 
+    template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
+
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
         current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
+        template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
+        template_categories=list(
+            {template.template_category[template_category_name_col] for template in template_list if template.template_category}
+        ),
+        template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
         sending_view=sending_view,
