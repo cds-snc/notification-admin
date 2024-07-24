@@ -259,6 +259,8 @@ class ProductionFF(Config):
     FF_NEW_BRANDING = True
     FF_TOU = False
     FF_TEMPLATE_CATEGORY = False
+
+
 class Production(Config):
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
