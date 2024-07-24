@@ -227,9 +227,7 @@ class Test(Development):
     FF_TEMPLATE_CATEGORY = True
 
 
-class Production(Config):
-    CHECK_PROXY_HEADER = False
-    HTTP_PROTOCOL = "https"
+class ProductionFF(Config):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
     ANTIVIRUS_API_HOST = "https://test-antivirus"
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
@@ -241,6 +239,7 @@ class Production(Config):
     DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
+    NOTIFY_ENVIRONMENT = "test"
     SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
@@ -248,11 +247,8 @@ class Production(Config):
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
-
-    NOTIFY_ENVIRONMENT = "production"
-    NOTIFY_LOG_LEVEL = "INFO"
-    SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
-    NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
+    SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
     FF_SPIKE_SMS_DAILY_LIMIT = True
     FF_SMS_PARTS_UI = False
@@ -263,6 +259,13 @@ class Production(Config):
     FF_NEW_BRANDING = True
     FF_TOU = False
     FF_TEMPLATE_CATEGORY = False
+class Production(Config):
+    CHECK_PROXY_HEADER = False
+    HTTP_PROTOCOL = "https"
+    NOTIFY_ENVIRONMENT = "production"
+    NOTIFY_LOG_LEVEL = "INFO"
+    SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
+    NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
 
 
 class Staging(Production):
@@ -288,6 +291,7 @@ configs = {
     "test": Test,
     "staging": Staging,
     "production": Production,
+    "production_FF": ProductionFF,
     "scratch": Scratch,
     "dev": Dev,
 }
