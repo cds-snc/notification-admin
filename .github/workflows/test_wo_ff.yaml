@@ -36,7 +36,7 @@ jobs:
     
     - name: Check for missing translations
       run: make test-translations
-    - name: Modify FF_TEMPLATE_CATEGORY in config.py
+    - name: Update NOTIFY_ENVIRONMENT for pytest
       run: sed -i 's/NOTIFY_ENVIRONMENT=test/NOTIFY_ENVIRONMENT=production/' pytest.ini
     - name: Echo contents of config.py
       run: cat app/config.py
