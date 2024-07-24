@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '1 0-12,20-23 * * 1-5'
     - cron: '1 * * * 0,6'
-name: Continuous Integration Testing with FF OFF
+name: Continuous Integration Testing (prod feature flags)
 jobs:
   test:
     runs-on: ubuntu-latest
