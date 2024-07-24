@@ -39,7 +39,7 @@ jobs:
     - name: Update NOTIFY_ENVIRONMENT for pytest
       run: sed -i 's/NOTIFY_ENVIRONMENT=test/NOTIFY_ENVIRONMENT=production_FF/' pytest.ini
     - name: Echo contents of config.py
-      run: cat app/config.py
+      run: cat pytest.ini
     - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
