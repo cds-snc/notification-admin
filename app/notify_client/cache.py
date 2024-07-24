@@ -79,7 +79,9 @@ def set(key_format):
         @wraps(client_method)
         def new_client_method(client_instance, *args, **kwargs):
             if client_method.__qualname__ == "TemplateCategoryClient.get_all_template_categories":
-                current_app.logger.info(f"cache.set() -> client_instance: {client_instance.__module__} args: {args} kwargs: {kwargs}")
+                current_app.logger.info(
+                    f"cache.set() -> client_instance: {client_instance.__module__} args: {args} kwargs: {kwargs}"
+                )
 
             redis_key = _make_key(key_format, client_method, args, kwargs)
             cached = redis_client.get(redis_key)
