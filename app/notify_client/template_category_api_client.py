@@ -1,4 +1,3 @@
-from flask import current_app
 from requests import HTTPError
 
 from app.notify_client import NotifyAdminAPIClient, cache
@@ -28,7 +27,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
     @cache.set("template_categories")
     def get_all_template_categories(self, template_type=None, hidden=None, sort_key=None):
         categories = self.get(url="/template-category")["template_categories"]
-        current_app.logger.info(f"get_all_template_categories response: {categories}")
+
         if len(categories) > 0:
             if sort_key and sort_key in categories[0]:
                 categories.sort(key=lambda category: category[sort_key].lower())
