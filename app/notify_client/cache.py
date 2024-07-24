@@ -4,6 +4,8 @@ from datetime import timedelta
 from functools import wraps
 from inspect import signature
 
+from flask import current_app
+
 from app.extensions import redis_client
 
 TTL = int(timedelta(days=7).total_seconds())
@@ -76,6 +78,11 @@ def set(key_format):
     def _set(client_method):
         @wraps(client_method)
         def new_client_method(client_instance, *args, **kwargs):
+            if client_method.__qualname__ == "TemplateCategoryClient.get_all_template_categories":
+                current_app.logger.info(
+                    f"cache.set() -> client_instance: {client_instance.__module__} args: {args} kwargs: {kwargs}"
+                )
+
             redis_key = _make_key(key_format, client_method, args, kwargs)
             cached = redis_client.get(redis_key)
             if cached:
