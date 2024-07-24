@@ -216,7 +216,6 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
-    FF_SALESFORCE_CONTACT = True
     FF_SPIKE_SMS_DAILY_LIMIT = True
     FF_SMS_PARTS_UI = False
     FF_BOUNCE_RATE_V1 = True
@@ -247,17 +246,13 @@ class Production(Config):
     WTF_CSRF_ENABLED = False
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     FF_SALESFORCE_CONTACT = False
-    SYSTEM_STATUS_URL = "https://localhost:3000"
-    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
-    TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
 
-    FF_SALESFORCE_CONTACT = True
     FF_SPIKE_SMS_DAILY_LIMIT = True
     FF_SMS_PARTS_UI = False
     FF_BOUNCE_RATE_V1 = True
