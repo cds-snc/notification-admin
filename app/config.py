@@ -229,7 +229,27 @@ class Test(Development):
 
 
 class Production(Config):
-    CHECK_PROXY_HEADER = False
+    ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
+    ANTIVIRUS_API_HOST = "https://test-antivirus"
+    ANTIVIRUS_API_KEY = "test-antivirus-secret"
+    API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
+    ASSET_DOMAIN = "static.example.com"
+    CRM_ORG_LIST_URL = "test-domain-dot-com"
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
+    DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
+    DEBUG = True
+    DEBUG_KEY = "debug"
+    MOU_BUCKET_NAME = "test-mou"
+    SECRET_KEY = ["dev-notify-secret-key"]
+    TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
+    TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
+    TESTING = True
+    WTF_CSRF_ENABLED = False
+    GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
+    FF_SALESFORCE_CONTACT = False
+    SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+
     HTTP_PROTOCOL = "https"
     NOTIFY_ENVIRONMENT = "production"
     NOTIFY_LOG_LEVEL = "INFO"
