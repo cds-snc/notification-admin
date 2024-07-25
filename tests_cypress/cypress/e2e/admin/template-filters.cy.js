@@ -129,6 +129,18 @@ describe("Template filters", () => {
               .should("have.length", emailRows);
           });
       });
+
+      it("Filtering to 0 results shows empty message", () => {
+        cy.visit(url);
+
+        Page.Components.EmptyState().should("not.be.visible");
+
+        Page.ToggleFilters();
+        Page.ApplyTypeFilter(types[lang][1]);
+        Page.ApplyCategoryFilter(categories[lang][0]);
+
+        Page.Components.EmptyState().should("be.visible");
+      });
     });
   });
 });
