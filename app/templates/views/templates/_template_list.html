@@ -59,9 +59,11 @@
         <span id="sr-{{ item.id }}1" class="message-meta message-type">
           {{ _(item.hint) }}
         </span>
-        <span id="sr-{{ item.id }}2" class="message-meta message-category">
-          {{ item.template_category[template_category_name_col] }}
-        </span>
+        {% if config["FF_TEMPLATE_CATEGORY"] %}
+          <span id="sr-{{ item.id }}2" class="message-meta message-category">
+            {{ item.template_category[template_category_name_col] }}
+          </span>
+        {% endif %}
       </div>
     {% endfor %}
     {% if display_checkboxes %}
