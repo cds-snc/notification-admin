@@ -22,6 +22,9 @@ class TemplateList:
         self.template_folder_id = template_folder_id
         self.user = user
 
+    def __len__(self):
+        return sum(1 for _ in self)
+
     def __iter__(self):
         for item in self.get_templates_and_folders(self.template_type, self.template_folder_id, self.user, ancestors=[]):
             yield item
