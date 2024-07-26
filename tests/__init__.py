@@ -348,6 +348,7 @@ def template_json(
         "is_precompiled_letter": is_precompiled_letter,
         "folder": folder,
         "postage": postage,
+        "template_category": template_category_json(template_category_id, hidden=True),
     }
     if content is None:
         template["content"] = "template content"

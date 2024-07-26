@@ -7,6 +7,7 @@ from flask import url_for
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
+from app.main.forms import TC_PRIORITY_VALUE
 from app.main.views.templates import (
     delete_preview_data,
     get_human_readable_delta,
@@ -1334,40 +1335,44 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
     )
 
 
+# parametrize with FF enabled and disabled
+@pytest.mark.parametrize("ff_enabled", [True, False])
 def test_should_redirect_when_saving_a_template(
-    client_request, mock_get_template_categories, mock_get_service_template, mock_update_service_template, fake_uuid, app_
+    client_request, mock_get_template_categories, mock_get_service_template, mock_update_service_template, fake_uuid, app_, ff_enabled
 ):
-    name = "new name"
-    content = "template <em>content</em> with & entity"
-    page = client_request.post(
-        ".edit_service_template",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        _data={
-            "id": fake_uuid,
-            "name": name,
-            "template_content": content,
-            "template_type": "sms",
-            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
-            "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
-        },
-        _follow_redirects=True,
-    )
+    with set_config(app_, "FF_TEMPLATE_CATEGORY", ff_enabled): 
+        name = "new name"
+        content = "template <em>content</em> with & entity"
 
-    flash_banner = page.select_one(".banner-default-with-tick").string.strip()
-    assert flash_banner == f"'{name}' template saved"
+        page = client_request.post(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _data={
+                "id": fake_uuid,
+                "name": name,
+                "template_content": content,
+                "template_type": "sms",
+                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                "service": SERVICE_ONE_ID,
+                "process_type": TC_PRIORITY_VALUE if ff_enabled else DEFAULT_PROCESS_TYPE,
+            },
+            _follow_redirects=True,
+        )
 
-    mock_update_service_template.assert_called_with(
-        fake_uuid,
-        name,
-        "sms",
-        content,
-        SERVICE_ONE_ID,
-        None,
-        DEFAULT_PROCESS_TYPE,
-        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
-    )
+        flash_banner = page.select_one(".banner-default-with-tick").string.strip()
+        assert flash_banner == f"'{name}' template saved"
+
+        mock_update_service_template.assert_called_with(
+            fake_uuid,
+            name,
+            "sms",
+            content,
+            SERVICE_ONE_ID,
+            None,
+            DEFAULT_PROCESS_TYPE,
+            DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
+        )
 
 
 @pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
