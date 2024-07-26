@@ -130,7 +130,7 @@ class TestSendOtherCategoryInfo:
                     "template_type": "email",
                     "template_category_id": TESTING_TEMPLATE_CATEGORY,
                     "service": SERVICE_ONE_ID,
-                    "process_type": DEFAULT_PROCESS_TYPE,
+                    "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
                     "button_pressed": "save",
                     "template_category_other": "hello",
                 },
@@ -1643,7 +1643,7 @@ def test_should_not_update_if_template_name_too_long(
 
 @pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_create_if_template_name_too_long(
-    client_request, template_type, mock_create_service_template_400_name_too_long, mock_get_template_categories
+    client_request, template_type, mock_create_service_template_400_name_too_long, mock_get_template_categories, app_
 ):
     template_data = {
         "name": "new name",
@@ -1651,7 +1651,7 @@ def test_should_not_create_if_template_name_too_long(
         "template_type": template_type,
         "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
-        "process_type": DEFAULT_PROCESS_TYPE,
+        "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
     }
     if template_type == "email":
         template_data.update({"subject": "subject"})
@@ -1672,6 +1672,7 @@ def test_should_not_create_too_big_template(
     mock_create_service_template_content_too_big,
     mock_get_template_categories,
     fake_uuid,
+    app_,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -1683,7 +1684,7 @@ def test_should_not_create_too_big_template(
             "template_type": "sms",
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
     )
@@ -2300,6 +2301,7 @@ def test_can_create_email_template_with_emoji(
     mock_get_template_folders,
     mock_get_service_template_when_no_template_exists,
     mock_get_template_categories,
+    app_,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2312,7 +2314,7 @@ def test_can_create_email_template_with_emoji(
             "template_type": "email",
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
             "button_pressed": "save",
         },
         _follow_redirects=True,
@@ -2400,10 +2402,7 @@ def test_create_template_with_process_types(
 
 
 def test_should_not_create_sms_template_with_emoji(
-    client_request,
-    service_one,
-    mock_create_service_template,
-    mock_get_template_categories,
+    client_request, service_one, mock_create_service_template, mock_get_template_categories, app_
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2415,7 +2414,7 @@ def test_should_not_create_sms_template_with_emoji(
             "template_type": "sms",
             "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
     )
@@ -2450,7 +2449,7 @@ def test_should_not_update_sms_template_with_emoji(
 
 
 def test_should_create_sms_template_without_downgrading_unicode_characters(
-    client_request, mock_create_service_template, mock_get_template_categories
+    client_request, mock_create_service_template, mock_get_template_categories, app_
 ):
     msg = "here:\tare some “fancy quotes” and non\u200Bbreaking\u200Bspaces"
 
@@ -2463,7 +2462,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
             "template_content": msg,
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
         },
         expected_status=302,
