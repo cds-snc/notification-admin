@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block platform_admin_content %}
-
   <div class="p-gutterHalf">
     {# TODO: remove when feature goes live #}
     <div id="sticky-banner" tabindex="-1" class="flex justify-between w-full p-4 border-b border-gray-200 bg-red text-white rounded-lg">
@@ -24,30 +23,39 @@
     {% call(item, row_number) list_table(
       template_categories,
       caption=_('Template categories'),
-      field_headings=['Category name', 'Email Priority', 'SMS Priority', 'Hidden?'],
+      field_headings=[_('Category name'), _('Email priority'), _('Text message priority'), _('Visibility')],
       field_headings_visible=True,
       caption_visible=False,
       testid="template-categories-table"
     ) %}
+      {% set name = _(item.name_en) if session['userlang'] == 'en' else _(item.name_fr) %}
+      {% set email_process_type = _(item.email_process_type) %}
+      {% set sms_process_type = _(item.sms_process_type) %}
+
       {% call field() %}
-        <a class="template-cat" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
-          {{ item.name_en }} 
+        <a class="template-cat" data-testid="edit-category-{{item.id}}" href="{{ url_for('main.template_category', template_category_id=item.id)}}">
+          {{ name }}
         </a>
       {% endcall %}
       {% call field() %}
-        {{ item.email_priority }}
+        {{ email_process_type }}
       {% endcall %}
       {% call field() %}
-        {{ item.sms_priority }}
+        {{ sms_process_type }}
       {% endcall %}
-      {% call field() %}
-        {{ item.hidden }}
-      {% endcall %}
+      {% if item.hidden %}
+        {% call field(status='error') %}
+          {{ _("Hide") }}
+        {% endcall %}
+      {% else %}
+        {% call field() %}
+          {{ _("Visible") }}
+        {% endcall %}
+      {% endif %}
     {% endcall %}
-
     <div class="js-stick-at-bottom-when-scrolling">
-      <a href="#" class="mt-gutter button button">{{ _('New category') }}</a>
+      <a href="{{url_for('.add_template_category')}}" data-testid="add-template-category-button" class="mt-gutter button button">{{ _('New category') }}</a>
     </div>
   </div>
-  
+
 {% endblock %}

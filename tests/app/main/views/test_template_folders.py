@@ -7,7 +7,7 @@ from notifications_python_client.errors import HTTPError
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
-from tests import sample_uuid
+from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
@@ -276,6 +276,7 @@ def test_should_show_templates_folder_page(
     expected_displayed_items,
     expected_searchable_text,
     expected_empty_message,
+    app_,
 ):
     mock_get_template_folders.return_value = [
         _folder("folder_two", FOLDER_TWO_ID),
@@ -300,7 +301,6 @@ def test_should_show_templates_folder_page(
         },
     )
 
-    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
@@ -313,7 +313,12 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
-    links_in_page = page.select(".pill a")
+    if app_.config["FF_TEMPLATE_CATEGORY"]:
+        expected_nav_links = ["All", "Email template", "Text message template", "All"]
+        links_in_page = page.select('nav[data-testid="filter-content"] a')
+    else:
+        expected_nav_links = ["All", "Email", "Text message", "Letter"]
+        links_in_page = page.select(".pill a")
 
     assert len(links_in_page) == len(expected_nav_links)
 
@@ -370,12 +375,15 @@ def test_should_show_templates_folder_page(
     mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
 
 
-def test_can_create_email_template_with_parent_folder(client_request, mock_create_service_template, fake_uuid):
+def test_can_create_email_template_with_parent_folder(
+    client_request, mock_create_service_template, mock_get_template_categories, fake_uuid, app_
+):
     data = {
         "name": "new name",
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
@@ -396,6 +404,7 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         data["subject"],
         data["process_type"],
         data["parent_folder_id"],
+        data["template_category_id"] if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 

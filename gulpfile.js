@@ -64,6 +64,7 @@ const javascripts = () => {
     paths.src + "javascripts/url-typer.js",
     paths.src + "javascripts/notificationsReports.js",
     paths.src + "javascripts/main.js",
+    paths.src + "javascripts/templateCategories.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(
@@ -94,6 +95,7 @@ const javascripts = () => {
         paths.src + "javascripts/formValidateRequired.min.js",
         paths.src + "javascripts/sessionRedirect.min.js",
         paths.src + "javascripts/touDialog.min.js",
+        paths.src + "javascripts/templateFilters.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));

@@ -16,6 +16,7 @@ from app.main.views.templates import (
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from tests import (
+    TESTING_TEMPLATE_CATEGORY,
     MockRedis,
     sample_uuid,
     single_notification_json,
@@ -30,6 +31,7 @@ from tests.app.main.views.test_template_folders import (
     _template,
 )
 from tests.conftest import (
+    DEFAULT_TEMPLATE_CATEGORY_LOW,
     SERVICE_ONE_ID,
     SERVICE_TWO_ID,
     TEMPLATE_ONE_ID,
@@ -46,6 +48,7 @@ from tests.conftest import (
     fake_uuid,
     mock_get_service_template_with_process_type,
     normalize_spaces,
+    set_config,
 )
 
 DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
@@ -99,6 +102,83 @@ class TestRedisPreviewUtilities:
         actual_data = get_preview_data(fake_uuid)
 
         assert actual_data == {}
+
+
+class TestSendOtherCategoryInfo:
+    def test_create_email_template_cat_other_to_freshdesk(
+        self,
+        client_request,
+        mock_create_service_template,
+        mock_get_template_folders,
+        mock_get_service_template_when_no_template_exists,
+        mock_get_template_categories,
+        mock_send_other_category_to_freshdesk,
+        active_user_with_permissions,
+        fake_uuid,
+        app_,
+    ):
+        with set_config(app_, "FF_TEMPLATE_CATEGORY", True):
+            client_request.post(
+                ".add_service_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                _data={
+                    "name": "new name",
+                    "subject": "Food incoming!",
+                    "template_content": "here's a burrito 🌯",
+                    "template_type": "email",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "service": SERVICE_ONE_ID,
+                    "process_type": DEFAULT_PROCESS_TYPE,
+                    "button_pressed": "save",
+                    "template_category_other": "hello",
+                },
+                _follow_redirects=True,
+            )
+            assert mock_create_service_template.called is True
+            assert mock_send_other_category_to_freshdesk.called is True
+            mock_send_other_category_to_freshdesk.assert_called_once_with(
+                active_user_with_permissions["id"], SERVICE_ONE_ID, "hello", None, fake_uuid
+            )
+
+    def test_edit_email_template_cat_other_to_freshdesk(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_service_template,
+        mock_update_service_template,
+        mock_send_other_category_to_freshdesk,
+        active_user_with_permissions,
+        fake_uuid,
+        app_,
+    ):
+        with set_config(app_, "FF_TEMPLATE_CATEGORY", True):
+            name = "new name"
+            content = "template <em>content</em> with & entity"
+            client_request.post(
+                ".edit_service_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                _data={
+                    "id": fake_uuid,
+                    "name": name,
+                    "template_content": content,
+                    "template_type": "sms",
+                    "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                    "service": SERVICE_ONE_ID,
+                    "template_category_other": "hello",
+                    "reply_to_text": "reply@go.com",
+                },
+                _follow_redirects=True,
+            )
+
+            mock_update_service_template.assert_called_with(
+                fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW
+            )
+            assert mock_send_other_category_to_freshdesk.called is True
+            mock_send_other_category_to_freshdesk.assert_called_once_with(
+                active_user_with_permissions["id"], SERVICE_ONE_ID, "hello", None, fake_uuid
+            )
 
 
 def test_should_show_empty_page_when_no_templates(
@@ -205,16 +285,21 @@ def test_should_show_page_for_choosing_a_template(
     fake_uuid,
     user,
     expected_page_title,
+    app_,
 ):
-    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"].append("letter")
     client_request.login(user)
 
     page = client_request.get("main.choose_template", service_id=service_one["id"], **extra_args)
 
-    assert normalize_spaces(page.select_one("h1").text) == expected_page_title
+    if app_.config["FF_TEMPLATE_CATEGORY"]:
+        expected_nav_links = ["All", "Email template", "Text message template", "All"]
+        links_in_page = page.select('nav[data-testid="filter-content"] a')
+    else:
+        expected_nav_links = ["All", "Email", "Text message", "Letter"]
+        links_in_page = page.select(".pill a")
 
-    links_in_page = page.select(".pill a")
+    assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
     assert len(links_in_page) == len(expected_nav_links)
 
@@ -785,6 +870,7 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
     fake_uuid,
 ):
     mocker.patch("app.user_api_client.get_users_for_service", return_value=[platform_admin_user])
+    mocker.patch("app.template_category_api_client.get_all_template_categories")
     template_id = fake_uuid
     client_request.login(platform_admin_user)
     page = client_request.get(
@@ -1080,6 +1166,7 @@ def test_load_edit_template_with_copy_of_template(
     mock_get_service_templates,
     mock_get_service_email_template,
     mock_get_non_empty_organisations_and_services_for_user,
+    mock_get_template_categories,
     existing_template_names,
     expected_name,
 ):
@@ -1108,6 +1195,7 @@ def test_copy_template_loads_template_from_within_subfolder(
     client_request,
     active_user_with_permission_to_two_services,
     mock_get_service_templates,
+    mock_get_template_categories,
     mock_get_non_empty_organisations_and_services_for_user,
     mocker,
 ):
@@ -1196,6 +1284,7 @@ def test_should_not_allow_creation_of_a_template_without_correct_permission(
     client_request,
     service_one,
     mocker,
+    mock_get_template_categories,
     type_of_template,
 ):
     service_one["permissions"] = []
@@ -1246,10 +1335,7 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
 
 
 def test_should_redirect_when_saving_a_template(
-    client_request,
-    mock_get_service_template,
-    mock_update_service_template,
-    fake_uuid,
+    client_request, mock_get_template_categories, mock_get_service_template, mock_update_service_template, fake_uuid, app_
 ):
     name = "new name"
     content = "template <em>content</em> with & entity"
@@ -1262,6 +1348,7 @@ def test_should_redirect_when_saving_a_template(
             "name": name,
             "template_content": content,
             "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -1279,16 +1366,13 @@ def test_should_redirect_when_saving_a_template(
         SERVICE_ONE_ID,
         None,
         DEFAULT_PROCESS_TYPE,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
 @pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
-    client_request,
-    mocker,
-    mock_update_service_template,
-    fake_uuid,
-    process_type,
+    client_request, mocker, mock_update_service_template, mock_get_template_categories, fake_uuid, process_type, app_
 ):
     mock_get_service_template_with_process_type(mocker, process_type)
     client_request.post(
@@ -1300,6 +1384,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "name": "new name",
             "template_content": "new template <em>content</em> with & entity",
             "template_type": "sms",
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
             "button_pressed": "save",
@@ -1319,6 +1404,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         SERVICE_ONE_ID,
         None,
         process_type,
+        TESTING_TEMPLATE_CATEGORY if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
@@ -1369,6 +1455,7 @@ def test_should_403_when_edit_template_with_non_default_process_type_for_non_pla
         "name": "new name",
         "template_content": "template <em>content</em> with & entity",
         "template_type": "sms",
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "service": service["id"],
         "process_type": process_type,
     }
@@ -1387,6 +1474,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
     mocker,
     mock_get_service_template,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
     process_type,
     service_one,
@@ -1403,6 +1491,7 @@ def test_should_403_when_create_template_with_non_default_process_type_for_non_p
         "name": "new name",
         "template_content": "template <em>content</em> with & entity",
         "template_type": "sms",
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": service["id"],
         "process_type": process_type,
     }
@@ -1441,6 +1530,7 @@ def test_should_show_interstitial_when_making_breaking_change(
     client_request,
     mock_update_service_template,
     mock_get_user_by_email,
+    mock_get_template_categories,
     fake_uuid,
     mocker,
     template_data,
@@ -1454,6 +1544,7 @@ def test_should_show_interstitial_when_making_breaking_change(
         "name": "new name",
         "template_content": "hello lets talk about ((thing))",
         "template_type": template_type,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "subject": "reminder '\" <span> & ((name))",
         "service": SERVICE_ONE_ID,
         "process_type": DEFAULT_PROCESS_TYPE,
@@ -1498,6 +1589,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
     client_request,
     mock_get_service_email_template,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
 ):
     existing_template = mock_get_service_email_template(0, 0)["data"]
@@ -1508,6 +1600,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
         _data={
             "name": existing_template["name"],
             "template_content": "no placeholders",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "subject": existing_template["subject"],
             "button_pressed": "save",
         },
@@ -1531,6 +1624,7 @@ def test_should_not_update_if_template_name_too_long(
         "name": "new name",
         "template_content": "template content!!",
         "template_type": template_type,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
     if template_type == "email":
@@ -1548,12 +1642,13 @@ def test_should_not_update_if_template_name_too_long(
 
 @pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_create_if_template_name_too_long(
-    client_request, template_type, mock_create_service_template_400_name_too_long
+    client_request, template_type, mock_create_service_template_400_name_too_long, mock_get_template_categories
 ):
     template_data = {
         "name": "new name",
         "template_content": "template content",
         "template_type": template_type,
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
         "process_type": DEFAULT_PROCESS_TYPE,
     }
@@ -1574,6 +1669,7 @@ def test_should_not_create_too_big_template(
     client_request,
     mock_get_service_template,
     mock_create_service_template_content_too_big,
+    mock_get_template_categories,
     fake_uuid,
 ):
     page = client_request.post(
@@ -1584,6 +1680,7 @@ def test_should_not_create_too_big_template(
             "name": "new name",
             "template_content": "template content",
             "template_type": "sms",
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -1608,6 +1705,7 @@ def test_should_not_update_too_big_template(
             "template_content": "template content",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
@@ -1619,8 +1717,10 @@ def test_should_redirect_when_saving_a_template_email(
     client_request,
     mock_get_service_email_template,
     mock_update_service_template,
+    mock_get_template_categories,
     mock_get_user_by_email,
     fake_uuid,
+    app_,
 ):
     name = "new name"
     content = "template <em>content</em> with & entity ((thing)) ((date))"
@@ -1634,6 +1734,7 @@ def test_should_redirect_when_saving_a_template_email(
             "name": name,
             "template_content": content,
             "template_type": "email",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": DEFAULT_PROCESS_TYPE,
@@ -1654,6 +1755,7 @@ def test_should_redirect_when_saving_a_template_email(
         SERVICE_ONE_ID,
         subject,
         DEFAULT_PROCESS_TYPE,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
@@ -1661,6 +1763,7 @@ def test_should_redirect_when_previewing_a_template_email(
     client_request,
     mock_get_service_email_template,
     mock_update_service_template,
+    mock_get_template_categories,
     mock_get_user_by_email,
     fake_uuid,
 ):
@@ -1676,6 +1779,7 @@ def test_should_redirect_when_previewing_a_template_email(
             "name": name,
             "template_content": content,
             "template_type": "email",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "subject": subject,
             "process_type": DEFAULT_PROCESS_TYPE,
@@ -1765,6 +1869,7 @@ def test_preview_edit_button_should_redirect_to_add_page(
         "content": "hi there",
         "subject": "test subject",
         "template_type": "email",
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "folder": "",
         "id": None,
     }
@@ -1800,6 +1905,7 @@ def test_preview_has_correct_back_link(
         "subject": "test subject",
         "content": "test content",
         "template_type": "email",
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
         "folder": "",
         "id": id,
     }
@@ -2083,6 +2189,7 @@ def test_route_permissions(
     mock_get_service_template,
     mock_get_template_folders,
     mock_get_template_statistics_for_template,
+    mock_get_template_categories,
     fake_uuid,
 ):
     validate_route_permission(
@@ -2191,6 +2298,7 @@ def test_can_create_email_template_with_emoji(
     mock_create_service_template,
     mock_get_template_folders,
     mock_get_service_template_when_no_template_exists,
+    mock_get_template_categories,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2201,6 +2309,7 @@ def test_can_create_email_template_with_emoji(
             "subject": "Food incoming!",
             "template_content": "here's a burrito 🌯",
             "template_type": "email",
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
             "button_pressed": "save",
@@ -2217,6 +2326,7 @@ def test_should_not_create_sms_template_with_emoji(
     client_request,
     service_one,
     mock_create_service_template,
+    mock_get_template_categories,
 ):
     page = client_request.post(
         ".add_service_template",
@@ -2226,6 +2336,7 @@ def test_should_not_create_sms_template_with_emoji(
             "name": "new name",
             "template_content": "here are some noodles 🍜",
             "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
@@ -2239,6 +2350,7 @@ def test_should_not_update_sms_template_with_emoji(
     client_request,
     mock_get_service_template,
     mock_update_service_template,
+    mock_get_template_categories,
     fake_uuid,
 ):
     page = client_request.post(
@@ -2251,6 +2363,7 @@ def test_should_not_update_sms_template_with_emoji(
             "template_content": "here's a burger 🍔",
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "process_type": DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
@@ -2259,7 +2372,9 @@ def test_should_not_update_sms_template_with_emoji(
     assert mock_update_service_template.called is False
 
 
-def test_should_create_sms_template_without_downgrading_unicode_characters(client_request, mock_create_service_template):
+def test_should_create_sms_template_without_downgrading_unicode_characters(
+    client_request, mock_create_service_template, mock_get_template_categories
+):
     msg = "here:\tare some “fancy quotes” and non\u200Bbreaking\u200Bspaces"
 
     client_request.post(
@@ -2272,6 +2387,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(clien
             "template_type": "sms",
             "service": SERVICE_ONE_ID,
             "process_type": DEFAULT_PROCESS_TYPE,
+            "template_category_id": TESTING_TEMPLATE_CATEGORY,
         },
         expected_status=302,
     )
@@ -2284,6 +2400,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(clien
         ANY,  # subject
         ANY,  # process_type
         ANY,  # parent_folder_id
+        ANY,  # template_category_id
     )
 
 
