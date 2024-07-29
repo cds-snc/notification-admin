@@ -175,7 +175,14 @@ class TestSendOtherCategoryInfo:
             )
 
             mock_update_service_template.assert_called_with(
-                fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None
+                fake_uuid,
+                name,
+                "sms",
+                content,
+                SERVICE_ONE_ID,
+                None,
+                None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
+                DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
             )
             assert mock_send_other_category_to_freshdesk.called is True
             mock_send_other_category_to_freshdesk.assert_called_once_with(
@@ -1369,7 +1376,7 @@ def test_should_redirect_when_saving_a_template(
 
         flash_banner = page.select_one(".banner-default-with-tick").string.strip()
         assert flash_banner == f"'{name}' template saved"
-        #self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
+        # self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
         mock_update_service_template.assert_called_with(
             fake_uuid,
             name,
@@ -1380,7 +1387,7 @@ def test_should_redirect_when_saving_a_template(
             None if ff_enabled else DEFAULT_PROCESS_TYPE,
             DEFAULT_TEMPLATE_CATEGORY_LOW if ff_enabled else None,
         )
- 
+
 
 @pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
@@ -1703,11 +1710,7 @@ def test_should_not_create_too_big_template(
 
 
 def test_should_not_update_too_big_template(
-    client_request,
-    mock_get_service_template,
-    mock_update_service_template_400_content_too_big,
-    fake_uuid,
-    app_
+    client_request, mock_get_service_template, mock_update_service_template_400_content_too_big, fake_uuid, app_
 ):
     page = client_request.post(
         ".edit_service_template",
