@@ -5,7 +5,7 @@ import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 
 const types = {
   en: ["Email template", "Text message template"],
-  fr: ["Gabarit de courriel", "Gabarit de message texte"],
+  fr: ["Courriel", "Message texte"],
 };
 
 const categories = {
