@@ -315,6 +315,14 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
+    # Get the full list of template categories, excluding hidden ones
+    template_categories = list(
+        {
+            template.template_category[template_category_name_col]
+            for template in template_list
+            if template.template_category and not template.template_category.get("hidden")
+        }
+    )
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
@@ -322,9 +330,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
-        template_categories=list(
-            {template.template_category[template_category_name_col] for template in template_list if template.template_category}
-        ),
+        template_categories=template_categories,
         template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
