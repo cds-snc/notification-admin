@@ -2656,3 +2656,18 @@ def test_template_should_show_phone_number_in_correct_language(
     )
     assert "phone number" not in page.text
     assert "numéro de téléphone" in page.text
+
+
+def test_should_hide_category_name_from_template_list_if_marked_hidden(
+    client_request,
+    mock_get_template_folders,
+    mock_get_more_service_templates_than_can_fit_onscreen,
+):
+    page = client_request.get(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+    )
+
+    # assert that "HIDDEN_CATEGORY" is not found anywhere in the page using beautifulsoup
+    assert "HIDDEN_CATEGORY" not in page.text
+    assert not page.find(text="HIDDEN_CATEGORY")
