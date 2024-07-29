@@ -2,9 +2,9 @@ from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
 TEMPLATE_TYPES = {
-    "email": _l("Email"),
-    "sms": _l("Text message"),
-    "letter": _l("Letter"),
+    "email": _l("Email template"),
+    "sms": _l("Text message template"),
+    "letter": _l("Letter template"),
 }
 TEMPLATE_TYPES_NO_LETTER = filtered_template_types = {key: value for key, value in TEMPLATE_TYPES.items() if key != "letter"}
 
