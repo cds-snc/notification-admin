@@ -83,9 +83,9 @@ form_objects = {
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
-    "bulk": "Low",
-    "normal": "Medium",
-    "priority": "High",
+    "bulk": "Bulk",
+    "normal": "Normal",
+    "priority": "Priority",
 }
 
 form_objects_with_category = {
