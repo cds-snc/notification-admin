@@ -790,6 +790,7 @@ def mock_get_service_template(mocker):
             "Two week reminder",
             "sms",
             "Template <em>content</em> with & entity",
+            process_type=None
         )
         if version:
             template.update({"version": version})

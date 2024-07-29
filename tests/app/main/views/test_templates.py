@@ -165,16 +165,17 @@ class TestSendOtherCategoryInfo:
                     "name": name,
                     "template_content": content,
                     "template_type": "sms",
-                    "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                    "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
                     "service": SERVICE_ONE_ID,
                     "template_category_other": "hello",
                     "reply_to_text": "reply@go.com",
+                    "process_type": None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
                 },
                 _follow_redirects=True,
             )
 
             mock_update_service_template.assert_called_with(
-                fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW
+                fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE, DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None
             )
             assert mock_send_other_category_to_freshdesk.called is True
             mock_send_other_category_to_freshdesk.assert_called_once_with(
@@ -1359,16 +1360,16 @@ def test_should_redirect_when_saving_a_template(
                 "name": name,
                 "template_content": content,
                 "template_type": "sms",
-                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW if ff_enabled else None,
                 "service": SERVICE_ONE_ID,
-                "process_type": TC_PRIORITY_VALUE if ff_enabled else DEFAULT_PROCESS_TYPE,
+                "process_type": None if ff_enabled else DEFAULT_PROCESS_TYPE,
             },
             _follow_redirects=True,
         )
 
         flash_banner = page.select_one(".banner-default-with-tick").string.strip()
         assert flash_banner == f"'{name}' template saved"
-
+        #self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
         mock_update_service_template.assert_called_with(
             fake_uuid,
             name,
@@ -1376,10 +1377,10 @@ def test_should_redirect_when_saving_a_template(
             content,
             SERVICE_ONE_ID,
             None,
-            DEFAULT_PROCESS_TYPE,
-            DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
+            None if ff_enabled else DEFAULT_PROCESS_TYPE,
+            DEFAULT_TEMPLATE_CATEGORY_LOW if ff_enabled else None,
         )
-
+ 
 
 @pytest.mark.parametrize("process_type", [TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.PRIORITY.value])
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
@@ -1627,7 +1628,7 @@ def test_removing_placeholders_is_not_a_breaking_change(
 
 @pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_update_if_template_name_too_long(
-    client_request, template_type, fake_uuid, mock_get_service_template, mock_update_service_template_400_name_too_long
+    client_request, template_type, fake_uuid, mock_get_service_template, mock_update_service_template_400_name_too_long, app_
 ):
     template_data = {
         "id": fake_uuid,
@@ -1635,8 +1636,8 @@ def test_should_not_update_if_template_name_too_long(
         "name": "new name",
         "template_content": "template content!!",
         "template_type": template_type,
-        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
-        "process_type": DEFAULT_PROCESS_TYPE,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
+        "process_type": TC_PRIORITY_VALUE if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
     }
     if template_type == "email":
         template_data.update({"subject": "subject"})
@@ -1706,6 +1707,7 @@ def test_should_not_update_too_big_template(
     mock_get_service_template,
     mock_update_service_template_400_content_too_big,
     fake_uuid,
+    app_
 ):
     page = client_request.post(
         ".edit_service_template",
@@ -1718,7 +1720,7 @@ def test_should_not_update_too_big_template(
             "service": SERVICE_ONE_ID,
             "template_type": "sms",
             "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
-            "process_type": DEFAULT_PROCESS_TYPE,
+            "process_type": TC_PRIORITY_VALUE if app_.config["FF_TEMPLATE_CATEGORY"] else DEFAULT_PROCESS_TYPE,
         },
         _expected_status=200,
     )
