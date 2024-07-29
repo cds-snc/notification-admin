@@ -776,8 +776,12 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
         form = form_objects[template_type](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
-        if form.process_type.data != TemplateProcessTypes.BULK.value:
-            abort_403_if_not_admin_user()
+        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TC_PRIORITY_VALUE:
+                abort_403_if_not_admin_user()
+        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TemplateProcessTypes.BULK.value:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+                abort_403_if_not_admin_user()  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         subject = form.subject.data if hasattr(form, "subject") else None
         if request.form.get("button_pressed") == "preview":
             preview_template_data = {
