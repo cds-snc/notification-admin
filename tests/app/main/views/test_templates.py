@@ -1338,9 +1338,15 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
 # parametrize with FF enabled and disabled
 @pytest.mark.parametrize("ff_enabled", [True, False])
 def test_should_redirect_when_saving_a_template(
-    client_request, mock_get_template_categories, mock_get_service_template, mock_update_service_template, fake_uuid, app_, ff_enabled
+    client_request,
+    mock_get_template_categories,
+    mock_get_service_template,
+    mock_update_service_template,
+    fake_uuid,
+    app_,
+    ff_enabled,
 ):
-    with set_config(app_, "FF_TEMPLATE_CATEGORY", ff_enabled): 
+    with set_config(app_, "FF_TEMPLATE_CATEGORY", ff_enabled):
         name = "new name"
         content = "template <em>content</em> with & entity"
 
