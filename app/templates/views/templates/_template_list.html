@@ -51,7 +51,7 @@
               <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
             </a>
           {% else %}
-            {% set adb2 = "sr-" + item.id | string + "2" if item.template_category else '' %}
+            {% set adb2 = "sr-" + (item.id | string) + "2" if item.template_category else '' %}
             <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" aria-describedby="sr-{{ item.id }}1 {{ adb2 }}" class="template-list-template">
               <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
             </a>
@@ -61,11 +61,13 @@
           {{ _(item.hint) }}
         </span>
         {% if config["FF_TEMPLATE_CATEGORY"] %}
-          {% if not item.template_category.hidden %}
-            <span id="sr-{{ item.id }}2" class="message-meta message-category">
+          <span id="sr-{{ item.id }}2" class="message-meta message-category">
+            {% if not item.template_category.hidden %}
               {{ item.template_category[template_category_name_col] }}
-            </span>
-          {% endif %}
+            {% else %}
+              {{ _('Other') }}
+            {% endif %}
+        </span>
         {% endif %}
       </div>
     {% endfor %}
