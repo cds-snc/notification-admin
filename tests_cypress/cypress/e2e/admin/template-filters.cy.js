@@ -86,7 +86,7 @@ describe("Template filters", () => {
 
       context("Filtering by category", () => {
         categories[lang].forEach((type) => {
-          it(`${type}: displays the correct number of rows`, () => {
+          it(`Category "${type}": displays the correct number of rows`, () => {
             cy.visit(url);
 
             // Test type filter works

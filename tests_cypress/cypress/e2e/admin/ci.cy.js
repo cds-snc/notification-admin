@@ -5,3 +5,4 @@ import "./sitemap/sitemap.cy";
 import "./branding/all.cy";
 import "./tou_dialog.cy";
 import "./template-filters.cy";
+import "./template-categories.cy";
