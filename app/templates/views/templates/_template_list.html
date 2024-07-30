@@ -29,8 +29,8 @@
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
     {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ item.template_category[template_category_name_col] }}" data-testid="template-row">
-        {% if display_checkboxes %}
+      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ _('Other') if item.template_category.hidden else item.template_category[template_category_name_col] }}" data-testid="template-row">
+        {% if display_checkboxes %}                  
           {{ unlabelled_checkbox(
             id='templates-or-folder-{}'.format(item.id),
             name='templates_and_folders',
@@ -51,7 +51,8 @@
               <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
             </a>
           {% else %}
-            <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" aria-describedby="sr-{{ item.id }}1 sr-{{ item.id }}2" class="template-list-template">
+            {% set adb2 = "sr-" + (item.id | string) + "2" if item.template_category else '' %}
+            <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" aria-describedby="sr-{{ item.id }}1 {{ adb2 }}" class="template-list-template">
               <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
             </a>
           {% endif %}
@@ -61,8 +62,12 @@
         </span>
         {% if config["FF_TEMPLATE_CATEGORY"] %}
           <span id="sr-{{ item.id }}2" class="message-meta message-category">
-            {{ item.template_category[template_category_name_col] }}
-          </span>
+            {% if not item.template_category.hidden %}
+              {{ item.template_category[template_category_name_col] }}
+            {% else %}
+              {{ _('Other') }}
+            {% endif %}
+        </span>
         {% endif %}
       </div>
     {% endfor %}
