@@ -107,3 +107,18 @@ def delete(key_format):
         return new_client_method
 
     return _delete
+
+
+def delete_by_pattern(pattern):
+    def _delete_by_pattern(client_method):
+        @wraps(client_method)
+        def new_client_method(client_instance, *args, **kwargs):
+            try:
+                api_response = client_method(client_instance, *args, **kwargs)
+            finally:
+                redis_client.delete_cache_keys_by_pattern(pattern)
+            return api_response
+
+        return new_client_method
+
+    return _delete_by_pattern
