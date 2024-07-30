@@ -64,9 +64,11 @@
           {{ _("{} template").format(_(item.hint)) | capitalize if item.type else _(item.hint) }}
         </span>
         {% if config["FF_TEMPLATE_CATEGORY"] %}
-          <span id="sr-{{ item.id }}2" class="message-meta message-category">
-            {{ item.template_category[template_category_name_col] }}
-          </span>
+          {% if not item.template_category.hidden %}
+            <span id="sr-{{ item.id }}2" class="message-meta message-category">
+              {{ item.template_category[template_category_name_col] }}
+            </span>
+          {% endif %}
         {% endif %}
       </div>
     {% endfor %}
