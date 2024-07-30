@@ -314,7 +314,7 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
     if app_.config["FF_TEMPLATE_CATEGORY"]:
-        expected_nav_links = ["All", "Email template", "Text message template", "All"]
+        expected_nav_links = ["All", "Email", "Text message", "All"]
         links_in_page = page.select('nav[data-testid="filter-content"] a')
     else:
         expected_nav_links = ["All", "Email", "Text message", "Letter"]
