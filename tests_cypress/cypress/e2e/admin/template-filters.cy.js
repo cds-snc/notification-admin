@@ -132,22 +132,26 @@ describe("Template filters", () => {
 
       it.only("Should list category filters alphabetically", () => {
         cy.visit(url);
-        
+
         Page.ToggleFilters();
-        
-        Page.Components.CategoryFilter().find('a').then($filters => {
-          // Extract the text from each filter
-          const filterTexts = $filters.map((index, filter) => Cypress.$(filter).text()).get();
 
-          // Remove the first item, "All"
-          filterTexts.shift();
+        Page.Components.CategoryFilter()
+          .find("a")
+          .then(($filters) => {
+            // Extract the text from each filter
+            const filterTexts = $filters
+              .map((index, filter) => Cypress.$(filter).text())
+              .get();
 
-          // Sort the extracted text alphabetically
-          const sortedFilterTexts = [...filterTexts].sort();
+            // Remove the first item, "All"
+            filterTexts.shift();
 
-          // Compare the sorted list with the original list to ensure they match
-          expect(filterTexts).to.deep.equal(sortedFilterTexts);
-        });
+            // Sort the extracted text alphabetically
+            const sortedFilterTexts = [...filterTexts].sort();
+
+            // Compare the sorted list with the original list to ensure they match
+            expect(filterTexts).to.deep.equal(sortedFilterTexts);
+          });
       });
     });
   });
