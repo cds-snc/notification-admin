@@ -323,7 +323,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     ]
 
     # Remove duplicates while preserving order
-    template_categories = list(dict.fromkeys(template_categories))
+    template_categories = sorted(set(template_categories))
 
     return render_template(
         "views/templates/choose.html",
