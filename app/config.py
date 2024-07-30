@@ -192,7 +192,6 @@ class Development(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
-
 class Test(Development):
     ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
     ANTIVIRUS_API_HOST = "https://test-antivirus"
