@@ -1,14 +1,8 @@
 import csv
 import os
-from typing import List
-
-# input keywords here, lowercase
-keywords: List[str] = []
-# example
-# keywords = ["can't","can’t","cannot","can not"]
 
 
-def search_single_file(filename):
+def search_single_file(filename, keywords):
     d = []
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
@@ -27,16 +21,17 @@ def search_single_file(filename):
     return d
 
 
-def search_translation_strings():
+def search_translation_strings(search_terms: str):
+    keywords = [x.strip() for x in search_terms.split(",")]
     cwd = os.getcwd()
 
-    d = []
+    d: list = []
 
     # english
-    d = d + search_single_file(cwd + "/app/translations/csv/en.csv")
+    d = d + search_single_file(cwd + "/app/translations/csv/en.csv", keywords)
 
     # french
-    d = d + search_single_file(cwd + "/app/translations/csv/fr.csv")
+    d = d + search_single_file(cwd + "/app/translations/csv/fr.csv", keywords)
 
     # write results
     with open(cwd + "/scripts/searchresults.csv", "w", newline="") as csvfile:
@@ -44,6 +39,3 @@ def search_translation_strings():
         writer.writeheader()
         for row in d:
             writer.writerow({"keyword": row["keyword"], "found_string": row["found_string"]})
-
-
-search_translation_strings()
