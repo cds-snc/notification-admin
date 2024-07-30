@@ -903,13 +903,14 @@ def _get_categories_and_prepare_form(template, template_type):
     form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
 
     # add "other" category to choices, default to the low priority template category
-    form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
     # if the template is already in one of the default categories, then dont show the other
     if template.get("template_category") and template["template_category"].get("hidden"):
         other_category = None
         form.template_category_other.validators = []
+        form.template_category_id.choices.append((form.template_category_id.data, _("Other")))
     else:
         other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+        form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
 
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
