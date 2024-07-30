@@ -3,3 +3,5 @@ import "./sign_out/sign_out.cy";
 import "./menu/disclosure_menu.cy";
 import "./sitemap/sitemap.cy";
 import "./branding/all.cy";
+import "./tou_dialog.cy";
+import "./template-filters.cy";

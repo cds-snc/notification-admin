@@ -151,7 +151,7 @@
 
 {% macro textbox_localized(
   name,
-  fields, 
+  fields,
   legend,
   hint=None,
   describedby=""
@@ -166,7 +166,11 @@
     {% endif %}
     <div class="localized-field-fields flex w-full">
       {% for lang, localized_field in fields.items() %}
-        {{ textbox(localized_field, localized_field.label.text, width='w-full', data_error_msg=localized_field.validators[0].message, lang=lang) }}
+        {% set error_msg = "" %}
+        {% if localized_field.validators | length > 0 %}
+          {% set error_msg = localized_field.validators[0].message %}
+        {% endif %}
+        {{ textbox(localized_field, localized_field.label.text, width='w-full', data_error_msg=error_msg, lang=lang, testid=name + "-" + lang) }}
       {% endfor %}
     </div>
   </fieldset>

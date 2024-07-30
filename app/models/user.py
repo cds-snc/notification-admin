@@ -394,6 +394,13 @@ class User(JSONModel, UserMixin):
             self.id, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name
         )
 
+    def send_new_template_category_request(
+        self, user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+    ):
+        user_api_client.send_new_template_category_request(
+            user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+        )
+
     def refresh_session_id(self):
         self.current_session_id = user_api_client.get_user(self.id).get("current_session_id")
         session["current_session_id"] = self.current_session_id

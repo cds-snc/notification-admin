@@ -1,3 +1,5 @@
+import "cypress-real-events";
+
 import config from "../../config";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
@@ -6,30 +8,29 @@ import LoginPage from "../Notify/Admin/Pages/LoginPage";
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
         req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
     });
 
-    cy.visit(url);
+    if (url) {
+        cy.visit(url);
+    }
 
     // 1. validate a11y rules using axe dequeue
     if (options.a11y) {
         cy.injectAxe();
-        cy.checkA11y();
+
+        if (options.axeConfig) {
+            cy.configureAxe({ rules: options.axeConfig });
+        }
     }
 
     // 2. validate html
     if (options.htmlValidate) {
-        cy.get('main').htmlvalidate({
-            rules: {
-                "no-redundant-role": "off",
-                "no-dup-class": "off",
-                "require-sri": "off",
-            },
-        });
+        cy.get('main').htmlvalidate();
     }
 
     // 3. check for dead links
@@ -96,8 +97,8 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
-Cypress.Commands.add('login', (username, password) => {
-    cy.session([username, password], () => {
-        LoginPage.Login(username, password);
+Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
+    cy.session([username, password, agreeToTerms], () => {
+        LoginPage.Login(username, password, agreeToTerms);
     });
 });

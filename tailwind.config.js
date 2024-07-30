@@ -106,6 +106,11 @@ module.exports = {
       black: {
         default: "#000",
       },
+      lime: {
+        default: '#D3E766',
+        100: '#D3E766',
+        700: '#545E00',
+      },
       transparent: {
         default: "transparent",
       },

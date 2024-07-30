@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '1 0-12,20-23 * * 1-5'
     - cron: '1 * * * 0,6'
-name: Continuous Integration Testing
+name: Continuous Integration Testing (staging feature flags)
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -33,12 +33,12 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+    - name: Check for missing translations
+      run: make test-translations
     - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}
         MIXPANEL_PROJECT_TOKEN: <project_token>
-    - name: Check for missing translations
-      run: make test-translations
     - name: Notify Slack channel if this job failed in default branch
       if: ${{ failure() && github.ref == 'refs/heads/main' }}
       run: |

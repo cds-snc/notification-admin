@@ -22,6 +22,7 @@
 @import "./components/big-number.css";
 @import "./components/textbox.css";
 @import "./components/file-upload.css";
+@import "./components/filter.css";
 @import "./components/browse-list.css";
 @import "./components/email_sms_message.css";
 @import "./components/buttons.css";
@@ -42,6 +43,7 @@
 @import "./components/empty-list.css";
 @import "./components/autocomplete.css";
 @import "./components/menu.css";
+@import "./components/tou-dialog.css";
 
 /* views */
 @import "./views/dashboard.css";

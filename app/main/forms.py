@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import request
+from flask import current_app, request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -32,7 +32,15 @@ from wtforms import (
     widgets,
 )
 from wtforms.fields import EmailField, SearchField, TelField
-from wtforms.validators import URL, AnyOf, DataRequired, Length, Optional, Regexp
+from wtforms.validators import (
+    URL,
+    AnyOf,
+    DataRequired,
+    InputRequired,
+    Length,
+    Optional,
+    Regexp,
+)
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import format_thousands
@@ -49,6 +57,7 @@ from app.main.validators import (
     validate_email_from,
     validate_service_name,
 )
+from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import permissions, roles
 from app.utils import get_logo_cdn_domain, guess_name_from_email_address, is_blank
@@ -370,6 +379,12 @@ class RegisterUserForm(StripWhitespaceForm):
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
+    tou_agreed = HiddenField("tou_agreed", validators=[])
+
+    def validate_tou_agreed(self, field):
+        if current_app.config["FF_TOU"]:
+            if field.data is not None and field.data.strip() == "":
+                raise ValidationError(_l("Read and agree to continue"))
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):
@@ -754,6 +769,9 @@ class ConfirmPasswordForm(StripWhitespaceForm):
             raise ValidationError(_l("Invalid password"))
 
 
+TC_PRIORITY_VALUE = "__use_tc"
+
+
 class BaseTemplateForm(StripWhitespaceForm):
     name = StringField(
         _l("Template name"),
@@ -773,11 +791,13 @@ class BaseTemplateForm(StripWhitespaceForm):
             ("bulk", _l("Bulk — Not time-sensitive")),
             ("normal", _l("Normal")),
             ("priority", _l("Priority — Time-sensitive")),
+            (TC_PRIORITY_VALUE, _l("Use template category")),
         ],
-        default="normal",
+        default=TC_PRIORITY_VALUE,
     )
 
 
+# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
 class SMSTemplateForm(BaseTemplateForm):
     def validate_template_content(self, field):
         OnlySMSCharacters()(None, field)
@@ -791,6 +811,7 @@ class SMSTemplateForm(BaseTemplateForm):
     )
 
 
+# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
 class EmailTemplateForm(BaseTemplateForm):
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
@@ -803,7 +824,70 @@ class EmailTemplateForm(BaseTemplateForm):
     )
 
 
+# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
 class LetterTemplateForm(EmailTemplateForm):
+    subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
+
+    template_content = TextAreaField(
+        "Body",
+        validators=[
+            DataRequired(message="This cannot be empty"),
+            NoCommasInPlaceHolders(),
+        ],
+    )
+
+
+class RequiredIf(InputRequired):
+    # a validator which makes a field required if
+    # another field is set and has a truthy value
+
+    def __init__(self, other_field_name, other_field_value, *args, **kwargs):
+        self.other_field_name = other_field_name
+        self.other_field_value = other_field_value
+        super(RequiredIf, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if bool(other_field.data and other_field.data == self.other_field_value):
+            super(RequiredIf, self).__call__(form, field)
+
+
+class BaseTemplateFormWithCategory(BaseTemplateForm):
+    template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
+
+    template_category_other = StringField(
+        _l("Describe category"), validators=[RequiredIf("template_category_id", DefaultTemplateCategories.LOW.value)]
+    )
+
+
+class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
+    def validate_template_content(self, field):
+        OnlySMSCharacters()(None, field)
+
+    template_content = TextAreaField(
+        _l("Text message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
+
+
+class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
+    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+
+    template_content = TextAreaField(
+        _l("Email message"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            NoCommasInPlaceHolders(),
+        ],
+    )
+
+
+class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
 
     template_content = TextAreaField(
@@ -1831,4 +1915,34 @@ class BrandingRequestForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("You must select a file to continue")),
         ],
+    )
+
+
+class TemplateCategoryForm(StripWhitespaceForm):
+    name_en = StringField("EN", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name_fr = StringField("FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    description_en = StringField("EN")
+    description_fr = StringField("FR")
+    hidden = RadioField(_l("Category visibility"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
+    sms_sending_vehicle = RadioField(
+        _l("Sending method for text messages"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))]
+    )
+
+    email_process_type = RadioField(
+        _l("Email priority"),
+        choices=[
+            ("priority", _l("High")),
+            ("normal", _l("Medium")),
+            ("bulk", _l("Low")),
+        ],
+        validators=[DataRequired(message=_l("This cannot be empty"))],
+    )
+    sms_process_type = RadioField(
+        _l("Text message priority"),
+        choices=[
+            ("priority", _l("High")),
+            ("normal", _l("Medium")),
+            ("bulk", _l("Low")),
+        ],
+        validators=[DataRequired(message=_l("This cannot be empty"))],
     )

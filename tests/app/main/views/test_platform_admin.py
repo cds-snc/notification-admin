@@ -995,9 +995,10 @@ def test_clear_cache_shows_form(client_request, platform_admin_user, mocker):
     assert page.select("input[type=radio]")[0]["value"] == "user"
     assert page.select("input[type=radio]")[1]["value"] == "service"
     assert page.select("input[type=radio]")[2]["value"] == "template"
-    assert page.select("input[type=radio]")[3]["value"] == "email_branding"
-    assert page.select("input[type=radio]")[4]["value"] == "letter_branding"
-    assert page.select("input[type=radio]")[5]["value"] == "organisation"
+    assert page.select("input[type=radio]")[3]["value"] == "template_category"
+    assert page.select("input[type=radio]")[4]["value"] == "email_branding"
+    assert page.select("input[type=radio]")[5]["value"] == "letter_branding"
+    assert page.select("input[type=radio]")[6]["value"] == "organisation"
     assert not redis.delete_cache_keys_by_pattern.called
 
 
@@ -1415,3 +1416,44 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
         + "Fake Service ID,My service,Org name,email,admin,5\r\n"
     )
     mock.assert_called_once_with(datetime.date(2020, 11, 1), datetime.date(2020, 12, 1))
+
+
+class TestTemplateCategory:
+    testing_template = {
+        "name_en": "name_en-123",
+        "name_fr": "name_fr-123",
+        "description_en": "desc_en-123",
+        "description_fr": "desc_fr-123",
+        "id": "id-123",
+        "email_process_type": "email_priority-123",
+        "sms_process_type": "sms_priority-123",
+        "hidden": "hidden-123",
+        "sms_sending_vehicle": "long_code",
+    }
+
+    def test_item_displays_in_admin_menu(self, platform_admin_client, platform_admin_user, mocker):
+        resp = platform_admin_client.get(url_for("main.live_services"))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+        assert page.find("a", href="/template-categories")
+
+    def test_categories_page_is_accessible(self, platform_admin_client, platform_admin_user, mocker):
+        mocker.patch(
+            "app.main.views.templates.template_category_api_client.get_all_template_categories",
+            return_value=[self.testing_template],
+        )
+        resp = platform_admin_client.get(url_for("main.template_categories"))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+
+        assert len(page.select('table[data-testid="template-categories-table"]')) == 1
+
+    def test_category_page_is_accessible(self, platform_admin_client, platform_admin_user, mocker):
+        mocker.patch(
+            "app.main.views.templates.template_category_api_client.get_template_category",
+            return_value=self.testing_template,
+        )
+        resp = platform_admin_client.get(url_for("main.template_category", template_category_id=123))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select(f"input[value='{self.testing_template['name_en']}']")) == 1
