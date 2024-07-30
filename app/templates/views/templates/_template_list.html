@@ -29,7 +29,10 @@
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
     {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ item.template_category[template_category_name_col] }}" data-testid="template-row">
+      <div
+        class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}"
+        data-notification-type="{{ item.hint }}"
+        data-template-category="{{ item.template_category[template_category_name_col] }}" data-testid="template-row">
         {% if display_checkboxes %}
           {{ unlabelled_checkbox(
             id='templates-or-folder-{}'.format(item.id),
@@ -57,7 +60,7 @@
           {% endif %}
         </span>
         <span id="sr-{{ item.id }}1" class="message-meta message-type">
-          {{ _(item.hint) }}
+          {{ _("{} template").format(_(item.hint)) | capitalize }}
         </span>
         {% if config["FF_TEMPLATE_CATEGORY"] %}
           <span id="sr-{{ item.id }}2" class="message-meta message-category">

@@ -47,7 +47,7 @@
               {% endif %}
             </h2>
             <p class="message-type">
-              {{ _(item.hint) }}
+              {{ _("{} template").format(_(item.hint)) | capitalize }}
             </p>
           </div>
         {% endfor %}

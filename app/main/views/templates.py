@@ -321,7 +321,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
-        template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
+        template_types=list([_("Email"), _("Text message")]),
         template_categories=list(
             {template.template_category[template_category_name_col] for template in template_list if template.template_category}
         ),

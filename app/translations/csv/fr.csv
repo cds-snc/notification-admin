@@ -206,6 +206,7 @@
 "default","par défaut"
 "Email template","Gabarit de courriel"
 "Text message template","Gabarit de message texte"
+"{} template","Gabarit de {}"
 "Menu","Menu"
 "API documentation","Documentation API"
 "Platform admin","Administrateur de la plateforme"
