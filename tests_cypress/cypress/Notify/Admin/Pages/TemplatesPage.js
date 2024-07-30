@@ -1,18 +1,26 @@
 // Parts of the page a user can interact with
 let Components = {
-    YesAddRecipients: () => cy.contains('a', 'Yes, add recipients').first(),
+    // Template list page
+    CreateTemplateButton: () => cy.get('button').contains('Create template'),
     EditCurrentTemplateButton: () => cy.getByTestId('edit-template'),
+    // create template 1st page
+    TemplateTypeRadio: () => cy.getByTestId('template-type'),
+    EmailRadio: () => cy.getByTestId('email'),
+    SMSRadio: () => cy.getByTestId('sms'),
+    ContinueButton: () => cy.contains('button', 'Continue'),
+    // edit template page
+    TemplateName: () => cy.getByTestId('template-name'),
+    TemplateContent: () => cy.getByTestId('template-content'),
+    TemplateSubject: () => cy.getByTestId('template-subject'),
+    FlashMessage: () => cy.get('.banner-default-with-tick'),
     TemplateCategoryButtonContainer: () => cy.getByTestId('tc_button_container'),
     TemplateCategoryRadiosContainer: () => cy.getByTestId('tc_radios'),
     TemplateCategories: () => cy.getByTestId('template-categories'),
-    TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
-    // this is the first submit button in the form
+    TemplateCategoryOther: () => cy.get('#template_category_other'),
     SaveTemplateButton: () => cy.get('button[type="submit"]').first(),
-    CreateTemplateButton: () => cy.get('button').contains('Create template'),
-    TemplateTypeRadio: () => cy.getByTestId('template-type'),
-    ContinueButton: () => cy.contains('button', 'Continue'),
-    EmailRadio: () => cy.getByTestId('email'),
-    SMSRadio: () => cy.getByTestId('sms')
+    SelectedTemplateCategory: () => Components.TemplateCategories().find('input:checked').parent(),
+    SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
+    TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
 };
 
 // Actions users can take on the page
@@ -32,8 +40,11 @@ let Actions = {
     ExpandTemplateCategories: () => {
         Components.TCExpandBytton().click();
     },
-    SaveTemplate: () => {
+    SaveTemplate: (expectFailure=false) => {
         Components.SaveTemplateButton().click();
+        if (!expectFailure) {
+            Components.FlashMessage().should('contain', 'template saved');
+        }
     },
     CreateTemplate: () => {
         Components.CreateTemplateButton().click();
@@ -55,7 +66,7 @@ let Actions = {
     },
     SelectTemplateCategory: (category) => {
         Components.TemplateCategories().contains('label', category).click();
-    }
+    },
 };
 
 let TemplatesPage = {
