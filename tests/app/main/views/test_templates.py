@@ -302,7 +302,7 @@ def test_should_show_page_for_choosing_a_template(
     page = client_request.get("main.choose_template", service_id=service_one["id"], **extra_args)
 
     if app_.config["FF_TEMPLATE_CATEGORY"]:
-        expected_nav_links = ["All", "Email template", "Text message template", "All", "Other"]
+        expected_nav_links = ["All", "Email", "Text message", "All", "Other"]
         links_in_page = page.select('nav[data-testid="filter-content"] a')
     else:
         expected_nav_links = ["All", "Email", "Text message", "Letter"]

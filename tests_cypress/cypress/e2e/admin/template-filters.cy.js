@@ -4,7 +4,7 @@ import config from "../../../config";
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 
 const types = {
-  en: ["Email template", "Text message template"],
+  en: ["Email", "Text message"],
   fr: ["Courriel", "Message texte"],
 };
 
