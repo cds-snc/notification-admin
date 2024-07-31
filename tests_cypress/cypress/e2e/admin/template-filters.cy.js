@@ -130,7 +130,7 @@ describe("Template filters", () => {
           });
       });
 
-      it.only("Should list category filters alphabetically", () => {
+      it("Should list category filters alphabetically", () => {
         cy.visit(url);
 
         Page.ToggleFilters();
