@@ -311,14 +311,16 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
-    # Get the full list of template categories, excluding hidden ones
-    template_categories = list(
-        {
-            template.template_category[template_category_name_col]
-            for template in template_list
-            if template.template_category and not template.template_category.get("hidden")
-        }
-    )
+    # Get the full list of template categories, any hidden ones will be called 'Other'
+    template_categories = [
+        template.template_category[template_category_name_col] if not template.template_category.get("hidden") else _("Other")
+        for template in template_list
+        if template.template_category
+    ]
+
+    # Remove duplicates while preserving order
+    template_categories = sorted(set(template_categories))
+
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
@@ -897,17 +899,14 @@ def _get_categories_and_prepare_form(template, template_type):
     form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
 
     # add "other" category to choices, default to the low priority template category
-    form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
     # if the template is already in one of the default categories, then dont show the other
-    if template.get("template_category_id", "") in [
-        DefaultTemplateCategories.LOW.value,
-        DefaultTemplateCategories.MEDIUM.value,
-        DefaultTemplateCategories.HIGH.value,
-    ]:
+    if template.get("template_category") and template["template_category"].get("hidden"):
         other_category = None
         form.template_category_other.validators = []
+        form.template_category_id.choices.append((form.template_category_id.data, _("Other")))
     else:
         other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+        form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
 
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
