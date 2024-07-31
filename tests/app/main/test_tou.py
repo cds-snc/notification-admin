@@ -6,7 +6,6 @@ from tests.conftest import set_config
 
 
 class TestShowTouPrompt:
-
     @pytest.fixture(autouse=True)
     def setUp(self, app_, api_user_active):
         self.app = app_

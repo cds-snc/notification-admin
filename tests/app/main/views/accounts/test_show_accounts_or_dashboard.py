@@ -1,6 +1,5 @@
 import pytest
 from flask import url_for
-
 from tests import user_json
 
 

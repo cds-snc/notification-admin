@@ -24,7 +24,7 @@ jobs:
     - name: Install poetry
       env:
         POETRY_VERSION: "1.7.1"
-      run: pip install poetry==${POETRY_VERSION} && poetry --version
+      run: pip install poetry==${POETRY_VERSION} poetry-plugin-sort && poetry --version
     - name: Install requirements
       run: poetry install --with test
     - uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c # v3.3.3
