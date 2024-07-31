@@ -26,7 +26,9 @@
         <div class="template-filter" data-row-selector="{{ row_selector }}">
             <details data-testid="filter">
                 <summary data-testid="filter-toggle">{{ _("Apply filters") }}</summary>
-                <nav class="flex p-0 gap-gutter pl-gutter mt-2" aria-label="{{ _('Filter by template type and category') }}" data-testid="filter-content">
+                <div>
+                    <nav class="flex p-0 gap-gutter mt-2" aria-label="{{ _('Filter by template type and category') }}"
+                        data-testid="filter-content">
                     {# Filter group for notification types #}
                     <div class="filter-list" data-target="{{ notification_type_data_attribue }}">
                         <h2 class="filter-heading">{{ _("Type") }}</h2>
@@ -49,6 +51,7 @@
                         </div>
                     </div>
                 </nav>
+                </div>
             </details>
         </div>
     
