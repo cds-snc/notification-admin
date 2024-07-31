@@ -86,7 +86,7 @@ describe("Template filters", () => {
 
       context("Filtering by category", () => {
         categories[lang].forEach((type) => {
-          it(`${type}: displays the correct number of rows`, () => {
+          it(`Category "${type}": displays the correct number of rows`, () => {
             cy.visit(url);
 
             // Test type filter works
@@ -127,6 +127,30 @@ describe("Template filters", () => {
             Page.Components.Templates()
               .filter(":visible")
               .should("have.length", emailRows);
+          });
+      });
+
+      it.only("Should list category filters alphabetically", () => {
+        cy.visit(url);
+
+        Page.ToggleFilters();
+
+        Page.Components.CategoryFilter()
+          .find("a")
+          .then(($filters) => {
+            // Extract the text from each filter
+            const filterTexts = $filters
+              .map((index, filter) => Cypress.$(filter).text())
+              .get();
+
+            // Remove the first item, "All"
+            filterTexts.shift();
+
+            // Sort the extracted text alphabetically
+            const sortedFilterTexts = [...filterTexts].sort();
+
+            // Compare the sorted list with the original list to ensure they match
+            expect(filterTexts).to.deep.equal(sortedFilterTexts);
           });
       });
     });
