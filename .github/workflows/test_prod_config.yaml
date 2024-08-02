@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '1 0-12,20-23 * * 1-5'
     - cron: '1 * * * 0,6'
-name: Continuous Integration Testing (staging feature flags)
+name: Continuous Integration Testing (prod feature flags)
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -33,8 +33,11 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+    
     - name: Check for missing translations
       run: make test-translations
+    - name: Update NOTIFY_ENVIRONMENT for pytest
+      run: sed -i 's/NOTIFY_ENVIRONMENT=test/NOTIFY_ENVIRONMENT=production_FF/' pytest.ini
     - run: /bin/bash -c "scripts/bootstrap.sh && poetry run make test"
       env:
         A11Y_TRACKER_KEY: ${{ secrets.A11Y_TRACKER_KEY }}

@@ -18,27 +18,37 @@
         <span>This page is under development and is not yet functional.</span>
       </div>
     </div>
-    
-    {{ page_header(_('Update category'), id_text='template_cats') }}
+
+    {{ page_header(_('Update category') if template_category else _('Create category'), id_text='template_cats') }}
     {% call form_wrapper() %}
       <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-        
+
         <div class="mb-gutterHalf md:mb-gutter">
-          {{ textbox_localized("name", fields=({"en": form.name_en, "fr": form.name_fr}), legend=_("Category label")) }}
+          {{ textbox_localized(
+          "name",
+          fields=({"en": form.name_en, "fr": form.name_fr}),
+          legend=_("Category name")
+          ) }}
         </div>
         <div class="mb-gutterHalf md:mb-gutter">
-          {{ textbox_localized("desc", fields=({"en": form.desc_en, "fr": form.desc_fr}), legend=_("Category description")) }}
+          {{ textbox_localized(
+          "desc",
+          fields=({"en": form.description_en, "fr": form.description_fr}),
+          legend=_("Category description")
+          ) }}
         </div>
 
         {{ radios(form.hidden) }}
-        {{ radios(form.email_priority) }}
-        {{ radios(form.sms_priority) }}
+        {{ radios(form.email_process_type) }}
+        {{ radios(form.sms_process_type) }}
+        {{ radios(form.sms_sending_vehicle)}}
 
         <div class="js-stick-at-bottom-when-scrolling">
           {{ page_footer(
             _('Save'),
             button_name='operation',
-            button_value='email-branding-details'
+            button_value='email-branding-details',
+            delete_link=url_for('.delete_template_category', template_category_id=template_category.id) if template_category else None,
           ) }}
         </div>
       </div>

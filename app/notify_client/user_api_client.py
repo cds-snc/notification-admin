@@ -135,6 +135,18 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = "/user/{0}/branding-request".format(user_id)
         self.post(endpoint, data=data)
 
+    def send_new_template_category_request(
+        self, user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+    ):
+        data = {
+            "service_id": service_id,
+            "template_category_name_en": template_category_name_en,
+            "template_category_name_fr": template_category_name_fr,
+            "template_id": template_id,
+        }
+        endpoint = "/user/{0}/new-template-category-request".format(user_id)
+        self.post(endpoint, data=data)
+
     @cache.delete("user-{user_id}")
     def check_verify_code(self, user_id, code, code_type):
         data = {"code_type": code_type, "code": code}

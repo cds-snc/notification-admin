@@ -15,7 +15,9 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
         req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
     });
 
-    cy.visit(url);
+    if (url) {
+        cy.visit(url);
+    }
 
     // 1. validate a11y rules using axe dequeue
     if (options.a11y) {
