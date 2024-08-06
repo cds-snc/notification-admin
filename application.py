@@ -35,4 +35,4 @@ if os.environ.get("USE_LOCAL_JINJA_TEMPLATES") == "True":
 
 def handler(event, context):
     return apig_wsgi_handler(event, context)
-    
+
