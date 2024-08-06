@@ -697,8 +697,13 @@ def useful_headers_after_request(response):
     return response
 
 
+from aws_xray_sdk.core import xray_recorder
+
 def register_errorhandlers(application):  # noqa (C901 too complex)
     def _error_response(error_code):
+        
+        xray_recorder.begin_segment("error_response")
+
         resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 
