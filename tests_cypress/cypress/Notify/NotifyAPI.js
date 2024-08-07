@@ -122,7 +122,7 @@ const Admin = {
     UpdateTemplate: ({ id, name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
-            url: `${BASE_URL}/service/${service_id}/template/${templateId}`,
+            url: `${BASE_URL}/service/${service_id}/template/${id}`,
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ const Admin = {
                 "content": content,
                 "service": service_id,
                 "process_type": process_type,
-                "template_category_id": template
+                "template_category_id": template_category_id
             }
         });
     },
