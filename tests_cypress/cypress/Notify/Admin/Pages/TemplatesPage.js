@@ -82,7 +82,23 @@ let Actions = {
             Actions.SetTemplatePriority(priority);
         }
     },
-};
+    SeedTemplate: async (name, subject, content, category = null, priority = null) => {
+        Actions.CreateTemplate();
+        Actions.SelectTemplateType("email");
+        Actions.Continue();
+        Actions.FillTemplateForm(
+            name,
+            subject,
+            content,
+            category,
+            priority,
+        );
+        Actions.SaveTemplate();
+        return await cy.url().then((url) => {
+            return url.split("/templates/")[1]
+        })
+    }
+}
 
 let TemplatesPage = {
     Components,
