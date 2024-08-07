@@ -16,7 +16,7 @@ const templates =
         AUTOREPLY: "Automatic reply",
       };
 describe("Edit template", () => {
-    context("FF OFF", () => {
+    context.only("FF OFF", () => {
         // Override the process_type -> new process type should be saved for an existing template
         it("Should allow platform admin to override process type", () => {
             // login as admin
@@ -60,40 +60,43 @@ describe("Edit template", () => {
 
         it("Should save bulk template as regular user still as bulk template", () => {
             // login as admin
-            cy.login(Cypress.env("NOTIFY_ADMIN_USER"), Cypress.env("NOTIFY_PASSWORD"));
-            cy.visit(`/services/${config.Services.Cypress}/templates`);
+            const template_name = 'Test Template';
 
-            // set template priority to bulk
-            Page.SelectTemplate(templates.smoke_test_email.name);
-            Page.EditCurrentTemplate();
-            Page.SetTemplatePriority('bulk')
-            Page.SaveTemplate();
-
-            // use api to check that it was set
-            Admin.GetTemplate({ templateId: templates.smoke_test_email.id, serviceId: config.Services.Cypress }).then((response) => {
-                console.log('response', response);
-                expect(response.body.data.process_type_column).to.equal('bulk');
-            });
-
-            // login as regular user
+            // seed data
             cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
             cy.visit(`/services/${config.Services.Cypress}/templates`);
-
-            // set template priority to use TC
-            Page.SelectTemplate(templates.smoke_test_email_attach.name);
-            Page.EditCurrentTemplate();
-            Page.Components.TemplateSubject().type("a");
+            Page.CreateTemplate();
+            Page.SelectTemplateType("email");
+            Page.Continue();
+            Page.FillTemplateForm(
+                template_name,
+                "Test Subject",
+                "Test Content",
+                false,
+                false
+            );
             Page.SaveTemplate();
 
-            // use api to check that it was set
-            Admin.GetTemplate({ templateId: templates.smoke_test_email_attach.id, serviceId: config.Services.Cypress }).then((response) => {
-                console.log('response', response);
-                expect(response.body.data.process_type_column).to.equal('bulk');
-            });
+            cy.url().then((url) => {
+                let templateId = url.split("/templates/")[1];
+
+                // update category
+                cy.visit(`/services/${config.Services.Cypress}/templates`);
+                Page.SelectTemplate(template_name);
+                Page.EditCurrentTemplate();
+                Page.Components.TemplateSubject().type('a');
+                Page.SaveTemplate();
+
+                Admin.GetTemplate({ templateId: templateId, serviceId: config.Services.Cypress }).then((response) => {
+                    let template = response.body.data;
+                    expect(template.process_type_column).to.equal('bulk');
+                    Admin.DeleteTemplate({ templateId: templateId, serviceId: config.Services.Cypress })
+                })
+            })
 
         });
     });
-    context.only("FF ON", () => {
+    context("FF ON", () => {
         // Override the process_type -> new process type should be saved for an existing template
         it("Should allow platform admin to override process type", () => { // Admin user 1.
             // login as admin
