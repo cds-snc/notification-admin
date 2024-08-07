@@ -94,6 +94,20 @@ const Admin = {
             }
         });
     },
+    DeleteTemplate: ({ serviceId, templateId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/service/${serviceId}/template/${templateId}`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "archived": true
+            }
+        });
+    },
     GetTemplate: ({ templateId, serviceId }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
