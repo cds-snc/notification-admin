@@ -35,6 +35,7 @@ describe("Create Template", () => {
                     expect(template.process_type_column).to.be.equal('bulk')
                     expect(template.template_category_id).to.be.a('null')
                     expect(template.process_type).to.be.equal('bulk')
+                    Admin.DeleteTemplate({ templateId: templateId, serviceId: config.Services.Cypress })
                 });
             });
         });
@@ -62,6 +63,7 @@ describe("Create Template", () => {
                     expect(template.process_type_column).to.be.equal('bulk')
                     expect(template.template_category_id).to.be.a('null')
                     expect(template.process_type).to.be.equal('bulk')
+                    Admin.DeleteTemplate({ templateId: templateId, serviceId: config.Services.Cypress })
                 });
             });
         });
@@ -89,6 +91,7 @@ describe("Create Template", () => {
                     expect(template.process_type_column).to.be.a('null')
                     expect(template.template_category_id).to.not.be.a('null')
                     expect(template.process_type).to.be.equal('normal') // Alert category process type is normal
+                    Admin.DeleteTemplate({ templateId: templateId, serviceId: config.Services.Cypress })
                 })
             })
         });
@@ -115,6 +118,7 @@ describe("Create Template", () => {
                     expect(template.process_type_column).to.be.a('null')
                     expect(template.template_category_id).to.not.be.a('null')
                     expect(template.process_type).to.be.equal('normal') // Alert category process type is normal
+                    Admin.DeleteTemplate({ templateId: templateId, serviceId: config.Services.Cypress })
                 })
             })
         });
