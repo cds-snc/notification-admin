@@ -9,7 +9,6 @@ from time import monotonic
 from urllib.parse import urljoin
 
 import timeago
-from aws_xray_sdk.core import xray_recorder
 from flask import (
     Markup,
     current_app,
@@ -700,9 +699,6 @@ def useful_headers_after_request(response):
 
 def register_errorhandlers(application):  # noqa (C901 too complex)
     def _error_response(error_code):
-
-        xray_recorder.begin_segment("error_response")
-
         resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 
