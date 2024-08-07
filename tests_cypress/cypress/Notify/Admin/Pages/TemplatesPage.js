@@ -11,7 +11,7 @@ let Components = {
     // edit template page
     TemplateName: () => cy.getByTestId('template-name'),
     TemplateContent: () => cy.getByTestId('template-content'),
-    TemplateSubject: () => cy.getByTestId('template-subject'),
+    TemplateSubject: () => cy.get('textarea[name=subject]'),
     FlashMessage: () => cy.get('.banner-default-with-tick'),
     TemplateCategoryButtonContainer: () => cy.getByTestId('tc_button_container'),
     TemplateCategoryRadiosContainer: () => cy.getByTestId('tc_radios'),
@@ -21,6 +21,7 @@ let Components = {
     SelectedTemplateCategory: () => Components.TemplateCategories().find('input:checked').parent(),
     SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
+    TemplatePriority: () => cy.getByTestId('process_type'),
 };
 
 // Actions users can take on the page
@@ -40,7 +41,7 @@ let Actions = {
     ExpandTemplateCategories: () => {
         Components.TCExpandBytton().click();
     },
-    SaveTemplate: (expectFailure=false) => {
+    SaveTemplate: (expectFailure = false) => {
         Components.SaveTemplateButton().click();
         if (!expectFailure) {
             Components.FlashMessage().should('contain', 'template saved');
@@ -66,6 +67,20 @@ let Actions = {
     },
     SelectTemplateCategory: (category) => {
         Components.TemplateCategories().contains('label', category).click();
+    },
+    SetTemplatePriority: (priority) => {
+        cy.getByTestId(priority).click();
+    },
+    FillTemplateForm: (name, subject, content, category = null, priority = null) => {
+        Components.TemplateName().type(name);
+        Components.TemplateSubject().type(subject);
+        Components.TemplateContent().type(content);
+        if (category) {
+            Actions.SelectTemplateCategory(category);
+        }
+        if (priority) {
+            Actions.SetTemplatePriority(priority);
+        }
     },
 };
 
