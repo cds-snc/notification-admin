@@ -54,6 +54,41 @@ describe("Edit template", () => {
             });
         });
 
+        it("Should save bulk template as regular user still as bulk template", () => {
+            // login as admin
+            cy.login(Cypress.env("NOTIFY_ADMIN_USER"), Cypress.env("NOTIFY_PASSWORD"));
+            cy.visit(`/services/${config.Services.Cypress}/templates`);
+
+            // set template priority to bulk
+            Page.SelectTemplate(templates.smoke_test_email.name);
+            Page.EditCurrentTemplate();
+            Page.SetTemplatePriority('bulk')
+            Page.SaveTemplate();
+
+            // use api to check that it was set
+            Admin.GetTemplate({ templateId: templates.smoke_test_email.id, serviceId: config.Services.Cypress }).then((response) => {
+                console.log('response', response);
+                expect(response.body.data.process_type_column).to.equal('bulk');
+            });
+
+            // login as regular user
+            cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+            cy.visit(`/services/${config.Services.Cypress}/templates`);
+
+            // set template priority to use TC
+            Page.SelectTemplate(templates.smoke_test_email_attach.name);
+            Page.EditCurrentTemplate();
+            Page.Components.TemplateSubject().type("a");
+            Page.SaveTemplate();
+
+            // use api to check that it was set
+            Admin.GetTemplate({ templateId: templates.smoke_test_email_attach.id, serviceId: config.Services.Cypress }).then((response) => {
+                console.log('response', response);
+                expect(response.body.data.process_type_column).to.equal('bulk');
+            });
+
+        });
+    });
         it.only("Should save bulk template as regular user still as bulk template", () => {
             // login as regular user
             cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
