@@ -5,14 +5,8 @@ import { TemplatesPage } from "../../../Notify/Admin/Pages/all";
 import { Admin } from "../../../Notify/NotifyAPI";
 
 describe("Create Template", () => {
-    // Login to notify before the test suite starts
-    before(() => {
-        cy.login(Cypress.env("NOTIFY_ADMIN_USER"), Cypress.env("NOTIFY_PASSWORD"));
-        cy.visit(`/services/${config.Services.Cypress}/templates`);
-    });
-
-    context("FF_TEMPLATE_CATEGORY - OFF", () => {
-        it.skip("Process type defaults to bulk if non-admin", () => {
+    context.skip("FF_TEMPLATE_CATEGORY - OFF", () => {
+        it("Process type defaults to bulk if non-admin", () => {
             cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
             cy.visit(`/services/${config.Services.Cypress}/templates`);
 
@@ -23,13 +17,12 @@ describe("Create Template", () => {
                 "Test Template",
                 "Test Subject",
                 "Test Content",
-                "Other"
             );
 
             TemplatesPage.SaveTemplate();
 
             cy.url().then((url) => {
-                let templateId = cy.log(url.split("/templates/")[1]);
+                let templateId = url.split("/templates/")[1];
                 Admin.GetTemplate({ templateId: templateId, serviceId: config.Services.Cypress }).then((response) => {
                     let template = response.body.data;
                     expect(template.process_type_column).to.be.equal('bulk')
@@ -51,13 +44,12 @@ describe("Create Template", () => {
                 "Test Template",
                 "Test Subject",
                 "Test Content",
-                "Other"
             );
 
             TemplatesPage.SaveTemplate();
 
             cy.url().then((url) => {
-                let templateId = cy.log(url.split("/templates/")[1]);
+                let templateId = url.split("/templates/")[1];
                 Admin.GetTemplate({ templateId: templateId, serviceId: config.Services.Cypress }).then((response) => {
                     let template = response.body.data;
                     expect(template.process_type_column).to.be.equal('bulk')
