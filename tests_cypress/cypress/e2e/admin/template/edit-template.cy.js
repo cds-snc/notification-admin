@@ -16,7 +16,7 @@ const templates =
         AUTOREPLY: "Automatic reply",
       };
 describe("Edit template", () => {
-    context.only("FF OFF", () => {
+    context.skip("FF OFF", () => {
         // Override the process_type -> new process type should be saved for an existing template
         it("Should allow platform admin to override process type", () => {
             // login as admin
