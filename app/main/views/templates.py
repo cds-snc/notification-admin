@@ -929,8 +929,7 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
         template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
 
-    
-    if template.get("process_type_column") is None:
+    if template.get("process_type") is None:
         if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
             template["process_type"] = TC_PRIORITY_VALUE
         else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
