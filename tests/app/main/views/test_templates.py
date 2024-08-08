@@ -1644,7 +1644,7 @@ def test_should_not_update_if_template_name_too_long(
     mocker,
     mock_update_service_template_400_name_too_long,
     mock_get_template_categories,
-    app_
+    app_,
 ):
     mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     template_data = {
