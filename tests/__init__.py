@@ -322,7 +322,7 @@ def template_json(
     version=1,
     archived=False,
     process_type=TemplateProcessTypes.BULK.value,
-    process_type_column=None,
+    process_type_column=TemplateProcessTypes.BULK.value,
     redact_personalisation=None,
     service_letter_contact=None,
     reply_to=None,
