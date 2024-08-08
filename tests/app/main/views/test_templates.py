@@ -1393,7 +1393,7 @@ def test_should_redirect_when_saving_a_template(
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
     client_request, mocker, mock_update_service_template, mock_get_template_categories, fake_uuid, process_type, app_
 ):
-    mock_get_service_template_with_process_type(mocker, process_type)
+    mock_get_service_template_with_process_type(mocker, process_type, process_type)
     client_request.post(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
@@ -1406,6 +1406,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
+            "process_type_column": process_type,
             "button_pressed": "save",
         },
         _expected_status=302,
