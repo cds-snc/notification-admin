@@ -122,7 +122,7 @@ describe("Edit template", () => {
     });
   });
 
-  context.skip("FF ON", () => {
+  context("FF ON", () => {
     // Override the process_type -> new process type should be saved for an existing template
     it("Should allow platform admin to override process type", () => {
       // Admin user 1.
