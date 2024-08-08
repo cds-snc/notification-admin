@@ -83,9 +83,9 @@ form_objects = {
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
-    "bulk": "Low",
-    "normal": "Medium",
-    "priority": "High",
+    "bulk": "Bulk",
+    "normal": "Normal",
+    "priority": "Priority",
 }
 
 form_objects_with_category = {
@@ -315,6 +315,16 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
+    # Get the full list of template categories, any hidden ones will be called 'Other'
+    template_categories = [
+        template.template_category[template_category_name_col] if not template.template_category.get("hidden") else _("Other")
+        for template in template_list
+        if template.template_category
+    ]
+
+    # Remove duplicates while preserving order
+    template_categories = sorted(set(template_categories))
+
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
@@ -322,9 +332,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
-        template_categories=list(
-            {template.template_category[template_category_name_col] for template in template_list if template.template_category}
-        ),
+        template_categories=template_categories,
         template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
@@ -770,8 +778,12 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
         form = form_objects[template_type](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
-        if form.process_type.data != TemplateProcessTypes.BULK.value:
-            abort_403_if_not_admin_user()
+        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TC_PRIORITY_VALUE:
+                abort_403_if_not_admin_user()
+        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TemplateProcessTypes.BULK.value:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+                abort_403_if_not_admin_user()  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         subject = form.subject.data if hasattr(form, "subject") else None
         if request.form.get("button_pressed") == "preview":
             preview_template_data = {
@@ -891,17 +903,14 @@ def _get_categories_and_prepare_form(template, template_type):
     form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
 
     # add "other" category to choices, default to the low priority template category
-    form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
     # if the template is already in one of the default categories, then dont show the other
-    if template.get("template_category_id", "") in [
-        DefaultTemplateCategories.LOW.value,
-        DefaultTemplateCategories.MEDIUM.value,
-        DefaultTemplateCategories.HIGH.value,
-    ]:
+    if template.get("template_category") and template["template_category"].get("hidden"):
         other_category = None
         form.template_category_other.validators = []
+        form.template_category_id.choices.append((form.template_category_id.data, _("Other")))
     else:
         other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+        form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
 
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 

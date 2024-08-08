@@ -4,6 +4,7 @@ import pytest
 from flask import abort, url_for
 from notifications_python_client.errors import HTTPError
 
+from app.main.forms import TC_PRIORITY_VALUE
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
@@ -314,7 +315,7 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
     if app_.config["FF_TEMPLATE_CATEGORY"]:
-        expected_nav_links = ["All", "Email template", "Text message template", "All"]
+        expected_nav_links = ["All", "Email", "Text message", "All"]
         links_in_page = page.select('nav[data-testid="filter-content"] a')
     else:
         expected_nav_links = ["All", "Email", "Text message", "Letter"]
@@ -385,7 +386,7 @@ def test_can_create_email_template_with_parent_folder(
         "template_type": "email",
         "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
-        "process_type": TemplateProcessTypes.BULK.value,
+        "process_type": TC_PRIORITY_VALUE if app_.config["FF_TEMPLATE_CATEGORY"] else TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
     }
     client_request.post(
@@ -402,7 +403,7 @@ def test_can_create_email_template_with_parent_folder(
         data["template_content"],
         SERVICE_ONE_ID,
         data["subject"],
-        data["process_type"],
+        None if app_.config["FF_TEMPLATE_CATEGORY"] else data["process_type"],
         data["parent_folder_id"],
         data["template_category_id"] if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
