@@ -72,7 +72,7 @@
       {% if config["FF_TEMPLATE_CATEGORY"] %}
         {% if template_list_length > 0 %}
           <div id="template-list-empty" class="mb-6" data-testid="template-empty">
-            {{ empty_list(_('No templates match your filters'), _('Change your filters to see more templates.'), 'emptyBirdCurious') }}
+            {{ empty_list(_('No matching templates'), _('Change your filters or search for more templates'), 'emptyBirdHole') }}
           </div>
         {% endif %}
       {% endif %}
