@@ -157,13 +157,22 @@ describe("Template filters", () => {
       it("Filtering to 0 results shows empty message", () => {
         cy.visit(url);
 
+        // Empty state should NOT be visible
         Page.Components.EmptyState().should("not.be.visible");
 
         Page.ToggleFilters();
         Page.ApplyTypeFilter(types[lang][1]);
         Page.ApplyCategoryFilter(categories[lang][0]);
 
+        // Empty state should be visible
         Page.Components.EmptyState().should("be.visible");
+
+        // Clear filters
+        Page.ApplyTypeFilterAll();
+        Page.ApplyCategoryFilterAll();
+
+        // Empty state should NOT be visible
+        Page.Components.EmptyState().should("not.be.visible");
       });
     });
   });
