@@ -144,9 +144,9 @@ class TestSendOtherCategoryInfo:
 
     def test_edit_email_template_cat_other_to_freshdesk(
         self,
+        mocker,
         client_request,
         mock_get_template_categories,
-        mock_get_service_template,
         mock_update_service_template,
         mock_send_other_category_to_freshdesk,
         active_user_with_permissions,
@@ -154,6 +154,7 @@ class TestSendOtherCategoryInfo:
         app_,
     ):
         with set_config(app_, "FF_TEMPLATE_CATEGORY", True):
+            mock_get_service_template_with_process_type(mocker, "bulk", None)
             name = "new name"
             content = "template <em>content</em> with & entity"
             client_request.post(
@@ -1348,13 +1349,14 @@ def test_should_redirect_to_one_off_if_template_type_is_letter(
 def test_should_redirect_when_saving_a_template(
     client_request,
     mock_get_template_categories,
-    mock_get_service_template,
     mock_update_service_template,
     fake_uuid,
     app_,
+    mocker,
     ff_enabled,
 ):
     with set_config(app_, "FF_TEMPLATE_CATEGORY", ff_enabled):
+        mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
         name = "new name"
         content = "template <em>content</em> with & entity"
 
@@ -1393,7 +1395,7 @@ def test_should_redirect_when_saving_a_template(
 def test_should_edit_content_when_process_type_is_set_not_platform_admin(
     client_request, mocker, mock_update_service_template, mock_get_template_categories, fake_uuid, process_type, app_
 ):
-    mock_get_service_template_with_process_type(mocker, process_type)
+    mock_get_service_template_with_process_type(mocker, process_type, process_type)
     client_request.post(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
@@ -1406,6 +1408,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
             "process_type": process_type,
+            "process_type_column": process_type,
             "button_pressed": "save",
         },
         _expected_status=302,
@@ -1635,8 +1638,15 @@ def test_removing_placeholders_is_not_a_breaking_change(
 
 @pytest.mark.parametrize("template_type", ["sms", "email"])
 def test_should_not_update_if_template_name_too_long(
-    client_request, template_type, fake_uuid, mock_get_service_template, mock_update_service_template_400_name_too_long, app_
+    client_request,
+    template_type,
+    fake_uuid,
+    mocker,
+    mock_update_service_template_400_name_too_long,
+    mock_get_template_categories,
+    app_,
 ):
+    mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     template_data = {
         "id": fake_uuid,
         "service": SERVICE_ONE_ID,
@@ -1710,8 +1720,9 @@ def test_should_not_create_too_big_template(
 
 
 def test_should_not_update_too_big_template(
-    client_request, mock_get_service_template, mock_update_service_template_400_content_too_big, fake_uuid, app_
+    mocker, client_request, mock_get_service_template, mock_update_service_template_400_content_too_big, fake_uuid, app_
 ):
+    mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     page = client_request.post(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
