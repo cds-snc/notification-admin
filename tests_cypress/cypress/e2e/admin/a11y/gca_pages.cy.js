@@ -7,7 +7,7 @@ const langs = ["en", "fr"];
 const fullPageList = [
   { en: "/accessibility", fr: "/accessibilite" },
   { en: "/features", fr: "/fonctionnalites" },
-  { en: "/formatting-emails", fr: "/guide-mise-en-forme" },
+  { en: "/formatting-emails", fr: "/mettre-en-forme-les-courriels" },
   { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
   { en: "/guidance", fr: "/guides-reference" },
   { en: "/home", fr: "/accueil" },

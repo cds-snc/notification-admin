@@ -6,7 +6,7 @@ GC_ARTICLES_ROUTES = {
     "accessibility": {"en": "/accessibility", "fr": "/accessibilite"},
     "bounce_guidance": {"en": "/updating-contact-information", "fr": "/maintenir-a-jour-les-coordonnees"},
     "features": {"en": "/features", "fr": "/fonctionnalites"},
-    "formatting_guide": {"en": "/formatting-emails", "fr": "/guide-mise-en-forme"},
+    "formatting_guide": {"en": "/formatting-emails", "fr": "/mettre-en-forme-les-courriels"},
     "guidance": {"en": "/guidance", "fr": "/guides-reference"},
     "home": {"en": "/home", "fr": "/accueil"},
     "message_delivery_status": {"en": "/understanding-delivery-and-failure", "fr": "/comprendre-statut-de-livraison"},
