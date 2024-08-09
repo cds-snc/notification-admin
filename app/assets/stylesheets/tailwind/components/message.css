@@ -86,6 +86,20 @@
       @apply absolute right-0 m-0;
     }
   }
+
+  /* Initially hide the empty message */
+  #template-list-empty {
+    display: none;
+  }
+
+  /* Show the empty message if all .template-list-item elements are hidden */
+  #template-list-container:not(
+      :has(.template-list-item:not([style*="display: none"]))
+    )
+    #template-list-empty {
+    display: block;
+  }
+
   .content-fixed .template-list-selected-counter {
     right: 15px;
   }

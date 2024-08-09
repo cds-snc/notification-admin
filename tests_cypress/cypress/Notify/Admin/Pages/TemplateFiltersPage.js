@@ -7,6 +7,7 @@ let Components = {
     CategoryFilter: () => cy.getByTestId('filter-categories'),
     CategoryAll: () => cy.getByTestId('filter-category-all'),
     TypeAll: () => cy.getByTestId('filter-type-all'),
+    EmptyState: () => cy.getByTestId('template-empty'),
 };
 
 // Actions users can take on the page
