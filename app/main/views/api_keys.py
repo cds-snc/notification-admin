@@ -179,6 +179,7 @@ def get_delivery_status_callback_details():
 def delivery_status_callback(service_id):
     delivery_status_callback = get_delivery_status_callback_details()
     back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = "Must start with https://"
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
@@ -214,10 +215,13 @@ def delivery_status_callback(service_id):
             pass
 
         return redirect(url_for(back_link, service_id=service_id))
+    elif form.errors:
+        url_hint_txt = "Your service must be running and reachable from the internet."
 
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
         back_link=back_link,
+        hint_text=url_hint_txt,
         form=form,
     )
 
@@ -241,6 +245,7 @@ def received_text_messages_callback(service_id):
         url=received_text_messages_callback.get("url") if received_text_messages_callback else "",
         bearer_token=dummy_bearer_token if received_text_messages_callback else "",
     )
+    url_hint_txt = "Must start with https://"
 
     if form.validate_on_submit():
         if received_text_messages_callback and form.url.data:
@@ -264,8 +269,11 @@ def received_text_messages_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
+        elif form.errors:
+            url_hint_txt = "Your service must be running and reachable from the internet."
         return redirect(url_for(".api_callbacks", service_id=service_id))
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
         form=form,
+        hint_text=url_hint_txt,
     )

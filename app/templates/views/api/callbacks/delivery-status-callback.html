@@ -23,12 +23,11 @@
       <h2 class="heading-small">
         {{ _('Add an endpoint where GC Notify should send POST requests') }}
      </h2>
-      {% set hint_txt = _('Must start with https://') %}
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
           width='w-full',
-          hint=hint_txt
+          hint=hint_text
         ) }}
         <h2 class="heading-small">
           {{ _('Add a secret value for authentication') }}

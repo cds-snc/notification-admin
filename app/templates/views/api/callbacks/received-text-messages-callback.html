@@ -18,12 +18,12 @@
       <p>
         {{ _('When you receive a text message in GC Notify, we can forward it to your system. Learn more in the') }} <a href="{{ documentation_url('callbacks') }}"> {{ _('callbacks documentation') }} </a>.
       </p>
-      {% set hint_txt = _('Must start with https://') %}
+
       {% call form_wrapper() %}
         {{ textbox(
           form.url,
           width='w-full',
-          hint=hint_txt
+          hint=hint_text
         ) }}
         {% set hint_txt = _('At least 10 characters') %}
         {{ textbox(
