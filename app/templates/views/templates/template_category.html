@@ -24,10 +24,18 @@
       <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
 
         <div class="mb-gutterHalf md:mb-gutter">
-          {{ textbox_localized("name", fields=({"en": form.name_en, "fr": form.name_fr}), legend=_("Describe category"), hint=_("Explain purpose of message")) }}
+          {{ textbox_localized(
+          "name",
+          fields=({"en": form.name_en, "fr": form.name_fr}),
+          legend=_("Category name")
+          ) }}
         </div>
         <div class="mb-gutterHalf md:mb-gutter">
-          {{ textbox_localized("desc", fields=({"en": form.description_en, "fr": form.description_fr}), legend=_("Category description"), hint=_("Explain purpose of message")) }}
+          {{ textbox_localized(
+          "desc",
+          fields=({"en": form.description_en, "fr": form.description_fr}),
+          legend=_("Category description")
+          ) }}
         </div>
 
         {{ radios(form.hidden) }}

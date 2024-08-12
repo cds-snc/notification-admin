@@ -63,6 +63,7 @@ xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; 
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
+aws-xray-sdk = "^2.14.0"
 
 validators = "^0.28.3"
 [tool.poetry.group.test.dependencies]

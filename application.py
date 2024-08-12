@@ -1,6 +1,8 @@
 import os
 
 from apig_wsgi import make_lambda_handler
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from dotenv import load_dotenv
 from flask import Flask
 
@@ -12,7 +14,8 @@ load_dotenv()
 
 application = Flask("app")
 application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
-
+xray_recorder.configure(service='admin')
+XRayMiddleware(application, xray_recorder)
 create_app(application)
 
 apig_wsgi_handler = make_lambda_handler(application, binary_support=True)

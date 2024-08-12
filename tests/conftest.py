@@ -785,11 +785,7 @@ def mock_get_services_with_one_service(mocker, api_user_active):
 def mock_get_service_template(mocker):
     def _get(service_id, template_id, version=None):
         template = template_json(
-            service_id,
-            template_id,
-            "Two week reminder",
-            "sms",
-            "Template <em>content</em> with & entity",
+            service_id, template_id, "Two week reminder", "sms", "Template <em>content</em> with & entity", process_type=None
         )
         if version:
             template.update({"version": version})
@@ -803,7 +799,7 @@ def mock_get_service_template(mocker):
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
-def mock_get_service_template_with_process_type(mocker, process_type):
+def mock_get_service_template_with_process_type(mocker, process_type, process_type_column):
     def _get(service_id, template_id, version=None):
         template = template_json(
             service_id,
@@ -812,6 +808,7 @@ def mock_get_service_template_with_process_type(mocker, process_type):
             "sms",
             "Template <em>content</em> with & entity",
             process_type=process_type,
+            process_type_column=process_type_column,
         )
         if version:
             template.update({"version": version})
