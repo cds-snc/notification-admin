@@ -153,6 +153,17 @@ class ValidCallbackUrl:
 
 
 def validate_callback_url(service_callback_url, bearer_token):
+    """Validates a callback URL, checking that it is https and by sending a POST request to the URL with a health_check parameter.
+    4xx responses are considered invalid. 5xx responses are considered valid as it indicates there is at least a service running
+    at the URL, and we are sending a payload that the service will not understand.
+
+    Args:
+        service_callback_url (str): The url to validate.
+        bearer_token (str): The bearer token to use in the request, specified by the user requesting callbacks.
+
+    Raises:
+        ValidationError: If the URL is not HTTPS or the http response is 4xx.
+    """
     if not validators.url(service_callback_url):
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id}. Error: Invalid callback URL format: URL: {service_callback_url}"
@@ -168,12 +179,7 @@ def validate_callback_url(service_callback_url, bearer_token):
             timeout=5,
         )
 
-        if response.status_code >= 500:
-            current_app.logger.warning(
-                f"Unable to create callback for service: {current_service.id} Error: URL was reachable but returned status code {response.status_code} URL: {service_callback_url}"
-            )
-            raise ValidationError(_l("Check your service log for errors"))
-        elif response.status_code < 500 and response.status_code >= 400:
+        if response.status_code < 500 and response.status_code >= 400:
             current_app.logger.warning(
                 f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
             )
