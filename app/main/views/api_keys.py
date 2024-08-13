@@ -172,6 +172,42 @@ def get_delivery_status_callback_details():
 
 
 @main.route(
+    "/services/<service_id>/api/callbacks/delivery-status-callback/delete",
+    methods=["GET", "POST"]
+)
+@user_has_permissions("manage_api_keys")
+def delete_delivery_status_callback(service_id):
+    delivery_status_callback = get_delivery_status_callback_details()
+    back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = "Must start with https://"
+
+    if request.method == "POST":
+        if delivery_status_callback:
+            service_api_client.delete_service_callback_api(
+                service_id,
+                delivery_status_callback["id"],
+            )
+
+            flash(_l("Callback configuration deleted"), "default_with_tick")
+            return redirect(url_for(back_link, service_id=service_id))
+
+    flash(_l("Are you sure you want to delete this callback?"), "delete")
+
+    form = ServiceDeliveryStatusCallbackForm(
+        url=delivery_status_callback.get("url") if delivery_status_callback else "",
+        bearer_token=dummy_bearer_token if delivery_status_callback else "",
+    )
+
+    return render_template(
+        "views/api/callbacks/delivery-status-callback.html",
+        back_link=".api_callbacks" if current_service.has_permission("inbound_sms") else ".delivery_status_callback",
+        hint_text=url_hint_txt,
+        is_deleting=True,
+        form=form,
+    )
+
+
+@main.route(
     "/services/<service_id>/api/callbacks/delivery-status-callback",
     methods=["GET", "POST"],
 )
@@ -196,11 +232,8 @@ def delivery_status_callback(service_id):
                     user_id=current_user.id,
                     callback_api_id=delivery_status_callback.get("id"),
                 )
-        elif delivery_status_callback and not form.url.data:
-            service_api_client.delete_service_callback_api(
-                service_id,
-                delivery_status_callback["id"],
-            )
+                flash(_l("Callback to '{}' saved").format(form.url.data.split('https://')[1]), "default_with_tick")
+                return redirect(url_for(back_link, service_id=service_id))
         elif form.url.data:
             service_api_client.create_service_callback_api(
                 service_id,
@@ -208,12 +241,15 @@ def delivery_status_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
+            flash(_l("Callback to '{}' created").format(form.url.data.split('https://')[1]), "default_with_tick")
+            return redirect(url_for(back_link, service_id=service_id))
         else:
             # If no callback is set up and the user chooses to continue
             # having no callback (ie both fields empty) then there’s
             # nothing for us to do here
             pass
 
+        flash(_l("Callback to '{}' saved").format(form.url.data.split('https://')[1]), "default_with_tick")
         return redirect(url_for(back_link, service_id=service_id))
     elif form.errors:
         url_hint_txt = "Your service must be running and reachable from the internet."

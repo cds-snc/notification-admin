@@ -2440,7 +2440,6 @@ files = [
 ua-parser = ">=0.10.0"
 
 [[package]]
-
 name = "validators"
 version = "0.28.3"
 description = "Python Data Validation for Humans™"
@@ -2449,6 +2448,7 @@ python-versions = ">=3.8"
 files = [
     {file = "validators-0.28.3-py3-none-any.whl", hash = "sha256:53cafa854f13850156259d9cc479b864ee901f6a96e6b109e6fc33f98f37d99f"},
     {file = "validators-0.28.3.tar.gz", hash = "sha256:c6c79840bcde9ba77b19f6218f7738188115e27830cbaff43264bc4ed24c429d"},
+]
 
 [[package]]
 name = "virtualenv"
@@ -2695,4 +2695,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.10.9"
-content-hash = "16eae1c9720d9a920fc5dc629d76695c9ec87a30fef7e13bb302756e81a44cde"
+content-hash = "e0ac74772b34ecba75fab4bc38dfe09f988fb06c0430d553f87d15623a8fbd82"

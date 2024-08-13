@@ -40,7 +40,10 @@
           autocomplete='new-password'
         ) }}
         {% set button_txt = _('Save') %}
-        {{ page_footer(button_txt) }}
+        {% set display_footer = is_deleting if is_deleting else False %}
+        {% if not display_footer %}
+          {{ page_footer(button_txt, delete_link=url_for('.delete_delivery_status_callback', service_id=current_service.id)) }}
+        {% endif %}
       {% endcall %}
     </div>
   </div>
