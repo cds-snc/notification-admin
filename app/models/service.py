@@ -48,6 +48,7 @@ class Service(JSONModel):
         "go_live_at",
         "sending_domain",
         "organisation_notes",
+        "sensitive_service",
     }
 
     TEMPLATE_TYPES = (
