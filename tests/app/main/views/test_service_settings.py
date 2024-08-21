@@ -4304,8 +4304,5 @@ class TestSettingSensitiveService:
     ):
         client_request.login(platform_admin_user, service_one)
         client_request.post(
-            "main.set_sensitive_service",
-            service_id=SERVICE_ONE_ID,
-            _data={"sensitive_service": False},
-            _expected_status=200
+            "main.set_sensitive_service", service_id=SERVICE_ONE_ID, _data={"sensitive_service": False}, _expected_status=200
         )
