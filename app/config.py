@@ -143,6 +143,9 @@ class Config(object):
     WTF_CSRF_TIME_LIMIT = None
     ZENDESK_API_KEY = os.environ.get("ZENDESK_API_KEY")
 
+    # XRAY Switch Config
+    AWS_XRAY_ENABLED = env.bool("AWS_XRAY_ENABLED", False)
+
     # Various IDs
     BULK_SEND_TEST_SERVICE_ID = os.getenv("BULK_SEND_TEST_SERVICE_ID")
 
