@@ -16,7 +16,7 @@ application = Flask("app")
 application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
 create_app(application)
 
-if  application.config("AWS_XRAY_ENABLED"):
+if application.config("AWS_XRAY_ENABLED"):
     xray_recorder.configure(service='admin')
     XRayMiddleware(application, xray_recorder)
 
