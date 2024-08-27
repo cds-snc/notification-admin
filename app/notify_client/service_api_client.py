@@ -117,6 +117,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "go_live_at",
             "sending_domain",
             "sms_volume_today",
+            "sensitive_service",
         }
 
         if disallowed_attributes:
