@@ -4291,3 +4291,18 @@ def test_update_service_data_retention_populates_form(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.find("input", attrs={"name": "days_of_retention"})["value"] == "5"
+
+
+class TestSettingSensitiveService:
+
+    def test_should_redirect_after_change_service_name(
+        self,
+        client_request,
+        mock_update_service,
+        service_one,
+        platform_admin_user,
+    ):
+        client_request.login(platform_admin_user, service_one)
+        client_request.post(
+            "main.set_sensitive_service", service_id=SERVICE_ONE_ID, _data={"sensitive_service": False}, _expected_status=200
+        )

@@ -24,7 +24,6 @@ class NotifyAdminAPIClient(BaseAPIClient):
         self.api_key = app.config["ADMIN_CLIENT_SECRET"]
         self.route_secret = app.config["ROUTE_SECRET_KEY_1"]
         self.waf_secret = app.config["WAF_SECRET"]
-        self.sensitive_services = [x.strip() for x in app.config["SENSITIVE_SERVICES"].split(",")]
 
     def generate_headers(self, api_token):
         headers = {
@@ -59,7 +58,9 @@ class NotifyAdminAPIClient(BaseAPIClient):
         # to prevent cyclical imports
         from app import current_service
 
-        service_is_sensitive = current_service and any(service == current_service.id for service in self.sensitive_services)
+        service_is_sensitive = True
+        if current_service:
+            service_is_sensitive = current_service.sensitive_service if current_service.sensitive_service else False
         if hasattr(current_user, "platform_admin") and current_user.platform_admin:
             user = current_user.email_address + "|" + current_user.id
             logger.warn("{}Admin API request {} {} {} ".format("Sensitive " if service_is_sensitive else "", method, url, user))

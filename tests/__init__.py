@@ -197,6 +197,7 @@ def service_json(
     sending_domain=None,
     go_live_user=None,
     organisation_notes="",
+    sensitive_service=None,
 ):
     if users is None:
         users = []
@@ -238,6 +239,7 @@ def service_json(
         "sending_domain": sending_domain,
         "go_live_user": go_live_user,
         "organisation_notes": organisation_notes,
+        "sensitive_service": sensitive_service,
     }
     service: Service = dotdict(service_dict)
     return service
