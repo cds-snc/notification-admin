@@ -392,7 +392,7 @@ def service_switch_live(service_id):
 @user_is_platform_admin
 def set_sensitive_service(service_id):
     title = _("Set sensitive service")
-    form = ServiceOnOffSettingForm(name=title)
+    form = ServiceOnOffSettingForm(name=title, enabled=current_service.sensitive_service)
 
     if form.validate_on_submit():
         current_service.update(sensitive_service=form.enabled.data)
