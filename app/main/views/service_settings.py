@@ -388,6 +388,23 @@ def service_switch_live(service_id):
     )
 
 
+@main.route("/services/<service_id>/service-settings/set-sensitive-service", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_sensitive_service(service_id):
+    title = _("Set sensitive service")
+    form = ServiceOnOffSettingForm(name=title, enabled=current_service.sensitive_service)
+
+    if form.validate_on_submit():
+        current_service.update(sensitive_service=form.enabled.data)
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template(
+        "views/service-settings/set-service-setting.html",
+        title=_("Set sensitive service"),
+        form=form,
+    )
+
+
 @main.route(
     "/services/<service_id>/service-settings/switch-upload-document",
     methods=["GET", "POST"],
