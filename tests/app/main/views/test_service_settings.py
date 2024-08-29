@@ -4306,3 +4306,15 @@ class TestSettingSensitiveService:
         client_request.post(
             "main.set_sensitive_service", service_id=SERVICE_ONE_ID, _data={"sensitive_service": False}, _expected_status=200
         )
+
+
+class TestSuspendingCallbackApi:
+    def test_should_suspend_service_callback_api(self, client_request, platform_admin_user, mocker, service_one):
+
+        client_request.login(platform_admin_user, service_one)
+        client_request.post(
+            "main.suspend_callback",
+            service_id=service_one["id"],
+            _data={"updated_by_id": platform_admin_user["id"], "suspend_unsuspend": False},
+            _expected_status=200,
+        )

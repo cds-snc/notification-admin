@@ -98,12 +98,18 @@ def service_settings(service_id: str):
         "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         "free_yearly_sms": current_app.config["FREE_YEARLY_SMS_LIMIT"],
     }
+    callback_api = (
+        service_api_client.get_service_callback_api(current_service.id, current_service.service_callback_api[0])
+        if current_service.service_callback_api
+        else None
+    )
     assert limits["free_yearly_email"] >= 2_000_000, "The user-interface does not support French translations of < 2M"
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
         sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],  # type: ignore
         limits=limits,
+        callback_api=callback_api,
     )
 
 
@@ -1455,6 +1461,37 @@ def edit_data_retention(service_id, data_retention_id):
         form=form,
         data_retention_id=data_retention_id,
         notification_type=data_retention_item["notification_type"],
+    )
+
+
+@main.route(
+    "/services/<service_id>/service-settings/suspend-callback",
+    methods=["GET", "POST"],
+)
+@user_is_platform_admin
+def suspend_callback(service_id):
+    title = _("Suspend Callback")
+    form = ServiceOnOffSettingForm(name=title)
+    if current_service.service_callback_api:
+        callback_api = service_api_client.get_service_callback_api(current_service.id, current_service.service_callback_api[0])
+        form = ServiceOnOffSettingForm(name=title, enabled=callback_api["is_suspended"])
+
+        if form.validate_on_submit():
+            try:
+                service_api_client.suspend_service_callback_api(service_id, current_user.id, suspend_unsuspend=form.enabled.data)
+            except Exception as e:
+                raise "Error suspending callback: {}".format(e)
+            return redirect(url_for(".service_settings", service_id=service_id))
+
+        return render_template(
+            "views/service-settings/set-service-setting.html",
+            title=_("Suspend Callback"),
+            form=form,
+        )
+    return render_template(
+        "views/service-settings/set-service-setting.html",
+        title=_("Suspend Callback"),
+        form=form,
     )
 
 
