@@ -62,7 +62,7 @@ class NotifyAdminAPIClient(BaseAPIClient):
         if current_service:
             service_is_sensitive = current_service.sensitive_service if current_service.sensitive_service else False
         if hasattr(current_user, "platform_admin") and current_user.platform_admin:
-            user = current_user.email_address + "|" + current_user.id
+            user = f"{current_user.email_address}|{current_user.id}"
             logger.warn("{}Admin API request {} {} {} ".format("Sensitive " if service_is_sensitive else "", method, url, user))
 
     def get(self, url, params=None):
