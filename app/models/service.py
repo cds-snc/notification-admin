@@ -88,6 +88,9 @@ class Service(JSONModel):
     def toggle_research_mode(self):
         self.update(research_mode=not self.research_mode)
 
+    def suspend_callback_api(self, **kwargs):
+        return service_api_client.suspend_service_callback_api(self.id, **kwargs)
+
     @property
     def trial_mode(self):
         return self._dict["restricted"]

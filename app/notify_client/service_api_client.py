@@ -505,6 +505,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.delete("/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id))
 
     @cache.delete("service-{service_id}")
+    def suspend_service_callback_api(self, service_id, updated_by_id, suspend_unsuspend):
+        return self.post(
+            "/service/{}/delivery-receipt-api/suspend-callback".format(service_id),
+            data={"updated_by_id": updated_by_id, "suspend_unsuspend": suspend_unsuspend},
+        )
+
+    @cache.delete("service-{service_id}")
     def create_service_callback_api(self, service_id, url, bearer_token, user_id):
         data = {"url": url, "bearer_token": bearer_token, "updated_by_id": user_id}
         return self.post("/service/{}/delivery-receipt-api".format(service_id), data)
