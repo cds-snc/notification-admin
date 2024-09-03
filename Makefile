@@ -57,10 +57,8 @@ run-dev:
 
 .PHONY: format
 format:
-	isort ./app ./tests
-	black ./app ./tests
-	flake8 ./app ./tests
-	isort --check-only ./app ./tests
+	ruff check --select I --fix .
+	ruff format .
 	mypy ./
 	npx prettier --write app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
 

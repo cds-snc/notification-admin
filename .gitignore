@@ -97,3 +97,4 @@ cypress*env*json*
 node_modules/
 tests_cypress/cypress/videos/
 tests_cypress/cypress/screenshots/
+.ruff_cache/
