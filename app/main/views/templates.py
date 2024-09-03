@@ -79,9 +79,9 @@ form_objects = {
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
-    "bulk": "Low",
-    "normal": "Medium",
-    "priority": "High",
+    "bulk": "Bulk",
+    "normal": "Normal",
+    "priority": "Priority",
 }
 
 form_objects_with_category = {
@@ -925,7 +925,7 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
         template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
 
-    if template.get("process_type") is None:
+    if template.get("process_type_column") is None:
         if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
             template["process_type"] = TC_PRIORITY_VALUE
         else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed

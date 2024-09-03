@@ -4,7 +4,7 @@ import config from "../../../config";
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 
 const types = {
-  en: ["Email template", "Text message template"],
+  en: ["Email", "Text message"],
   fr: ["Courriel", "Message texte"],
 };
 
@@ -130,7 +130,7 @@ describe("Template filters", () => {
           });
       });
 
-      it.only("Should list category filters alphabetically", () => {
+      it("Should list category filters alphabetically", () => {
         cy.visit(url);
 
         Page.ToggleFilters();
@@ -152,6 +152,27 @@ describe("Template filters", () => {
             // Compare the sorted list with the original list to ensure they match
             expect(filterTexts).to.deep.equal(sortedFilterTexts);
           });
+      });
+
+      it("Filtering to 0 results shows empty message", () => {
+        cy.visit(url);
+
+        // Empty state should NOT be visible
+        Page.Components.EmptyState().should("not.be.visible");
+
+        Page.ToggleFilters();
+        Page.ApplyTypeFilter(types[lang][1]);
+        Page.ApplyCategoryFilter(categories[lang][0]);
+
+        // Empty state should be visible
+        Page.Components.EmptyState().should("be.visible");
+
+        // Clear filters
+        Page.ApplyTypeFilterAll();
+        Page.ApplyCategoryFilterAll();
+
+        // Empty state should NOT be visible
+        Page.Components.EmptyState().should("not.be.visible");
       });
     });
   });
