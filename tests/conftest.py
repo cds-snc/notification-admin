@@ -625,6 +625,11 @@ def mock_service_name_is_unique(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_set_sensitive_service(mocker):
+    return mocker.patch("app.service_api_client.update_service", return_value=True)
+
+
+@pytest.fixture(scope="function")
 def mock_service_email_from_is_not_unique(mocker):
     return mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=False)
 
@@ -724,6 +729,7 @@ def mock_update_service(mocker):
                     "email_from",
                     "sms_sender",
                     "permissions",
+                    "sensitive_service",
                 ]
             },
         )

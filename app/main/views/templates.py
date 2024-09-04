@@ -35,22 +35,18 @@ from app import (
 from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
-    EmailTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
-)
-from app.main.forms import (
-    SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
-)
-from app.main.forms import (
     TC_PRIORITY_VALUE,
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
+    EmailTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
     EmailTemplateFormWithCategory,
     LetterTemplateForm,
     LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
     SetTemplateSenderForm,
+    SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
     SMSTemplateFormWithCategory,
     TemplateAndFoldersSelectionForm,
     TemplateCategoryForm,

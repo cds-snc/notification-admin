@@ -365,14 +365,10 @@ def get_human_day(time):
 
 
 def format_time(date):
-    return (
-        {"12:00AM": "Midnight", "12:00PM": "Midday"}
-        .get(
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-        )
-        .lower()
-    )
+    return {"12:00AM": "Midnight", "12:00PM": "Midday"}.get(
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+    ).lower()
 
 
 def format_date(date):
@@ -450,9 +446,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                     "suppressed": _("Blocked"),
                     "on-account-suppression-list": _("Blocked"),
                 },
-            }[
-                template_type
-            ].get(feedback_subtype, _("No such address"))
+            }[template_type].get(feedback_subtype, _("No such address"))
         else:
             return _("No such address")
 
@@ -510,40 +504,36 @@ def format_notification_status_as_time(status, created, updated):
 
 
 def format_notification_status_as_field_status(status, notification_type):
-    return (
-        {
-            "letter": {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": None,
-                "created": None,
-                "accepted": None,
-                "pending-virus-check": None,
-                "virus-scan-failed": "error",
-                "returned-letter": None,
-                "cancelled": "error",
-            }
+    return {
+        "letter": {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": None,
+            "created": None,
+            "accepted": None,
+            "pending-virus-check": None,
+            "virus-scan-failed": "error",
+            "returned-letter": None,
+            "cancelled": "error",
         }
-        .get(
-            notification_type,
-            {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": "default",
-                "created": "default",
-                "pending": "default",
-            },
-        )
-        .get(status, "error")
-    )
+    }.get(
+        notification_type,
+        {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": "default",
+            "created": "default",
+            "pending": "default",
+        },
+    ).get(status, "error")
 
 
 def format_notification_status_as_url(status, notification_type):

@@ -477,6 +477,42 @@
           )}}
           {% endcall %}
 
+          {% call row() %}
+          {% set txt = _('Set sensitive service') %}
+          {{ text_field(txt)}}
+          {% if current_service.sensitive_service %}
+            {% set value = _('On') %}
+            {{ text_field(value) }}
+          {% else %}
+            {% set value = _('Off') %}
+            {{ text_field(value) }}
+          {% endif %}
+          {{ edit_field(
+            change_txt,
+            url_for('.set_sensitive_service', service_id=current_service.id),
+            for=txt
+          ) }}
+          {% endcall %}
+
+          {%if callback_api%}
+            {% call row() %}
+            {% set txt = _('Suspend Callback') %}
+            {{ text_field(txt)}}
+            {% if callback_api is not none and callback_api.is_suspended %}
+              {% set value = _('On') %}
+              {{ text_field(value) }}
+            {% else %}
+              {% set value = _('Off') %}
+              {{ text_field(value) }}
+            {% endif %}
+            {{ edit_field(
+              change_txt,
+              url_for('.suspend_callback', service_id=current_service.id),
+              for=txt
+            ) }}
+            {% endcall %}
+          {% endif %}
+
         {% endcall %}
 
       </div>

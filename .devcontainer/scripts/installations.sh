@@ -17,7 +17,7 @@ echo -e "fpath+=/.zfunc" >> ~/.zshrc
 echo -e "autoload -Uz compinit && compinit"
 
 # Install Poetry
-pip install poetry==${POETRY_VERSION}
+pip install poetry==${POETRY_VERSION} poetry-plugin-sort
 echo "PATH=$PATH"
 #echo "/home/vscode/.local/bin/.."
 export PATH=$PATH:/home/vscode/.local/bin/

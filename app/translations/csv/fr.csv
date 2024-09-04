@@ -1912,7 +1912,7 @@
 "Practice continuous security","Pratiquer la sécurité continue"
 "Getting started","Découvrez comment fonctionne Notification GC"
 "Read and agree to the terms of use","Lisez et acceptez les conditions d’utilisation"
-"Read and agree to continue","Lire et accepter pour continuer"
+"Read and agree to continue","Lisez et acceptez les conditions d’utilisation"
 "Agree follows terms of use","Accepter suite aux conditions d'utilisation"
 "Priority","Envoi prioritaire",
 "Bulk","Envoi de masse"
@@ -1976,4 +1976,8 @@
 "Provide an accessible description of your logo","Fournissez une description accessible de votre logo"
 "Category","Catégorie"
 "Does the category still apply?","La catégorie s'applique-t-elle toujours?"
+"No matching templates","Aucun gabarit correspondant"
+"Change your filters or search for more templates","Modifiez vos filtres ou recherchez d’autres gabarits"
 "Review your activity","Examinez votre activité"
+"Set sensitive service","Définir un service sensible"
+"Suspend Callback","Suspension du rappel"
