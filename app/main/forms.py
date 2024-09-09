@@ -23,6 +23,7 @@ from wtforms import (
     SelectField,
     SelectMultipleField,
     StringField,
+    SubmitField,
     TextAreaField,
     ValidationError,
     validators,
@@ -65,8 +66,10 @@ def get_time_value_and_label(future_time):
     return (
         future_time.replace(tzinfo=None).isoformat(),
         "{} at {}".format(
-            get_human_day(future_time.astimezone(pytz.timezone("Europe/London"))),
-            get_human_time(future_time.astimezone(pytz.timezone("Europe/London"))),
+            get_human_day(future_time.astimezone(
+                pytz.timezone("Europe/London"))),
+            get_human_time(future_time.astimezone(
+                pytz.timezone("Europe/London"))),
         ),
     )
 
@@ -254,7 +257,8 @@ class OrganisationTypeField(RadioField):
     def __init__(self, *args, include_only=None, validators=None, **kwargs):
         super().__init__(
             *args,
-            choices=[(value, label) for value, label in Organisation.TYPES if not include_only or value in include_only],
+            choices=[(value, label) for value,
+                     label in Organisation.TYPES if not include_only or value in include_only],
             validators=validators or [],
             **kwargs,
         )
@@ -294,18 +298,22 @@ class RadioFieldWithNoneOption(FieldWithNoneOption, RadioField):
 class NestedFieldMixin:
     def children(self):
         # start map with root option as a single child entry
-        child_map = {None: [option for option in self if option.data == self.NONE_OPTION_VALUE]}
+        child_map = {
+            None: [option for option in self if option.data == self.NONE_OPTION_VALUE]}
 
         # add entries for all other children
         for option in self:
             if option.data == self.NONE_OPTION_VALUE:
-                child_ids = [folder["id"] for folder in self.all_template_folders if folder["parent_id"] is None]
+                child_ids = [
+                    folder["id"] for folder in self.all_template_folders if folder["parent_id"] is None]
                 key = self.NONE_OPTION_VALUE
             else:
-                child_ids = [folder["id"] for folder in self.all_template_folders if folder["parent_id"] == option.data]
+                child_ids = [
+                    folder["id"] for folder in self.all_template_folders if folder["parent_id"] == option.data]
                 key = option.data
 
-            child_map[key] = [option for option in self if option.data in child_ids]
+            child_map[key] = [
+                option for option in self if option.data in child_ids]
 
         return child_map
 
@@ -340,10 +348,12 @@ class StripWhitespaceForm(Form):
             # FieldList simply doesn't support filters.
             # @see: https://github.com/wtforms/wtforms/issues/148
             no_filter_fields = (FieldList, PasswordField)
-            filters = [strip_whitespace] if not issubclass(unbound_field.field_class, no_filter_fields) else []
+            filters = [strip_whitespace] if not issubclass(
+                unbound_field.field_class, no_filter_fields) else []
             filters += unbound_field.kwargs.get("filters", [])
             bound = unbound_field.bind(form=form, filters=filters, **options)
-            bound.get_form = weakref.ref(form)  # GC won't collect the form if we don't use a weakref
+            # GC won't collect the form if we don't use a weakref
+            bound.get_form = weakref.ref(form)
             return bound
 
 
@@ -367,11 +377,13 @@ class LoginForm(StripWhitespaceForm):
             ValidEmail(),
         ],
     )
-    password = PasswordField(_l("Password"), validators=[DataRequired(message=_l("Enter your password"))])
+    password = PasswordField(_l("Password"), validators=[
+                             DataRequired(message=_l("Enter your password"))])
 
 
 class RegisterUserForm(StripWhitespaceForm):
-    name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField(_l("Full name"), validators=[
+                       DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
     mobile_number = international_phone_number()
     password = password()
@@ -394,7 +406,8 @@ class RegisterUserFromInviteForm(RegisterUserForm):
             name=guess_name_from_email_address(invited_user.email_address),
         )
 
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"), validators=[])
+    mobile_number = InternationalPhoneNumber(
+        _l("Mobile number"), validators=[])
     service = HiddenField("service")
     email_address = HiddenField("email_address")
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
@@ -411,7 +424,8 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
             email_address=invited_org_user.email_address,
         )
 
-    name = StringField("Full name", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField("Full name", validators=[
+                       DataRequired(message=_l("This cannot be empty"))])
 
     mobile_number = InternationalPhoneNumber(
         _l("Mobile number"),
@@ -440,7 +454,8 @@ class PermissionsForm(PermissionsAbstract):  # type: ignore
                 (item["id"], item["name"]) for item in ([{"name": _l("Templates"), "id": None}] + all_template_folders)
             ]
 
-    folder_permissions = NestedCheckboxesField(_l("Folders this team member can see"))
+    folder_permissions = NestedCheckboxesField(
+        _l("Folders this team member can see"))
 
     login_authentication = RadioField(
         _l("Sign in using"),
@@ -476,7 +491,8 @@ class InviteUserForm(PermissionsForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError(_l("You cannot send an invitation to yourself"))
+            raise ValidationError(
+                _l("You cannot send an invitation to yourself"))
 
 
 class InviteOrgUserForm(StripWhitespaceForm):
@@ -488,7 +504,8 @@ class InviteOrgUserForm(StripWhitespaceForm):
 
     def validate_email_address(self, field):
         if field.data.lower() == self.invalid_email_address:
-            raise ValidationError(_l("You cannot send an invitation to yourself"))
+            raise ValidationError(
+                _l("You cannot send an invitation to yourself"))
 
 
 class TwoFactorForm(StripWhitespaceForm):
@@ -651,7 +668,8 @@ class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
 class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
     other_organisation_name = StringField(
         _l("Enter name of your group"),
-        validators=[DataRequired(message=_l("Enter name to continue")), Length(max=500)],
+        validators=[DataRequired(message=_l(
+            "Enter name to continue")), Length(max=500)],
     )
 
 
@@ -744,7 +762,8 @@ class EmailMessageLimit(StripWhitespaceForm):
 class SMSMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
         _l("Daily text message limit"),
-        validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
+        validators=[DataRequired(message=_l(
+            "This cannot be empty")), validators.NumberRange(min=1)],
     )
 
 
@@ -811,7 +830,8 @@ class SMSTemplateForm(BaseTemplateForm):
 
 # TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
 class EmailTemplateForm(BaseTemplateForm):
-    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    subject = TextAreaField(_l("Subject line of the email"), validators=[
+                            DataRequired(message=_l("This cannot be empty"))])
 
     template_content = TextAreaField(
         _l("Email message"),
@@ -824,7 +844,8 @@ class EmailTemplateForm(BaseTemplateForm):
 
 # TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
 class LetterTemplateForm(EmailTemplateForm):
-    subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
+    subject = TextAreaField("Main heading", validators=[
+                            DataRequired(message="This cannot be empty")])
 
     template_content = TextAreaField(
         "Body",
@@ -847,13 +868,15 @@ class RequiredIf(InputRequired):
     def __call__(self, form, field):
         other_field = form._fields.get(self.other_field_name)
         if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
+            raise Exception('no field named "%s" in form' %
+                            self.other_field_name)
         if bool(other_field.data and other_field.data == self.other_field_value):
             super(RequiredIf, self).__call__(form, field)
 
 
 class BaseTemplateFormWithCategory(BaseTemplateForm):
-    template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    template_category_id = RadioField(_l("Select category"), validators=[
+                                      DataRequired(message=_l("This cannot be empty"))])
 
     template_category_other = StringField(
         _l("Describe category"), validators=[RequiredIf("template_category_id", DefaultTemplateCategories.LOW.value)]
@@ -874,7 +897,8 @@ class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 
 class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
-    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    subject = TextAreaField(_l("Subject line of the email"), validators=[
+                            DataRequired(message=_l("This cannot be empty"))])
 
     template_content = TextAreaField(
         _l("Email message"),
@@ -886,7 +910,8 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
-    subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
+    subject = TextAreaField("Main heading", validators=[
+                            DataRequired(message="This cannot be empty")])
 
     template_content = TextAreaField(
         "Body",
@@ -931,7 +956,8 @@ class ChangePasswordForm(StripWhitespaceForm):
 class CsvUploadForm(StripWhitespaceForm):
     file = FileField(
         _l("Choose a file"),
-        validators=[DataRequired(message="Please pick a file"), CsvFileValidator()],
+        validators=[DataRequired(
+            message="Please pick a file"), CsvFileValidator()],
     )
 
 
@@ -966,7 +992,8 @@ class ChooseTimeForm(StripWhitespaceForm):
         self.scheduled_for.choices = [("", "Now")] + [
             get_time_value_and_label(hour) for hour in get_next_hours_until(get_furthest_possible_scheduled_time())
         ]
-        self.scheduled_for.categories = get_next_days_until(get_furthest_possible_scheduled_time())
+        self.scheduled_for.categories = get_next_days_until(
+            get_furthest_possible_scheduled_time())
 
     scheduled_for = RadioField(
         _l("When should we send these messages?"),
@@ -976,7 +1003,8 @@ class ChooseTimeForm(StripWhitespaceForm):
 
 class CreateKeyForm(StripWhitespaceForm):
     def __init__(self, existing_keys, *args, **kwargs):
-        self.existing_key_names = [key["name"].lower() for key in existing_keys if not key["expiry_date"]]
+        self.existing_key_names = [
+            key["name"].lower() for key in existing_keys if not key["expiry_date"]]
         super().__init__(*args, **kwargs)
 
     key_type = RadioField(
@@ -985,7 +1013,8 @@ class CreateKeyForm(StripWhitespaceForm):
 
     key_name = StringField(
         "Description of key",
-        validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
+        validators=[DataRequired(message=_l(
+            "You need to give the key a name")), Length(max=255)],
     )
 
     def validate_key_name(self, key_name):
@@ -1010,7 +1039,8 @@ class CreateInboundSmsForm(StripWhitespaceForm):
 
 class ContactNotify(StripWhitespaceForm):
     not_empty = _l("Enter your name")
-    name = StringField(_l("Your name"), validators=[DataRequired(message=not_empty), Length(max=255)])
+    name = StringField(_l("Your name"), validators=[
+                       DataRequired(message=not_empty), Length(max=255)])
     support_type = RadioField(
         _l("How can we help?"),
         choices=[
@@ -1026,7 +1056,8 @@ class ContactNotify(StripWhitespaceForm):
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(
         _l("Message"),
-        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
+        validators=[DataRequired(message=_l(
+            "You need to enter something if you want to contact us")), Length(max=2000)],
     )
 
 
@@ -1040,7 +1071,8 @@ class SelectLogoForm(StripWhitespaceForm):
     branding_style = SelectField()
     file = FileField_wtf(
         _l("Upload logo"),
-        validators=[FileAllowed(["png"], _l("Your logo must be an image in PNG format"))],
+        validators=[FileAllowed(["png"], _l(
+            "Your logo must be an image in PNG format"))],
     )
 
 
@@ -1057,7 +1089,8 @@ class Triage(StripWhitespaceForm):
 class ProviderForm(StripWhitespaceForm):
     priority = IntegerField(
         "Priority",
-        [validators.NumberRange(min=1, max=100, message="Must be between 1 and 100")],
+        [validators.NumberRange(
+            min=1, max=100, message="Must be between 1 and 100")],
     )
 
 
@@ -1077,7 +1110,8 @@ class ServiceContactDetailsForm(StripWhitespaceForm):
 
     def validate(self, extra_validators=None):
         if self.contact_details_type.data == "url":
-            self.url.validators = [DataRequired(), URL(message="Must be a valid URL")]
+            self.url.validators = [DataRequired(), URL(
+                message="Must be a valid URL")]
 
         elif self.contact_details_type.data == "email_address":
             self.email_address.validators = [
@@ -1149,7 +1183,8 @@ class ServiceLetterContactBlockForm(StripWhitespaceForm):
     def validate_letter_contact_block(self, field):
         line_count = field.data.strip().count("\n")
         if line_count >= 10:
-            raise ValidationError("Contains {} lines, maximum is 10".format(line_count + 1))
+            raise ValidationError(
+                "Contains {} lines, maximum is 10".format(line_count + 1))
 
 
 class OnOffField(RadioField):
@@ -1167,7 +1202,8 @@ class OnOffField(RadioField):
     def process_formdata(self, valuelist):
         if valuelist:
             value = valuelist[0]
-            self.data = (value == "True") if value in ["True", "False"] else value
+            self.data = (value == "True") if value in [
+                "True", "False"] else value
 
 
 class ServiceOnOffSettingForm(StripWhitespaceForm):
@@ -1329,14 +1365,16 @@ class Safelist(StripWhitespaceForm):
                 form_field[index].data = value
 
     email_addresses = FieldList(
-        EmailFieldInSafelist("", validators=[Optional(), ValidEmail()], default=""),
+        EmailFieldInSafelist(
+            "", validators=[Optional(), ValidEmail()], default=""),
         min_entries=5,
         max_entries=5,
         label=_l("Email safelist"),
     )
 
     phone_numbers = FieldList(
-        InternationalPhoneNumberInSafelist("", validators=[Optional()], default=""),
+        InternationalPhoneNumberInSafelist(
+            "", validators=[Optional()], default=""),
         min_entries=5,
         max_entries=5,
         label=_l("Phone safelist"),
@@ -1346,7 +1384,8 @@ class Safelist(StripWhitespaceForm):
 class DateFilterForm(StripWhitespaceForm):
     start_date = DateField(_l("Start Date"), [validators.optional()])
     end_date = DateField(_l("End Date"), [validators.optional()])
-    include_from_test_key = BooleanField(_l("Include test keys"), default="checked", false_values={"N"})
+    include_from_test_key = BooleanField(
+        _l("Include test keys"), default="checked", false_values={"N"})
 
 
 class RequiredDateFilterForm(StripWhitespaceForm):
@@ -1357,14 +1396,16 @@ class RequiredDateFilterForm(StripWhitespaceForm):
 class SearchByNameForm(StripWhitespaceForm):
     search = SearchField(
         _l("Search by name"),
-        validators=[DataRequired("You need to enter full or partial name to search by.")],
+        validators=[DataRequired(
+            "You need to enter full or partial name to search by.")],
     )
 
 
 class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
         _l("Search by name or email address"),
-        validators=[DataRequired(_l("You need to enter full or partial email address to search by."))],
+        validators=[DataRequired(
+            _l("You need to enter full or partial email address to search by."))],
     )
 
 
@@ -1416,7 +1457,8 @@ class ServiceReceiveMessagesCallbackForm(CallbackForm):
         "URL",
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Regexp(regex="^https.*", message=_l("Enter a URL that starts with https://")),
+            Regexp(regex="^https.*",
+                   message=_l("Enter a URL that starts with https://")),
             ValidCallbackUrl(),
         ],
     )
@@ -1434,7 +1476,8 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
         "URL",
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Regexp(regex="^https.*", message=_l("Enter a URL that starts with https://")),
+            Regexp(regex="^https.*",
+                   message=_l("Enter a URL that starts with https://")),
             ValidCallbackUrl(),
         ],
     )
@@ -1445,6 +1488,7 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
             Length(min=10, message=_l("Must be at least 10 characters")),
         ],
     )
+    test_response_time = SubmitField()
 
 
 class InternationalSMSForm(StripWhitespaceForm):
@@ -1483,10 +1527,12 @@ def get_placeholder_form_instance(
         else:
             field = uk_mobile_number(label=placeholder_name)
     elif optional_placeholder:
-        field = StringField(_l("What is the custom content in (({})) ?").format(placeholder_name))
+        field = StringField(
+            _l("What is the custom content in (({})) ?").format(placeholder_name))
     elif is_conditional:
         field = RadioField(
-            _l("Do you want to include the content in (({})) ?").format(placeholder_name),
+            _l("Do you want to include the content in (({})) ?").format(
+                placeholder_name),
             choices=[
                 ("yes", _l("Yes")),
                 ("no", _l("No")),
@@ -1558,14 +1604,16 @@ class ServiceDataRetentionForm(StripWhitespaceForm):
     )
     days_of_retention = IntegerField(
         label="Days of retention",
-        validators=[validators.NumberRange(min=3, max=7, message="Must be between 3 and 7")],
+        validators=[validators.NumberRange(
+            min=3, max=7, message="Must be between 3 and 7")],
     )
 
 
 class ServiceDataRetentionEditForm(StripWhitespaceForm):
     days_of_retention = IntegerField(
         label="Days of retention",
-        validators=[validators.NumberRange(min=3, max=7, message="Must be between 3 and 7")],
+        validators=[validators.NumberRange(
+            min=3, max=7, message="Must be between 3 and 7")],
     )
 
 
@@ -1583,10 +1631,13 @@ class TemplateFolderForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         if all_service_users is not None:
             self.users_with_permission.all_service_users = all_service_users
-            self.users_with_permission.choices = [(item.id, item.name) for item in all_service_users]
+            self.users_with_permission.choices = [
+                (item.id, item.name) for item in all_service_users]
 
-    users_with_permission = MultiCheckboxField(_l("Team members who can see this folder"))
-    name = StringField(_l("Folder name"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    users_with_permission = MultiCheckboxField(
+        _l("Team members who can see this folder"))
+    name = StringField(_l("Folder name"), validators=[
+                       DataRequired(message=_l("This cannot be empty"))])
 
 
 def required_for_ops(*operations):
@@ -1613,19 +1664,23 @@ class CreateTemplateForm(Form):
 class AddEmailRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+        self.what_type.choices = [("many_recipients", _l(
+            "Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
-    placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
+    placeholder_value = email_address(
+        _l("Email address of recipient"), gov_user=False)
 
 
 class AddSMSRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+        self.what_type.choices = [("many_recipients", _l(
+            "Many recipients")), ("one_recipient", _l("One recipient"))]
 
     what_type = RadioField("")
-    placeholder_value = international_phone_number(_l("Phone number of recipient"))
+    placeholder_value = international_phone_number(
+        _l("Phone number of recipient"))
 
 
 class TemplateAndFoldersSelectionForm(Form):
@@ -1667,7 +1722,8 @@ class TemplateAndFoldersSelectionForm(Form):
         self.is_move_op = self.is_add_folder_op = False
 
         self.move_to.all_template_folders = all_template_folders
-        self.move_to.choices = [(item["id"], item["name"]) for item in ([self.ALL_TEMPLATES_FOLDER] + all_template_folders)]
+        self.move_to.choices = [(item["id"], item["name"]) for item in (
+            [self.ALL_TEMPLATES_FOLDER] + all_template_folders)]
 
     def is_selected(self, template_folder_id):
         return template_folder_id in (self.templates_and_folders.data or [])
@@ -1675,8 +1731,10 @@ class TemplateAndFoldersSelectionForm(Form):
     def validate(self, extra_validators=None):
         self.op = request.form.get("operation")
 
-        self.is_move_op = self.op in {"move-to-existing-folder", "move-to-new-folder"}
-        self.is_add_folder_op = self.op in {"add-new-folder", "move-to-new-folder"}
+        self.is_move_op = self.op in {
+            "move-to-existing-folder", "move-to-new-folder"}
+        self.is_add_folder_op = self.op in {
+            "add-new-folder", "move-to-new-folder"}
 
         if not (self.is_add_folder_op or self.is_move_op):
             return False
@@ -1692,7 +1750,8 @@ class TemplateAndFoldersSelectionForm(Form):
 
     templates_and_folders = MultiCheckboxField(
         "Choose templates or folders",
-        validators=[required_for_ops("move-to-new-folder", "move-to-existing-folder")],
+        validators=[required_for_ops(
+            "move-to-new-folder", "move-to-existing-folder")],
     )
     # if no default set, it is set to None, which process_data transforms to '__NONE__'
     # this means '__NONE__' (self.ALL_TEMPLATES option) is selected when no form data has been submitted
@@ -1702,8 +1761,10 @@ class TemplateAndFoldersSelectionForm(Form):
         default="",
         validators=[required_for_ops("move-to-existing-folder"), Optional()],
     )
-    add_new_folder_name = StringField(_l("Folder name"), validators=[required_for_ops("add-new-folder")])
-    move_to_new_folder_name = StringField(_l("Folder name"), validators=[required_for_ops("move-to-new-folder")])
+    add_new_folder_name = StringField(_l("Folder name"), validators=[
+                                      required_for_ops("add-new-folder")])
+    move_to_new_folder_name = StringField(_l("Folder name"), validators=[
+                                          required_for_ops("move-to-new-folder")])
 
 
 class ClearCacheForm(StripWhitespaceForm):
@@ -1736,7 +1797,8 @@ class AcceptAgreementForm(StripWhitespaceForm):
             on_behalf_of_email=org.agreement_signed_on_behalf_of_email_address,
         )
 
-    version = StringField("Which version of the agreement do you want to accept?")
+    version = StringField(
+        "Which version of the agreement do you want to accept?")
 
     who = RadioField(
         "Who are you accepting the agreement for?",
@@ -1871,7 +1933,8 @@ class BrandingGOCForm(StripWhitespaceForm):
             (FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, _l("English-first")),
             (FieldWithLanguageOptions.FRENCH_OPTION_VALUE, _l("French-first")),
         ],
-        validators=[DataRequired(message=_l("You must select an option to continue"))],
+        validators=[DataRequired(message=_l(
+            "You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1888,8 +1951,10 @@ class BrandingPoolForm(StripWhitespaceForm):
 
     pool_branding = RadioField(
         _l("Select alternate logo"),
-        choices=[],  # Choices by default, override to get more refined options.
-        validators=[DataRequired(message=_l("You must select an option to continue"))],
+        # Choices by default, override to get more refined options.
+        choices=[],
+        validators=[DataRequired(message=_l(
+            "You must select an option to continue"))],
     )
 
     def __init__(self, *args, **kwargs):
@@ -1905,9 +1970,12 @@ class BrandingRequestForm(StripWhitespaceForm):
         file (FileField_wtf): Field for uploading the logo file.
     """
 
-    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
-    alt_text_en = StringField(label=_l("English"), validators=[DataRequired(message=_l("This cannot be empty"))])
-    alt_text_fr = StringField(label=_l("French"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField(label=_l("Name of logo"), validators=[
+                       DataRequired(message=_l("Enter the name of the logo"))])
+    alt_text_en = StringField(label=_l("English"), validators=[
+                              DataRequired(message=_l("This cannot be empty"))])
+    alt_text_fr = StringField(label=_l("French"), validators=[
+                              DataRequired(message=_l("This cannot be empty"))])
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
@@ -1917,11 +1985,14 @@ class BrandingRequestForm(StripWhitespaceForm):
 
 
 class TemplateCategoryForm(StripWhitespaceForm):
-    name_en = StringField("EN", validators=[DataRequired(message=_l("This cannot be empty"))])
-    name_fr = StringField("FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name_en = StringField(
+        "EN", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name_fr = StringField(
+        "FR", validators=[DataRequired(message=_l("This cannot be empty"))])
     description_en = StringField("EN")
     description_fr = StringField("FR")
-    hidden = RadioField(_l("Hide category"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
+    hidden = RadioField(_l("Hide category"), choices=[
+                        ("True", _l("Hide")), ("False", _l("Show"))])
     sms_sending_vehicle = RadioField(
         _l("Sending method for text messages"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))]
     )
