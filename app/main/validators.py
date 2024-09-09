@@ -21,8 +21,7 @@ from app.utils import Spreadsheet, email_safe, email_safe_name, is_gov_user
 class Blocklist:
     def __init__(self, message=None):
         if not message:
-            message = _(
-                "This password is not allowed. Try a different password.")
+            message = _("This password is not allowed. Try a different password.")
         self.message = message
 
     def __call__(self, form, field):
@@ -110,8 +109,7 @@ class NoCommasInPlaceHolders:
 
 class OnlySMSCharacters:
     def __call__(self, form, field):
-        non_sms_characters = sorted(
-            list(SanitiseSMS.get_non_compatible_characters(field.data)))
+        non_sms_characters = sorted(list(SanitiseSMS.get_non_compatible_characters(field.data)))
         if non_sms_characters:
             raise ValidationError(
                 "You can’t use {} in text messages. {} won’t show up properly on everyone’s phones.".format(
@@ -178,8 +176,7 @@ def validate_callback_url(service_callback_url, bearer_token):
             url=service_callback_url,
             allow_redirects=True,
             data={"health_check": "true"},
-            headers={"Content-Type": "application/json",
-                     "Authorization": f"Bearer {bearer_token}"},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {bearer_token}"},
             timeout=2,
         )
 
@@ -189,15 +186,13 @@ def validate_callback_url(service_callback_url, bearer_token):
             current_app.logger.warning(
                 f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
             )
-            raise ValidationError(
-                _l("Check your service is running and not using a proxy we cannot access"))
+            raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
 
     except requests.RequestException as e:
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Exception: {e}"
         )
-        raise ValidationError(
-            _l("Check your service is running and not using a proxy we cannot access"))
+        raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
 
 
 def validate_email_from(form, field):
@@ -207,23 +202,18 @@ def validate_email_from(form, field):
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
     # this filler is used because service id is not available when validating a new service to be created
-    service_id = getattr(form, "service_id",
-                         current_app.config["NOTIFY_BAD_FILLER_UUID"])
-    unique_name = service_api_client.is_service_email_from_unique(
-        service_id, field.data)
+    service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
+    unique_name = service_api_client.is_service_email_from_unique(service_id, field.data)
     if not unique_name:
         raise ValidationError(_l("This email address is already in use"))
 
 
 def validate_service_name(form, field):
     if len(field.data) > 255:
-        raise ValidationError(
-            _l("This cannot exceed 255 characters in length"))
+        raise ValidationError(_l("This cannot exceed 255 characters in length"))
     if field.data != email_safe_name(field.data):
-        raise ValidationError(
-            _l("Make sure we formatted your email address correctly."))
-    service_id = getattr(form, "service_id",
-                         current_app.config["NOTIFY_BAD_FILLER_UUID"])
+        raise ValidationError(_l("Make sure we formatted your email address correctly."))
+    service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
     unique_name = service_api_client.is_service_name_unique(
         service_id,
         field.data,
