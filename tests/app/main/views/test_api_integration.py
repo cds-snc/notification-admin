@@ -1,5 +1,6 @@
 import uuid
 from collections import OrderedDict
+from datetime import timedelta
 from unittest.mock import Mock, call
 
 import pytest
@@ -61,7 +62,8 @@ def test_should_show_api_page_with_no_notifications(
         service_id=SERVICE_ONE_ID,
     )
     rows = page.find_all("div", {"class": "api-notifications-item"})
-    assert "When you send messages via the API they’ll appear here." in rows[len(rows) - 1].text.strip()
+    assert "When you send messages via the API they’ll appear here." in rows[len(
+        rows) - 1].text.strip()
 
 
 @pytest.mark.parametrize(
@@ -80,7 +82,8 @@ def test_letter_notifications_should_have_link_to_view_letter(
     link_text,
 ):
     notifications = create_notifications(template_type=template_type)
-    mocker.patch("app.notification_api_client.get_api_notifications_for_service", return_value=notifications)
+    mocker.patch("app.notification_api_client.get_api_notifications_for_service",
+                 return_value=notifications)
     page = client_request.get(
         "main.api_integration",
         service_id=SERVICE_ONE_ID,
@@ -94,7 +97,8 @@ def test_should_not_have_link_to_view_letter_for_precompiled_letters_in_virus_st
     client_request, fake_uuid, mock_has_permissions, mocker, status
 ):
     notifications = create_notifications(status=status)
-    mocker.patch("app.notification_api_client.get_api_notifications_for_service", return_value=notifications)
+    mocker.patch("app.notification_api_client.get_api_notifications_for_service",
+                 return_value=notifications)
 
     page = client_request.get(
         "main.api_integration",
@@ -120,7 +124,8 @@ def test_letter_notifications_should_show_client_reference(
     shows_ref,
 ):
     notifications = create_notifications(client_reference=client_reference)
-    mocker.patch("app.notification_api_client.get_api_notifications_for_service", return_value=notifications)
+    mocker.patch("app.notification_api_client.get_api_notifications_for_service",
+                 return_value=notifications)
 
     page = client_request.get(
         "main.api_integration",
@@ -171,7 +176,8 @@ def test_should_show_empty_api_keys_page(
     response = client.get(url_for("main.api_keys", service_id=service_id))
 
     assert response.status_code == 200
-    assert "You have not created any API keys yet" in response.get_data(as_text=True)
+    assert "You have not created any API keys yet" in response.get_data(
+        as_text=True)
     assert "Create API key" in response.get_data(as_text=True)
     mock_get_no_api_keys.assert_called_once_with(service_id)
 
@@ -185,7 +191,8 @@ def test_should_show_api_keys_page(
     rows = [normalize_spaces(row.text) for row in page.select("main tr")]
 
     assert rows[0] == "API keys Action"
-    assert "another key name 20 total sends in the last 7 days (20 email, 0 sms)" in rows[1]
+    assert "another key name 20 total sends in the last 7 days (20 email, 0 sms)" in rows[
+        1]
     assert "Revoke API key some key name" in rows[2]
 
     mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)
@@ -237,12 +244,14 @@ def test_should_show_create_api_key_page(
     if can_send_letters:
         service_one["permissions"].append("letter")
 
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    mocker.patch("app.service_api_client.get_service",
+                 return_value={"data": service_one})
 
     page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
     for index, option in enumerate(expected_options):
-        assert normalize_spaces(page.select(".block-label")[index].text) == option
+        assert normalize_spaces(page.select(
+            ".block-label")[index].text) == option
 
 
 def test_should_create_api_key_with_type_normal(
@@ -269,7 +278,8 @@ def test_should_create_api_key_with_type_normal(
         _expected_status=200,
     )
 
-    assert page.select_one("span.api-key-key").text.strip() == ("{}-{}-{}".format(key_name_fixed, SERVICE_ONE_ID, fake_uuid))
+    assert page.select_one("span.api-key-key").text.strip() == (
+        "{}-{}-{}".format(key_name_fixed, SERVICE_ONE_ID, fake_uuid))
 
     post.assert_called_once_with(
         url="/service/{}/api-key".format(SERVICE_ONE_ID),
@@ -291,7 +301,8 @@ def test_cant_create_normal_api_key_in_trial_mode(
     fake_uuid,
     mocker,
 ):
-    mock_post = mocker.patch("app.notify_client.api_key_api_client.ApiKeyApiClient.post")
+    mock_post = mocker.patch(
+        "app.notify_client.api_key_api_client.ApiKeyApiClient.post")
 
     client_request.post(
         "main.create_api_key",
@@ -378,7 +389,8 @@ def test_should_redirect_after_revoking_api_key(
             service_id=SERVICE_ONE_ID,
         ),
     )
-    mock_revoke_api_key.assert_called_once_with(service_id=SERVICE_ONE_ID, key_id=fake_uuid)
+    mock_revoke_api_key.assert_called_once_with(
+        service_id=SERVICE_ONE_ID, key_id=fake_uuid)
     mock_get_api_keys.assert_called_once_with(
         SERVICE_ONE_ID,
     )
@@ -443,7 +455,8 @@ def test_should_show_safelist_page(
         "main.safelist",
         service_id=SERVICE_ONE_ID,
     )
-    textboxes = page.find_all("input", {"type": "email"}) + page.find_all("input", {"type": "tel"})
+    textboxes = page.find_all(
+        "input", {"type": "email"}) + page.find_all("input", {"type": "tel"})
     for index, value in enumerate(["test@example.com"] + [""] * 4 + ["6502532222"] + [""] * 4):
         assert textboxes[index]["value"] == value
 
@@ -483,11 +496,13 @@ def test_should_validate_safelist_items(
     page = client_request.post(
         "main.safelist",
         service_id=SERVICE_ONE_ID,
-        _data=OrderedDict([("email_addresses-1", "abc"), ("phone_numbers-0", "123")]),
+        _data=OrderedDict([("email_addresses-1", "abc"),
+                          ("phone_numbers-0", "123")]),
         _expected_status=200,
     )
 
-    assert page.select_one(".banner-title").string.strip() == "There was a problem with your safelist"
+    assert page.select_one(
+        ".banner-title").string.strip() == "There was a problem with your safelist"
     jump_links = page.select(".banner-dangerous a")
 
     assert jump_links[0].string.strip() == "Enter valid email addresses"
@@ -510,12 +525,13 @@ def test_should_validate_safelist_items(
     "url, bearer_token, response, expected_errors",
     [
         ("https://example.com", "", None, "This cannot be empty"),
-        ("http://not_https.com", "1234567890", None, "Enter a URL that starts with https://"),
+        ("http://not_https.com", "1234567890", None,
+         "Enter a URL that starts with https://"),
         (
             "https://test.com",
             "123456789",
             {"content": "a", "status_code": 500, "headers": {"a": "a"}},
-            "Check your service log for errors Must be at least 10 characters",
+            "Must be at least 10 characters",
         ),
         (
             "https://test.ee",
@@ -544,21 +560,23 @@ def test_callback_forms_validation(
         "bearer_token": bearer_token,
     }
     if response:
-        resp = Mock(content=response["content"], status_code=response["status_code"], headers=response["headers"])
+        resp = Mock(
+            content=response["content"], status_code=response["status_code"], headers=response["headers"])
         mocker.patch("app.main.validators.requests.post", return_value=resp)
 
-    response = client_request.post(endpoint, service_id=service_one["id"], _data=data, _expected_status=200)
-    error_msgs = " ".join(msg.text.strip() for msg in response.select(".error-message"))
+    response = client_request.post(
+        endpoint, service_id=service_one["id"], _data=data, _expected_status=200)
+    error_msgs = " ".join(msg.text.strip()
+                          for msg in response.select(".error-message"))
 
     assert error_msgs == expected_errors
 
 
-@pytest.mark.parametrize("bearer_token", ["", "some-bearer-token"])
 @pytest.mark.parametrize(
     "endpoint, expected_delete_url",
     [
         (
-            "main.delivery_status_callback",
+            "main.delete_delivery_status_callback",
             "/service/{}/delivery-receipt-api/{}",
         ),
         (
@@ -567,12 +585,11 @@ def test_callback_forms_validation(
         ),
     ],
 )
-def test_callback_forms_can_be_cleared(
+def test_delete_callback(
     client_request,
     service_one,
     endpoint,
     expected_delete_url,
-    bearer_token,
     mocker,
     fake_uuid,
     mock_get_valid_service_callback_api,
@@ -586,18 +603,12 @@ def test_callback_forms_can_be_cleared(
     page = client_request.post(
         endpoint,
         service_id=service_one["id"],
-        _data={
-            "url": "",
-            "bearer_token": bearer_token,
-        },
-        _expected_redirect=url_for(
-            "main.api_callbacks",
-            service_id=service_one["id"],
-        ),
+        _follow_redirects=True,
     )
 
     assert not page.select(".error-message")
-    mocked_delete.assert_called_once_with(expected_delete_url.format(service_one["id"], fake_uuid))
+    mocked_delete.assert_called_once_with(
+        expected_delete_url.format(service_one["id"], fake_uuid))
 
 
 @pytest.mark.parametrize("bearer_token", ["", "some-bearer-token"])
@@ -667,7 +678,8 @@ def test_callbacks_button_links_straight_to_delivery_status_if_service_has_no_in
         service_id=service_one["id"],
     )
 
-    assert page.select(".api-header-links")[2]["href"] == url_for(expected_link, service_id=service_one["id"])
+    assert page.select(
+        ".api-header-links")[2]["href"] == url_for(expected_link, service_id=service_one["id"])
 
 
 def test_callbacks_page_redirects_to_delivery_status_if_service_has_no_inbound_sms(
@@ -682,7 +694,8 @@ def test_callbacks_page_redirects_to_delivery_status_if_service_has_no_inbound_s
         _follow_redirects=True,
     )
 
-    assert normalize_spaces(page.select_one("h1").text) == "Callbacks for delivery receipts"
+    assert normalize_spaces(page.select_one(
+        "h1").text) == "Callbacks for delivery receipts"
 
 
 @pytest.mark.parametrize(
@@ -704,7 +717,8 @@ def test_back_link_directs_to_api_integration_from_delivery_callback_if_no_inbou
         _follow_redirects=True,
     )
 
-    assert page.select_one(".back-link")["href"] == url_for(expected_link, service_id=service_one["id"])
+    assert page.select_one(
+        ".back-link")["href"] == url_for(expected_link, service_id=service_one["id"])
 
 
 @pytest.mark.parametrize(
@@ -763,6 +777,7 @@ def test_update_delivery_status_callback_details(
     mock_get_valid_service_callback_api,
     fake_uuid,
     mock_validate_callback_url,
+    mocker,
 ):
     service_one["service_callback_api"] = [fake_uuid]
 
@@ -794,7 +809,8 @@ def test_update_receive_text_message_callback_details(
     service_one["inbound_api"] = [fake_uuid]
     service_one["permissions"] = ["inbound_sms"]
 
-    data = {"url": "https://test.url.com/", "bearer_token": "1234567890", "user_id": fake_uuid}
+    data = {"url": "https://test.url.com/",
+            "bearer_token": "1234567890", "user_id": fake_uuid}
 
     client_request.post(
         "main.received_text_messages_callback",
@@ -818,9 +834,11 @@ def test_update_delivery_status_callback_without_changes_does_not_update(
     fake_uuid,
     mock_get_valid_service_callback_api,
     mock_validate_callback_url,
+    mocker,
 ):
     service_one["service_callback_api"] = [fake_uuid]
-    data = {"user_id": fake_uuid, "url": "https://hello2.canada.ca", "bearer_token": "bearer_token_set"}
+    data = {"user_id": fake_uuid, "url": "https://hello2.canada.ca",
+            "bearer_token": "bearer_token_set"}
 
     client_request.post(
         "main.delivery_status_callback",
@@ -841,7 +859,8 @@ def test_update_receive_text_message_callback_without_changes_does_not_update(
 ):
     service_one["inbound_api"] = [fake_uuid]
     service_one["permissions"] = ["inbound_sms"]
-    data = {"user_id": fake_uuid, "url": "https://hello3.canada.ca", "bearer_token": "bearer_token_set"}
+    data = {"user_id": fake_uuid, "url": "https://hello3.canada.ca",
+            "bearer_token": "bearer_token_set"}
 
     client_request.post(
         "main.received_text_messages_callback",
@@ -889,10 +908,13 @@ def test_callbacks_page_works_when_no_apis_set(
     service_one["inbound_api"] = inbound_api
     service_one["service_callback_api"] = service_callback_api
 
-    mocker.patch("app.service_api_client.get_service_callback_api", return_value=delivery_url)
-    mocker.patch("app.service_api_client.get_service_inbound_api", return_value=inbound_url)
+    mocker.patch("app.service_api_client.get_service_callback_api",
+                 return_value=delivery_url)
+    mocker.patch("app.service_api_client.get_service_inbound_api",
+                 return_value=inbound_url)
 
-    page = client_request.get("main.api_callbacks", service_id=service_one["id"], _follow_redirects=True)
+    page = client_request.get(
+        "main.api_callbacks", service_id=service_one["id"], _follow_redirects=True)
     expected_rows = [
         expected_1st_table_row,
         expected_2nd_table_row,

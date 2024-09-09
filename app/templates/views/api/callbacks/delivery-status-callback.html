@@ -1,7 +1,7 @@
 {% extends "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import page_footer, sticky_page_footer_two_submit_buttons_and_delete_link %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons_and_delete_link %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/ajax-block.html" import ajax_block %}
 
@@ -56,5 +56,4 @@
       {% endcall %}
     </div>
   </div>
-  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/testCallbackApi.min.js') }}"></script>
 {% endblock %}
