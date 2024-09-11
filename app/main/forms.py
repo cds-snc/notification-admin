@@ -1410,7 +1410,7 @@ class ServiceInboundNumberForm(StripWhitespaceForm):
 
 class CallbackForm(StripWhitespaceForm):
     def validate(self, extra_validators=None):
-        return super().validate(extra_validators) or self.url.data == ""
+        return super().validate(extra_validators)
 
 
 class ServiceReceiveMessagesCallbackForm(CallbackForm):
