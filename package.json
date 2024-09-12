@@ -22,8 +22,8 @@
   "homepage": "https://github.com/cds-snc/notification-admin#readme",
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.14.5",
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "accessible-autocomplete": "^2.0.4",
     "braces": "^3.0.3",
     "dayjs": "^1.11.13",
@@ -35,12 +35,12 @@
     "moment": "^2.29.4",
     "node-polyglot": "^2.4.2",
     "query-command-supported": "1.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "textarea-caret": "3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.2",
+    "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.14.5",
     "@fullhuman/postcss-purgecss": "^3.1.3",
