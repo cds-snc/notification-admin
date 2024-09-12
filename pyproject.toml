@@ -52,7 +52,6 @@ awscli-cwlogs = "^1.4.6"
 notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "52.3.3" }
 
 # Pinned dependencies
-rsa = "^4.1" # not directly required, pinned by Snyk to avoid a vulnerability
 certifi = "^2024.0.0" # Pinned for security reasons: https://github.com/cds-snc/notification-admin/security/dependabot/169
 redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
@@ -74,10 +73,10 @@ freezegun = "1.5.1"
 requests-mock = "1.12.1"
 # used for creating manifest file locally
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
-mypy = "1.10.0"
+mypy = "1.11.2"
 monkeytype = "23.3.0"
 poethepoet = "^0.24.4"
-ruff = "^0.2.1"
+ruff = "^0.6.0"
 
 # stubs libraries to keep mypy happy
 types-python-dateutil = "2.9.0.20240821"
