@@ -47,7 +47,8 @@
               {% endif %}
             </h2>
             <p class="message-type">
-              {{ _(item.hint) }}
+              {# Compose hint + "template" IF it has a type. ELSE just print the hint #}
+              {{ _("{} template").format(_(item.hint)) | capitalize if item.type else _(item.hint) }}
             </p>
           </div>
         {% endfor %}

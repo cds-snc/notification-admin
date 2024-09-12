@@ -75,6 +75,70 @@ const Admin = {
             }
         })
     },
+    CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/service/${service_id}/template`,
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "name": name,
+                "template_type": type,
+                "content": content,
+                "service": service_id,
+                "process_type": process_type,
+                "template_category_id": template_category_id,
+            }
+        });
+    },
+    DeleteTemplate: ({ serviceId, templateId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/service/${serviceId}/template/${templateId}`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "archived": true
+            }
+        });
+    },
+    GetTemplate: ({ templateId, serviceId }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/service/${serviceId}/template/${templateId}`,
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            }
+        });
+    },
+    UpdateTemplate: ({ id, name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
+        var token = Utilities.CreateJWT();
+        return cy.request({
+            url: `${BASE_URL}/service/${service_id}/template/${id}`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                "id": id,
+                "name": name,
+                "template_type": type,
+                "content": content,
+                "service": service_id,
+                "process_type": process_type,
+                "template_category_id": template_category_id
+            }
+        });
+    },
     GetTemplateCategory: ({ templateCategoryId }) => {
         var token = Utilities.CreateJWT();
         return cy.request({

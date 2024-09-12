@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:1-3.10@sha256:5ddf5326789e017c5c8468bf574cb5ede78f837cd910487b98fa63aba32e6cfe
+FROM mcr.microsoft.com/vscode/devcontainers/python:1-3.10@sha256:c5b379b09a94ac1ccb437e000dd54c96164a8322d0c53d2bcb25f225e27924e6
 
 ENV POETRY_VERSION="1.7.1"
 

@@ -10,13 +10,10 @@ class TestAssetFingerprint(object):
             body {
                 font-family: nta;
             }
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         asset_fingerprinter = AssetFingerprinter(asset_root="/suppliers/static/")
         assert (
-            asset_fingerprinter.get_url("application.css")
-            == "/suppliers/static/application.css?418e6f4a6cdf1142e45c072ed3e1c90a"  # noqa
+            asset_fingerprinter.get_url("application.css") == "/suppliers/static/application.css?418e6f4a6cdf1142e45c072ed3e1c90a"  # noqa
         )
         assert (
             asset_fingerprinter.get_url("application-ie6.css")
@@ -27,9 +24,7 @@ class TestAssetFingerprint(object):
         get_file_content_mock = mocker.patch.object(AssetFingerprinter, "get_asset_file_contents")
         get_file_content_mock.return_value = """
             document.write('Hello world!');
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         fingerprinter = AssetFingerprinter()
         fingerprinter.get_url("javascripts/application.js")
         fingerprinter.get_asset_file_contents.assert_called_with("app/static/javascripts/application.js")
@@ -40,9 +35,7 @@ class TestAssetFingerprint(object):
             body {
                 font-family: nta;
             }
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         asset_fingerprinter = AssetFingerprinter()
         assert asset_fingerprinter.get_asset_fingerprint("application.css") == asset_fingerprinter.get_asset_fingerprint(
             "same_contents.css"
@@ -55,15 +48,11 @@ class TestAssetFingerprint(object):
             body {
                 font-family: nta;
             }
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         css_hash = asset_fingerprinter.get_asset_fingerprint("application.css")
         get_file_content_mock.return_value = """
             document.write('Hello world!');
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         js_hash = asset_fingerprinter.get_asset_fingerprint("application.js")
         assert js_hash != css_hash
 
@@ -73,9 +62,7 @@ class TestAssetFingerprint(object):
             body {
                 font-family: nta;
             }
-        """.encode(
-            "utf-8"
-        )
+        """.encode("utf-8")
         fingerprinter = AssetFingerprinter()
         assert fingerprinter.get_url("application.css") == "/static/application.css?418e6f4a6cdf1142e45c072ed3e1c90a"
         fingerprinter._cache["application.css"] = "a1a1a1"

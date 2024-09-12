@@ -117,6 +117,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "go_live_at",
             "sending_domain",
             "sms_volume_today",
+            "sensitive_service",
         }
 
         if disallowed_attributes:
@@ -502,6 +503,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}")
     def delete_service_callback_api(self, service_id, callback_api_id):
         return self.delete("/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id))
+
+    @cache.delete("service-{service_id}")
+    def suspend_service_callback_api(self, service_id, updated_by_id, suspend_unsuspend):
+        return self.post(
+            "/service/{}/delivery-receipt-api/suspend-callback".format(service_id),
+            data={"updated_by_id": updated_by_id, "suspend_unsuspend": suspend_unsuspend},
+        )
 
     @cache.delete("service-{service_id}")
     def create_service_callback_api(self, service_id, url, bearer_token, user_id):

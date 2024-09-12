@@ -122,7 +122,6 @@ class Config(object):
     SECRET_KEY = env.list("SECRET_KEY", [])
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security+securite@cds-snc.ca")
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
-    SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_NAME = "notify_admin_session"
     SESSION_COOKIE_SAMESITE = "Lax"
@@ -190,7 +189,6 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_TEMPLATE_CATEGORY = False
 
 
 class Test(Development):

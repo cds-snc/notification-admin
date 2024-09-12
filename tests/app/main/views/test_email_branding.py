@@ -657,7 +657,6 @@ class TestBranding:
             assert "The canada wordmark is displayed at the bottom right" in html_template
 
     def test_get_preview_template_with_email_branding_and_custom_brand_logo(self, mocker, app_):
-
         email_branding = {
             "brand_type": "both_english",
             "colour": "#ff0000",
@@ -705,7 +704,6 @@ class TestBranding:
         }
 
         with patch.object(current_user, "send_branding_request", return_value="") as mock_create_branding_request:
-
             platform_admin_client.post(
                 url_for(".create_branding_request", service_id="1234"),
                 data=data,

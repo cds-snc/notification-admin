@@ -277,7 +277,6 @@ def test_get_last_email_login_datetime(mocker, value, expected_return):
 
 
 class TestFreshdesk:
-
     def test_send_new_template_category_request(self, mocker):
         mock_post = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
 

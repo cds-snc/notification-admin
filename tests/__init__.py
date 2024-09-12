@@ -197,6 +197,7 @@ def service_json(
     sending_domain=None,
     go_live_user=None,
     organisation_notes="",
+    sensitive_service=None,
 ):
     if users is None:
         users = []
@@ -238,6 +239,7 @@ def service_json(
         "sending_domain": sending_domain,
         "go_live_user": go_live_user,
         "organisation_notes": organisation_notes,
+        "sensitive_service": sensitive_service,
     }
     service: Service = dotdict(service_dict)
     return service
@@ -322,6 +324,7 @@ def template_json(
     version=1,
     archived=False,
     process_type=TemplateProcessTypes.BULK.value,
+    process_type_column=TemplateProcessTypes.BULK.value,
     redact_personalisation=None,
     service_letter_contact=None,
     reply_to=None,
@@ -342,6 +345,7 @@ def template_json(
         "updated_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f"),
         "archived": archived,
         "process_type": process_type,
+        "process_type_column": process_type_column,
         "service_letter_contact": service_letter_contact,
         "reply_to": reply_to,
         "reply_to_text": reply_to_text,
