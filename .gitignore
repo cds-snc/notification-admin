@@ -50,6 +50,9 @@ test_results.xml
 *.pot
 app/translations/csv/en.csv
 
+# MonkeyType
+monkeytype.sqlite3
+
 # Django stuff:
 *.log
 
