@@ -26,7 +26,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "accessible-autocomplete": "^2.0.4",
     "braces": "^3.0.3",
-    "dayjs": "^1.10.7",
+    "dayjs": "^1.11.13",
     "diff-dom": "4.2.8",
     "govuk_frontend_toolkit": "9.0.1",
     "hogan": "1.0.2",
