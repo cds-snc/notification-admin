@@ -56,6 +56,7 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
+from app.monkeytype_config import MonkeytypeConfig
 from app.navigation import (
     AdminNavigation,
     HeaderNavigation,
@@ -91,7 +92,6 @@ from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
-
 
 # The current service attached to the request stack.
 current_service: Service = LocalProxy(lambda: g.current_service)  # type: ignore
@@ -230,6 +230,13 @@ def create_app(application):
         application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
             application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
         )
+
+    # Specify packages to be traced by MonkeyType. This can be overriden
+    # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:
+    # MONKEYTYPE_TRACE_MODULES="app.,notifications_utils."
+    if application.config["NOTIFY_ENVIRONMENT"] == "development":
+        packages_prefix = ["app.", "notifications_utils."]
+        application.monkeytype_config = MonkeytypeConfig(packages_prefix)
 
 
 def init_app(application):

@@ -60,6 +60,7 @@ itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
 aws-xray-sdk = "^2.14.0"
 
+
 [tool.poetry.group.test.dependencies]
 pytest = "7.4.4"
 pytest-env = "0.8.2"
@@ -73,6 +74,8 @@ requests-mock = "1.12.1"
 # used for creating manifest file locally
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
 mypy = "1.11.2"
+monkeytype = "23.3.0"
+poethepoet = "^0.24.4"
 ruff = "^0.6.0"
 
 # stubs libraries to keep mypy happy
@@ -81,6 +84,146 @@ types-pytz = "2021.3.8"
 types-requests = "2.32.0.20240712"
 types-beautifulsoup4 = "^4.12.0.6"
 
+
+
+[tool.poe.tasks.trace-app]
+help = "Runs the app with monkeytype type collection enabled."
+shell = """
+    monkeytype run -m flask run -p 6012 --host=0.0.0.0
+"""
+
+
+[tool.poe.tasks.trace-tests]
+help = "Runs a test suite or single test through MonkeyType, generating a record of type annotation traces monkeytype.sqlite3"
+shell = """
+    if [ -z "${method}" ]; then
+        monkeytype run -m pytest '/tests/app/${test-path}::${method}'
+    else
+        monkeytype run -m pytest '/tests/app/${test-path}'
+    fi
+"""
+    # Define arguments for trace-tests
+    [tool.poe.tasks.trace-tests.args.test-path]
+    help = "Path to the test file to run. /tests/app/ can be omitted. e.g. poe trace-tests -p main/test_contact.py"
+    options = ["-p", "--path"]
+    type = "string"
+    required = true
+
+    [tool.poe.tasks.trace-tests.args.method]
+    help = "Name of the test method to execute and trace"
+    options = ["-m", "--method"]
+    type = "string"
+    default = ""
+    required = false
+
+
+[tool.poe.tasks.list-modules]
+help = "Lists all files and modules that have trace data associated with them in monkeytype.sqlite3"
+cmd = "monkeytype list-modules"
+
+
+# Composite task that uses list-modules to obtain a list of files and modules
+[tool.poe.tasks.apply-annotations]
+help = "Applies ALL known type annotations stored in monkeytype.sqlite3"
+shell = """
+    for trace in ${TRACES}
+    do
+        monkeytype apply $trace
+    done
+"""
+deps = ["list-modules"]
+uses = { TRACES = "list-modules"}
+
+
+[tool.poe.tasks.generate-version-file]
+help = "Generate the app version file"
+shell = """
+    GIT_COMMIT="$(git rev-parse HEAD 2> /dev/null || echo "")"
+    DATE="$(date +%Y-%m-%dT%H:%M:%S)"
+    APP_VERSION_FILE="app/version.py"
+    printf "__commit_sha__ = '${GIT_COMMIT}'\n__time__ = '${DATE}'\n" > ${APP_VERSION_FILE}
+"""
+
+
+[tool.poe.tasks.test]
+help = "Runs code linters, npm tests, and python tests for the project."
+shell = """
+    ./scripts/run_tests.sh
+"""
+
+
+[tool.poe.tasks.babel-test]
+help = "Compiles app translations from fr.csv"
+shell = """
+    pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && po2csv /tmp/messages.po /tmp/messages.csv
+	rm /tmp/messages.po
+	python scripts/test-translations.py /tmp/messages.csv
+	rm /tmp/messages.csv
+"""
+
+
+[tool.poe.tasks.babel]
+help = "Compiles app translations from fr.csv"
+shell = """
+    python scripts/generate_en_translations.py
+	csv2po app/translations/csv/en.csv app/translations/en/LC_MESSAGES/messages.po
+	csv2po app/translations/csv/fr.csv app/translations/fr/LC_MESSAGES/messages.po
+	pybabel compile -d app/translations
+"""
+
+
+[tool.poe.tasks.search-csv]
+help = "Searches translations for the specified list of strings"
+script = """
+    scripts.search_csv:search_translation_strings(search_terms=keywords)
+"""
+print_result = true
+
+    [tool.poe.tasks.search-csv.args.keywords]
+    help = "Comma separated list of keywords to search by."
+    options = ["-k", "--keywords"]
+    type = "string"
+    required = true
+
+
+[tool.poe.tasks.lock-deps]
+help = "Updates the Poetry lock file. Prevents automatic version bumps by default."
+cmd = "poetry lock --no-update"
+use_exec = true
+
+
+[tool.poe.tasks.check-lock]
+help = "Checks if the Poetry lock file is in sync with dependencies specified in pyproject.toml."
+cmd = "poetry check --lock"
+use_exec = true
+
+
+[tool.poe.tasks.coverage]
+help = "Creates a code coverage report. TODO: Is this still needed?"
+shell = "coveralls"
+
+
+[tool.poe.tasks.run-dev]
+help = "Runs the app locally. Defaults: port = 6012, host=localhost"
+shell = "flask run -p ${port} --host=${host}"
+args = { port = { options = ["--port", "-p"], default = "6012"}, host = { options = ["--host", "-h"], default = "localhost"}}
+
+
+[tool.poe.tasks.format]
+help = "Formats the python code with isort, black, and flake8, and checks typing with mypy and formats the JS code with prettier."
+shell = """
+    isort ./app ./tests
+	black ./app ./tests
+	flake8 ./app ./tests
+	isort --check-only ./app ./tests
+	mypy ./
+	npx prettier --write app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
+"""
+
+
+[tool.poe.tasks.tailwind]
+help = "Compiles Tailwind CSS"
+shell = "npm run tailwind"
 
 [tool.ruff]
 target-version = "py310"
