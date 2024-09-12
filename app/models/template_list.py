@@ -1,6 +1,13 @@
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 
+TEMPLATE_TYPES = {
+    "email": _l("Email"),
+    "sms": _l("Text message"),
+    "letter": _l("Letter"),
+}
+TEMPLATE_TYPES_NO_LETTER = filtered_template_types = {key: value for key, value in TEMPLATE_TYPES.items() if key != "letter"}
+
 
 class TemplateList:
     def __init__(
@@ -15,12 +22,14 @@ class TemplateList:
         self.template_folder_id = template_folder_id
         self.user = user
 
+    def __len__(self):
+        return sum(1 for _ in self)
+
     def __iter__(self):
         for item in self.get_templates_and_folders(self.template_type, self.template_folder_id, self.user, ancestors=[]):
             yield item
 
     def get_templates_and_folders(self, template_type, template_folder_id, user, ancestors):
-
         for item in self.service.get_template_folders(
             template_type,
             template_folder_id,
@@ -65,16 +74,13 @@ class TemplateLists:
         self.user = user
 
     def __iter__(self):
-
         if len(self.services) == 1:
-
             for template_or_folder in TemplateList(self.services[0], user=self.user):
                 yield template_or_folder
 
             return
 
         for service in self.services:
-
             template_list_service = TemplateListService(service)
 
             yield template_list_service
@@ -93,7 +99,6 @@ class TemplateLists:
 
 
 class TemplateListItem:
-
     is_service = False
 
     def __init__(
@@ -104,10 +109,10 @@ class TemplateListItem:
         self.id = template_or_folder["id"]
         self.name = template_or_folder["name"]
         self.ancestors = ancestors
+        self.template_category = template_or_folder.get("template_category", None)
 
 
 class TemplateListTemplate(TemplateListItem):
-
     is_folder = False
 
     def __init__(
@@ -118,15 +123,11 @@ class TemplateListTemplate(TemplateListItem):
     ):
         super().__init__(template, ancestors)
         self.service_id = service_id
-        self.hint = {
-            "email": _l("Email template"),
-            "sms": _l("Text message template"),
-            "letter": _l("Letter template"),
-        }.get(template["template_type"])
+        self.hint = TEMPLATE_TYPES.get(template["template_type"])
+        self.type = template["template_type"]
 
 
 class TemplateListFolder(TemplateListItem):
-
     is_folder = True
 
     def __init__(
@@ -144,7 +145,6 @@ class TemplateListFolder(TemplateListItem):
 
     @property
     def _hint_parts(self):
-
         if self.number_of_folders == self.number_of_templates == 0:
             yield "Empty"  # This strings is wrapped later on in the html
 
@@ -165,7 +165,6 @@ class TemplateListFolder(TemplateListItem):
 
 
 class TemplateListService(TemplateListFolder):
-
     is_service = True
 
     def __init__(

@@ -2,10 +2,10 @@ import uuid
 from unittest.mock import PropertyMock
 
 import pytest
+from tests import organisation_json
 
 from app.models.service import Service
 from app.models.user import User
-from tests import organisation_json
 
 INV_PARENT_FOLDER_ID = "7e979e79-d970-43a5-ac69-b625a8d147b0"
 INV_CHILD_1_FOLDER_ID = "92ee1ee0-e4ee-4dcc-b1a7-a5da9ebcfa2b"

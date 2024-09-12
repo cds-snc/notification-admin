@@ -1,28 +1,30 @@
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
 {% from "components/big-number.html" import big_number -%}
+{% from "components/empty-list.html" import empty_list  %}
 
 <div class='dashboard-table ajax-block-container'>
   {% call(item, row_number) list_table(
     jobs,
     caption=_("Bulk sends"),
     caption_visible=False,
-    empty_message='You haven’t uploaded any files recently',
+    empty_message=empty_list(_('Scheduled messages will be sent soon'), _('Come back later to find your delivery reports'), "emptyTruck"),
     field_headings=[
       _('List name'),
       _('Sending'),
       _('Delivered'),
       _('Failed')
     ],
-    field_headings_visible=True
+    field_headings_visible=False if jobs|length == 0 else True
   ) %}
+  
     {% call row_heading() %}
       <div class="file-list">
         <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
         <span class="file-list-hint">
           {{ _('Sent') }}
-            <span class="local-datetime-short">
+            <time class="local-datetime-short">
               {{item.scheduled_for if item.scheduled_for else item.created_at}}
-            </span>
+            </time>
         </span>
       </div>
     {% endcall %}

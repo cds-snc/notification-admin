@@ -37,7 +37,9 @@ def test_should_render_sms_two_factor_page(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.select_one("main p").text.strip() == ("We’ve sent you a text message with a security code.")
     assert page.select_one("label").text.strip("Text message code")
-    assert page.select_one("input")["type"] == "tel"
+    assert page.select_one("input")["type"] == "text"
+    assert page.select_one("input")["autocomplete"] == "one-time-code"
+    assert page.select_one("input")["inputmode"] == "numeric"
     assert page.select_one("input")["pattern"] == "[0-9]*"
 
 
@@ -80,7 +82,9 @@ def test_should_render_email_two_factor_page(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.select_one("main p").text.strip() == ("We’ve sent you an email with a security code.")
     assert page.select_one("label").text.strip("Text message code")
-    assert page.select_one("input")["type"] == "tel"
+    assert page.select_one("input")["type"] == "text"
+    assert page.select_one("input")["autocomplete"] == "one-time-code"
+    assert page.select_one("input")["inputmode"] == "numeric"
     assert page.select_one("input")["pattern"] == "[0-9]*"
 
 
@@ -157,7 +161,6 @@ def test_should_login_platform_admin_user_and_redirect_to_your_services(
     mock_get_login_events,
     method,
 ):
-
     mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
     with client.session_transaction() as session:
         session["user_details"] = {

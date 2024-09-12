@@ -19,10 +19,7 @@ class Navigation:
 
     @property
     def endpoints_without_navigation(self):
-        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + (
-            "static",
-            "status.show_status",
-        )
+        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + ("static", "status.show_status", "status.debug")
 
     def is_selected(self, navigation_item):
         if request.endpoint in self.mapping[navigation_item]:
@@ -51,6 +48,10 @@ class AdminNavigation(Navigation):
         },
         "email_branding": {
             "email_branding",
+        },
+        "template_categories": {
+            "template_categories",
+            "template_category",
         },
         "find_services_by_name": {
             "find_services_by_name",
@@ -194,9 +195,6 @@ class HeaderNavigation(Navigation):
             "service_add_email_reply_to",
             "service_add_letter_contact",
             "service_add_sms_sender",
-            "service_agreement",
-            "service_accept_agreement",
-            "service_confirm_agreement",
             "service_confirm_delete_email_reply_to",
             "service_confirm_delete_letter_contact",
             "service_confirm_delete_sms_sender",
@@ -309,8 +307,6 @@ class HeaderNavigation(Navigation):
         "organisation_preview_letter_branding",
         "organisations",
         "privacy",
-        "public_agreement",
-        "public_download_agreement",
         "redact_template",
         "register",
         "register_from_invite",
@@ -333,7 +329,6 @@ class HeaderNavigation(Navigation):
         "service_delete_email_reply_to",
         "service_delete_letter_contact",
         "service_delete_sms_sender",
-        "service_download_agreement",
         "service_letter_validation_preview",
         "service_switch_upload_document",
         "service_switch_count_as_live",
@@ -372,9 +367,9 @@ class HeaderNavigation(Navigation):
 
 
 class MainNavigation(Navigation):
-
     mapping = {
         "dashboard": {
+            "problem_emails",
             "monthly",
             "service_dashboard",
             "template_usage",
@@ -426,6 +421,7 @@ class MainNavigation(Navigation):
         "usage": {
             "usage",
         },
+        "contact": {"message", "demo_organization_details", "demo_primary_purpose"},
         "settings": {
             "branding_request",
             "link_service_to_organisation",
@@ -436,9 +432,6 @@ class MainNavigation(Navigation):
             "service_add_email_reply_to",
             "service_add_letter_contact",
             "service_add_sms_sender",
-            "service_agreement",
-            "service_accept_agreement",
-            "service_confirm_agreement",
             "service_confirm_delete_email_reply_to",
             "service_confirm_delete_letter_contact",
             "service_confirm_delete_sms_sender",
@@ -510,6 +503,7 @@ class MainNavigation(Navigation):
         "create_email_branding",
         "create_letter_branding",
         "email_branding",
+        "template_categories",
         "find_services_by_name",
         "find_users_by_email",
         "letter_branding",
@@ -624,6 +618,7 @@ class OrgNavigation(Navigation):
         "edit_user_mobile_number",
         "edit_user_permissions",
         "email_branding",
+        "template_categories",
         "email_not_received",
         "email_template",
         "error",
@@ -676,8 +671,6 @@ class OrgNavigation(Navigation):
         "platform_admin_returned_letters",
         "pricing",
         "privacy",
-        "public_agreement",
-        "public_download_agreement",
         "received_text_messages_callback",
         "redact_template",
         "register",
@@ -708,9 +701,6 @@ class OrgNavigation(Navigation):
         "service_add_email_reply_to",
         "service_add_letter_contact",
         "service_add_sms_sender",
-        "service_agreement",
-        "service_accept_agreement",
-        "service_confirm_agreement",
         "service_confirm_delete_email_reply_to",
         "service_confirm_delete_letter_contact",
         "service_confirm_delete_sms_sender",
@@ -719,7 +709,6 @@ class OrgNavigation(Navigation):
         "service_delete_email_reply_to",
         "service_delete_letter_contact",
         "service_delete_sms_sender",
-        "service_download_agreement",
         "service_edit_email_reply_to",
         "service_edit_letter_contact",
         "service_edit_sms_sender",

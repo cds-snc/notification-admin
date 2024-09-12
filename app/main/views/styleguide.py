@@ -8,7 +8,6 @@ from app.main import main
 
 @main.route("/_styleguide")
 def styleguide():
-
     if not current_app.config["SHOW_STYLEGUIDE"]:
         abort(404)
 

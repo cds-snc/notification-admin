@@ -1,5 +1,6 @@
 {% from "components/checkbox.html" import unlabelled_checkbox %}
 {% from "components/message-count-label.html" import folder_contents_count, message_count_label %}
+{% from "components/empty-list.html" import empty_list  %}
 
 {% macro format_item_name(name) -%}
   {%- if name is string -%}
@@ -21,45 +22,67 @@
     {% endif %}
   </p>
 {% else %}
-  {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view %}
+  {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view and template_list.templates_to_show %}
 
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}"  aria-label="{{ _('Templates and folders') }}">
     {% if display_checkboxes %}
       <fieldset>
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
-    {% for item in template_list %}
-      <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
-        {% if display_checkboxes %}
-          {{ unlabelled_checkbox(
-            id='templates-or-folder-{}'.format(item.id),
-            name='templates_and_folders',
-            data=templates_and_folders_form.is_selected(item.id),
-            value=item.id,
-            label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
-          ) }}
-        {% endif %}
-        <p class="message-name">
-          {% for ancestor in item.ancestors %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              {{- format_item_name(ancestor.name) -}}
-            </a> <span class="message-name-separator"></span>
-          {% endfor %}
-          {% if item.is_folder %}
-            <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" class="template-list-folder">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
-          {% else %}
-            <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" class="template-list-template">
-              <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
-            </a>
+    <div id="template-list-container">
+      {% set template_list_length = template_list | length %}
+      {% for item in template_list %}
+        <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ _('Other') if item.template_category.hidden else item.template_category[template_category_name_col] }}" data-testid="template-row">
+          {% if display_checkboxes %}
+            {{ unlabelled_checkbox(
+              id='templates-or-folder-{}'.format(item.id),
+              name='templates_and_folders',
+              data=templates_and_folders_form.is_selected(item.id),
+              value=item.id,
+              label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
+            ) }}
           {% endif %}
-        </p>
-        <p class="message-type">
-          {{ _(item.hint) }}
-        </p>
-      </div>
-    {% endfor %}
+          <span class="message-name">
+            {% for ancestor in item.ancestors %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=ancestor.id, view='sending' if sending_view else None) }}" class="template-list-folder">
+                {{- format_item_name(ancestor.name) -}}
+              </a> <span class="message-name-separator"></span>
+            {% endfor %}
+            {# TODO: Add Cypress test to ensure describedby is present and properly associated with the link #}
+            {% if item.is_folder %}
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" aria-describedby="sr-{{ item.id }}1 sr-{{ item.id }}2" class="template-list-folder">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% else %}
+              {% set adb2 = "sr-" + (item.id | string) + "2" if item.template_category else '' %}
+              <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=item.id) }}" aria-describedby="sr-{{ item.id }}1 {{ adb2 }}" class="template-list-template">
+                <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
+              </a>
+            {% endif %}
+          </span>
+          <span id="sr-{{ item.id }}1" class="message-meta message-type">
+            {# Compose hint + "template" IF it has a type. ELSE just print the hint #}
+            {{ _("{} template").format(_(item.hint)) | capitalize if item.type else _(item.hint) }}
+          </span>
+          {% if config["FF_TEMPLATE_CATEGORY"] %}
+            <span id="sr-{{ item.id }}2" class="message-meta message-category">
+              {% if not item.template_category.hidden %}
+                {{ item.template_category[template_category_name_col] }}
+              {% else %}
+                {{ _('Other') }}
+              {% endif %}
+          </span>
+          {% endif %}
+        </div>
+      {% endfor %}
+      {% if config["FF_TEMPLATE_CATEGORY"] %}
+        {% if template_list_length > 0 %}
+          <div id="template-list-empty" class="mb-6" data-testid="template-empty">
+            {{ empty_list(_('No matching templates'), _('Change your filters or search for more templates'), 'emptyBirdHole') }}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
     {% if display_checkboxes %}
       </fieldset>
     {% endif %}

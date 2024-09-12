@@ -4,10 +4,11 @@ import pytest
 from flask import abort, url_for
 from notifications_python_client.errors import HTTPError
 
+from app.main.forms import TC_PRIORITY_VALUE
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
-from tests import sample_uuid
+from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
@@ -276,6 +277,7 @@ def test_should_show_templates_folder_page(
     expected_displayed_items,
     expected_searchable_text,
     expected_empty_message,
+    app_,
 ):
     mock_get_template_folders.return_value = [
         _folder("folder_two", FOLDER_TWO_ID),
@@ -300,7 +302,6 @@ def test_should_show_templates_folder_page(
         },
     )
 
-    expected_nav_links = ["All", "Email", "Text message", "Letter"]
     service_one["permissions"] += ["letter"]
 
     page = client_request.get(
@@ -313,7 +314,12 @@ def test_should_show_templates_folder_page(
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
 
-    links_in_page = page.select(".pill a")
+    if app_.config["FF_TEMPLATE_CATEGORY"]:
+        expected_nav_links = ["All", "Email", "Text message", "All"]
+        links_in_page = page.select('nav[data-testid="filter-content"] a')
+    else:
+        expected_nav_links = ["All", "Email", "Text message", "Letter"]
+        links_in_page = page.select(".pill a")
 
     assert len(links_in_page) == len(expected_nav_links)
 
@@ -370,14 +376,17 @@ def test_should_show_templates_folder_page(
     mock_get_service_templates.assert_called_once_with(SERVICE_ONE_ID)
 
 
-def test_can_create_email_template_with_parent_folder(client_request, mock_create_service_template, fake_uuid):
+def test_can_create_email_template_with_parent_folder(
+    client_request, mock_create_service_template, mock_get_template_categories, fake_uuid, app_
+):
     data = {
         "name": "new name",
         "subject": "Food incoming!",
         "template_content": "here's a burrito 🌯",
         "template_type": "email",
+        "template_category_id": TESTING_TEMPLATE_CATEGORY,
         "service": SERVICE_ONE_ID,
-        "process_type": TemplateProcessTypes.BULK.value,
+        "process_type": TC_PRIORITY_VALUE if app_.config["FF_TEMPLATE_CATEGORY"] else TemplateProcessTypes.BULK.value,
         "parent_folder_id": PARENT_FOLDER_ID,
     }
     client_request.post(
@@ -394,8 +403,9 @@ def test_can_create_email_template_with_parent_folder(client_request, mock_creat
         data["template_content"],
         SERVICE_ONE_ID,
         data["subject"],
-        data["process_type"],
+        None if app_.config["FF_TEMPLATE_CATEGORY"] else data["process_type"],
         data["parent_folder_id"],
+        data["template_category_id"] if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
@@ -595,7 +605,6 @@ def test_user_access_denied_to_template_folder_actions_without_folder_permission
     mocker,
     endpoint,
 ):
-
     mock = mocker.patch(
         "app.models.service.Service.get_template_folder_with_user_permission_or_403",
         side_effect=lambda *args: abort(403),
@@ -630,7 +639,6 @@ def test_user_access_denied_to_template_folder_actions_without_folder_permission
 def test_user_access_denied_to_template_actions_without_folder_permission(
     client_request, active_user_with_permissions, service_one, mocker, endpoint
 ):
-
     mock = mocker.patch(
         "app.models.service.Service.get_template_with_user_permission_or_403",
         side_effect=lambda *args: abort(403),
@@ -842,7 +850,7 @@ def test_delete_template_folder_should_request_confirmation(
     assert page.select_one("input[name=name]")["value"] == "sacrifice"
 
     assert len(page.select("form")) == 2
-    assert len(page.select("button")) == 6
+    assert len(page.select("button")) == 5
 
     assert "action" not in page.select("form")[0]
     assert page.select("form button")[0].text == "Yes, delete"
@@ -1024,8 +1032,8 @@ def test_should_show_radios_and_buttons_for_move_destination_if_correct_permissi
         FOLDER_ONE_TWO_ID,
         FOLDER_TWO_ID,
     ]
-    assert [x.text.strip() for x in radio_div.select("label")] == [
-        "Templates",
+    assert [normalize_spaces(x) for x in radio_div.select("label")] == [
+        "Templates Current folder",
         "folder_one",
         "folder_one_one",
         "folder_one_two",
@@ -1161,29 +1169,7 @@ def test_move_folder_form_shows_current_folder_hint_when_in_a_folder(
 
     assert len(move_form_labels) == 3
     assert normalize_spaces(move_form_labels[0].text) == "Templates"
-    assert normalize_spaces(move_form_labels[1].text) == "parent_folder current folder"
-    assert normalize_spaces(move_form_labels[2].text) == "child_folder"
-
-
-def test_move_folder_form_does_not_show_current_folder_hint_at_the_top_level(
-    client_request,
-    service_one,
-    mock_get_service_templates,
-    mock_get_template_folders,
-):
-    mock_get_template_folders.return_value = [
-        _folder("parent_folder", PARENT_FOLDER_ID, None),
-        _folder("child_folder", CHILD_FOLDER_ID, PARENT_FOLDER_ID),
-    ]
-    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID, _test_page_title=False)
-
-    page.find("input", attrs={"name": "move_to", "value": PARENT_FOLDER_ID})
-
-    move_form_labels = page.find("div", id="move_to_folder_radios").find_all("label")
-
-    assert len(move_form_labels) == 3
-    assert normalize_spaces(move_form_labels[0].text) == "Templates"
-    assert normalize_spaces(move_form_labels[1].text) == "parent_folder"
+    assert normalize_spaces(move_form_labels[1].text) == "parent_folder Current folder"
     assert normalize_spaces(move_form_labels[2].text) == "child_folder"
 
 

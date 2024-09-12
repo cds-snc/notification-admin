@@ -12,6 +12,7 @@
     --text: theme("colors.white.default");
     --interactive: theme("colors.blue.lighter");
   }
+
   .wp-block-cover.bg-gray {
     --bg: theme("colors.gray.default");
     --text: theme("colors.black.default");
@@ -35,6 +36,7 @@
     position: relative;
     @apply py-20;
   }
+
   .wp-block-cover.flow
     .wp-block-cover__inner-container
     > :not(template)
@@ -49,6 +51,7 @@
   .wp-block-columns {
     flex-direction: column;
   }
+
   /* Gives some flow spacing for all columns when stacked */
   .wp-block-columns > :not(template) + :not(template) {
     @apply mt-gutter;
@@ -108,6 +111,7 @@
       width: calc(100% + theme("spacing.gutter"));
       @apply -mx-gutterHalf;
     }
+
     .wp-block-columns > :not(template) + :not(template) {
       @apply mt-0;
     }
@@ -117,6 +121,7 @@
       flex-grow: 0;
       @apply px-gutterHalf;
     }
+
     .wp-block-column > :not(template) + :not(template) {
       @apply mt-gutter;
     }
@@ -125,11 +130,13 @@
     .stack-swap .wp-block-column > .wp-block-image:only-child {
       @apply block;
     }
+
     /* On lg screens: Hide wp-block-image if it isn't the first child */
     .stack-swap .wp-block-column * + .wp-block-image {
       @apply hidden;
     }
   }
+
   .has-text-align-center {
     @apply text-center mx-auto;
   }
@@ -138,6 +145,7 @@
   .wp-block-buttons {
     display: flex;
   }
+
   .wp-block-buttons > *:not(:last-child) {
     @apply mr-gutter;
   }
@@ -159,13 +167,20 @@
     @apply mt-0;
   }
 
+  .wp-block-columns.panel-container .panel-preview ul li + li,
+  .wp-block-columns.panel-container .panel-preview ol li + li {
+    @apply p-0;
+  }
+
   /* Semantic styling for content pages */
   .page-content ul {
     @apply list list-bullet pl-8;
   }
+
   .page-content ul ul {
     list-style-type: circle;
   }
+
   .page-content ul ul ul {
     list-style-type: square;
   }
@@ -195,5 +210,30 @@
   .wp .page-content.home p + ul {
     margin-top: -0.5rem;
   }
+
+  /** Block
+      wp-block-post-template
+      after page-content
+    */
+  ul.wp-block-post-template {
+    @apply list-none p-0;
+  }
+
+  .wp-block-post-template > li {
+    @apply flex flex-col;
+  }
+
+  .wp-block-post-template h2.wp-block-post-title {
+    @apply mb-0;
+  }
+
+  .wp-block-post-date {
+    @apply mb-gutterHalf text-small text-gray-700;
+  }
+
+  .wp-block-post-content p + ul {
+    margin-top: -0.5rem;
+  }
+
   /*! purgecss end ignore */
 }

@@ -12,11 +12,17 @@ from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
+from pytest_mock import MockerFixture
 
 from app import create_app
+from app.tou import TERMS_KEY
 from app.types import EmailReplyTo
 
 from . import (
+    DEFAULT_TEMPLATE_CATEGORY_HIGH,
+    DEFAULT_TEMPLATE_CATEGORY_LOW,
+    DEFAULT_TEMPLATE_CATEGORY_MEDIUM,
+    TESTING_TEMPLATE_CATEGORY,
     TestClient,
     api_key_json,
     assert_url_expected,
@@ -29,6 +35,7 @@ from . import (
     sample_uuid,
     service_json,
     single_notification_json,
+    template_category_json,
     template_json,
     template_version_json,
     user_json,
@@ -616,6 +623,11 @@ def mock_service_name_is_unique(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_set_sensitive_service(mocker):
+    return mocker.patch("app.service_api_client.update_service", return_value=True)
+
+
+@pytest.fixture(scope="function")
 def mock_service_email_from_is_not_unique(mocker):
     return mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=False)
 
@@ -660,6 +672,7 @@ def mock_create_service(mocker):
         user_id,
         email_from,
         default_branding_is_french,
+        organisation_notes="",
     ):
         service = service_json(
             101,
@@ -670,6 +683,7 @@ def mock_create_service(mocker):
             restricted=restricted,
             email_from=email_from,
             default_branding_is_french=default_branding_is_french,
+            organisation_notes=organisation_notes,
         )
         return service["id"]
 
@@ -713,6 +727,7 @@ def mock_update_service(mocker):
                     "email_from",
                     "sms_sender",
                     "permissions",
+                    "sensitive_service",
                 ]
             },
         )
@@ -774,20 +789,21 @@ def mock_get_services_with_one_service(mocker, api_user_active):
 def mock_get_service_template(mocker):
     def _get(service_id, template_id, version=None):
         template = template_json(
-            service_id,
-            template_id,
-            "Two week reminder",
-            "sms",
-            "Template <em>content</em> with & entity",
+            service_id, template_id, "Two week reminder", "sms", "Template <em>content</em> with & entity", process_type=None
         )
         if version:
             template.update({"version": version})
         return {"data": template}
 
+    def _get_tc():
+        return [template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW)]
+
+    mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get_tc)
+
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
-def mock_get_service_template_with_process_type(mocker, process_type):
+def mock_get_service_template_with_process_type(mocker, process_type, process_type_column):
     def _get(service_id, template_id, version=None):
         template = template_json(
             service_id,
@@ -796,6 +812,7 @@ def mock_get_service_template_with_process_type(mocker, process_type):
             "sms",
             "Template <em>content</em> with & entity",
             process_type=process_type,
+            process_type_column=process_type_column,
         )
         if version:
             template.update({"version": version})
@@ -938,15 +955,7 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
 
 @pytest.fixture(scope="function")
 def mock_create_service_template(mocker, fake_uuid):
-    def _create(
-        name,
-        type_,
-        content,
-        service,
-        subject=None,
-        process_type=None,
-        parent_folder_id=None,
-    ):
+    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
         template = template_json(
             service_id=service,
             id_=fake_uuid,
@@ -955,10 +964,16 @@ def mock_create_service_template(mocker, fake_uuid):
             content=content,
             process_type=process_type,
             folder=parent_folder_id,
+            template_category_id=template_category_id,
         )
         return {"data": template}
 
     return mocker.patch("app.service_api_client.create_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
+def mock_send_other_category_to_freshdesk(mocker):
+    return mocker.patch("app.user_api_client.send_new_template_category_request")
 
 
 @pytest.fixture(scope="function")
@@ -972,24 +987,58 @@ def mock_update_service_template(mocker):
         subject=None,
         process_type=None,
         postage=None,
+        template_category_id=None,
     ):
-        template = template_json(service, id_, name, type_, content, subject, process_type, postage)
+        template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
 
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
 
 
 @pytest.fixture(scope="function")
-def mock_create_service_template_content_too_big(mocker):
+def mock_create_service_template_400_name_too_long(mocker):
+    def _update(id_, name, type_, content, service, subject=None, process_type=None, postage=None, template_category_id=None):
+        json_mock = Mock(
+            return_value={
+                "message": {"name": ["Template name must be less than 256 characters"]},
+                "result": "error",
+            }
+        )
+        response_mock = Mock(status_code=400, json=json_mock)
+        http_error = HTTPError(response=response_mock, message={"name": ["Template name must be less than 256 characters"]})
+        raise http_error
+
+    return mocker.patch("app.service_api_client.create_service_template", side_effect=_update)
+
+
+@pytest.fixture(scope="function")
+def mock_update_service_template_400_name_too_long(mocker):
     def _create(
+        id,
         name,
-        type_,
+        type,
         content,
         service,
         subject=None,
         process_type=None,
-        parent_folder_id=None,
+        postage=None,
     ):
+        json_mock = Mock(
+            return_value={
+                "message": {"name": ["Template name must be less than 256 characters"]},
+                "result": "error",
+            }
+        )
+        response_mock = Mock(status_code=400, json=json_mock)
+        http_error = HTTPError(response=response_mock, message={"name": ["Template name must be less than 256 characters"]})
+        raise http_error
+
+    return mocker.patch("app.service_api_client.update_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
+def mock_create_service_template_content_too_big(mocker):
+    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
         json_mock = Mock(
             return_value={
                 "message": {"content": ["Content has a character count greater than the limit of 459"]},
@@ -1041,6 +1090,7 @@ def create_template(
     name="sample template",
     content="Template content",
     subject="Template subject",
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
     redact_personalisation=False,
     postage=None,
     folder=None,
@@ -1056,6 +1106,7 @@ def create_template(
             redact_personalisation=redact_personalisation,
             postage=postage,
             folder=folder,
+            template_category_id=template_category_id,
         )
     }
 
@@ -1113,9 +1164,11 @@ def create_service_templates(service_id, number_of_templates=6):
                 "{}_template_{}".format(template_type, template_number),
                 template_type,
                 "{} template {} content".format(template_type, template_number),
-                subject="{} template {} subject".format(template_type, template_number)
-                if template_type in ["email", "letter"]
-                else None,
+                subject=(
+                    "{} template {} subject".format(template_type, template_number)
+                    if template_type in ["email", "letter"]
+                    else None
+                ),
             )
         )
 
@@ -1365,6 +1418,39 @@ def active_user_with_permissions(fake_uuid):
         "password": "somepassword",
         "password_changed_at": str(datetime.utcnow()),
         "email_address": "test@user.canada.ca",
+        "mobile_number": "6502532222",
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "sms_auth",
+        "organisations": [ORGANISATION_ID],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
+def active_cds_user_with_permissions(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@cds-snc.ca",
         "mobile_number": "6502532222",
         "blocked": False,
         "state": "active",
@@ -2215,6 +2301,20 @@ def mock_get_jobs(mocker, api_user_active):
 
 
 @pytest.fixture(scope="function")
+def mock_get_no_jobs(mocker, api_user_active):
+    def _get_jobs(service_id, limit_days=None, statuses=None, page=1):
+        return {
+            "data": [],
+            "links": {
+                "prev": "services/{}/jobs?page={}".format(service_id, page - 1),
+                "next": "services/{}/jobs?page={}".format(service_id, page + 1),
+            },
+        }
+
+    return mocker.patch("app.job_api_client.get_jobs", side_effect=_get_jobs)
+
+
+@pytest.fixture(scope="function")
 def mock_get_notifications(
     mocker,
     api_user_active,
@@ -2365,6 +2465,29 @@ def mock_get_notifications_with_previous_next(mocker):
         include_one_off=None,
     ):
         return notification_json(service_id, rows=50, with_links=True if count_pages is None else count_pages)
+
+    return mocker.patch(
+        "app.notification_api_client.get_notifications_for_service",
+        side_effect=_get_notifications,
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_get_no_notifications(mocker):
+    def _get_notifications(
+        service_id,
+        job_id=None,
+        page=1,
+        count_pages=None,
+        template_type=None,
+        status=None,
+        limit_days=None,
+        include_jobs=None,
+        include_from_test_key=None,
+        to=None,
+        include_one_off=None,
+    ):
+        return notification_json(service_id, rows=0, with_links=True if count_pages is None else count_pages)
 
     return mocker.patch(
         "app.notification_api_client.get_notifications_for_service",
@@ -2738,6 +2861,19 @@ def mock_remove_user_from_service(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_get_template_categories(mocker):
+    def _get():
+        return [
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_LOW),
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_MEDIUM),
+            template_category_json(id_=DEFAULT_TEMPLATE_CATEGORY_HIGH),
+            template_category_json(id_=TESTING_TEMPLATE_CATEGORY),
+        ]
+
+    return mocker.patch("app.template_category_api_client.get_all_template_categories", side_effect=_get)
+
+
+@pytest.fixture(scope="function")
 def mock_get_template_statistics(mocker, service_one, fake_uuid):
     template = template_json(
         service_one["id"],
@@ -2776,6 +2912,45 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
                 "name": "My first template",
                 "type": "sms",
             }
+        ]
+
+    return mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        side_effect=_stats,
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fake_uuid):
+    def _stats(service_id, year):
+        return [
+            {
+                "count": 1101,
+                "is_precompiled_letter": False,
+                "month": 5,
+                "name": "testtes",
+                "template_id": "34a2693e-664f-4081-870d-da42c8c1d320",
+                "type": "email",
+                "year": 2023,
+            },
+            {
+                "count": 1,
+                "is_precompiled_letter": False,
+                "month": 5,
+                "name": "tetet",
+                "template_id": "d98bf1a3-64e9-41ae-a907-d4a35e9cbdec",
+                "type": "email",
+                "year": 2023,
+            },
+            {
+                "count": 1,
+                "is_precompiled_letter": False,
+                "month": 6,
+                "name": "tetet",
+                "template_id": "d98bf1a3-64e9-41ae-a907-d4a35e9cbdec",
+                "type": "email",
+                "year": 2023,
+            },
         ]
 
     return mocker.patch(
@@ -3026,7 +3201,7 @@ def create_email_brandings(number_of_brandings, non_standard_values={}, shuffle=
 
 @pytest.fixture(scope="function")
 def mock_get_all_email_branding(mocker):
-    def _get_all_email_branding(sort_key=None):
+    def _get_all_email_branding(sort_key=None, organisation_id=None):
         non_standard_values = [
             {"idx": 1, "colour": "red"},
             {"idx": 2, "colour": "orange"},
@@ -3103,6 +3278,9 @@ def create_email_branding(id, non_standard_values={}):
         "id": id,
         "colour": "#f00",
         "brand_type": "custom_logo",
+        "organisation_id": "organisation_id",
+        "alt_text_en": "Alt text english",
+        "alt_text_fr": "Alt text french",
     }
 
     if bool(non_standard_values):
@@ -3156,7 +3334,7 @@ def mock_get_email_branding_without_brand_text(mocker, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_create_email_branding(mocker):
-    def _create_email_branding(logo, name, text, colour, brand_type):
+    def _create_email_branding(logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         return
 
     return mocker.patch(
@@ -3167,7 +3345,7 @@ def mock_create_email_branding(mocker):
 
 @pytest.fixture(scope="function")
 def mock_update_email_branding(mocker):
-    def _update_email_branding(branding_id, logo, name, text, colour, brand_type):
+    def _update_email_branding(branding_id, logo, name, text, colour, brand_type, organisation_id, alt_text_en, alt_text_fr):
         return
 
     return mocker.patch(
@@ -3262,6 +3440,9 @@ def mock_send_notification(mocker, fake_uuid):
 @pytest.fixture(scope="function")
 def client(app_):
     with app_.test_request_context(), app_.test_client() as client:
+        with client.session_transaction() as session:
+            # agree to the tou by default so other tests dont need to deal with this
+            session[TERMS_KEY] = True
         yield client
 
 
@@ -3355,7 +3536,16 @@ class ClientRequest:
             count_of_h1s = len(page.select("h1"))
             if count_of_h1s != 1:
                 raise AssertionError("Page should have one H1 ({} found)".format(count_of_h1s))
-            page_title, h1 = (normalize_spaces(page.find(selector).text) for selector in ("title", "h1"))
+
+            page_title_el = page.find("title")
+            h1_el = page.find("h1")
+            if not page_title_el:
+                raise AssertionError("Title is missing from the page")
+            if not h1_el:
+                raise AssertionError("H1 is missing from the page")
+
+            page_title = normalize_spaces(page_title_el.text)
+            h1 = normalize_spaces(h1_el.text)
 
             if not normalize_spaces(page_title).startswith(h1):
                 raise AssertionError("Page title ‘{}’ does not start with H1 ‘{}’".format(page_title, h1))
@@ -3438,6 +3628,12 @@ def mock_update_message_limit(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_update_sms_message_limit(mocker):
+    sample_limit = 10000
+    return mocker.patch("app.service_api_client.update_sms_message_limit", return_value=sample_limit)
+
+
+@pytest.fixture(scope="function")
 def mock_create_or_update_free_sms_fragment_limit(mocker):
     sample_limit = 250000
     return mocker.patch(
@@ -3487,7 +3683,6 @@ def valid_token(app_, fake_uuid):
     return generate_token(
         json.dumps({"user_id": fake_uuid, "secret_code": "my secret"}),
         app_.config["SECRET_KEY"],
-        app_.config["DANGEROUS_SALT"],
     )
 
 
@@ -4037,6 +4232,18 @@ def mock_GCA_404(mocker):
     mocker.patch(
         "app.main.views.index.get_nav_items", return_value=[{"title": "Home", "url": "/", "target": "", "description": "main"}]
     )
+
+
+@pytest.fixture(scope="function")
+def mock_salesforce_get_accounts(mocker: MockerFixture):
+    mock_crm_orgs = [
+        "Accessibility Standards Canada",
+        "Canada Post",
+        "Canada Revenue Agency",
+        "National Film Board",
+        "Royal Canadian Mint",
+    ]
+    return mocker.patch("app.salesforce_account.get_accounts", return_value=mock_crm_orgs)
 
 
 def create_api_user_active(with_unique_id=False):

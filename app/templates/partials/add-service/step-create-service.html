@@ -1,3 +1,5 @@
+{% from "components/confirmation-preview.html" import confirmation_preview %}
+
 <p>{{ _("You can change the name and email address later in Settings.") }}</p>
 <p>{{ _("When GC Notify sends your emails, the ‘From’ field shows the name followed by the email address.") }}</p>
 
@@ -6,7 +8,7 @@
   <div class="details-body">
     <p>{{ _("Recipients can check the name and email address to confirm the message comes from your service.") }}</p>
     <p>{{ _("In this example, a government service has chosen the name ‘Renew your license’ and the email address ’renew@notification.canada.ca’:") }}</p>
-    <p>{{ _("Service name: <b>Renew your license | Renouveler votre permis</b>") }}
+    <p>{{ _("Service name: <b><span lang='en-CA'>Renew your license</span>&nbsp;|&nbsp;<span lang='fr-CA'>Renouveler votre permis</span></b>") }}
     <br>{{ _("Email address: <b>renew</b>@notification.canada.ca") }}
     </p>
   </div>
@@ -26,14 +28,25 @@
 
       {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
 
-      <span id="preview" style="display: none">
-        {{ _("Your service’s email address will be:") }}
-        <b><span id="fixed-email-address"></span>@notification.canada.ca</b>
-      </span>
+      <div id="preview" class="focus:outline-yellow" style="display: none" tabindex="0" >
+        {% call confirmation_preview() %}
+          <p class="m-0">{{_("Make sure we have formatted your email address correctly.")}}</p>
+          <p class="m-0">
+            {{_("Your service’s email address will be: ")}}
+            <b><span id='fixed-email-address'></span>@notification.canada.ca</b>
+          </p>
+        {% endcall %}
+      </div>
+
   </p>
   <p>{{ _("This email address cannot receive replies. In Settings, you can enter a different email for replies. Currently your service is set to prevent replies.") }}</p>
 
-  {% set button_txt = _('Create service') %}
+  {% if config["FF_SALESFORCE_CONTACT"] %}
+    {% set button_txt = _('Continue') %}
+  {% else %}
+    {% set button_txt = _('Create service') %}
+  {% endif %}
+
   {{ page_footer(button_txt) }}
 
   {% endcall %}

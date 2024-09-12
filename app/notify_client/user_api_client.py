@@ -118,14 +118,33 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = f"/user/{self.notify_user_id}/contact-request"
         self.post(endpoint, data=data)
 
-    def send_branding_request(self, user_id, serviceID, service_name, filename):
+    def send_branding_request(
+        self, user_id, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name=None
+    ):
         data = {
             "email": self.contact_email,
             "serviceID": serviceID,
             "service_name": service_name,
+            "organisation_id": org_id,
+            "organisation_name": org_name,
             "filename": filename,
+            "alt_text_en": alt_text_en,
+            "alt_text_fr": alt_text_fr,
+            "branding_logo_name": branding_logo_name,
         }
         endpoint = "/user/{0}/branding-request".format(user_id)
+        self.post(endpoint, data=data)
+
+    def send_new_template_category_request(
+        self, user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+    ):
+        data = {
+            "service_id": service_id,
+            "template_category_name_en": template_category_name_en,
+            "template_category_name_fr": template_category_name_fr,
+            "template_id": template_id,
+        }
+        endpoint = "/user/{0}/new-template-category-request".format(user_id)
         self.post(endpoint, data=data)
 
     @cache.delete("user-{user_id}")
@@ -251,7 +270,7 @@ class UserApiClient(NotifyAdminAPIClient):
         value = redis_client.get(self._last_email_login_key_name(user_id))
         if value is None:
             return None
-        if type(value) == bytes:
+        if isinstance(value, bytes):
             value = value.decode("utf-8")
         return datetime.fromisoformat(value)
 

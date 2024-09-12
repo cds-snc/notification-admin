@@ -8,6 +8,7 @@
 <head>
   <meta charset="utf-8"/>
   <title>{% block page_title %}Notification{% endblock %}</title>
+  {% include 'partials/newrelic-head.html' %}
   {% include 'partials/google-tag-manager-head.html' %}
   {% include 'partials/qualtrics-head.html' %}
 
@@ -31,6 +32,7 @@
     href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
     rel="stylesheet"
   />
+  <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet" />
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta
@@ -46,6 +48,9 @@
       copy_template_button: "{{ _('Copy template') }}",
       new_folder_button: "{{ _('New folder') }}",
       nothing_selected: "{{ _('Nothing selected') }}",
+      create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
+      selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
+      move_template_legend: "{{ _('Move templates to a new or existing folder') }}",
       selection: "{{ _('selection') }}",
       selections: "{{ _('selections') }}",
       chosen_time_button: "{{ _('Choose a different time') }}",
@@ -83,17 +88,23 @@
       no_folders_only_outside_folder: "{{ _('No folders (only templates outside a folder)') }}",
       no_team_member_only_you: "{{ _('No team members (only you)') }}",
       "selection_of_total_folder": "{{ _('{selection} of {total} folders').format(selection='%{smart_count}',total='%{total}') }} |||| {{ _('many {selection} of {total} folders').format(selection='%{smart_count}',total='%{total}') }}",
-      "selection_of_total_team member": "{{ _('{selection} of {total} team members').format(selection='%{smart_count}',total='%{total}') }} |||| {{ _('many {selection} of {total} team members').format(selection='%{smart_count}',total='%{total}') }}",      
+      "selection_of_total_team member": "{{ _('{selection} of {total} team members').format(selection='%{smart_count}',total='%{total}') }} |||| {{ _('many {selection} of {total} team members').format(selection='%{smart_count}',total='%{total}') }}",
       no_fields: "{{ _('No {field}s').format(field='%{field}') }}",
       "all_team members": "{{ _('All team members') }}",
-      "choose_team members": "{{ _('Choose team members') }}",
+      "choose_team members": "{{ _('Select team members') }}",
       "cancel_upload": "{{ _('Cancel upload') }}",
       "choose_arbitrary things": "{{ _('Choose arbitrary things') }}",
-      never: "{{ _('Never') }}"
+      never: "{{ _('Never') }}",
+      branding_request_error: "{{ _('Not a valid file type. Choose a different file.') }}",
+      branding_request_file_name: "{{ _('File name:') }}",
+      branding_request_file_size: "{{ _('file size:') }}",
+      branding_request_display_size: "{{ _('display size:') }}",
+      branding_request_brand_error:  "{{ _('Enter the name of the logo') }}",
+      branding_request_logo_error:  "{{ _('You must select a file to continue') }}",
     }
 
   </script>
-  <style title="CSS strings">
+  <style title="CSS strings" nonce="{{ request_nonce }}">
     :root {
       --opens-in-new-tab: "{{ _("Opens in a new tab") }}";
     }
@@ -158,8 +169,11 @@
 {% block page_script %}
 <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/main.min.js') }}"></script>
 <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
-<script defer nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/solid.min.js') }}"></script>
-<script defer nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/fontawesome.min.js') }}"></script>
+
+{% if current_user.is_authenticated %}
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/sessionRedirect.min.js') }}"></script>
+{% endif %}
+
 {% endblock %}
 </body>
 </html>

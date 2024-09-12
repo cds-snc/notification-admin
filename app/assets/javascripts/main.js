@@ -1,37 +1,44 @@
 window.formatAllDates = function () {
   $(".local-datetime-short").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleString(locale, {
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-        })
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleString(locale, {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          }),
+        );
     }
   });
 
   $(".local-datetime-short-year").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleString(locale, {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleString(locale, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        );
     }
   });
 
   $(".local-datetime-full").each(function (index) {
-    let datetime = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date(datetimeRaw);
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
 
     if ($(this).text().trim() === "None") {
@@ -39,31 +46,34 @@ window.formatAllDates = function () {
     }
 
     if (datetime instanceof Date && !isNaN(datetime)) {
-      $(this).text(
-        datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
-          ", " +
-          datetime.toLocaleTimeString(locale, { timeStyle: "short" })
-      );
+      $(this)
+        .attr("datetime", datetimeRaw)
+        .text(
+          datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
+            ", " +
+            datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
+        );
     }
   });
 
   $(".relative-time-past").each(function (index) {
-    let timeRaw = new Date($(this).text().trim());
+    let datetimeRaw = $(this).text().trim();
+    let datetime = new Date($(this).text().trim());
     let locale = window.APP_LANG == "fr" ? "fr-CA" : "en-US";
-    let time = moment(timeRaw);
+    let time = moment(datetime);
 
     if (time.isValid() && window.APP_LANG) {
       let isToday = moment().isSame(time, "day");
       let dayStr = "";
-      let timeStr = timeRaw.toLocaleTimeString(locale, { timeStyle: "short" });
+      let timeStr = datetime.toLocaleTimeString(locale, { timeStyle: "short" });
 
       if (isToday && window.APP_PHRASES) {
         dayStr = window.APP_PHRASES["today"];
       } else {
-        dayStr = timeRaw.toLocaleDateString(locale, { dateStyle: "long" });
+        dayStr = datetime.toLocaleDateString(locale, { dateStyle: "long" });
       }
 
-      $(this).text(`${dayStr}, ${timeStr}`);
+      $(this).attr("datetime", datetimeRaw).text(`${dayStr}, ${timeStr}`);
     }
   });
 };
@@ -86,7 +96,7 @@ showHideContent.init();
 $(() => GOVUK.modules.start());
 
 $(() =>
-  $(".error-message").eq(0).parent("label").next("input").trigger("focus")
+  $(".error-message").eq(0).parent("label").next("input").trigger("focus"),
 );
 
 $(() => $(".banner-dangerous").eq(0).trigger("focus"));
@@ -183,7 +193,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         // jshint ignore:line
         e.preventDefault();
         var target = document.getElementById(
-            this.getAttribute("href").substr(1)
+            this.getAttribute("href").substr(1),
           ),
           targetClass = target.getAttribute("class") || "",
           sourceClass = this.getAttribute("class") || "";
@@ -191,7 +201,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         if (targetClass.indexOf("js-visible") !== -1) {
           target.setAttribute(
             "class",
-            targetClass.replace(/(^|\s)js-visible(\s|$)/, "")
+            targetClass.replace(/(^|\s)js-visible(\s|$)/, ""),
           );
         } else {
           target.setAttribute("class", targetClass + " js-visible");
@@ -199,18 +209,18 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         if (sourceClass.indexOf("js-visible") !== -1) {
           this.setAttribute(
             "class",
-            sourceClass.replace(/(^|\s)js-visible(\s|$)/, "")
+            sourceClass.replace(/(^|\s)js-visible(\s|$)/, ""),
           );
         } else {
           this.setAttribute("class", sourceClass + " js-visible");
         }
         this.setAttribute(
           "aria-expanded",
-          this.getAttribute("aria-expanded") !== "true"
+          this.getAttribute("aria-expanded") !== "true",
         );
         target.setAttribute(
           "aria-hidden",
-          target.getAttribute("aria-hidden") === "false"
+          target.getAttribute("aria-hidden") === "false",
         );
       });
     }

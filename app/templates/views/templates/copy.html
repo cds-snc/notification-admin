@@ -4,13 +4,13 @@
 {% extends "admin_template.html" %}
 
 {% block service_page_title %}
-  {{ _('Copy an existing template') }}
+  {{ _('Copy an existing template') }} {{ _("into") }} {{ current_service.name }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
     <div class="mb-12 clear-both contain-floats">
-      <h1 class="heading-large">{{ _('Copy an existing template') }}</h1>
+      <h1 class="heading-large">{{ _('Copy an existing template') }} {{ _("into") }} {{ current_service.name }}</h1>
       {{ copy_folder_path(template_folder_path, current_service.id, from_service, current_user) }}
     </div>
     {% if not services_templates_and_folders.templates_to_show %}
@@ -42,12 +42,13 @@
                 </a>
               {% else %}
                 <a href="{{ url_for('.copy_template', service_id=current_service.id, template_id=item.id, from_service=item.service_id) }}">
-                  <span class="live-search-relevant">{{ item.name }}</span>
+                  {{ _("Copy") }} <span class="live-search-relevant">{{ item.name }}</span> <span class="sr-only">{{ _("into") }} {{ current_service.name }}</span>
                 </a>
               {% endif %}
             </h2>
             <p class="message-type">
-              {{ _(item.hint) }}
+              {# Compose hint + "template" IF it has a type. ELSE just print the hint #}
+              {{ _("{} template").format(_(item.hint)) | capitalize if item.type else _(item.hint) }}
             </p>
           </div>
         {% endfor %}

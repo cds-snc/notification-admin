@@ -1,0 +1,104 @@
+{% extends "admin_template.html" %}
+
+{% from "components/table.html" import list_table, notification_status_field, row_heading%}
+{% from "components/ajax-block.html" import ajax_block %}
+{% from "components/table.html" import list_table, link_field %}
+{% from "components/show-more.html" import show_more %}
+
+{% set address_single = _('address') %}
+{% set address_plural = _('addresses') %}
+
+{% block service_page_title %}
+  {{ _('Review email addresses') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+    <div class="page-content">
+        <h1 class="heading-large py-4">{{ _('Review email addresses') }}</h1>
+        <p>{{ _("GC Notify's email provider could suspend our services if we send too many problem emails. Check email addresses are correct. If necessary, confirm recipients’ email address using another contact method. Remove addresses you cannot correct.") }}</p>
+        <p>{{ _("To learn how, read the guide <a href='{}'>Updating contact information.</a>").format(gca_url_for('bounce_guidance')) }}</p>
+        <br />
+        <div class="no-underline text-white block border-solid {% if bounce_rate["below_volume_threshold"] %}neutral{% elif bounce_rate["bounce_status"] == "critical" or bounce_rate["bounce_status"] == "warning" %}critical{% else %}normal{% endif %} px-5">
+            <p class="text-title py-4">
+                <i aria-hidden="true" class="px-1 fa-solid fa-fas fa-circle-exclamation"></i>
+                <strong>
+                    {% if bounce_rate["bounce_status"] == "warning" %}
+                    {{ _('Caution:') }}
+                    {% elif bounce_rate["bounce_status"] == "critical" %}
+                    {{ _('Critical:') }}
+                    {% endif %}
+                </strong>
+                {% if bounce_rate["bounce_percentage_display"] < 0.1 %}
+                  {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
+                {% else %}
+                  {{ bounce_rate["bounce_percentage_display"]|round(1)|string + "%" if session["userlang"] == 'en' else bounce_rate["bounce_percentage_display"]|round(1)|replace('.', ',')|string + " %"}}
+                {% endif %}
+                 {{ _('of email addresses need review') }}
+            </p>
+        </div>
+
+        <h2 class="heading-medium mt-8">
+            {% if problem_count_within_24hrs == 1 %}
+                {{ _('1 problem email over the past 24 hours') }}
+            {% else %}
+                {{ _('{} problem emails over the past 24 hours').format(problem_count_within_24hrs) }}
+            {% endif %}
+        </h2>
+
+        <div class="ajax-block-container">
+            <ul class="list list-bullet within_24hrs" id="within-24hrs">
+            {% for job in problem_jobs_within_24hrs %}
+                <li>
+                    <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                        {%- if job["bounce_count"] > 1 -%}
+                            {{ _('{count} problems').format(count=job["bounce_count"]) }}
+                        {%- else -%}
+                            {{ _('1 problem') }}
+                        {%- endif -%}
+                    </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
+                </li>
+            {% endfor %}
+            {% for notification in problem_one_offs_within_24hrs %}
+                <li>
+                    <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                        {{- notification["to"] -}}
+                    </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        {% if problem_count_older_than_24hrs > 0 %}
+            <h2 class="heading-medium mt-8">{{ _('More problem emails') }}</h2>
+
+            <div class="ajax-block-container">
+                <ul class="list list-bullet" id="older-than-24hrs">
+                {% for job in problem_jobs_older_than_24hrs %}
+                    <li>
+                        <a href="{{ url_for('.view_job', service_id=current_service.id, job_id=job.id, status='permanent-failure', pe_filter='true') }}">
+                            {%- if job["bounce_count"] > 1 -%}
+                                {{ _('{count} problems').format(count=job["bounce_count"]) }}
+                            {%- else -%}
+                                {{ _('1 problem') }}
+                            {%- endif -%}
+                        </a> {{ _( 'in ‘{}’').format(job.original_file_name) }}
+                    </li>
+                {% endfor %}
+                {% for notification in problem_one_offs_older_than_24hrs %}
+                    <li>
+                        <a href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=notification.id) }}">
+                            {{- notification["to"] -}}
+                        </a> {{ _( "using template ‘{}’").format(notification["template"]["name"]) }}
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="pt-4" id="see-more">
+            {{ show_more(
+                url_for('.view_notifications', service_id=current_service.id, message_type='email', status='permanent-failure', pe_filter='true'),
+                _("See all problem email addresses")
+            ) }}
+        </div>
+    </div>
+{% endblock %}

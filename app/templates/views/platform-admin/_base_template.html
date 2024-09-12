@@ -14,6 +14,7 @@
           ('Organisations', 'organisations'),
           ('Live API keys', 'live_api_keys'),
           ('Email branding', 'email_branding'),
+          ('Template categories', 'template_categories'),
           ('Search for service', 'find_services_by_name'),
           ('Search for user', 'find_users_by_email'),
           ('Email complaints', 'platform_admin_list_complaints'),
@@ -26,8 +27,11 @@
             <a
               aria-label="{{ _(link_text) }}" 
               href="{{ url_for('main.'+view) }}"
-              class="no-underline text-blue visited:text-blue link:text-blue text-smaller">
+              class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
+              {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
+              >
               {{ _(link_text) }}
+              
             </a>
           </div>
         {% endfor %}

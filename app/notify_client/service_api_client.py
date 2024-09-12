@@ -20,6 +20,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         user_id,
         email_from,
         default_branding_is_french,
+        organisation_notes="",
     ) -> str:
         """
         Create a service and return the json.
@@ -34,6 +35,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "restricted": restricted,
             "email_from": email_from,
             "default_branding_is_french": default_branding_is_french,
+            "organisation_notes": organisation_notes,
         }
         data = _attach_current_user(data)
         return self.post("/service", data)["data"]["id"]
@@ -57,11 +59,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         return self.get("/service", params=params_dict)
 
-    def get_stats_by_month(self):
+    def get_stats_by_month(self, filter_heartbeats=False):
         """
         Retrieve notifications stats by month.
         """
-        return self.get("/service/delivered-notifications-stats-by-month-data")
+        return self.get("/service/delivered-notifications-stats-by-month-data", params={"filter_heartbeats": filter_heartbeats})
 
     def find_services_by_name(self, service_name):
         return self.get("/service/find-services-by-name", params={"service_name": service_name})
@@ -115,6 +117,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "go_live_at",
             "sending_domain",
             "sms_volume_today",
+            "sensitive_service",
         }
 
         if disallowed_attributes:
@@ -192,6 +195,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         subject=None,
         process_type="normal",
         parent_folder_id=None,
+        template_category_id=None,
     ):
         """
         Create a service template.
@@ -202,6 +206,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "content": content,
             "service": service_id,
             "process_type": process_type,
+            "template_category_id": template_category_id,
         }
         if subject:
             data.update({"subject": subject})
@@ -214,7 +219,9 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}-templates")
     @cache.delete("template-{id_}-version-None")
     @cache.delete("template-{id_}-versions")
-    def update_service_template(self, id_, name, type_, content, service_id, subject=None, process_type=None):
+    def update_service_template(
+        self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
+    ):
         """
         Update a service template.
         """
@@ -224,11 +231,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "template_type": type_,
             "content": content,
             "service": service_id,
+            "template_category_id": template_category_id,
+            "process_type": process_type,
         }
         if subject:
             data.update({"subject": subject})
-        if process_type:
-            data.update({"process_type": process_type})
+
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)
         return self.post(endpoint, data)
@@ -261,7 +269,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             _attach_current_user({"postage": postage}),
         )
 
-    @cache.set("template-{template_id}-version-{version}")
+    @cache.set_service_template("template-{template_id}-version-{version}")
     def get_service_template(self, service_id, template_id, version=None):
         """
         Retrieve a service template.
@@ -495,6 +503,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("service-{service_id}")
     def delete_service_callback_api(self, service_id, callback_api_id):
         return self.delete("/service/{}/delivery-receipt-api/{}".format(service_id, callback_api_id))
+
+    @cache.delete("service-{service_id}")
+    def suspend_service_callback_api(self, service_id, updated_by_id, suspend_unsuspend):
+        return self.post(
+            "/service/{}/delivery-receipt-api/suspend-callback".format(service_id),
+            data={"updated_by_id": updated_by_id, "suspend_unsuspend": suspend_unsuspend},
+        )
 
     @cache.delete("service-{service_id}")
     def create_service_callback_api(self, service_id, url, bearer_token, user_id):

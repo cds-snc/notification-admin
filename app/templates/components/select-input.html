@@ -1,11 +1,11 @@
 {% from "components/textbox.html" import textbox %}
 
-{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}, is_page_heading=False) %}
+{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}, is_page_heading=False, use_aria_labelledby=True, testid=None) %}
   {% call select_wrapper(
-    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input, is_page_heading
+    field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input, is_page_heading, use_aria_labelledby, testid
   ) %}
   {% for option in field %}
-    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals) }}
+    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data) }}
   {% endfor %}
   {% endcall %}
 {% endmacro %}
@@ -36,11 +36,11 @@
   </div>
   {% endcall %}
 {% endmacro %}
-{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", is_page_heading=False) %}
+{% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", is_page_heading=False, use_aria_labelledby=True, testid=None) %}
   {% set is_collapsible = collapsible_opts|length %}
   {% set group = "radiogroup" if input == "radio" else "group" if input == "checkbox" %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
-    <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" aria-labelledby="{{ field.id }}-label">
+    <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %}>
       <legend class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }}{% endif %}">
         {% if is_page_heading %}<h1 class="heading-large">{% endif %}
         {% if hide_legend %}<span class="visually-hidden">{% endif %}
@@ -65,33 +65,34 @@
     </fieldset>
   </div>
 {% endmacro %}
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}) %}
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None) %}
   {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
     <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
     {% else %}
       <div class="multiple-choice{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
       {% endif %}
-      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
+      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if testid %} data-testid="{{ testid }}" {% endif %} {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
         <label class="block-label" for="{{ option.id }}">
           {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
           {% if '||' in option.label.text %}
-            <div id="{{ option.id }}-img">
-              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}" style="width: 400px;margin-top:16px"></div>
+            <span id="{{ option.id }}-img">
+              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}">
+            </span>
             {% endif %}
             {% if option_hints[option.data] %}
-              <div class="block-label-hint max-w-80ch">
+              <span class="block block-label-hint max-w-80ch">
                 {{ option_hints[option.data] }}
-              </div>
+              </span>
             {% endif %}
           </label>
           {% if has_conditional %}
               <div class="conditional">
-              {{ textbox( 
+              {{ textbox(
                   option_conditionals[option.data],
-                  label=_(option_conditionals[option.data].label.text)|capitalize, 
-                  hint=hint_txt if optional_placeholder else None, 
-                  width='w-full', 
+                  label=_(option_conditionals[option.data].label.text)|capitalize,
+                  hint=hint_txt if optional_placeholder else None,
+                  width='w-full',
                 ) }}
               </div>
             {% endif %}

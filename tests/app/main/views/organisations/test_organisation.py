@@ -4,7 +4,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
-
 from tests import organisation_json, service_json
 from tests.conftest import (
     ORGANISATION_ID,
@@ -66,6 +65,7 @@ def test_page_to_create_new_organisation(
     assert [(input["type"], input["name"], input["value"]) for input in page.select("input")] == [
         ("text", "name", ""),
         ("radio", "org_type", "central"),
+        ("radio", "org_type", "province_or_territory"),
         ("radio", "org_type", "local"),
         ("radio", "org_type", "nhs_central"),
         ("radio", "org_type", "nhs_local"),
@@ -221,7 +221,6 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
         "GC Notify data sharing and financial agreement Not signed Change",
         "Request to go live notes None Change",
         "Default email branding English Government of Canada signature Change",
-        "Default letter branding No branding Change",
     ]
 
     client_request.login(platform_admin_user)
@@ -242,6 +241,7 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
             ".edit_organisation_type",
             (
                 ("central", "Government of Canada"),
+                ("province_or_territory", "Provincial or Territorial Government"),
                 ("local", "Local government"),
                 ("nhs_central", "NHS – central government agency or public body"),
                 ("nhs_local", "NHS Trust or Clinical Commissioning Group"),

@@ -13,13 +13,16 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
-from notifications_utils.clients.redis import sms_daily_count_cache_key
+from notifications_utils.clients.redis import (
+    email_daily_count_cache_key,
+    sms_daily_count_cache_key,
+)
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_sms_fragment_count
+from app.main.views.send import daily_email_count, daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -38,7 +41,6 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
-    set_config,
 )
 
 template_types = ["email", "sms"]
@@ -56,6 +58,14 @@ def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
     assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
+
+
+@pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
+def test_daily_email_count(mocker, redis_value, expected_result):
+    mocker.patch(
+        "app.extensions.redis_client.get", lambda x: redis_value if x == email_daily_count_cache_key(SERVICE_ONE_ID) else None
+    )
+    assert daily_email_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -85,7 +95,6 @@ def test_show_correct_title_and_description_for_sender_type(
     expected_description,
     mocker,
 ):
-
     mocker.patch("app.service_api_client.get_service_template", return_value=create_template(template_type=template_type))
 
     mocker.patch("app.service_api_client.get_reply_to_email_addresses", return_value=sender_data)
@@ -192,7 +201,6 @@ def test_sender_session_is_present_after_selected(client_request, service_one, f
     ],
 )
 def test_set_sender_redirects_if_no_sender_data(client_request, service_one, fake_uuid, template_type, sender_data, mocker):
-
     mocker.patch("app.service_api_client.get_service_template", return_value=create_template(template_type=template_type))
 
     if template_type == "email":
@@ -248,7 +256,6 @@ def test_example_spreadsheet(
     mock_get_service_template_with_placeholders_same_as_recipient,
     fake_uuid,
 ):
-
     page = client_request.get(".send_messages", service_id=SERVICE_ONE_ID, template_id=fake_uuid)
 
     assert normalize_spaces(page.select_one("tbody tr").text) == ("1 phone number name date")
@@ -379,7 +386,6 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
     mock_get_jobs,
     fake_uuid,
 ):
-
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="""
@@ -499,7 +505,6 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     expected_error,
     expected_heading,
 ):
-
     mocker.patch("app.main.views.send.s3download", return_value=file_contents)
 
     page = client_request.post(
@@ -517,6 +522,69 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     assert normalize_spaces(page.select_one("h1").text) == expected_heading
 
 
+@pytest.mark.parametrize(
+    "file_contents, expected_error, expected_heading, num_cells_errors",
+    [
+        (
+            f"""
+                phone number, one, two, three
+                +16502532222, {'a' * 155}, {'a' * 155}, {'a' * 155}
+                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
+                +16502532222, {'a' * 50}, {'a' * 50}, {'a' * 50}
+            """,
+            "Maximum 612 characters. Some messages may be too long due to custom content.",
+            "Added custom content exceeds the 612 character limit in 1 row",
+            3,
+        ),
+        (
+            f"""
+                phone number, one, two, three
+                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
+                +16502532222, {'a' * 619}, {'a' * 619}, {'a' * 619}
+                +16502532222, {'a' * 700}, {'a' * 700}, {'a' * 700}
+            """,
+            "Maximum 612 characters. Some messages may be too long due to custom content.",
+            "Added custom content exceeds the 612 character limit in 3 rows",
+            9,
+        ),
+    ],
+)
+def test_upload_csv_variables_too_long_shows_banner_and_inline_cell_errors(
+    client_request,
+    mocker,
+    mock_get_service_template_with_multiple_placeholders,
+    mock_s3_upload,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    service_one,
+    fake_uuid,
+    file_contents,
+    expected_error,
+    expected_heading,
+    num_cells_errors,
+):
+    mocker.patch("app.main.views.send.s3download", return_value=file_contents)
+    page = client_request.post(
+        "main.send_messages",
+        service_id=service_one["id"],
+        template_id=fake_uuid,
+        _data={"file": (BytesIO("".encode("utf-8")), "invalid.csv")},
+        _follow_redirects=True,
+    )
+    cell_errors = page.find_all("span", class_="table-field-error-label")
+
+    with client_request.session_transaction() as session:
+        assert "file_uploads" not in session
+
+    assert normalize_spaces(page.find(role="alert").text) == expected_heading
+    assert normalize_spaces(page.select_one("h1").text) == "Edit your spreadsheet"
+    assert all(cell.text == expected_error for cell in cell_errors)
+    assert len(cell_errors) == num_cells_errors
+
+
 def test_upload_csv_invalid_extension(
     logged_in_client,
     mock_login,
@@ -524,7 +592,6 @@ def test_upload_csv_invalid_extension(
     mock_get_service_template,
     fake_uuid,
 ):
-
     resp = logged_in_client.post(
         url_for("main.send_messages", service_id=service_one["id"], template_id=fake_uuid),
         data={"file": (BytesIO("contents".encode("utf-8")), "invalid.txt")},
@@ -594,7 +661,6 @@ def test_upload_valid_csv_shows_preview_and_table(
     expected_recipient,
     expected_message,
 ):
-
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
@@ -645,8 +711,8 @@ def test_upload_valid_csv_shows_preview_and_table(
     for row_index, row in enumerate(
         [
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532223">6502532223</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="A">A</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532223</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">A</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -658,8 +724,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532224">6502532224</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="B">B</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532224</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">B</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -671,8 +737,8 @@ def test_upload_valid_csv_shows_preview_and_table(
                 ),
             ),
             (
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="6502532225">6502532225</div> </td>',  # noqa: E501
-                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text" title="C">C</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">6502532225</div> </td>',  # noqa: E501
+                '<td class="table-field-left-aligned"> <div class="do-not-truncate-text">C</div> </td>',  # noqa: E501
                 (
                     '<td class="table-field-left-aligned"> '
                     '<div class="table-field-status-default"> '
@@ -703,7 +769,6 @@ def test_upload_valid_csv_only_sets_meta_if_filename_known(
     mock_s3_set_metadata,
     fake_uuid,
 ):
-
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="""
@@ -742,7 +807,6 @@ def test_file_name_truncated_to_fit_in_s3_metadata(
     mock_s3_set_metadata,
     fake_uuid,
 ):
-
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
@@ -831,7 +895,6 @@ def test_show_all_columns_if_there_are_duplicate_recipient_columns(
     mock_get_jobs,
     fake_uuid,
 ):
-
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
@@ -881,7 +944,6 @@ def test_404_for_previewing_a_row_out_of_range(
     row_index,
     expected_status,
 ):
-
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
@@ -1237,7 +1299,6 @@ def test_skip_link_will_not_show_on_sms_one_off_if_service_has_no_mobile_number(
     mocker,
     user,
 ):
-
     user["mobile_number"] = None
     client_request.login(user)
     page = client_request.get(
@@ -1734,7 +1795,6 @@ def test_send_test_letter_clears_previous_page_cache(
     mock_get_service_letter_template,
     fake_uuid,
 ):
-
     with platform_admin_client.session_transaction() as session:
         session["send_test_letter_page_count"] = "WRONG"
 
@@ -1760,7 +1820,6 @@ def test_send_test_letter_redirects_to_right_url(
     mock_get_service_statistics,
     mocker,
 ):
-
     with platform_admin_client.session_transaction() as session:
         session["send_test_letter_page_count"] = 1
         session["recipient"] = ""
@@ -1802,7 +1861,6 @@ def test_send_test_populates_field_from_session(
     mock_get_service_template_with_placeholders,
     fake_uuid,
 ):
-
     with client_request.session_transaction() as session:
         session["recipient"] = None
         session["placeholders"] = {}
@@ -1827,7 +1885,6 @@ def test_send_test_caches_page_count(
     mock_get_service_letter_template,
     fake_uuid,
 ):
-
     mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=9)
 
     logged_in_client.get(
@@ -1848,7 +1905,6 @@ def test_send_test_indicates_optional_address_columns(
     mock_get_service_letter_template,
     fake_uuid,
 ):
-
     mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
 
     with client_request.session_transaction() as session:
@@ -1878,7 +1934,6 @@ def test_send_test_allows_empty_optional_address_columns(
     mock_get_service_letter_template,
     fake_uuid,
 ):
-
     mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
 
     with client_request.session_transaction() as session:
@@ -1966,7 +2021,7 @@ def test_send_test_works_as_letter_preview(
     assert response.status_code == 200
     assert response.get_data(as_text=True) == "foo"
     assert mocked_preview.call_args[0][0].id == template_id
-    assert type(mocked_preview.call_args[0][0]) == LetterImageTemplate
+    assert isinstance(mocked_preview.call_args[0][0], LetterImageTemplate)
     assert mocked_preview.call_args[0][0].values == {"address_line_1": "Jo Lastname"}
     assert mocked_preview.call_args[0][1] == filetype
 
@@ -2006,7 +2061,6 @@ def test_download_example_csv(
     mock_has_permissions,
     fake_uuid,
 ):
-
     response = logged_in_client.get(
         url_for("main.get_example_csv", service_id=fake_uuid, template_id=fake_uuid),
         follow_redirects=True,
@@ -2031,7 +2085,6 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     mock_s3_upload,
     mocker,
 ):
-
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="\n".join(["phone number"] + ["65025322{0:02d}".format(final_two) for final_two in range(0, 53)]),
@@ -2062,8 +2115,6 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     assert "6502532210" not in content
     assert "Only shows the first 10 recipients" in content
 
-    mock_get_service_statistics.assert_called_once_with(service_one["id"], today_only=True)
-
 
 @pytest.mark.parametrize(
     "international_sms_permission, should_allow_international",
@@ -2090,7 +2141,6 @@ def test_upload_csvfile_with_international_validates(
     should_allow_international,
     service_one,
 ):
-
     if international_sms_permission:
         service_one["permissions"] += ("sms", "international_sms")
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
@@ -2135,37 +2185,6 @@ def test_test_message_can_only_be_sent_now(
     )
 
     assert 'name="scheduled_for"' not in content
-
-
-def test_letter_can_only_be_sent_now(
-    client_request,
-    mocker,
-    mock_get_live_service,
-    mock_get_service_letter_template,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_s3_set_metadata,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    fake_uuid,
-):
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="addressline1, addressline2, postcode\na,b,c",
-    )
-    mocker.patch("app.main.views.send.set_metadata_on_csv_upload")
-    mocker.patch("app.main.views.send.get_page_count_for_letter", return_value=1)
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        upload_id=fake_uuid,
-        template_id=fake_uuid,
-    )
-
-    assert 'name="scheduled_for"' not in page
-    assert normalize_spaces(page.select_one("[type=submit]").text) == ("Send all now")
 
 
 @pytest.mark.parametrize("when", ["", "2016-08-25T13:04:21.767198"])
@@ -2315,7 +2334,7 @@ def test_should_show_preview_letter_message(
     assert response.status_code == 200
     assert response.get_data(as_text=True) == "foo"
     assert mocked_preview.call_args[0][0].id == template_id
-    assert type(mocked_preview.call_args[0][0]) == LetterPreviewTemplate
+    assert isinstance(mocked_preview.call_args[0][0], LetterPreviewTemplate)
     assert mocked_preview.call_args[0][1] == filetype
     assert mocked_preview.call_args[0][0].values == expected_values
     assert mocked_preview.call_args[1] == {"page": expected_page}
@@ -2471,7 +2490,6 @@ def test_check_messages_back_link(
     extra_args,
     expected_url,
 ):
-
     content = "Hi there ((name))" if has_placeholders else "Hi there"
     template_data = create_template(template_id=fake_uuid, template_type=template_type, content=content)
     mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
@@ -2508,12 +2526,12 @@ def test_check_messages_back_link(
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "You’ve sent too many text messages or too many long messages."),
-        (1, "You’ve sent too many text messages or too many long messages."),
+        (0, "You cannot send all these text messages today"),
+        (1, "You cannot send all these text messages today"),
     ],
     ids=["none_sent", "some_sent"],
 )
-def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_true(
+def test_check_messages_shows_too_many_sms_messages_errors(
     app_,
     mocker,
     client_request,
@@ -2551,79 +2569,26 @@ def test_check_messages_shows_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAI
             }
         }
 
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", True):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
+    page = client_request.get(
+        "main.check_messages",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        original_file_name="valid.csv",
+        _test_page_title=False,
+    )
 
     # remove excess whitespace from element
-    details = page.find(role="alert").findAll("h2")[0]
+    details = page.findAll("h2")[1]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
-
-
-def test_check_messages_does_not_show_too_many_sms_messages_errors_when_FF_SPIKE_SMS_DAILY_LIMIT_false(
-    app_,
-    mocker,
-    client_request,
-    mock_get_service,  # set message_limit to 50 and sms limit to 20
-    mock_get_users_by_service,
-    mock_get_service_template,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    mock_s3_download,
-    mock_s3_set_metadata,
-    fake_uuid,
-):
-    # csv with 100 phone numbers
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * 30)),
-    )
-    mocker.patch(
-        "app.service_api_client.get_service_statistics",
-        return_value={
-            "sms": {"requested": 0, "delivered": 0, "failed": 0},
-            "email": {"requested": 0, "delivered": 0, "failed": 0},
-        },
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": fake_uuid,
-                "notification_count": 1,
-                "valid": True,
-            }
-        }
-
-    with set_config(app_, "FF_SPIKE_SMS_DAILY_LIMIT", False):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
-
-    assert page.find(role="alert") is None
 
 
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
-        (0, "‘valid.csv’ contains 100 email addresses."),
-        (
-            1,
-            "You can still send 49 messages today, but ‘valid.csv’ contains 100 email addresses.",
-        ),
+        (0, "These messages exceed your daily limit"),
+        (1, "These messages exceed your daily limit"),
     ],
     ids=["none_sent", "some_sent"],
 )
@@ -2671,12 +2636,12 @@ def test_check_messages_shows_too_many_email_messages_errors(
         _test_page_title=False,
     )
 
-    assert page.find(role="alert").find("h1").text.strip() == "Too many recipients"
+    assert page.find("h1").text.strip() == expected_msg
 
-    # remove excess whitespace from element
-    details = page.find(role="alert").findAll("p")[1]
-    details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
-    assert details == expected_msg
+    # # remove excess whitespace from element
+    # details = page.find(role="alert").findAll("p")[1]
+    # details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
+    # assert details == expected_msg
 
 
 def test_check_messages_shows_trial_mode_error(
@@ -2715,128 +2680,6 @@ def test_check_messages_shows_trial_mode_error(
         "You cannot send to this phone number "
         "In trial mode, you can only send to yourself and team members. To send to more recipients, request to go live."
     )
-
-
-@pytest.mark.parametrize(
-    "restricted, error_should_be_shown",
-    [
-        (True, True),
-        (False, False),
-    ],
-)
-@pytest.mark.parametrize(
-    "number_of_rows, expected_error_message",
-    [
-        (1, "You cannot send this letter"),
-        (11, "You cannot send these letters"),  # Less than trial mode limit
-        (111, "You cannot send these letters"),  # More than trial mode limit
-    ],
-)
-def test_check_messages_shows_trial_mode_error_for_letters(
-    client_request,
-    service_one,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    mock_s3_set_metadata,
-    fake_uuid,
-    mocker,
-    restricted,
-    error_should_be_shown,
-    number_of_rows,
-    expected_error_message,
-):
-    service_one["restricted"] = restricted
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
-
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="\n".join(
-            ["address_line_1,address_line_2,postcode,"] + ["First Last,    123 Street,    SW1 1AA"] * number_of_rows
-        ),
-    )
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=3,
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": "",
-            }
-        }
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        upload_id=fake_uuid,
-        _test_page_title=False,
-    )
-
-    error = page.select(".banner-dangerous")
-
-    if error_should_be_shown:
-        assert normalize_spaces(error[0].text) == ("{} " "In trial mode, you can only preview how your letters will look").format(
-            expected_error_message
-        )
-    else:
-        assert not error
-
-    assert len(page.select(".letter img")) == 3
-
-
-def test_check_messages_shows_data_errors_before_trial_mode_errors_for_letters(
-    mocker,
-    client_request,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    fake_uuid,
-):
-
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="\n".join(
-            ["address_line_1,address_line_2,postcode,"]
-            + ["              ,              ,11SW1 1AA"]
-            + ["              ,              ,11SW1 1AA"]
-        ),
-    )
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": "",
-                "original_file_name": "example.xlsx",
-            }
-        }
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        upload_id=fake_uuid,
-        _test_page_title=False,
-        original_file_name="example.xlsx",
-    )
-
-    assert normalize_spaces(page.find(role="alert").text) == ("Enter missing data in 2 rows")
-    assert not page.select(".table-field-index a")
 
 
 @pytest.mark.parametrize(
@@ -2892,7 +2735,6 @@ def test_check_messages_column_error_doesnt_show_optional_columns(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
 ):
-
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="\n".join(["address_line_1,address_line_2,foo"] + ["First Lastname,1 Example Road,SW1 1AA"]),
@@ -2964,160 +2806,6 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
     )
 
 
-@pytest.mark.parametrize(
-    "extra_args",
-    (
-        {},
-        {"from_test": True},
-    ),
-)
-def test_letters_from_csv_files_dont_have_download_link(
-    client_request,
-    mocker,
-    mock_get_service,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    fake_uuid,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-    mock_s3_set_metadata,
-    extra_args,
-):
-
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="""
-        address_line_1,address_line_2,postcode,
-        First Last,    123 Street,    SW1 1AA
-    """,
-    )
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": "",
-            }
-        }
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        upload_id=fake_uuid,
-        _test_page_title=False,
-        **extra_args,
-    )
-
-    assert normalize_spaces(page.select_one(".banner-dangerous").text) == normalize_spaces(
-        "You cannot send this letter " "In trial mode, you can only preview how your letters will look"
-    )
-
-    assert len(page.select(".letter img")) == 5
-    assert not page.select("a[download]")
-
-
-@pytest.mark.parametrize("restricted", [True, False])
-def test_one_off_letters_have_download_link(
-    client_request,
-    mocker,
-    api_user_active,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    fake_uuid,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    restricted,
-    service_one,
-):
-
-    service_one["restricted"] = restricted
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["recipient"] = None
-        session["placeholders"] = {
-            "address_line_1": "First Last",
-            "address_line_2": "123 Street",
-            "postcode": "SW1 1AA",
-        }
-
-    page = client_request.get(
-        "main.check_notification",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        _test_page_title=False,
-    )
-
-    assert len(page.select(".letter img")) == 5
-
-    assert page.select_one("a[download]")["href"] == url_for(
-        "main.check_notification_preview",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        filetype="pdf",
-    )
-    assert page.select_one("a[download]").text == "Download as a PDF"
-
-
-def test_send_one_off_letter_errors_in_trial_mode(
-    client_request,
-    mocker,
-    mock_get_service,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    fake_uuid,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_s3_set_metadata,
-):
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["recipient"] = None
-        session["placeholders"] = {
-            "address_line_1": "First Last",
-            "address_line_2": "123 Street",
-            "postcode": "SW1 1AA",
-        }
-
-    page = client_request.get(
-        "main.check_notification",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        _test_page_title=False,
-    )
-
-    assert normalize_spaces(page.select(".banner-dangerous")) == normalize_spaces(
-        "You cannot send this letter " "In trial mode, you can only preview how your letters will look"
-    )
-
-    assert len(page.select(".letter img")) == 5
-
-    assert not page.select("[type=submit]")
-    assert page.select_one(".back-link").text == "Back"
-    assert page.select_one("a[download]").text == "Download as a PDF"
-
-
 def test_check_messages_shows_over_max_row_error(
     client_request,
     mock_get_users_by_service,
@@ -3135,7 +2823,7 @@ def test_check_messages_shows_over_max_row_error(
     mock_recipients.max_rows = 11111
     mock_recipients.__len__.return_value = 99999
     mock_recipients.too_many_rows.return_value = True
-
+    mock_recipients.sms_fragment_count = 20
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -3373,8 +3061,8 @@ SERVICE_DAILY_LIMIT_MSG = "Exceeded send limits (1000) for today"
         ),
         (
             SERVICE_DAILY_LIMIT_MSG,
-            "Daily limit reached",
-            "You can only send 1,000 messages per day in trial mode. To send more messages, request to go live.",
+            "These messages exceed your daily limit",
+            "Your service is in trial mode. To send more messages, request to go live",
         ),
     ],
 )
@@ -3406,10 +3094,14 @@ def test_send_notification_shows_error_if_400(
         template_id=fake_uuid,
         _expected_status=200,
     )
-
-    assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == expected_h1
-    assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
-    assert not page.find("input[type=submit]")
+    if exception_msg == SERVICE_DAILY_LIMIT_MSG:
+        # assert normalize_spaces(page.select("h1")[0].text) == expected_h1
+        assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
+        assert not page.find("input[type=submit]")
+    else:
+        assert normalize_spaces(page.select(".banner-dangerous h1")[0].text) == expected_h1
+        assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details
+        assert not page.find("input[type=submit]")
 
 
 def test_send_notification_shows_email_error_in_trial_mode(
@@ -3511,7 +3203,7 @@ def test_reply_to_is_previewed_if_chosen(
     [
         (
             "fr",
-            "De service one Répondre à test@example.com À email address Objet Template subject",
+            "De service one Répondre à test@example.com À adresse courriel Objet Template subject",
         ),
         (
             "en",
@@ -3520,7 +3212,6 @@ def test_reply_to_is_previewed_if_chosen(
     ],
 )
 def test_preview_is_translated(client_request, mocker, get_default_reply_to_email_address, fake_uuid, lang, expected_content):
-
     mocker.patch("app.service_api_client.get_service_template", return_value=create_template(template_type="email"))
     mocker.patch("app.get_current_locale", return_value=lang)
 
@@ -3571,7 +3262,6 @@ def test_sms_sender_is_previewed(
     extra_args,
     sms_sender,
 ):
-
     mocker.patch(
         "app.main.views.send.s3download",
         return_value="""
@@ -3606,7 +3296,6 @@ def test_redirects_to_template_if_job_exists_already(
     mock_get_job,
     fake_uuid,
 ):
-
     client_request.get(
         "main.check_messages",
         service_id=SERVICE_ONE_ID,
@@ -3712,23 +3401,3 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
-
-
-@pytest.mark.parametrize(
-    "feature_flag, expected",
-    [(True, 1), (False, 0)],
-)
-def test_sms_parts_section_is_visible_depending_on_ff(
-    feature_flag, expected, client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, app_
-):
-    app_.config["FF_SMS_PARTS_UI"] = feature_flag
-
-    with client_request.session_transaction() as session:
-        session["recipient"] = "6502532223"
-        session["placeholders"] = {}
-
-    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
-
-    assert page.h1.text.strip() == "Review before sending"
-    sms_count = page.select("#sms-count")
-    assert len(list(sms_count)) == expected

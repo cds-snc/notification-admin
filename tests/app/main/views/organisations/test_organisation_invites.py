@@ -4,9 +4,9 @@ from unittest.mock import ANY
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 from app.models.user import InvitedOrgUser
-from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 
 def test_view_team_members(
@@ -50,7 +50,6 @@ def test_invite_org_user(
     mock_get_organisation,
     sample_org_invite,
 ):
-
     mock_invite_org_user = mocker.patch(
         "app.org_invite_api_client.create_invite",
         return_value=sample_org_invite,
@@ -222,7 +221,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "+4966921809",
                 "password": "password",
             },
-            "Choose a password that’s harder to guess",
+            "A password that is hard to guess contains",
         ],
     ],
 )

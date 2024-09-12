@@ -2,7 +2,7 @@ from unittest.mock import ANY, Mock
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import url_for
+from flask import current_app, url_for
 from notifications_python_client.errors import HTTPError
 
 import app
@@ -91,7 +91,10 @@ def test_if_existing_user_accepts_twice_they_redirect_to_sign_in(
     )
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )
@@ -193,7 +196,10 @@ def test_existing_user_of_service_get_redirected_to_signin(
     )
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )
@@ -238,7 +244,10 @@ def test_existing_signed_out_user_accept_invite_redirects_to_sign_in(
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert (page.h1.string, page.select("main p")[0].text.strip(),) == (
+    assert (
+        page.h1.string,
+        page.select("main p")[0].text.strip(),
+    ) == (
         "You need to sign in again",
         "We signed you out because you haven’t used GC Notify for a while.",
     )
@@ -396,6 +405,9 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
         "auth_type": "email_auth",
     }
 
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
     expected_redirect_location = "/verify"
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
@@ -507,6 +519,10 @@ def test_new_invited_user_verifies_and_added_to_service(
         "name": "Invited User",
         "auth_type": "sms_auth",
     }
+
+    if current_app.config["FF_TOU"]:
+        data["tou_agreed"] = "true"
+
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
     assert response.location == url_for("main.verify")

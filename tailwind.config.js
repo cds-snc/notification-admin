@@ -49,6 +49,7 @@ module.exports = {
         hover: "#990c1a",
         border: "#6a0812",
         mellow: "#df3034",
+        300: "#D74D42",
       },
       white: {
         default: "#FFF",
@@ -100,9 +101,15 @@ module.exports = {
         hover: "#00692f",
         border: "#003618",
         green: "#006435",
+        300: "#29A35A",
       },
       black: {
         default: "#000",
+      },
+      lime: {
+        default: '#D3E766',
+        100: '#D3E766',
+        700: '#545E00',
       },
       transparent: {
         default: "transparent",
@@ -122,6 +129,11 @@ module.exports = {
         folderBluePng: "url('/static/images/folder-blue-bold.png')",
         folderBlueHover: "url('/static/images/folder-blue-bold-hover.svg')",
         folderBlueHoverPng: "url('/static/images/folder-blue-bold-hover.png')",
+        emptyBird: "url('/static/images/empty-bird.svg')",
+        emptyBirdHole: "url('/static/images/empty-bird-hole.svg')",
+        emptyFlower: "url('/static/images/empty-flower.svg')",
+        emptyTruck: "url('/static/images/empty-truck.svg')",
+        emptyBirdCurious: "url('/static/images/empty-bird-curious.svg')",
       },
       backgroundSize: {
         19: "19px",
@@ -175,6 +187,9 @@ module.exports = {
         "2/3": "66.666667%",
       },
       minHeight: {
+        target: "45px",
+      },
+      minWidth: {
         target: "45px",
       },
       flex: {

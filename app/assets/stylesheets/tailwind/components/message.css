@@ -3,9 +3,10 @@
   .message-name {
     @apply m-0 leading-tight font-bold text-title;
   }
-  .message-name a {
-    margin-bottom: -30px;
-    @apply pb-12;
+  @media (min-width: theme("screens.sm")) {
+    .message-name {
+      grid-column: span 2;
+    }
   }
   .message-name a:hover {
     @apply text-blue-lightblue;
@@ -25,8 +26,8 @@
     @apply border-blue;
   }
 
-  .message-type {
-    @apply m-0 mb-8 pointer-events-none text-gray-grey1;
+  .message-meta {
+    @apply text-small pointer-events-none text-gray-700;
   }
 
   #template-list {
@@ -34,6 +35,11 @@
   }
   #template-list.top-gutter-5px {
     @apply mt-2;
+  }
+
+  .template-list-item {
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    @apply grid gap-x-gutter gap-y-2 pb-gutterHalf mb-gutterHalf border-b border-gray-300 items-baseline;
   }
 
   .template-list-item-with-checkbox {
@@ -80,6 +86,20 @@
       @apply absolute right-0 m-0;
     }
   }
+
+  /* Initially hide the empty message */
+  #template-list-empty {
+    display: none;
+  }
+
+  /* Show the empty message if all .template-list-item elements are hidden */
+  #template-list-container:not(
+      :has(.template-list-item:not([style*="display: none"]))
+    )
+    #template-list-empty {
+    display: block;
+  }
+
   .content-fixed .template-list-selected-counter {
     right: 15px;
   }

@@ -1,0 +1,5 @@
+{% from "components/checkbox.html" import checkbox %}
+
+{% macro problem_email_checkbox() %}
+    {{ checkbox({ "id": "pe_filter", "name": "pe_filter", "data": request.args.get('pe_filter'), "label": { "text": _("Only show problem addresses")}}) }}
+{% endmacro %}

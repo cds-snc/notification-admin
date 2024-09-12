@@ -35,6 +35,7 @@ from notifications_utils.recipients import (
 )
 from notifications_utils.sanitise_text import SanitiseASCII
 from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
+from user_agents import parse
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
@@ -46,6 +47,7 @@ from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
     antivirus_client,
+    bounce_rate_client,
     cache,
     redis_client,
     statsd_client,
@@ -78,9 +80,13 @@ from app.notify_client.provider_client import provider_client
 from app.notify_client.service_api_client import service_api_client
 from app.notify_client.status_api_client import status_api_client
 from app.notify_client.template_api_prefill_client import template_api_prefill_client
+from app.notify_client.template_category_api_client import template_category_api_client
 from app.notify_client.template_folder_api_client import template_folder_api_client
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
+from app.salesforce import salesforce_account
+from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from app.tou import EVENTS_KEY, show_tou_prompt
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
@@ -159,6 +165,7 @@ def create_app(application):
         provider_client,
         service_api_client,
         status_api_client,
+        template_category_api_client,
         template_folder_api_client,
         template_statistics_client,
         template_api_prefill_client,
@@ -168,8 +175,12 @@ def create_app(application):
         statsd_client,
         zendesk_client,
         redis_client,
+        bounce_rate_client,
     ):
         client.init_app(application)
+
+    # pass the scanfiles url and token
+    scanfiles_api_client.init_app(application.config["SCANFILES_URL"], application.config["SCANFILES_AUTH_TOKEN"])
 
     logging.init_app(application, statsd_client)
 
@@ -207,6 +218,18 @@ def create_app(application):
 
     # allow gca_url_for to be called from any template
     application.jinja_env.globals["gca_url_for"] = gca_url_for
+    application.jinja_env.globals["current_service"] = current_service
+
+    # cross-cutting concerns for TOU/login events
+    application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
+    application.jinja_env.globals["parse_ua"] = parse
+    application.jinja_env.globals["events_key"] = EVENTS_KEY
+
+    # Initialize Salesforce Account list
+    if application.config["FF_SALESFORCE_CONTACT"]:
+        application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
+            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
+        )
 
 
 def init_app(application):
@@ -273,7 +296,7 @@ def safe_get_request_nonce():
         nonce = _request_ctx_stack.top.nonce
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
-    except (AttributeError):
+    except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
 
@@ -342,14 +365,10 @@ def get_human_day(time):
 
 
 def format_time(date):
-    return (
-        {"12:00AM": "Midnight", "12:00PM": "Midday"}
-        .get(
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-        )
-        .lower()
-    )
+    return {"12:00AM": "Midnight", "12:00PM": "Midday"}.get(
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+    ).lower()
 
 
 def format_date(date):
@@ -385,8 +404,8 @@ def translate_preview_template(_template_str):
             "Reply to": _("Reply to"),
             "From:": _("From:"),
             "To:": _("To:"),
-            "phone number": "phone number",
-            "email address": "email address",
+            "phone number": _("phone number"),
+            "email address": _("email address"),
             "hidden": _("hidden"),
         }.get(word, match)
 
@@ -415,32 +434,47 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
-def format_notification_status(status, template_type, provider_response=None):
-    if provider_response:
+def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
+    if template_type == "sms" and provider_response:
         return _(provider_response)
+
+    def _getStatusByBounceSubtype():
+        """Return the status of a notification based on the bounce sub type"""
+        if feedback_subtype:
+            return {
+                "email": {
+                    "suppressed": _("Blocked"),
+                    "on-account-suppression-list": _("Blocked"),
+                },
+            }[template_type].get(feedback_subtype, _("No such address"))
+        else:
+            return _("No such address")
 
     return {
         "email": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Inbox not accepting messages right now"),
-            "virus-scan-failed": _("Attachment has virus"),
-            "permanent-failure": _("Email address does not exist"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Content or inbox issue"),
+            "virus-scan-failed": _("Virus in attachment"),
+            "permanent-failure": _getStatusByBounceSubtype(),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
             "sent": _("Delivered"),
+            "pending": _("In transit"),
+            "pending-virus-check": _("In transit"),
+            "pii-check-failed": _("Exceeds Protected A"),
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Technical failure"),
-            "temporary-failure": _("Phone number not accepting messages right now"),
-            "permanent-failure": _("Phone number does not exist"),
+            "technical-failure": _("Tech issue"),
+            "temporary-failure": _("Carrier issue"),
+            "permanent-failure": _("No such number"),
             "delivered": _("Delivered"),
-            "sending": _("Sending"),
-            "created": _("Sending"),
-            "pending": _("Sending"),
-            "sent": _("Sent"),
+            "sending": _("In transit"),
+            "created": _("In transit"),
+            "pending": _("In transit"),
+            "sent": _("In transit"),
         },
         "letter": {
             "failed": "",
@@ -465,45 +499,41 @@ def format_notification_status(status, template_type, provider_response=None):
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
-    ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
+        " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),
+    ).get(status, '<time class="local-datetime-short">{}</time>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):
-    return (
-        {
-            "letter": {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": None,
-                "created": None,
-                "accepted": None,
-                "pending-virus-check": None,
-                "virus-scan-failed": "error",
-                "returned-letter": None,
-                "cancelled": "error",
-            }
+    return {
+        "letter": {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": None,
+            "created": None,
+            "accepted": None,
+            "pending-virus-check": None,
+            "virus-scan-failed": "error",
+            "returned-letter": None,
+            "cancelled": "error",
         }
-        .get(
-            notification_type,
-            {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": "default",
-                "created": "default",
-                "pending": "default",
-            },
-        )
-        .get(status, "error")
-    )
+    }.get(
+        notification_type,
+        {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": "default",
+            "created": "default",
+            "pending": "default",
+        },
+    ).get(status, "error")
 
 
 def format_notification_status_as_url(status, notification_type):
@@ -593,7 +623,7 @@ def load_request_nonce():
     elif _request_ctx_stack.top is not None:
         token = secrets.token_urlsafe()
         _request_ctx_stack.top.nonce = token
-        current_app.logger.warning(f"Set request nonce to {token}")
+        current_app.logger.debug(f"Set request nonce to {token}")
 
 
 def save_service_or_org_after_request(response):
@@ -617,23 +647,30 @@ def useful_headers_after_request(response):
     response.headers.add("X-Frame-Options", "deny")
     response.headers.add("X-Content-Type-Options", "nosniff")
     response.headers.add("X-XSS-Protection", "1; mode=block")
+    response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
     response.headers.add(
+        "Report-To",
+        """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
+    )
+    response.headers.add(
         "Content-Security-Policy",
         (
-            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
-            "default-src 'self' {asset_domain} 'unsafe-inline';"
+            f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            f"script-src-elem 'self' https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "object-src 'self';"
-            "style-src 'self' *.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
-            "font-src 'self' {asset_domain} *.googleapis.com *.gstatic.com data:;"
-            "img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
-            "frame-src 'self' www.googletagmanager.com www.youtube.com https://cdssnc.qualtrics.com/;".format(
-                asset_domain=asset_domain
-            )
+            f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+            f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "media-src 'self' *.alpha.canada.ca;"
+            "frame-ancestors 'self';"
+            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+            "report-to default;"
         ),
     )
     if "Cache-Control" in response.headers:

@@ -15,7 +15,7 @@
     $moreMenu.attr("aria-expanded", show);
 
     $menuContainer.toggleClass("hidden");
-    if ($arrow) $arrow.toggleClass("flip");
+    if ($arrow) $arrow.attr("data-fa-transform", show ? "rotate-180" : "");
   }
 
   function init($menu) {
@@ -26,7 +26,7 @@
     $menuItems = $(menuItemsId);
     $menuContainer = $(menuContainerId);
     $moreMenu.click(() =>
-      menuToggle($moreMenu, $menuContainer, $moreMenu.find(".arrow"))
+      menuToggle($moreMenu, $menuContainer, $moreMenu.find(".fa-angle-down")),
     );
 
     // Take the number of menu items and calculate individual outer width
@@ -67,7 +67,7 @@
     var $moreMenuItems = $("<div/>")
       .attr("id", "more-menu-items")
       .addClass(
-        "absolute right-0 mr-gutterHalf flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2  shadow z-50"
+        "absolute right-0 flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2 shadow z-50",
       );
     $menuContainer.html($moreMenuItems);
 

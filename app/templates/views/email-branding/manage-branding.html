@@ -20,7 +20,7 @@
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% if logo %}
         <div id="logo-img">
-          <img src="https://{{ cdn_url }}/{{ logo }}"/>
+          <img alt="" src="https://{{ cdn_url }}/{{ logo }}"/>
         </div>
       {% endif %}
       <p>
@@ -31,8 +31,11 @@
         <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
           <div style='margin-top:15px;'>{{textbox(form.name)}}</div>
           <div style='margin-top:15px;'>{{textbox(form.text)}}</div>
+          <div style='margin-top:15px;'>{{textbox(form.alt_text_en)}}</div>
+          <div style='margin-top:15px;'>{{textbox(form.alt_text_fr)}}</div>
           {{ textbox(form.colour, width='w-full md:w-1/4', colour_preview=True) }}
-           {{ radios(form.brand_type) }}
+          {{ radios(form.brand_type) }}
+          {{ radios(form.organisation) }}
           {{ page_footer(
             _('Save'),
             button_name='operation',
@@ -41,5 +44,4 @@
         </div>
       {% endcall %}
     </div>
-
 {% endblock %}

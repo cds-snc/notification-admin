@@ -37,11 +37,11 @@ def test_should_render_new_password_template(
             "password_expired": False,
         }
     )
-    token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(data, app_.config["SECRET_KEY"])
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
     assert response.status_code == 200
-    assert "A password that is hard to guess contains:" in response.get_data(as_text=True)
+    assert "Your password must have:" in response.get_data(as_text=True)
 
 
 def test_should_return_404_when_email_address_does_not_exist(
@@ -50,7 +50,7 @@ def test_should_return_404_when_email_address_does_not_exist(
     mock_get_user_by_email_not_found,
 ):
     data = json.dumps({"email": "no_user@d.canada.ca", "created_at": str(datetime.utcnow())})
-    token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(data, app_.config["SECRET_KEY"])
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
     assert response.status_code == 404
 
@@ -65,7 +65,7 @@ def test_should_redirect_to_two_factor_when_password_reset_is_successful(
 ):
     user = mock_get_user_by_email_request_password_reset.return_value
     data = json.dumps({"email": user["email_address"], "created_at": str(datetime.utcnow())})
-    token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(data, app_.config["SECRET_KEY"])
     response = client.post(
         url_for_endpoint_with_token(".new_password", token=token),
         data={"new_password": "a-new_password"},
@@ -85,7 +85,7 @@ def test_should_redirect_index_if_user_has_already_changed_password(
 ):
     user = mock_get_user_by_email_user_changed_password.return_value
     data = json.dumps({"email": user["email_address"], "created_at": str(datetime.utcnow())})
-    token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(data, app_.config["SECRET_KEY"])
     response = client.post(
         url_for_endpoint_with_token(".new_password", token=token),
         data={"new_password": "a-new_password"},
@@ -116,9 +116,7 @@ def test_should_redirect_to_forgot_password_with_flash_message_when_token_is_exp
         "app.main.views.new_password.check_token",
         side_effect=SignatureExpired("expired"),
     )
-    token = generate_token(
-        json.dumps({"email": sample_user["email_address"]}), app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"]
-    )
+    token = generate_token(json.dumps({"email": sample_user["email_address"]}), app_.config["SECRET_KEY"])
 
     response = client.get(url_for_endpoint_with_token(".new_password", token=token))
 
@@ -143,7 +141,7 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
     user = mock_get_user_by_email_request_password_reset.return_value
     user["auth_type"] = "email_auth"
     data = json.dumps({"email": user["email_address"], "created_at": str(datetime.utcnow())})
-    token = generate_token(data, app_.config["SECRET_KEY"], app_.config["DANGEROUS_SALT"])
+    token = generate_token(data, app_.config["SECRET_KEY"])
 
     response = client.post(
         url_for_endpoint_with_token(".new_password", token=token),

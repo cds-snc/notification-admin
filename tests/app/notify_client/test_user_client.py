@@ -14,7 +14,6 @@ user_id = sample_uuid()
 
 
 def test_client_gets_all_users_for_service(mocker, fake_uuid, api_user_pending):
-
     user_api_client.max_failed_login_count = 99  # doesn't matter for this test
     mock_get = mocker.patch(
         "app.notify_client.user_api_client.UserApiClient.get",
@@ -33,7 +32,6 @@ def test_client_gets_all_users_for_service(mocker, fake_uuid, api_user_pending):
 
 
 def test_client_uses_correct_find_by_email(mocker, api_user_active):
-
     expected_url = "/user/email"
     expected_params = {"email": api_user_active["email_address"]}
 
@@ -160,7 +158,6 @@ def test_returns_value_from_cache(
     expected_api_calls,
     expected_cache_set_calls,
 ):
-
     mock_redis_get = mocker.patch(
         "app.extensions.RedisClient.get",
         return_value=cache_value,
@@ -277,3 +274,27 @@ def test_get_last_email_login_datetime(mocker, value, expected_return):
 
     assert user_api_client.get_last_email_login_datetime(user_id) == expected_return
     mock_redis_get.assert_called_once_with(f"user-{user_id}-last-email-login")
+
+
+class TestFreshdesk:
+    def test_send_new_template_category_request(self, mocker):
+        mock_post = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
+
+        data = {
+            "user_id": user_id,
+            "service_id": "456",
+            "template_category_name_en": "Category EN",
+            "template_category_name_fr": "Category FR",
+            "template_id": "789",
+        }
+
+        user_api_client.send_new_template_category_request(**data)
+
+        expected_data = {
+            "service_id": data["service_id"],
+            "template_category_name_en": data["template_category_name_en"],
+            "template_category_name_fr": data["template_category_name_fr"],
+            "template_id": data["template_id"],
+        }
+        del data["user_id"]
+        mock_post.assert_called_once_with(f"/user/{user_id}/new-template-category-request", data=expected_data)

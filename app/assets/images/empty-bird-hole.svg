@@ -1,0 +1,33 @@
+<svg width="135" height="75" viewBox="0 0 135 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="65" rx="35" ry="10" fill="#304760" />
+    <mask id="mask0_2410_13043" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="65" y="36" width="70" height="39">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M135 36H65V65C65 70.5228 80.67 75 100 75C119.33 75 135 70.5228 135 65V36Z" fill="#D9D9D9" />
+    </mask>
+    <g mask="url(#mask0_2410_13043)">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M119.519 90.7078L126.651 51.3486L106.971 47.7829L105.188 57.6227L95.3487 55.8398L103.406 67.4625L99.8398 87.142L119.519 90.7078Z"
+            fill="#C1E8FA" />
+        <path d="M119.855 55.1987L115.398 79.7982" stroke="#304760" />
+        <path d="M115.919 54.4856L111.462 79.0851" stroke="#304760" />
+        <path d="M111.984 53.7725L109.31 68.5321" stroke="#304760" />
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M109.906 62.9925L76.4941 41L65.4979 57.7058L73.8507 63.2039L68.3526 71.5568L82.2036 68.702L98.9094 79.6983L109.906 62.9925Z"
+            fill="#6DA8D3" />
+        <path d="M77.3716 48.7607L98.2538 62.5061" stroke="#304760" />
+        <path d="M75.1724 52.1021L96.0546 65.8474" stroke="#304760" />
+        <path d="M72.9731 55.4431L85.5025 63.6903" stroke="#304760" />
+    </g>
+    <path d="M39.5 61L37.5 71.5M37.5 71.5H40.5M37.5 71.5L33.5 73.5M37.5 71.5L38 74.5" stroke="#304760" />
+    <path d="M46 65V73M46 73H50M46 73H43.5M46 73V75" stroke="#304760" />
+    <path d="M21.0001 25C67.0001 53 72.9734 64.4584 67.5001 68C59.0001 73.5 26.0001 79.5 21.0001 25Z" fill="#AFB9C3" />
+    <circle cx="3" cy="3" r="3" transform="matrix(-1 0 0 1 66.5 61.5)" fill="white" />
+    <circle cx="1" cy="1" r="1" transform="matrix(-1 0 0 1 65.5 64.5)" fill="black" />
+    <path d="M71 69.5L67.5 65.5L65 69L71 69.5Z" fill="#F6BE00" />
+    <path d="M30.5 39C55.5 58.5 52 58.5 42 69.5" stroke="#304760" />
+    <path d="M12 23L21 25M21 25L19 14M21 25L15 18" stroke="#304760" />
+    <path d="M28 73L0 73" stroke="#304760" />
+    <path d="M72.5 40.5L69 38" stroke="#304760" />
+    <path d="M76.2768 38.2845L75.8989 34" stroke="#304760" />
+    <path d="M79.9999 40.4887L82.7734 37.2012" stroke="#304760" />
+</svg>

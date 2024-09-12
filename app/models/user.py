@@ -31,7 +31,6 @@ def _get_org_id_from_view_args():
 
 
 class User(JSONModel, UserMixin):
-
     ALLOWED_PROPERTIES = {
         "id",
         "name",
@@ -141,7 +140,6 @@ class User(JSONModel, UserMixin):
         session["user_id"] = self.id
 
     def sign_in(self):
-
         session["user_details"] = {"email": self.email_address, "id": self.id}
 
         if not self.is_active:
@@ -389,8 +387,19 @@ class User(JSONModel, UserMixin):
     def send_already_registered_email(self):
         user_api_client.send_already_registered_email(self.id, self.email_address)
 
-    def send_branding_request(self, serviceID, service_name, filename):
-        user_api_client.send_branding_request(self.id, serviceID, service_name, filename)
+    def send_branding_request(
+        self, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name
+    ):
+        user_api_client.send_branding_request(
+            self.id, serviceID, service_name, org_id, org_name, filename, alt_text_en, alt_text_fr, branding_logo_name
+        )
+
+    def send_new_template_category_request(
+        self, user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+    ):
+        user_api_client.send_new_template_category_request(
+            user_id, service_id, template_category_name_en, template_category_name_fr, template_id
+        )
 
     def refresh_session_id(self):
         self.current_session_id = user_api_client.get_user(self.id).get("current_session_id")
@@ -412,7 +421,6 @@ class User(JSONModel, UserMixin):
 
 
 class InvitedUser(JSONModel):
-
     ALLOWED_PROPERTIES = {
         "id",
         "service",
@@ -498,7 +506,14 @@ class InvitedUser(JSONModel):
         return self.service == service_id and permission in self.permissions
 
     def __eq__(self, other):
-        return (self.id, self.service, self._from_user, self.email_address, self.auth_type, self.status,) == (
+        return (
+            self.id,
+            self.service,
+            self._from_user,
+            self.email_address,
+            self.auth_type,
+            self.status,
+        ) == (
             other.id,
             other.service,
             other._from_user,
@@ -530,7 +545,6 @@ class InvitedUser(JSONModel):
 
 
 class InvitedOrgUser(JSONModel):
-
     ALLOWED_PROPERTIES = {
         "id",
         "organisation",
@@ -544,7 +558,13 @@ class InvitedOrgUser(JSONModel):
         self._invited_by = _dict["invited_by"]
 
     def __eq__(self, other):
-        return (self.id, self.organisation, self._invited_by, self.email_address, self.status,) == (
+        return (
+            self.id,
+            self.organisation,
+            self._invited_by,
+            self.email_address,
+            self.status,
+        ) == (
             other.id,
             other.organisation,
             other._invited_by,
@@ -604,7 +624,6 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 class Users(ModelList):
-
     client = user_api_client.get_users_for_service
     model = User
 
@@ -617,7 +636,6 @@ class OrganisationUsers(Users):
 
 
 class InvitedUsers(ModelList):
-
     client = invite_api_client.get_invites_for_service
     model = InvitedUser
 
@@ -626,7 +644,6 @@ class InvitedUsers(ModelList):
 
 
 class OrganisationInvitedUsers(ModelList):
-
     client = org_invite_api_client.get_invites_for_organisation
     model = InvitedOrgUser
 

@@ -5,40 +5,59 @@
   }
 
   .big-number-number {
-    @apply block text-48 font-bold leading-none;
+    @apply block .text-titlelarge pb-4 font-bold leading-none;
   }
 
   .big-number-dark {
-    @apply relative p-gutterHalf text-white bg-blue;
+    @apply block p-gutterHalf text-white bg-blue;
   }
 
   .big-number-label {
-    @apply text-smaller inline-block pb-4;
+    @apply text-smaller inline-block;
+  }
+
+  .big-number-status {
+    @apply text-smaller block text-white bg-green-darker;
+  }
+
+  .big-number-status:hover > div {
+    @apply no-underline;
   }
 
   .big-number-with-status {
     @apply relative mb-8;
   }
 
-  .big-number-link {
-    @apply no-underline mb-2 text-white block bg-blue border-2 border-blue border-solid;
+  .big-number-link,
+  .big-number-with-status > .big-number {
+    @apply no-underline text-white block bg-blue border-2 border-blue border-solid;
   }
+
+  .big-number-link-normal {
+    @apply no-underline text-white block;
+  }
+
+  .big-number-link-warning {
+    @apply no-underline text-black block;
+  }
+
   .big-number-link:hover,
   .big-number-link:hover .big-number {
     @apply text-blue-lightblue25;
   }
+
   .big-number-link:active,
   .big-number-link:focus {
     @apply outline-yellow bg-blue;
   }
+
   .big-number-link:hover .big-number-label,
   .big-number-link:active .big-number-label,
-  .big-number-link:focus .big-number-label {
+  .big-number-link:focus .big-number-label,
+  .big-number-link:hover span,
+  .big-number-link:active span,
+  .big-number-link:focus span {
     @apply no-underline;
-  }
-
-  .big-number-status {
-    @apply text-smaller block text-white bg-green-darker;
   }
 
   .big-number-status-link:link,
@@ -54,5 +73,34 @@
     box-shadow: none;
     @apply outline-yellow border-0;
   }
+
+  /* Covers -normal, -warn, -critical */
+  div[class*="review-email-status-"]:active,
+  div[class*="review-email-status-"]:focus {
+    @apply outline-yellow;
+  }
+
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-label"]
+    span,
+  div[class*="review-email-status-"]:hover
+    div[class~="review-email-link"]
+    span {
+    @apply no-underline;
+  }
+
+  .normal {
+    @apply bg-green-darker border-green-darker;
+  }
+
+  .critical {
+    @apply bg-red border-red;
+  }
+
+  .neutral {
+    background: #49535d;
+    border-color: #49535d;
+  }
+
   /*! purgecss end ignore */
 }

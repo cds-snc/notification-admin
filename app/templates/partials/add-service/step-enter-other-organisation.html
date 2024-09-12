@@ -1,0 +1,12 @@
+{% from "components/radios.html" import radios %}
+
+<div data-module="url-typer" class="form-wrap">
+  {% call form_wrapper() %}
+
+    {{ textbox(form.other_organisation_name, maxlength=255) }}
+
+    {% set button_txt = _('Create service') %}
+    {{ page_footer(button_txt) }}
+
+  {% endcall %}
+</div>

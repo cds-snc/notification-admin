@@ -1,4 +1,4 @@
-from flask import abort, flash, redirect, render_template, session, url_for
+from flask import abort, current_app, flash, redirect, render_template, session, url_for
 from flask_babel import _
 from flask_login import current_user
 from markupsafe import Markup
@@ -75,7 +75,13 @@ def accept_invite(token):
 
 @main.route("/organisation-invitation/<token>")
 def accept_org_invite(token):
-    invited_org_user = InvitedOrgUser.from_token(token)
+    try:
+        invited_org_user = InvitedOrgUser.from_token(token)
+    except InviteTokenError:
+        current_app.logger.warning(f"Bad org invite token: {token}")
+        flash(message=_("bad invitation link"))
+        abort(403)
+
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_org_user.email_address.lower():
         message = Markup(
             _(

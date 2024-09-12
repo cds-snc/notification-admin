@@ -18,11 +18,13 @@ import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
+import pytz
 from dateutil import parser
 from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
+from notifications_utils import SMS_CHAR_COUNT_LIMIT
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
 from notifications_utils.letter_timings import letter_can_be_cancelled
@@ -44,6 +46,7 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
+from app.models.enum.template_types import TemplateType
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 from app.types import EmailReplyTo
@@ -57,6 +60,21 @@ FAILURE_STATUSES = [
     "technical-failure",
     "virus-scan-failed",
     "validation-failed",
+]
+CSV_COLUMN_HEADER_MAPPINGS = [
+    {"original_heading": "email address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "email_address", "en": "Email address", "fr": _l("Email address")},
+    {"original_heading": "phone number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "phone_number", "en": "Phone number", "fr": _l("Phone number")},
+    {"original_heading": "Row number", "en": "Row number", "fr": _l("Row number")},
+    {"original_heading": "Recipient", "en": "Recipient", "fr": _l("Recipient")},
+    {"original_heading": "Template", "en": "Template", "fr": _l("Template")},
+    {"original_heading": "Type", "en": "Type", "fr": _l("Type")},
+    {"original_heading": "Sent by", "en": "Sent by", "fr": _l("Sent by")},
+    {"original_heading": "Sent by email", "en": "Sent by email", "fr": _l("Sent by email")},
+    {"original_heading": "Job", "en": "Job", "fr": _l("Job")},
+    {"original_heading": "Status", "en": "Status", "fr": _l("Status")},
+    {"original_heading": "Time", "en": "Sent Time", "fr": _l("Sent Time")},
 ]
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
@@ -76,8 +94,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=3600)
-def get_latest_stats(lang):
-    results = service_api_client.get_stats_by_month()["data"]
+def get_latest_stats(lang, filter_heartbeats=None):
+    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -103,7 +121,7 @@ def get_latest_stats(lang):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data()["data"])
+    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
 
     return {
         "monthly_stats": monthly_stats,
@@ -165,7 +183,6 @@ def redirect_to_sign_in(f):
 
 
 def get_errors_for_csv(recipients, template_type):
-
     errors = []
 
     if any(recipients.rows_with_bad_recipients):
@@ -193,12 +210,37 @@ def get_errors_for_csv(recipients, template_type):
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
+    if recipients.template_type == TemplateType.SMS.value and any(recipients.rows_with_combined_variable_content_too_long):
+        num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
+        if num_rows_with_combined_content_too_long == 1:
+            errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
+        else:
+            errors.append(
+                _("added custom content exceeds the {} character limit in {} rows").format(
+                    SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+                )
+            )
+        # TODO Update the inline cell error messages
+
     return errors
 
 
+def localize_and_format_csv_headers(column_headers: list) -> list:
+    from app import get_current_locale
+
+    lang = get_current_locale(current_app)
+    localized_headers = []
+    for header in column_headers:
+        localized_header = [mapped for mapped in CSV_COLUMN_HEADER_MAPPINGS if mapped["original_heading"] == header]
+        localized_headers.append(str(localized_header[0][lang]) if len(localized_header) >= 1 else header)
+    return localized_headers
+
+
 def generate_notifications_csv(**kwargs):
-    from app import notification_api_client
+    from app import get_current_locale, notification_api_client
     from app.s3_client.s3_csv_client import s3download
+
+    lang = get_current_locale(current_app)
 
     if "page" not in kwargs:
         kwargs["page"] = 1
@@ -210,19 +252,24 @@ def generate_notifications_csv(**kwargs):
             template_type=kwargs["template_type"],
         )
         original_column_headers = original_upload.column_headers
-        fieldnames = ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        fieldnames = localize_and_format_csv_headers(
+            ["Row number"] + original_column_headers + ["Template", "Type", "Job", "Status", "Time"]
+        )
     else:
-        fieldnames = [
-            "Recipient",
-            "Template",
-            "Type",
-            "Sent by",
-            "Sent by email",
-            "Job",
-            "Status",
-            "Time",
-        ]
-
+        fieldnames = localize_and_format_csv_headers(
+            [
+                "Recipient",
+                "Template",
+                "Type",
+                "Sent by",
+                "Sent by email",
+                "Job",
+                "Status",
+                "Time",
+            ]
+        )
+    # Add encoded Byte Order Mark to the csv so MS Excel treats it as UTF-8 and properly renders accented FR characters.
+    yield "\uFEFF".encode("utf-8")
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:
@@ -236,9 +283,9 @@ def generate_notifications_csv(**kwargs):
                     + [original_upload[notification["row_number"] - 1].get(header).data for header in original_column_headers]
                     + [
                         notification["template_name"],
-                        notification["template_type"],
+                        notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                         notification["job_name"],
-                        notification["status"],
+                        notification["status"] if lang == "en" else _l(notification["status"]),
                         notification["created_at"],
                     ]
                 )
@@ -246,11 +293,11 @@ def generate_notifications_csv(**kwargs):
                 values = [
                     notification["recipient"],
                     notification["template_name"],
-                    notification["template_type"],
+                    notification["template_type"] if lang == "en" else _l(notification["template_type"]),
                     notification["created_by_name"] or "",
                     notification["created_by_email_address"] or "",
                     notification["job_name"] or "",
-                    notification["status"],
+                    notification["status"] if lang == "en" else _l(notification["status"]),
                     notification["created_at"],
                 ]
             yield Spreadsheet.from_rows([map(str, values)]).as_csv_data
@@ -321,18 +368,17 @@ def get_remote_addr(request):
 
 
 class Spreadsheet:
-
     allowed_file_extensions = ["csv", "xlsx", "xls", "ods", "xlsm", "tsv"]
 
-    def __init__(self, csv_data=None, rows=None, filename=""):
-
+    def __init__(self, csv_data=None, rows=None, filename="", json_data=None):
         self.filename = filename
 
         if csv_data and rows:
             raise TypeError("Spreadsheet must be created from either rows or CSV data")
 
-        self._csv_data = csv_data or ""
-        self._rows = rows or []
+        self.json_data: list[dict[str, str]] = json_data or []
+        self._csv_data: str = csv_data or ""
+        self._rows: list = rows or []
 
     @property
     def as_dict(self):
@@ -340,8 +386,17 @@ class Spreadsheet:
 
     @property
     def as_csv_data(self):
-        if not self._csv_data:
-            with StringIO() as converted:
+        if self._csv_data:
+            return self._csv_data
+        with StringIO() as converted:
+            if self.json_data:
+                if len(self.json_data) == 0:
+                    return ""
+                writer = csv.DictWriter(converted, self.json_data[0].keys())
+                writer.writeheader()
+                writer.writerows(self.json_data)
+                self._csv_data = converted.getvalue()
+            else:
                 output = csv.writer(converted)
                 for row in self._rows:
                     output.writerow(row)
@@ -490,6 +545,8 @@ def get_email_logo_options(service):
             "asset_domain": get_logo_cdn_domain(),
             "fip_banner_english": not service.default_branding_is_french,
             "fip_banner_french": service.default_branding_is_french,
+            "alt_text_en": None,
+            "alt_text_fr": None,
         }
 
     return {
@@ -498,6 +555,8 @@ def get_email_logo_options(service):
         "brand_logo": email_branding["logo"],
         "brand_text": email_branding["text"],
         "brand_name": email_branding["name"],
+        "alt_text_en": email_branding["alt_text_en"],
+        "alt_text_fr": email_branding["alt_text_fr"],
     }
 
 
@@ -566,7 +625,6 @@ def normalize_spaces(name):
 
 
 def guess_name_from_email_address(email_address):
-
     possible_name = re.split(r"[\@\+]", email_address)[0]
 
     if "." not in possible_name or starts_with_initial(possible_name):
@@ -826,3 +884,24 @@ def get_new_default_reply_to_address(email_reply_tos: List[EmailReplyTo], defaul
     if len(non_default_reply_tos) < 1:
         return None
     return non_default_reply_tos[0]
+
+
+# TODO: move this to utils sinee its use in API, too
+def get_limit_reset_time_et() -> dict[str, str]:
+    """
+    This function gets the time when the daily limit resets (UTC midnight)
+    and returns this formatted in eastern time. This will either be 7PM or 8PM,
+    depending on the time of year."""
+
+    now = datetime.now()
+    one_day = timedelta(1.0)
+    next_midnight = datetime(now.year, now.month, now.day) + one_day
+
+    utc = pytz.timezone("UTC")
+    et = pytz.timezone("US/Eastern")
+
+    next_midnight_utc = next_midnight.astimezone(utc)
+    next_midnight_utc_in_et = next_midnight_utc.astimezone(et)
+
+    limit_reset_time_et = {"en": next_midnight_utc_in_et.strftime("%-I%p"), "fr": next_midnight_utc_in_et.strftime("%H")}
+    return limit_reset_time_et

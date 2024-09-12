@@ -10,9 +10,10 @@
       this.$form.find("button[value=unknown]").remove();
 
       this.$liveRegionCounter = this.$form.find(".selection-counter");
-
-      this.$liveRegionCounter.before(this.nothingSelectedButtons);
-      this.$liveRegionCounter.before(this.itemsSelectedButtons);
+      this.$legend = this.$form.find("#aria-live-legend");
+      this.$buttonContainer = this.$form.find(".aria-live-region");
+      this.$buttonContainer.before(this.nothingSelectedButtons);
+      this.$buttonContainer.before(this.itemsSelectedButtons);
 
       // all the diff states that we want to show or hide
       this.states = [
@@ -73,7 +74,7 @@
       }
 
       this.$form.on("click", "button.js-button-action", (event) =>
-        this.actionButtonClicked(event)
+        this.actionButtonClicked(event),
       );
       this.$form.on("click", "button[value=add-new-template]", (event) => {
         event.stopPropagation();
@@ -81,7 +82,7 @@
         window.location.href = `${window.location.href}/create`;
       });
       this.$form.on("change", "input[type=checkbox]", () =>
-        this.templateFolderCheckboxChanged()
+        this.templateFolderCheckboxChanged(),
       );
 
       this.$form.on("click", ".copy-template", (event) => {
@@ -116,7 +117,7 @@
       // see: https://github.com/cds-snc/notification-api/issues/152
       if ($(".template-list-item").length === 0) {
         $(".js-stick-at-bottom-when-scrolling").removeClass(
-          "js-stick-at-bottom-when-scrolling"
+          "js-stick-at-bottom-when-scrolling",
         );
       }
 
@@ -181,7 +182,7 @@
 
       if (opts.hasOwnProperty("nonvisualText")) {
         $btn.append(
-          `<span class="visuallyhidden"> ${opts.nonvisualText}</span>`
+          `<span class="visuallyhidden"> ${opts.nonvisualText}</span>`,
         );
       }
 
@@ -236,6 +237,24 @@
       },
     };
 
+    this.legendText = {
+      default: window.polyglot.t("create_template_legend"),
+      selected: (numSelected) => {
+        if (numSelected === 1) {
+          return window.polyglot.t("selecting_templates_legend");
+        }
+        return window.polyglot.t("move_template_legend");
+      },
+      update: (numSelected) => {
+        let message =
+          numSelected > 0
+            ? this.legendText.selected(numSelected)
+            : this.legendText.default;
+
+        this.$legend.html(message);
+      },
+    };
+
     this.templateFolderCheckboxChanged = function () {
       let numSelected = this.countSelectedCheckboxes();
 
@@ -257,6 +276,7 @@
         this.render();
       }
 
+      this.legendText.update(numSelected);
       this.selectionStatus.update(numSelected);
 
       $(".template-list-selected-counter").toggle(this.hasCheckboxes());
@@ -279,8 +299,8 @@
       // detach everything, unless they are the currentState
       this.states.forEach((state) =>
         state.key === this.currentState && state.key !== "add-new-template"
-          ? this.$liveRegionCounter.before(state.$el)
-          : state.$el.detach()
+          ? this.$buttonContainer.before(state.$el)
+          : state.$el.detach(),
       );
 
       if (this.currentState === "add-new-template") {
@@ -304,14 +324,14 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button" value="add-new-template">${window.polyglot.t(
-            "new_template_button"
+          <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
+            "new_template_button",
           )}</button>
-          <button class="button js-button-action button-secondary copy-template" value="copy-template">${window.polyglot.t(
-            "copy_template_button"
+          <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
+            "copy_template_button",
           )}</button>
-          <button class="button js-button-action button-secondary" value="add-new-folder">${window.polyglot.t(
-            "new_folder_button"
+          <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
+            "new_folder_button",
           )}</button>
           <div class="template-list-selected-counter">
             <span class="template-list-selected-counter__count" aria-hidden="true">
@@ -326,10 +346,10 @@
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
           <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t(
-            "move"
+            "move",
           )}</button>
           <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t(
-            "add_to_new_folder"
+            "add_to_new_folder",
           )}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">

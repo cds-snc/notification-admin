@@ -18,7 +18,10 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
-from notifications_utils.clients.redis import sms_daily_count_cache_key
+from notifications_utils.clients.redis import (
+    email_daily_count_cache_key,
+    sms_daily_count_cache_key,
+)
 from notifications_utils.columns import Columns
 from notifications_utils.recipients import (
     RecipientCSV,
@@ -28,10 +31,12 @@ from notifications_utils.recipients import (
 from notifications_utils.sanitise_text import SanitiseASCII
 from ordered_set import OrderedSet
 from xlrd.biffh import XLRDError
+from xlrd.compdoc import CompDocError
 from xlrd.xldate import XLDateError
 
 from app import (
     current_service,
+    get_current_locale,
     job_api_client,
     notification_api_client,
     redis_client,
@@ -62,6 +67,7 @@ from app.utils import (
     email_or_sms_not_enabled,
     get_errors_for_csv,
     get_help_argument,
+    get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
     unicode_truncate,
@@ -71,6 +77,10 @@ from app.utils import (
 
 def daily_sms_fragment_count(service_id):
     return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
+
+
+def daily_email_count(service_id):
+    return int(redis_client.get(email_daily_count_cache_key(service_id)) or "0")
 
 
 def service_can_bulk_send(service_id):
@@ -191,13 +201,15 @@ def send_messages(service_id, template_id):
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
             flash(_("Could not read {}. Try using a different file format.").format(form.file.data.filename))
-        except (XLDateError):
+        except XLDateError:
             flash(
                 _(
                     "{} contains numbers or dates that GC Notify can’t understand. "
                     "Try formatting all columns as ‘text’ or export your file as CSV."
                 ).format(form.file.data.filename)
             )
+        except CompDocError:
+            flash(_("Try creating {} in a different application").format(form.file.data.filename))
 
     column_headings = get_spreadsheet_column_headings_from_template(template)
 
@@ -287,7 +299,7 @@ def s3_send(service_id, template_id):
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
             flash(_("Could not read {}. Try using a different file format.").format(form.s3_files.data))
-        except (XLDateError):
+        except XLDateError:
             flash(
                 _(
                     "{} contains numbers or dates that GC Notify can’t understand. "
@@ -599,7 +611,6 @@ def send_test_step(service_id, template_id, step_index):
 @main.route("/services/<service_id>/send/<template_id>/test.<filetype>", methods=["GET"])
 @user_has_permissions("send_messages")
 def send_test_preview(service_id, template_id, filetype):
-
     if filetype not in ("pdf", "png"):
         abort(404)
 
@@ -621,8 +632,7 @@ def send_test_preview(service_id, template_id, filetype):
     return TemplatePreview.from_utils_template(template, filetype, page=request.args.get("page"))
 
 
-def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False):
-
+def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False, user_language="en"):
     try:
         # The happy path is that the job doesn’t already exist, so the
         # API will return a 404 and the client will raise HTTPError.
@@ -637,10 +647,10 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         if e.status_code != 404:
             raise
 
-    statistics = service_api_client.get_service_statistics(service_id, today_only=True)
-    remaining_messages = current_service.message_limit - sum(stat["requested"] for stat in statistics.values())
     sms_fragments_sent_today = daily_sms_fragment_count(service_id)
+    emails_sent_today = daily_email_count(service_id)
     remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
+    remaining_email_messages = current_service.message_limit - emails_sent_today
 
     contents = s3download(service_id, upload_id)
 
@@ -648,6 +658,10 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     email_reply_to = None
     sms_sender = None
+    recipients_remaining_messages = (
+        remaining_email_messages if db_template["template_type"] == "email" else remaining_sms_message_fragments
+    )
+
     if db_template["template_type"] == "email":
         email_reply_to = get_email_reply_to_address_from_session()
     elif db_template["template_type"] == "sms":
@@ -656,32 +670,38 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         db_template,
         current_service,
         show_recipient=True,
-        letter_preview_url=url_for(
-            ".check_messages_preview",
-            service_id=service_id,
-            template_id=template_id,
-            upload_id=upload_id,
-            filetype="png",
-            row_index=preview_row,
-        )
-        if not letters_as_pdf
-        else None,
+        letter_preview_url=(
+            url_for(
+                ".check_messages_preview",
+                service_id=service_id,
+                template_id=template_id,
+                upload_id=upload_id,
+                filetype="png",
+                row_index=preview_row,
+            )
+            if not letters_as_pdf
+            else None
+        ),
         email_reply_to=email_reply_to,
         sms_sender=sms_sender,
         page_count=get_page_count_for_letter(db_template),
     )
     recipients = RecipientCSV(
         contents,
+        template=template,
         template_type=template.template_type,
         placeholders=template.placeholders,
         max_initial_rows_shown=int(request.args.get("show") or 10),
         max_errors_shown=50,
-        safelist=itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
-        if current_service.trial_mode
-        else None,
-        remaining_messages=remaining_messages,
+        safelist=(
+            itertools.chain.from_iterable([user.name, user.mobile_number, user.email_address] for user in Users(service_id))
+            if current_service.trial_mode
+            else None
+        ),
+        remaining_messages=recipients_remaining_messages,
         international_sms=current_service.has_permission("international_sms"),
         max_rows=get_csv_max_rows(service_id),
+        user_language=user_language,
     )
 
     if request.args.get("from_test"):
@@ -723,7 +743,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
-        remaining_messages=remaining_messages,
+        remaining_messages=remaining_email_messages,
         remaining_sms_message_fragments=remaining_sms_message_fragments,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
@@ -754,10 +774,16 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 )
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def check_messages(service_id, template_id, upload_id, row_index=2):
-
-    data = _check_messages(service_id, template_id, upload_id, row_index)
+    current_lang = get_current_locale(current_app)
+    data = _check_messages(service_id, template_id, upload_id, row_index, user_language=current_lang)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
+    data["time_to_reset"] = get_limit_reset_time_et()
+
+    data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
+    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+    data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
@@ -775,12 +801,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if data["errors"] or data["trying_to_send_letters_in_trial_mode"]:
         return render_template("views/check/column-errors.html", **data)
 
-    data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
-    data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
-    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
-    data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["sms_parts_remaining"]
-
-    if current_app.config["FF_SPIKE_SMS_DAILY_LIMIT"] and data["send_exceeds_daily_limit"]:
+    if data["send_exceeds_daily_limit"]:
         return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
@@ -845,7 +866,6 @@ def check_notification_preview(service_id, template_id, filetype):
 @main.route("/services/<service_id>/start-job/<upload_id>", methods=["POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def start_job(service_id, upload_id):
-
     job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
 
     session.pop("sender_id", None)
@@ -864,14 +884,12 @@ def start_job(service_id, upload_id):
 @main.route("/services/<service_id>/end-tour/<example_template_id>")
 @user_has_permissions("manage_templates")
 def go_to_dashboard_after_tour(service_id, example_template_id):
-
     service_api_client.delete_service_template(service_id, example_template_id)
 
     return redirect(url_for("main.service_dashboard", service_id=service_id))
 
 
 def fields_to_fill_in(template, prefill_current_user=False):
-
     recipient_columns = first_column_headings[template.template_type]
 
     if "letter" == template.template_type or not prefill_current_user:
@@ -1034,6 +1052,7 @@ def _check_notification(service_id, template_id, exception=None):
         raise PermanentRedirect(back_link)
 
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
+    time_to_reset = get_limit_reset_time_et()
 
     sms_parts_data = {}
     if db_template["template_type"] == "sms":
@@ -1042,11 +1061,13 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
+
     return dict(
         template=template,
         back_link=back_link,
         help=get_help_argument(),
         stats_daily=stats_daily,
+        time_to_reset=time_to_reset,
         **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
@@ -1058,6 +1079,8 @@ def get_template_error_dict(exception):
         error = "not-allowed-to-send-to"
     elif "Exceeded send limits" in exception.message:
         error = "too-many-messages"
+    elif "Exceeded email daily sending limit" in exception.message:
+        error = "too-many-email-messages"
     elif "Exceeded SMS daily sending limit" in exception.message:
         error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
@@ -1130,9 +1153,10 @@ def get_sms_sender_from_session():
 
 
 def get_spreadsheet_column_headings_from_template(template):
+    current_lang = get_current_locale(current_app)
     column_headings = []
 
-    for column_heading in first_column_headings[template.template_type] + list(template.placeholders):
+    for column_heading in first_column_headings[current_lang][template.template_type] + list(template.placeholders):
         if column_heading not in Columns.from_keys(column_headings):
             column_headings.append(column_heading)
 

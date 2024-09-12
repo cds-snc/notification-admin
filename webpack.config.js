@@ -8,6 +8,11 @@ module.exports = {
   mode: "production",
   entry: {
     main: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
+    branding_request: ["./app/assets/javascripts/branding_request.js"],
+    formValidateRequired: ["./app/assets/javascripts/formValidateRequired.js"],
+    sessionRedirect: ["./app/assets/javascripts/sessionRedirect.js"],
+    touDialog: ["./app/assets/javascripts/touDialog.js"],
+    templateFilters: ["./app/assets/javascripts/templateFilters.js"],
     scheduler: {
       import: './app/assets/javascripts/scheduler/scheduler.js',
       library: {

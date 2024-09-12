@@ -22,7 +22,6 @@ from app.utils import get_default_sms_sender
 
 
 class Service(JSONModel):
-
     ALLOWED_PROPERTIES = {
         "active",
         "contact_link",
@@ -48,6 +47,8 @@ class Service(JSONModel):
         "go_live_user",
         "go_live_at",
         "sending_domain",
+        "organisation_notes",
+        "sensitive_service",
     }
 
     TEMPLATE_TYPES = (
@@ -57,7 +58,6 @@ class Service(JSONModel):
     )
 
     def __init__(self, _dict):
-
         super().__init__(_dict)
         if "permissions" not in self._dict:
             self.permissions = {"email", "sms", "letter"}
@@ -76,7 +76,6 @@ class Service(JSONModel):
         return service_api_client.update_status(self.id, live=live, message_limit=message_limit, sms_daily_limit=sms_daily_limit)
 
     def force_permission(self, permission, on=False):
-
         permissions, permission = set(self.permissions), {permission}
 
         return self.update_permissions(
@@ -88,6 +87,9 @@ class Service(JSONModel):
 
     def toggle_research_mode(self):
         self.update(research_mode=not self.research_mode)
+
+    def suspend_callback_api(self, **kwargs):
+        return service_api_client.suspend_service_callback_api(self.id, **kwargs)
 
     @property
     def trial_mode(self):
@@ -152,7 +154,6 @@ class Service(JSONModel):
         )
 
     def get_team_member(self, user_id):
-
         if str(user_id) not in {user.id for user in self.active_users}:
             abort(404)
 
@@ -160,7 +161,6 @@ class Service(JSONModel):
 
     @cached_property
     def all_templates(self):
-
         templates = service_api_client.get_service_templates(self.id)["data"]
 
         return [template for template in templates if template["template_type"] in self.available_template_types]
@@ -550,7 +550,6 @@ class Service(JSONModel):
         return self._get_by_id(self.all_template_folders, folder_id)
 
     def is_folder_visible(self, template_folder_id, template_type="all", user=None):
-
         if template_type == "all":
             return True
 
@@ -566,7 +565,6 @@ class Service(JSONModel):
         return False
 
     def get_template_folder_path(self, template_folder_id):
-
         folder = self.get_template_folder(template_folder_id)
 
         if folder["id"] is None:
@@ -589,7 +587,6 @@ class Service(JSONModel):
         return len(self.all_templates + self.all_template_folders)
 
     def move_to_folder(self, ids_to_move, move_to):
-
         ids_to_move = set(ids_to_move)
 
         template_folder_api_client.move_to_folder(
@@ -608,3 +605,7 @@ class Service(JSONModel):
 
     def get_api_key(self, id):
         return self._get_by_id(self.api_keys, id)
+
+    @property
+    def organisation_notes(self):
+        return self._dict["organisation_notes"]

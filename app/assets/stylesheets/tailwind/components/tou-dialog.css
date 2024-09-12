@@ -1,0 +1,36 @@
+@layer components {
+  /*! purgecss start ignore */
+
+  dialog {
+    @apply text-smaller;
+  }
+
+  .dialog-content:focus {
+    box-shadow: inset 0 0 0 3px theme("colors.yellow.default");
+  }
+
+  .dialog-sticky-footer {
+    bottom: theme("spacing.gutterHalf");
+    @apply font-bold mx-gutter p-4 border-4 border-blue-700 bg-white text-blue-700 sticky;
+  }
+
+  #tou-dialog:not([open]) {
+    display: none;
+  }
+
+  ::backdrop {
+    @apply bg-gray-900;
+    opacity: 0.85;
+  }
+
+  #tou-dialog {
+    margin: 0;
+    max-height: 100vh;
+
+    @screen lg {
+      margin: auto;
+      max-height: calc(100vh - 6rem);
+    }
+  }
+  /*! purgecss end ignore */
+}

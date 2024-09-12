@@ -69,20 +69,23 @@ def view_jobs(service_id):
         page=page,
         prev_page=prev_page,
         next_page=next_page,
-        scheduled_jobs=render_template(
-            "views/dashboard/_upcoming.html",
-            scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
-            hide_show_more=True,
-            title=_("Scheduled messages"),
-        )
-        if page == 1
-        else None,
+        scheduled_jobs=(
+            render_template(
+                "views/dashboard/_upcoming.html",
+                scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
+                hide_show_more=True,
+                title=_("Scheduled messages"),
+            )
+            if page == 1
+            else None
+        ),
     )
 
 
 @main.route("/services/<service_id>/jobs/<job_id>")
 @user_has_permissions()
 def view_job(service_id, job_id):
+    retention_default = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
     job = job_api_client.get_job(service_id, job_id)["data"]
     if job["job_status"] == "cancelled":
         abort(404)
@@ -106,11 +109,18 @@ def view_job(service_id, job_id):
     partials = get_job_partials(job, template)
     can_cancel_letter_job = partials["can_letter_job_be_cancelled"]
 
+    # get service retention
+    svc_retention_days = [
+        dr["days_of_retention"] for dr in current_service.data_retention if dr["notification_type"] == template["template_type"]
+    ]
+    svc_retention_days = retention_default if len(svc_retention_days) == 0 else svc_retention_days[0]
+
     return render_template(
         "views/jobs/job.html",
         finished=(total_notifications == processed_notifications),
         uploaded_file_name=job["original_file_name"],
         template_id=job["template"],
+        template_name=template["name"],
         job_id=job_id,
         status=request.args.get("status", ""),
         updates_url=url_for(
@@ -118,11 +128,14 @@ def view_job(service_id, job_id):
             service_id=service_id,
             job_id=job["id"],
             status=request.args.get("status", ""),
+            pe_filter=request.args.get("pe_filter", ""),
         ),
         partials=partials,
         just_sent=bool(request.args.get("just_sent") == "yes" and template["template_type"] == "letter"),
         just_sent_message=just_sent_message,
         can_cancel_letter_job=can_cancel_letter_job,
+        job=job,
+        svc_retention_days=svc_retention_days,
     )
 
 
@@ -196,7 +209,6 @@ def cancel_letter_job(service_id, job_id):
 @main.route("/services/<service_id>/jobs/<job_id>.json")
 @user_has_permissions()
 def view_job_updates(service_id, job_id):
-
     job = job_api_client.get_job(service_id, job_id)["data"]
 
     return jsonify(
@@ -215,6 +227,14 @@ def view_job_updates(service_id, job_id):
 @main.route("/services/<service_id>/notifications/<message_type>", methods=["GET", "POST"])
 @user_has_permissions()
 def view_notifications(service_id, message_type=None):
+    service_data_retention_days = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
+
+    if message_type is not None:
+        service_data_retention_days = current_service.get_days_of_retention(message_type)
+
+    notifications = notification_api_client.get_notifications_for_service(
+        service_id=service_id, template_type=[message_type] if message_type else [], limit_days=service_data_retention_days
+    )
     return render_template(
         "views/notifications.html",
         partials=get_notifications(service_id, message_type),
@@ -222,6 +242,7 @@ def view_notifications(service_id, message_type=None):
         status=request.args.get("status") or "sending,delivered,failed",
         page=request.args.get("page", 1),
         to=request.form.get("to", ""),
+        pe_filter=request.form.get("pe_filter", ""),
         search_form=SearchNotificationsForm(
             message_type=message_type,
             to=request.form.get("to", ""),
@@ -232,6 +253,9 @@ def view_notifications(service_id, message_type=None):
             message_type=message_type,
             status=request.args.get("status"),
         ),
+        total_notifications=notifications["total"],
+        service_data_retention_days=service_data_retention_days,
+        service_id=service_id,
     )
 
 
@@ -323,6 +347,7 @@ def get_notifications(service_id, message_type, status_override=None):
             status=request.args.get("status"),
             message_type=message_type,
             download_link=download_link,
+            service_id=service_id,
         ),
     }
 
@@ -340,7 +365,7 @@ def get_status_filters(service, message_type, statistics):
     filters = [
         # key, label, option
         ("requested", "total", "sending,delivered,failed"),
-        ("sending", "sending", "sending"),
+        ("sending", "in transit", "sending"),
         ("delivered", "delivered", "delivered"),
         ("failed", "failed", "failed"),
     ]
@@ -381,7 +406,7 @@ def _get_job_counts(job):
         )
         for label, query_param, count in [
             ["total", "", job.get("notification_count", 0)],
-            ["sending", "sending", sending],
+            ["in transit", "sending", sending],
             ["delivered", "delivered", job.get("notifications_delivered", 0)],
             ["failed", "failed", job.get("notifications_failed", 0)],
         ]
@@ -425,6 +450,24 @@ def get_job_partials(job, template):
             can_letter_job_be_cancelled = True
     return {
         "counts": counts,
+        "notifications_header": render_template(
+            "partials/jobs/notifications_header.html",
+            notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
+            percentage_complete=(job["notifications_requested"] / job["notification_count"] * 100),
+            download_link=url_for(
+                ".view_job_csv",
+                service_id=current_service.id,
+                job_id=job["id"],
+                status=request.args.get("status"),
+            ),
+            available_until_date=get_available_until_date(
+                job["created_at"],
+                service_data_retention_days=service_data_retention_days,
+            ),
+            job=job,
+            template=template,
+            template_version=job["template_version"],
+        ),
         "notifications": render_template(
             "partials/jobs/notifications.html",
             notifications=list(add_preview_of_content_to_notifications(notifications["notifications"])),
@@ -457,9 +500,7 @@ def get_job_partials(job, template):
 
 
 def add_preview_of_content_to_notifications(notifications):
-
     for notification in notifications:
-
         if notification["template"].get("redact_personalisation"):
             notification["personalisation"] = {}
 

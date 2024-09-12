@@ -24,7 +24,7 @@ describe("Calendar", function () {
         <StateProvider value={providerState}>
           <Calendar />
         </StateProvider>
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     //debug();
@@ -38,7 +38,7 @@ describe("Calendar", function () {
 
     // shows month name for the date provided
     expect(container.querySelector(`.Nav--month`)).toHaveTextContent(
-      "February"
+      "February",
     );
 
     // renders a day
@@ -58,7 +58,7 @@ describe("Calendar", function () {
         <StateProvider value={providerState}>
           <Calendar />
         </StateProvider>
-      </I18nProvider>
+      </I18nProvider>,
     );
 
     fireEvent.keyDown(document.activeElement, {

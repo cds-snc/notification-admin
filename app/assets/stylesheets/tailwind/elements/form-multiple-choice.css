@@ -36,14 +36,14 @@
 
   .multiple-choice [type="radio"] + label:before {
     content: "";
-    @apply bg-transparent border-2 border-solid border-black absolute top-0 left-0;
+    @apply bg-transparent border-2 border-solid border-black box-content absolute top-0 left-0;
     border-radius: 50%;
     width: 34px;
     height: 34px;
   }
   .multiple-choice [type="radio"] + label:after {
     content: "";
-    @apply border-10 border-solid w-0 h-0 absolute opacity-0;
+    @apply border-10 border-solid border-black w-0 h-0 absolute opacity-0;
     top: 9px;
     left: 9px;
     border-radius: 50%;
@@ -53,7 +53,7 @@
     content: "";
     width: 34px;
     height: 34px;
-    @apply bg-transparent absolute top-0 left-0 border-2 border-solid border-black;
+    @apply bg-transparent absolute top-0 left-0 border-2 border-solid border-black box-content;
   }
   .multiple-choice [type="checkbox"] + label:after {
     content: "";
@@ -63,7 +63,7 @@
     top: 10px;
     left: 8px;
     border-top-color: transparent;
-    @apply border-solid bg-transparent absolute opacity-0 transform -rotate-45;
+    @apply border-solid border-black box-content bg-transparent absolute opacity-0 transform -rotate-45;
   }
 
   /* Focus state */
@@ -100,5 +100,83 @@
       @apply mb-0 mr-gutter;
     }
   }
+  /* When multiple choice has an image */
+  fieldset:has(img) {
+    @apply grid gap-gutterHalf;
+  }
+  fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
+    @apply grid gap-gutterHalf;
+  }
+  @screen md {
+    fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
+      @apply grid-cols-2;
+    }
+  }
+
+  .multiple-choice:has(img) {
+    --multiple-choice-img-padding: 1.5rem;
+    padding-left: calc(38px + var(--multiple-choice-img-padding));
+    padding-top: var(--multiple-choice-img-padding);
+    max-width: 600px;
+    @apply border-2 border-gray-300 m-0;
+  }
+  .multiple-choice:has(img):hover {
+    @apply border-gray-500;
+  }
+
+  .multiple-choice:has(img) [type="radio"] {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+  .multiple-choice:has(img) [type="radio"] + label {
+    padding-bottom: var(--multiple-choice-img-padding);
+    padding-right: var(--multiple-choice-img-padding);
+  }
+
+  .multiple-choice:has(img) [type="radio"] + label::before {
+    top: var(--multiple-choice-img-padding);
+    left: var(--multiple-choice-img-padding);
+    @apply bg-white;
+  }
+  .multiple-choice:has(img) [type="radio"] + label::after {
+    top: calc(9px + var(--multiple-choice-img-padding));
+    left: calc(9px + var(--multiple-choice-img-padding));
+  }
+  .multiple-choice:has(img):focus-within {
+    box-shadow: 0 2px 0 0 black;
+    @apply bg-yellow border-yellow;
+  }
+  .multiple-choice:has(img):has(input:checked) {
+    box-shadow: none;
+    @apply border-black;
+  }
+
+  .multiple-choice:has(img) img {
+    max-height: 108px;
+    background-size: 10px 10px;
+    background-position:
+      0 0,
+      5px 5px;
+    background-image: linear-gradient(
+        45deg,
+        #cfd5dd 25%,
+        transparent 25%,
+        transparent 75%,
+        #cfd5dd 75%,
+        #cfd5dd
+      ),
+      linear-gradient(
+        45deg,
+        #cfd5dd 25%,
+        transparent 25%,
+        transparent 75%,
+        #cfd5dd 75%,
+        #cfd5dd
+      );
+    @apply border-1 border-gray-300 bg-white mt-gutterHalf;
+  }
+
   /*! purgecss end ignore */
 }

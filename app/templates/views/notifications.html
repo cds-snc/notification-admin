@@ -4,6 +4,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox_search %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
 {% set title_status = (
   'Failed '
@@ -17,52 +18,63 @@
 ) %}
 
 {% block service_page_title %}
-  {{ page_title }}
+  {{ page_title }}{{_(' in the past {} days').format(service_data_retention_days)}}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large">
-    {{ page_title }}
+    {{ page_title }}{{_(' in the past {} days').format(service_data_retention_days)}}
   </h1>
   {% if not message_type == "letter" %}
+  {% if total_notifications > 0 %}
+      {{ ajax_block(
+        partials,
+        url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
+        'counts'
+      ) }}
+    
+      {% if message_type == "email" %}
+        {{ problem_email_checkbox() }}
+      {% endif %}
 
-    {{ ajax_block(
-      partials,
-      url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status),
-      'counts'
-    ) }}
+      
+      {% call form_wrapper(
+        action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
+        class="grid-row contain-floats"
+      ) %}
+        <div class="w-full float-left py-0 px-0 px-gutterHalf box-border {% if message_type == 'sms' %}extra-tracking{% endif %}">
+          {{ textbox_search(
+            search_form.to,
+            width='w-full',
+          ) }}
+        </div>
+      {% endcall %}
 
-    {% call form_wrapper(
-      action=url_for('.view_notifications', service_id=current_service.id, message_type=message_type),
-      class="grid-row contain-floats"
-    ) %}
-      <div class="w-full float-left py-0 px-0 px-gutterHalf box-border {% if message_type == 'sms' %}extra-tracking{% endif %}">
-        {{ textbox_search(
-          search_form.to,
-          width='w-full',
-        ) }}
-      </div>
-    {% endcall %}
+      {% call form_wrapper(id="search-form") %}
+        <input type="hidden" name="to" value="{{ search_form.to.data }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" style="visibility: hidden; position: absolute; left: -999em">submit</button>
+      {% endcall %}
+    {% endif %}
 
-    {% call form_wrapper(id="search-form") %}
-      <input type="hidden" name="to" value="{{ search_form.to.data }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    {% endcall %}
   {% else %}
     {% call form_wrapper(id="search-form") %}
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <button type="submit" style="visibility: hidden; position: absolute; left: -999em">submit</button>
     {% endcall %}
   {% endif %}
 
-  {% if current_user.has_permissions('view_activity') %}
-    <p class="mb-12 clear-both contain-floats">
-      <a href="{{ download_link }}" download="download" class="heading-small">{{ _('Download this report') }}</a>
-      &emsp;
-      {{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}
-    </p>
+  {% if total_notifications > 0 %}
+    {% if current_user.has_permissions('view_activity') %}
+      <div class="mb-12 mt-12 clear-both contain-floats">
+        <a href="{{ download_link }}" download="download" class="text-smaller leading-tight font-bold">
+          {{ _('Download this report') }} 
+        </a>
+        <div class="mt-2 text-small leading-tight font-normal">{{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}</div>
+      </div>
+    {% endif %}
   {% endif %}
-
   {{ ajax_block(
     partials,
     url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status, page=page),

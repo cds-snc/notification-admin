@@ -5,7 +5,6 @@ from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
 class JobApiClient(NotifyAdminAPIClient):
-
     JOB_STATUSES = {
         "scheduled",
         "pending",
@@ -84,10 +83,10 @@ class JobApiClient(NotifyAdminAPIClient):
             page=page,
         )
 
-    def get_immediate_jobs(self, service_id):
+    def get_immediate_jobs(self, service_id, limit_days=7):
         return self.get_jobs(
             service_id,
-            limit_days=7,
+            limit_days=limit_days,
             statuses=self.NON_SCHEDULED_JOB_STATUSES,
         )["data"]
 
@@ -126,7 +125,6 @@ class JobApiClient(NotifyAdminAPIClient):
 
     @cache.delete("has_jobs-{service_id}")
     def cancel_job(self, service_id, job_id):
-
         job = self.post(url="/service/{}/job/{}/cancel".format(service_id, job_id), data={})
 
         stats = self.__convert_statistics(job["data"])

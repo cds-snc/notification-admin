@@ -251,42 +251,45 @@ def test_should_show_total_on_live_trial_services_pages(
     [
         (
             "main.live_services",
-            ("0 emails sent No failures", "0 text messages sent No failures"),
+            ("0 emails sent emails sent: No failures", "0 text messages sent text messages sent: No failures"),
             0,
             0,
             "en",
         ),
         (
             "main.live_services",
-            ("1 email sent No failures", "1 text message sent No failures"),
+            ("1 email sent email sent: No failures", "1 text message sent text message sent: No failures"),
             1,
             1,
             "en",
         ),
         (
             "main.live_services",
-            ("2 emails sent No failures", "2 text messages sent No failures"),
+            ("2 emails sent emails sent: No failures", "2 text messages sent text messages sent: No failures"),
             2,
             2,
             "en",
         ),
         (
             "main.live_services",
-            ("0 courriel envoyé Aucun échec", "0 message texte envoyé Aucun échec"),
+            ("0 courriel envoyé courriel envoyé: Aucun échec", "0 message texte envoyé message texte envoyé: Aucun échec"),
             0,
             0,
             "fr",
         ),
         (
             "main.live_services",
-            ("1 courriel envoyé Aucun échec", "1 message texte envoyé Aucun échec"),
+            ("1 courriel envoyé courriel envoyé: Aucun échec", "1 message texte envoyé message texte envoyé: Aucun échec"),
             1,
             1,
             "fr",
         ),
         (
             "main.live_services",
-            ("2 courriels envoyés Aucun échec", "2 messages texte envoyés Aucun échec"),
+            (
+                "2 courriels envoyés courriels envoyés: Aucun échec",
+                "2 messages texte envoyés messages texte envoyés: Aucun échec",
+            ),
             2,
             2,
             "fr",
@@ -992,9 +995,10 @@ def test_clear_cache_shows_form(client_request, platform_admin_user, mocker):
     assert page.select("input[type=radio]")[0]["value"] == "user"
     assert page.select("input[type=radio]")[1]["value"] == "service"
     assert page.select("input[type=radio]")[2]["value"] == "template"
-    assert page.select("input[type=radio]")[3]["value"] == "email_branding"
-    assert page.select("input[type=radio]")[4]["value"] == "letter_branding"
-    assert page.select("input[type=radio]")[5]["value"] == "organisation"
+    assert page.select("input[type=radio]")[3]["value"] == "template_category"
+    assert page.select("input[type=radio]")[4]["value"] == "email_branding"
+    assert page.select("input[type=radio]")[5]["value"] == "letter_branding"
+    assert page.select("input[type=radio]")[6]["value"] == "organisation"
     assert not redis.delete_cache_keys_by_pattern.called
 
 
@@ -1171,7 +1175,10 @@ def test_get_performance_platform_report(platform_admin_client, mocker):
     )
     response = platform_admin_client.get(url_for("main.performance_platform_xlsx"))
     assert response.status_code == 200
-    assert pyexcel.get_array(file_type="xlsx", file_stream=response.get_data(),) == [
+    assert pyexcel.get_array(
+        file_type="xlsx",
+        file_stream=response.get_data(),
+    ) == [
         ["service_id", "agency", "service_name", "_timestamp", "service", "count"],
         [
             "abc123",
@@ -1189,15 +1196,15 @@ def test_get_trial_report_csv(platform_admin_client, mocker):
     mocker.patch(
         "app.platform_stats_api_client.usage_for_trial_services",
         return_value=[
-            [
-                "Fake Service ID",
-                "My service",
-                "2020-11-01",
-                "Bob",
-                "foo@example.com",
-                "email",
-                "5",
-            ]
+            {
+                "service_id": "Fake Service ID",
+                "service_name": "My service",
+                "creation_date": "2020-11-01",
+                "created_by_name": "Bob",
+                "created_by_email": "foo@example.com",
+                "total_email_notifications": "10",
+                "total_sms_notifications": "5",
+            }
         ],
     )
     response = platform_admin_client.get(url_for("main.trial_report_csv"))
@@ -1207,8 +1214,8 @@ def test_get_trial_report_csv(platform_admin_client, mocker):
     assert response.headers["Content-Disposition"].startswith("inline; filename=")
 
     assert response.get_data(as_text=True) == (
-        "service_id,service_name,creation_date,created_by_name,created_by_email,notification_type,"
-        "notification_sum\r\n" + "Fake Service ID,My service,2020-11-01,Bob,foo@example.com,email,5\r\n"
+        "service_id,service_name,creation_date,created_by_name,created_by_email,total_email_notifications,"
+        "total_sms_notifications\r\n" + "Fake Service ID,My service,2020-11-01,Bob,foo@example.com,10,5\r\n"
     )
 
 
@@ -1381,14 +1388,14 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
     mock = mocker.patch(
         "app.platform_stats_api_client.get_send_method_stats_by_service",
         return_value=[
-            [
-                "Fake Service ID",
-                "My service",
-                "Org name",
-                "email",
-                "admin",
-                "5",
-            ]
+            {
+                "service_id": "Fake Service ID",
+                "service_name": "My service",
+                "organisation_name": "Org name",
+                "notification_type": "email",
+                "send_method": "admin",
+                "total_notifications": "5",
+            }
         ],
     )
 
@@ -1405,7 +1412,48 @@ def test_send_method_stats_by_service(platform_admin_client, mocker):
     assert response.headers["Content-Disposition"].startswith("attachment; filename=")
 
     assert response.get_data(as_text=True) == (
-        "service_id,service_name,org_name,notification_type,send_method,count\r\n"
+        "service_id,service_name,organisation_name,notification_type,send_method,total_notifications\r\n"
         + "Fake Service ID,My service,Org name,email,admin,5\r\n"
     )
     mock.assert_called_once_with(datetime.date(2020, 11, 1), datetime.date(2020, 12, 1))
+
+
+class TestTemplateCategory:
+    testing_template = {
+        "name_en": "name_en-123",
+        "name_fr": "name_fr-123",
+        "description_en": "desc_en-123",
+        "description_fr": "desc_fr-123",
+        "id": "id-123",
+        "email_process_type": "email_priority-123",
+        "sms_process_type": "sms_priority-123",
+        "hidden": "hidden-123",
+        "sms_sending_vehicle": "long_code",
+    }
+
+    def test_item_displays_in_admin_menu(self, platform_admin_client, platform_admin_user, mocker):
+        resp = platform_admin_client.get(url_for("main.live_services"))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+        assert page.find("a", href="/template-categories")
+
+    def test_categories_page_is_accessible(self, platform_admin_client, platform_admin_user, mocker):
+        mocker.patch(
+            "app.main.views.templates.template_category_api_client.get_all_template_categories",
+            return_value=[self.testing_template],
+        )
+        resp = platform_admin_client.get(url_for("main.template_categories"))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+        # find an anchor tag with the text "Template categories"
+
+        assert len(page.select('table[data-testid="template-categories-table"]')) == 1
+
+    def test_category_page_is_accessible(self, platform_admin_client, platform_admin_user, mocker):
+        mocker.patch(
+            "app.main.views.templates.template_category_api_client.get_template_category",
+            return_value=self.testing_template,
+        )
+        resp = platform_admin_client.get(url_for("main.template_category", template_category_id=123))
+        page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
+
+        assert len(page.select(f"input[value='{self.testing_template['name_en']}']")) == 1

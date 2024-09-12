@@ -25,8 +25,8 @@ def test_overview_page_shows_disable_for_platform_admin(client_request, platform
     client_request.login(platform_admin_user)
     page = client_request.get(("main.user_profile"))
     assert page.select_one("h1").text.strip() == "Your profile"
-    disable_platform_admin_row = page.select("tr")[-1]
-    assert " ".join(disable_platform_admin_row.text.split()) == "Use platform admin view Yes Change"
+    disable_platform_admin_row = page.find_all("div", class_="sm:w-3/4")[-1]
+    assert " ".join(disable_platform_admin_row.text.split()) == "Use platform admin view Yes"
 
 
 def test_should_show_name_page(client_request, mock_get_security_keys):
@@ -104,11 +104,9 @@ def test_should_redirect_to_user_profile_when_user_confirms_email_link(
     api_user_active,
     mock_update_user_attribute,
 ):
-
     token = generate_token(
         payload=json.dumps({"user_id": api_user_active["id"], "email": "new_email@canada.ca"}),
         secret=app_.config["SECRET_KEY"],
-        salt=app_.config["DANGEROUS_SALT"],
     )
     response = logged_in_client.get(url_for_endpoint_with_token("main.user_profile_email_confirm", token=token))
 

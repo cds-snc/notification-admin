@@ -16,6 +16,7 @@
           {% else %}
             {{ nav_link_dark(id_key='nav-footer-primary-why-notify', label=_('Why GC Notify'), href=gca_url_for('whynotify'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-features', label=_('Features'), href=gca_url_for('features'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-primary-new-features', label=_('New features'), href=gca_url_for('new_features'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-activity', label=_('Activity on GC Notify'), href=url_for('main.activity'), class="-ml-2") }}
           {% endif %}
         </div>
@@ -30,6 +31,7 @@
           {% else %}
             {{ nav_link_dark(id_key='nav-footer-primary-doc', label=_('API documentation'), href=documentation_url(), is_external_link=True, class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-guidance', label=_('Guidance'), href=gca_url_for('guidance'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-sitemap', label=_('Sitemap'), href=url_for('main.sitemap'), class="-ml-2") }}
             {{ nav_link_dark(id_key='nav-footer-primary-slo', label=_('Service level objectives'), href=gca_url_for('service-level-objectives'), class="-ml-2") }}
           {% endif %}
         </div>
@@ -43,6 +45,7 @@
             {% endfor %}
           {% else %}
             {{ nav_link_dark(id_key='nav-footer-primary-contact', label=_('Contact us'), href=url_for('main.contact'), class="-ml-2") }}
+            {{ nav_link_dark(id_key='nav-footer-system-status', label=_('System status'), href=config["SYSTEM_STATUS_URL"] + ('/#fr' if current_lang == 'fr' else ''), class="-ml-2") }}
           {% endif %}
         </div>
       </div>
@@ -53,7 +56,7 @@
   {% macro separator() %}
     <img 
       aria-hidden="true"
-      alt="{{ _('Separator') }}"
+      alt=""
       class="hidden lg:flex lg:visible separator self-center"
       src="{{ asset_url('images/bullet.svg') }}"
     />

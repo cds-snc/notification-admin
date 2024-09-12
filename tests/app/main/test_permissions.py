@@ -62,7 +62,7 @@ def _test_permissions(
         decorated_index()
     else:
         try:
-            if decorated_index().location != "/sign-in?next=%2F" or decorated_index().status_code != 302:
+            if decorated_index().location != "/sign-in?next=/" or decorated_index().status_code != 302:
                 pytest.fail("Failed to throw a forbidden or unauthorised exception")
         except (Forbidden, Unauthorized):
             pass
@@ -417,7 +417,6 @@ def test_code_to_extract_decorators_works_with_known_examples():
 
 
 def test_routes_have_permissions_decorators():
-
     for endpoint, decorators in list(get_routes_and_decorators(SERVICE_ID_ARGUMENT)) + list(
         get_routes_and_decorators(ORGANISATION_ID_ARGUMENT)
     ):
@@ -439,7 +438,6 @@ def test_routes_have_permissions_decorators():
         ).format(file, function)
 
     for endpoint, decorators in get_routes_and_decorators():
-
         assert "login_required" not in decorators, (
             "@login_required found\n"
             "For consistency, use @user_is_logged_in() instead (from app.utils)\n"

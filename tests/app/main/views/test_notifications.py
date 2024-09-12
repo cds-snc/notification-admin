@@ -22,18 +22,18 @@ from tests.conftest import (
 @pytest.mark.parametrize(
     "key_type, notification_status, provider_response, expected_status",
     [
-        (None, "created", None, "Sending"),
-        (None, "sending", None, "Sending"),
+        (None, "created", None, "In transit"),
+        (None, "sending", None, "In transit"),
         (None, "delivered", None, "Delivered"),
         (None, "failed", None, "Failed"),
         (
             None,
             "temporary-failure",
             None,
-            "Phone number not accepting messages right now",
+            "Carrier issue",
         ),
-        (None, "permanent-failure", None, "Phone number does not exist"),
-        (None, "technical-failure", None, "Technical failure"),
+        (None, "permanent-failure", None, "No such number"),
+        (None, "technical-failure", None, "Tech issue"),
         (
             None,
             "technical-failure",
@@ -60,9 +60,9 @@ from tests.conftest import (
         ),
         ("team", "delivered", None, "Delivered"),
         ("live", "delivered", None, "Delivered"),
-        ("test", "sending", None, "Sending (test)"),
+        ("test", "sending", None, "In transit (test)"),
         ("test", "delivered", None, "Delivered (test)"),
-        ("test", "permanent-failure", None, "Phone number does not exist (test)"),
+        ("test", "permanent-failure", None, "No such number (test)"),
     ],
 )
 @pytest.mark.parametrize(
@@ -73,7 +73,7 @@ from tests.conftest import (
     ],
 )
 @freeze_time("2016-01-01 11:09:00.061258")
-def test_notification_status_page_shows_details(
+def test_notification_status_page_shows_details_new_statuses(
     client_request,
     mocker,
     mock_has_no_jobs,
@@ -84,8 +84,8 @@ def test_notification_status_page_shows_details(
     notification_status,
     provider_response,
     expected_status,
+    app_,
 ):
-
     mocker.patch("app.user_api_client.get_user", return_value=user)
 
     notification = create_notification(
@@ -124,7 +124,6 @@ def test_notification_status_page_respects_redaction(
     template_redaction_setting,
     expected_content,
 ):
-
     _mock_get_notification = mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(redact_personalisation=template_redaction_setting),
@@ -216,7 +215,6 @@ def test_notification_status_page_shows_attachments_with_links(
     service_one,
     fake_uuid,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(
@@ -240,6 +238,28 @@ def test_notification_status_page_shows_attachments_with_links(
     )
 
     assert "Download it https://example.com/test.pdf" in page.select_one(".email-message-body").text
+
+
+@pytest.mark.parametrize("message_type, has_problem_address_filter", [("sms", False), ("email", True)])
+def test_problem_email_address_filter_only_present_when_viewing_emails(
+    client_request,
+    message_type,
+    mock_get_notifications,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mock_has_no_jobs,
+    has_problem_address_filter,
+):
+    client_request.login(create_active_user_with_permissions())
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=SERVICE_ONE_ID,
+        message_type=message_type,
+        status="sending,delivered,failed",
+    )
+    problem_address_filter = page.select_one(".multiple-choice > #pe_filter")
+
+    assert (problem_address_filter is not None) == has_problem_address_filter
 
 
 @pytest.mark.parametrize(
@@ -300,7 +320,6 @@ def test_notification_page_doesnt_link_to_template_in_tour(
     fake_uuid,
     mock_get_notification,
 ):
-
     page = client_request.get(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
@@ -321,7 +340,6 @@ def test_notification_page_shows_page_for_letter_notification(
     mocker,
     fake_uuid,
 ):
-
     count_of_pages = 3
 
     notification = mock_get_notification(
@@ -397,7 +415,6 @@ def test_notification_page_shows_page_for_letter_sent_with_test_key(
     expected_p2,
     expected_postage,
 ):
-
     mocker.patch(
         "app.main.views.notifications.view_letter_notification_as_preview",
         return_value=b"foo",
@@ -464,7 +481,6 @@ def test_notification_page_shows_cancelled_or_failed_letter(
     notification_status,
     expected_message,
 ):
-
     mock_get_notification(
         mocker,
         fake_uuid,
@@ -594,7 +610,6 @@ def test_should_show_image_of_letter_notification(
     mocker,
     filetype,
 ):
-
     mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
@@ -616,7 +631,6 @@ def test_should_show_image_of_letter_notification(
 
 
 def test_should_show_image_of_letter_notification_that_failed_validation(logged_in_client, fake_uuid, mocker):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(
@@ -648,7 +662,6 @@ def test_should_show_preview_error_image_letter_notification_on_preview_error(
     fake_uuid,
     mocker,
 ):
-
     mocker.patch("app.notification_api_client.get_notification", return_value=create_notification(template_type="letter"))
 
     mocker.patch(
@@ -736,7 +749,6 @@ def test_notification_page_has_link_to_download_letter(
     template_type,
     expected_link,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(notification_status="created", template_type=template_type),
@@ -772,7 +784,6 @@ def test_notification_page_has_expected_template_link_for_letter(
     is_precompiled_letter,
     has_template_link,
 ):
-
     mocker.patch(
         "app.main.views.notifications.view_letter_notification_as_preview",
         return_value=b"foo",
@@ -808,7 +819,6 @@ def test_should_show_image_of_precompiled_letter_notification(
     fake_uuid,
     mocker,
 ):
-
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=create_notification(template_type="letter", is_precompiled_letter=True),

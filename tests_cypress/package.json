@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "cypress": "ETHEREAL_CACHE=false npx cypress open",
+    "a11y": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/a11y/*'"
+  },
+  "dependencies": {
+    "cypress-axe": "^1.4.0",
+    "cypress-html-validate": "^6.1.0",
+    "cypress-recurse": "^1.23.0",
+    "html-validate": "^8.7.1",
+    "imap-simple": "^5.1.0",
+    "jsrsasign": "^11.0.0",
+    "mailparser": "^3.7.1",
+    "nanoid": "^5.0.4",
+    "nodemailer": "^6.9.2"
+  },
+  "devDependencies": {
+    "axe-core": "^4.7.2",
+    "cypress": "^13.8.1",
+    "cypress-real-events": "^1.13.0"
+  }
+}

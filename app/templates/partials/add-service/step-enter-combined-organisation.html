@@ -1,0 +1,25 @@
+{% from "components/radios.html" import radios %}
+{% from "components/autocomplete.html" import autocomplete %}
+
+<p id="info-text">{{ _("We use this information to improve GC Notify.") }}</p>
+
+<div data-module="url-typer" class="form-wrap" aria-labelledby="info-text">
+  {% call form_wrapper() %}
+
+    <div class="mb-gutterAndAHalf">
+      <label for="parent_organisation_name">{{ _("Name of parent organisation") }}</label>
+      {{ autocomplete(form.parent_organisation_name, autocomplete_items_combined[current_lang], hint=_("For example: Treasury Board of Canada Secretariat")) }}
+      <a href="{{ url_for('.add_service', current_step='choose_organisation', government_type='other') }}" aria-label="{{ _("Not on the list? Add your organization") }}">
+        {{ _("Not on list?") }}
+      </a>
+    </div>  
+    
+    <div>
+      {{ textbox(form.child_organisation_name, hint=_("For example: Canadian Digital Service"), maxlength=255, required=false) }}
+    </div>
+
+    {% set button_txt = _('Create service') %}
+    {{ page_footer(button_txt) }}
+
+  {% endcall %}
+</div>

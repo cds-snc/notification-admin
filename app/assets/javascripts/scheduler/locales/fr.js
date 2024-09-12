@@ -11,7 +11,7 @@ export const FR = {
   message_will_be_sent: "Message sera envoyé : ",
   at: "à",
   date_prefix: "le ",
-  date_format: "dddd D MMMM 2020",
+  date_format: "dddd D MMMM YYYY",
   time_format: "H [h] mm",
   cancel: "Vous pourrez annuler cet envoi avant l’heure prévue.",
   select_date: "Sélectionnez une date et une heure pour programmer l’envoi.",

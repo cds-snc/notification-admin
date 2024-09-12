@@ -5,6 +5,7 @@ from string import ascii_uppercase
 from dateutil.parser import parse
 from flask import (
     abort,
+    current_app,
     flash,
     jsonify,
     redirect,
@@ -18,35 +19,48 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
+from notifications_utils import TEMPLATE_NAME_CHAR_COUNT_LIMIT
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
 from app import (
     current_service,
+    get_current_locale,
     service_api_client,
     template_api_prefill_client,
+    template_category_api_client,
     template_folder_api_client,
     template_statistics_client,
 )
 from app.extensions import redis_client
 from app.main import main
 from app.main.forms import (
+    TC_PRIORITY_VALUE,
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
-    EmailTemplateForm,
+    EmailTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
+    EmailTemplateFormWithCategory,
     LetterTemplateForm,
+    LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
     SetTemplateSenderForm,
-    SMSTemplateForm,
+    SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
+    SMSTemplateFormWithCategory,
     TemplateAndFoldersSelectionForm,
+    TemplateCategoryForm,
     TemplateFolderForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
+from app.models.enum.template_categories import DefaultTemplateCategories
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
-from app.models.template_list import TemplateList, TemplateLists
+from app.models.template_list import (
+    TEMPLATE_TYPES_NO_LETTER,
+    TemplateList,
+    TemplateLists,
+)
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -56,10 +70,24 @@ from app.utils import (
     user_is_platform_admin,
 )
 
+# TODO: Remove `form_objects` when FF_TEMPLATE_CATEGORY IS REMOVED
 form_objects = {
     "email": EmailTemplateForm,
     "sms": SMSTemplateForm,
     "letter": LetterTemplateForm,
+}
+
+# Todo: Remove this once the process_types in the backend are updated to use low/med/high
+category_mapping = {
+    "bulk": "Bulk",
+    "normal": "Normal",
+    "priority": "Priority",
+}
+
+form_objects_with_category = {
+    "email": EmailTemplateFormWithCategory,
+    "sms": SMSTemplateFormWithCategory,
+    "letter": LetterTemplateFormWithCategory,
 }
 
 
@@ -102,6 +130,10 @@ def get_preview_data(service_id, template_id=None):
 def delete_preview_data(service_id, template_id=None):
     key = f"template-preview:{service_id}:{template_id}"
     redis_client.delete(key)
+
+
+def get_char_limit_error_msg():
+    return _("Too many characters")
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
@@ -182,7 +214,13 @@ def preview_template(service_id, template_id=None):
             except HTTPError as e:
                 if e.status_code == 400:
                     if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                        flash(e.message["content"])
+                        error_message = get_char_limit_error_msg()
+                        flash(error_message)
+                    elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
+                        error_message = (_("Template name must be less than {char_limit} characters")).format(
+                            char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
+                        )
+                        flash(error_message)
                     else:
                         raise e
                 else:
@@ -210,7 +248,6 @@ def preview_template(service_id, template_id=None):
 @main.route("/services/<service_id>/start-tour/<uuid:template_id>")
 @user_has_permissions("view_activity")
 def start_tour(service_id, template_id):
-
     template = current_service.get_template(template_id)
 
     if template["template_type"] != "email":
@@ -252,7 +289,8 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         allow_adding_letter_template=current_service.has_permission("letter"),
         allow_adding_copy_of_template=(current_service.all_templates or len(current_user.service_ids) > 1),
     )
-    option_hints = {template_folder_id: "current folder"}
+
+    option_hints = {template_folder_id if template_folder_id is not None else "__NONE__": _l("Current folder")}
 
     if request.method == "POST" and templates_and_folders_form.validate_on_submit():
         if not current_user.has_permissions("manage_templates"):
@@ -271,12 +309,27 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     sending_view = request.args.get("view") == "sending"
 
+    template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
+
+    # Get the full list of template categories, any hidden ones will be called 'Other'
+    template_categories = [
+        template.template_category[template_category_name_col] if not template.template_category.get("hidden") else _("Other")
+        for template in template_list
+        if template.template_category
+    ]
+
+    # Remove duplicates while preserving order
+    template_categories = sorted(set(template_categories))
+
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
         current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
         template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
+        template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
+        template_categories=template_categories,
+        template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
         sending_view=sending_view,
@@ -378,15 +431,17 @@ def _view_template_version(service_id, template_id, version, letters_as_pdf=Fals
         template=get_template(
             current_service.get_template(template_id, version=version),
             current_service,
-            letter_preview_url=url_for(
-                ".view_template_version_preview",
-                service_id=service_id,
-                template_id=template_id,
-                version=version,
-                filetype="png",
-            )
-            if not letters_as_pdf
-            else None,
+            letter_preview_url=(
+                url_for(
+                    ".view_template_version_preview",
+                    service_id=service_id,
+                    template_id=template_id,
+                    version=version,
+                    filetype="png",
+                )
+                if not letters_as_pdf
+                else None
+            ),
         )
     )
 
@@ -408,7 +463,6 @@ def view_template_version_preview(service_id, template_id, version, filetype):
 
 
 def _add_template_by_type(template_type, template_folder_id):
-
     if template_type == "copy-existing":
         return redirect(
             url_for(
@@ -498,12 +552,10 @@ def choose_template_to_copy(
     from_service=None,
     from_folder=None,
 ):
-
     if from_folder and from_service is None:
         from_service = service_id
 
     if from_service:
-
         current_user.belongs_to_service_or_403(from_service)
         service = Service(service_api_client.get_service(from_service)["data"])
 
@@ -545,8 +597,13 @@ def copy_template(service_id, template_id):
 
     template["template_content"] = template["content"]
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
-    form = form_objects[template["template_type"]](**template)
 
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        other_category = None
+        template_category_hints = None
+        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
         form=form,
@@ -554,11 +611,12 @@ def copy_template(service_id, template_id):
         heading=_l("Copy email template") if template["template_type"] == "email" else _l("Copy text message template"),
         service_id=service_id,
         services=current_user.service_ids,
+        template_category_hints=template_category_hints,
+        other_category=other_category,
     )
 
 
 def _get_template_copy_name(template, existing_templates):
-
     template_names = [existing["name"] for existing in existing_templates]
 
     for index in reversed(range(1, 10)):
@@ -650,7 +708,6 @@ def delete_template_folder(service_id, template_folder_id):
         )
 
     if request.method == "POST":
-
         try:
             template_folder_api_client.delete_template_folder(current_service.id, template_folder_id)
 
@@ -699,21 +756,30 @@ def get_template_data(template_id):
     methods=["GET", "POST"],
 )
 @user_has_permissions("manage_templates")
-def add_service_template(service_id, template_type, template_folder_id=None):
-
+def add_service_template(service_id, template_type, template_folder_id=None):  # noqa: C901
     if template_type not in ["sms", "email", "letter"]:
         abort(404)
     if not current_service.has_permission("letter") and template_type == "letter":
         abort(403)
 
     template = get_preview_data(service_id)
-    if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
-    form = form_objects[template_type](**template)
+
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        if template.get("process_type") is None:
+            template["process_type"] = TemplateProcessTypes.BULK.value
+        other_category = None
+        template_category_hints = None
+        form = form_objects[template_type](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
-        if form.process_type.data != TemplateProcessTypes.BULK.value:
-            abort_403_if_not_admin_user()
+        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TC_PRIORITY_VALUE:
+                abort_403_if_not_admin_user()
+        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            if form.process_type.data != TemplateProcessTypes.BULK.value:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+                abort_403_if_not_admin_user()  # TODO: remove when FF_TEMPLATE_CATEGORY removed
         subject = form.subject.data if hasattr(form, "subject") else None
         if request.form.get("button_pressed") == "preview":
             preview_template_data = {
@@ -740,16 +806,44 @@ def add_service_template(service_id, template_type, template_folder_id=None):
                 form.template_content.data,
                 service_id,
                 subject,
-                form.process_type.data,
+                None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
+                form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
             )
+            # Send the information in form's template_category_other field to Freshdesk
+            # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
+            if current_app.config["FF_TEMPLATE_CATEGORY"]:
+                if form.template_category_other.data:
+                    is_english = get_current_locale(current_app) == "en"
+                    try:
+                        current_user.send_new_template_category_request(
+                            current_user.id,
+                            current_service.id,
+                            form.template_category_other.data if is_english else None,
+                            form.template_category_other.data if not is_english else None,
+                            new_template["data"]["id"],
+                        )
+                    except HTTPError as e:
+                        current_app.logger.error(
+                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                        )
+                    except AttributeError as e:
+                        current_app.logger.error(
+                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                        )
         except HTTPError as e:
             if (
                 e.status_code == 400
                 and "content" in e.message
                 and any(["character count greater than" in x for x in e.message["content"]])
             ):
-                form.template_content.errors.extend(e.message["content"])
+                error_message = get_char_limit_error_msg()
+                form.template_content.errors.extend([error_message])
+            elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
+                error_message = (_("Template name must be less than {char_limit} characters")).format(
+                    char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
+                )
+                form.name.errors.extend([error_message])
             else:
                 raise e
         else:
@@ -782,6 +876,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):
             template_folder_id=template_folder_id,
             service_id=service_id,
             heading=_l("Create reusable template"),
+            template_category_hints=template_category_hints,
+            other_category=other_category,
+            template_category_mode="expand",
         )
 
 
@@ -790,9 +887,35 @@ def abort_403_if_not_admin_user():
         abort(403)
 
 
+def _get_categories_and_prepare_form(template, template_type):
+    categories = template_category_api_client.get_all_template_categories()
+
+    form = form_objects_with_category[template_type](**template)
+
+    # alphabetize choices
+    name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
+    desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
+    categories = sorted(categories, key=lambda x: x[name_col])
+    form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
+
+    # add "other" category to choices, default to the low priority template category
+    # if the template is already in one of the default categories, then dont show the other
+    if template.get("template_category") and template["template_category"].get("hidden"):
+        other_category = None
+        form.template_category_other.validators = []
+        form.template_category_id.choices.append((form.template_category_id.data, _("Other")))
+    else:
+        other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+        form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
+
+    template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
+
+    return form, other_category, template_category_hints
+
+
 @main.route("/services/<service_id>/templates/<template_id>/edit", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
-def edit_service_template(service_id, template_id):
+def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove this comment when FF_TEMPLATE_CATEGORY removed
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
@@ -801,9 +924,19 @@ def edit_service_template(service_id, template_id):
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
     template["template_content"] = template["content"]
-    if template.get("process_type") is None:
-        template["process_type"] = TemplateProcessTypes.BULK.value
-    form = form_objects[template["template_type"]](**template)
+
+    if template.get("process_type_column") is None:
+        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            template["process_type"] = TC_PRIORITY_VALUE
+        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+            template["process_type"] = TemplateProcessTypes.BULK.value  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+
+    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
+    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        other_category = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        template_category_hints = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
 
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
@@ -857,8 +990,26 @@ def edit_service_template(service_id, template_id):
                         form.template_content.data,
                         service_id,
                         subject,
-                        form.process_type.data,
+                        None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
+                        form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
                     )
+                    # Send the information in form's template_category_other field to Freshdesk
+                    # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
+                    if current_app.config["FF_TEMPLATE_CATEGORY"]:
+                        if form.template_category_other.data:
+                            is_english = get_current_locale(current_app) == "en"
+                            try:
+                                current_user.send_new_template_category_request(
+                                    current_user.id,
+                                    current_service.id,
+                                    form.template_category_other.data if is_english else None,
+                                    form.template_category_other.data if not is_english else None,
+                                    template_id,
+                                )
+                            except HTTPError as e:
+                                current_app.logger.error(
+                                    f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
+                                )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
@@ -871,7 +1022,13 @@ def edit_service_template(service_id, template_id):
                 except HTTPError as e:
                     if e.status_code == 400:
                         if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
-                            form.template_content.errors.extend(e.message["content"])
+                            error_message = get_char_limit_error_msg()
+                            form.template_content.errors.extend([error_message])
+                        elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
+                            error_message = (_("Template name must be less than {char_limit} characters")).format(
+                                char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
+                            )
+                            form.name.errors.extend([error_message])
                         else:
                             raise e
                     else:
@@ -893,6 +1050,9 @@ def edit_service_template(service_id, template_id):
             form=form,
             template=template,
             heading=_l("Edit reusable template"),
+            template_category_hints=template_category_hints,
+            other_category=other_category,
+            template_category_mode="expand" if request.method == "POST" else None,
         )
 
 
@@ -959,7 +1119,6 @@ def confirm_redact_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/redact", methods=["POST"])
 @user_has_permissions("manage_templates")
 def redact_template(service_id, template_id):
-
     service_api_client.redact_service_template(service_id, template_id)
 
     flash(
@@ -1094,7 +1253,6 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if template["template_type"] == "email":
@@ -1148,4 +1306,135 @@ def add_recipients(service_id, template_id):
         disabled_options={},
         option_hints=option_hints,
         option_conditionals=option_conditionals,
+    )
+
+
+@main.route("/template-categories", methods=["GET"])
+@main.route("/template-categories/<template_category_id>", methods=["POST"])
+@user_is_platform_admin
+def template_categories():
+    template_category_list = template_category_api_client.get_all_template_categories()
+
+    # Todo: Remove this once the process_types in the backend are updated to use low/med/high
+    # Maps bulk/normal/priority to low/med/high for display in the front end.
+    for cat in template_category_list:
+        if cat["sms_process_type"] in category_mapping:
+            cat["sms_process_type"] = category_mapping[cat["sms_process_type"]]
+
+        if cat["email_process_type"] in category_mapping:
+            cat["email_process_type"] = category_mapping[cat["email_process_type"]]
+
+    return render_template(
+        "views/templates/template_categories.html", search_form=SearchByNameForm(), template_categories=template_category_list
+    )
+
+
+@main.route("/template-category/<template_category_id>/delete", methods=["GET", "POST"])
+@user_is_platform_admin
+def delete_template_category(template_category_id):
+    template_category = template_category_api_client.get_template_category(template_category_id)
+
+    if request.method == "POST":
+        try:
+            template_category_api_client.delete_template_category(template_category_id)
+        except HTTPError:
+            flash(
+                [
+                    _l("Cannot delete template category, ‘{}’, is associated with templates").format(
+                        (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])
+                    )
+                ]
+            )
+        return redirect(url_for(".template_categories"))
+
+    flash(
+        [
+            "{} ‘{}’?".format(
+                _l("Are you sure you want to delete"),
+                (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"]),
+            ),
+        ],
+        "delete",
+    )
+
+    form = TemplateCategoryForm(
+        name_en=template_category["name_en"],
+        name_fr=template_category["name_fr"],
+        description_en=template_category["description_en"],
+        description_fr=template_category["description_fr"],
+        hidden=template_category["hidden"],
+        email_process_type=template_category["email_process_type"],
+        sms_process_type=template_category["sms_process_type"],
+    )
+
+    return render_template(
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
+    )
+
+
+@main.route("/template-categories")
+@main.route("/template-category/add", methods=["GET", "POST"])
+@user_is_platform_admin
+def add_template_category():
+    form = TemplateCategoryForm()
+
+    if form.validate_on_submit():
+        template_category_api_client.create_template_category(
+            name_en=form.data["name_en"],
+            name_fr=form.data["name_fr"],
+            description_en=form.data["description_en"],
+            description_fr=form.data["description_fr"],
+            hidden=form.data["hidden"],
+            email_process_type=form.data["email_process_type"],
+            sms_process_type=form.data["sms_process_type"],
+            sms_sending_vehicle=form.data["sms_sending_vehicle"],
+        )
+        flash(
+            _("Template category '{}' added.").format(
+                form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
+            ),
+            "default_with_tick",
+        )
+        return redirect(url_for(".template_categories"))
+
+    return render_template("views/templates/template_category.html", search_form=SearchByNameForm(), form=form)
+
+
+@main.route("/template-category/<template_category_id>", methods=["GET", "POST"])
+@user_is_platform_admin
+def template_category(template_category_id):
+    template_category = template_category_api_client.get_template_category(template_category_id)
+    form = TemplateCategoryForm(
+        name_en=template_category["name_en"],
+        name_fr=template_category["name_fr"],
+        description_en=template_category["description_en"],
+        description_fr=template_category["description_fr"],
+        hidden=template_category["hidden"],
+        email_process_type=template_category["email_process_type"],
+        sms_process_type=template_category["sms_process_type"],
+        sms_sending_vehicle=template_category["sms_sending_vehicle"],
+    )
+
+    if form.validate_on_submit():
+        template_category_api_client.update_template_category(
+            template_category_id,
+            name_en=form.data["name_en"],
+            name_fr=form.data["name_fr"],
+            description_en=form.data["description_en"],
+            description_fr=form.data["description_fr"],
+            hidden=form.data["hidden"],
+            email_process_type=form.data["email_process_type"],
+            sms_process_type=form.data["sms_process_type"],
+            sms_sending_vehicle=form.data["sms_sending_vehicle"],
+        )
+        flash(
+            _("Template category '{}' saved.").format(
+                form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
+            ),
+            "default_with_tick",
+        )
+        return redirect(url_for(".template_categories"))
+
+    return render_template(
+        "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )

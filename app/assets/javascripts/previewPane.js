@@ -5,7 +5,7 @@
   const $ = root.jQuery;
 
   let branding_style = $(
-    '.multiple-choice input[name="branding_style"]:checked'
+    '.multiple-choice input[name="branding_style"]:checked',
   );
 
   if (!branding_style.length) {
@@ -15,7 +15,7 @@
   branding_style = branding_style.val();
 
   const $paneWrapper = $(
-    '<div class="w-full float-left py-0 px-0 px-gutterHalf box-border"></div>'
+    '<div class="w-full float-left py-0 px-0 px-gutterHalf box-border"></div>',
   );
   const $form = $("form");
   const previewType = $form.data("previewType");
@@ -23,13 +23,13 @@
     `<iframe src="/_${previewType}?${buildQueryString([
       "branding_style",
       branding_style,
-    ])}" class="branding-preview"></iframe>`
+    ])}" class="branding-preview border-4 border-gray-200" width="600px" height="345px"></iframe>`,
   );
 
   function buildQueryString() {
     return $.map(
       arguments,
-      (val, idx) => encodeURI(val[0]) + "=" + encodeURI(val[1])
+      (val, idx) => encodeURI(val[0]) + "=" + encodeURI(val[1]),
     ).join("&");
   }
 
@@ -40,7 +40,10 @@
     }
     $previewPane.attr(
       "src",
-      `/_${previewType}?${buildQueryString(["branding_style", branding_style])}`
+      `/_${previewType}?${buildQueryString([
+        "branding_style",
+        branding_style,
+      ])}`,
     );
   }
 
@@ -50,8 +53,8 @@
     "action",
     location.pathname.replace(
       new RegExp(`set-${previewType}-branding$`),
-      `preview-${previewType}-branding`
-    )
+      `preview-${previewType}-branding`,
+    ),
   );
 
   $("fieldset").on("change", 'input[name="branding_style"]', setPreviewPane);

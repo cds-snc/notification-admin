@@ -185,8 +185,8 @@ def test_should_show_api_keys_page(
     rows = [normalize_spaces(row.text) for row in page.select("main tr")]
 
     assert rows[0] == "API keys Action"
-    assert "another key name Revoked" in rows[1]
-    assert rows[2] == "some key name Revoke"
+    assert "another key name 20 total sends in the last 7 days (20 email, 0 sms)" in rows[1]
+    assert "Revoke API key some key name" in rows[2]
 
     mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)
 
@@ -480,7 +480,6 @@ def test_should_validate_safelist_items(
     client_request,
     mock_update_safelist,
 ):
-
     page = client_request.post(
         "main.safelist",
         service_id=SERVICE_ONE_ID,

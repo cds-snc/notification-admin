@@ -2,6 +2,8 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/validation-summary.html" import validation_summary with context %}
+{% from "components/tou-dialog.html" import tou_dialog, tou_dialog_trigger with context %}
 
 {% block per_page_title %}
 {{ _('Create an account') }}
@@ -9,27 +11,40 @@
 
 {% block maincolumn_content %}
 
-<div class="grid-row contain-floats">
-  <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
-    <h1 class="heading-large">{{ _('Create an account') }}</h1>
-    {% call form_wrapper(autocomplete=True) %}
-      {{ textbox(form.name, width='w-full md:w-3/4', autocomplete='name') }}
-      {% set hint_txt = _('Must be a federal government email address') %}
-      {{ textbox(form.email_address, hint=hint_txt, width='w-full md:w-3/4', safe_error_message=True, autocomplete='email') }}
-      <div class="extra-tracking">
-        {% set hint_txt = _('We’ll send you a security code by text message') %}
-        {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=hint_txt) }}
-      </div>
-      <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete">
-      {% set txt = _('Must be at least 8 characters and hard to guess') %}
-      {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
-      <p>
-        {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(gca_url_for('terms')) }}
-      </p>
-      {{form.auth_type}}
-      {% set txt = _('Continue') %}
-      {{ page_footer(txt) }}
-    {% endcall %}
-</div>
+  <div class="grid-row contain-floats">
+    <div class="md:w-2/3 float-left py-0 px-gutterHalf box-border">
+      <h1 class="heading-large">{{ _('Create an account') }}</h1>
+      {% call form_wrapper(action='/register', autocomplete=True, show_validation_summary=True, form=form) %}
+        {{ textbox(form.name, width='w-full md:w-3/4', autocomplete='name') }}
+        {% set hint_txt = _('Use a government email address only you can access, not a shared inbox') %}
+        {{ textbox(form.email_address, hint=hint_txt, width='w-full md:w-3/4', safe_error_message=True, autocomplete='email') }}
+        <div class="extra-tracking">
+          {% set hint_txt = _('We’ll send you a security code by text message') %}
+          {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=hint_txt, autocomplete='tel') }}
+        </div>
+        <input class="visually-hidden" aria-hidden="true" tabindex="-1" id="defeat-chrome-autocomplete" type="hidden">
+        {% set txt = _('Must be at least 8 characters and hard to guess') %}
+        {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
 
+        {% if config['FF_TOU'] %}
+          {{ tou_dialog_trigger(button_text=_('Read and agree to the terms of use'), is_in_error_state=(form.errors.get('tou_agreed') != None)) }}
+          {{ form.tou_agreed }}
+        {% else %}
+          <p>
+            {{ _("By creating an account, you agree to the <a href='{}'>terms of use</a>.").format(gca_url_for('terms')) }}
+          </p>
+        {% endif %}
+
+        {{ form.auth_type }}
+        {% set txt = _('Continue') %} 
+        {{ page_footer(txt) }}
+      {% endcall %}
+    </div>
+  </div>
 {% endblock %}
+
+{% if config['FF_TOU'] %}
+  {% block body_end %}
+    {{ tou_dialog() }}
+  {% endblock %}
+{% endif %}

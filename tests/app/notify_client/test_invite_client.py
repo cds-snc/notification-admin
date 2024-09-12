@@ -9,7 +9,6 @@ def test_client_creates_invite(
     fake_uuid,
     sample_invite,
 ):
-
     mocker.patch("app.notify_client.current_user")
 
     mock_post = mocker.patch(
@@ -49,7 +48,6 @@ def test_client_creates_invite(
 
 
 def test_client_returns_invite(mocker, sample_invite):
-
     sample_invite["status"] = "pending"
     service_id = sample_invite["service"]
 

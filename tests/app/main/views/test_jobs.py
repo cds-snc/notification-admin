@@ -58,6 +58,16 @@ def test_jobs_page_shows_scheduled_jobs(
         assert normalize_spaces(page.select("tr")[index].text) == row
 
 
+def test_jobs_page_shows_empty_message_when_no_jobs_scheduled(
+    client_request, service_one, active_user_with_permissions, mock_get_no_jobs, fake_uuid
+):
+    client_request.login(create_active_user_with_permissions())
+    page = client_request.get("main.view_jobs", service_id=service_one["id"])
+
+    assert "You have no scheduled messages at the moment" in str(page.contents)
+    assert "Scheduled messages will be sent soon" in str(page.contents)
+
+
 @pytest.mark.parametrize(
     "user",
     [
@@ -166,8 +176,8 @@ def test_should_show_page_for_one_job(
     status_argument,
     expected_api_call,
     user,
+    app_,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -175,13 +185,14 @@ def test_should_show_page_for_one_job(
         status=status_argument,
     )
 
-    assert page.h1.text.strip() == "thisisatest.csv"
-    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content Delivered 11:10:00.061258")
+    assert page.h1.text.strip() == "Delivery report"
+    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content No Delivered 11:10:00.061258")
     assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
         "main.view_job_updates",
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
         status=status_argument,
+        pe_filter="",
     )
     csv_link = page.select_one("a[download]")
     assert csv_link["href"] == url_for(
@@ -191,10 +202,10 @@ def test_should_show_page_for_one_job(
         status=status_argument,
     )
     assert csv_link.text == "Download this report"
-    assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
+    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
     assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
-        "6502532222 " "template content " "Delivered 11:10:00.061258"
+        "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
     )
     assert page.select_one("tbody tr a")["href"] == url_for(
         "main.view_notification",
@@ -217,11 +228,10 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     mock_get_service_data_retention.side_effect = [[{"days_of_retention": 10, "notification_type": "sms"}]]
     page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid, status="delivered")
 
-    assert page.find("span", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
+    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-12"
     assert "Cancel sending these letters" not in page
 
 
@@ -259,7 +269,7 @@ def test_should_show_job_in_progress(
         service_id=service_one["id"],
         job_id=fake_uuid,
     )
-    assert page.find("p", {"class": "hint"}).text.strip() == "Report is 50% complete…"
+    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -273,7 +283,6 @@ def test_should_show_letter_job(
     active_user_with_permissions,
     mocker,
 ):
-
     get_notifications = mock_get_notifications(mocker, active_user_with_permissions, diff_template_type="letter")
 
     page = client_request.get(
@@ -323,7 +332,6 @@ def test_should_show_letter_job_with_banner_after_sending_before_1730(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -347,7 +355,6 @@ def test_should_show_letter_job_with_banner_when_there_are_multiple_CSV_rows(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -371,7 +378,6 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
     mock_get_service_data_retention,
     fake_uuid,
 ):
-
     page = client_request.get(
         "main.view_job",
         service_id=SERVICE_ONE_ID,
@@ -400,9 +406,12 @@ def test_should_show_scheduled_job(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == ("Uploaded by Test User on 2016-01-01T00:00:00.061258+0000")
-    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
-    assert page.select("main p a")[0]["href"] == url_for(
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0]) == "Test User"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
+    assert page.select("td > a")[0]["href"] == url_for(
         "main.view_template_version",
         service_id=SERVICE_ONE_ID,
         template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
@@ -426,11 +435,17 @@ def test_should_show_job_from_api(
         job_id=fake_uuid,
     )
 
-    assert normalize_spaces(page.select("main p")[0].text) == (
-        f"'Two week reminder' sent from the API using the key '{JOB_API_KEY_NAME}' on 2016-01-01T00:00:00.061258+0000"
+    assert (
+        normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(1)")[0].text)
+        == f"Sent by: API key '{JOB_API_KEY_NAME}'"
+    )
+    assert (
+        normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(2)")[0].text)
+        == "Started: 2016-01-01T00:00:00.061258+0000"
     )
 
 
+# TODO: This test could be migrated to Cypress instead
 @freeze_time("2016-01-01T00:00:00.061258")
 def test_should_show_scheduled_job_with_api_key(
     client_request,
@@ -445,23 +460,18 @@ def test_should_show_scheduled_job_with_api_key(
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
     )
-
-    assert normalize_spaces(page.select("main p")[0].text) == (
-        f"'Two week reminder' scheduled from the API using the key '{JOB_API_KEY_NAME}'"
+    scheduled_job = page.select("td > [class~='do-not-truncate-text']")
+    assert normalize_spaces(scheduled_job[0].text) == f"API key '{JOB_API_KEY_NAME}'"
+    assert normalize_spaces(scheduled_job[1]) == "2016-01-02T00:00:00.061258"
+    assert normalize_spaces(scheduled_job[2]) == "thisisatest.csv"
+    assert normalize_spaces(scheduled_job[3]) == "1 recipient(s)"
+    assert page.select("td > a")[0]["href"] == url_for(
+        "main.view_template_version",
+        service_id=SERVICE_ONE_ID,
+        template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
+        version=1,
     )
-    assert normalize_spaces(page.select("main p")[1].text) == ("Sending Two week reminder 2016-01-02T00:00:00.061258")
-    assert [(a.text, a["href"]) for a in page.select("main p")[0].select("a")] == [
-        (
-            "Two week reminder",
-            url_for(
-                "main.view_template_version",
-                service_id=SERVICE_ONE_ID,
-                template_id="5d729fbd-239c-44ab-b498-75a985f3198f",
-                version=1,
-            ),
-        ),
-        (JOB_API_KEY_NAME, url_for("main.api_keys", service_id=SERVICE_ONE_ID)),
-    ]
+
     assert page.select_one("button[type=submit]").text.strip() == "Cancel scheduled send"
 
 
@@ -735,7 +745,6 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     mock_get_service_data_retention,
     mocker,
 ):
-
     mocker.patch(
         "app.service_api_client.get_service_template",
         return_value=create_template(template_type="letter", postage="first"),
@@ -748,3 +757,44 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     )
 
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
+
+
+def test_a11y_ensure_headings_are_hidden_when_no_data_on_view_job_page(
+    client_request,
+    fake_uuid,
+    service_one,
+    mock_get_job,
+    mock_get_service_template,
+    mock_get_no_notifications,
+    mock_get_service_data_retention,
+):
+    page = client_request.get(
+        "main.view_job",
+        service_id=service_one["id"],
+        job_id=fake_uuid,
+        status="sending",
+    )
+    assert len(page.find_all("thead", {"class": "table-field-headings-visible"})) == 0
+    assert len(page.find_all("thead", {"class": "table-field-headings"})) == 1
+
+
+class TestBounceRate:
+    def test_jobs_page_shows_problem_email_filter(
+        self,
+        client_request,
+        active_user_with_permissions,
+        mock_get_service_template,
+        mock_get_job,
+        mocker,
+        mock_get_notifications,
+        mock_get_service_data_retention,
+        fake_uuid,
+        app_,
+    ):
+        page = client_request.get(
+            "main.view_job",
+            service_id=SERVICE_ONE_ID,
+            job_id=fake_uuid,
+        )
+
+        assert len(page.find(id="pe_filter")) is not None

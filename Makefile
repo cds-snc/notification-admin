@@ -45,7 +45,7 @@ freeze-requirements:
 
 .PHONY: test-requirements
 test-requirements:
-	poetry lock --check
+	poetry check --lock
 
 .PHONY: coverage
 coverage: venv ## Create coverage report
@@ -53,12 +53,15 @@ coverage: venv ## Create coverage report
 
 .PHONY: run-dev
 run-dev:
-	flask run -p 6012 --host=localhost
+	poetry run flask run -p 6012 --host=localhost
 
 .PHONY: format
 format:
-	isort ./app ./tests
-	black ./app ./tests
-	isort --check-only ./app ./tests
+	ruff check --select I --fix .
+	ruff format .
 	mypy ./
-	npx prettier --write app/assets/javascripts app/assets/stylesheets
+	npx prettier --write app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
+
+.PHONY: tailwind
+tailwind:
+	npm run tailwind

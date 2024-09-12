@@ -61,18 +61,22 @@ class CsvFileValidator:
 
 class ValidGovEmail:
     def __call__(self, form, field):
-
-        if field.data == "":
+        if not field.data:
             return
 
-        from flask import url_for
+        # extract domain name from given email address
 
-        gov_email = _("Enter a government email address.")
-        contact_url = url_for(".contact")
-        access_text = _("If you think you should have access")
+        domain = re.search(r"@(.*)$", field.data)
+
+        if domain:
+            domain = domain.group(1)
+        else:
+            domain = ""
+
         contact_text = _("contact us")
-
-        message = ('{} {} <a href="{}">{}</a>').format(gov_email, access_text, contact_url, contact_text)
+        message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
+            domain, contact_text
+        )
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
@@ -82,8 +86,7 @@ class ValidEmail(Email):
         super().__init__(_l("Enter a valid email address"))
 
     def __call__(self, form, field):
-
-        if field.data == "":
+        if not field.data:
             return
 
         try:
@@ -119,7 +122,6 @@ class OnlySMSCharacters:
 
 
 class LettersNumbersAndFullStopsOnly:
-
     regex = re.compile(r"^[a-zA-Z0-9\s\.]+$")
 
     def __init__(self, message="Use letters and numbers only"):
@@ -143,7 +145,6 @@ def validate_email_from(form, field):
     if email_safe(field.data) != field.data.lower():
         # fix their data instead of only warning them
         field.data = email_safe(field.data)
-        raise ValidationError(_l("Make sure we formatted your email address correctly."))
     if len(field.data) > 64:
         raise ValidationError(_l("This cannot exceed 64 characters in length"))
     # this filler is used because service id is not available when validating a new service to be created

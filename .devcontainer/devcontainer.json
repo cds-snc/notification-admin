@@ -4,35 +4,37 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
-
 	"remoteEnv": {
 		"PATH": "/home/vscode/.local/bin:${containerEnv:PATH}" // give our installed Python modules precedence
 	},
-
 	"containerEnv": {
 		"SHELL": "/bin/zsh"
 	},
-
 	"settings": {
-		"python.linting.enabled": true,
-		"python.linting.pylintEnabled": true,
-		"python.linting.pylintPath": "/usr/local/bin/pylint",
 		"python.pythonPath": "/usr/local/bin/python",
 	},
-
 	"extensions": [
+		"njpwerner.autodocstring",
+		"github.copilot",
+		"GitHub.copilot-labs",
 		"donjayamanne.python-extension-pack",
 		"ms-python.vscode-pylance",
 		"eamodio.gitlens",
 		"wholroyd.jinja",
-		"pmbenjamin.vscode-snyk",
 		"visualstudioexptteam.vscodeintellicode",
 		"yzhang.markdown-all-in-one",
 		"ms-ossdata.vscode-postgresql",
-		"bungcip.better-toml",
+		"tamasfe.even-better-toml",
+		"charliermarsh.ruff",
 	],
-
-	"forwardPorts": [6012],
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "16.20.0"
+		}
+	},
+	"forwardPorts": [
+		6012
+	],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"
 }

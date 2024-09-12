@@ -1,5 +1,5 @@
 import pytest
-from flask import url_for
+from flask import Flask, url_for
 
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
@@ -129,17 +129,32 @@ def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
 ):
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
-    page = client_request.post(
+    client_request.post(
         "main.add_service",
         _data={"name": "testing the post", "email_from": "[Health Canada! - Sante&&Canada]"},
         current_step="choose_service_name",
-        _expected_status=200,
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
     )
 
-    # ensure email has spaces and special characters removed
-    assert page.find(id="email_from")["value"] == "health.canada-santecanada"
+    assert mock_create_service.called is True
+    mock_create_service.assert_called_once_with(
+        service_name="testing the post",
+        organisation_type="central",
+        message_limit=50,
+        sms_daily_limit=50,
+        restricted=True,
+        user_id="6ce466d0-fd6a-11e5-82f5-e0accb9d11a6",
+        email_from="health.canada-santecanada",
+        default_branding_is_french=False,
+        organisation_notes=None,
+    )
 
 
+# TODO: remove this test after the CRM integration is released
 def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     client_request,
     mock_service_email_from_is_unique,
@@ -166,6 +181,149 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     assert mock_service_name_is_unique.called is True
     assert mock_create_service.called is True
     assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
+def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
+    app_: Flask,
+    client_request,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+    client_request.post(
+        "main.add_service",
+        _data={
+            "name": "testing the post",
+            "email_from": "testing.the.post",
+        },
+        current_step="choose_service_name",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.add_service",
+            current_step="choose_organisation",
+        ),
+    )
+    assert mock_service_email_from_is_unique.called is True
+    assert mock_service_name_is_unique.called is True
+
+
+@pytest.mark.parametrize(
+    "child_organisation_name",
+    (
+        "Sock inspection group",
+        "",
+    ),
+)
+def test_wizard_flow_with_step_3_should_create_service(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+    child_organisation_name: str,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "parent_organisation_name": "Department of socks",
+            "child_organisation_name": child_organisation_name,
+        },
+        current_step="choose_organisation",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
+    )
+    assert mock_create_service.called is True
+    assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
+def test_wizard_flow_with_step_3_should_not_create_service_no_parent_org(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "parent_organisation_name": "",
+            "child_organisation_name": "Sock inspection group",
+        },
+        current_step="choose_organisation",
+        _expected_status=200,
+    )
+    assert mock_create_service.called is False
+    assert mock_create_or_update_free_sms_fragment_limit.called is False
+
+
+def test_wizard_flow_with_step_3b_should_create_service(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "other_organisation_name": "Department of magic",
+        },
+        current_step="choose_organisation",
+        government_type="other",
+        _expected_status=302,
+        _expected_redirect=url_for(
+            "main.service_dashboard",
+            service_id=101,
+        ),
+    )
+    assert mock_create_service.called is True
+    assert mock_create_or_update_free_sms_fragment_limit.called is True
+
+
+def test_wizard_flow_with_step_3b_create_service_no_org(
+    app_: Flask,
+    client_request,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(
+            default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE, name="testing the post", email_from="testing.the.post"
+        )
+    client_request.post(
+        "main.add_service",
+        _data={
+            "other_organisation_name": "",
+        },
+        current_step="choose_organisation",
+        government_type="other",
+        _expected_status=200,
+    )
+    assert mock_create_service.called is False
+    assert mock_create_or_update_free_sms_fragment_limit.called is False
 
 
 def test_wizard_flow_with_step_0_should_display_branding_form(client_request, mock_service_email_from_is_unique):
@@ -362,7 +520,6 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
     mock_service_name_is_unique,
     mock_service_email_from_is_unique,
 ):
-
     client_request.post(
         "main.add_service",
         _data={
@@ -398,6 +555,7 @@ def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_eff
         email_from="testing.the.post",
         default_branding_is_french=True,
         organisation_type=organisation_type,
+        organisation_notes=None,
     )
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
     assert len(mock_create_service_template.call_args_list) == 0

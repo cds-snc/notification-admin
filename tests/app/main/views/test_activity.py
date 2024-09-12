@@ -9,6 +9,7 @@ from freezegun import freeze_time
 
 from app.main.views.jobs import get_available_until_date, get_status_filters
 from app.models.service import Service
+from tests import notification_json
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_active_caseworking_user,
@@ -27,21 +28,21 @@ from tests.conftest import (
             {"message_type": "email"},
             "/email.json",
             7,
-            "Emails",
+            "Emails   in the past 7 days",
         ),
         (
             create_active_user_view_permissions(),
             {"message_type": "sms"},
             "/sms.json",
             7,
-            "Text messages",
+            "Text messages   in the past 7 days",
         ),
         (
             create_active_caseworking_user(),
             {},
             ".json",
             7,
-            "Sent messages",
+            "Sent messages in the past 7 days",
         ),
     ],
 )
@@ -187,7 +188,7 @@ def test_can_show_notifications_if_data_retention_not_available(
         service_id=SERVICE_ONE_ID,
         status="sending,delivered,failed",
     )
-    assert page.h1.text.strip() == "Messages"
+    assert page.h1.text.strip() == "Messages   in the past 7 days"
 
 
 @pytest.mark.parametrize(
@@ -323,7 +324,9 @@ def test_shows_message_when_no_notifications(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr")[0].text) == ("No messages found (messages are kept for 7 days)")
+    assert normalize_spaces(page.select("tbody tr")[0].text) == (
+        "You have not sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates"
+    )
 
 
 @pytest.mark.parametrize(
@@ -473,7 +476,7 @@ def test_get_status_filters_calculates_stats(client):
 
     assert {label: count for label, _option, _link, count in ret} == {
         "total": 6,
-        "sending": 3,
+        "in transit": 3,
         "failed": 2,
         "delivered": 1,
     }
@@ -484,7 +487,7 @@ def test_get_status_filters_in_right_order(client):
 
     assert [label for label, _option, _link, _count in ret] == [
         "total",
-        "sending",
+        "in transit",
         "delivered",
         "failed",
     ]
@@ -515,15 +518,12 @@ def test_html_contains_notification_id(
 
     notifications = page.tbody.find_all("tr")
     for tr in notifications:
-        assert uuid.UUID(tr.attrs["id"])
+        id = tr.attrs["id"]
+        assert uuid.UUID(id.lstrip("cds"))
 
 
 def test_html_contains_links_for_failed_notifications(
-    client_request,
-    active_user_with_permissions,
-    mock_get_service_statistics,
-    mock_get_service_data_retention,
-    mocker,
+    client_request, active_user_with_permissions, mock_get_service_statistics, mock_get_service_data_retention, mocker, app_
 ):
     notifications = create_notifications(status="technical-failure")
     mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
@@ -536,7 +536,7 @@ def test_html_contains_links_for_failed_notifications(
     notifications = response.tbody.find_all("tr")
     for tr in notifications:
         link_text = tr.find("div", class_="table-field-status-error").find("a").text
-        assert normalize_spaces(link_text) == "Technical failure"
+        assert normalize_spaces(link_text) == "Tech issue"
 
 
 @pytest.mark.parametrize(
@@ -612,25 +612,25 @@ def test_big_numbers_and_search_dont_show_for_letters(
 @pytest.mark.parametrize(
     "message_type, status, expected_hint_status, single_line",
     [
-        ("email", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("email", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
+        ("email", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "email",
             "temporary-failure",
-            "Inbox not accepting messages right now 16:31:00",
+            "Content or inbox issue 16:31:00",
             False,
         ),
-        ("email", "permanent-failure", "Email address does not exist 16:31:00", False),
+        ("email", "permanent-failure", "No such address 16:31:00", False),
         ("email", "delivered", "Delivered 16:31:00", True),
-        ("sms", "created", "Sending since 2017-09-27T16:30:00+00:00", True),
-        ("sms", "sending", "Sending since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "sms",
             "temporary-failure",
-            "Phone number not accepting messages right now 16:31:00",
+            "Carrier issue 16:31:00",
             False,
         ),
-        ("sms", "permanent-failure", "Phone number does not exist 16:31:00", False),
+        ("sms", "permanent-failure", "No such number 16:31:00", False),
         ("sms", "delivered", "Delivered 16:31:00", True),
         ("letter", "created", "2017-09-27T16:30:00+00:00", True),
         ("letter", "pending-virus-check", "2017-09-27T16:30:00+00:00", True),
@@ -676,7 +676,7 @@ def test_big_numbers_and_search_dont_show_for_letters(
         ),
     ],
 )
-def test_sending_status_hint_displays_correctly_on_notifications_page(
+def test_sending_status_hint_displays_correctly_on_notifications_page_new_statuses(
     client_request,
     service_one,
     active_user_with_permissions,
@@ -687,6 +687,7 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
     expected_hint_status,
     single_line,
     mocker,
+    app_,
 ):
     notifications = create_notifications(template_type=message_type, status=status)
     mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
@@ -699,6 +700,29 @@ def test_sending_status_hint_displays_correctly_on_notifications_page(
 
     assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
     assert bool(page.select(".align-with-message-body")) is single_line
+
+
+@pytest.mark.parametrize("message_type", [("email"), ("sms")])
+def test_empty_message_display_on_notifications_report_when_none_sent(
+    client_request,
+    service_one,
+    active_user_with_permissions,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mocker,
+    app_,
+    message_type,
+):
+    notifications = notification_json(service_id=service_one["id"], rows=0)
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=service_one["id"],
+        message_type=message_type,
+    )
+
+    assert "You have not sent messages recently" in str(page.contents)
 
 
 @pytest.mark.skip(reason="letters: unused functionality")

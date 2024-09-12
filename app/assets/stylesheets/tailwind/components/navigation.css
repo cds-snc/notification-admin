@@ -117,12 +117,13 @@
     @apply text-black;
   }
 
-  .header--active {
+  #proposition-links [aria-current="page"] {
     @apply border-b-4 !important;
     @apply border-blue !important;
   }
 
-  .menu--active {
+  .menu--active,
+  #mobile-menu-content [aria-current="page"] {
     @apply font-bold;
   }
 
@@ -141,7 +142,8 @@
   }
 
   .shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   /*! purgecss end ignore */

@@ -13,6 +13,12 @@ from flask_login import login_user
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
+from app.tou import TERMS_KEY
+
+DEFAULT_TEMPLATE_CATEGORY_LOW = "0dda24c2-982a-4f44-9749-0e38b2607e89"
+DEFAULT_TEMPLATE_CATEGORY_MEDIUM = "f75d6706-21b7-437e-b93a-2c0ab771e28e"
+DEFAULT_TEMPLATE_CATEGORY_HIGH = "c4f87d7c-a55b-4c0f-91fe-e56c65bb1871"
+TESTING_TEMPLATE_CATEGORY = "f3b8a8d1-6e3f-4b93-bb7b-3a8d3f625f17"
 
 # Add itsdangerous to the libraries which freezegun ignores to avoid errors.
 # In tests where we freeze time, the code in the test function will get the frozen time but the
@@ -46,12 +52,15 @@ class MockRedis:
 
 
 class TestClient(FlaskClient):
-    def login(self, user, mocker=None, service=None):
+    def login(self, user, mocker=None, service=None, agree_to_terms=True):
         # Skipping authentication here and just log them in
         model_user = User(user)
         with self.session_transaction() as session:
             session["current_session_id"] = model_user.current_session_id
             session["user_id"] = model_user.id
+
+            if agree_to_terms:
+                session[TERMS_KEY] = True
         if mocker:
             mocker.patch("app.user_api_client.get_user", return_value=user)
         if mocker and service:
@@ -187,6 +196,8 @@ def service_json(
     organisation_id=None,
     sending_domain=None,
     go_live_user=None,
+    organisation_notes="",
+    sensitive_service=None,
 ):
     if users is None:
         users = []
@@ -227,6 +238,8 @@ def service_json(
         "organisation": organisation_id,
         "sending_domain": sending_domain,
         "go_live_user": go_live_user,
+        "organisation_notes": organisation_notes,
+        "sensitive_service": sensitive_service,
     }
     service: Service = dotdict(service_dict)
     return service
@@ -278,6 +291,29 @@ def organisation_json(
     }
 
 
+def template_category_json(
+    id_,
+    name_en="name_en",
+    name_fr="name_fr",
+    description_en="description_en",
+    description_fr="description_fr",
+    hidden=False,
+    sms_process_type="bulk",
+    email_process_type="bulk",
+):
+    template_category = {
+        "id": id_,
+        "name_en": name_en,
+        "name_fr": name_fr,
+        "description_en": description_en,
+        "description_fr": description_fr,
+        "hidden": hidden,
+        "sms_process_type": sms_process_type,
+        "email_process_type": email_process_type,
+    }
+    return template_category
+
+
 def template_json(
     service_id,
     id_,
@@ -288,6 +324,7 @@ def template_json(
     version=1,
     archived=False,
     process_type=TemplateProcessTypes.BULK.value,
+    process_type_column=TemplateProcessTypes.BULK.value,
     redact_personalisation=None,
     service_letter_contact=None,
     reply_to=None,
@@ -295,9 +332,11 @@ def template_json(
     is_precompiled_letter=False,
     postage=None,
     folder=None,
+    template_category_id=DEFAULT_TEMPLATE_CATEGORY_LOW,
 ):
     template = {
         "id": id_,
+        "template_category_id": template_category_id,
         "name": name,
         "template_type": type_ or "sms",
         "content": content,
@@ -306,12 +345,14 @@ def template_json(
         "updated_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f"),
         "archived": archived,
         "process_type": process_type,
+        "process_type_column": process_type_column,
         "service_letter_contact": service_letter_contact,
         "reply_to": reply_to,
         "reply_to_text": reply_to_text,
         "is_precompiled_letter": is_precompiled_letter,
         "folder": folder,
         "postage": postage,
+        "template_category": template_category_json(template_category_id, hidden=True, name_en="HIDDEN_CATEGORY"),
     }
     if content is None:
         template["content"] = "template content"

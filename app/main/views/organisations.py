@@ -1,6 +1,14 @@
 from collections import OrderedDict
 
-from flask import flash, redirect, render_template, request, session, url_for
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -9,7 +17,6 @@ from werkzeug.exceptions import abort
 from app import (
     current_organisation,
     email_branding_client,
-    letter_branding_client,
     org_invite_api_client,
     organisations_client,
     user_api_client,
@@ -30,7 +37,6 @@ from app.main.forms import (
     SearchByNameForm,
     SearchUsersForm,
     SetEmailBranding,
-    SetLetterBranding,
 )
 from app.main.views.service_settings import get_branding_as_value_and_label
 from app.models.organisation import Organisation, Organisations
@@ -152,7 +158,6 @@ def cancel_invited_org_user(org_id, invited_user_id):
 @main.route("/organisations/<org_id>/settings/", methods=["GET"])
 @user_is_platform_admin
 def organisation_settings(org_id):
-
     email_branding = (
         "French Government of Canada signature"
         if current_organisation.default_branding_is_french is True
@@ -164,15 +169,9 @@ def organisation_settings(org_id):
             "name"
         ]
 
-    letter_branding = None
-
-    if current_organisation.letter_branding_id:
-        letter_branding = letter_branding_client.get_letter_branding(current_organisation.letter_branding_id)["name"]
-
     return render_template(
         "views/organisations/organisation/settings/index.html",
         email_branding=email_branding,
-        letter_branding=letter_branding,
     )
 
 
@@ -204,7 +203,6 @@ def edit_organisation_name(org_id):
 @main.route("/organisations/<org_id>/settings/edit-type", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_type(org_id):
-
     form = OrganisationOrganisationTypeForm(org_type=current_organisation.organisation_type)
 
     if form.validate_on_submit():
@@ -226,7 +224,6 @@ def edit_organisation_type(org_id):
 @main.route("/organisations/<org_id>/settings/edit-crown-status", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_crown_status(org_id):
-
     form = OrganisationCrownStatusForm(
         crown_status={
             True: "crown",
@@ -255,7 +252,6 @@ def edit_organisation_crown_status(org_id):
 @main.route("/organisations/<org_id>/settings/edit-agreement", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_agreement(org_id):
-
     form = OrganisationAgreementSignedForm(
         agreement_signed={
             True: "yes",
@@ -284,8 +280,11 @@ def edit_organisation_agreement(org_id):
 @main.route("/organisations/<org_id>/settings/set-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_email_branding(org_id):
-
-    email_branding = email_branding_client.get_all_email_branding()
+    email_branding = email_branding_client.get_all_email_branding(organisation_id=org_id)
+    # As the user is a platform admin, we want the user to be able to get the no branding option
+    no_branding = email_branding_client.get_email_branding(current_app.config["NO_BRANDING_ID"])
+    if no_branding and "email_branding" in no_branding:
+        email_branding.append(no_branding["email_branding"])
 
     current_branding = current_organisation.email_branding_id
 
@@ -321,7 +320,6 @@ def edit_organisation_email_branding(org_id):
 @main.route("/organisations/<org_id>/settings/preview-email-branding", methods=["GET", "POST"])
 @user_is_platform_admin
 def organisation_preview_email_branding(org_id):
-
     branding_style = request.args.get("branding_style", None)
     form = PreviewBranding(branding_style=branding_style)
 
@@ -350,57 +348,12 @@ def organisation_preview_email_branding(org_id):
     )
 
 
-@main.route("/organisations/<org_id>/settings/set-letter-branding", methods=["GET", "POST"])
-@user_is_platform_admin
-def edit_organisation_letter_branding(org_id):
-    letter_branding = letter_branding_client.get_all_letter_branding()
-
-    form = SetLetterBranding(
-        all_branding_options=get_branding_as_value_and_label(letter_branding),
-        current_branding=current_organisation.letter_branding_id,
-    )
-
-    if form.validate_on_submit():
-        return redirect(
-            url_for(
-                ".organisation_preview_letter_branding",
-                org_id=org_id,
-                branding_style=form.branding_style.data,
-            )
-        )
-
-    return render_template(
-        "views/organisations/organisation/settings/set-letter-branding.html",
-        form=form,
-        search_form=SearchByNameForm(),
-    )
-
-
-@main.route("/organisations/<org_id>/settings/preview-letter-branding", methods=["GET", "POST"])
-@user_is_platform_admin
-def organisation_preview_letter_branding(org_id):
-    branding_style = request.args.get("branding_style")
-
-    form = PreviewBranding(branding_style=branding_style)
-
-    if form.validate_on_submit():
-        organisations_client.update_organisation(org_id, letter_branding_id=form.branding_style.data)
-        return redirect(url_for(".organisation_settings", org_id=org_id))
-
-    return render_template(
-        "views/organisations/organisation/settings/preview-letter-branding.html",
-        form=form,
-        action=url_for("main.organisation_preview_letter_branding", org_id=org_id),
-    )
-
-
 @main.route(
     "/organisations/<org_id>/settings/edit-organisation-domains",
     methods=["GET", "POST"],
 )
 @user_is_platform_admin
 def edit_organisation_domains(org_id):
-
     return redirect(url_for(".organisation_settings", org_id=org_id))
 
     form = OrganisationDomainsForm()
@@ -456,7 +409,6 @@ def confirm_edit_organisation_name(org_id):
 @main.route("/organisations/<org_id>/settings/edit-go-live-notes", methods=["GET", "POST"])
 @user_is_platform_admin
 def edit_organisation_go_live_notes(org_id):
-
     form = GoLiveNotesForm()
 
     if form.validate_on_submit():
