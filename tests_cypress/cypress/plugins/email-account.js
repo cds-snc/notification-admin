@@ -75,65 +75,57 @@ const emailAccount = async () => {
          * Utility method for getting the last email
          * for the Ethereal email account 
          */
-        async getLastEmail(emailAddress) {
-            // makes debugging very simple
-            console.log('Getting the last email', emailAddress)
-
+        async getLastEmail(emailAddress) {        
+            let connection;
             try {
-                const connection = await imaps.connect(emailConfig)
-
+                connection = await imaps.connect(emailConfig);
+        
                 // grab up to 50 emails from the inbox
-                await connection.openBox('INBOX')
+                await connection.openBox('INBOX');
                 const searchCriteria = ['UNSEEN'];
                 const fetchOptions = {
                     bodies: [''],
                     struct: true,
                 };
-                const messages = await connection.search(searchCriteria, fetchOptions)
-                // connection.end();
+                const messages = await connection.search(searchCriteria, fetchOptions);
+        
                 if (!messages.length) {
-                    console.log('Cannot find any emails')
-                    return null
+                    console.log('Cannot find any emails');
+                    return null;
                 } else {
                     let latestMail = null;
-                    let uidsToDelete = []; 
+                    let uidsToDelete = [];
                     for (const message of messages) {
-                        
                         const mail = await simpleParser(message.parts[0].body);
                         const to_address = mail.to.value[0].address;
-                        console.log('to_address', to_address)
-                        console.log('email', emailAddress);
-                        console.log('---')
-                        if (to_address == emailAddress) {      
-                            console.log('mafch found')   
-                            uidsToDelete.push(message.attributes.uid);         
+
+                        if (to_address == emailAddress) {
+                            uidsToDelete.push(message.attributes.uid);
                             latestMail = {
                                 subject: mail.subject,
                                 text: mail.text,
                                 html: mail.html,
-                            }
+                            };
                         }
                     }
-                    
+        
                     console.log('deleting', uidsToDelete);
                     try {
                         await connection.deleteMessage(uidsToDelete);
                         await connection.imap.expunge();
+                    } catch (e) {
+                        console.error('delete error', e);
                     }
-                    catch (e) {
-                        console.error('delete error', e)
-                    }
-
-                    connection.end()      
-
-                    return latestMail;                    
+        
+                    return latestMail;
                 }
             } catch (e) {
-                // and close the connection to avoid it hanging
-                // connection.end()
-
-                console.error(e)
-                return null
+                console.error(e);
+                return null;
+            } finally {
+                if (connection) {
+                    connection.end();
+                }
             }
         },
         async fetchEmail(acct) {
@@ -201,11 +193,6 @@ const emailAccount = async () => {
                 console.error(e)
                 return null
             }
-        },
-        async createEmailAccount() {
-            let testAccount = await nodemailer.createTestAccount();
-            // console.log("test account created: ", testAccount);
-            return testAccount;
         }
     }
 
