@@ -24,31 +24,37 @@ const Utilities = {
     }
 };
 
-const createAccount = async (baseUrl, username, secret) => {
+const createAccount = async (baseUrl, username, secret, pw) => {
     // return a generated id
     const token = Utilities.CreateJWT(username, secret);
     const generatedUsername = Utilities.GenerateID(10);
     const url = `${baseUrl}/cypress/create_user/${generatedUsername}`;
-    console.log('generatedUsername', generatedUsername);
 
     return new Promise((resolve, reject) => {
+        const postData = JSON.stringify({
+            password: pw
+        });
+
         const options = {
-            method: 'GET', // or 'POST', depending on your API
+            method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": 'application/json'
-            }
+                "Content-Type": 'application/json',
+                'Content-Length': Buffer.byteLength(postData)
+            },
         };
-
+        
         const getHttpModule = (url) => url.startsWith('https://') ? https : http;
 
         const req = getHttpModule(url).request(url, options, (res) => {
             let data = '';
 
+            // A chunk of data has been received.
             res.on('data', (chunk) => {
                 data += chunk;
             });
 
+            // The whole response has been received.
             res.on('end', () => {
                 try {
                     const parsedData = JSON.parse(data);
@@ -62,10 +68,11 @@ const createAccount = async (baseUrl, username, secret) => {
         req.on('error', (error) => {
             reject(error); // Reject the promise on request error
         });
-
+        
+        // Write the POST parameters to the request body
+        req.write(postData);
         req.end();
     });
-
 };
 
 

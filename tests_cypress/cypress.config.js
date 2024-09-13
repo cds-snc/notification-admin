@@ -38,20 +38,17 @@ module.exports = defineConfig({
         fetchEmail(acct) {
           return emailAccount.fetchEmail(acct)
         },
-        createEmailAccount() {
-          return emailAccount.createEmailAccount();
-        },
-        createAccount({ baseUrl, username, secret }) {
+        createAccount({ baseUrl, username, secret, pw }) {
           if (global.acct) {
             return global.acct;
           } else {
-            let acct = CreateAccount(baseUrl, username, secret);
+            let acct = CreateAccount(baseUrl, username, secret, pw);
             global.acct = acct;
             return acct
           }          
         },
         getUserName() {
-          return global.stuff;
+          return global.acct;
         }
       });
 
@@ -68,6 +65,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    retries: 3
+    // retries: 3
   },
 });
