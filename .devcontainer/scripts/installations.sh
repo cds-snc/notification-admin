@@ -11,13 +11,14 @@ echo -e "alias ls='exa'" >> ~/.zshrc
 echo -e "alias l='exa -alh'" >> ~/.zshrc
 echo -e "alias ll='exa -alh@ --git'" >> ~/.zshrc
 echo -e "alias lt='exa -al -T -L 2'" >> ~/.zshrc
+echo -e "alias poe='poetry run poe'" >> ~/.zshrc
 
 # Poetry autocomplete
 echo -e "fpath+=/.zfunc" >> ~/.zshrc
 echo -e "autoload -Uz compinit && compinit"
 
 # Install Poetry
-pip install poetry==${POETRY_VERSION}
+pip install poetry==${POETRY_VERSION} poetry-plugin-sort
 echo "PATH=$PATH"
 #echo "/home/vscode/.local/bin/.."
 export PATH=$PATH:/home/vscode/.local/bin/
@@ -32,6 +33,10 @@ poetry completions zsh > ~/.zfunc/_poetry
 # Install dependencies
 cd /workspaces/notification-admin
 poetry install
+
+# Poe the Poet plugin tab completions
+touch ~/.zfunc/_poe
+poetry run poe _zsh_completion > ~/.zfunc/_poe
 
 npm rebuild node-sass
 make generate-version-file

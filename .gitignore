@@ -50,6 +50,9 @@ test_results.xml
 *.pot
 app/translations/csv/en.csv
 
+# MonkeyType
+monkeytype.sqlite3
+
 # Django stuff:
 *.log
 
@@ -97,3 +100,4 @@ cypress*env*json*
 node_modules/
 tests_cypress/cypress/videos/
 tests_cypress/cypress/screenshots/
+.ruff_cache/

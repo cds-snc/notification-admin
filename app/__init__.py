@@ -56,6 +56,7 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
+from app.monkeytype_config import MonkeytypeConfig
 from app.navigation import (
     AdminNavigation,
     HeaderNavigation,
@@ -91,7 +92,6 @@ from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
-
 
 # The current service attached to the request stack.
 current_service: Service = LocalProxy(lambda: g.current_service)  # type: ignore
@@ -231,6 +231,13 @@ def create_app(application):
             application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
         )
 
+    # Specify packages to be traced by MonkeyType. This can be overriden
+    # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:
+    # MONKEYTYPE_TRACE_MODULES="app.,notifications_utils."
+    if application.config["NOTIFY_ENVIRONMENT"] == "development":
+        packages_prefix = ["app.", "notifications_utils."]
+        application.monkeytype_config = MonkeytypeConfig(packages_prefix)
+
 
 def init_app(application):
     application.after_request(useful_headers_after_request)
@@ -365,14 +372,10 @@ def get_human_day(time):
 
 
 def format_time(date):
-    return (
-        {"12:00AM": "Midnight", "12:00PM": "Midday"}
-        .get(
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-        )
-        .lower()
-    )
+    return {"12:00AM": "Midnight", "12:00PM": "Midday"}.get(
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+    ).lower()
 
 
 def format_date(date):
@@ -450,9 +453,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                     "suppressed": _("Blocked"),
                     "on-account-suppression-list": _("Blocked"),
                 },
-            }[
-                template_type
-            ].get(feedback_subtype, _("No such address"))
+            }[template_type].get(feedback_subtype, _("No such address"))
         else:
             return _("No such address")
 
@@ -510,40 +511,36 @@ def format_notification_status_as_time(status, created, updated):
 
 
 def format_notification_status_as_field_status(status, notification_type):
-    return (
-        {
-            "letter": {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": None,
-                "created": None,
-                "accepted": None,
-                "pending-virus-check": None,
-                "virus-scan-failed": "error",
-                "returned-letter": None,
-                "cancelled": "error",
-            }
+    return {
+        "letter": {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": None,
+            "created": None,
+            "accepted": None,
+            "pending-virus-check": None,
+            "virus-scan-failed": "error",
+            "returned-letter": None,
+            "cancelled": "error",
         }
-        .get(
-            notification_type,
-            {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": "default",
-                "created": "default",
-                "pending": "default",
-            },
-        )
-        .get(status, "error")
-    )
+    }.get(
+        notification_type,
+        {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": "default",
+            "created": "default",
+            "pending": "default",
+        },
+    ).get(status, "error")
 
 
 def format_notification_status_as_url(status, notification_type):
