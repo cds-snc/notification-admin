@@ -11,7 +11,7 @@ export const Toggle = () => {
 
   return (
     <fieldset className="form-group choice choice--radios" id="time-toggle" role="radio-group">
-      <legend className="form-label">
+      <legend className="form-label w-full">
         <span>{translate("select_time_format_label")}</span>
       </legend>
       <div className="choice__item">
