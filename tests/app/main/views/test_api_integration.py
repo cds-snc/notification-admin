@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from collections import OrderedDict
 from unittest.mock import Mock, call
@@ -535,6 +536,7 @@ class TestApiCallbacks:
         client_request,
         service_one,
         mock_get_valid_service_callback_api,
+        mock_validate_callback_url,
         endpoint,
         url,
         bearer_token,
@@ -557,6 +559,54 @@ class TestApiCallbacks:
         error_msgs = " ".join(msg.text.strip() for msg in response.select(".error-message"))
 
         assert error_msgs == expected_errors
+
+    @pytest.mark.parametrize(
+        "endpoint",
+        [
+            ("main.delivery_status_callback"),
+            ("main.received_text_messages_callback"),
+        ],
+    )
+    def test_callback_response_time_banner_shows_error_when_response_time_greater_than_one_second(
+        self,
+        endpoint,
+        fake_uuid,
+        client_request,
+        service_one,
+        mock_get_valid_service_callback_api,
+        mock_get_valid_service_inbound_api,
+        mocker,
+    ):
+        mocker.patch(
+            "app.main.validators.requests.post", return_value=Mock(elapsed=datetime.timedelta(seconds=1.1), status_code=200)
+        )
+
+        if endpoint == "main.received_text_messages_callback":
+            service_one["permissions"] = ["inbound_sms"]
+            service_one["inbound_api"] = [fake_uuid]
+            url = "https://hello3.canada.ca"
+        else:
+            service_one["service_callback_api"] = [fake_uuid]
+            url = "https://hello2.canada.ca"
+
+        data = {
+            "url": url,
+            "bearer_token": "bearer_token_set",
+            "button_pressed": "test_response_time",
+        }
+
+        response = client_request.post(
+            endpoint,
+            service_id=service_one["id"],
+            _data=data,
+            _follow_redirects=True,
+        )
+
+        expected_banner_msg = f"The service {url.split('https://')[1]} took longer than 1 second to respond."
+        page = BeautifulSoup(response.decode("utf-8"), "html.parser")
+        banner_msg = normalize_spaces(page.select(".banner-dangerous")[0].text)
+
+        assert banner_msg == expected_banner_msg
 
     @pytest.mark.parametrize(
         "endpoint, expected_delete_url",

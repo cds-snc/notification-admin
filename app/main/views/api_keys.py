@@ -279,7 +279,15 @@ def delivery_status_callback(service_id):
             # nothing for us to do here
             pass
 
-        if request.form.get("button_pressed") == "test_response_time":
+        if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
+            flash(
+                _l("The service {} took longer than 1 second to respond.").format(
+                    url_hostname,
+                ),
+                "error",
+            )
+            return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+        else:
             flash(
                 _l("The service {} responded in {} seconds.").format(
                     url_hostname,
@@ -386,7 +394,15 @@ def received_text_messages_callback(service_id):
 
             return redirect(url_for(back_link, service_id=service_id))
 
-        if request.form.get("button_pressed") == "test_response_time":
+        if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
+            flash(
+                _l("The service {} took longer than 1 second to respond.").format(
+                    url_hostname,
+                ),
+                "error",
+            )
+            return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+        else:
             flash(
                 _l("The service {} responded in {} seconds.").format(
                     url_hostname,
