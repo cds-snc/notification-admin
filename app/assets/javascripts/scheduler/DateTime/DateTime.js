@@ -8,7 +8,6 @@ export const DateTime = () => {
   const { selected } = useContext(store);
   const { translate } = useContext(I18nContext);
 
-
   if (typeof selected[0] === "undefined") {
     return null;
   }
@@ -20,9 +19,13 @@ export const DateTime = () => {
         <div className="date-time-box">
           <div classNAme="form-group">
             <label className="form-label" for="time">
-              <span>{translate("select_time_label")} <Date /></span>
+              <span>
+                {translate("select_time_label")} <Date />
+              </span>
             </label>
-            <span id="time-hint" className="form-hint">{translate("select_time_hint")}</span>
+            <span id="time-hint" className="form-hint">
+              {translate("select_time_hint")}
+            </span>
             <Time name="time" />
           </div>
           <Toggle />
