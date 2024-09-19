@@ -189,7 +189,8 @@ def preview_template(service_id, template_id=None):
                         template["content"],
                         service_id,
                         template["subject"],
-                        template["process_type"],
+                        None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
+                        template["template_category_id"] if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -198,8 +199,9 @@ def preview_template(service_id, template_id=None):
                         template["content"],
                         service_id,
                         template["subject"],
-                        template["process_type"],
+                        None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["folder"],
+                        template["template_category_id"] if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
                     )
                     template_id = new_template["data"]["id"]
 
@@ -953,6 +955,7 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
             "process_type": form.process_type.data,
             "reply_to_text": template["reply_to_text"],
             "folder": template["folder"],
+            "template_category_id": form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
         }
         set_preview_data(new_template_data, service_id, template_id)
 
