@@ -16,8 +16,11 @@ patch_all()
 
 application = Flask("app")
 application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
-xray_recorder.configure(service='Notify-Admin')
-XRayMiddleware(application, xray_recorder)
+
+if application.config.get("AWS_XRAY_SDK_ENABLED") is True:
+    xray_recorder.configure(service="Notify-Admin")
+    XRayMiddleware(application, xray_recorder)
+
 create_app(application)
 
 apig_wsgi_handler = make_lambda_handler(application, binary_support=True)
