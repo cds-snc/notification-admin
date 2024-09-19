@@ -1967,7 +1967,7 @@ def test_preview_has_correct_back_link(
     assert page.select(".back-link")[0]["href"] == expected_back_url
 
 
-def test_preview_should_update_and_redirect_on_save(client_request, mock_update_service_template, fake_uuid, mocker):
+def test_preview_should_update_and_redirect_on_save(client_request, mock_update_service_template, fake_uuid, mocker, app_):
     preview_data = {
         "name": "test name",
         "content": "test content",
@@ -1975,7 +1975,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         "template_type": "email",
         "process_type": DEFAULT_PROCESS_TYPE,
         "id": fake_uuid,
-        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     }
     mocker.patch(
         "app.main.views.templates.get_preview_data",
@@ -2004,11 +2004,11 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         SERVICE_ONE_ID,
         "test subject",
         DEFAULT_PROCESS_TYPE,
-        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
-def test_preview_should_create_and_redirect_on_save(client_request, mock_create_service_template, fake_uuid, mocker):
+def test_preview_should_create_and_redirect_on_save(client_request, mock_create_service_template, fake_uuid, mocker, app_):
     preview_data = {
         "name": "test name",
         "content": "test content",
@@ -2016,7 +2016,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         "template_type": "email",
         "process_type": DEFAULT_PROCESS_TYPE,
         "folder": None,
-        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     }
     mocker.patch(
         "app.main.views.templates.get_preview_data",
@@ -2044,7 +2044,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         "test subject",
         DEFAULT_PROCESS_TYPE,
         None,
-        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        DEFAULT_TEMPLATE_CATEGORY_LOW if app_.config["FF_TEMPLATE_CATEGORY"] else None,
     )
 
 
