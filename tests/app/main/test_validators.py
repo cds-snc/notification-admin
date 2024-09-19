@@ -130,7 +130,7 @@ def test_for_commas_in_placeholders(client):
     NoCommasInPlaceHolders()(None, _gen_mock_field("Hello ((name))"))
 
 
-@pytest.mark.parametrize("msg", ["The quick brown fox", "Thé “quick” bröwn fox\u200B"])
+@pytest.mark.parametrize("msg", ["The quick brown fox", "Thé “quick” bröwn fox\u200b"])
 def test_sms_character_validation(client, msg):
     OnlySMSCharacters()(None, _gen_mock_field(msg))
 
