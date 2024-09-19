@@ -148,7 +148,6 @@ class Config(object):
     NOTIFY_USER_ID = "6af522d0-2915-4e52-83a3-3690455a5fe6"
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
-    AWS_XRAY_SDK_ENABLED = True
 
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
@@ -190,7 +189,6 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    AWS_XRAY_SDK_ENABLED = False
 
 
 class Test(Development):
@@ -225,7 +223,6 @@ class Test(Development):
     FF_NEW_BRANDING = True
     FF_TOU = True
     FF_TEMPLATE_CATEGORY = True
-    AWS_XRAY_SDK_ENABLED = False
 
 
 class ProductionFF(Config):
