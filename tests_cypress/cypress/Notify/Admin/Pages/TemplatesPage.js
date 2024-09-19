@@ -18,6 +18,7 @@ let Components = {
     TemplateCategories: () => cy.getByTestId('template-categories'),
     TemplateCategoryOther: () => cy.get('#template_category_other'),
     SaveTemplateButton: () => cy.get('button[type="submit"]').first(),
+    PreviewTemplateButton: () => cy.get('button[type="submit"]').eq(1),
     SelectedTemplateCategory: () => Components.TemplateCategories().find('input:checked').parent(),
     SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
@@ -46,6 +47,10 @@ let Actions = {
         if (!expectFailure) {
             Components.FlashMessage().should('contain', 'template saved');
         }
+    },
+    PreviewTemplate: () => {
+        Components.PreviewTemplateButton().click();
+        cy.contains('h1', 'Previewing template').should('be.visible');
     },
     CreateTemplate: () => {
         Components.CreateTemplateButton().click();

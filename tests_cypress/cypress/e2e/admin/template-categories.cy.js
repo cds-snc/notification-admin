@@ -141,6 +141,15 @@ describe("Template categories", () => {
           .should("be.visible");
       });
 
+      it("Can be saved after being previewed", () => {
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.SelectTemplateCategory(categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+      });
+
       context("Other/specify", () => {
         it("Category label must be provided when “other” template category selected in order to save template ", () => {
           // Start with the authentication category
