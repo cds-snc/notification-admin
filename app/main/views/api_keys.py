@@ -1,4 +1,4 @@
-from flask import Markup, abort, flash, redirect, render_template, request, url_for
+from flask import Markup, abort, flash, g, redirect, render_template, request, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 
@@ -171,6 +171,39 @@ def get_delivery_status_callback_details():
         return service_api_client.get_service_callback_api(current_service.id, current_service.service_callback_api[0])
 
 
+@main.route("/services/<service_id>/api/callbacks/delivery-status-callback/delete", methods=["GET", "POST"])
+@user_has_permissions("manage_api_keys")
+def delete_delivery_status_callback(service_id):
+    delivery_status_callback = get_delivery_status_callback_details()
+    back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = "Must start with https://"
+
+    if request.method == "POST":
+        if delivery_status_callback:
+            service_api_client.delete_service_callback_api(
+                service_id,
+                delivery_status_callback["id"],
+            )
+
+            flash(_l("Callback configuration deleted."), "default_with_tick")
+            return redirect(url_for(back_link, service_id=service_id))
+
+    flash(_l("Are you sure you want to delete this callback configuration?"), "delete")
+
+    form = ServiceDeliveryStatusCallbackForm(
+        url=delivery_status_callback.get("url") if delivery_status_callback else "",
+        bearer_token=dummy_bearer_token if delivery_status_callback else "",
+    )
+
+    return render_template(
+        "views/api/callbacks/delivery-status-callback.html",
+        back_link=".api_callbacks" if current_service.has_permission("inbound_sms") else ".delivery_status_callback",
+        hint_text=url_hint_txt,
+        is_deleting=True,
+        form=form,
+    )
+
+
 @main.route(
     "/services/<service_id>/api/callbacks/delivery-status-callback",
     methods=["GET", "POST"],
@@ -179,6 +212,7 @@ def get_delivery_status_callback_details():
 def delivery_status_callback(service_id):
     delivery_status_callback = get_delivery_status_callback_details()
     back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = _l("Must start with https://")
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
@@ -186,6 +220,11 @@ def delivery_status_callback(service_id):
     )
 
     if form.validate_on_submit():
+        # As part of the ValidCallbackUrl validation, we ping their callback URL to check if it's up and set the response time in g
+        response_time = "{:.2f}".format(g.callback_response_time)
+        url_hostname = form.url.data.split("https://")[1]
+
+        # Update existing callback
         if delivery_status_callback and form.url.data:
             if delivery_status_callback.get("url") != form.url.data or form.bearer_token.data != dummy_bearer_token:
                 service_api_client.update_service_callback_api(
@@ -195,11 +234,28 @@ def delivery_status_callback(service_id):
                     user_id=current_user.id,
                     callback_api_id=delivery_status_callback.get("id"),
                 )
-        elif delivery_status_callback and not form.url.data:
-            service_api_client.delete_service_callback_api(
-                service_id,
-                delivery_status_callback["id"],
-            )
+
+                # If the user is just testing their URL, don't send them back to the API Integration page
+                if request.form.get("button_pressed") == "test_response_time":
+                    flash(
+                        _l("The service {} responded in {} seconds.").format(
+                            url_hostname,
+                            response_time,
+                        ),
+                        "default_with_tick",
+                    )
+                    return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+
+                flash(
+                    _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                        url_hostname,
+                        response_time,
+                    ),
+                    "default_with_tick",
+                )
+
+                return redirect(url_for(back_link, service_id=service_id))
+        # Create a new callback
         elif form.url.data:
             service_api_client.create_service_callback_api(
                 service_id,
@@ -207,17 +263,55 @@ def delivery_status_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
+
+            flash(
+                _l("We’ve set up your callback configuration. {} responded in {} seconds.").format(
+                    url_hostname,
+                    response_time,
+                ),
+                "default_with_tick",
+            )
+
+            return redirect(url_for(back_link, service_id=service_id))
         else:
             # If no callback is set up and the user chooses to continue
             # having no callback (ie both fields empty) then there’s
             # nothing for us to do here
             pass
 
+        if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
+            flash(
+                _l("The service {} took longer than 1 second to respond.").format(
+                    url_hostname,
+                ),
+                "error",
+            )
+            return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+        else:
+            flash(
+                _l("The service {} responded in {} seconds.").format(
+                    url_hostname,
+                    response_time,
+                ),
+                "default_with_tick",
+            )
+            return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+
+        flash(
+            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                url_hostname,
+                response_time,
+            ),
+            "default_with_tick",
+        )
+
         return redirect(url_for(back_link, service_id=service_id))
 
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
+        has_callback_config=delivery_status_callback is not None,
         back_link=back_link,
+        hint_text=url_hint_txt,
         form=form,
     )
 
@@ -235,14 +329,20 @@ def get_received_text_messages_callback():
 def received_text_messages_callback(service_id):
     if not current_service.has_permission("inbound_sms"):
         return redirect(url_for(".api_integration", service_id=service_id))
+    back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
 
     received_text_messages_callback = get_received_text_messages_callback()
     form = ServiceReceiveMessagesCallbackForm(
         url=received_text_messages_callback.get("url") if received_text_messages_callback else "",
         bearer_token=dummy_bearer_token if received_text_messages_callback else "",
     )
+    url_hint_txt = _l("Must start with https://")
 
     if form.validate_on_submit():
+        # As part of the ValidCallbackUrl validation, we ping their callback URL to check if it's up and set the response time in g
+        response_time = "{:.2f}".format(g.callback_response_time)
+        url_hostname = form.url.data.split("https://")[1]
+
         if received_text_messages_callback and form.url.data:
             if received_text_messages_callback.get("url") != form.url.data or form.bearer_token.data != dummy_bearer_token:
                 service_api_client.update_service_inbound_api(
@@ -252,6 +352,26 @@ def received_text_messages_callback(service_id):
                     user_id=current_user.id,
                     inbound_api_id=received_text_messages_callback.get("id"),
                 )
+
+                # If the user is just testing their URL, don't send them back to the API Integration page
+                if request.form.get("button_pressed") == "test_response_time":
+                    flash(
+                        _l("The service {} responded in {} seconds.").format(
+                            url_hostname,
+                            response_time,
+                        ),
+                        "default_with_tick",
+                    )
+                    return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+
+                flash(
+                    _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                        url_hostname,
+                        response_time,
+                    ),
+                    "default_with_tick",
+                )
+
         elif received_text_messages_callback and not form.url.data:
             service_api_client.delete_service_inbound_api(
                 service_id,
@@ -264,8 +384,79 @@ def received_text_messages_callback(service_id):
                 bearer_token=form.bearer_token.data,
                 user_id=current_user.id,
             )
+            flash(
+                _l("We’ve set up your callback configuration. {} responded in {} seconds.").format(
+                    url_hostname,
+                    response_time,
+                ),
+                "default_with_tick",
+            )
+
+            return redirect(url_for(back_link, service_id=service_id))
+
+        if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
+            flash(
+                _l("The service {} took longer than 1 second to respond.").format(
+                    url_hostname,
+                ),
+                "error",
+            )
+            return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+        else:
+            flash(
+                _l("The service {} responded in {} seconds.").format(
+                    url_hostname,
+                    response_time,
+                ),
+                "default_with_tick",
+            )
+            return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+
+        flash(
+            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                url_hostname,
+                response_time,
+            ),
+            "default_with_tick",
+        )
+
         return redirect(url_for(".api_callbacks", service_id=service_id))
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
+        has_callback_config=received_text_messages_callback is not None,
+        form=form,
+        hint_text=url_hint_txt,
+    )
+
+
+@main.route("/services/<service_id>/api/callbacks/received-text-messages-callback/delete", methods=["GET", "POST"])
+@user_has_permissions("manage_api_keys")
+def delete_received_text_messages_callback(service_id):
+    received_text_messages_callback = get_received_text_messages_callback()
+    back_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".api_integration"
+    url_hint_txt = "Must start with https://"
+
+    if request.method == "POST":
+        if received_text_messages_callback:
+            service_api_client.delete_service_inbound_api(
+                service_id,
+                received_text_messages_callback["id"],
+            )
+
+            flash(_l("Callback configuration deleted."), "default_with_tick")
+            return redirect(url_for(back_link, service_id=service_id))
+
+    flash(_l("Are you sure you want to delete this callback configuration?"), "delete")
+
+    form = ServiceReceiveMessagesCallbackForm(
+        url=received_text_messages_callback.get("url") if delivery_status_callback else "",
+        bearer_token=dummy_bearer_token if received_text_messages_callback else "",
+    )
+
+    return render_template(
+        "views/api/callbacks/delivery-status-callback.html",
+        back_link=".api_callbacks" if current_service.has_permission("inbound_sms") else ".delivery_status_callback",
+        hint_text=url_hint_txt,
+        is_deleting=True,
         form=form,
     )
