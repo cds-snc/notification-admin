@@ -1,7 +1,6 @@
 import os
 
 from apig_wsgi import make_lambda_handler
-
 from aws_xray_sdk.core import patch_all, xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from dotenv import load_dotenv
