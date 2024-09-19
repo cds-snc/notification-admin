@@ -223,6 +223,7 @@ class Test(Development):
     FF_NEW_BRANDING = True
     FF_TOU = True
     FF_TEMPLATE_CATEGORY = True
+    AWS_XRAY_SDK_ENABLED = False
 
 
 class ProductionFF(Config):
