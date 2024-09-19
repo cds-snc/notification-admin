@@ -99,9 +99,9 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 });
 
 Cypress.Commands.add('login', (un, password, agreeToTerms = true) => {
-    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET'), pw: Cypress.env('NOTIFY_PASSWORD') }).then((acct) => {
-        cy.session([acct.email_address, password, agreeToTerms], () => {
-            LoginPage.Login(acct.email_address, password, agreeToTerms);
+    //cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET'), pw: Cypress.env('NOTIFY_PASSWORD') }).then((acct) => {
+        cy.session([un, password, agreeToTerms], () => {
+            LoginPage.Login(un, password, agreeToTerms);
         });
-    });
+    //});
 });
