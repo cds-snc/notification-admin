@@ -156,7 +156,12 @@ describe("Template categories", () => {
         Page.Continue();
         const randomString = Math.random().toString(36).substring(2, 15);
         const subject = template.type === "email" ? "Subject" : null;
-        Page.FillTemplateForm(`Testing template ${randomString}`, subject, "content", categories.AUTOREPLY);
+        Page.FillTemplateForm(
+          `Testing template ${randomString}`,
+          subject,
+          "content",
+          categories.AUTOREPLY,
+        );
         Page.PreviewTemplate();
         Page.SaveTemplate();
       });

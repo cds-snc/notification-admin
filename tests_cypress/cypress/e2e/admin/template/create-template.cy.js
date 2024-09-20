@@ -123,7 +123,7 @@ describe("Create Template", () => {
         "Test Subject",
         "Test Content",
         "Alert",
-        TemplatesPage.CONSTANTS.USE_CATEGORY_PRIORITY
+        TemplatesPage.CONSTANTS.USE_CATEGORY_PRIORITY,
       );
       TemplatesPage.SaveTemplate();
 
