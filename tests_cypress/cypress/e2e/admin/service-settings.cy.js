@@ -6,7 +6,7 @@ import { ServiceSettingsPage } from "../../Notify/Admin/Pages/all";
 describe("Service Settings", () => {
   // Login to notify before the test suite starts
   before(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login();
   });
 
   beforeEach(() => {

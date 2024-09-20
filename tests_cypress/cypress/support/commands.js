@@ -98,10 +98,20 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
-Cypress.Commands.add('login', (un, password, agreeToTerms = true) => {
-    //cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET'), pw: Cypress.env('NOTIFY_PASSWORD') }).then((acct) => {
-        cy.session([un, password, agreeToTerms], () => {
-            LoginPage.Login(un, password, agreeToTerms);
+Cypress.Commands.add('login', (agreeToTerms = true) => {
+    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET') }).then((acct) => {
+        cy.log('acct', acct);
+        cy.session([acct.regular.email_address, agreeToTerms], () => {
+            LoginPage.Login(acct.regular.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
         });
-    //});
+    });
+});
+
+
+Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
+    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET') }).then((acct) => {
+        cy.session([acct.admin.email_address, agreeToTerms], () => {
+            LoginPage.Login(acct.admin.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
+        });
+    });
 });
