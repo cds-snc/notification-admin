@@ -90,7 +90,6 @@ const emailAccount = async () => {
                 const messages = await connection.search(searchCriteria, fetchOptions);
         
                 if (!messages.length) {
-                    console.log('Cannot find any emails');
                     return null;
                 } else {
                     let latestMail = null;
@@ -109,7 +108,6 @@ const emailAccount = async () => {
                         }
                     }
         
-                    console.log('deleting', uidsToDelete);
                     try {
                         await connection.deleteMessage(uidsToDelete);
                         await connection.imap.expunge();
