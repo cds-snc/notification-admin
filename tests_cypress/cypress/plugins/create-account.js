@@ -24,23 +24,19 @@ const Utilities = {
     }
 };
 
-const createAccount = async (baseUrl, username, secret, pw) => {
+const createAccount = async (baseUrl, username, secret) => {
     // return a generated id
     const token = Utilities.CreateJWT(username, secret);
     const generatedUsername = Utilities.GenerateID(10);
     const url = `${baseUrl}/cypress/create_user/${generatedUsername}`;
 
     return new Promise((resolve, reject) => {
-        const postData = JSON.stringify({
-            password: pw
-        });
-
         const options = {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": 'application/json',
-                'Content-Length': Buffer.byteLength(postData)
+                'Content-Length': 0
             },
         };
         
@@ -69,8 +65,6 @@ const createAccount = async (baseUrl, username, secret, pw) => {
             reject(error); // Reject the promise on request error
         });
         
-        // Write the POST parameters to the request body
-        req.write(postData);
         req.end();
     });
 };
