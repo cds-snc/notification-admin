@@ -154,16 +154,18 @@ describe("Template categories", () => {
         Page.CreateTemplate();
         Page.SelectTemplateType(template.type);
         Page.Continue();
+
         const randomString = Math.random().toString(36).substring(2, 15);
         const subject = template.type === "email" ? "Subject" : null;
-        Page.FillTemplateForm(
-          `Testing template ${randomString}`,
-          subject,
-          "content",
-          categories.AUTOREPLY,
-        );
+        const name = `Testing template ${randomString}`;
+        Page.FillTemplateForm(name, subject, "content", categories.AUTOREPLY);
         Page.PreviewTemplate();
         Page.SaveTemplate();
+
+        // remove the template
+        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        Page.SelectTemplate(name);
+        Page.DeleteTemplate();
       });
 
       context("Other/specify", () => {

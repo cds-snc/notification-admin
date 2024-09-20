@@ -27,6 +27,7 @@ let Components = {
     SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
     TemplatePriority: () => cy.getByTestId('process_type'),
+    DeleteTemplateButton: () => cy.contains('a', 'Delete this template'), 
 };
 
 // Actions users can take on the page
@@ -108,6 +109,12 @@ let Actions = {
         return cy.url().then((url) => {
             return url.split("/templates/")[1]
         })
+    },
+    DeleteTemplate: () => {
+        Components.DeleteTemplateButton().click();
+        cy.get('.banner-dangerous').contains('Are you sure').should('be.visible');
+        cy.get('button[name="delete"]').click();
+        cy.url().should('contain', '/templates');
     }
 }
 
