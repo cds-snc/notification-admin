@@ -1,3 +1,7 @@
+let CONSTANTS = {
+    USE_CATEGORY_PRIORITY: "__use_tc",
+};
+
 // Parts of the page a user can interact with
 let Components = {
     // Template list page
@@ -78,7 +82,9 @@ let Actions = {
     },
     FillTemplateForm: (name, subject, content, category = null, priority = null) => {
         Components.TemplateName().type(name);
-        Components.TemplateSubject().type(subject);
+        if (subject) {
+            Components.TemplateSubject().type(subject);
+        }
         Components.TemplateContent().type(content);
         if (category) {
             Actions.SelectTemplateCategory(category);
@@ -106,6 +112,7 @@ let Actions = {
 }
 
 let TemplatesPage = {
+    CONSTANTS,
     Components,
     ...Actions
 };

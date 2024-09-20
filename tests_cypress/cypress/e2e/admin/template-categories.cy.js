@@ -141,11 +141,22 @@ describe("Template categories", () => {
           .should("be.visible");
       });
 
-      it("Can be saved after being previewed", () => {
+      it("Template can be saved after being previewed", () => {
         Page.SelectTemplate(template.name);
         Page.EditCurrentTemplate();
         Page.ExpandTemplateCategories();
         Page.SelectTemplateCategory(categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+      });
+
+      it("Template can be created after being previewed", () => {
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
+        const randomString = Math.random().toString(36).substring(2, 15);
+        const subject = template.type === "email" ? "Subject" : null;
+        Page.FillTemplateForm(`Testing template ${randomString}`, subject, "content", categories.AUTOREPLY);
         Page.PreviewTemplate();
         Page.SaveTemplate();
       });
