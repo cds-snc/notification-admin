@@ -4,6 +4,7 @@ let COMMON = {
     },
     Templates: {
         'SMOKE_TEST_EMAIL': 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+        'SMOKE_TEST_SMS': 'e4b8f8d0-6a3b-4b9e-8c2b-1f2d3e4a5b6c',
     },
 };
 
