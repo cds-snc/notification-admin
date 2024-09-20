@@ -625,6 +625,11 @@ def mock_service_name_is_unique(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_set_sensitive_service(mocker):
+    return mocker.patch("app.service_api_client.update_service", return_value=True)
+
+
+@pytest.fixture(scope="function")
 def mock_service_email_from_is_not_unique(mocker):
     return mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=False)
 
@@ -724,6 +729,7 @@ def mock_update_service(mocker):
                     "email_from",
                     "sms_sender",
                     "permissions",
+                    "sensitive_service",
                 ]
             },
         )
@@ -785,11 +791,7 @@ def mock_get_services_with_one_service(mocker, api_user_active):
 def mock_get_service_template(mocker):
     def _get(service_id, template_id, version=None):
         template = template_json(
-            service_id,
-            template_id,
-            "Two week reminder",
-            "sms",
-            "Template <em>content</em> with & entity",
+            service_id, template_id, "Two week reminder", "sms", "Template <em>content</em> with & entity", process_type=None
         )
         if version:
             template.update({"version": version})
@@ -803,7 +805,7 @@ def mock_get_service_template(mocker):
     return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
 
 
-def mock_get_service_template_with_process_type(mocker, process_type):
+def mock_get_service_template_with_process_type(mocker, process_type, process_type_column):
     def _get(service_id, template_id, version=None):
         template = template_json(
             service_id,
@@ -812,6 +814,7 @@ def mock_get_service_template_with_process_type(mocker, process_type):
             "sms",
             "Template <em>content</em> with & entity",
             process_type=process_type,
+            process_type_column=process_type_column,
         )
         if version:
             template.update({"version": version})
@@ -968,6 +971,11 @@ def mock_create_service_template(mocker, fake_uuid):
         return {"data": template}
 
     return mocker.patch("app.service_api_client.create_service_template", side_effect=_create)
+
+
+@pytest.fixture(scope="function")
+def mock_send_other_category_to_freshdesk(mocker):
+    return mocker.patch("app.user_api_client.send_new_template_category_request")
 
 
 @pytest.fixture(scope="function")

@@ -20,9 +20,6 @@ from wtforms import (
     HiddenField,
     IntegerField,
     PasswordField,
-)
-from wtforms import RadioField as WTFormsRadioField
-from wtforms import (
     SelectField,
     SelectMultipleField,
     StringField,
@@ -31,6 +28,7 @@ from wtforms import (
     validators,
     widgets,
 )
+from wtforms import RadioField as WTFormsRadioField
 from wtforms.fields import EmailField, SearchField, TelField
 from wtforms.validators import (
     URL,
@@ -1916,26 +1914,30 @@ class BrandingRequestForm(StripWhitespaceForm):
 
 
 class TemplateCategoryForm(StripWhitespaceForm):
-    name_en = StringField("Name EN", validators=[DataRequired(message=_l("This cannot be empty"))])
-    name_fr = StringField("Name FR", validators=[DataRequired(message=_l("This cannot be empty"))])
-    description_en = StringField("Desc EN")
-    description_fr = StringField("Desc FR")
+    name_en = StringField("EN", validators=[DataRequired(message=_l("This cannot be empty"))])
+    name_fr = StringField("FR", validators=[DataRequired(message=_l("This cannot be empty"))])
+    description_en = StringField("EN")
+    description_fr = StringField("FR")
     hidden = RadioField(_l("Hide category"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
+    sms_sending_vehicle = RadioField(
+        _l("Sending method for text messages"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))]
+    )
+
     email_process_type = RadioField(
-        _l("Email Priority"),
+        _l("Email priority"),
         choices=[
-            ("priority", _l("High")),
-            ("normal", _l("Medium")),
-            ("bulk", _l("Low")),
+            ("priority", _l("Priority")),
+            ("normal", _l("Normal")),
+            ("bulk", _l("Bulk")),
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
     sms_process_type = RadioField(
         _l("Text message priority"),
         choices=[
-            ("priority", _l("High")),
-            ("normal", _l("Medium")),
-            ("bulk", _l("Low")),
+            ("priority", _l("Priority")),
+            ("normal", _l("Normal")),
+            ("bulk", _l("Bulk")),
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )

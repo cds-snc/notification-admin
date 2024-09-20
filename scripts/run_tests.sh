@@ -25,13 +25,10 @@ display_result $? 1 "Requirements check"
 
 make babel
 
-black --config pyproject.toml ./app ./tests --check
-display_result $? 1 "Code style check (Black)"
+ruff check .
+display_result $? 1 "Code style check"
 
-flake8 .
-display_result $? 1 "Code style check (flake8)"
-
-isort --check-only ./app ./tests
+ruff check --select I .
 display_result $? 1 "Import order check"
 
 mypy ./

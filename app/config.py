@@ -122,7 +122,6 @@ class Config(object):
     SECRET_KEY = env.list("SECRET_KEY", [])
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security+securite@cds-snc.ca")
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
-    SENSITIVE_SERVICES = os.environ.get("SENSITIVE_SERVICES", "")
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_NAME = "notify_admin_session"
     SESSION_COOKIE_SAMESITE = "Lax"
@@ -190,7 +189,6 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_TEMPLATE_CATEGORY = True
 
 
 class Test(Development):
@@ -215,7 +213,50 @@ class Test(Development):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+
+    FF_SPIKE_SMS_DAILY_LIMIT = True
+    FF_SMS_PARTS_UI = False
+    FF_BOUNCE_RATE_V1 = True
+    FF_BOUNCE_RATE_V15 = True
+    FF_BOUNCE_RATE_BACKEND = True
+    FF_ABTEST_SERVICE_ID = ""
+    FF_NEW_BRANDING = True
+    FF_TOU = True
     FF_TEMPLATE_CATEGORY = True
+
+
+class ProductionFF(Config):
+    ADMIN_CLIENT_SECRET = os.environ.get("ADMIN_CLIENT_SECRET", "dev-notify-secret-key")
+    ANTIVIRUS_API_HOST = "https://test-antivirus"
+    ANTIVIRUS_API_KEY = "test-antivirus-secret"
+    API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
+    ASSET_DOMAIN = "static.example.com"
+    CRM_ORG_LIST_URL = "test-domain-dot-com"
+    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
+    DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
+    DEBUG = True
+    DEBUG_KEY = "debug"
+    MOU_BUCKET_NAME = "test-mou"
+    NOTIFY_ENVIRONMENT = "test"
+    SECRET_KEY = ["dev-notify-secret-key"]
+    TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
+    TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
+    TESTING = True
+    WTF_CSRF_ENABLED = False
+    GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
+    FF_SALESFORCE_CONTACT = False
+    SYSTEM_STATUS_URL = "https://localhost:3000"
+    NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+
+    FF_SPIKE_SMS_DAILY_LIMIT = True
+    FF_SMS_PARTS_UI = False
+    FF_BOUNCE_RATE_V1 = True
+    FF_BOUNCE_RATE_V15 = True
+    FF_BOUNCE_RATE_BACKEND = True
+    FF_ABTEST_SERVICE_ID = ""
+    FF_NEW_BRANDING = True
+    FF_TOU = False
+    FF_TEMPLATE_CATEGORY = False
 
 
 class Production(Config):
@@ -250,6 +291,7 @@ configs = {
     "test": Test,
     "staging": Staging,
     "production": Production,
+    "production_FF": ProductionFF,
     "scratch": Scratch,
     "dev": Dev,
 }

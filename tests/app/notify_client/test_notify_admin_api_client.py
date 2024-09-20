@@ -143,11 +143,10 @@ def test_non_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user
 
 @pytest.mark.parametrize("method", ["put", "post", "delete"])
 def test_sensitive_logging_enabled_for_admin_users(app_, platform_admin_user, method, caplog):
-    sensitive_service = Service(service_json(id_="ss1111"))
+    sensitive_service = Service(service_json(id_="ss1111", sensitive_service=True))
 
     api_client = NotifyAdminAPIClient()
-    with set_config(app_, "SENSITIVE_SERVICES", "222, ss1111,33333"):
-        api_client.init_app(app_)
+    api_client.init_app(app_)
 
     with app_.test_request_context(), app_.test_client() as client:
         client.login(platform_admin_user)
