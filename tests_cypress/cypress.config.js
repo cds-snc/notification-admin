@@ -38,11 +38,11 @@ module.exports = defineConfig({
         fetchEmail(acct) {
           return emailAccount.fetchEmail(acct)
         },
-        createAccount({ baseUrl, username, secret, pw }) {
+        createAccount({ baseUrl, username, secret }) {
           if (global.acct) {
             return global.acct;
           } else {
-            let acct = CreateAccount(baseUrl, username, secret, pw);
+            let acct = CreateAccount(baseUrl, username, secret);
             global.acct = acct;
             return acct
           }          
