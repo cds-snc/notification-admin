@@ -255,7 +255,7 @@ class ProductionFF(Config):
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
     FF_NEW_BRANDING = True
-    FF_TOU = False
+    FF_TOU = True
     FF_TEMPLATE_CATEGORY = False
 
 
