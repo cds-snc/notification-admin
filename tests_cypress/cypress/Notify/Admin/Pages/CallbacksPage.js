@@ -1,5 +1,3 @@
-import { Test } from "mocha";
-
 let Components = {
     ChangeDeliveryReceiptsLink: () => cy.getByTestId('change-delivery-receipts'),
     ChangeReceivedTextMessagesLink: () => cy.getByTestId('change-received-text-messages'),
