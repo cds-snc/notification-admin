@@ -188,7 +188,7 @@ def delete_delivery_status_callback(service_id):
             flash(_l("Callback configuration deleted."), "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
-    flash(_l("Are you sure you want to delete this callback configuration?"), "delete")
+        flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
@@ -446,7 +446,7 @@ def delete_received_text_messages_callback(service_id):
             flash(_l("Callback configuration deleted."), "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
-    flash(_l("Are you sure you want to delete this callback configuration?"), "delete")
+    flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
 
     form = ServiceReceiveMessagesCallbackForm(
         url=received_text_messages_callback.get("url") if delivery_status_callback else "",
