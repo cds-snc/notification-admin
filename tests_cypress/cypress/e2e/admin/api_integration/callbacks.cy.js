@@ -3,7 +3,7 @@
 import config from "../../../../config";
 import {
   CallbacksPage as Page,
-  ApiIntegrationPage as ApiPage
+  ApiIntegrationPage as ApiPage,
 } from "../../../Notify/Admin/Pages/all";
 import { Admin } from "../../../Notify/NotifyAPI";
 
@@ -40,13 +40,13 @@ describe(
         url: "https://example.com",
         bearerToken: "bestBearerToken",
       }).then(() => {
-          cy.visit(`/services/${config.Services.Cypress}/api`);
-          ApiPage.Callbacks();
-          Page.Components.UrlField().should("be.visible");
-          Page.Components.BearerTokenField().should("be.visible");
-          Page.Components.SaveButton().should("be.visible");
-          Page.Components.TestResponseTimeButton().should("be.visible");
-          Page.Components.DeleteButton().should("be.visible");
+        cy.visit(`/services/${config.Services.Cypress}/api`);
+        ApiPage.Callbacks();
+        Page.Components.UrlField().should("be.visible");
+        Page.Components.BearerTokenField().should("be.visible");
+        Page.Components.SaveButton().should("be.visible");
+        Page.Components.TestResponseTimeButton().should("be.visible");
+        Page.Components.DeleteButton().should("be.visible");
       });
     });
 
