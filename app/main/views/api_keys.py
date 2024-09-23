@@ -193,11 +193,12 @@ def delete_delivery_status_callback(service_id):
                 delivery_status_callback["id"],
             )
 
-            flash(_l("Callback configuration deleted."), "default_with_tick")
+            flash(_l("Your Callback configuration has been deleted."),
+                  "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
-    flash(["{}".format(
-        _l("Are you sure you want to delete this callback configuration?"))], "delete")
+        flash(["{}".format(
+            _l("Are you sure you want to delete this callback configuration?"))], "delete")
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get(
@@ -311,16 +312,6 @@ def delivery_status_callback(service_id):
             )
             return redirect(url_for("main.delivery_status_callback", service_id=service_id))
 
-        flash(
-            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
-                url_hostname,
-                response_time,
-            ),
-            "default_with_tick",
-        )
-
-        return redirect(url_for(back_link, service_id=service_id))
-
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
         has_callback_config=delivery_status_callback is not None,
@@ -429,15 +420,6 @@ def received_text_messages_callback(service_id):
             )
             return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
 
-        flash(
-            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
-                url_hostname,
-                response_time,
-            ),
-            "default_with_tick",
-        )
-
-        return redirect(url_for(".api_callbacks", service_id=service_id))
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
         has_callback_config=received_text_messages_callback is not None,
@@ -461,7 +443,8 @@ def delete_received_text_messages_callback(service_id):
                 received_text_messages_callback["id"],
             )
 
-            flash(_l("Callback configuration deleted."), "default_with_tick")
+            flash(_l("Your Callback configuration has been deleted."),
+                  "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
     flash(["{}".format(
