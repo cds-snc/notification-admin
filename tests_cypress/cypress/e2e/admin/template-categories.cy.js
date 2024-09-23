@@ -141,6 +141,33 @@ describe("Template categories", () => {
           .should("be.visible");
       });
 
+      it("Template can be saved after being previewed", () => {
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.SelectTemplateCategory(categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+      });
+
+      it("Template can be created after being previewed", () => {
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
+
+        const randomString = Math.random().toString(36).substring(2, 15);
+        const subject = template.type === "email" ? "Subject" : null;
+        const name = `Testing template ${randomString}`;
+        Page.FillTemplateForm(name, subject, "content", categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+
+        // remove the template
+        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        Page.SelectTemplate(name);
+        Page.DeleteTemplate();
+      });
+
       context("Other/specify", () => {
         it("Category label must be provided when “other” template category selected in order to save template ", () => {
           // Start with the authentication category

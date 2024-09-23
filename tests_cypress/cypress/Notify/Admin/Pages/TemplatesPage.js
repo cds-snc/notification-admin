@@ -1,3 +1,7 @@
+let CONSTANTS = {
+    USE_CATEGORY_PRIORITY: "__use_tc",
+};
+
 // Parts of the page a user can interact with
 let Components = {
     // Template list page
@@ -18,10 +22,12 @@ let Components = {
     TemplateCategories: () => cy.getByTestId('template-categories'),
     TemplateCategoryOther: () => cy.get('#template_category_other'),
     SaveTemplateButton: () => cy.get('button[type="submit"]').first(),
+    PreviewTemplateButton: () => cy.get('button[type="submit"]').eq(1),
     SelectedTemplateCategory: () => Components.TemplateCategories().find('input:checked').parent(),
     SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
     TemplatePriority: () => cy.getByTestId('process_type'),
+    DeleteTemplateButton: () => cy.contains('a', 'Delete this template'), 
 };
 
 // Actions users can take on the page
@@ -46,6 +52,10 @@ let Actions = {
         if (!expectFailure) {
             Components.FlashMessage().should('contain', 'template saved');
         }
+    },
+    PreviewTemplate: () => {
+        Components.PreviewTemplateButton().click();
+        cy.contains('h1', 'Previewing template').should('be.visible');
     },
     CreateTemplate: () => {
         Components.CreateTemplateButton().click();
@@ -73,7 +83,9 @@ let Actions = {
     },
     FillTemplateForm: (name, subject, content, category = null, priority = null) => {
         Components.TemplateName().type(name);
-        Components.TemplateSubject().type(subject);
+        if (subject) {
+            Components.TemplateSubject().type(subject);
+        }
         Components.TemplateContent().type(content);
         if (category) {
             Actions.SelectTemplateCategory(category);
@@ -97,10 +109,17 @@ let Actions = {
         return cy.url().then((url) => {
             return url.split("/templates/")[1]
         })
+    },
+    DeleteTemplate: () => {
+        Components.DeleteTemplateButton().click();
+        cy.get('.banner-dangerous').contains('Are you sure').should('be.visible');
+        cy.get('button[name="delete"]').click();
+        cy.url().should('contain', '/templates');
     }
 }
 
 let TemplatesPage = {
+    CONSTANTS,
     Components,
     ...Actions
 };
