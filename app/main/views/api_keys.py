@@ -185,7 +185,7 @@ def delete_delivery_status_callback(service_id):
                 delivery_status_callback["id"],
             )
 
-            flash(_l("Callback configuration deleted."), "default_with_tick")
+            flash(_l("Your Callback configuration has been deleted."), "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
         flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
@@ -443,7 +443,7 @@ def delete_received_text_messages_callback(service_id):
                 received_text_messages_callback["id"],
             )
 
-            flash(_l("Callback configuration deleted."), "default_with_tick")
+            flash(_l("Your Callback configuration has been deleted."), "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
     flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
