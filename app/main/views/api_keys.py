@@ -197,8 +197,8 @@ def delete_delivery_status_callback(service_id):
                   "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
-        flash(["{}".format(
-            _l("Are you sure you want to delete this callback configuration?"))], "delete")
+    flash(["{}".format(
+        _l("Are you sure you want to delete this callback configuration?"))], "delete")
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get(
@@ -250,26 +250,34 @@ def delivery_status_callback(service_id):
                     callback_api_id=delivery_status_callback.get("id"),
                 )
 
-                # If the user is just testing their URL, don't send them back to the API Integration page
-                if request.form.get("button_pressed") == "test_response_time":
-                    flash(
-                        _l("The service {} responded in {} seconds.").format(
-                            url_hostname,
-                            response_time,
-                        ),
-                        "default_with_tick",
-                    )
-                    return redirect(url_for("main.delivery_status_callback", service_id=service_id))
-
+            # If the user is just testing their URL, don't send them back to the API Integration page
+            if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
                 flash(
-                    _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                    _l("The service {} took longer than 1 second to respond.").format(
+                        url_hostname,
+                    ),
+                    "error",
+                )
+                return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+            else:
+                flash(
+                    _l("The service {} responded in {} seconds.").format(
                         url_hostname,
                         response_time,
                     ),
                     "default_with_tick",
                 )
+                return redirect(url_for("main.delivery_status_callback", service_id=service_id))
 
-                return redirect(url_for(back_link, service_id=service_id))
+            flash(
+                _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                    url_hostname,
+                    response_time,
+                ),
+                "default_with_tick",
+            )
+
+            return redirect(url_for(back_link, service_id=service_id))
         # Create a new callback
         elif form.url.data:
             service_api_client.create_service_callback_api(
@@ -311,6 +319,16 @@ def delivery_status_callback(service_id):
                 "default_with_tick",
             )
             return redirect(url_for("main.delivery_status_callback", service_id=service_id))
+
+        flash(
+            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                url_hostname,
+                response_time,
+            ),
+            "default_with_tick",
+        )
+
+        return redirect(url_for(back_link, service_id=service_id))
 
     return render_template(
         "views/api/callbacks/delivery-status-callback.html",
@@ -362,7 +380,15 @@ def received_text_messages_callback(service_id):
                 )
 
                 # If the user is just testing their URL, don't send them back to the API Integration page
-                if request.form.get("button_pressed") == "test_response_time":
+                if request.form.get("button_pressed") == "test_response_time" and g.callback_response_time >= 1:
+                    flash(
+                        _l("The service {} took longer than 1 second to respond.").format(
+                            url_hostname,
+                        ),
+                        "error",
+                    )
+                    return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+                else:
                     flash(
                         _l("The service {} responded in {} seconds.").format(
                             url_hostname,
@@ -379,6 +405,7 @@ def received_text_messages_callback(service_id):
                     ),
                     "default_with_tick",
                 )
+                return redirect(url_for(back_link, service_id=service_id))
 
         elif received_text_messages_callback and not form.url.data:
             service_api_client.delete_service_inbound_api(
@@ -419,6 +446,16 @@ def received_text_messages_callback(service_id):
                 "default_with_tick",
             )
             return redirect(url_for("main.received_text_messages_callback", service_id=service_id))
+
+        flash(
+            _l("We’ve saved your callback configuration. {} responded in {} seconds.").format(
+                url_hostname,
+                response_time,
+            ),
+            "default_with_tick",
+        )
+
+        return redirect(url_for(back_link, service_id=service_id))
 
     return render_template(
         "views/api/callbacks/received-text-messages-callback.html",
