@@ -100,7 +100,6 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
     cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET') }).then((acct) => {
-        cy.log('acct', acct);
         cy.session([acct.regular.email_address, agreeToTerms], () => {
             LoginPage.Login(acct.regular.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
         });
