@@ -16,7 +16,7 @@ plugins.faMinify = require("gulp-fa-minify");
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
-//plugins.uglify = require("gulp-uglify");
+plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
 // - - - - - - - - - - - - - - -

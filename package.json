@@ -22,9 +22,9 @@
   "homepage": "https://github.com/cds-snc/notification-admin#readme",
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.14.5",
-    "@lexical/react": "^0.12.2",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@lexical/react": "^0.12.2",
     "accessible-autocomplete": "^2.0.4",
     "braces": "^3.0.3",
     "dayjs": "^1.11.13",
@@ -39,6 +39,7 @@
     "query-command-supported": "1.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^15.0.2",
     "textarea-caret": "3.1.0"
   },
   "devDependencies": {
