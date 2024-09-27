@@ -7,7 +7,7 @@ import { Admin } from "../../../Notify/NotifyAPI";
 describe("Create Template", () => {
   context.skip("FF_TEMPLATE_CATEGORY - OFF", () => {
     it("Process type defaults to bulk if non-admin", () => {
-      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+      cy.login();
       cy.visit(`/services/${config.Services.Cypress}/templates`);
 
       TemplatesPage.CreateTemplate();
@@ -40,10 +40,7 @@ describe("Create Template", () => {
     });
 
     it.skip("Process type defaults to bulk if admin", () => {
-      cy.login(
-        Cypress.env("NOTIFY_ADMIN_USER"),
-        Cypress.env("NOTIFY_PASSWORD"),
-      );
+      cy.loginAsPlatformAdmin();
       cy.visit(`/services/${config.Services.Cypress}/templates`);
 
       TemplatesPage.CreateTemplate();
@@ -78,7 +75,7 @@ describe("Create Template", () => {
 
   context("FF_TEMPLATE_CATEGORY - ON", () => {
     it("Process type should be null and the category process type should be used if non-admin", () => {
-      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+      cy.login();
       cy.visit(`/services/${config.Services.Cypress}/templates`);
       TemplatesPage.CreateTemplate();
       TemplatesPage.SelectTemplateType("email");
@@ -110,10 +107,7 @@ describe("Create Template", () => {
     });
 
     it("Process type should be null and the category process type should be used if admin", () => {
-      cy.login(
-        Cypress.env("NOTIFY_ADMIN_USER"),
-        Cypress.env("NOTIFY_PASSWORD"),
-      );
+      cy.loginAsPlatformAdmin();
       cy.visit(`/services/${config.Services.Cypress}/templates`);
       TemplatesPage.CreateTemplate();
       TemplatesPage.SelectTemplateType("email");

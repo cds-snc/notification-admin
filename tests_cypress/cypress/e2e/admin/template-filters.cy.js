@@ -20,7 +20,7 @@ const catEmpty = {
 
 describe("Template filters", () => {
   beforeEach(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login();
   });
 
   ["en", "fr"].forEach((lang) => {
