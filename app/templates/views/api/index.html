@@ -49,9 +49,6 @@
     <h2 class="heading-small">
       {{ _('Your API rate limit is {} calls per minute').format(current_service.rate_limit | format_number) }}
     </h2>
-    <p>
-      {{ _("To request an API rate increase, <a href='{}'>contact us</a>.").format(url_for('.contact')) }}
-    </p>
   </div>
 
   <div class="grid-row flex items-baseline">
@@ -99,7 +96,7 @@
                 ] %}
                   {% if notification[key] %}
                     <dt>{{ key }}:</dt>
-                    <dd class="api-notifications-item-data-item local-datetime-full">{{ notification[key] }}</dd>
+                    <dd class="api-notifications-item-data-item"><time class="local-datetime-full">{{ notification[key] }}</time></dd>
                   {% endif %}
                 {% endfor %}
                 {% if notification.status not in ('pending-virus-check', 'virus-scan-failed') %}

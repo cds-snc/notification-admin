@@ -3,5 +3,5 @@
   "extends": [
     "local>cds-snc/renovate-config"
   ],
-  "ignoreDeps": ["Werkzeug"]
+  "ignoreDeps": ["Werkzeug", "newrelic"]
 }

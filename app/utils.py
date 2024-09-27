@@ -24,6 +24,7 @@ from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user, login_required
+from notifications_utils import SMS_CHAR_COUNT_LIMIT
 from notifications_utils.field import Field
 from notifications_utils.formatters import make_quotes_smart
 from notifications_utils.letter_timings import letter_can_be_cancelled
@@ -45,6 +46,7 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
+from app.models.enum.template_types import TemplateType
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
 from app.types import EmailReplyTo
@@ -92,8 +94,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=3600)
-def get_latest_stats(lang):
-    results = service_api_client.get_stats_by_month()["data"]
+def get_latest_stats(lang, filter_heartbeats=None):
+    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -119,7 +121,7 @@ def get_latest_stats(lang):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data()["data"])
+    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
 
     return {
         "monthly_stats": monthly_stats,
@@ -208,6 +210,18 @@ def get_errors_for_csv(recipients, template_type):
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
+    if recipients.template_type == TemplateType.SMS.value and any(recipients.rows_with_combined_variable_content_too_long):
+        num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
+        if num_rows_with_combined_content_too_long == 1:
+            errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
+        else:
+            errors.append(
+                _("added custom content exceeds the {} character limit in {} rows").format(
+                    SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+                )
+            )
+        # TODO Update the inline cell error messages
+
     return errors
 
 
@@ -255,7 +269,7 @@ def generate_notifications_csv(**kwargs):
             ]
         )
     # Add encoded Byte Order Mark to the csv so MS Excel treats it as UTF-8 and properly renders accented FR characters.
-    yield "\uFEFF".encode("utf-8")
+    yield "\ufeff".encode("utf-8")
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:
@@ -531,6 +545,8 @@ def get_email_logo_options(service):
             "asset_domain": get_logo_cdn_domain(),
             "fip_banner_english": not service.default_branding_is_french,
             "fip_banner_french": service.default_branding_is_french,
+            "alt_text_en": None,
+            "alt_text_fr": None,
         }
 
     return {
@@ -539,6 +555,8 @@ def get_email_logo_options(service):
         "brand_logo": email_branding["logo"],
         "brand_text": email_branding["text"],
         "brand_name": email_branding["name"],
+        "alt_text_en": email_branding["alt_text_en"],
+        "alt_text_fr": email_branding["alt_text_fr"],
     }
 
 

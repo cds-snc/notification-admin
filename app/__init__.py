@@ -35,6 +35,7 @@ from notifications_utils.recipients import (
 )
 from notifications_utils.sanitise_text import SanitiseASCII
 from notifications_utils.timezones import utc_string_to_aware_gmt_datetime
+from user_agents import parse
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from werkzeug.exceptions import abort
 from werkzeug.local import LocalProxy
@@ -55,6 +56,7 @@ from app.extensions import (
 from app.models.organisation import Organisation
 from app.models.service import Service
 from app.models.user import AnonymousUser, User
+from app.monkeytype_config import MonkeytypeConfig
 from app.navigation import (
     AdminNavigation,
     HeaderNavigation,
@@ -79,15 +81,17 @@ from app.notify_client.provider_client import provider_client
 from app.notify_client.service_api_client import service_api_client
 from app.notify_client.status_api_client import status_api_client
 from app.notify_client.template_api_prefill_client import template_api_prefill_client
+from app.notify_client.template_category_api_client import template_category_api_client
 from app.notify_client.template_folder_api_client import template_folder_api_client
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
 from app.salesforce import salesforce_account
+from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from app.tou import EVENTS_KEY, show_tou_prompt
 from app.utils import documentation_url, id_safe
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
-
 
 # The current service attached to the request stack.
 current_service: Service = LocalProxy(lambda: g.current_service)  # type: ignore
@@ -161,6 +165,7 @@ def create_app(application):
         provider_client,
         service_api_client,
         status_api_client,
+        template_category_api_client,
         template_folder_api_client,
         template_statistics_client,
         template_api_prefill_client,
@@ -173,6 +178,9 @@ def create_app(application):
         bounce_rate_client,
     ):
         client.init_app(application)
+
+    # pass the scanfiles url and token
+    scanfiles_api_client.init_app(application.config["SCANFILES_URL"], application.config["SCANFILES_AUTH_TOKEN"])
 
     logging.init_app(application, statsd_client)
 
@@ -212,11 +220,23 @@ def create_app(application):
     application.jinja_env.globals["gca_url_for"] = gca_url_for
     application.jinja_env.globals["current_service"] = current_service
 
+    # cross-cutting concerns for TOU/login events
+    application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
+    application.jinja_env.globals["parse_ua"] = parse
+    application.jinja_env.globals["events_key"] = EVENTS_KEY
+
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
         application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
             application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
         )
+
+    # Specify packages to be traced by MonkeyType. This can be overriden
+    # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:
+    # MONKEYTYPE_TRACE_MODULES="app.,notifications_utils."
+    if application.config["NOTIFY_ENVIRONMENT"] == "development":
+        packages_prefix = ["app.", "notifications_utils."]
+        application.monkeytype_config = MonkeytypeConfig(packages_prefix)
 
 
 def init_app(application):
@@ -352,14 +372,10 @@ def get_human_day(time):
 
 
 def format_time(date):
-    return (
-        {"12:00AM": "Midnight", "12:00PM": "Midday"}
-        .get(
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-            utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
-        )
-        .lower()
-    )
+    return {"12:00AM": "Midnight", "12:00PM": "Midday"}.get(
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+        utc_string_to_aware_gmt_datetime(date).strftime("%-I:%M%p"),
+    ).lower()
 
 
 def format_date(date):
@@ -437,9 +453,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
                     "suppressed": _("Blocked"),
                     "on-account-suppression-list": _("Blocked"),
                 },
-            }[
-                template_type
-            ].get(feedback_subtype, _("No such address"))
+            }[template_type].get(feedback_subtype, _("No such address"))
         else:
             return _("No such address")
 
@@ -492,45 +506,41 @@ def format_notification_status(status, template_type, provider_response=None, fe
 def format_notification_status_as_time(status, created, updated):
     return dict.fromkeys(
         {"created", "pending", "sending"},
-        " " + _("since") + ' <span class="local-datetime-short">{}</span>'.format(created),
-    ).get(status, '<span class="local-datetime-short">{}</span>'.format(updated))
+        " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),
+    ).get(status, '<time class="local-datetime-short">{}</time>'.format(updated))
 
 
 def format_notification_status_as_field_status(status, notification_type):
-    return (
-        {
-            "letter": {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": None,
-                "created": None,
-                "accepted": None,
-                "pending-virus-check": None,
-                "virus-scan-failed": "error",
-                "returned-letter": None,
-                "cancelled": "error",
-            }
+    return {
+        "letter": {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": None,
+            "created": None,
+            "accepted": None,
+            "pending-virus-check": None,
+            "virus-scan-failed": "error",
+            "returned-letter": None,
+            "cancelled": "error",
         }
-        .get(
-            notification_type,
-            {
-                "failed": "error",
-                "technical-failure": "error",
-                "temporary-failure": "error",
-                "permanent-failure": "error",
-                "delivered": None,
-                "sent": None,
-                "sending": "default",
-                "created": "default",
-                "pending": "default",
-            },
-        )
-        .get(status, "error")
-    )
+    }.get(
+        notification_type,
+        {
+            "failed": "error",
+            "technical-failure": "error",
+            "temporary-failure": "error",
+            "permanent-failure": "error",
+            "delivered": None,
+            "sent": None,
+            "sending": "default",
+            "created": "default",
+            "pending": "default",
+        },
+    ).get(status, "error")
 
 
 def format_notification_status_as_url(status, notification_type):
@@ -661,7 +671,8 @@ def useful_headers_after_request(response):
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
             "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"

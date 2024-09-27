@@ -16,7 +16,34 @@
     });
   }
 
+  function registerKeyBasedMenuNavigation($selector, fn) {
+    $selector.keydown(function (e) {
+      var menuVisible = !!$selector.not(":hidden");
+      if (menuVisible) fn(e);
+    });
+  }
+
+  function registerDisclosureMenuBlur($selectors, fn) {
+    $selectors.forEach((selector) => {
+      selector.addEventListener("blur", function (e) {
+        fn(e);
+      });
+    });
+  }
+
+  /**
+   * Make branding links automatically go back to the previous page without keeping track of them
+   */
+  document
+    .querySelector(".branding .back-link")
+    ?.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.history.back();
+    });
+
   global.utils = {
     registerKeyDownEscape: registerKeyDownEscape,
+    registerKeyBasedMenuNavigation: registerKeyBasedMenuNavigation,
+    registerDisclosureMenuBlur: registerDisclosureMenuBlur,
   };
 })(window);

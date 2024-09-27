@@ -7,15 +7,10 @@
           <h2 class="heading-large">
             {{ _("Start sending test messages right away!") }}
           </h2>
+          <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             {{ primary_button_blue_lighter(label=_("Try it now"), href=url_for('.register' )) }}
-          <p class="text-white">
-            {{ _("Want to know more?") }}
-            {{ secondary_button_transparent_white(
-              label=_("Get in touch"), 
-              href=url_for('.contact'),
-              class="-ml-2"
-            ) }}
-          </p>
+            {{ primary_button_blue_lighter(label=_("Register for a demo"), href=gca_url_for('register_for_demo')) }}
+          </div>
     </div>
   </div>
 <!-- end section 7 -->

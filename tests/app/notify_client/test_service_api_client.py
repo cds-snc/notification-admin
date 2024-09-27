@@ -59,6 +59,20 @@ def test_client_gets_service_statistics(mocker, today_only, limit_days):
     )
 
 
+@pytest.mark.parametrize("filter_heartbeat", [True, False])
+def test_client_gets_stats_by_month(mocker, filter_heartbeat):
+    client = ServiceAPIClient()
+    mock_get = mocker.patch.object(client, "get", return_value={"data": {"a": "b"}})
+
+    ret = client.get_stats_by_month(filter_heartbeat)
+
+    assert ret["data"] == {"a": "b"}
+    mock_get.assert_called_once_with(
+        "/service/delivered-notifications-stats-by-month-data",
+        params={"filter_heartbeats": filter_heartbeat},
+    )
+
+
 def test_client_only_updates_allowed_attributes(mocker):
     mocker.patch("app.notify_client.current_user", id="1")
     with pytest.raises(TypeError) as error:
@@ -562,3 +576,16 @@ def test_store_use_case_data(mocker):
         ex=60 * 60 * 60 * 24,  # 60 days in seconds
     )
     mock_redis_delete.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")
+
+
+class TestSuspendCallbackApi:
+    def test_suspend_callback_api(self, mocker, active_user_with_permissions):
+        service_id = str(uuid4())
+        mock_post = mocker.patch("app.notify_client.service_api_client.ServiceAPIClient.post")
+        ServiceAPIClient().suspend_service_callback_api(service_id, active_user_with_permissions["id"], True)
+        mock_post.assert_called_once()
+        args, kwargs = mock_post.call_args_list[0]
+        expected_url = f"/service/{service_id}/delivery-receipt-api/suspend-callback"
+        expected_data = {"updated_by_id": active_user_with_permissions["id"], "suspend_unsuspend": True}
+        assert args[0] == expected_url
+        assert kwargs["data"] == expected_data

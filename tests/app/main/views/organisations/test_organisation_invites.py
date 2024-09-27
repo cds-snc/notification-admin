@@ -4,9 +4,9 @@ from unittest.mock import ANY
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 from app.models.user import InvitedOrgUser
-from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 
 def test_view_team_members(
@@ -221,7 +221,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "+4966921809",
                 "password": "password",
             },
-            "A password that is hard to guess contains:<li>Uppercase and lowercase letters.</li><li>Numbers and special characters.</li><li>Words separated by a space.</li>",
+            "A password that is hard to guess contains",
         ],
     ],
 )

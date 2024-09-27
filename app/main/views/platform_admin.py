@@ -276,9 +276,11 @@ def performance_platform_xlsx():
                 row["service_id"],
                 row["organisation_name"],
                 row["service_name"],
-                datetime.strptime(row["live_date"], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%dT%H:%M:%S") + "Z"
-                if row["live_date"]
-                else None,
+                (
+                    datetime.strptime(row["live_date"], "%a, %d %b %Y %X %Z").strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+                    if row["live_date"]
+                    else None
+                ),
                 "notification",
                 1,
             ]
@@ -592,10 +594,19 @@ def clear_cache():
                 ],
             ),
             (
+                "template_category",
+                [
+                    "template_categories",
+                    "template_category-????????-????-????-????-????????????",
+                    "service-????????-????-????-????-????????????-templates",
+                    "template-????????-????-????-????-????????????-version-*",
+                ],
+            ),
+            (
                 "email_branding",
                 [
-                    "email_branding",
                     "email_branding-????????-????-????-????-????????????",
+                    "email_branding-None",
                 ],
             ),
             (

@@ -106,6 +106,11 @@ module.exports = {
       black: {
         default: "#000",
       },
+      lime: {
+        default: '#D3E766',
+        100: '#D3E766',
+        700: '#545E00',
+      },
       transparent: {
         default: "transparent",
       },
@@ -128,6 +133,7 @@ module.exports = {
         emptyBirdHole: "url('/static/images/empty-bird-hole.svg')",
         emptyFlower: "url('/static/images/empty-flower.svg')",
         emptyTruck: "url('/static/images/empty-truck.svg')",
+        emptyBirdCurious: "url('/static/images/empty-bird-curious.svg')",
       },
       backgroundSize: {
         19: "19px",
@@ -181,6 +187,9 @@ module.exports = {
         "2/3": "66.666667%",
       },
       minHeight: {
+        target: "45px",
+      },
+      minWidth: {
         target: "45px",
       },
       flex: {

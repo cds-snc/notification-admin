@@ -6,7 +6,7 @@ GC_ARTICLES_ROUTES = {
     "accessibility": {"en": "/accessibility", "fr": "/accessibilite"},
     "bounce_guidance": {"en": "/updating-contact-information", "fr": "/maintenir-a-jour-les-coordonnees"},
     "features": {"en": "/features", "fr": "/fonctionnalites"},
-    "formatting_guide": {"en": "/formatting-emails", "fr": "/guide-mise-en-forme"},
+    "formatting_guide": {"en": "/formatting-emails", "fr": "/mettre-en-forme-les-courriels"},
     "guidance": {"en": "/guidance", "fr": "/guides-reference"},
     "home": {"en": "/home", "fr": "/accueil"},
     "message_delivery_status": {"en": "/understanding-delivery-and-failure", "fr": "/comprendre-statut-de-livraison"},
@@ -27,6 +27,8 @@ GC_ARTICLES_ROUTES = {
     "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-notification-gc"},
     "incidents": {"en": "/system-status", "fr": "/etat-du-systeme"},
     "new_features": {"en": "/new-features", "fr": "/nouvelles-fonctionnalites"},
+    "register_for_demo": {"en": "/register-for-a-demo", "fr": "/sinscrire-a-une-demo"},
+    "getting_started": {"en": "/getting-started", "fr": "/decouvrir-notification-gc"},
 }
 
 

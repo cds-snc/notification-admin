@@ -22,9 +22,9 @@
         <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
         <span class="file-list-hint">
           {{ _('Sent') }}
-            <span class="local-datetime-short">
+            <time class="local-datetime-short">
               {{item.scheduled_for if item.scheduled_for else item.created_at}}
-            </span>
+            </time>
         </span>
       </div>
     {% endcall %}

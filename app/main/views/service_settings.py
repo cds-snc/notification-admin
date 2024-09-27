@@ -60,6 +60,7 @@ from app.main.forms import (
     SMSMessageLimit,
     SMSPrefixForm,
 )
+from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
@@ -97,12 +98,18 @@ def service_settings(service_id: str):
         "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
         "free_yearly_sms": current_app.config["FREE_YEARLY_SMS_LIMIT"],
     }
+    callback_api = (
+        service_api_client.get_service_callback_api(current_service.id, current_service.service_callback_api[0])
+        if current_service.service_callback_api
+        else None
+    )
     assert limits["free_yearly_email"] >= 2_000_000, "The user-interface does not support French translations of < 2M"
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
         sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],  # type: ignore
         limits=limits,
+        callback_api=callback_api,
     )
 
 
@@ -383,6 +390,23 @@ def service_switch_live(service_id):
     return render_template(
         "views/service-settings/set-service-setting.html",
         title="Make service live",
+        form=form,
+    )
+
+
+@main.route("/services/<service_id>/service-settings/set-sensitive-service", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_sensitive_service(service_id):
+    title = _("Set sensitive service")
+    form = ServiceOnOffSettingForm(name=title, enabled=current_service.sensitive_service)
+
+    if form.validate_on_submit():
+        current_service.update(sensitive_service=form.enabled.data)
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template(
+        "views/service-settings/set-service-setting.html",
+        title=_("Set sensitive service"),
         form=form,
     )
 
@@ -1128,10 +1152,14 @@ def set_free_sms_allowance(service_id):
 )
 @user_is_platform_admin
 def service_set_email_branding(service_id):
-    email_branding = email_branding_client.get_all_email_branding()
+    organisation_id = current_service.organisation_id
+    email_branding = email_branding_client.get_all_email_branding(organisation_id=organisation_id)
+    # As the user is a platform admin, we want the user to be able to get the no branding option
+    no_branding = email_branding_client.get_email_branding(current_app.config["NO_BRANDING_ID"])
+    if no_branding and "email_branding" in no_branding:
+        email_branding.append(no_branding["email_branding"])
 
     current_branding = current_service.email_branding_id
-
     if current_branding is None:
         current_branding = (
             FieldWithLanguageOptions.FRENCH_OPTION_VALUE
@@ -1285,6 +1313,44 @@ def link_service_to_organisation(service_id):
     )
 
 
+@main.route("/services/<service_id>/branding", methods=["GET"])
+@user_has_permissions("manage_service")
+def view_branding_settings(service_id):
+    def _get_current_branding():
+        """
+        Get the current branding information for the service.
+
+        This function retrieves the current branding information for the service from the service table.
+        It checks if the default branding is set to French and constructs the branding image path accordingly.
+        If the current branding is not set, it uses the default branding image path based on the default language.
+
+        Returns:
+            dict: A dictionary containing the branding image path and branding name.
+                - branding_image_path (str): The URL of the branding image.
+                - branding_name (str): The name of the branding.
+        """
+        current_branding = current_service.email_branding_id
+        cdn_url = get_logo_cdn_domain()
+        default_en_filename = "https://{}/gc-logo-en.png".format(cdn_url)
+        default_fr_filename = "https://{}/gc-logo-fr.png".format(cdn_url)
+
+        if current_branding is None:
+            branding_image_path = default_fr_filename if current_service.default_branding_is_french else default_en_filename
+        else:
+            branding_image_path = "https://{}/{}".format(cdn_url, current_service.email_branding["logo"])
+
+        return {"branding_image_path": branding_image_path, "branding_name": current_service.email_branding_name}
+
+    branding = _get_current_branding()
+
+    return render_template(
+        "views/service-settings/branding/branding-settings.html",
+        branding=branding,
+        current_service=current_service,
+        template=get_preview_template(),
+    )
+
+
 @main.route("/services/<service_id>/branding-request/email", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def branding_request(service_id):
@@ -1292,6 +1358,7 @@ def branding_request(service_id):
     cdn_url = get_logo_cdn_domain()
     default_en_filename = "https://{}/gov-canada-en.svg".format(cdn_url)
     default_fr_filename = "https://{}/gov-canada-fr.svg".format(cdn_url)
+
     choices = [
         ("__FIP-EN__", _("English-first") + "||" + default_en_filename),
         ("__FIP-FR__", _("French-first") + "||" + default_fr_filename),
@@ -1328,7 +1395,13 @@ def branding_request(service_id):
                 current_app.config["AWS_REGION"],
                 user_id=session["user_id"],
             )
-            current_user.send_branding_request(current_service.id, current_service.name, upload_filename)
+            current_user.send_branding_request(
+                current_service.id,
+                current_service.name,
+                current_service.organisation_id,
+                current_service.organisation.name,
+                upload_filename,
+            )
 
         default_branding_is_french = None
         branding_choice = form.branding_style.data
@@ -1388,6 +1461,37 @@ def edit_data_retention(service_id, data_retention_id):
         form=form,
         data_retention_id=data_retention_id,
         notification_type=data_retention_item["notification_type"],
+    )
+
+
+@main.route(
+    "/services/<service_id>/service-settings/suspend-callback",
+    methods=["GET", "POST"],
+)
+@user_is_platform_admin
+def suspend_callback(service_id):
+    title = _("Suspend Callback")
+    form = ServiceOnOffSettingForm(name=title)
+    if current_service.service_callback_api:
+        callback_api = service_api_client.get_service_callback_api(current_service.id, current_service.service_callback_api[0])
+        form = ServiceOnOffSettingForm(name=title, enabled=callback_api["is_suspended"])
+
+        if form.validate_on_submit():
+            try:
+                service_api_client.suspend_service_callback_api(service_id, current_user.id, suspend_unsuspend=form.enabled.data)
+            except Exception as e:
+                raise "Error suspending callback: {}".format(e)
+            return redirect(url_for(".service_settings", service_id=service_id))
+
+        return render_template(
+            "views/service-settings/set-service-setting.html",
+            title=_("Suspend Callback"),
+            form=form,
+        )
+    return render_template(
+        "views/service-settings/set-service-setting.html",
+        title=_("Suspend Callback"),
+        form=form,
     )
 
 

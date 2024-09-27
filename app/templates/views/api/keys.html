@@ -50,7 +50,7 @@
               'email_sends' in item and
               'sms_sends' in item )  %}
             <div class="hint">
-              {{ "{:,}".format(item.total_sends) }} {{ _('total sends') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
+              {{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
             </div>
           {% endif %}
           <div class="hint">
@@ -64,19 +64,19 @@
             {% endif %}
           </div>
             <div class="hint">
-              {{ _('Created:') }} <span class="local-datetime-full">{{ item.created_at }}</span>
+              {{ _('Created:') }} <time class="local-datetime-full">{{ item.created_at }}</time>
             </div>
             <div class="hint">
-              {{ _('Expires:') }} <span class="local-datetime-full">{{ item.expiry_date }}</span>
+              {{ _('Expires:') }} <time class="local-datetime-full">{{ item.expiry_date }}</time>
             </div>
             <div class="hint">
-              {{ _('Last used:') }} <span class="local-datetime-full">{{ item.last_send }}</span>
+              {{ _('Last used:') }} <time class="local-datetime-full">{{ item.last_send }}</time>
             </div>
         </div>
       {% endcall %}
       {% if item.expiry_date %}
         {% call field(align='right') %}
-          <span class='hint'>{{ _('Revoked') }} <span class="local-datetime-short">{{ item.expiry_date }}</span></span>
+          <span class='hint'>{{ _('Revoked') }} <time class="local-datetime-short">{{ item.expiry_date }}</time></span>
         {% endcall %}
       {% else %}
         {% call field(align='right', status='error') %}

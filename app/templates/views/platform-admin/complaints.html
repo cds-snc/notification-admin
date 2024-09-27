@@ -29,7 +29,7 @@
 
       {{ text_field(item.complaint_type) }}
 
-      <span class="local-datetime-short">{{ text_field(item.complaint_date if item.complaint_date else None) }}</span>
+      <time class="local-datetime-short">{{ text_field(item.complaint_date if item.complaint_date else None) }}</time>
 
   {% endcall %}
 

@@ -1,15 +1,15 @@
 <!-- Large screen menu dropdown -->
-<li class="hidden md:visible md:flex relative justify-end inline-block text-left w-full text-blue visited:text-blue
-    link:text-blue no-underline text-small">
+<li class="md:visible md:flex grid-flow-row relative justify-end inline-block w-full text-left text-blue visited:text-blue
+link:text-blue no-underline text-small">
   <button
     aria-controls="account-menu-options"
     aria-expanded="false"
-    aria-haspopup="true"
-    class="inline-flex items-center line-under shadow-sm text-smaller font-medium text-gray-700 px-4 py-1 border-b-2
+    class="inline-flex items-center line-under shadow-sm text-smaller font-medium text-blue px-4 py-1 border-b-2
       border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
     id="account-menu"
     data-module="menu"
-    data-menu-items="account-menu-options">
+    data-menu-items="account-menu-options"
+    type="button">
       {{ _('Your account') }}
       <img alt="" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-licorice.svg') }}" width="15"/>
   </button>

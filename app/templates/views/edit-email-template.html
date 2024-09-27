@@ -3,9 +3,11 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons %}
 {% from "components/radios.html" import radios %}
+{% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/rich-text-editor.html" import rich_text_editor %}
+{% from "components/template-category.html" import template_category %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -46,15 +48,23 @@
 
   <div class="grid-row contain-floats">
     <div class="md:w-2/3 px-gutterHalf">
-      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Choose a name that helps you find the template when you need to reuse it.'), rows=10) }}
+      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
 
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.")) }}
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
 
-      <!-- {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8 ) }} -->
-      
+            
       {{ rich_text_editor(form.template_content)}}
+      <!-- {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, testid="template-content" ) }} -->
+
+      {% if config["FF_TEMPLATE_CATEGORY"] %}
+        <h2 class="heading-medium">{{ _('Template category') }}</h2>
+        {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
+          {{ select(form.template_category_id, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category, testid="template-categories", use_aria_labelledby=false) }}
+        {% endcall %}
+      {% endif %}
+      
       {% if current_user.platform_admin %}
-        {{ radios(form.process_type, hint=_('This is only manageable by platform admins')) }}
+        {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
       {% endif %}
       {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>

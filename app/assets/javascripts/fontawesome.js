@@ -25,6 +25,9 @@ import { fa3 } from "@fortawesome/free-solid-svg-icons/fa3";
 import { faLink } from "@fortawesome/free-solid-svg-icons/faLink";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
 import { faGripLines } from "@fortawesome/free-solid-svg-icons/faGripLines";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
+import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -48,6 +51,9 @@ let FontAwesomeIconLoader = () => {
     faLink,
     faPencil,
     faGripLines,
+    faInfoCircle,
+    faXmark,
+    faTag,
   ]);
   dom.watch();
 };

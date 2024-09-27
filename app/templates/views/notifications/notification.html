@@ -44,14 +44,14 @@
         {% elif created_by %}
           {{ _('by') }} {{ created_by.name }}
         {% endif %}
-        {{ _('on') }} <span class="local-datetime-short">{{ created_at }}</span>
+        {{ _('on') }} <time class="local-datetime-short">{{ created_at }}</time>
       </p>
     </div>
 
     {% if template.template_type == 'letter' %}
       {% if notification_status in ('permanent-failure', 'cancelled') %}
         <p class="notification-status-cancelled">
-          Cancelled <span class="local-datetime-short">{{ updated_at }}</span>
+          Cancelled <time class="local-datetime-short">{{ updated_at }}</time>
         </p>
       {% elif notification_status == 'validation-failed' %}
         <p class="notification-status-cancelled">

@@ -1,59 +1,36 @@
+import "cypress-real-events";
+
 import config from "../../config";
 
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
 let svgs_checked = [];
 
-Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true }) => {
+Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
     // bypass rate limiting
     cy.intercept(`${current_hostname}/*`, (req) => {
         req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
     });
 
-    cy.visit(url);
+    if (url) {
+        cy.visit(url);
+    }
 
     // 1. validate a11y rules using axe dequeue
     if (options.a11y) {
         cy.injectAxe();
-        cy.checkA11y();
+
+        if (options.axeConfig) {
+            cy.configureAxe({ rules: options.axeConfig });
+        }
     }
 
     // 2. validate html
     if (options.htmlValidate) {
-        cy.get('main').htmlvalidate({
-            rules: {
-                "no-redundant-role": "off",
-                "no-dup-class": "off",
-                "require-sri": "off",
-            },
-        });
+        cy.get('main').htmlvalidate();
     }
 
     // 3. check for dead links
@@ -114,4 +91,14 @@ Cypress.Commands.add('a11yScan', (url, options={ a11y: true, htmlValidate: true,
             });
         });
     }
- })
+});
+
+Cypress.Commands.add('getByTestId', (selector, ...args) => {
+    return cy.get(`[data-testid=${selector}]`, ...args)
+});
+
+Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
+    cy.session([username, password, agreeToTerms], () => {
+        LoginPage.Login(username, password, agreeToTerms);
+    });
+});

@@ -1,37 +1,41 @@
 {% from "components/big-number.html" import big_number %}
 
-{% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
-  <table class="table table-font-xsmall">
-    <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible}}">
+{% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, font_size="table-font-xsmall", testid=None) -%}
+  <section class="scrollable-table" tabindex="0">
+   <table class="table {{fontsize}}"{% if testid %} data-testid="{{ testid }}"{% endif %}>
+    <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible }}">
       {{ caption }}
     </caption>
-    <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
-      <tr>
-        {% for field_heading in field_headings %}
-          {% if field_heading == '' %} 
-          <td class="table-field-index"></td>
-          {% else %} 
-            <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
-              {% if field_headings_visible %}
-                {{ field_heading }}
-              {% else %}
-                <span class="visuallyhidden">{{ field_heading }}</span>
-              {% endif %}
-            </th>
-          {% endif %}
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {{ caller() }}
-    </tbody>
-  </table>
+    {% if field_headings | length > 0 %}
+      <thead class="table-field-headings{% if field_headings_visible %}-visible{% endif %}">
+        <tr>
+          {% for field_heading in field_headings %}
+            {% if field_heading == '' %}
+            <td class="table-field-index"></td>
+            {% else %}
+              <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
+                {% if field_headings_visible %}
+                  {{ field_heading }}
+                {% else %}
+                  <span class="visuallyhidden">{{ field_heading }}</span>
+                {% endif %}
+              </th>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      </thead>
+     {% endif %}
+      <tbody>
+        {{ caller() }}
+      </tbody>
+    </table>
+  </section>
 {%- endmacro %}
 
-{% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False) -%}
+{% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, testid=None) -%}
   {% set parent_caller = caller %}
 
-  {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length) %}
+  {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length, testid=testid) %}
     {% for item in items %}
       {% call row(item.id) %}
         {{ parent_caller(item, loop.index + 1) }}
@@ -48,8 +52,8 @@
 
 {%- endmacro %}
 
-{% macro row(id=None) -%}
-  <tr class="table-row" {% if id and id is string %}id="cds{{id}}"{% endif %}>
+{% macro row(id=None, classes=None) -%}
+  <tr class="table-row {{ classes if classes }}" {% if id and id is string %}id="cds{{id}}"{% endif %}>
     {{ caller() }}
   </tr>
 {%- endmacro %}
@@ -69,12 +73,12 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro field(align='left', status='', border=True) -%}
+{% macro field(align='left', status='', cell_width=None, border=True) -%}
 
     {% set field_alignment = 'table-field-right-aligned' if align == 'right' else 'table-field-left-aligned' %}
     {% set border = '' if border else 'table-field-noborder' %}
 
-    <td class="{{ [field_alignment, border]|join(' ') }}">
+    <td class="{{ [field_alignment, border]|join(' ')}}{{ cell_width if cell_width }}">
       {% if status %}
         <div class="{{ 'table-field-status-' + status }}">{{ caller() }}</div>
       {% else %}
@@ -83,8 +87,8 @@
     </td>
 {%- endmacro %}
 
-{% macro row_heading() -%}
-  <th class="table-field" scope="row">
+{% macro row_heading(cell_width=None) -%}
+  <th class="table-field {{ cell_width if cell_width}}" scope="row">
     {{ caller() }}
   </th>
 {%- endmacro %}
@@ -95,8 +99,8 @@
   </td>
 {%- endmacro %}
 
-{% macro text_field(text, status='', truncate=false) -%}
-  {% call field(status=status) %}
+{% macro text_field(text, status='', truncate=false, date_format=None, cell_width=None) -%}
+  {% call field(status=status, cell_width=cell_width) %}
     {% if text is iterable and text is not string %}
       <ul>
         {% for item in text %}
@@ -107,9 +111,17 @@
       </ul>
     {% else %}
       {% if truncate %}
-        <div class="truncate-text">{{text}}</div>
+        {% if date_format %}
+          <time class="truncate-text {{date_format if date_format}}">{{text}}</time>
+        {% else %}
+          <div class="truncate-text {{date_format if date_format}}">{{text}}</div>
+        {% endif %}
       {% else %}
-        <div class="do-not-truncate-text">{{text}}</div>
+        {% if date_format %}
+          <time class="do-not-truncate-text {{date_format}}">{{text}}</time>
+        {% else %}
+          <div class="do-not-truncate-text">{{text}}</div>
+        {% endif %}
       {% endif %}
     {% endif %}
   {% endcall %}

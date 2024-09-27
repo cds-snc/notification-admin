@@ -1,3 +1,5 @@
+import TouPrompt from './TouPrompt';
+
 const { recurse } = require('cypress-recurse')
 const ADMIN_COOKIE = "notify_admin_session";
 
@@ -15,7 +17,7 @@ let Actions = {
         Components.TwoFactorCode().type(code);
         Components.SubmitButton().click();
     },
-    Login: (email, password) => {
+    Login: (email, password, agreeToTerms=true) => {
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
         cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
@@ -42,16 +44,19 @@ let Actions = {
             });
 
         // ensure code is received and enter it
-        cy.contains('p', "security code to log in").should('be.visible');
-        cy.contains('p', 'security code to log in').invoke('text').as('MFACode');
+        cy.get('blockquote').should('be.visible');
+        cy.get('blockquote p').invoke('text').as('MFACode');
         cy.get('@MFACode').then((text) => {
-            let code = text.slice(0, 5);
+            let code = text;
             cy.visit('/two-factor-email-sent');
             Actions.EnterCode(code);
         });
     
         // ensure we logged in correctly
-        cy.contains('h1', 'Sign-in history').should('be.visible');
+        TouPrompt.Components.Heading().should('be.visible');
+        if (agreeToTerms) {
+            TouPrompt.AgreeToTerms();
+        }
     }
 };
 

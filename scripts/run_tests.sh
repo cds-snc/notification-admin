@@ -25,19 +25,16 @@ display_result $? 1 "Requirements check"
 
 make babel
 
-black --config pyproject.toml ./app ./tests --check
-display_result $? 1 "Code style check (Black)"
+ruff check .
+display_result $? 1 "Code style check"
 
-flake8 .
-display_result $? 1 "Code style check (flake8)"
-
-isort --check-only ./app ./tests
+ruff check --select I .
 display_result $? 1 "Import order check"
 
 mypy ./
 display_result $? 1 "Type check"
 
-npx prettier --check app/assets/javascripts app/assets/stylesheets
+npx prettier --check app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
 display_result $? 1 "JS/CSS code style check"
 
 npm test

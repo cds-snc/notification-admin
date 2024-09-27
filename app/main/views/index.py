@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from flask_babel import _
 from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
@@ -35,11 +36,14 @@ from app.main.forms import (
     FieldWithNoneOption,
     SearchByNameForm,
 )
+from app.main.sitemap import get_sitemap
+from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
     documentation_url,
     get_latest_stats,
     get_logo_cdn_domain,
+    is_safe_redirect_url,
     user_is_logged_in,
 )
 
@@ -103,6 +107,11 @@ def pricing():
     )
 
 
+@main.route("/terms")
+def terms():
+    return render_template("views/terms.html")
+
+
 @main.route("/design-patterns-content-guidance")
 def design_content():
     return render_template("views/design-patterns-content-guidance.html")
@@ -133,6 +142,8 @@ def email_template():
         fip_banner_french = False
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     elif branding_type == "fip_french":
         brand_text = None
         brand_colour = None
@@ -141,6 +152,8 @@ def email_template():
         fip_banner_french = True
         logo_with_background_colour = False
         brand_name = None
+        alt_text_en = "The canada wordmark is displayed at the bottom right."
+        alt_text_fr = "Le mot-symbole canada est affiché en bas à droite."
     else:
         colour = email_branding["colour"]
         brand_text = email_branding["text"]
@@ -150,64 +163,37 @@ def email_template():
         fip_banner_french = branding_type in ["fip_french", "both_french"]
         logo_with_background_colour = branding_type == "custom_logo_with_background_colour"
         brand_name = email_branding["name"]
+        alt_text_en = email_branding["alt_text_en"]
+        alt_text_fr = email_branding["alt_text_fr"]
 
     template = {
         "subject": "foo",
-        "content": (
-            "Lorem Ipsum is simply dummy text of the printing and typesetting "
-            "industry.\n\nLorem Ipsum has been the industry’s standard dummy "
-            "text ever since the 1500s, when an unknown printer took a galley "
-            "of type and scrambled it to make a type specimen book. "
-            "\n\n"
-            "# History"
-            "\n\n"
-            "It has "
-            "survived not only"
-            "\n\n"
-            "* five centuries"
-            "\n"
-            "* but also the leap into electronic typesetting"
-            "\n\n"
-            "It was "
-            "popularised in the 1960s with the release of Letraset sheets "
-            "containing Lorem Ipsum passages, and more recently with desktop "
-            "publishing software like Aldus PageMaker including versions of "
-            "Lorem Ipsum."
-            "\n\n"
-            "^ It is a long established fact that a reader will be distracted "
-            "by the readable content of a page when looking at its layout."
-            "\n\n"
-            "The point of using Lorem Ipsum is that it has a more-or-less "
-            "normal distribution of letters, as opposed to using ‘Content "
-            "here, content here’, making it look like readable English."
-            "\n\n\n"
-            "1. One"
-            "\n"
-            "2. Two"
-            "\n"
-            "10. Three"
-            "\n\n"
-            "This is an example of an email sent using Notification."
-            "\n\n"
-            "https://www.notifications.service.gov.uk"
+        "content": "# Email preview\n{}\n{}".format(
+            _("An example email showing the {} at the top left.").format(brand_name),
+            _("The canada wordmark is displayed at the bottom right."),
         ),
     }
 
     if not bool(request.args):
-        resp = make_response(str(HTMLEmailTemplate(template)))
+        resp = make_response(render_template("views/email-branding/_preview.html", template=str(HTMLEmailTemplate(template))))
     else:
         resp = make_response(
-            str(
-                HTMLEmailTemplate(
-                    template,
-                    fip_banner_english=fip_banner_english,
-                    fip_banner_french=fip_banner_french,
-                    brand_text=brand_text,
-                    brand_colour=brand_colour,
-                    brand_logo=brand_logo,
-                    logo_with_background_colour=logo_with_background_colour,
-                    brand_name=brand_name,
-                )
+            render_template(
+                "views/email-branding/_preview.html",
+                template=str(
+                    HTMLEmailTemplate(
+                        template,
+                        fip_banner_english=fip_banner_english,
+                        fip_banner_french=fip_banner_french,
+                        brand_text=brand_text,
+                        brand_colour=brand_colour,
+                        brand_logo=brand_logo,
+                        logo_with_background_colour=logo_with_background_colour,
+                        brand_name=brand_name,
+                        alt_text_en=alt_text_en,
+                        alt_text_fr=alt_text_fr,
+                    )
+                ),
             )
         )
 
@@ -288,9 +274,30 @@ def welcome():
     )
 
 
+# TODO: refactor this out into a decorator
+@main.route("/plandesite", endpoint="plandesite", methods=["GET"])
+@main.route("/sitemap", methods=["GET"])
+def sitemap():
+    requested_lang = "en" if request.endpoint == "main.sitemap" else "fr"
+    current_lang = get_current_locale(current_app)
+
+    # if the language is changing
+    if requested_lang != current_lang:
+        # if the user typed in the url:
+        if request.referrer is None:
+            route = "/plandesite" if requested_lang == "fr" else "/sitemap"
+            return redirect(url_for(**{"endpoint": "main.set_lang", "from": route}))
+        # if the user clicked the lang button:
+        else:
+            route = "main.sitemap" if requested_lang == "fr" else "main.plandesite"
+            return redirect(url_for(route))
+
+    return render_template("views/sitemap.html", sitemap=get_sitemap())
+
+
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
 @main.route("/activity/download", endpoint="activity_download")
@@ -311,6 +318,19 @@ def activity_download():
             ),
         },
     )
+
+
+@main.route("/agree-terms", methods=["POST"])
+def agree_terms():
+    accept_terms()
+
+    next_url = request.form["next"]
+    if next_url and is_safe_redirect_url(next_url):
+        url = next_url
+    else:
+        url = url_for("main.show_accounts_or_dashboard")
+
+    return redirect(url)
 
 
 # --- Internal Redirects --- #
@@ -395,7 +415,7 @@ def _render_articles_page(response):
         nav_items=nav_items,
         slug=slug_en,
         lang_url=get_lang_url(response, bool(page_id)),
-        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
+        stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
     )
 

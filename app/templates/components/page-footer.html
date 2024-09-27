@@ -7,7 +7,8 @@
   secondary_link_text=None,
   delete_link=False,
   delete_link_text=_("Delete"),
-  button_id="btn"
+  button_id="btn",
+  testid=None
 ) %}
   <div class="page-footer">
     {% if button_text %}
@@ -18,6 +19,7 @@
         class="button text-base outline-none focus:shadow-outline {% if destructive %}button-red{% endif %}"
         {% if button_name %}name="{{ button_name }}"{% endif %}
         {% if button_value %}value="{{ button_value }}"{% endif %}
+        {% if testid %}data-testid="{{ testid }}"{% endif %}
       >
         {{- button_text -}}
       </button>
@@ -62,6 +64,47 @@
       >
         {{- button2_text -}}
       </button>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro sticky_page_footer_two_submit_buttons_and_delete_link(
+  button1_text="b1",
+  button1_value="b1",
+  button2_text=None,
+  button2_value=None,
+  delete_link=None,
+  delete_link_text=_("Delete")) %}
+  <div class="js-stick-at-bottom-when-scrolling">
+    <div class="page-footer">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button
+        data-button-id="btn1"
+        type="submit"
+        class="button text-base outline-none focus:shadow-outline"
+        name="button_pressed"
+        value="{{ button1_value }}"
+      >
+        {{- button1_text -}}
+      </button>
+
+      {% if button2_text and button2_value %}
+        <button
+          data-button-id="btn2"
+          type="submit"
+          class="button button-secondary text-base outline-none focus:shadow-outline"
+          name="button_pressed"
+          value="{{ button2_value }}"
+        >
+          {{- button2_text -}}
+        </button>
+      {% endif %}
+
+      {% if delete_link %}
+      <span class="page-footer-delete-link {% if not button_text %}page-footer-delete-link-without-button{% endif %}">
+        <a href="{{ delete_link }}">{{ delete_link_text }}</a>
+      </span>
+    {% endif %}
     </div>
   </div>
 {% endmacro %}

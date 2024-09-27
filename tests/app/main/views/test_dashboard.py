@@ -125,10 +125,10 @@ def test_redirect_caseworkers_to_templates(
 @pytest.mark.parametrize(
     "permissions, text_in_page, text_not_in_page",
     [
-        (["view_activity", "manage_templates"], ["Create template"], ["Choose template"]),
-        (["view_activity", "send_messages"], ["Choose template"], ["Create template"]),
-        (["view_activity"], [], ["Create template", "Choose template"]),
-        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Choose template"], []),
+        (["view_activity", "manage_templates"], ["Create template"], ["Select template"]),
+        (["view_activity", "send_messages"], ["Select template"], ["Create template"]),
+        (["view_activity"], [], ["Create template", "Select template"]),
+        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Select template"], []),
     ],
 )
 def test_task_shortcuts_are_visible_based_on_permissions(
@@ -257,7 +257,7 @@ def test_should_show_recent_templates_on_dashboard(
     assert "100" in table_rows[1].find_all("td")[0].text
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@freeze_time("2016-07-01 12:00")  # 4 months into 2016 fiscal year
 @pytest.mark.parametrize(
     "extra_args",
     [
@@ -277,7 +277,7 @@ def test_should_show_redirect_from_template_history(
     )
 
 
-@freeze_time("2016-07-01 12:00")  # 4 months into 2016 financial year
+@freeze_time("2016-07-01 12:00")  # 4 months into 2016 fiscal year
 @pytest.mark.parametrize(
     "extra_args, template_label",
     [
@@ -356,7 +356,7 @@ def test_stats_pages_show_last_3_years(
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 financial year " "2013 to 2014 financial year " "2014 to 2015 financial year"
+        "2012 to 2013 fiscal year " "2013 to 2014 fiscal year " "2014 to 2015 fiscal year"
     )
 
 
@@ -505,7 +505,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 0, "delivered": 0, "failed": 0},
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
-            ("0 emails sent No failures", "0 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "0 emails sent emails sent: No failures",
+                "0 text messages sent text messages sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -515,8 +519,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 0, "delivered": 0, "failed": 0},
             },
             (
-                "0 courriel envoyé Aucun échec",
-                "0 message texte envoyé Aucun échec",
+                "0 courriel envoyé courriel envoyé: Aucun échec",
+                "0 message texte envoyé message texte envoyé: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
@@ -527,7 +531,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 1, "delivered": 1, "failed": 0},
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
-            ("1 email sent No failures", "1 text message sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "1 email sent email sent: No failures",
+                "1 text message sent text message sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -537,8 +545,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 1, "delivered": 1, "failed": 0},
             },
             (
-                "1 courriel envoyé Aucun échec",
-                "1 message texte envoyé Aucun échec",
+                "1 courriel envoyé courriel envoyé: Aucun échec",
+                "1 message texte envoyé message texte envoyé: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
@@ -549,7 +557,11 @@ def test_correct_font_size_for_big_numbers(
                 "email": {"requested": 2, "delivered": 2, "failed": 0},
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
-            ("2 emails sent No failures", "2 text messages sent No failures", "0 problem email addresses No problem addresses"),
+            (
+                "2 emails sent emails sent: No failures",
+                "2 text messages sent text messages sent: No failures",
+                "0 problem email addresses No problem addresses",
+            ),
             "en",
         ),
         (
@@ -559,8 +571,8 @@ def test_correct_font_size_for_big_numbers(
                 "sms": {"requested": 2, "delivered": 2, "failed": 0},
             },
             (
-                "2 courriels envoyés Aucun échec",
-                "2 messages texte envoyés Aucun échec",
+                "2 courriels envoyés courriels envoyés: Aucun échec",
+                "2 messages texte envoyés messages texte envoyés: Aucun échec",
                 "0 addresse courriel problématique Aucune adresse problématique",
             ),
             "fr",
@@ -654,8 +666,8 @@ def test_usage_page(
     nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
-    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
+    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 fiscal year"
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 fiscal year"
     assert normalize_spaces(nav["aria-label"]) == "Filter by year"
     assert "252,190" in cols[1].text
     assert "Text messages" in cols[1].text
@@ -697,9 +709,9 @@ def test_usage_page_with_letters(
     nav = page.find("ul", {"class": "pill", "role": "nav"})
     nav_links = nav.find_all("a")
 
-    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 financial year"
-    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 financial year"
-    assert normalize_spaces(nav_links[1].text) == "2012 to 2013 financial year"
+    assert normalize_spaces(nav_links[0].text) == "2010 to 2011 fiscal year"
+    assert normalize_spaces(nav.find("li", {"aria-selected": "true"}).text) == "2011 to 2012 fiscal year"
+    assert normalize_spaces(nav_links[1].text) == "2012 to 2013 fiscal year"
     assert normalize_spaces(nav["aria-label"]) == "Filter by year"
 
     assert "252,190" in cols[1].text

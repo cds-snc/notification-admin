@@ -274,3 +274,27 @@ def test_get_last_email_login_datetime(mocker, value, expected_return):
 
     assert user_api_client.get_last_email_login_datetime(user_id) == expected_return
     mock_redis_get.assert_called_once_with(f"user-{user_id}-last-email-login")
+
+
+class TestFreshdesk:
+    def test_send_new_template_category_request(self, mocker):
+        mock_post = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
+
+        data = {
+            "user_id": user_id,
+            "service_id": "456",
+            "template_category_name_en": "Category EN",
+            "template_category_name_fr": "Category FR",
+            "template_id": "789",
+        }
+
+        user_api_client.send_new_template_category_request(**data)
+
+        expected_data = {
+            "service_id": data["service_id"],
+            "template_category_name_en": data["template_category_name_en"],
+            "template_category_name_fr": data["template_category_name_fr"],
+            "template_id": data["template_id"],
+        }
+        del data["user_id"]
+        mock_post.assert_called_once_with(f"/user/{user_id}/new-template-category-request", data=expected_data)

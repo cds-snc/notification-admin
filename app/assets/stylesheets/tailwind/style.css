@@ -22,6 +22,7 @@
 @import "./components/big-number.css";
 @import "./components/textbox.css";
 @import "./components/file-upload.css";
+@import "./components/filter.css";
 @import "./components/browse-list.css";
 @import "./components/email_sms_message.css";
 @import "./components/buttons.css";
@@ -40,6 +41,9 @@
 @import "./components/preview-fullpage-border.css";
 @import "./components/remaining-messages.css";
 @import "./components/empty-list.css";
+@import "./components/autocomplete.css";
+@import "./components/menu.css";
+@import "./components/tou-dialog.css";
 
 /* views */
 @import "./views/dashboard.css";
@@ -131,6 +135,7 @@ section[id]:target {
       0 0 0 15px var(--white),
       0 0 0 20px var(--yellow);
   }
+
   100% {
     box-shadow:
       0 0 0 15px var(--white),
@@ -230,9 +235,11 @@ label {
   height: 1px;
   width: 1px;
   overflow: hidden;
-  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px 1px 1px 1px);
+  /* IE6, IE7 */
   clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap; /* added line */
+  white-space: nowrap;
+  /* added line */
 }
 
 .border-box {
@@ -240,6 +247,7 @@ label {
   border: 1px solid #000;
   @apply p-8 mb-8;
 }
+
 .border-box strong {
   @apply font-bold;
 }
@@ -287,6 +295,7 @@ label {
     margin: -1px;
     @apply absolute overflow-hidden border-0 p-0;
   }
+
   .research-mode {
     @apply font-bold inline-block bg-blue text-white py-2 px-4 rounded;
   }
@@ -304,7 +313,8 @@ label {
   }
 
   .loading-indicator:after {
-    content: "\2026"; /* ellipsis */
+    content: "\2026";
+    /* ellipsis */
     @apply overflow-hidden inline-block align-bottom animate-ellipsis w-0;
   }
 
@@ -316,6 +326,7 @@ label {
   .highlight {
     @apply font-monospace overflow-x-scroll p-4 pr-0;
   }
+
   @screen md {
     .inline.block-label {
       @apply inline-block float-none;
@@ -335,6 +346,7 @@ label {
     outline: 2px solid #000;
     @apply p-2 max-w-full;
   }
+
   @screen smaller {
     #global-header .header-proposition #proposition-links li {
       width: 95%;
@@ -361,4 +373,5 @@ label {
 .overflow-anywhere {
   overflow-wrap: anywhere;
 }
+
 /*! purgecss end ignore */

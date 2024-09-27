@@ -12,7 +12,8 @@
   safe_error_message=False,
   rows=8,
   required=true,
-  is_page_heading=false
+  is_page_heading=false,
+  testid=None
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -67,6 +68,7 @@
       required='' if required != false else false,
       aria_required='true' if required != false else false,
       aria_describedby=describedby|trim if describedby != '' else false,
+      data_testid=testid,
       **kwargs
     ) }}
 
@@ -144,4 +146,32 @@
     </div>
 
   </div>
+{% endmacro %}
+
+
+{% macro textbox_localized(
+  name,
+  fields,
+  legend,
+  hint=None,
+  describedby=""
+) %}
+  <fieldset class="localized-field">
+    <legend>{{ legend }}</legend>
+    {% if hint %}
+    {% set describedby = describedby + name + '-hint ' %}
+      <span id="{{ name }}-hint" class="form-hint">
+        {{ hint }}
+      </span>
+    {% endif %}
+    <div class="localized-field-fields flex w-full">
+      {% for lang, localized_field in fields.items() %}
+        {% set error_msg = "" %}
+        {% if localized_field.validators | length > 0 %}
+          {% set error_msg = localized_field.validators[0].message %}
+        {% endif %}
+        {{ textbox(localized_field, localized_field.label.text, width='w-full', data_error_msg=error_msg, lang=lang, testid=name + "-" + lang) }}
+      {% endfor %}
+    </div>
+  </fieldset>
 {% endmacro %}

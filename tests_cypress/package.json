@@ -10,12 +10,13 @@
     "html-validate": "^8.7.1",
     "imap-simple": "^5.1.0",
     "jsrsasign": "^11.0.0",
-    "mailparser": "^3.5.0",
+    "mailparser": "^3.7.1",
     "nanoid": "^5.0.4",
-    "nodemailer": "^6.9.2"
+    "nodemailer": "^6.9.15"
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
-    "cypress": "^12.16.0"
+    "cypress": "^13.14.2",
+    "cypress-real-events": "^1.13.0"
   }
 }
