@@ -109,10 +109,12 @@ const emailAccount = async () => {
                     }
         
                     try {
-                        await connection.deleteMessage(uidsToDelete);
-                        await connection.imap.expunge();
+                        if (uidsToDelete.length > 0) {
+                            await connection.deleteMessage(uidsToDelete);
+                            await connection.imap.expunge();
+                        }
                     } catch (e) {
-                        console.error('delete error', e);
+                        console.error('delete error', uidsToDelete, e);
                     }
         
                     return latestMail;
