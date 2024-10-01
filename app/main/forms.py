@@ -796,6 +796,7 @@ class BaseTemplateForm(StripWhitespaceForm):
         default=TC_PRIORITY_VALUE,
     )
 
+
 class RequiredIf(InputRequired):
     # a validator which makes a field required if
     # another field is set and has a truthy value

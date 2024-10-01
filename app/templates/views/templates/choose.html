@@ -77,16 +77,12 @@
     {% endif %}
     {% if show_template_nav %}
       <div class="mb-12 clear-both contain-floats">
-        {% if config["FF_TEMPLATE_CATEGORY"] %}
-          {{
-          template_filter(".template-list-item", template_types, template_categories,
-            "data-notification-type",
-            "data-template-category"
-            )
-          }}
-        {% else %}
-          {{ pill(template_nav_items, current_value=template_type, show_count=False, label=_("Filter by template type")) }}
-        {% endif %}
+        {{
+        template_filter(".template-list-item", template_types, template_categories,
+          "data-notification-type",
+          "data-template-category"
+          )
+        }}
       </div>
     {% endif %}
 

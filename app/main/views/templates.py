@@ -40,7 +40,6 @@ from app.main.forms import (
     AddSMSRecipientsForm,
     CreateTemplateForm,
     EmailTemplateFormWithCategory,
-    LetterTemplateForm,
     LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
@@ -52,7 +51,6 @@ from app.main.forms import (
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.enum.template_categories import DefaultTemplateCategories
-from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.template_list import (
     TEMPLATE_TYPES_NO_LETTER,
@@ -67,7 +65,6 @@ from app.utils import (
     user_has_permissions,
     user_is_platform_admin,
 )
-
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
@@ -107,8 +104,7 @@ def get_email_preview_template(template, template_id, service_id):
 
 def set_preview_data(data, service_id, template_id=None):
     key = f"template-preview:{service_id}:{template_id}"
-    redis_client.set(key=key, value=json.dumps(
-        data), ex=int(timedelta(days=1).total_seconds()))
+    redis_client.set(key=key, value=json.dumps(data), ex=int(timedelta(days=1).total_seconds()))
 
 
 def get_preview_data(service_id, template_id=None):
@@ -136,8 +132,7 @@ def view_template(service_id, template_id):
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
 
-    user_has_template_permission = current_user.has_template_folder_permission(
-        template_folder)
+    user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
@@ -157,8 +152,7 @@ def preview_template(service_id, template_id=None):
     template = get_preview_data(service_id, template_id)
     if not template:
         # template == {} if the user has not yet clicked the preview link
-        template = current_service.get_template_with_user_permission_or_403(
-            template_id, current_user)
+        template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if request.method == "POST":
         if request.form["button_pressed"] == "edit":
@@ -200,8 +194,7 @@ def preview_template(service_id, template_id=None):
                     )
                     template_id = new_template["data"]["id"]
 
-                flash(_("'{}' template saved").format(
-                    template["name"]), "default_with_tick")
+                flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
                 return redirect(
                     url_for(
                         ".view_template",
@@ -228,8 +221,7 @@ def preview_template(service_id, template_id=None):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template["id"]))
 
     if template["id"]:
-        back_link = url_for(".edit_service_template",
-                            service_id=current_service.id, template_id=template["id"])
+        back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template["id"])
     else:
         back_link = url_for(
             ".add_service_template",
@@ -239,8 +231,7 @@ def preview_template(service_id, template_id=None):
         )
     return render_template(
         "views/templates/preview_template.html",
-        template=get_email_preview_template(
-            template, template["id"], service_id),
+        template=get_email_preview_template(template, template["id"], service_id),
         back_link=back_link,
     )
 
@@ -278,24 +269,19 @@ def start_tour(service_id, template_id):
 def choose_template(service_id, template_type="all", template_folder_id=None):
     template_folder = current_service.get_template_folder(template_folder_id)
 
-    user_has_template_folder_permission = current_user.has_template_folder_permission(
-        template_folder)
+    user_has_template_folder_permission = current_user.has_template_folder_permission(template_folder)
 
-    template_list = TemplateList(
-        current_service, template_type, template_folder_id, current_user)
+    template_list = TemplateList(current_service, template_type, template_folder_id, current_user)
 
     templates_and_folders_form = TemplateAndFoldersSelectionForm(
-        all_template_folders=current_service.get_user_template_folders(
-            current_user),
+        all_template_folders=current_service.get_user_template_folders(current_user),
         template_list=template_list,
         template_type=template_type,
         allow_adding_letter_template=current_service.has_permission("letter"),
-        allow_adding_copy_of_template=(
-            current_service.all_templates or len(current_user.service_ids) > 1),
+        allow_adding_copy_of_template=(current_service.all_templates or len(current_user.service_ids) > 1),
     )
 
-    option_hints = {
-        template_folder_id if template_folder_id is not None else "__NONE__": _l("Current folder")}
+    option_hints = {template_folder_id if template_folder_id is not None else "__NONE__": _l("Current folder")}
 
     if request.method == "POST" and templates_and_folders_form.validate_on_submit():
         if not current_user.has_permissions("manage_templates"):
@@ -314,13 +300,11 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
     sending_view = request.args.get("view") == "sending"
 
-    template_category_name_col = "name_en" if get_current_locale(
-        current_app) == "en" else "name_fr"
+    template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
     # Get the full list of template categories, any hidden ones will be called 'Other'
     template_categories = [
-        template.template_category[template_category_name_col] if not template.template_category.get(
-            "hidden") else _("Other")
+        template.template_category[template_category_name_col] if not template.template_category.get("hidden") else _("Other")
         for template in template_list
         if template.template_category
     ]
@@ -331,20 +315,16 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     return render_template(
         "views/templates/choose.html",
         current_template_folder_id=template_folder_id,
-        current_template_folder=current_service.get_template_folder_path(
-            template_folder_id)[-1],
-        template_folder_path=current_service.get_template_folder_path(
-            template_folder_id),
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
+        template_folder_path=current_service.get_template_folder_path(template_folder_id),
         template_list=template_list,
         template_types=list(TEMPLATE_TYPES_NO_LETTER.values()),
         template_categories=template_categories,
         template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
-        show_template_nav=(current_service.has_multiple_template_types and (
-            len(current_service.all_templates) > 2)),
+        show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
         sending_view=sending_view,
-        template_nav_items=get_template_nav_items(
-            template_folder_id, sending_view),
+        template_nav_items=get_template_nav_items(template_folder_id, sending_view),
         template_type=template_type,
         search_form=SearchByNameForm(),
         templates_and_folders_form=templates_and_folders_form,
@@ -355,8 +335,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
 
 
 def process_folder_management_form(form, current_folder_id):
-    current_service.get_template_folder_with_user_permission_or_403(
-        current_folder_id, current_user)
+    current_service.get_template_folder_with_user_permission_or_403(current_folder_id, current_user)
     new_folder_id = None
 
     if form.is_add_folder_op:
@@ -368,8 +347,7 @@ def process_folder_management_form(form, current_folder_id):
         # if we've just made a folder, we also want to move there
         move_to_id = new_folder_id or form.move_to.data
 
-        current_service.move_to_folder(
-            ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
+        current_service.move_to_folder(ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
 
     return redirect(request.url)
 
@@ -574,8 +552,7 @@ def choose_template_to_copy(
 
         return render_template(
             "views/templates/copy.html",
-            services_templates_and_folders=TemplateList(
-                service, template_folder_id=from_folder, user=current_user),
+            services_templates_and_folders=TemplateList(service, template_folder_id=from_folder, user=current_user),
             template_folder_path=service.get_template_folder_path(from_folder),
             from_service=service,
             search_form=SearchByNameForm(),
@@ -596,11 +573,9 @@ def copy_template(service_id, template_id):
 
     current_user.belongs_to_service_or_403(from_service)
 
-    template = service_api_client.get_service_template(
-        from_service, str(template_id))["data"]
+    template = service_api_client.get_service_template(from_service, str(template_id))["data"]
 
-    template_folder = template_folder_api_client.get_template_folder(
-        from_service, template["folder"])
+    template_folder = template_folder_api_client.get_template_folder(from_service, template["folder"])
     if not current_user.has_template_folder_permission(template_folder):
         abort(403)
 
@@ -612,17 +587,14 @@ def copy_template(service_id, template_id):
         )
 
     template["template_content"] = template["content"]
-    template["name"] = _get_template_copy_name(
-        template, current_service.all_templates)
+    template["name"] = _get_template_copy_name(template, current_service.all_templates)
 
-    form, other_category, template_category_hints = _get_categories_and_prepare_form(
-        template, template["template_type"])
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
         form=form,
         template=template,
-        heading=_l("Copy email template") if template["template_type"] == "email" else _l(
-            "Copy text message template"),
+        heading=_l("Copy email template") if template["template_type"] == "email" else _l("Copy text message template"),
         service_id=service_id,
         services=current_user.service_ids,
         template_category_hints=template_category_hints,
@@ -666,19 +638,15 @@ def action_blocked(service_id, notification_type, return_to, template_id):
 )
 @user_has_permissions("manage_templates")
 def manage_template_folder(service_id, template_folder_id):
-    template_folder = current_service.get_template_folder_with_user_permission_or_403(
-        template_folder_id, current_user)
+    template_folder = current_service.get_template_folder_with_user_permission_or_403(template_folder_id, current_user)
     form = TemplateFolderForm(
         name=template_folder["name"],
-        users_with_permission=template_folder.get(
-            "users_with_permission", None),
-        all_service_users=[
-            user for user in current_service.active_users if user.id != current_user.id],
+        users_with_permission=template_folder.get("users_with_permission", None),
+        all_service_users=[user for user in current_service.active_users if user.id != current_user.id],
     )
     if form.validate_on_submit():
         if current_user.has_permissions("manage_service") and form.users_with_permission.all_service_users:
-            users_with_permission = form.users_with_permission.data + \
-                [current_user.id]
+            users_with_permission = form.users_with_permission.data + [current_user.id]
         else:
             users_with_permission = None
         template_folder_api_client.update_template_folder(
@@ -698,10 +666,8 @@ def manage_template_folder(service_id, template_folder_id):
     return render_template(
         "views/templates/manage-template-folder.html",
         form=form,
-        current_template_folder=current_service.get_template_folder_path(
-            template_folder_id)[-1],
-        template_folder_path=current_service.get_template_folder_path(
-            template_folder_id),
+        current_template_folder=current_service.get_template_folder_path(template_folder_id)[-1],
+        template_folder_path=current_service.get_template_folder_path(template_folder_id),
         current_service_id=current_service.id,
         template_folder_id=template_folder_id,
         template_type="all",
@@ -714,8 +680,7 @@ def manage_template_folder(service_id, template_folder_id):
 )
 @user_has_permissions("manage_templates")
 def delete_template_folder(service_id, template_folder_id):
-    template_folder = current_service.get_template_folder_with_user_permission_or_403(
-        template_folder_id, current_user)
+    template_folder = current_service.get_template_folder_with_user_permission_or_403(template_folder_id, current_user)
 
     if len(current_service.get_template_folders_and_templates(template_type="all", template_folder_id=template_folder_id)) > 0:
         flash(_l("You must empty this folder before you can delete it"), "info")
@@ -730,8 +695,7 @@ def delete_template_folder(service_id, template_folder_id):
 
     if request.method == "POST":
         try:
-            template_folder_api_client.delete_template_folder(
-                current_service.id, template_folder_id)
+            template_folder_api_client.delete_template_folder(current_service.id, template_folder_id)
 
             return redirect(
                 url_for(
@@ -786,8 +750,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
 
     template = get_preview_data(service_id)
 
-    form, other_category, template_category_hints = _get_categories_and_prepare_form(
-        template, template_type)
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
 
     if form.validate_on_submit():
         if form.process_type.data != TC_PRIORITY_VALUE:
@@ -858,8 +821,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             else:
                 raise e
         else:
-            flash(_("'{}' template saved").format(
-                form.name.data), "default_with_tick")
+            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
 
             return redirect(
                 url_for(
@@ -905,26 +867,20 @@ def _get_categories_and_prepare_form(template, template_type):
     form = form_objects_with_category[template_type](**template)
 
     # alphabetize choices
-    name_col = "name_en" if get_current_locale(
-        current_app) == "en" else "name_fr"
-    desc_col = "description_en" if get_current_locale(
-        current_app) == "en" else "description_fr"
+    name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
+    desc_col = "description_en" if get_current_locale(current_app) == "en" else "description_fr"
     categories = sorted(categories, key=lambda x: x[name_col])
-    form.template_category_id.choices = [
-        (cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
+    form.template_category_id.choices = [(cat["id"], cat[name_col]) for cat in categories if not cat.get("hidden", False)]
 
     # add "other" category to choices, default to the low priority template category
     # if the template is already in one of the default categories, then dont show the other
     if template.get("template_category") and template["template_category"].get("hidden"):
         other_category = None
         form.template_category_other.validators = []
-        form.template_category_id.choices.append(
-            (form.template_category_id.data, _("Other")))
+        form.template_category_id.choices.append((form.template_category_id.data, _("Other")))
     else:
-        other_category = {
-            DefaultTemplateCategories.LOW.value: form.template_category_other}
-        form.template_category_id.choices.append(
-            (DefaultTemplateCategories.LOW.value, _("Other")))
+        other_category = {DefaultTemplateCategories.LOW.value: form.template_category_other}
+        form.template_category_id.choices.append((DefaultTemplateCategories.LOW.value, _("Other")))
 
     template_category_hints = {cat["id"]: cat[desc_col] for cat in categories}
 
@@ -934,8 +890,7 @@ def _get_categories_and_prepare_form(template, template_type):
 @main.route("/services/<service_id>/templates/<template_id>/edit", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
 def edit_service_template(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
     if new_template_data.get("content"):
@@ -947,8 +902,7 @@ def edit_service_template(service_id, template_id):
     if template.get("process_type_column") is None:
         template["process_type"] = TC_PRIORITY_VALUE
 
-    form, other_category, template_category_hints = _get_categories_and_prepare_form(
-        template, template["template_type"])
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
 
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
@@ -970,17 +924,14 @@ def edit_service_template(service_id, template_id):
         set_preview_data(new_template_data, service_id, template_id)
 
         new_template = get_template(new_template_data, current_service)
-        template_change = get_template(
-            template, current_service).compare_to(new_template)
+        template_change = get_template(template, current_service).compare_to(new_template)
         if template_change.placeholders_added and not request.form.get("confirm"):
-            example_column_headings = first_column_headings[new_template.template_type] + list(
-                new_template.placeholders)
+            example_column_headings = first_column_headings[new_template.template_type] + list(new_template.placeholders)
             return render_template(
                 "views/templates/breaking-change.html",
                 template_change=template_change,
                 new_template=new_template,
-                column_headings=list(
-                    ascii_uppercase[: len(example_column_headings)]),
+                column_headings=list(ascii_uppercase[: len(example_column_headings)]),
                 example_rows=[
                     example_column_headings,
                     get_example_csv_rows(new_template),
@@ -1012,8 +963,7 @@ def edit_service_template(service_id, template_id):
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
                     if form.template_category_other.data:
-                        is_english = get_current_locale(
-                            current_app) == "en"
+                        is_english = get_current_locale(current_app) == "en"
                         try:
                             current_user.send_new_template_category_request(
                                 current_user.id,
@@ -1026,8 +976,7 @@ def edit_service_template(service_id, template_id):
                             current_app.logger.error(
                                 f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
                             )
-                    flash(_("'{}' template saved").format(
-                        form.name.data), "default_with_tick")
+                    flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
                             ".view_template",
@@ -1040,8 +989,7 @@ def edit_service_template(service_id, template_id):
                     if e.status_code == 400:
                         if "content" in e.message and any(["character count greater than" in x for x in e.message["content"]]):
                             error_message = get_char_limit_error_msg()
-                            form.template_content.errors.extend(
-                                [error_message])
+                            form.template_content.errors.extend([error_message])
                         elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
                             error_message = (_("Template name must be less than {char_limit} characters")).format(
                                 char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
@@ -1077,8 +1025,7 @@ def edit_service_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/delete", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
 def delete_service_template(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if request.method == "POST":
         service_api_client.delete_service_template(service_id, template_id)
@@ -1091,20 +1038,16 @@ def delete_service_template(service_id, template_id):
         )
 
     try:
-        last_used_notification = template_statistics_client.get_template_statistics_for_template(
-            service_id, template["id"])
+        last_used_notification = template_statistics_client.get_template_statistics_for_template(service_id, template["id"])
 
         last_used_text = ""
         if not last_used_notification:
             last_used_text = _l("more than seven days")
         else:
-            last_used_date = parse(
-                last_used_notification["created_at"]).replace(tzinfo=None)
-            last_used_text = get_human_readable_delta(
-                last_used_date, datetime.utcnow())
+            last_used_date = parse(last_used_notification["created_at"]).replace(tzinfo=None)
+            last_used_text = get_human_readable_delta(last_used_date, datetime.utcnow())
 
-        message = "{} {} {}".format(
-            _l("This template was last used"), last_used_text, _l("ago."))
+        message = "{} {} {}".format(_l("This template was last used"), last_used_text, _l("ago."))
 
     except HTTPError as e:
         if e.status_code == 404:
@@ -1114,16 +1057,14 @@ def delete_service_template(service_id, template_id):
 
     flash(
         [
-            "{} ‘{}’?".format(
-                _l("Are you sure you want to delete"), template["name"]),
+            "{} ‘{}’?".format(_l("Are you sure you want to delete"), template["name"]),
             message,
         ],
         "delete",
     )
     return render_template(
         "views/templates/template.html",
-        template=get_email_preview_template(
-            template, template["id"], service_id),
+        template=get_email_preview_template(template, template["id"], service_id),
         user_has_template_permission=True,
     )
 
@@ -1131,13 +1072,11 @@ def delete_service_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/redact", methods=["GET"])
 @user_has_permissions("manage_templates")
 def confirm_redact_template(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     return render_template(
         "views/templates/template.html",
-        template=get_email_preview_template(
-            template, template["id"], service_id),
+        template=get_email_preview_template(template, template["id"], service_id),
         user_has_template_permission=True,
         show_redaction_message=True,
     )
@@ -1190,8 +1129,7 @@ def view_template_versions(service_id, template_id):
 )
 @user_has_permissions("manage_templates")
 def set_template_sender(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     sender_details = get_template_sender_form_dict(service_id, template)
     no_senders = sender_details.get("no_senders", False)
 
@@ -1224,15 +1162,13 @@ def set_template_sender(service_id, template_id):
 )
 @user_has_permissions("manage_templates")
 def edit_template_postage(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     if template["template_type"] != "letter":
         abort(404)
     form = LetterTemplatePostageForm(**template)
     if form.validate_on_submit():
         postage = form.postage.data
-        service_api_client.update_service_template_postage(
-            service_id, template_id, postage)
+        service_api_client.update_service_template_postage(service_id, template_id, postage)
 
         return redirect(url_for(".view_template", service_id=service_id, template_id=template_id))
 
@@ -1254,13 +1190,11 @@ def get_template_sender_form_dict(service_id, template):
 
     sender_format = context["field_name"]
     service_senders = get_sender_details(service_id, template["template_type"])
-    context["default_sender"] = next(
-        (x["id"] for x in service_senders if x["is_default"]), "Not set")
+    context["default_sender"] = next((x["id"] for x in service_senders if x["is_default"]), "Not set")
     if not service_senders:
         context["no_senders"] = True
 
-    context["value_and_label"] = [(sender["id"], Markup(
-        nl2br(sender[sender_format]))) for sender in service_senders]
+    context["value_and_label"] = [(sender["id"], Markup(nl2br(sender[sender_format]))) for sender in service_senders]
     # Add blank option to start of list
     context["value_and_label"].insert(0, ("", "Blank"))
 
@@ -1286,8 +1220,7 @@ def get_human_readable_delta(from_time, until_time):
 @main.route("/services/<service_id>/add-recipients/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def add_recipients(service_id, template_id):
-    template = current_service.get_template_with_user_permission_or_403(
-        template_id, current_user)
+    template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
     if template["template_type"] == "email":
         form = AddEmailRecipientsForm()
@@ -1366,19 +1299,16 @@ def template_categories():
 @main.route("/template-category/<template_category_id>/delete", methods=["GET", "POST"])
 @user_is_platform_admin
 def delete_template_category(template_category_id):
-    template_category = template_category_api_client.get_template_category(
-        template_category_id)
+    template_category = template_category_api_client.get_template_category(template_category_id)
 
     if request.method == "POST":
         try:
-            template_category_api_client.delete_template_category(
-                template_category_id)
+            template_category_api_client.delete_template_category(template_category_id)
         except HTTPError:
             flash(
                 [
                     _l("Cannot delete template category, ‘{}’, is associated with templates").format(
-                        (template_category["name_en"] if session["userlang"]
-                         == "en" else template_category["name_fr"])
+                        (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"])
                     )
                 ]
             )
@@ -1388,8 +1318,7 @@ def delete_template_category(template_category_id):
         [
             "{} ‘{}’?".format(
                 _l("Are you sure you want to delete"),
-                (template_category["name_en"] if session["userlang"]
-                 == "en" else template_category["name_fr"]),
+                (template_category["name_en"] if session["userlang"] == "en" else template_category["name_fr"]),
             ),
         ],
         "delete",
@@ -1441,8 +1370,7 @@ def add_template_category():
 @main.route("/template-category/<template_category_id>", methods=["GET", "POST"])
 @user_is_platform_admin
 def template_category(template_category_id):
-    template_category = template_category_api_client.get_template_category(
-        template_category_id)
+    template_category = template_category_api_client.get_template_category(template_category_id)
     form = TemplateCategoryForm(
         name_en=template_category["name_en"],
         name_fr=template_category["name_fr"],
