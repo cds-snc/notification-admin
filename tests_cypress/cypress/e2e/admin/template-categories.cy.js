@@ -22,7 +22,7 @@ describe("Template categories", () => {
   const categories = {
     OTHER: "Other",
     AUTH: "Authentication",
-    AUTOREPLY: "Automatic reply",
+    AUTOREPLY: "General Communication",
   };
 
   templates.forEach((template) => {
