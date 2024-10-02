@@ -80,7 +80,6 @@ class Config(object):
     # FEATURE FLAGS
     FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
-    FF_TOU = env.bool("FF_TOU", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 25_000)
@@ -220,7 +219,6 @@ class Test(Development):
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
     FF_NEW_BRANDING = True
-    FF_TOU = True
 
 
 class ProductionFF(Config):
@@ -253,7 +251,6 @@ class ProductionFF(Config):
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
     FF_NEW_BRANDING = True
-    FF_TOU = False
 
 
 class Production(Config):
@@ -270,7 +267,6 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_TOU = True
 
 
 class Scratch(Production):

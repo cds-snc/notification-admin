@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
 import pytest
-from flask import current_app
 from wtforms import ValidationError
 
 from app.main.forms import RegisterUserForm, ServiceSmsSenderForm
@@ -35,22 +34,13 @@ def test_valid_email_not_in_valid_domains(
 
 
 def test_valid_email_in_valid_domains(client):
-    if current_app.config["FF_TOU"]:
-        form = RegisterUserForm(
-            name="test",
-            email_address="test@my.gc.ca",
-            mobile_number="6502532222",
-            password="an uncommon password",
-            tou_agreed="true",
-        )
-    else:
-        form = RegisterUserForm(
-            name="test",
-            email_address="test@my.gc.ca",
-            mobile_number="6502532222",
-            password="an uncommon password",
-        )
-
+    form = RegisterUserForm(
+        name="test",
+        email_address="test@my.gc.ca",
+        mobile_number="6502532222",
+        password="an uncommon password",
+        tou_agreed="true",
+    )
     form.validate()
     assert form.errors == {}
 

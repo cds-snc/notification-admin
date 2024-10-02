@@ -3,7 +3,7 @@ from unittest.mock import ANY
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import current_app, url_for
+from flask import url_for
 
 from app.models.user import InvitedUser, User
 
@@ -62,9 +62,7 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "password": password,
         "auth_type": "sms_auth",
     }
-
-    if current_app.config["FF_TOU"]:
-        user_data["tou_agreed"] = "true"
+    user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
     assert response.status_code == 200
@@ -158,9 +156,7 @@ def test_should_add_user_details_to_session(
         "mobile_number": "+16502532222",
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
     }
-
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     client_request.post("main.register", _data=data)
     with client_request.session_transaction() as session:
@@ -199,8 +195,7 @@ def test_register_with_existing_email_sends_emails(
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
     }
 
-    if current_app.config["FF_TOU"]:
-        user_data["tou_agreed"] = "true"
+    user_data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=user_data)
     assert response.status_code == 302
@@ -285,8 +280,7 @@ def test_register_from_invite(
         "auth_type": "sms_auth",
     }
 
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
@@ -332,8 +326,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
         "auth_type": "sms_auth",
     }
 
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
@@ -371,8 +364,7 @@ def test_register_from_email_auth_invite(
         "auth_type": "email_auth",
     }
 
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
@@ -388,7 +380,8 @@ def test_register_from_email_auth_invite(
     mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
     # just logs them in
     mock_login_user.assert_called_once_with(
-        User({"id": fake_uuid, "platform_admin": False})  # This ID matches the return value of mock_register_user
+        # This ID matches the return value of mock_register_user
+        User({"id": fake_uuid, "platform_admin": False})
     )
     mock_add_user_to_service.assert_called_once_with(
         sample_invite["service"],
@@ -429,8 +422,8 @@ def test_can_register_email_auth_without_phone_number(
         "auth_type": "email_auth",
     }
 
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
+
     resp = client.post(url_for("main.register_from_invite"), data=data)
     assert resp.status_code == 302
     assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
