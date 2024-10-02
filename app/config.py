@@ -80,7 +80,6 @@ class Config(object):
     # FEATURE FLAGS
     FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
-    FF_TEMPLATE_CATEGORY = env.bool("FF_TEMPLATE_CATEGORY", False)
     FF_TOU = env.bool("FF_TOU", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
@@ -222,7 +221,6 @@ class Test(Development):
     FF_ABTEST_SERVICE_ID = ""
     FF_NEW_BRANDING = True
     FF_TOU = True
-    FF_TEMPLATE_CATEGORY = True
 
 
 class ProductionFF(Config):
@@ -256,7 +254,6 @@ class ProductionFF(Config):
     FF_ABTEST_SERVICE_ID = ""
     FF_NEW_BRANDING = True
     FF_TOU = False
-    FF_TEMPLATE_CATEGORY = False
 
 
 class Production(Config):

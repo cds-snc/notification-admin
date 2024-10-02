@@ -64,7 +64,6 @@
             {# Compose hint + "template" IF it has a type. ELSE just print the hint #}
             {{ _("{} template").format(_(item.hint)) | capitalize if item.type else _(item.hint) }}
           </span>
-          {% if config["FF_TEMPLATE_CATEGORY"] %}
             <span id="sr-{{ item.id }}2" class="message-meta message-category">
               {% if not item.template_category.hidden %}
                 {{ item.template_category[template_category_name_col] }}
@@ -72,16 +71,13 @@
                 {{ _('Other') }}
               {% endif %}
           </span>
-          {% endif %}
         </div>
       {% endfor %}
-      {% if config["FF_TEMPLATE_CATEGORY"] %}
         {% if template_list_length > 0 %}
           <div id="template-list-empty" class="mb-6" data-testid="template-empty">
             {{ empty_list(_('No matching templates'), _('Change your filters or search for more templates'), 'emptyBirdHole') }}
           </div>
         {% endif %}
-      {% endif %}
     </div>
     {% if display_checkboxes %}
       </fieldset>
