@@ -2360,7 +2360,7 @@ def test_can_create_email_template_with_emoji(
 
 
 @pytest.mark.parametrize(
-    "PRIORITY_FF_ON, IS_ADMIN",
+    "PRIORITY, IS_ADMIN",
     [
         (TC_PRIORITY_VALUE, False),
         (TemplateProcessTypes.BULK.value, True),
@@ -2377,7 +2377,7 @@ def test_create_template_with_process_types(
     app_,
     mocker,
     platform_admin_user,
-    PRIORITY_FF_ON,
+    PRIORITY,
     IS_ADMIN,
 ):
     if IS_ADMIN:
@@ -2394,7 +2394,7 @@ def test_create_template_with_process_types(
             "template_type": "email",
             "template_category_id": TESTING_TEMPLATE_CATEGORY,
             "service": SERVICE_ONE_ID,
-            "process_type": PRIORITY_FF_ON,
+            "process_type": PRIORITY,
             "button_pressed": "save",
         },
         _follow_redirects=True,
