@@ -2360,12 +2360,12 @@ def test_can_create_email_template_with_emoji(
 
 
 @pytest.mark.parametrize(
-    "PRIORITY_FF_ON, PRIORITY_FF_OFF, expect_success",
-    [  # TODO: Remove `PRIORITY_FF_OFF`, rename `PRIORITY_FF_ON` to simply `priority`
-        (TC_PRIORITY_VALUE, TemplateProcessTypes.BULK.value, True),
-        (TemplateProcessTypes.BULK.value, TC_PRIORITY_VALUE, False),
-        (TemplateProcessTypes.NORMAL.value, TemplateProcessTypes.NORMAL.value, False),
-        (TemplateProcessTypes.PRIORITY.value, TemplateProcessTypes.PRIORITY.value, False),
+    "PRIORITY_FF_ON, IS_ADMIN",
+    [
+        (TC_PRIORITY_VALUE, False),
+        (TemplateProcessTypes.BULK.value, True),
+        (TemplateProcessTypes.NORMAL.value, True),
+        (TemplateProcessTypes.PRIORITY.value, True),
     ],
 )
 def test_create_template_with_process_types(
@@ -2376,10 +2376,13 @@ def test_create_template_with_process_types(
     mock_get_template_categories,
     app_,
     mocker,
+    platform_admin_user,
     PRIORITY_FF_ON,
-    PRIORITY_FF_OFF,
-    expect_success,
+    IS_ADMIN,
 ):
+    if IS_ADMIN:
+        client_request.login(platform_admin_user)
+
     page = client_request.post(
         ".add_service_template",
         service_id=SERVICE_ONE_ID,
