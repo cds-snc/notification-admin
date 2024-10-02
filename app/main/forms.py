@@ -797,46 +797,6 @@ class BaseTemplateForm(StripWhitespaceForm):
     )
 
 
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class SMSTemplateForm(BaseTemplateForm):
-    def validate_template_content(self, field):
-        OnlySMSCharacters()(None, field)
-
-    template_content = TextAreaField(
-        _l("Text message"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            NoCommasInPlaceHolders(),
-        ],
-    )
-
-
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class EmailTemplateForm(BaseTemplateForm):
-    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
-
-    template_content = TextAreaField(
-        _l("Email message"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            NoCommasInPlaceHolders(),
-        ],
-    )
-
-
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class LetterTemplateForm(EmailTemplateForm):
-    subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
-
-    template_content = TextAreaField(
-        "Body",
-        validators=[
-            DataRequired(message="This cannot be empty"),
-            NoCommasInPlaceHolders(),
-        ],
-    )
-
-
 class RequiredIf(InputRequired):
     # a validator which makes a field required if
     # another field is set and has a truthy value
