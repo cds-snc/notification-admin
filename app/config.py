@@ -236,7 +236,6 @@ class Test(Development):
     FF_BOUNCE_RATE_V15 = True
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
-    FF_NEW_BRANDING = True
 
 
 class ProductionFF(Config):
@@ -269,7 +268,6 @@ class ProductionFF(Config):
     FF_BOUNCE_RATE_V15 = True
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
-    FF_NEW_BRANDING = True
 
 
 class Production(Config):
