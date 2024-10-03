@@ -78,7 +78,6 @@ class Config(object):
     EXTRA_ROUTES = [item for sublist in map(lambda x: x.values(), GC_ARTICLES_ROUTES.values()) for item in sublist]
 
     # FEATURE FLAGS
-    FF_NEW_BRANDING = env.bool("FF_NEW_BRANDING", False)
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_TOU = env.bool("FF_TOU", False)
 
@@ -219,7 +218,6 @@ class Test(Development):
     FF_BOUNCE_RATE_V15 = True
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
-    FF_NEW_BRANDING = True
     FF_TOU = True
 
 
@@ -252,7 +250,6 @@ class ProductionFF(Config):
     FF_BOUNCE_RATE_V15 = True
     FF_BOUNCE_RATE_BACKEND = True
     FF_ABTEST_SERVICE_ID = ""
-    FF_NEW_BRANDING = True
     FF_TOU = False
 
 
