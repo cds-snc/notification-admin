@@ -20,11 +20,14 @@ describe("Edit template", () => {
       cy.visit(`/services/${config.Services.Cypress}/templates`);
 
       // set template priority to use TC
-      Page.SelectTemplateById(config.Services.Cypress, config.Templates.SMOKE_TEST_SMS);
+      Page.SelectTemplateById(
+        config.Services.Cypress,
+        config.Templates.SMOKE_TEST_SMS,
+      );
       Page.EditCurrentTemplate();
       Page.SetTemplatePriority("bulk");
       Page.SaveTemplate();
-      
+
       // use api to check that it was set
       Admin.GetTemplate({
         templateId: config.Templates.SMOKE_TEST_SMS,
@@ -117,7 +120,10 @@ describe("Edit template", () => {
       cy.visit(`/services/${config.Services.Cypress}/templates`);
 
       // set template priority to use TC
-      Page.SelectTemplateById(config.Services.Cypress, config.Templates.SMOKE_TEST_EMAIL);
+      Page.SelectTemplateById(
+        config.Services.Cypress,
+        config.Templates.SMOKE_TEST_EMAIL,
+      );
       Page.EditCurrentTemplate();
       Page.Components.TemplateSubject().type("a");
       Page.SetTemplatePriority("bulk");
