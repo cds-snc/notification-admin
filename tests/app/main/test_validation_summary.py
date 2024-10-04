@@ -1,6 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
-from flask import current_app, url_for
+from flask import url_for
 
 register_field_names = ("name", "email_address", "mobile_number", "password")
 
@@ -35,8 +35,7 @@ def test_validation_summary(
     data,
     expected_errors,
 ):
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register"), data=data, follow_redirects=True)
     assert response.status_code == 200

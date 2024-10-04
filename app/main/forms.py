@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import current_app, request
+from flask import request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -382,9 +382,8 @@ class RegisterUserForm(StripWhitespaceForm):
     tou_agreed = HiddenField("tou_agreed", validators=[])
 
     def validate_tou_agreed(self, field):
-        if current_app.config["FF_TOU"]:
-            if field.data is not None and field.data.strip() == "":
-                raise ValidationError(_l("Read and agree to continue"))
+        if field.data is not None and field.data.strip() == "":
+            raise ValidationError(_l("Read and agree to continue"))
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):
@@ -794,46 +793,6 @@ class BaseTemplateForm(StripWhitespaceForm):
             (TC_PRIORITY_VALUE, _l("Use template category")),
         ],
         default=TC_PRIORITY_VALUE,
-    )
-
-
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class SMSTemplateForm(BaseTemplateForm):
-    def validate_template_content(self, field):
-        OnlySMSCharacters()(None, field)
-
-    template_content = TextAreaField(
-        _l("Text message"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            NoCommasInPlaceHolders(),
-        ],
-    )
-
-
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class EmailTemplateForm(BaseTemplateForm):
-    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
-
-    template_content = TextAreaField(
-        _l("Email message"),
-        validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            NoCommasInPlaceHolders(),
-        ],
-    )
-
-
-# TODO: Remove this class when FF_TEMPLATE_CATEGORY is removed
-class LetterTemplateForm(EmailTemplateForm):
-    subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
-
-    template_content = TextAreaField(
-        "Body",
-        validators=[
-            DataRequired(message="This cannot be empty"),
-            NoCommasInPlaceHolders(),
-        ],
     )
 
 
