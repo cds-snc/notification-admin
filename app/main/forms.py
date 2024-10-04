@@ -1324,9 +1324,10 @@ class SearchByNameForm(StripWhitespaceForm):
 
 class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
-        _l("zzzzzSearch by name or email address"),
+        _l("Search by name or email address"),
         validators=[DataRequired(_l("You need to enter full or partial email address to search by."))],
     )
+
 
 class SearchIds(StripWhitespaceForm):
     search = SearchField(
