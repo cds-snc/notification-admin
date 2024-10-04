@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from itertools import chain
 
 import pytz
-from flask import current_app, request
+from flask import request
 from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm as Form
 from flask_wtf.file import FileAllowed
@@ -382,9 +382,8 @@ class RegisterUserForm(StripWhitespaceForm):
     tou_agreed = HiddenField("tou_agreed", validators=[])
 
     def validate_tou_agreed(self, field):
-        if current_app.config["FF_TOU"]:
-            if field.data is not None and field.data.strip() == "":
-                raise ValidationError(_l("Read and agree to continue"))
+        if field.data is not None and field.data.strip() == "":
+            raise ValidationError(_l("Read and agree to continue"))
 
 
 class RegisterUserFromInviteForm(RegisterUserForm):
