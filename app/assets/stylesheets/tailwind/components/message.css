@@ -121,7 +121,7 @@
     @apply mr-4 mb-4;
   }
   .folder-heading-folder-truncated {
-    @apply w-0 p-0 pl-12 whitespace-no-wrap overflow-hidden;
+    @apply w-0 p-0 pl-12 whitespace-nowrap overflow-hidden;
   }
   .folder-heading-folder-root-truncated {
     max-width: 5em;

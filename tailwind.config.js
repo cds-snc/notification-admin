@@ -1,6 +1,7 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
+  content: ["./app/**/*.{html,css,js}"],
   theme: {
     container: {
       center: true,
@@ -60,19 +61,19 @@ module.exports = {
       doubleGutter: "3.75rem",
     },
     colors: {
+      transparent: "transparent",
+      current: "currentColor",
       red: {
-        default: "#b10e1e",
+        DEFAULT: "#b10e1e",
         hover: "#990c1a",
         border: "#6a0812",
         mellow: "#df3034",
         300: "#D74D42",
       },
-      white: {
-        default: "#FFF",
-      },
+      white: "#FFF",
       blue: {
         lighter: "#B2E3FF",
-        default: "#213045",
+        DEFAULT: "#213045",
         border: "#1A3152",
         selected: "#75b9e0",
         lightblue25: "#d5e8f3",
@@ -87,7 +88,7 @@ module.exports = {
         900: "#26374A",
       },
       gray: {
-        default: "#eee",
+        DEFAULT: "#eee",
         button: "#dee0e2" /* grey3 */,
         selected: "#e1e4e7",
         hover: "#d0d3d6",
@@ -110,27 +111,22 @@ module.exports = {
         900: "#21262C",
       },
       yellow: {
-        default: "#ffbf47",
+        DEFAULT: "#ffbf47",
         light: "#FFE7BB",
       },
       green: {
-        default: "#00672F",
+        DEFAULT: "#00672F",
         darker: "#00703C",
         hover: "#00692f",
         border: "#003618",
         green: "#006435",
         300: "#29A35A",
       },
-      black: {
-        default: "#000",
-      },
+      black: "#000",
       lime: {
-        default: '#D3E766',
-        100: '#D3E766',
-        700: '#545E00',
-      },
-      transparent: {
-        default: "transparent",
+        DEFAULT: "#D3E766",
+        100: "#D3E766",
+        700: "#545E00",
       },
     },
     extend: {

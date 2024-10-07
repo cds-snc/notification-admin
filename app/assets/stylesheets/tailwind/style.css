@@ -116,7 +116,7 @@ input[type="search"]::-webkit-search-decoration {
 
 section[id]:target {
   scroll-margin-top: 30px;
-  --yellow: theme("colors.yellow.default");
+  --yellow: theme("colors.yellow.DEFAULT");
   --white: white;
   box-shadow:
     0 0 0 15px var(--white),
@@ -144,7 +144,6 @@ section[id]:target {
   box-decoration-break: clone;
 }
 
-.hidden,
 .js-enabled .js-hidden {
   @apply hidden invisible;
 }
@@ -195,12 +194,6 @@ label {
 
 .shim {
   display: block;
-}
-
-@variants focus {
-  .input {
-    @apply outline-none;
-  }
 }
 
 .line-under {
@@ -343,8 +336,7 @@ label {
     @apply p-2 max-w-full;
   }
 
-  @screen smaller {
-    #global-header .header-proposition #proposition-links li {
+#global-header .header-proposition #proposition-links li {
       width: 95%;
     }
 
@@ -352,7 +344,6 @@ label {
       @apply text-smaller;
       line-height: 1.4;
     }
-  }
 
   #add_template_by_template_type {
     legend {
@@ -368,6 +359,10 @@ label {
 
 .overflow-anywhere {
   overflow-wrap: anywhere;
+}
+
+.ph-bold, .ph-fill {
+ font-size-adjust: 0.58;
 }
 
 /*! purgecss end ignore */

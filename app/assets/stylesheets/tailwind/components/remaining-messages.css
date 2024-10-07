@@ -10,7 +10,7 @@
   }
 
   .rm-used {
-    @apply .text-titlelarge pb-4 font-bold leading-none;
+    @apply text-titlelarge pb-4 font-bold leading-none;
   }
 
   .rm-total {

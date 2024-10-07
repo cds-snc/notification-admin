@@ -6,7 +6,7 @@
   }
 
   .dialog-content:focus {
-    box-shadow: inset 0 0 0 3px theme("colors.yellow.default");
+    box-shadow: inset 0 0 0 3px theme("colors.yellow.DEFAULT");
   }
 
   .dialog-sticky-footer {

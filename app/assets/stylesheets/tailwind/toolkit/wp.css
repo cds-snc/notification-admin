@@ -9,14 +9,14 @@
   /* Theming the cover blocks with our tokens */
   .wp-block-cover.bg-blue-slightlight {
     --bg: theme("colors.blue.slightlight");
-    --text: theme("colors.white.default");
+    --text: theme("colors.white");
     --interactive: theme("colors.blue.lighter");
   }
 
   .wp-block-cover.bg-gray {
-    --bg: theme("colors.gray.default");
-    --text: theme("colors.black.default");
-    --interactive: theme("colors.blue.default");
+    --bg: theme("colors.gray.100");
+    --text: theme("colors.black");
+    --interactive: theme("colors.blue.DEFAULT");
   }
 
   .wp-block-cover a:not(.button):not(:focus) {
