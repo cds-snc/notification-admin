@@ -147,7 +147,11 @@ section[id]:target {
 .js-enabled .js-hidden {
   @apply hidden invisible;
 }
-
+@layer utilities {
+.input {
+    @apply outline-none;
+  }
+}
 .visually-hidden,
 .visuallyhidden {
   @apply absolute overflow-hidden top-auto;
