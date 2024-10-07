@@ -39,14 +39,11 @@ from app.main.forms import (
     AddEmailRecipientsForm,
     AddSMSRecipientsForm,
     CreateTemplateForm,
-    EmailTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
     EmailTemplateFormWithCategory,
-    LetterTemplateForm,
     LetterTemplateFormWithCategory,
     LetterTemplatePostageForm,
     SearchByNameForm,
     SetTemplateSenderForm,
-    SMSTemplateForm,  # remove when FF_TEMPLATE_CATEGORY is removed
     SMSTemplateFormWithCategory,
     TemplateAndFoldersSelectionForm,
     TemplateCategoryForm,
@@ -54,7 +51,6 @@ from app.main.forms import (
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.enum.template_categories import DefaultTemplateCategories
-from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.template_list import (
     TEMPLATE_TYPES_NO_LETTER,
@@ -69,13 +65,6 @@ from app.utils import (
     user_has_permissions,
     user_is_platform_admin,
 )
-
-# TODO: Remove `form_objects` when FF_TEMPLATE_CATEGORY IS REMOVED
-form_objects = {
-    "email": EmailTemplateForm,
-    "sms": SMSTemplateForm,
-    "letter": LetterTemplateForm,
-}
 
 # Todo: Remove this once the process_types in the backend are updated to use low/med/high
 category_mapping = {
@@ -189,7 +178,8 @@ def preview_template(service_id, template_id=None):
                         template["content"],
                         service_id,
                         template["subject"],
-                        template["process_type"],
+                        None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
+                        template["template_category_id"],
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -198,8 +188,9 @@ def preview_template(service_id, template_id=None):
                         template["content"],
                         service_id,
                         template["subject"],
-                        template["process_type"],
+                        None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["folder"],
+                        template["template_category_id"],
                     )
                     template_id = new_template["data"]["id"]
 
@@ -598,12 +589,7 @@ def copy_template(service_id, template_id):
     template["template_content"] = template["content"]
     template["name"] = _get_template_copy_name(template, current_service.all_templates)
 
-    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
-    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        other_category = None
-        template_category_hints = None
-        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
     return render_template(
         f"views/edit-{template['template_type']}-template.html",
         form=form,
@@ -764,22 +750,11 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
 
     template = get_preview_data(service_id)
 
-    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
-    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        if template.get("process_type") is None:
-            template["process_type"] = TemplateProcessTypes.BULK.value
-        other_category = None
-        template_category_hints = None
-        form = form_objects[template_type](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
 
     if form.validate_on_submit():
-        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-            if form.process_type.data != TC_PRIORITY_VALUE:
-                abort_403_if_not_admin_user()
-        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-            if form.process_type.data != TemplateProcessTypes.BULK.value:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-                abort_403_if_not_admin_user()  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        if form.process_type.data != TC_PRIORITY_VALUE:
+            abort_403_if_not_admin_user()
         subject = form.subject.data if hasattr(form, "subject") else None
         if request.form.get("button_pressed") == "preview":
             preview_template_data = {
@@ -791,6 +766,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 "id": None,
                 "process_type": form.process_type.data,
                 "folder": template_folder_id,
+                "template_category_id": form.template_category_id.data,
             }
             set_preview_data(preview_template_data, service_id)
             return redirect(
@@ -808,29 +784,27 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 subject,
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
-                form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
+                form.template_category_id.data,
             )
             # Send the information in form's template_category_other field to Freshdesk
-            # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
-            if current_app.config["FF_TEMPLATE_CATEGORY"]:
-                if form.template_category_other.data:
-                    is_english = get_current_locale(current_app) == "en"
-                    try:
-                        current_user.send_new_template_category_request(
-                            current_user.id,
-                            current_service.id,
-                            form.template_category_other.data if is_english else None,
-                            form.template_category_other.data if not is_english else None,
-                            new_template["data"]["id"],
-                        )
-                    except HTTPError as e:
-                        current_app.logger.error(
-                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
-                        )
-                    except AttributeError as e:
-                        current_app.logger.error(
-                            f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
-                        )
+            if form.template_category_other.data:
+                is_english = get_current_locale(current_app) == "en"
+                try:
+                    current_user.send_new_template_category_request(
+                        current_user.id,
+                        current_service.id,
+                        form.template_category_other.data if is_english else None,
+                        form.template_category_other.data if not is_english else None,
+                        new_template["data"]["id"],
+                    )
+                except HTTPError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
+                except AttributeError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
         except HTTPError as e:
             if (
                 e.status_code == 400
@@ -915,7 +889,7 @@ def _get_categories_and_prepare_form(template, template_type):
 
 @main.route("/services/<service_id>/templates/<template_id>/edit", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
-def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove this comment when FF_TEMPLATE_CATEGORY removed
+def edit_service_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     new_template_data = get_preview_data(service_id, template_id)
 
@@ -926,17 +900,9 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
     template["template_content"] = template["content"]
 
     if template.get("process_type_column") is None:
-        if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-            template["process_type"] = TC_PRIORITY_VALUE
-        else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-            template["process_type"] = TemplateProcessTypes.BULK.value  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+        template["process_type"] = TC_PRIORITY_VALUE
 
-    if current_app.config["FF_TEMPLATE_CATEGORY"]:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
-    else:  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        other_category = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        template_category_hints = None  # TODO: remove when FF_TEMPLATE_CATEGORY removed
-        form = form_objects[template["template_type"]](**template)  # TODO: remove when FF_TEMPLATE_CATEGORY removed
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template["template_type"])
 
     if form.validate_on_submit():
         if form.process_type.data != template["process_type"]:
@@ -953,6 +919,7 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
             "process_type": form.process_type.data,
             "reply_to_text": template["reply_to_text"],
             "folder": template["folder"],
+            "template_category_id": form.template_category_id.data,
         }
         set_preview_data(new_template_data, service_id, template_id)
 
@@ -991,25 +958,24 @@ def edit_service_template(service_id, template_id):  # noqa: C901 TODO: remove t
                         service_id,
                         subject,
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
-                        form.template_category_id.data if current_app.config["FF_TEMPLATE_CATEGORY"] else None,
+                        form.template_category_id.data,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
-                    if current_app.config["FF_TEMPLATE_CATEGORY"]:
-                        if form.template_category_other.data:
-                            is_english = get_current_locale(current_app) == "en"
-                            try:
-                                current_user.send_new_template_category_request(
-                                    current_user.id,
-                                    current_service.id,
-                                    form.template_category_other.data if is_english else None,
-                                    form.template_category_other.data if not is_english else None,
-                                    template_id,
-                                )
-                            except HTTPError as e:
-                                current_app.logger.error(
-                                    f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
-                                )
+                    if form.template_category_other.data:
+                        is_english = get_current_locale(current_app) == "en"
+                        try:
+                            current_user.send_new_template_category_request(
+                                current_user.id,
+                                current_service.id,
+                                form.template_category_other.data if is_english else None,
+                                form.template_category_other.data if not is_english else None,
+                                template_id,
+                            )
+                        except HTTPError as e:
+                            current_app.logger.error(
+                                f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
+                            )
                     flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
@@ -1229,7 +1195,8 @@ def get_template_sender_form_dict(service_id, template):
         context["no_senders"] = True
 
     context["value_and_label"] = [(sender["id"], Markup(nl2br(sender[sender_format]))) for sender in service_senders]
-    context["value_and_label"].insert(0, ("", "Blank"))  # Add blank option to start of list
+    # Add blank option to start of list
+    context["value_and_label"].insert(0, ("", "Blank"))
 
     context["current_choice"] = template["service_letter_contact"] if template["service_letter_contact"] else ""
     return context

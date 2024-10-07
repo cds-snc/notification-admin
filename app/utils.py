@@ -93,7 +93,7 @@ def from_lambda_api(line):
     return isinstance(line, dict)
 
 
-@cache.memoize(timeout=3600)
+@cache.memoize(timeout=12*60*60)
 def get_latest_stats(lang, filter_heartbeats=None):
     results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
 
@@ -269,7 +269,7 @@ def generate_notifications_csv(**kwargs):
             ]
         )
     # Add encoded Byte Order Mark to the csv so MS Excel treats it as UTF-8 and properly renders accented FR characters.
-    yield "\uFEFF".encode("utf-8")
+    yield "\ufeff".encode("utf-8")
     yield ",".join(fieldnames) + "\n"
 
     while kwargs["page"]:

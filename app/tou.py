@@ -1,4 +1,4 @@
-from flask import current_app, request, session
+from flask import request, session
 from flask_login import current_user
 
 from app.articles.routing import GC_ARTICLES_ROUTES
@@ -12,10 +12,6 @@ def show_tou_prompt():
 
     The TOU prompt should be displayed if the user is authenticated, has not already agreed to the terms, and is not on the contact page or a GCA route.
     """
-
-    if current_app.config["FF_TOU"] is False:
-        return False
-
     is_gca_route = False
 
     for route in GC_ARTICLES_ROUTES.values():

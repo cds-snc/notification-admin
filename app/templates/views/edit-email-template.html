@@ -53,12 +53,10 @@
 
       {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, testid="template-content" ) }}
 
-      {% if config["FF_TEMPLATE_CATEGORY"] %}
-        <h2 class="heading-medium">{{ _('Template category') }}</h2>
-        {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
-          {{ select(form.template_category_id, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category, testid="template-categories", use_aria_labelledby=false) }}
-        {% endcall %}
-      {% endif %}
+      <h2 class="heading-medium">{{ _('Template category') }}</h2>
+      {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
+        {{ select(form.template_category_id, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category, testid="template-categories", use_aria_labelledby=false) }}
+      {% endcall %}
       
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
