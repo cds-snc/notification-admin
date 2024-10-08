@@ -148,7 +148,7 @@ section[id]:target {
   @apply hidden invisible;
 }
 @layer utilities {
-.input {
+  .input {
     @apply outline-none;
   }
 }
@@ -340,14 +340,14 @@ label {
     @apply p-2 max-w-full;
   }
 
-#global-header .header-proposition #proposition-links li {
-      width: 95%;
-    }
+  #global-header .header-proposition #proposition-links li {
+    width: 95%;
+  }
 
-    #global-header .header-proposition #proposition-links a {
-      @apply text-smaller;
-      line-height: 1.4;
-    }
+  #global-header .header-proposition #proposition-links a {
+    @apply text-smaller;
+    line-height: 1.4;
+  }
 
   #add_template_by_template_type {
     legend {
@@ -365,8 +365,9 @@ label {
   overflow-wrap: anywhere;
 }
 
-.ph-bold, .ph-fill {
- font-size-adjust: 0.58;
+.ph-bold,
+.ph-fill {
+  font-size-adjust: 0.58;
 }
 
 /*! purgecss end ignore */
