@@ -196,7 +196,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         process_type="normal",
         parent_folder_id=None,
         template_category_id=None,
-        text_direction_rtl=False
+        text_direction_rtl=False,
     ):
         """
         Create a service template.
@@ -222,7 +222,16 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("template-{id_}-version-None")
     @cache.delete("template-{id_}-versions")
     def update_service_template(
-        self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None, text_direction_rtl=False
+        self,
+        id_,
+        name,
+        type_,
+        content,
+        service_id,
+        subject=None,
+        process_type=None,
+        template_category_id=None,
+        text_direction_rtl=False,
     ):
         """
         Update a service template.
