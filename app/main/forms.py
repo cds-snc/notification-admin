@@ -784,6 +784,9 @@ class BaseTemplateForm(StripWhitespaceForm):
             NoCommasInPlaceHolders(),
         ],
     )
+
+    text_direction_rtl = BooleanField(_l("Display right-to-left"))
+
     process_type = RadioField(
         _l("Select a priority queue"),
         choices=[

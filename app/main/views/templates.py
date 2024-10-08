@@ -180,6 +180,7 @@ def preview_template(service_id, template_id=None):
                         template["subject"],
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["template_category_id"],
+                        template["text_direction_rtl"],
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -920,6 +921,7 @@ def edit_service_template(service_id, template_id):
             "reply_to_text": template["reply_to_text"],
             "folder": template["folder"],
             "template_category_id": form.template_category_id.data,
+            "text_direction_rtl": form.text_direction_rtl.data,
         }
         set_preview_data(new_template_data, service_id, template_id)
 
@@ -959,6 +961,7 @@ def edit_service_template(service_id, template_id):
                         subject,
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data,
+                        form.text_direction_rtl.data,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
