@@ -13,7 +13,7 @@
         <div class="relative">
             <div class="absolute right-0 flex items-center">
                 {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2") }}
-                <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display right-to-left') }}</label>
+                <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }}<span class="sr-only"> {{ _('email message') }} </span> {{ _('right-to-left') }}</label>
             </div>
         </div>
     {% endif %}
