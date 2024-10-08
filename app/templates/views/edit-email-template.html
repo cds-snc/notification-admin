@@ -7,6 +7,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/template-category.html" import template_category %}
+{% from "components/template-content.html" import template_content with context%}
 
 {% block service_page_title %}
   {{ heading }}
@@ -50,9 +51,9 @@
       {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
 
       {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
-
-      {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=8, testid="template-content" ) }}
-
+      
+      {{ template_content(form.template_content, form.text_direction_rtl, use_styled_checkbox=false) }}
+      
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
         {{ select(form.template_category_id, hint=_('Template categories help improve delivery of your messages'), option_hints=template_category_hints, option_conditionals=other_category, testid="template-categories", use_aria_labelledby=false) }}

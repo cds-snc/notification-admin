@@ -1,0 +1,22 @@
+{% from "components/checkbox.html" import checkbox, checkbox_input %}
+{% from "components/textbox.html" import textbox %}
+
+{% macro template_content(content_field, checkbox_field, use_styled_checkbox=false) %}
+<!-- TODO: remove `use_styled_checkbox` and this if statement once we decide on the UI element to use here  -->
+    {% if use_styled_checkbox %}
+        <div class="relative h-4">
+            <div class="absolute right-0 transform scale-75">
+                {{ checkbox(checkbox_field) }}
+            </div>
+        </div>
+    {% else %}
+        <div class="relative">
+            <div class="absolute right-0 flex items-center">
+                {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2") }}
+                <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display right-to-left') }}</label>
+            </div>
+        </div>
+    {% endif %}
+
+    {{ textbox(content_field, highlight_tags=True, width='w-full', rows=8, testid="template-content" ) }}
+{% endmacro %}

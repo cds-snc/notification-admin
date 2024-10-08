@@ -29,9 +29,9 @@
 {% endmacro %}
 
 
-{% macro checkbox_input(id, name, data=None, value="y") %}
+{% macro checkbox_input(id, name, data=None, value="y", class="") %}
   <input
-    id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}"
+    id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}" class="{{ class }}"
     {% if data %}
       checked
     {% endif %}
