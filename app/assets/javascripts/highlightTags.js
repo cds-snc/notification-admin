@@ -5,7 +5,8 @@
 
   const tagPattern = /\(\(([^\)\((\?)]+)(\?\?)?([^\)\(]*)\)\)/g;
   // set text_direction variable based on value of checkbox #text_direction_rtl
-  const textDirection = document.getElementById("text_direction_rtl").checked
+  const textDirectionElement = document.getElementById("text_direction_rtl");
+  const textDirection = textDirectionElement && textDirectionElement.checked
     ? "rtl"
     : "ltr";
 
