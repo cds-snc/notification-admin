@@ -768,6 +768,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 "process_type": form.process_type.data,
                 "folder": template_folder_id,
                 "template_category_id": form.template_category_id.data,
+                "text_direction_rtl": form.text_direction_rtl.data,
             }
             set_preview_data(preview_template_data, service_id)
             return redirect(
