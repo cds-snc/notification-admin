@@ -6,12 +6,15 @@
   const content = document.getElementById("template_content");
 
   // update the dir attribute when checkbox is clicked
-  checkbox.addEventListener("change", function () {
-    content.dir = this.checked ? "rtl" : "ltr";
-  });
+  if (checkbox) {
+    checkbox.addEventListener("change", function () {
+      content.dir = this.checked ? "rtl" : "ltr";
+      content.closest(".textbox-highlight-wrapper").dir = content.dir;
+    });
 
-  // on page load, if the checkbox is checked, set the dir attribute
-  if (checkbox.checked) {
-    content.dir = "rtl";
+    // on page load, if the checkbox is checked, set the dir attribute
+    if (checkbox.checked) {
+      content.dir = "rtl";
+    }
   }
 })();
