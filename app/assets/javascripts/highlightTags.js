@@ -4,13 +4,15 @@
   if (!("oninput" in document.createElement("input"))) return;
 
   const tagPattern = /\(\(([^\)\((\?)]+)(\?\?)?([^\)\(]*)\)\)/g;
-
+  // set text_direction variable based on value of checkbox #text_direction_rtl
+  const textDirection = document.getElementById("text_direction_rtl").checked ? "rtl" : "ltr";
+  
   Modules.HighlightTags = function () {
     this.start = function (textarea) {
       this.$textbox = $(textarea)
         .wrap(
           `
-          <div class='textbox-highlight-wrapper' />
+          <div class='textbox-highlight-wrapper' dir='${textDirection}' />
         `,
         )
         .after(
