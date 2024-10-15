@@ -52,7 +52,7 @@
 
       {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
       
-      {{ template_content(form.template_content, form.text_direction_rtl, use_styled_checkbox=false) }}
+      {{ template_content(form.template_content, form.text_direction_rtl) }}
       
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
