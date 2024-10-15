@@ -11,10 +11,17 @@
 
   Modules.HighlightTags = function () {
     this.start = function (textarea) {
+      // only add the dir attribute if the textarea is the template_content
+      let extraMarkup = "";
+
+      if (textarea.attr("id") == "template_content") {
+        extraMarkup = ` dir="${textDirection}" `;
+      }
+
       this.$textbox = $(textarea)
         .wrap(
           `
-          <div class='textbox-highlight-wrapper' dir='${textDirection}' />
+          <div class='textbox-highlight-wrapper'${extraMarkup}/>
         `,
         )
         .after(
