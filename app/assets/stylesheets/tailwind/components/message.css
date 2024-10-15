@@ -112,8 +112,7 @@
   .folder-heading-folder {
     background-size: auto 19px;
     background-position: 0px 4px;
-    min-height: 3rem;
-    @apply inline bg-no-repeat align-top text-smaller;
+    @apply inline bg-no-repeat align-top text-smaller min-h-12;
   }
   .folder-heading-folder {
     @apply p-0 pl-gutter bg-folderBlackPng bg-folderBlack;
@@ -122,7 +121,7 @@
     @apply mr-4 mb-4;
   }
   .folder-heading-folder-truncated {
-    @apply w-0 p-0 pl-12 whitespace-no-wrap overflow-hidden;
+    @apply w-0 p-0 pl-12 whitespace-nowrap overflow-hidden;
   }
   .folder-heading-folder-root-truncated {
     max-width: 5em;
@@ -145,8 +144,7 @@
     @apply text-blue-lightblue;
   }
   .folder-heading-manage-link {
-    min-height: 3rem;
-    @apply block text-right;
+    @apply block text-right min-h-12;
   }
 
   .message-name-separator,

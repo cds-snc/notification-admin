@@ -4,7 +4,7 @@
   }
 
   details summary {
-    border-color: theme("colors.blue.default");
+    border-color: theme("colors.blue.DEFAULT");
     @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative;
   }
   details summary:before {

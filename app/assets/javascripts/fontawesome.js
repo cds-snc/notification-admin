@@ -10,11 +10,13 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons/faArrowUpRightFromSquare";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
 import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 
@@ -25,11 +27,13 @@ let FontAwesomeIconLoader = () => {
     faArrowUpRightFromSquare,
     faPlus,
     faArrowRight,
+    faArrowLeft,
     faAngleDown,
     faCircleQuestion,
     faTriangleExclamation,
     faCircleExclamation,
     faInfoCircle,
+    faPaperPlane,
     faXmark,
     faTag,
   ]);
