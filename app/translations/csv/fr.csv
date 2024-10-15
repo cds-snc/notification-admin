@@ -1988,5 +1988,5 @@
 "Your Callback configuration has been deleted.","Votre configuration de rappel a été supprimée."
 "The service {} took longer than 1 second to respond.","Le service {} a mis plus d’une seconde à répondre."
 "Display","Afficher"
-"email message","le message du courriel"
-"right-to-left","de droite à gauche"
+"email content","le message du courriel"
+"right to left","de droite à gauche"
