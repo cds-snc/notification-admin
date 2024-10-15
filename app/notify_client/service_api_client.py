@@ -208,8 +208,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "service": service_id,
             "process_type": process_type,
             "template_category_id": template_category_id,
-            "text_direction_rtl": text_direction_rtl,
         }
+
+        # Move this into `data` dictionary above 👆 when FF_RTL removed
+        if current_app.config["FF_RTL"]:
+            data["text_direction_rtl"] = text_direction_rtl
+
         if subject:
             data.update({"subject": subject})
         if parent_folder_id:
@@ -246,6 +250,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "process_type": process_type,
             "text_direction_rtl": text_direction_rtl,
         }
+
+        # Move this into `data` dictionary above 👆 when FF_RTL removed
+        if current_app.config["FF_RTL"]:
+            data["text_direction_rtl"] = text_direction_rtl
+
         if subject:
             data.update({"subject": subject})
 
