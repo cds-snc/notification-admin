@@ -6,9 +6,8 @@
   const tagPattern = /\(\(([^\)\((\?)]+)(\?\?)?([^\)\(]*)\)\)/g;
   // set text_direction variable based on value of checkbox #text_direction_rtl
   const textDirectionElement = document.getElementById("text_direction_rtl");
-  const textDirection = textDirectionElement && textDirectionElement.checked
-    ? "rtl"
-    : "ltr";
+  const textDirection =
+    textDirectionElement && textDirectionElement.checked ? "rtl" : "ltr";
 
   Modules.HighlightTags = function () {
     this.start = function (textarea) {
