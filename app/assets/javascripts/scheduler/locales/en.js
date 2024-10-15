@@ -15,4 +15,10 @@ export const EN = {
   time_format: "h:mm A",
   cancel: "You can cancel this send before the scheduled time.",
   select_date: "Select a date and time to schedule the send.",
+  select_time_label: "What time on",
+  select_time_hint: "The clock uses your local time zone",
+  select_time_format_label: "Time format",
+  is_24: "24 hr time selected",
+  is_am_pm: "AM PM time selected",
+  local_time_suffix: "local time",
 };

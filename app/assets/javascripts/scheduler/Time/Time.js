@@ -32,7 +32,7 @@ export const Time = ({ name }) => {
           });
         }}
         id={name}
-        aria-label={name}
+        aria-describedby={`${name}-hint`}
         value={time}
       >
         {valid_time_values.map((item) => {

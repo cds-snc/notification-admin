@@ -105,10 +105,7 @@ export const StateProvider = ({ value, children }) => {
           ...state,
           _24hr: action.payload,
           time_values: populateTimes(action.payload),
-          updateMessage:
-            action.payload === "off"
-              ? "24 hr time selected"
-              : "AM PM time selected ",
+          updateMessage: action.payload === "off" ? "is_am_pm" : "is_24",
         };
         break;
       case "CALENDAR_UPDATES":
