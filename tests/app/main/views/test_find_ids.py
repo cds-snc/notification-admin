@@ -27,7 +27,16 @@ def test_find_ids_displays_notifications_found(client_request, platform_admin_us
     client_request.login(platform_admin_user)
     get_records = mocker.patch(
         "app.support_api_client.find_ids",
-        return_value=[{"id": "1234", "type": "notification", "service_id": "service_1234", "service_name": "Test Service", "template_id": "template_1234", "template_name": "Test Template"}],
+        return_value=[
+            {
+                "id": "1234",
+                "type": "notification",
+                "service_id": "service_1234",
+                "service_name": "Test Service",
+                "template_id": "template_1234",
+                "template_name": "Test Template",
+            }
+        ],
     )
     document = client_request.post(
         "main.find_ids",
@@ -49,7 +58,15 @@ def test_find_ids_displays_templates_found(client_request, platform_admin_user, 
     client_request.login(platform_admin_user)
     get_records = mocker.patch(
         "app.support_api_client.find_ids",
-        return_value=[{"id": "1234", "type": "template", "template_name": "Test Template", "service_id": "service_1234", "service_name": "Test Service"}],
+        return_value=[
+            {
+                "id": "1234",
+                "type": "template",
+                "template_name": "Test Template",
+                "service_id": "service_1234",
+                "service_name": "Test Service",
+            }
+        ],
     )
     document = client_request.post(
         "main.find_ids",
@@ -87,7 +104,16 @@ def test_find_ids_displays_jobs_found(client_request, platform_admin_user, mocke
     client_request.login(platform_admin_user)
     get_records = mocker.patch(
         "app.support_api_client.find_ids",
-        return_value=[{"id": "1234", "type": "job", "service_id": "service_1234", "service_name": "Test Service", "template_id": "template_1234", "template_name": "Test Template"}],
+        return_value=[
+            {
+                "id": "1234",
+                "type": "job",
+                "service_id": "service_1234",
+                "service_name": "Test Service",
+                "template_id": "template_1234",
+                "template_name": "Test Template",
+            }
+        ],
     )
     document = client_request.post(
         "main.find_ids",
