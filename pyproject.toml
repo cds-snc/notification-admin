@@ -12,14 +12,14 @@ requires = ["poetry-core>=1.7.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "~3.10.9"
+python = "~3.13.0"
 timeago = "1.0.16"
 Flask = "2.3.3"
 Flask-WTF = "1.2.1"
 Flask-Login = "0.6.3"
 Flask-Caching = "1.11.1"
 environs = "9.5.0"
-apig-wsgi = "2.18.0"
+apig-wsgi = "2.19.0"
 blinker = "1.8.2"
 pyexcel = "0.7.0"
 pyexcel-io = "0.6.6"
@@ -32,7 +32,7 @@ gevent = "23.9.1"
 notifications-python-client = "6.4.1"
 
 Babel = "2.16.0"
-boto3 = "1.34.153"
+boto3 = "1.35.38"
 Flask-Babel = "2.0.0"
 python-dotenv = "1.0.1"
 pwnedpasswords = "2.0.0"
@@ -60,7 +60,7 @@ itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
 aws-xray-sdk = "^2.14.0"
 
-validators = "^0.28.3"
+validators = "^0.34.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "7.4.4"
@@ -76,7 +76,7 @@ requests-mock = "1.12.1"
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
 mypy = "1.11.2"
 monkeytype = "23.3.0"
-poethepoet = "^0.24.4"
+poethepoet = "^0.29.0"
 ruff = "^0.6.9"
 
 # stubs libraries to keep mypy happy
