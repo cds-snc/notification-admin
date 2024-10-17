@@ -1329,6 +1329,13 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
     )
 
 
+class SearchIds(StripWhitespaceForm):
+    search = SearchField(
+        _l("List of IDs"),
+        validators=[DataRequired(_l("You need to enter one or more uuids to search by."))],
+    )
+
+
 class SearchUsersForm(StripWhitespaceForm):
     search = SearchField(_l("Search by name or email address"))
 
