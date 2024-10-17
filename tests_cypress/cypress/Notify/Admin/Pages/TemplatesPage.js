@@ -31,7 +31,6 @@ let Components = {
     TextDirectionCheckbox: () => cy.getByTestId('template-rtl'),
     AddRecipientsButton: () => cy.getByTestId('add-recipients'),
     OneRecipientRadio: () => cy.getByTestId('one-recipient'),
-    ContinueButton: () => cy.get('button[type="submit"]').first(),
 };
 
 // Actions users can take on the page
