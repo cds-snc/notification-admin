@@ -93,7 +93,7 @@ def from_lambda_api(line):
     return isinstance(line, dict)
 
 
-@cache.memoize(timeout=12*60*60)
+@cache.memoize(timeout=12 * 60 * 60)
 def get_latest_stats(lang, filter_heartbeats=None):
     results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
 
