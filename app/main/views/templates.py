@@ -899,6 +899,8 @@ def edit_service_template(service_id, template_id):
         template["content"] = new_template_data["content"]
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
+        template["text_direction_rtl"] = new_template_data["text_direction_rtl"]
+
     template["template_content"] = template["content"]
 
     if template.get("process_type_column") is None:
