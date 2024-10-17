@@ -10,7 +10,7 @@
         </legend>
         {% if config["FF_RTL"] %}
             <div class="p-2 bg-gray-300 flex items-center">
-                {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2") }}
+                {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2", testid="template-rtl") }}
                 <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }}<span class="sr-only"> {{ _('email content') }} </span> {{ _('right to left') }}</label>
             </div>
         {% endif %}
