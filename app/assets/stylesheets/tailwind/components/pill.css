@@ -12,11 +12,7 @@
   }
 
   .pill {
-    @apply bg-blue border-2 border-blue;
-  }
-
-  .pill > a + a {
-    @apply border-l-2 border-blue;
+    @apply bg-gray-100;
   }
 
   .pill a,
@@ -39,10 +35,10 @@
   }
 
   a.pill-selected-item {
-    @apply relative z-10 bg-gray-100 outline-white;
+    @apply relative z-10 bg-white outline-white border-2 border-b-0 border-blue;
   }
   a.pill-selected-item:hover {
-    @apply bg-blue-700 text-white;
+    @apply bg-blue-200;
   }
   a.pill-selected-item:focus {
     z-index: 1000;
@@ -50,15 +46,15 @@
   }
 
   a.pill-unselected-item {
-    @apply relative z-10 outline-white;
+    @apply relative z-10 outline-white border-b-2 border-blue;
   }
   /* LVHA-order: :link — :visited — :hover — :active */
   a.pill-unselected-item:link,
   a.pill-unselected-item:visited {
-    @apply bg-blue text-white;
+    @apply bg-gray-100 text-blue;
   }
   a.pill-unselected-item:hover {
-    @apply bg-blue-700;
+    @apply bg-blue-200;
   }
   a.pill-unselected-item:focus,
   a.pill-unselected-item:active {
@@ -66,7 +62,7 @@
   }
   a.pill-unselected-item:focus {
     z-index: 1000;
-    @apply outline-yellow;
+    @apply outline-yellow border-0;
   }
 
   .pill-centered-item {
