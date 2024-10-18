@@ -1,6 +1,6 @@
-{% macro remaining_messages(header, total, used) %}
+{% macro remaining_messages(header, total, used, muted=false) %}
   {% set near_limit = ((used/total) >= 0.8) %}
-  <div class="remaining-messages">
+  <div class="remaining-messages{% if muted %} muted{% endif %}">
     <div class="rm-header mb-2">{{ header }}</div>
     <div class="rm-message mb-2">
       <span class="rm-used">{{ "{:,}".format(used) if session['userlang'] == 'en' else "{:,}".format(used).replace(',', ' ') }}</span>
