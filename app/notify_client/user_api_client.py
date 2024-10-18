@@ -94,6 +94,9 @@ class UserApiClient(NotifyAdminAPIClient):
             if e.status_code == 400 or e.status_code == 404:
                 return False
 
+    def find_ids(self, ids):
+        return self.get("/support/find-ids", params={"ids": ids})
+
     def send_verify_code(self, user_id, code_type, to, next_string=None):
         data = {"to": to}
         if next_string:

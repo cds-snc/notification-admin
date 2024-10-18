@@ -12,6 +12,7 @@ from app.main.views import (  # noqa isort:skip
     email_branding,
     find_services,
     find_users,
+    find_ids,
     forgot_password,
     inbound_number,
     index,
