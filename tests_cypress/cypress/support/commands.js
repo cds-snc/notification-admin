@@ -3,6 +3,7 @@ import "cypress-real-events";
 import config from "../../config";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
+import { Admin } from "../Notify/NotifyAPI";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
@@ -97,8 +98,19 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
-Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
-    cy.session([username, password, agreeToTerms], () => {
-        LoginPage.Login(username, password, agreeToTerms);
+Cypress.Commands.add('login', (agreeToTerms = true) => {
+    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET') }).then((acct) => {
+        cy.session([acct.regular.email_address, agreeToTerms], () => {
+            LoginPage.Login(acct.regular.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
+        });
+    });
+});
+
+
+Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
+    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('ADMIN_USERNAME'), secret: Cypress.env('ADMIN_SECRET') }).then((acct) => {
+        cy.session([acct.admin.email_address, agreeToTerms], () => {
+            LoginPage.Login(acct.admin.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
+        });
     });
 });
