@@ -1,0 +1,21 @@
+{% from "components/checkbox.html" import checkbox, checkbox_input %}
+{% from "components/textbox.html" import textbox %}
+
+{% macro template_content(content_field, checkbox_field) %}
+    <!-- TODO: remove `use_styled_checkbox` and this if statement once we decide on the UI element to use here  -->
+    
+    <fieldset class="contain-floats w-full" role="radiogroup">
+        <legend>
+            <span>{{ _('Email message') }}</span>
+        </legend>
+        {% if config["FF_RTL"] %}
+            <div class="p-2 bg-gray-300 flex items-center">
+                {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2", testid="template-rtl") }}
+                <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }}<span class="sr-only"> {{ _('email content') }} </span> {{ _('right to left') }}</label>
+            </div>
+        {% endif %}
+
+        {{ textbox(content_field, highlight_tags=True, width='w-full', rows=8, testid="template-content", label_class="sr-only" ) }}
+    </fieldset> 
+    
+{% endmacro %}
