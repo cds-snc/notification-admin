@@ -44,7 +44,7 @@ def test_find_ids_displays_notifications_found(client_request, platform_admin_us
         _expected_status=200,
     )
     get_records.assert_called_once_with("1234")
-    results = document.findAll("a", {"class": "browse-list-link"})
+    results = document.find_all("a", {"class": "browse-list-link"})
     assert len(results) == 3
     assert results[0].text.strip() == "Test Service"
     assert results[0].attrs["href"] == "/services/service_1234"
@@ -74,7 +74,7 @@ def test_find_ids_displays_templates_found(client_request, platform_admin_user, 
         _expected_status=200,
     )
     get_records.assert_called_once_with("1234")
-    results = document.findAll("a", {"class": "browse-list-link"})
+    results = document.find_all("a", {"class": "browse-list-link"})
     assert len(results) == 2
     assert results[0].text.strip() == "Test Service"
     assert results[0].attrs["href"] == "/services/service_1234"
@@ -121,7 +121,7 @@ def test_find_ids_displays_jobs_found(client_request, platform_admin_user, mocke
         _expected_status=200,
     )
     get_records.assert_called_once_with("1234")
-    results = document.findAll("a", {"class": "browse-list-link"})
+    results = document.find_all("a", {"class": "browse-list-link"})
     assert len(results) == 3
     assert results[0].text.strip() == "Test Service"
     assert results[0].attrs["href"] == "/services/service_1234"
@@ -142,7 +142,7 @@ def test_find_ids_display_two_records(client_request, platform_admin_user, mocke
     )
     document = client_request.post("main.find_ids", _data={"search": "1234,5678"}, _expected_status=200)
     get_records.assert_called_once_with("1234,5678")
-    results = document.findAll("a", {"class": "browse-list-link"})
+    results = document.find_all("a", {"class": "browse-list-link"})
     assert len(results) == 2
     assert [result.text.strip() for result in results] == [
         "Test Service",

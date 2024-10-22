@@ -111,7 +111,7 @@
 "Search by phone number","Cherchez par numéro de téléphone"
 "Search by email address or phone number","Chercher par adresse courriel ou par numéro de téléphone"
 "Search for ids","Recherche d'identifiants"
-"List of IDs","Liste des identifiants"
+"List of UUIDs","Liste des UUIDs"
 "Find records by UUID","Recherche d'enregistrements par UUID"
 "You need to enter one or more UUIDs to search by.","Vous devez saisir un ou plusieurs UUIDs pour effectuer la recherche."
 "Must be a valid https URL","L’URL https doit être valide"
