@@ -192,7 +192,13 @@ class TwoFactorCode(StringField):
     ]
 
     def __call__(self, **kwargs):
-        return super().__call__(type="text", inputmode="numeric", autocomplete="one-time-code", pattern="[0-9]*", **kwargs)
+        return super().__call__(
+            type="text",
+            inputmode="numeric",
+            autocomplete="one-time-code",
+            pattern="[0-9]*",
+            **kwargs,
+        )
 
 
 class ForgivingIntegerField(StringField):
@@ -640,7 +646,8 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
 
 class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
     parent_organisation_name = StringField(
-        _l("Select your department or organisation"), validators=[DataRequired(_l("Choose name from drop-down menu"))]
+        _l("Select your department or organisation"),
+        validators=[DataRequired(_l("Choose name from drop-down menu"))],
     )
 
     child_organisation_name = StringField(
@@ -652,7 +659,10 @@ class CreateServiceStepCombinedOrganisationForm(StripWhitespaceForm):
 class CreateServiceStepOtherOrganisationForm(StripWhitespaceForm):
     other_organisation_name = StringField(
         _l("Enter name of your group"),
-        validators=[DataRequired(message=_l("Enter name to continue")), Length(max=500)],
+        validators=[
+            DataRequired(message=_l("Enter name to continue")),
+            Length(max=500),
+        ],
     )
 
 
@@ -745,7 +755,30 @@ class EmailMessageLimit(StripWhitespaceForm):
 class SMSMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
         _l("Daily text message limit"),
-        validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class SMSAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual text message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual email message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
     )
 
 
@@ -817,10 +850,14 @@ class RequiredIf(InputRequired):
 
 
 class BaseTemplateFormWithCategory(BaseTemplateForm):
-    template_category_id = RadioField(_l("Select category"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    template_category_id = RadioField(
+        _l("Select category"),
+        validators=[DataRequired(message=_l("This cannot be empty"))],
+    )
 
     template_category_other = StringField(
-        _l("Describe category"), validators=[RequiredIf("template_category_id", DefaultTemplateCategories.LOW.value)]
+        _l("Describe category"),
+        validators=[RequiredIf("template_category_id", DefaultTemplateCategories.LOW.value)],
     )
 
 
@@ -838,7 +875,10 @@ class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 
 class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
-    subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    subject = TextAreaField(
+        _l("Subject line of the email"),
+        validators=[DataRequired(message=_l("This cannot be empty"))],
+    )
 
     template_content = TextAreaField(
         _l("Email content"),
@@ -949,7 +989,10 @@ class CreateKeyForm(StripWhitespaceForm):
 
     key_name = StringField(
         "Description of key",
-        validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
+        validators=[
+            DataRequired(message=_l("You need to give the key a name")),
+            Length(max=255),
+        ],
     )
 
     def validate_key_name(self, key_name):
@@ -990,7 +1033,10 @@ class ContactNotify(StripWhitespaceForm):
 class ContactMessageStep(ContactNotify):
     message = TextAreaField(
         _l("Message"),
-        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
+        validators=[
+            DataRequired(message=_l("You need to enter something if you want to contact us")),
+            Length(max=2000),
+        ],
     )
 
 
@@ -1578,7 +1624,10 @@ class CreateTemplateForm(Form):
 class AddEmailRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+        self.what_type.choices = [
+            ("many_recipients", _l("Many recipients")),
+            ("one_recipient", _l("One recipient")),
+        ]
 
     what_type = RadioField("")
     placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
@@ -1587,7 +1636,10 @@ class AddEmailRecipientsForm(Form):
 class AddSMSRecipientsForm(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
+        self.what_type.choices = [
+            ("many_recipients", _l("Many recipients")),
+            ("one_recipient", _l("One recipient")),
+        ]
 
     what_type = RadioField("")
     placeholder_value = international_phone_number(_l("Phone number of recipient"))
@@ -1871,9 +1923,18 @@ class BrandingRequestForm(StripWhitespaceForm):
         file (FileField_wtf): Field for uploading the logo file.
     """
 
-    name = StringField(label=_l("Name of logo"), validators=[DataRequired(message=_l("Enter the name of the logo"))])
-    alt_text_en = StringField(label=_l("English"), validators=[DataRequired(message=_l("This cannot be empty"))])
-    alt_text_fr = StringField(label=_l("French"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    name = StringField(
+        label=_l("Name of logo"),
+        validators=[DataRequired(message=_l("Enter the name of the logo"))],
+    )
+    alt_text_en = StringField(
+        label=_l("English"),
+        validators=[DataRequired(message=_l("This cannot be empty"))],
+    )
+    alt_text_fr = StringField(
+        label=_l("French"),
+        validators=[DataRequired(message=_l("This cannot be empty"))],
+    )
     file = FileField_wtf(
         label=_l("Prepare your logo"),
         validators=[
@@ -1889,7 +1950,8 @@ class TemplateCategoryForm(StripWhitespaceForm):
     description_fr = StringField("FR")
     hidden = RadioField(_l("Hide category"), choices=[("True", _l("Hide")), ("False", _l("Show"))])
     sms_sending_vehicle = RadioField(
-        _l("Sending method for text messages"), choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))]
+        _l("Sending method for text messages"),
+        choices=[("long_code", _l("Long code")), ("short_code", _l("Short code"))],
     )
 
     email_process_type = RadioField(

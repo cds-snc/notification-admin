@@ -19,7 +19,11 @@ class Navigation:
 
     @property
     def endpoints_without_navigation(self):
-        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + ("static", "status.show_status", "status.debug")
+        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + (
+            "static",
+            "status.show_status",
+            "status.debug",
+        )
 
     def is_selected(self, navigation_item):
         if request.endpoint in self.mapping[navigation_item]:
@@ -227,6 +231,8 @@ class HeaderNavigation(Navigation):
             "service_sms_senders",
             "set_message_limit",
             "set_free_sms_allowance",
+            "set_annual_sms_limit",
+            "set_email_annual_limit",
             "service_set_letter_branding",
             "submit_request_to_go_live",
         },
@@ -464,6 +470,8 @@ class MainNavigation(Navigation):
             "service_sms_senders",
             "set_message_limit",
             "set_free_sms_allowance",
+            "set_annual_sms_limit",
+            "set_email_annual_limit",
             "service_set_letter_branding",
             "submit_request_to_go_live",
         },
@@ -744,6 +752,8 @@ class OrgNavigation(Navigation):
         "services_or_dashboard",
         "set_message_limit",
         "set_free_sms_allowance",
+        "set_annual_sms_limit",
+        "set_email_annual_limit",
         "service_set_letter_branding",
         "set_lang",
         "set_sender",

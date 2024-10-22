@@ -49,6 +49,8 @@ class Service(JSONModel):
         "sending_domain",
         "organisation_notes",
         "sensitive_service",
+        "email_annual_limit",
+        "sms_annual_limit",
     }
 
     TEMPLATE_TYPES = (
@@ -73,7 +75,12 @@ class Service(JSONModel):
         return service_api_client.update_count_as_live(self.id, count_as_live=count_as_live)
 
     def update_status(self, live, message_limit, sms_daily_limit):
-        return service_api_client.update_status(self.id, live=live, message_limit=message_limit, sms_daily_limit=sms_daily_limit)
+        return service_api_client.update_status(
+            self.id,
+            live=live,
+            message_limit=message_limit,
+            sms_daily_limit=sms_daily_limit,
+        )
 
     def force_permission(self, permission, on=False):
         permissions, permission = set(self.permissions), {permission}
