@@ -4,13 +4,24 @@
   if (!("oninput" in document.createElement("input"))) return;
 
   const tagPattern = /\(\(([^\)\((\?)]+)(\?\?)?([^\)\(]*)\)\)/g;
+  // set text_direction variable based on value of checkbox #text_direction_rtl
+  const textDirectionElement = document.getElementById("text_direction_rtl");
+  const textDirection =
+    textDirectionElement && textDirectionElement.checked ? "rtl" : "ltr";
 
   Modules.HighlightTags = function () {
     this.start = function (textarea) {
+      // only add the dir attribute if the textarea is the template_content
+      let extraMarkup = "";
+
+      if (textarea.attr("id") == "template_content") {
+        extraMarkup = ` dir="${textDirection}" `;
+      }
+
       this.$textbox = $(textarea)
         .wrap(
           `
-          <div class='textbox-highlight-wrapper' />
+          <div class='textbox-highlight-wrapper'${extraMarkup}/>
         `,
         )
         .after(
