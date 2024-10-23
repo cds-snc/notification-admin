@@ -1,0 +1,29 @@
+{% extends "admin_template.html" %}
+{% from 'views/storybook/storybook-menu.html' import storybook_menu %}
+
+{% block page_title %} Storybook {% endblock %}
+
+{% block maincolumn_content %}
+<style>
+  .container {
+    max-width: 1536px;
+  }
+</style>
+
+<div class="flex">
+  <!-- Left Column -->
+  <div class="w-1/4 p-4 bg-gray-100">
+    <h2 class="text-lg font-bold mb-4">Components</h2>
+    {{ storybook_menu() }}
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="w-3/4 p-4">
+    {% if component %}
+      {% include 'views/storybook/' ~ component ~ '.html' %}
+    {% else %}
+      <p>Choose a component</p>
+    {% endif %}
+  </div>
+
+  {% endblock %}

@@ -29,6 +29,7 @@ from app.main.views import (  # noqa isort:skip
     set_lang,
     sign_in,
     sign_out,
+    storybook,
     styleguide,
     templates,
     two_factor,

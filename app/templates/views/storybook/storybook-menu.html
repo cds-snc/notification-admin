@@ -1,0 +1,21 @@
+<!-- macro to display the component menu -->
+{% set components = [
+    {
+        'name': 'Remaining Messages Summary',
+        'path': 'remaining-messages-summary'
+    },
+    {
+        'name': 'Remaining Messages',
+        'path': 'remaining-messages'
+    },
+] %}
+
+{% macro storybook_menu() %}
+    <ul>
+        <!-- loop through components -->
+        {% for component in components %}
+            <li><a href="{{ url_for('main.storybook', component=component.path) }}"
+                class="text-blue-500 hover:underline">{{ component.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
