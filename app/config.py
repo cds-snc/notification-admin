@@ -241,13 +241,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
     FF_RTL = False
-    FF_SPIKE_SMS_DAILY_LIMIT = True
-    FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
-    FF_BOUNCE_RATE_V15 = True
-    FF_BOUNCE_RATE_BACKEND = True
-    FF_ABTEST_SERVICE_ID = ""
-    FF_ANNUAL_LIMIT = True
+    FF_ANNUAL_LIMIT = False
 
 
 class Production(Config):
