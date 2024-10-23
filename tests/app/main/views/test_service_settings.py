@@ -137,6 +137,10 @@ def test_should_show_overview_inc_sms_daily_limit(
     mock_get_service_settings_page_common,
     app_,
 ):
+    # TODO FF_ANNUAL_LIMIT removal
+    if not app_.config["FF_ANNUAL_LIMIT"]:
+        expected_rows.remove("Annual email limit 10,000,000 Change")
+        expected_rows.remove("Annual text message limit 25,000 Change")
     service_one = service_json(
         SERVICE_ONE_ID,
         users=[api_user_active["id"]],
