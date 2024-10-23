@@ -19,11 +19,7 @@ class Navigation:
 
     @property
     def endpoints_without_navigation(self):
-        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + (
-            "static",
-            "status.show_status",
-            "status.debug",
-        )
+        return tuple("main.{}".format(endpoint) for endpoint in self.exclude) + ("static", "status.show_status", "status.debug")
 
     def is_selected(self, navigation_item):
         if request.endpoint in self.mapping[navigation_item]:

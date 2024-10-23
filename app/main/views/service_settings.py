@@ -262,7 +262,7 @@ def use_case(service_id):
     display_org_question = not current_service.organisation_notes or not current_app.config["FF_SALESFORCE_CONTACT"]
     steps = [
         {
-            "form": (GoLiveAboutServiceForm if display_org_question else GoLiveAboutServiceFormNoOrg),
+            "form": GoLiveAboutServiceForm if display_org_question else GoLiveAboutServiceFormNoOrg,
             "current_step": DEFAULT_STEP,
             "previous_step": None,
             "next_step": "about-notifications",
@@ -271,7 +271,7 @@ def use_case(service_id):
             "back_link": url_for("main.request_to_go_live", service_id=current_service.id),
         },
         {
-            "form": (GoLiveAboutNotificationsForm if display_org_question else GoLiveAboutNotificationsFormNoOrg),
+            "form": GoLiveAboutNotificationsForm if display_org_question else GoLiveAboutNotificationsFormNoOrg,
             "current_step": "about-notifications",
             "previous_step": DEFAULT_STEP,
             "next_step": None,
@@ -398,10 +398,7 @@ def service_switch_live(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-sensitive-service",
-    methods=["GET", "POST"],
-)
+@main.route("/services/<service_id>/service-settings/set-sensitive-service", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_sensitive_service(service_id):
     title = _("Set sensitive service")
@@ -708,7 +705,7 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
                 current_service.id,
                 reply_to_email_id=reply_to_email_id,
                 email_address=form.email_address.data,
-                is_default=(True if reply_to_email_address["is_default"] else form.is_default.data),
+                is_default=True if reply_to_email_address["is_default"] else form.is_default.data,
             )
             return redirect(url_for(".service_email_reply_to", service_id=service_id))
         try:
@@ -726,17 +723,14 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
                 ".service_verify_reply_to_address",
                 service_id=service_id,
                 notification_id=notification_id,
-                is_default=(True if reply_to_email_address["is_default"] else form.is_default.data),
+                is_default=True if reply_to_email_address["is_default"] else form.is_default.data,
                 replace=reply_to_email_id,
             )
         )
 
     if reply_to_email_address and request.endpoint == "main.service_confirm_delete_email_reply_to":
         if not reply_to_email_address["is_default"]:
-            flash(
-                _("Are you sure you want to delete this reply-to email address?"),
-                "delete",
-            )
+            flash(_("Are you sure you want to delete this reply-to email address?"), "delete")
         elif current_service.count_email_reply_to_addresses == 1:
             flash(_("You're about to delete your default reply-to address."), "delete")
         elif current_service.email_reply_to_addresses and current_service.count_email_reply_to_addresses > 1:
@@ -923,7 +917,7 @@ def service_add_letter_contact(service_id):
         new_letter_contact = service_api_client.add_letter_contact(
             current_service.id,
             contact_block=form.letter_contact_block.data.replace("\r", "") or None,
-            is_default=(first_contact_block if first_contact_block else form.is_default.data),
+            is_default=first_contact_block if first_contact_block else form.is_default.data,
         )
         if from_template:
             service_api_client.update_service_template_sender(
@@ -989,10 +983,7 @@ def service_make_blank_default_letter_contact(service_id):
     return redirect(url_for(".service_letter_contact_details", service_id=service_id))
 
 
-@main.route(
-    "/services/<service_id>/service-settings/letter-contact/<letter_contact_id>/delete",
-    methods=["POST"],
-)
+@main.route("/services/<service_id>/service-settings/letter-contact/<letter_contact_id>/delete", methods=["POST"])
 @user_has_permissions("manage_service")
 def service_delete_letter_contact(service_id, letter_contact_id):
     service_api_client.delete_letter_contact(
@@ -1117,17 +1108,10 @@ def set_message_limit(service_id):
             flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
-    return render_template(
-        "views/service-settings/set-message-limit.html",
-        form=form,
-        heading=_("Daily email limit"),
-    )
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily email limit"))
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-sms-message-limit",
-    methods=["GET", "POST"],
-)
+@main.route("/services/<service_id>/service-settings/set-sms-message-limit", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_sms_message_limit(service_id):
     form = SMSMessageLimit(message_limit=current_service.sms_daily_limit)
@@ -1145,10 +1129,7 @@ def set_sms_message_limit(service_id):
     )
 
 
-@main.route(
-    "/service/<service_id>/service_settings/set-sms-annual-limit",
-    methods=["GET", "POST"],
-)
+@main.route("/service/<service_id>/service_settings/set-sms-annual-limit", methods=["GET", "POST"])
 @user_is_platform_admin
 @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
 def set_sms_annual_limit(service_id):
@@ -1167,10 +1148,7 @@ def set_sms_annual_limit(service_id):
     )
 
 
-@main.route(
-    "/service/<service_id>/service_settings/set-email-annual.html",
-    methods=["GET", "POST"],
-)
+@main.route("/service/<service_id>/service_settings/set-email-annual.html", methods=["GET", "POST"])
 @user_is_platform_admin
 @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
 def set_email_annual_limit(service_id):
@@ -1189,10 +1167,7 @@ def set_email_annual_limit(service_id):
     )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-free-sms-allowance",
-    methods=["GET", "POST"],
-)
+@main.route("/services/<service_id>/service-settings/set-free-sms-allowance", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_free_sms_allowance(service_id):
     form = FreeSMSAllowance(free_sms_allowance=current_service.free_sms_fragment_limit)
@@ -1401,10 +1376,7 @@ def view_branding_settings(service_id):
         else:
             branding_image_path = "https://{}/{}".format(cdn_url, current_service.email_branding["logo"])
 
-        return {
-            "branding_image_path": branding_image_path,
-            "branding_name": current_service.email_branding_name,
-        }
+        return {"branding_image_path": branding_image_path, "branding_name": current_service.email_branding_name}
 
     branding = _get_current_branding()
 
