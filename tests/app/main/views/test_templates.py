@@ -168,19 +168,13 @@ class TestSendOtherCategoryInfo:
                 "template_category_other": "hello",
                 "reply_to_text": "reply@go.com",
                 "process_type": None,
+                "text_direction_rtl": None,
             },
             _follow_redirects=True,
         )
 
         mock_update_service_template.assert_called_with(
-            fake_uuid,
-            name,
-            "sms",
-            content,
-            SERVICE_ONE_ID,
-            None,
-            None,
-            DEFAULT_TEMPLATE_CATEGORY_LOW,
+            fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
         )
         assert mock_send_other_category_to_freshdesk.called is True
         mock_send_other_category_to_freshdesk.assert_called_once_with(
@@ -1369,14 +1363,7 @@ def test_should_redirect_when_saving_a_template(
     assert flash_banner == f"'{name}' template saved"
     # self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
     mock_update_service_template.assert_called_with(
-        fake_uuid,
-        name,
-        "sms",
-        content,
-        SERVICE_ONE_ID,
-        None,
-        None,
-        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
     )
 
 
@@ -1416,6 +1403,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         None,
         process_type,
         TESTING_TEMPLATE_CATEGORY,
+        False,
     )
 
 
@@ -1773,6 +1761,7 @@ def test_should_redirect_when_saving_a_template_email(
         subject,
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
+        False,
     )
 
 
@@ -1965,6 +1954,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         "process_type": DEFAULT_PROCESS_TYPE,
         "id": fake_uuid,
         "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+        "text_direction_rtl": False,
     }
     mocker.patch(
         "app.main.views.templates.get_preview_data",
@@ -1994,6 +1984,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         "test subject",
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
+        False,
     )
 
 
