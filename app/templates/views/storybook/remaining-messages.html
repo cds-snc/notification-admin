@@ -1,0 +1,46 @@
+{% from 'components/remaining-messages.html' import remaining_messages with context %}
+
+<h1 class="heading-large">remaining_messages</h1>
+<hr />
+<h2 class="heading-medium">Below limits</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=1) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=250) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=500) }}  
+  {{ remaining_messages(header=_('emails'), total=1000, used=799) }}  
+</div>
+
+<h2 class="heading-medium">Warning</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=800) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=825) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=900) }}  
+  {{ remaining_messages(header=_('emails'), total=1000, used=999) }}  
+</div>
+
+<h2 class="heading-medium">At limit</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=1000) }}
+</div>
+
+
+<h2 class="heading-medium">Muted - Below limits</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=1, muted=true) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=250, muted=true) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=500, muted=true) }}  
+  {{ remaining_messages(header=_('emails'), total=1000, used=799, muted=true) }}  
+</div>
+
+<h2 class="heading-medium">Muted - Warning</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=800, muted=true) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=825, muted=true) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=900, muted=true) }}  
+  {{ remaining_messages(header=_('emails'), total=1000, used=999, muted=true) }}  
+</div>
+
+<h2 class="heading-medium">Muted - At limit</h2>
+<div class="grid grid-cols-2 gap-4" data-testid="remaining-messages-below">
+  {{ remaining_messages(header=_('emails'), total=1000, used=1000, muted=true) }}
+</div>
