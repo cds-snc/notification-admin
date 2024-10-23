@@ -192,7 +192,12 @@
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
-          {% set annual_limit = _('{} million emails').format((current_service.email_annual_limit//1000000) | format_number) %}
+          {# TODO: FF_ANNUAL_LIMIT removal #}
+          {% if config["FF_ANNUAL_LIMIT"]  %}
+            {% set annual_limit = _('{} million emails').format((current_service.email_annual_limit//1000000) | format_number) %}
+          {% else %}
+            {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
+          {% endif%}
           {{ text_field(annual_limit) }}
           {{ text_field('')}}
         {% endcall %}
@@ -266,8 +271,13 @@
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
-          {% set txt_msg_limit = _('{} text messages').format(current_service.sms_annual_limit | format_number) %}
-          {{ text_field(txt_msg_limit) }}
+          {# TODO: FF_ANNUAL_LIMIT removal #}
+          {% if config["FF_ANNUAL_LIMIT"]  %}
+            {% set annual_sms_limit = _('{} text messages').format((current_service.sms_annual_limit) | format_number) %}
+          {% else %}
+            {% set annual_sms_limit = _('{} text messages').format((limits.free_yearly_sms) | format_number) %}
+          {% endif%}
+          {{ text_field(annual_sms_limit) }}
           {{ text_field('')}}
         {% endcall %}
 
@@ -374,7 +384,7 @@
           {% endcall %}
 
         {# TODO: FF_ANNUAL_LIMIT removal #}
-        {% if config["FF_ANNUAL_LIMIT"] %}
+        {% if config["FF_ANNUAL_LIMIT"]  %}
           {% call row() %}
             {% set txt = _('Annual email limit') %}
             {{ text_field(txt)}}
