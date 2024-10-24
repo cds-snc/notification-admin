@@ -49,6 +49,8 @@ class Service(JSONModel):
         "sending_domain",
         "organisation_notes",
         "sensitive_service",
+        "email_annual_limit",
+        "sms_annual_limit",
     }
 
     TEMPLATE_TYPES = (
