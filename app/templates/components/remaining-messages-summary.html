@@ -70,7 +70,7 @@
               {% set icon_type = "warning" %}
             {% endif %}
             <span data-testid="rms-icon-{{ icon_type }}">
-              <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }} text-xs rounded-full mx-1"></i>
+              <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }} text-xs rounded-full mx-1" {{ 'aria-label=' ~ _('warning') if icon_type == "warning" else "" }}></i>
             </span>
             <span class="mx-2 font-bold"  data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text }}
           </div>
