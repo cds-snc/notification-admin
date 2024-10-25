@@ -33,6 +33,7 @@
 
   {% set sections = [
     {
+      'type': 'daily',
       'used': dailyUsed,
       'limit': dailyLimit,
       'text': _('remaining until') ~ ' ' ~ ('7 pm ET'),
@@ -43,6 +44,7 @@
       'warn': dailyUsed / dailyLimit >= warning_threshold
     },
     {
+      'type': 'yearly',
       'used': yearlyUsed,
       'limit': yearlyLimit,
       'text': _('remaining until') ~ ' ' ~ next_april,
@@ -56,39 +58,50 @@
   {% if textOnlyMode %}
     <div class="mt-4 pl-10 py-2 border-l-8 border-gray-300">
   {% endif %}
-
-  {% for section in sections if not section.skip %}
-    {% if textOnly == None %}
-      <div class="flex justify-between items-center border-b border-gray-300 py-4 text-small" data-testid="rms-item">
-        <div class="flex items-center">
-          {% set icon_class = icon_default %}
-          {% if section.warn %}
-            {% set icon_class = icon_warning %}
-          {% endif %}
-          <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }} text-xs rounded-full mx-1" data-testid="rms-icon"></i>
-          <span class="mx-2 font-bold">{{ section.remaining }} </span> {{ section.text }}
+  <div data-testid="rms">
+    {% for section in sections if not section.skip %}
+      {% if textOnly == None %}
+        <div class="flex justify-between items-center border-b border-gray-300 py-4 text-small" data-testid="rms-item">
+          <div class="flex items-center">
+            {% set icon_class = icon_default %}
+            {% set icon_type = "default" %}
+            {% if section.warn %}
+              {% set icon_class = icon_warning %}
+              {% set icon_type = "warning" %}
+            {% endif %}
+            <span data-testid="rms-icon-{{ icon_type }}">
+              <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }} text-xs rounded-full mx-1"></i>
+            </span>
+            <span class="mx-2 font-bold"  data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text }}
+          </div>
+          <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="text-blue-500">{{ section.link_text }}</a>
         </div>
-        <a href="{{ section.link_href }}" class="text-blue-500">{{ section.link_text }}</a>
-      </div>
-    {% else %}
-      <p class="m-0 p-0">
-        {% if section.remaining == 0 %}
-          {{ _('At limit: ') if textOnly == 'text' else '⚠️' }}
-        {% elif section.warn %}
-          {{ _('Near limit: ') if textOnly == 'text' else '⚠️' }}
-        {% else %}
-          {{ _('Below limit: ') if textOnly == 'text' else '🆗' }}
-        {% endif %}
-        {{ section.remaining }} {{notification_type}} {{ section.text }}
-      </p>
-    {% endif %}
-  {% endfor %}
+      {% else %}
+        <p class="m-0 p-0" data-testid="rms-item">
+          {% if section.remaining == "0" %}
+            <span data-testid="text-prefix-at-limit">{{ _('At limit: ') if textOnly == 'text' else '⚠️' }}</span>
+          {% elif section.warn %}
+            <span data-testid="text-prefix-near-limit">{{ _('Near limit: ') if textOnly == 'text' else '⚠️' }}</span>
+          {% else %}
+            <span data-testid="text-prefix-below-limit">{{ _('Below limit: ') if textOnly == 'text' else '🆗' }}</span>
+          {% endif %}
+          {{ section.remaining }} {{notification_type}} {{ section.text }}
+        </p>
+      {% endif %}
+    {% endfor %}
+  </div>
   {% if textOnlyMode %}
     </div>
   {% endif %}
+
   {% if sections[0].skip %}
-    <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300">
+    <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="yearly-sending-paused">
       Sending paused until annual limit resets
     </p>
+  {% elif sections[0].remaining == "0" %}
+    <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="daily-sending-paused">
+      Sending paused until 7pm ET. You can schedule more messages to send later.
+    </p>
   {% endif %}
+  
 {% endmacro %}
