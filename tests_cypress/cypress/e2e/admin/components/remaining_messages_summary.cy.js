@@ -188,7 +188,7 @@ describe("Remaining Messages Summary Component", () => {
   });
 
   describe("Text-only at limit", () => {
-    it("shows “At limit” daily prefix when daily is < 80% usage", () => {
+    it("shows “At limit” daily prefix when daily is 100% usage", () => {
       RMS.TextLimit()
         .find('*[data-testid="rms-item"]')
         .first()
@@ -196,7 +196,7 @@ describe("Remaining Messages Summary Component", () => {
         .should("exist");
     });
 
-    it("shows “At limit” annual prefix when annual is < 80% usage", () => {
+    it("shows “At limit” annual prefix when annual is 100% usage", () => {
       RMS.TextLimit()
         .find('*[data-testid="rms-item"]')
         .eq(1)
@@ -242,7 +242,7 @@ describe("Remaining Messages Summary Component", () => {
   });
 
   describe("Text-only emoji at limit", () => {
-    it("shows “⚠️” daily prefix when daily is < 80% usage", () => {
+    it("shows “⚠️” daily prefix when daily is at 100% usage", () => {
       RMS.EmojiLimit()
         .find('*[data-testid="rms-item"]')
         .first()
@@ -250,7 +250,7 @@ describe("Remaining Messages Summary Component", () => {
         .should("contain", "⚠️");
     });
 
-    it("shows “⚠️” annual prefix when annual is < 80% usage", () => {
+    it("shows “⚠️” annual prefix when annual is at 100% usage", () => {
       RMS.EmojiLimit()
         .find('*[data-testid="rms-item"]')
         .eq(1)
