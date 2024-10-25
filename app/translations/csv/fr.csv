@@ -1991,6 +1991,7 @@
 "remaining until","restant jusqu'à"
 "Request a daily limit increase","Demander une augmentation de limite quotidienne"
 "Visit Usage reports","Consultez les rapports d'utilisation"
+"The service {} took longer than 1 second to respond.","Le service {} a mis plus d’une seconde à répondre. Votre service doit répondre dans un délai d’une seconde pour permettre le bon fonctionnement de Notification GC."
 "Display","Afficher"
 "email content","le message du courriel"
 "Email content","Message du courriel"
