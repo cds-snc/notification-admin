@@ -138,7 +138,7 @@ def test_should_show_overview_inc_sms_daily_limit(
     app_,
 ):
     # TODO FF_ANNUAL_LIMIT removal
-    if not app_.config["FF_ANNUAL_LIMIT"]:
+    if not app_.config["FF_ANNUAL_LIMIT"] and user["platform_admin"]:
         expected_rows.remove("Annual email limit 10,000,000 Change")
         expected_rows.remove("Annual text message limit 25,000 Change")
     service_one = service_json(
