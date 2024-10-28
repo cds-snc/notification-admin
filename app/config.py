@@ -79,6 +79,7 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
+    FF_RTL = env.bool("FF_RTL", True)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 25_000)
@@ -211,12 +212,7 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
-    FF_SPIKE_SMS_DAILY_LIMIT = True
-    FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
-    FF_BOUNCE_RATE_V15 = True
-    FF_BOUNCE_RATE_BACKEND = True
-    FF_ABTEST_SERVICE_ID = ""
+    FF_RTL = True
 
 
 class ProductionFF(Config):
@@ -242,12 +238,7 @@ class ProductionFF(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
-    FF_SPIKE_SMS_DAILY_LIMIT = True
-    FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
-    FF_BOUNCE_RATE_V15 = True
-    FF_BOUNCE_RATE_BACKEND = True
-    FF_ABTEST_SERVICE_ID = ""
+    FF_RTL = False
 
 
 class Production(Config):

@@ -5,6 +5,10 @@
     @apply bg-blue text-white p-gutterHalf;
   }
 
+  .remaining-messages.muted {
+    @apply bg-gray-200 text-black;
+  }
+
   .rm-header {
     @apply text-smaller inline-block;
   }
@@ -21,6 +25,10 @@
     box-shadow: inset 0 -10px #cfd5dd;
     display: flex;
     align-items: flex-end;
+  }
+
+  .muted .rm-bar {
+    box-shadow: inset 0 -10px #49535d;
   }
 
   .rm-bar-usage {
