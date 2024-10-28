@@ -10,7 +10,4 @@ set -ex
 # Tell git the workspace repository is safe, else upcoming commands will fail.
 git config --global --add safe.directory /workspaces/notification-admin
 
-find /workspaces/notification-admin \
-    -name .git -prune -o \
-    -exec chown vscode:vscode {} +
 sudo -u vscode -i -- /usr/local/bin/installations.sh
