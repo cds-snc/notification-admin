@@ -364,10 +364,4 @@ label {
 .overflow-anywhere {
   overflow-wrap: anywhere;
 }
-
-.ph-bold,
-.ph-fill {
-  font-size-adjust: 0.58;
-}
-
 /*! purgecss end ignore */
