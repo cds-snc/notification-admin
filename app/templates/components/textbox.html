@@ -13,7 +13,8 @@
   rows=8,
   required=true,
   is_page_heading=false,
-  testid=None
+  testid=None,
+  label_class=None
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -22,9 +23,9 @@
     {% set describedby = '' %}
 
     {% if is_page_heading %}
-    <h1><label class="form-label heading-large" for="{{ field.name }}" >
+    <h1><label class="form-label heading-large{% if label_class %} {{ label_class }} {% endif %}" for="{{ field.name }}" >
     {% else %}
-    <label class="form-label" for="{{ field.name }}" >
+    <label class="form-label{% if label_class %} {{ label_class }} {% endif %}" for="{{ field.name }}" >
     {% endif %}
       {% if label %}
         {{ label }}
