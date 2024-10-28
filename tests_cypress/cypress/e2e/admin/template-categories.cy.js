@@ -22,7 +22,7 @@ describe("Template categories", () => {
   const categories = {
     OTHER: "Other",
     AUTH: "Authentication",
-    AUTOREPLY: "Automatic reply",
+    AUTOREPLY: "General communication",
   };
 
   templates.forEach((template) => {
@@ -139,6 +139,33 @@ describe("Template categories", () => {
           .find("label")
           .contains(categories.AUTOREPLY)
           .should("be.visible");
+      });
+
+      it("Template can be saved after being previewed", () => {
+        Page.SelectTemplate(template.name);
+        Page.EditCurrentTemplate();
+        Page.ExpandTemplateCategories();
+        Page.SelectTemplateCategory(categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+      });
+
+      it("Template can be created after being previewed", () => {
+        Page.CreateTemplate();
+        Page.SelectTemplateType(template.type);
+        Page.Continue();
+
+        const randomString = Math.random().toString(36).substring(2, 15);
+        const subject = template.type === "email" ? "Subject" : null;
+        const name = `Testing template ${randomString}`;
+        Page.FillTemplateForm(name, subject, "content", categories.AUTOREPLY);
+        Page.PreviewTemplate();
+        Page.SaveTemplate();
+
+        // remove the template
+        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        Page.SelectTemplate(name);
+        Page.DeleteTemplate();
       });
 
       context("Other/specify", () => {

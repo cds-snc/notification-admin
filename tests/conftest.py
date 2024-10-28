@@ -990,6 +990,7 @@ def mock_update_service_template(mocker):
         process_type=None,
         postage=None,
         template_category_id=None,
+        text_direction_rtl=False,
     ):
         template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
@@ -1024,6 +1025,8 @@ def mock_update_service_template_400_name_too_long(mocker):
         subject=None,
         process_type=None,
         postage=None,
+        template_category_id=None,
+        text_direction_rtl=False,
     ):
         json_mock = Mock(
             return_value={
@@ -1068,6 +1071,8 @@ def mock_update_service_template_400_content_too_big(mocker):
         subject=None,
         process_type=None,
         postage=None,
+        template_category_id=None,
+        text_direction_rtl=False,
     ):
         json_mock = Mock(
             return_value={
@@ -3731,6 +3736,14 @@ def mock_get_empty_service_callback_api(mocker):
     return mocker.patch(
         "app.service_api_client.get_service_callback_api",
         side_effect=lambda service_id, callback_api_id: None,
+    )
+
+
+@pytest.fixture(scope="function")
+def mock_validate_callback_url(mocker):
+    return mocker.patch(
+        "app.main.validators.requests.post",
+        return_value=Mock(content="a", status_code=200, headers={"a": "a"}, elapsed=timedelta(seconds=0.3)),
     )
 
 

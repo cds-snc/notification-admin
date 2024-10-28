@@ -63,6 +63,7 @@ module.exports = {
         lightblue: "#0154B0",
         slightlight: "#284162",
         /* trying to slowly implement a more consistent scale below */
+        200: "#D2E5FA",
         300: "#71A7F3",
         500: "#4C8CE6",
         700: "#24508F",

@@ -2,7 +2,7 @@ from unittest.mock import ANY, Mock
 
 import pytest
 from bs4 import BeautifulSoup
-from flask import current_app, url_for
+from flask import url_for
 from notifications_python_client.errors import HTTPError
 
 import app
@@ -405,8 +405,7 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
         "auth_type": "email_auth",
     }
 
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     expected_redirect_location = "/verify"
     response = client.post(url_for("main.register_from_invite"), data=data)
@@ -519,9 +518,7 @@ def test_new_invited_user_verifies_and_added_to_service(
         "name": "Invited User",
         "auth_type": "sms_auth",
     }
-
-    if current_app.config["FF_TOU"]:
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
