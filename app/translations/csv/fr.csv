@@ -1990,7 +1990,7 @@
 "The service {} responded in {} seconds.","Le service {} a répondu en {} secondes."
 "Are you sure you want to delete this callback configuration?","Voulez-vous vraiment supprimer cette configuration de rappel?"
 "Your Callback configuration has been deleted.","Votre configuration de rappel a été supprimée."
-"The service {} took longer than 1 second to respond.","Le service {} a mis plus d’une seconde à répondre."
+"The service {} took longer than 1 second to respond.","Le service {} a mis plus d’une seconde à répondre. Votre service doit répondre dans un délai d’une seconde pour permettre le bon fonctionnement de Notification GC."
 "Display","Afficher"
 "email content","le message du courriel"
 "Email content","Message du courriel"
