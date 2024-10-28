@@ -16,7 +16,7 @@ export const FR = {
   cancel: "Vous pourrez annuler cet envoi avant l’heure prévue.",
   select_date: "Sélectionnez une date et une heure pour programmer l’envoi.",
   select_time_label: "Heure d'envoi le",
-  select_time_hint: "L'horloge utilise votre fuseau horaire",
+  select_time_hint: "L'heure affichée correspond à votre fuseau horaire",
   select_time_format_label: "Format de l'heure",
   is_24: "Mode 24 heures activé",
   is_am_pm: "Mode AM PM activé",

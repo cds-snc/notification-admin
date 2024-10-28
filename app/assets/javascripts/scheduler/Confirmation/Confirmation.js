@@ -22,7 +22,7 @@ export const Confirmation = () => {
           <strong>
             {translate("date_prefix")}
             {dayjs(date).format(translate("date_format"))} {translate("at")}{" "}
-            {timeFormat} {translate("local_time_suffix")}
+            {timeFormat}, {translate("local_time_suffix")}
           </strong>
         </p>
       </div>
