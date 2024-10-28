@@ -10,23 +10,35 @@
 	"containerEnv": {
 		"SHELL": "/bin/zsh"
 	},
-	"settings": {
-		"python.pythonPath": "/usr/local/bin/python",
+	"customizations":{
+		"vscode": {
+			"extensions": [
+				"njpwerner.autodocstring",
+				"github.copilot",
+				"GitHub.copilot-labs",
+				"donjayamanne.python-extension-pack",
+				"-ms-python.autopep8",
+				"ms-python.vscode-pylance",
+				"eamodio.gitlens",
+				"wholroyd.jinja",
+				"visualstudioexptteam.vscodeintellicode",
+				"yzhang.markdown-all-in-one",
+				"ms-ossdata.vscode-postgresql",
+				"tamasfe.even-better-toml",
+				"charliermarsh.ruff",
+			],
+			"settings": {
+				"ruff.lint.run": "onSave",
+				"ruff.configurationPreference": "filesystemFirst",
+				"editor.defaultFormatter": "charliermarsh.ruff",
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll": "explicit"
+				}
+			}
+		}
 	},
-	"extensions": [
-		"njpwerner.autodocstring",
-		"github.copilot",
-		"GitHub.copilot-labs",
-		"donjayamanne.python-extension-pack",
-		"ms-python.vscode-pylance",
-		"eamodio.gitlens",
-		"wholroyd.jinja",
-		"visualstudioexptteam.vscodeintellicode",
-		"yzhang.markdown-all-in-one",
-		"ms-ossdata.vscode-postgresql",
-		"tamasfe.even-better-toml",
-		"charliermarsh.ruff",
-	],
+
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "16.20.0"
