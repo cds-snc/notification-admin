@@ -59,7 +59,7 @@
   {% endif %}
   <div data-testid="rms">
     {% for section in sections if not section.skip %}
-      {% if textOnly is None %}
+      {% if textOnly == None %}
         <div class="flex justify-between items-center border-b border-gray-300 py-4 text-small" data-testid="rms-item">
           <div class="flex items-center">
             {% set icon_class = icon_default %}
