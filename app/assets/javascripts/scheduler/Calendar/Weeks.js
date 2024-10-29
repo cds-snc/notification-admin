@@ -10,6 +10,7 @@ export const Weeks = () => {
     <section
       id="Calendar-dates"
       onKeyDown={(event) => {
+        event.preventDefault();
         const key = event.key.replace("Arrow", "");
         onKeyDown({ key, dispatch });
       }}

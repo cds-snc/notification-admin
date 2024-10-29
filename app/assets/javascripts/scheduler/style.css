@@ -148,7 +148,8 @@
 }
 
 .Calendar-item.Calendar-item--unavailable:focus {
-  outline: dotted;
+  outline: dashed;
+  outline-width: 2px;
   outline-offset: -4px;
   outline-offset: -4px;
 }
@@ -220,7 +221,7 @@
 }
 
 .selected-date-time-box {
-  padding: 0 var(--dimension-gutterHalf);
+  padding: 0 var(--dimension-gutter);
   border-left: 3px solid var(--color-gray-300);
 }
 
@@ -252,7 +253,8 @@
 
 .choice--radios {
   display: flex;
-  gap: var(--dimension-gutter);
+  flex-wrap: wrap;
+  column-gap: var(--dimension-gutter);
 }
 .choice__item {
   display: flex;

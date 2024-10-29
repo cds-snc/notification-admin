@@ -188,8 +188,7 @@ def delete_delivery_status_callback(service_id):
             flash(_l("Your Callback configuration has been deleted."), "default_with_tick")
             return redirect(url_for(back_link, service_id=service_id))
 
-    flash(["{}".format(
-        _l("Are you sure you want to delete this callback configuration?"))], "delete")
+    flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
