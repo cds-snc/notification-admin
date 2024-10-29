@@ -10,7 +10,9 @@ export const Confirmation = () => {
   const date = selected + "T" + time;
 
   const timeFormat =
-    _24hr === "on" ? time : dayjs(date).format(translate("time_format"));
+    _24hr === "on"
+      ? dayjs(date).format("H [h] mm")
+      : dayjs(date).format("h:mm A");
 
   return selected.length > 0 && time ? (
     <div className="confirmation set">
@@ -25,7 +27,7 @@ export const Confirmation = () => {
           <time datetime={date}>
             {translate("date_prefix")}
             {dayjs(date).format(translate("date_format"))} {translate("at")}{" "}
-            {timeFormat}
+            {timeFormat}, {translate("local_time_suffix")}
           </time>
         </p>
         <p>{translate("cancel")}</p>
