@@ -1,15 +1,23 @@
 import React, { useContext } from "react";
-import { store } from "./index";
+import { store, I18nContext } from "./index";
 
 export const Toggle = () => {
   const { _24hr, time, dispatch } = useContext(store);
+  const { translate } = useContext(I18nContext);
 
   if (time === "") {
     return <div className="choice choice--radios"></div>;
   }
 
   return (
-    <div className="choice choice--radios">
+    <fieldset
+      className="form-group choice choice--radios"
+      id="time-toggle"
+      role="radio-group"
+    >
+      <legend className="form-label w-full">
+        <span>{translate("select_time_format_label")}</span>
+      </legend>
       <div className="choice__item">
         <input
           name="time-toggle"
@@ -37,6 +45,6 @@ export const Toggle = () => {
         />
         <label htmlFor="_24">24h</label>
       </div>
-    </div>
+    </fieldset>
   );
 };
