@@ -6,7 +6,7 @@
   <h1 class="heading-large mt-0 mb-4" tabindex="0" autofocus>{{ _('Before you continue') }}</h1>
   <div class="mt-16 mb-10">
     <h2 class="heading-medium">{{ _('Review your activity') }}</h1>
-    <p>{{ _('Our records show that these are the last 3 times you signed into this account:') }}</p>
+    <p>{{ _('Review our records of your last 3 sign in times:') }}</p>
     <table>
       <tbody>
         {% for event in session[events_key] %}
@@ -24,11 +24,12 @@
       </tbody>
     </table>
     <p>
-    {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us') }}</a>.
+    {{ _('If our records are not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us')
+      }}</a>.
     </p>
   </div>
   <div id="tou-prompt" data-testid="tou-prompt" class="mt-16">
-    <h2 class="heading-medium mt-0 mb-6" data-testid="tou-heading">{{ _('Know your responsibilities') }}</h2>
+    <h2 class="heading-medium mt-0 mb-6" data-testid="tou-heading">{{ _('By using GC Notify, you agree to:') }}</h2>
     <div data-testid="tou-terms">
       <p>
         {{ _('By using GC Notify, you accept our ') }}
