@@ -428,6 +428,7 @@ def format_thousands(value):
         return ""
     return value
 
+
 def format_thousands_localized(value):
     if isinstance(value, Number):
         return "{:,}".format(int(value)).replace(",", "\u2009" if get_current_locale(current_app) == "fr" else ",")
