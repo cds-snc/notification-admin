@@ -24,9 +24,6 @@ let Actions = {
     ClickChangeEmailBrandingLink: () => {
         Components.EditEmailBrandingLink().click();
     },
-    ClickChangeEmailAnnualLimitLink: () => {
-        Components.EditEmailAnnualLimitLink().click();
-    },
 
     // Text messages
 

@@ -2,7 +2,6 @@
 
 import config from "../../../config";
 import { ServiceSettingsPage } from "../../Notify/Admin/Pages/all";
-import ADMIN_COOKIE from "../../Notify/Admin/Pages/LoginPage";
 
 describe("Service Settings", () => {
   beforeEach(() => {
