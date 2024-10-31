@@ -71,7 +71,7 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 10,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
@@ -95,7 +95,7 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 10,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
@@ -233,7 +233,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 10,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
@@ -255,7 +255,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 10,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
@@ -281,20 +281,22 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     expected_rows,
     app_,
 ):
-    client.login(active_user_with_permissions, mocker, service_one)
-    service_one["permissions"] = permissions
-    service_one["email_branding"] = uuid4()
-    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    rows = page.find_all("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        visible = rows[index + 1]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(visible.text.split())
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        client.login(active_user_with_permissions, mocker, service_one)
+        service_one["permissions"] = permissions
+        service_one["email_branding"] = uuid4()
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        rows = page.find_all("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+            visible = rows[index + 1]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
