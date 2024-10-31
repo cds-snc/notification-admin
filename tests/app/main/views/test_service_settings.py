@@ -3093,7 +3093,7 @@ def test_should_set_sms_message_limit(
 def test_should_set_email_annual_limit(platform_admin_client, limit, expected_limit, mock_update_email_annual_limit, app_):
     with set_config(app_, "FF_ANNUAL_LIMIT", True):
         response = platform_admin_client.post(
-            url_for("main.set_email_annual_limit",service_id=SERVICE_ONE_ID),
+            url_for("main.set_email_annual_limit", service_id=SERVICE_ONE_ID),
             data={"message_limit": limit},
         )
 

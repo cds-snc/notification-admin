@@ -163,6 +163,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
+    @cache.delete("service-{service_id}")
     def update_sms_annual_limit(self, service_id, sms_annual_limit):
         return self.update_service(
             service_id,
@@ -170,6 +171,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
+    @cache.delete("service-{service_id}")
     def update_email_annual_limit(self, service_id, email_annual_limit):
         return self.update_service(
             service_id,

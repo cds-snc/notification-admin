@@ -194,11 +194,11 @@
           {{ text_field(txt) }}
           {# TODO: FF_ANNUAL_LIMIT removal #}
           {% if config["FF_ANNUAL_LIMIT"]  %}
-            {% set annual_limit = _('{} million emails').format((current_service.email_annual_limit//1000000) | format_number) %}
+            {% set annual_limit = _('{} emails').format((current_service.email_annual_limit) | format_number) %}
           {% else %}
             {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
           {% endif%}
-          {{ text_field(annual_limit) }}
+          {{ text_field(annual_limit, attributes="data-testid=email-annual-limit") }}
           {{ text_field('')}}
         {% endcall %}
 
@@ -277,7 +277,7 @@
           {% else %}
             {% set annual_sms_limit = _('{} text messages').format((limits.free_yearly_sms) | format_number) %}
           {% endif%}
-          {{ text_field(annual_sms_limit) }}
+          {{ text_field(annual_sms_limit, attributes="data-testid=sms-annual-limit") }}
           {{ text_field('')}}
         {% endcall %}
 
@@ -392,6 +392,7 @@
             {{ edit_field(
               change_txt,
               url_for('.set_email_annual_limit', service_id=current_service.id),
+              attributes="data-testid=edit-email-annual-limit",
               for=txt
             ) }}
           {% endcall %}
@@ -403,6 +404,7 @@
             {{ edit_field(
               change_txt,
               url_for('.set_sms_annual_limit', service_id=current_service.id),
+              attributes="data-testid=edit-sms-annual-limit",
               for=txt
             ) }}
           {% endcall %}
