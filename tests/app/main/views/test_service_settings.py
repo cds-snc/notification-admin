@@ -108,6 +108,8 @@ def mock_get_service_settings_page_common(
                 "Organisation Test Organisation Government of Canada Change",
                 "Daily email limit 1,000 Change",
                 "Daily text message limit 1,000 Change",
+                "Annual email limit 10,000,000 Change",
+                "Annual text message limit 25,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
@@ -135,31 +137,33 @@ def test_should_show_overview_inc_sms_daily_limit(
     mock_get_service_settings_page_common,
     app_,
 ):
-    service_one = service_json(
-        SERVICE_ONE_ID,
-        users=[api_user_active["id"]],
-        permissions=["sms", "email"],
-        organisation_id=ORGANISATION_ID,
-        restricted=False,
-        sending_domain=sending_domain,
-    )
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        service_one = service_json(
+            SERVICE_ONE_ID,
+            users=[api_user_active["id"]],
+            permissions=["sms", "email"],
+            organisation_id=ORGANISATION_ID,
+            restricted=False,
+            sending_domain=sending_domain,
+        )
+        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
-    client.login(user, mocker, service_one)
-    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-    assert response.status_code == 200
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.find("h1").text == "Settings"
-    rows = page.select("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-        visible = rows[index]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(rows[index].text.split())
-    app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+        client.login(user, mocker, service_one)
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("h1").text == "Settings"
+        rows = page.select("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            visible = rows[index]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(rows[index].text.split())
+        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
 def test_no_go_live_link_for_service_without_organisation(
@@ -3075,6 +3079,61 @@ def test_should_set_sms_message_limit(
     assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
 
     mock_update_sms_message_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
+
+
+@pytest.mark.parametrize(
+    "limit, expected_limit",
+    [
+        ("1", 1),
+        ("1000", 1_000),
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
+        pytest.param("foo", "foo", marks=pytest.mark.xfail),
+    ],
+)
+def test_should_set_email_annual_limit(platform_admin_client, limit, expected_limit, mock_update_email_annual_limit, app_):
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        response = platform_admin_client.post(
+            url_for("main.set_email_annual_limit",service_id=SERVICE_ONE_ID),
+            data={"message_limit": limit},
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
+
+        mock_update_email_annual_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
+
+
+@pytest.mark.parametrize(
+    "limit, expected_limit",
+    [
+        ("1", 1),
+        ("1000", 1_000),
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
+        pytest.param("foo", "foo", marks=pytest.mark.xfail),
+    ],
+)
+def test_should_set_sms_annual_limit(
+    platform_admin_client,
+    limit,
+    expected_limit,
+    mock_update_sms_annual_limit,
+    app_,
+):
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        response = platform_admin_client.post(
+            url_for(
+                "main.set_sms_annual_limit",
+                service_id=SERVICE_ONE_ID,
+            ),
+            data={
+                "message_limit": limit,
+            },
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
+
+        mock_update_sms_annual_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
 
 
 def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_free_sms_fragment_limit):
