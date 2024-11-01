@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: ci/Dockerfile
+    networks:
+      - notification-network
+
+networks:
+  notification-network:
+    external: true

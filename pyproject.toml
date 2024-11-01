@@ -5,7 +5,9 @@ description = "Notifications admin application."
 authors = ["Canadian Digital Service"]
 license = "MIT license"
 readme = "README.md"
-packages = []
+packages = [
+    { include = "app" }
+]
 
 [build-system]
 requires = ["poetry-core>=1.7.1"]

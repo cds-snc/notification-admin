@@ -47,6 +47,7 @@
 	"forwardPorts": [
 		6012
 	],
+	"runArgs": ["--network=notification-network", "--env-file=${localWorkspaceFolder}/.env"],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"
 }
