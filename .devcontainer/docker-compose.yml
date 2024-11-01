@@ -1,7 +1,7 @@
 version: '3'
 services:
   # Update this to the name of the service you want to work with in your docker-compose.yml file
-  web:
+  notify-admin:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
@@ -25,7 +25,9 @@ services:
     command: sleep infinity
     expose:
       - "6012"
-    ports:
-      - "6012:6012"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - notify-network
+
+networks:
+  notify-network:
+    external: true

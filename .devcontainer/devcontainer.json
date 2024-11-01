@@ -1,7 +1,7 @@
 {
 	"name": "notification-admin",
 	"dockerComposeFile": "docker-compose.yml",
-	"service": "web",
+	"service": "notify-admin",
 	"workspaceFolder": "/workspace",
 	"shutdownAction": "stopCompose",
 	"remoteEnv": {
@@ -21,6 +21,7 @@
 				"github.copilot",
 				"GitHub.copilot-labs",
 				"mechatroner.rainbow-csv",
+				"ms-azuretools.vscode-docker",
 				"ms-ossdata.vscode-postgresql",
 				"ms-python.black-formatter",
 				"ms-python.vscode-pylance",
