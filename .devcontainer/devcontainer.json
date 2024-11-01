@@ -13,19 +13,23 @@
 	"customizations":{
 		"vscode": {
 			"extensions": [
-				"njpwerner.autodocstring",
+				"-ms-python.autopep8",
+				"charliermarsh.ruff",
+				"donjayamanne.python-extension-pack",
+				"eamodio.gitlens",
+				"fill-labs.dependi",
 				"github.copilot",
 				"GitHub.copilot-labs",
-				"donjayamanne.python-extension-pack",
-				"-ms-python.autopep8",
+				"mechatroner.rainbow-csv",
+				"ms-ossdata.vscode-postgresql",
+				"ms-python.black-formatter",
 				"ms-python.vscode-pylance",
-				"eamodio.gitlens",
+				"njpwerner.autodocstring",
 				"wholroyd.jinja",
 				"visualstudioexptteam.vscodeintellicode",
 				"yzhang.markdown-all-in-one",
-				"ms-ossdata.vscode-postgresql",
 				"tamasfe.even-better-toml",
-				"charliermarsh.ruff",
+				"vsliveshare.vsliveshare"
 			],
 			"settings": {
 				"ruff.lint.run": "onSave",
@@ -38,15 +42,11 @@
 			}
 		}
 	},
-
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "16.20.0"
 		}
 	},
-	"forwardPorts": [
-		6012
-	],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"
 }
