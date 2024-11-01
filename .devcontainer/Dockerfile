@@ -18,6 +18,7 @@ RUN apt-get update \
     exa \
     fd-find \
     git \
+    iputils-ping \
     iproute2 \
     less \
     libsodium-dev \

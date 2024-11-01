@@ -9,3 +9,6 @@ set -ex
 
 # Tell git the workspace repository is safe, else upcoming commands will fail.
 git config --global --add safe.directory /workspaces/notification-admin
+
+# Install and setup dev environment
+installations.sh
