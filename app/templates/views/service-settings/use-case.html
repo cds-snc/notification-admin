@@ -38,11 +38,11 @@
         <p>
           {{ _("This information helps us set sending limits and budget accordingly.") }}
         </p>
-        <h2 class="heading-medium">{{ _("About emails you want to send") }}</h2>
+        <h2 class="heading-medium">{{ _("Emails") }}</h2>
         {{ select(form.daily_email_volume, option_conditionals=form.volume_conditionals) }}
         {{ select(form.annual_email_volume, option_conditionals=form.volume_conditionals) }}
         
-        <h2 class="heading-medium">{{ _("About text messages you want to send") }}</h2>
+        <h2 class="heading-medium">{{ _("Text messages") }}</h2>
         {{ select(form.daily_sms_volume, option_conditionals=form.volume_conditionals) }}
         {{ select(form.annual_sms_volume, option_conditionals=form.volume_conditionals) }}
 
