@@ -90,6 +90,7 @@ export const beforeFirstDayInMonth = (state) => {
     // state.date is the YYYY-MM-DD on the calendar display not the current date
     const newMonth = dayjs(state.date)
       .subtract(1, "month")
+      .endOf("month")
       .format("YYYY-MM-DD");
 
     if (dayjs(newMonth).isBefore(yearMonthDay(state.firstAvailableDate))) {
@@ -107,7 +108,11 @@ export const beforeFirstDayInMonth = (state) => {
 
 export const afterLastDayInMonth = (state) => {
   if (Number(state.focusedDayNum) === Number(state.lastDay)) {
-    const newMonth = dayjs(state.date).add(1, "month").format("YYYY-MM-DD");
+    // Create a new date by adding one month, and setting date to the 1st of the added month
+    const newMonth = dayjs(state.date)
+      .add(1, "month")
+      .date(1)
+      .format("YYYY-MM-DD");
 
     if (dayjs(newMonth).isAfter(yearMonthDay(state.lastAvailableDate))) {
       return { updateMessage: "at_end_of_calendar" };
@@ -121,10 +126,14 @@ export const afterLastDayInMonth = (state) => {
 
 export const getNextDay = (day, state, direction) => {
   if (day <= 0) {
+    console.log("get date before", day, state, direction);
+
     return beforeFirstDayInMonth(state);
   }
 
-  if (direction != "left" && day > state.lastDay) {
+  if (direction !== "left" && Number(day) > Number(state.lastDay)) {
+    console.log("get date after", day, state, direction);
+
     return afterLastDayInMonth(state);
   }
 

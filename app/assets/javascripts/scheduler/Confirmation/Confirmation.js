@@ -15,18 +15,21 @@ export const Confirmation = () => {
       : dayjs(date).format("h:mm A");
 
   return selected.length > 0 && time ? (
-    <div>
-      <div className="confirmation set">
+    <div className="confirmation set">
+      <i
+        aria-hidden="true"
+        class="confirmationIcon fa-xl fa-solid fa-paper-plane"
+      ></i>
+
+      <div className="confirmationMessage">
         <p>{translate("message_will_be_sent")}</p>
-        <p>
-          <strong>
+        <p className="confirmationTime">
+          <time datetime={date}>
             {translate("date_prefix")}
             {dayjs(date).format(translate("date_format"))} {translate("at")}{" "}
             {timeFormat}, {translate("local_time_suffix")}
-          </strong>
+          </time>
         </p>
-      </div>
-      <div>
         <p>{translate("cancel")}</p>
       </div>
     </div>
