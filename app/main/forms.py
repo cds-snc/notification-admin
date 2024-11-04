@@ -544,7 +544,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
             self.service_id = service_id
 
     email_from = StringField(
-        _l("Sending email address name"),
+        _l("Enter the part before ‘@notification.canada.ca’"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
