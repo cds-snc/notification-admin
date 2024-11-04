@@ -10,7 +10,7 @@
 <div class="grid-row contain-floats">
   <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
     <h1 class="heading-large">{{ _('Sign-in history') }}</h1>
-    <p>{{ _('Our records show that these are the last 3 times you signed into this account:') }}</p>
+    <p>{{ _('Review our records of your last 3 sign in times:') }}</p>
     <table>
       <tbody>
         {% for event in events %}
@@ -30,7 +30,8 @@
 
     <br />
     <p>
-    {{ _('If this is not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us') }}</a>.
+    {{ _('If our records are not correct, ') }}<a href="{{ url_for('main.contact') }}" target="_blank">{{ _('contact us')
+      }}</a>.
     </p>
     <a href="{{next}}" class="button">{{ _('Continue') }}</a>
     {{ page_footer(
