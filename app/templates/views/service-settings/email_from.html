@@ -32,7 +32,7 @@
       <p class="m-0">{{_("Make sure we have formatted your email address correctly.")}}</p>
       <p class="m-0">
         {{_("Your service’s email address will be: ")}}
-        <b><span id='fixed-email-address'>{{form.email_from.data}}</span>@notification.canada.ca</b>
+        <b><span id='fixed-email-address'>{{form.email_from.data}}</span>@{{sending_domain}}</b>
       </p>
       {% endcall %}
     </div>
