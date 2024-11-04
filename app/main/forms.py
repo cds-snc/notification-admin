@@ -39,6 +39,7 @@ from wtforms.validators import (
     Length,
     Optional,
     Regexp,
+    StopValidation,
 )
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -1811,17 +1812,25 @@ class OptionalIntegerRange:
     def __call__(self, form, field):
         trigger_data = getattr(form, self.trigger_field).data
 
+        # If trigger radio isn't selected, Stop Validation
+        if trigger_data != self.trigger_value:
+            print("DEBUG: Trigger condition not met, stopping validation chain")
+            field.errors = []  # Delete any errors
+            return StopValidation()  # Stop validation chain
+
         # Only validate if the trigger condition is met
         if trigger_data == self.trigger_value:
             # First check if empty
-            if not field.data:
+            if field.data is None or field.data == '':
                 raise ValidationError(self.message or _l("This cannot be empty"))
-
-            # Then check range if value is provided
+                # Then check range if value is provided
             if self.min is not None and field.data < self.min:
                 raise ValidationError(_l("Number must be more than {min}").format(min=format_thousands_localized(self.min)))
             if self.max is not None and field.data > self.max:
-                raise ValidationError(_l("Number must be less than {max}").format(max=format_thousands_localized(self.max)))
+                raise ValidationError(_l("Number must be less than {max}").forma(max=format_thousands_localized(self.max)))
+        else:
+            print("DEBUG: Trigger condition not met, skipping validation")
+            return True
 
 
 class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
@@ -1829,9 +1838,9 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
-            (f"{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
+            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
             (
-                f"{limit*10}",
+                f"{limit}-{limit*10}",
                 _l("{min} to {max}").format(
                     min=format_thousands_localized(limit + 1), max=format_thousands_localized(limit * 10)
                 ),
@@ -1842,8 +1851,8 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
     def volume_choices_restricted(self, limit):
         return [
             ("0", _l("None")),
-            (f"{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (f"{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
+            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
+            (f"{limit}-{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
         ]
 
     def more_validators(self, limit, notification_type):
@@ -1910,9 +1919,9 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
-            (f"{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
+            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
             (
-                f"{limit*10}",
+                f"{limit}-{limit*10}",
                 _l("{min} to {max}").format(
                     min=format_thousands_localized(limit + 1), max=format_thousands_localized(limit * 10)
                 ),
@@ -1923,8 +1932,8 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
     def volume_choices_restricted(self, limit):
         return [
             ("0", _l("None")),
-            (f"{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (f"{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
+            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
+            (f"{limit}-{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
         ]
 
     def more_validators(self, limit, notification_type):
