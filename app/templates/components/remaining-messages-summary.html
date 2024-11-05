@@ -26,8 +26,8 @@
   <!-- Set some constants -->
   {% set current_year = current_year or (now().year if now().month < 4 else now().year + 1) %}
   {% set next_april = _('April 1, ') ~  current_year %}
-  {% set icon_default = 'fa-check bg-blue-300 text-white p-2 w-4 h-4' %}
-  {% set icon_warning = 'fa-circle-exclamation text-red-300 w-8 h-8' %}
+  {% set icon_default = 'fa-circle-check text-blue-300 text-base self-start' %}
+  {% set icon_warning = 'fa-circle-exclamation text-red-300 text-base self-start' %}
   {% set warning_threshold = 0.8 %}
 
   {% set sections = [
@@ -60,20 +60,22 @@
   <div data-testid="rms">
     {% for section in sections if not section.skip %}
       {% if textOnly == None %}
-        <div class="flex justify-between items-center border-b border-gray-300 py-4 text-small" data-testid="rms-item">
-          <div class="flex items-center">
-            {% set icon_class = icon_default %}
-            {% set icon_type = "default" %}
-            {% if section.warn %}
-              {% set icon_class = icon_warning %}
-              {% set icon_type = "warning" %}
-            {% endif %}
-            <span data-testid="rms-icon-{{ icon_type }}">
-              <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }} text-xs rounded-full mx-1" {{ 'aria-label=' ~ _('warning') if icon_type == "warning" else "" }}></i>
-            </span>
-            <span class="mx-2 font-bold"  data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text }}
+        <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small " data-testid="rms-item">
+          {% set icon_class = icon_default %}
+          {% set icon_type = "default" %}
+          {% if section.warn %}
+          {% set icon_class = icon_warning %}
+          {% set icon_type = "warning" %}
+          {% endif %}
+          <span data-testid="rms-icon-{{ icon_type }}"></span>
+          <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" {{ 'aria-label=' ~ _('warning') if icon_type=="warning"
+            else "" }}></i>
+          <div class="flex flex-wrap items-baseline gap-x-2">
+            <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
+            }}
           </div>
-          <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="text-blue-500">{{ section.link_text }}</a>
+          <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="ml-auto text-blue-500">{{
+            section.link_text }}</a>
         </div>
       {% else %}
         <p class="m-0 p-0" data-testid="rms-item">
