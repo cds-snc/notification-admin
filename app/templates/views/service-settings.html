@@ -192,8 +192,13 @@
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
-          {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
-          {{ text_field(annual_limit) }}
+          {# TODO: FF_ANNUAL_LIMIT removal #}
+          {% if config["FF_ANNUAL_LIMIT"]  %}
+            {% set annual_limit = _('{} emails').format((current_service.email_annual_limit) | format_number) %}
+          {% else %}
+            {% set annual_limit = _('{} million emails').format((limits.free_yearly_email//1000000) | format_number) %}
+          {% endif%}
+          {{ text_field(annual_limit, attributes="data-testid=email-annual-limit") }}
           {{ text_field('')}}
         {% endcall %}
 
@@ -266,8 +271,13 @@
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
-          {% set txt_msg_limit = _('{} text messages').format(limits.free_yearly_sms | format_number) %}
-          {{ text_field(txt_msg_limit) }}
+          {# TODO: FF_ANNUAL_LIMIT removal #}
+          {% if config["FF_ANNUAL_LIMIT"]  %}
+            {% set annual_sms_limit = _('{} text messages').format((current_service.sms_annual_limit) | format_number) %}
+          {% else %}
+            {% set annual_sms_limit = _('{} text messages').format((limits.free_yearly_sms) | format_number) %}
+          {% endif%}
+          {{ text_field(annual_sms_limit, attributes="data-testid=sms-annual-limit") }}
           {{ text_field('')}}
         {% endcall %}
 
@@ -372,6 +382,33 @@
               for=txt
             ) }}
           {% endcall %}
+
+        {# TODO: FF_ANNUAL_LIMIT removal #}
+        {% if config["FF_ANNUAL_LIMIT"]  %}
+          {% call row() %}
+            {% set txt = _('Annual email limit') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.email_annual_limit | format_number) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.set_email_annual_limit', service_id=current_service.id),
+              attributes="data-testid=edit-email-annual-limit",
+              for=txt
+            ) }}
+          {% endcall %}
+
+          {% call row() %}
+            {% set txt = _('Annual text message limit') %}
+            {{ text_field(txt)}}
+            {{ text_field(current_service.sms_annual_limit | format_number) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.set_sms_annual_limit', service_id=current_service.id),
+              attributes="data-testid=edit-sms-annual-limit",
+              for=txt
+            ) }}
+          {% endcall %}
+        {% endif %}
 
           {% call row() %}
             {% set txt = _('API rate limit per minute') %}

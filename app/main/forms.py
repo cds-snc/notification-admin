@@ -749,6 +749,26 @@ class SMSMessageLimit(StripWhitespaceForm):
     )
 
 
+class SMSAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual text message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual email message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
         _l("Numbers of text messages per fiscal year"),
