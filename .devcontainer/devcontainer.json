@@ -1,31 +1,36 @@
 {
 	"name": "notification-admin",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"context": ".."
-	},
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "notify-admin",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
 	"remoteEnv": {
 		"PATH": "/home/vscode/.local/bin:${containerEnv:PATH}" // give our installed Python modules precedence
 	},
 	"containerEnv": {
 		"SHELL": "/bin/zsh"
 	},
-	"customizations":{
+	"customizations": {
 		"vscode": {
 			"extensions": [
-				"njpwerner.autodocstring",
+				"-ms-python.autopep8",
+				"charliermarsh.ruff",
+				"donjayamanne.python-extension-pack",
+				"eamodio.gitlens",
+				"fill-labs.dependi",
 				"github.copilot",
 				"GitHub.copilot-labs",
-				"donjayamanne.python-extension-pack",
-				"-ms-python.autopep8",
+				"mechatroner.rainbow-csv",
+				"ms-azuretools.vscode-docker",
+				"ms-ossdata.vscode-postgresql",
+				"ms-python.black-formatter",
 				"ms-python.vscode-pylance",
-				"eamodio.gitlens",
+				"njpwerner.autodocstring",
 				"wholroyd.jinja",
 				"visualstudioexptteam.vscodeintellicode",
 				"yzhang.markdown-all-in-one",
-				"ms-ossdata.vscode-postgresql",
 				"tamasfe.even-better-toml",
-				"charliermarsh.ruff",
+				"vsliveshare.vsliveshare"
 			],
 			"settings": {
 				"ruff.lint.run": "onSave",
@@ -38,15 +43,11 @@
 			}
 		}
 	},
-
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "16.20.0"
 		}
 	},
-	"forwardPorts": [
-		6012
-	],
-	"postCreateCommand": "notify-dev-entrypoint.sh",
+	"postCreateCommand": "/usr/local/bin/notify-dev-entrypoint.sh",
 	"remoteUser": "vscode"
 }
