@@ -18,6 +18,7 @@ RUN apt-get update \
     exa \
     fd-find \
     git \
+    iputils-ping \
     iproute2 \
     less \
     libsodium-dev \
@@ -51,7 +52,8 @@ RUN apt-get update \
 # Upgrade pip
 RUN pip install --upgrade pip
 
-COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+COPY --chown=vscode:vscode .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/notify-dev-entrypoint.sh
 
 COPY --chown=vscode:vscode .devcontainer/scripts/installations.sh /usr/local/bin/
 RUN chmod -R 765 /usr/local/bin/installations.sh

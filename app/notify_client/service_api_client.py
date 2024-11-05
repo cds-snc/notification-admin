@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from flask import current_app
 from flask_login import current_user
+from notifications_utils.decorators import requires_feature
 
 from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
@@ -118,6 +119,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "sending_domain",
             "sms_volume_today",
             "sensitive_service",
+            "email_annual_limit",
+            "sms_annual_limit",
         }
 
         if disallowed_attributes:
@@ -157,6 +160,22 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.update_service(
             service_id,
             sms_daily_limit=sms_daily_limit,
+        )
+
+    @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
+    @cache.delete("service-{service_id}")
+    def update_sms_annual_limit(self, service_id, sms_annual_limit):
+        return self.update_service(
+            service_id,
+            sms_annual_limit=sms_annual_limit,
+        )
+
+    @requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
+    @cache.delete("service-{service_id}")
+    def update_email_annual_limit(self, service_id, email_annual_limit):
+        return self.update_service(
+            service_id,
+            email_annual_limit=email_annual_limit,
         )
 
     # This method is not cached because it calls through to one which is
