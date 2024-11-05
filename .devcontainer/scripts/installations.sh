@@ -26,12 +26,12 @@ which poetry
 poetry --version
 
 # Initialize poetry autocompletions
-mkdir ~/.zfunc
+mkdir -p ~/.zfunc
 touch ~/.zfunc/_poetry
 poetry completions zsh > ~/.zfunc/_poetry
 
 # Install dependencies
-cd /workspaces/notification-admin
+cd /workspace
 poetry install
 
 # Poe the Poet plugin tab completions
