@@ -1814,22 +1814,20 @@ class OptionalIntegerRange:
 
         # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
-            print("DEBUG: Trigger condition not met, stopping validation chain")
             field.errors = []  # Delete any errors
             return StopValidation()  # Stop validation chain
 
         # Only validate if the trigger condition is met
         if trigger_data == self.trigger_value:
             # First check if empty
-            if field.data is None or field.data == '':
+            if field.data is None or field.data == "":
                 raise ValidationError(self.message or _l("This cannot be empty"))
                 # Then check range if value is provided
             if self.min is not None and field.data < self.min:
                 raise ValidationError(_l("Number must be more than {min}").format(min=format_thousands_localized(self.min)))
             if self.max is not None and field.data > self.max:
-                raise ValidationError(_l("Number must be less than {max}").forma(max=format_thousands_localized(self.max)))
+                raise ValidationError(_l("Number must be less than {max}").format(max=format_thousands_localized(self.max)))
         else:
-            print("DEBUG: Trigger condition not met, skipping validation")
             return True
 
 
@@ -1860,7 +1858,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
             OptionalIntegerRange(
                 trigger_field=f"daily_{notification_type}_volume",
                 trigger_value=f"more_{notification_type}",
-                min=limit * 10,
+                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
             )
         ]
 
@@ -1869,7 +1867,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         validators=[DataRequired()],
     )
     annual_email_volume = RadioField(
-        _l("How many emails do you expect to  send in a year?"),
+        _l("How many emails do you expect to send in a year?"),
         validators=[DataRequired()],
     )
     daily_sms_volume = RadioField(
@@ -1877,7 +1875,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         validators=[DataRequired()],
     )
     annual_sms_volume = RadioField(
-        _l("How many text messages do you expect to  send in a year?"),
+        _l("How many text messages do you expect to send in a year?"),
         validators=[DataRequired()],
     )
 
@@ -1950,7 +1948,7 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
         validators=[DataRequired()],
     )
     annual_email_volume = RadioField(
-        _l("How many emails do you expect to  send in a year?"),
+        _l("How many emails do you expect to send in a year?"),
         validators=[DataRequired()],
     )
     daily_sms_volume = RadioField(
@@ -1958,7 +1956,7 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
         validators=[DataRequired()],
     )
     annual_sms_volume = RadioField(
-        _l("How many text messages do you expect to  send in a year?"),
+        _l("How many text messages do you expect to send in a year?"),
         validators=[DataRequired()],
     )
 
