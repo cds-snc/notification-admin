@@ -1939,7 +1939,7 @@ class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
             OptionalIntegerRange(
                 trigger_field=f"daily_{notification_type}_volume",
                 trigger_value=f"more_{notification_type}",
-                min=limit * 10,
+                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
             )
         ]
 
