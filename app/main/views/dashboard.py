@@ -18,6 +18,7 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
+    annual_totals_client,
     current_service,
     job_api_client,
     notification_api_client,
@@ -300,12 +301,22 @@ def get_dashboard_partials(service_id):
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
+    # get annual data from fact table (all data this year except today) + redis (today)
+    annual_data = annual_totals_client.get_total_notifications_sent_this_year(service_id)
+
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
         "daily_totals": render_template(
             "views/dashboard/_totals_daily.html",
             service_id=service_id,
             statistics=dashboard_totals_daily[0],
+            column_width=column_width,
+        ),
+        "annual_totals": render_template(
+            "views/dashboard/_totals_annual.html",
+            service_id=service_id,
+            statistics=dashboard_totals_daily[0],
+            statistics_annual=annual_data,
             column_width=column_width,
         ),
         "weekly_totals": render_template(
