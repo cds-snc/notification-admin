@@ -37,7 +37,6 @@
       <nav class="browse-list">
         <ul>
           <li class="browse-list-item">
-            {{ record.id }} : <br>
             {% if record.type == "notification" %}
             <a href="{{url_for('.service_dashboard', service_id=record.service_id)}}" class="browse-list-link">{{ record.service_name }}</a> /
             <a href="{{url_for('.view_template', service_id=record.service_id, template_id=record.template_id)}}" class="browse-list-link">{{ record.template_name }}</a> /
@@ -57,7 +56,6 @@
             {{ record.type}}
             {% endif %}
           </li>
-          <hr>
         </ul>
       </nav>
     {% endfor %}
