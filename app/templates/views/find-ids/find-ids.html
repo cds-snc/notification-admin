@@ -16,8 +16,10 @@
 
   {% call form_wrapper(
       action=url_for('.find_ids'),
-      class='grid-row contain-floats'
+      class='grid-row contain-floats',
+      id='search-form'
   ) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     {% set label_txt = _('Find records by UUID') %}
     <div class="md:w-full float-left py-0 px-0 px-gutterHalf box-border">
       {{ textbox_search(
@@ -26,10 +28,6 @@
         label=label_txt
       ) }}
     </div>
-  {% endcall %}
-
-  {% call form_wrapper(id='search-form' ) %}
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   {% endcall %}
 
   {% if records %}
