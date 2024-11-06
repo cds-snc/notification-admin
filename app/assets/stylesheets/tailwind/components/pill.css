@@ -17,7 +17,7 @@
 
   .pill a,
   .pill-selected-item {
-    @apply block float-left w-full py-5 self-center no-underline;
+    @apply block float-left w-full py-5 no-underline;
   }
 
   .pill a {
