@@ -10,12 +10,13 @@ from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
-class ServiceAPIClient(NotifyAdminAPIClient):
-    def _seconds_until_midnight(self):
-        now = datetime.now()
-        midnight = datetime.combine(now + timedelta(days=1), datetime.min.time())
-        return int((midnight - now).total_seconds())
+def _seconds_until_midnight():
+    now = datetime.now()
+    midnight = datetime.combine(now + timedelta(days=1), datetime.min.time())
+    return int((midnight - now).total_seconds())
 
+
+class ServiceAPIClient(NotifyAdminAPIClient):
     @cache.delete("user-{user_id}")
     def create_service(
         self,
