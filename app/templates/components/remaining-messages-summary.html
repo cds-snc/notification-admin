@@ -48,7 +48,7 @@
       'limit': yearlyLimit,
       'text': _('remaining until') ~ ' ' ~ next_april,
       'link_text': _('Visit Usage reports'),
-      'link_href': '#',
+      'link_href': url_for('.monthly', service_id=current_service.id),
       'remaining': "{:,}".format(yearlyLimit - yearlyUsed) if session['userlang'] == 'en' else "{:,}".format(yearlyLimit - yearlyUsed).replace(',', ' '),
       'warn': yearlyUsed / yearlyLimit >= warning_threshold
     }
