@@ -63,7 +63,6 @@ from app.navigation import (
     MainNavigation,
     OrgNavigation,
 )
-from app.notify_client.annual_totals_client import annual_totals_client
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
@@ -177,7 +176,6 @@ def create_app(application):
         zendesk_client,
         redis_client,
         bounce_rate_client,
-        annual_totals_client,
     ):
         client.init_app(application)
 
@@ -226,7 +224,6 @@ def create_app(application):
     application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
     application.jinja_env.globals["parse_ua"] = parse
     application.jinja_env.globals["events_key"] = EVENTS_KEY
-    application.jinja_env.globals["now"] = datetime.utcnow
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:
