@@ -18,7 +18,6 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
-    annual_totals_client,
     current_service,
     job_api_client,
     notification_api_client,
@@ -231,14 +230,19 @@ def usage(service_id):
 @user_has_permissions("view_activity")
 def monthly(service_id):
     year, current_financial_year = requested_and_current_financial_year(request)
+    monthly_data = (service_api_client.get_monthly_notification_stats(service_id, year),)
+    annual_aggregate_data = service_api_client.aggregate_by_type(monthly_data[0])
+    months = (format_monthly_stats_to_list(monthly_data[0]["data"]),)
+
     return render_template(
         "views/dashboard/monthly.html",
-        months=format_monthly_stats_to_list(service_api_client.get_monthly_notification_stats(service_id, year)["data"]),
+        months=months[0],
         years=get_tuples_of_financial_years(
             partial_url=partial(url_for, ".monthly", service_id=service_id),
             start=current_financial_year - 2,
             end=current_financial_year,
         ),
+        annual_data=annual_aggregate_data,
         selected_year=year,
     )
 
@@ -302,7 +306,7 @@ def get_dashboard_partials(service_id):
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
     # get annual data from fact table (all data this year except today) + redis (today)
-    annual_data = annual_totals_client.get_total_notifications_sent_this_year(service_id)
+    annual_data = service_api_client.get_monthly_notification_stats_excluding_today(service_id, year=get_current_financial_year())
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
