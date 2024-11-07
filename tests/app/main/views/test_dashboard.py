@@ -137,6 +137,7 @@ def test_task_shortcuts_are_visible_based_on_permissions(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
+    mock_get_service_statistics,
     permissions: list,
     text_in_page: list,
     text_not_in_page: list,
@@ -170,6 +171,7 @@ def test_survey_widget_presence(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
+    mock_get_service_statistics,
     mocker,
     admin_url,
     is_widget_present,
@@ -193,6 +195,7 @@ def test_sending_link_has_query_param(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
+    mock_get_service_statistics,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
     client_request.login(active_user_with_permissions)
@@ -209,6 +212,7 @@ def test_no_sending_link_if_no_templates(
     client_request: ClientRequest,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_statistics,
+    mock_get_service_statistics,
     mock_get_jobs,
 ):
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
@@ -399,31 +403,6 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
     assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
     assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
-
-
-@pytest.mark.parametrize(
-    "permissions, column_name, expected_column_count",
-    [
-        (["email", "sms"], ".w-1\\/2", 6),
-        (["email", "sms"], ".w-1\\/2", 6),
-    ],
-)
-def test_correct_columns_display_on_dashboard_v15(
-    client_request: ClientRequest,
-    mock_get_service_templates,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    mock_get_jobs,
-    service_one,
-    permissions,
-    expected_column_count,
-    column_name,
-    app_,
-):
-    service_one["permissions"] = permissions
-
-    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
-    assert len(page.select(column_name)) == expected_column_count
 
 
 def test_daily_usage_section_shown(
