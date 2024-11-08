@@ -12,7 +12,7 @@ describe("Service Settings", () => {
 
     cy.visit(
       config.Hostnames.Admin +
-      `/services/${config.Services.Cypress}/service-settings`,
+        `/services/${config.Services.Cypress}/service-settings`,
     );
   });
 
@@ -33,7 +33,7 @@ describe("Platform Admin Service Settings", () => {
     cy.login();
     cy.visit(
       config.Hostnames.Admin +
-      `/services/${config.Services.Cypress}/service-settings`,
+        `/services/${config.Services.Cypress}/service-settings`,
     );
   });
 
