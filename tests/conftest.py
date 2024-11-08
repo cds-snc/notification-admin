@@ -990,6 +990,7 @@ def mock_update_service_template(mocker):
         process_type=None,
         postage=None,
         template_category_id=None,
+        text_direction_rtl=False,
     ):
         template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
@@ -1024,6 +1025,8 @@ def mock_update_service_template_400_name_too_long(mocker):
         subject=None,
         process_type=None,
         postage=None,
+        template_category_id=None,
+        text_direction_rtl=False,
     ):
         json_mock = Mock(
             return_value={
@@ -1068,6 +1071,8 @@ def mock_update_service_template_400_content_too_big(mocker):
         subject=None,
         process_type=None,
         postage=None,
+        template_category_id=None,
+        text_direction_rtl=False,
     ):
         json_mock = Mock(
             return_value={
@@ -3627,6 +3632,16 @@ def mock_get_free_sms_fragment_limit(mocker):
 def mock_update_message_limit(mocker):
     sample_limit = 10000
     return mocker.patch("app.service_api_client.update_message_limit", return_value=sample_limit)
+
+
+@pytest.fixture(scope="function")
+def mock_update_email_annual_limit(mocker):
+    return mocker.patch("app.service_api_client.update_email_annual_limit", return_value=10000000)
+
+
+@pytest.fixture(scope="function")
+def mock_update_sms_annual_limit(mocker):
+    return mocker.patch("app.service_api_client.update_sms_annual_limit", return_value=25000)
 
 
 @pytest.fixture(scope="function")

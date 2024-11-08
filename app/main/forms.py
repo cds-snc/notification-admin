@@ -749,6 +749,26 @@ class SMSMessageLimit(StripWhitespaceForm):
     )
 
 
+class SMSAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual text message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual email message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
 class FreeSMSAllowance(StripWhitespaceForm):
     free_sms_allowance = IntegerField(
         _l("Numbers of text messages per fiscal year"),
@@ -784,6 +804,9 @@ class BaseTemplateForm(StripWhitespaceForm):
             NoCommasInPlaceHolders(),
         ],
     )
+
+    text_direction_rtl = BooleanField("text_direction_rtl")
+
     process_type = RadioField(
         _l("Select a priority queue"),
         choices=[
@@ -838,7 +861,7 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
     template_content = TextAreaField(
-        _l("Email message"),
+        _l("Email content"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             NoCommasInPlaceHolders(),

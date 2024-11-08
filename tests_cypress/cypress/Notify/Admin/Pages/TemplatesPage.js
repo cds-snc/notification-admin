@@ -28,6 +28,9 @@ let Components = {
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
     TemplatePriority: () => cy.getByTestId('process_type'),
     DeleteTemplateButton: () => cy.contains('a', 'Delete this template'), 
+    TextDirectionCheckbox: () => cy.getByTestId('template-rtl'),
+    AddRecipientsButton: () => cy.getByTestId('add-recipients'),
+    OneRecipientRadio: () => cy.getByTestId('one-recipient'),
 };
 
 // Actions users can take on the page
@@ -118,6 +121,20 @@ let Actions = {
         cy.get('.banner-dangerous').contains('Are you sure').should('be.visible');
         cy.get('button[name="delete"]').click();
         cy.url().should('contain', '/templates');
+    },
+    SetTextDirection: (rtl) => {
+        if (rtl) {
+            Components.TextDirectionCheckbox().check();
+        } else {
+            Components.TextDirectionCheckbox().uncheck();
+        }
+    },
+    AddRecipients: (email_address) => {
+        Components.AddRecipientsButton().click();
+        cy.contains('h1', 'Add recipients').should('be.visible');
+        Components.OneRecipientRadio().click();
+        Components.OneRecipientRadio().nextAll('input').first().type(email_address);
+        Components.ContinueButton().click();
     }
 }
 

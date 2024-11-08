@@ -79,6 +79,8 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
+    FF_RTL = env.bool("FF_RTL", True)
+    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", True)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 25_000)
@@ -186,6 +188,7 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", True)
 
 
 class Test(Development):
@@ -211,12 +214,8 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
-    FF_SPIKE_SMS_DAILY_LIMIT = True
-    FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
-    FF_BOUNCE_RATE_V15 = True
-    FF_BOUNCE_RATE_BACKEND = True
-    FF_ABTEST_SERVICE_ID = ""
+    FF_RTL = True
+    FF_ANNUAL_LIMIT = False
 
 
 class ProductionFF(Config):
@@ -242,12 +241,8 @@ class ProductionFF(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
-    FF_SPIKE_SMS_DAILY_LIMIT = True
-    FF_SMS_PARTS_UI = False
-    FF_BOUNCE_RATE_V1 = True
-    FF_BOUNCE_RATE_V15 = True
-    FF_BOUNCE_RATE_BACKEND = True
-    FF_ABTEST_SERVICE_ID = ""
+    FF_RTL = False
+    FF_ANNUAL_LIMIT = False
 
 
 class Production(Config):
@@ -257,6 +252,7 @@ class Production(Config):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
+    FF_ANNUAL_LIMIT = False
 
 
 class Staging(Production):
@@ -264,6 +260,7 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_ANNUAL_LIMIT = True
 
 
 class Scratch(Production):

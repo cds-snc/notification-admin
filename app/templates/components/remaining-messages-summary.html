@@ -1,0 +1,108 @@
+{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, textOnly=None) %}
+  <!-- Validate textOnly param -->
+  {% set textOnly_allowed_values = ['text', 'emoji'] %}
+  {% if textOnly not in textOnly_allowed_values %}
+    {% set textOnly = None %}
+    {% set textOnlyMode = false %}
+  {% else %}
+    {% set textOnlyMode = true %}
+  {% endif %}
+
+  <!-- Validate notification_type param  -->
+  {% set notificationType_allowed_values = ['sms', 'email'] %}
+  {% if notification_type not in notificationType_allowed_values %}
+      {% set notification_type = None %}
+      {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
+        <p class="text-red-300 mt-6 mb-6"><i aria-hidden="true" class="fa-solid fa-fas fa-triangle-exclamation text-yellow w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i> Invalid notification type - check your jinja template!</p>
+      {% endif %}
+  {% else %}
+    {% if notification_type == 'sms' %}
+      {% set notification_type = _('text messages') %}
+    {% elif notification_type == 'email' %}
+      {% set notification_type = _('emails') %}
+    {% endif %}
+  {% endif %}
+
+  <!-- Set some constants -->
+  {% set current_year = current_year or (now().year if now().month < 4 else now().year + 1) %}
+  {% set next_april = _('April 1, ') ~  current_year %}
+  {% set icon_default = 'fa-circle-check text-blue-300 text-base self-start' %}
+  {% set icon_warning = 'fa-circle-exclamation text-red-300 text-base self-start' %}
+  {% set warning_threshold = 0.8 %}
+
+  {% set sections = [
+    {
+      'type': 'daily',
+      'used': dailyUsed,
+      'limit': dailyLimit,
+      'text': _('remaining until') ~ ' ' ~ ('7 pm ET'),
+      'link_text': _('Request a daily limit increase'),
+      'link_href': url_for('main.contact'),
+      'remaining': "{:,}".format(dailyLimit - dailyUsed) if session['userlang'] == 'en' else "{:,}".format(dailyLimit - dailyUsed).replace(',', ' '),
+      'skip': false if textOnlyMode else dailyLimit - dailyUsed == 0 and yearlyLimit - yearlyUsed == 0,
+      'warn': dailyUsed / dailyLimit >= warning_threshold
+    },
+    {
+      'type': 'yearly',
+      'used': yearlyUsed,
+      'limit': yearlyLimit,
+      'text': _('remaining until') ~ ' ' ~ next_april,
+      'link_text': _('Visit Usage reports'),
+      'link_href': url_for('.monthly', service_id=current_service.id),
+      'remaining': "{:,}".format(yearlyLimit - yearlyUsed) if session['userlang'] == 'en' else "{:,}".format(yearlyLimit - yearlyUsed).replace(',', ' '),
+      'warn': yearlyUsed / yearlyLimit >= warning_threshold
+    }
+  ] %}
+
+  {% if textOnlyMode %}
+    <div class="mt-4 pl-10 py-2 border-l-8 border-gray-300">
+  {% endif %}
+  <div data-testid="rms">
+    {% for section in sections if not section.skip %}
+      {% if textOnly == None %}
+        <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small " data-testid="rms-item">
+          {% set icon_class = icon_default %}
+          {% set icon_type = "default" %}
+          {% if section.warn %}
+          {% set icon_class = icon_warning %}
+          {% set icon_type = "warning" %}
+          {% endif %}
+          <span data-testid="rms-icon-{{ icon_type }}"></span>
+          <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" {{ 'aria-label=' ~ _('warning') if icon_type=="warning"
+            else "" }}></i>
+          <div class="flex flex-wrap items-baseline gap-x-2">
+            <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
+            }}
+          </div>
+          <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="ml-auto text-blue-500">{{
+            section.link_text }}</a>
+        </div>
+      {% else %}
+        <p class="m-0 p-0" data-testid="rms-item">
+          {% if section.remaining == "0" %}
+            <span data-testid="text-prefix-at-limit">{{ _('At limit: ') if textOnly == 'text' else '⚠️' }}</span>
+          {% elif section.warn %}
+            <span data-testid="text-prefix-near-limit">{{ _('Near limit: ') if textOnly == 'text' else '⚠️' }}</span>
+          {% else %}
+            <span data-testid="text-prefix-below-limit">{{ _('Below limit: ') if textOnly == 'text' else '🆗' }}</span>
+          {% endif %}
+          {{ section.remaining }} {{notification_type}} {{ section.text }}
+        </p>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if textOnlyMode %}
+    </div>
+  {% endif %}
+
+  {% if sections[0].skip %}
+    <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="yearly-sending-paused">
+      Sending paused until annual limit resets
+    </p>
+  {% elif sections[0].remaining == "0" %}
+    <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="daily-sending-paused">
+      Sending paused until 7pm ET. You can schedule more messages to send later.
+    </p>
+  {% endif %}
+  
+{% endmacro %}
