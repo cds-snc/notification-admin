@@ -30,7 +30,7 @@ describe("Platform Admin Service Settings", () => {
   beforeEach(() => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
-    cy.login(Cypress.env("NOTIFY_ADMIN_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login();
     cy.visit(
       config.Hostnames.Admin +
       `/services/${config.Services.Cypress}/service-settings`,
