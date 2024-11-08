@@ -33,6 +33,6 @@ const config = {
 };
 
 // choose which config to use here
-const ConfigToUse = { ...config.COMMON, ...config.LOCAL };
+const ConfigToUse = { ...config.COMMON, ...config.STAGING };
 
 module.exports = ConfigToUse;
