@@ -224,6 +224,7 @@ def create_app(application):
     application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
     application.jinja_env.globals["parse_ua"] = parse
     application.jinja_env.globals["events_key"] = EVENTS_KEY
+    application.jinja_env.globals["now"] = datetime.utcnow
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:

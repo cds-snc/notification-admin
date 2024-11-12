@@ -1,0 +1,85 @@
+{% from 'components/remaining-messages-summary.html' import remaining_messages_summary with context %}
+
+    <h2><code>remaining_messages_summary</code></h2>
+    <hr />
+    <h3 class="heading-medium">Below limits</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-below">
+
+        <div class="mb-6 bg-white p-4">
+        {{ remaining_messages_summary(1000, 799, 1000, 799, "email") }}
+        </div>
+        <div class="mb-6 bg-white p-4">
+        {{ remaining_messages_summary(10000, 699, 10000, 699, "sms") }}
+        </div>
+        <div class="mb-6 bg-white p-4">
+        {{ remaining_messages_summary(1000, 0, 1000, 0, "email") }}
+        </div>
+    </div>
+
+    <h3 class="heading-medium">Warning</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-warning">
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 800, 1000, 800, "email") }}
+        </div>
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 900, 1000, 900, "email") }}
+        </div>
+    </div>
+
+    <h3 class="heading-medium">At limit</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-limit-both">
+        At both limits
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email") }}
+        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-limit-daily">
+        At daily limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 1000, 1000, 500, "email") }}
+        </div>
+    </div>
+
+    <h3 class="heading-medium">Mixed</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-mixed">
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 100, 1000, 1000, "email") }}
+        </div>
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 1000, 1000, 100, "email") }}
+        </div>
+    </div>
+
+    <h3 class="heading-medium">Text only</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-below">below limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(10000, 700, 10000, 750, "email", "text") }}
+        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-warning">near limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", "text") }}
+        </div>  
+    </div>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-limit">at limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", "text") }}
+        </div>
+    </div>
+
+    <h3 class="heading-medium">Text only emoji</h3>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-below">below limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 700, 1000, 750, "email", "emoji") }}
+        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-warning">near limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", "emoji") }}
+        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-limit">at limit
+        <div class="mb-6 bg-white p-4">
+            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", "emoji") }}
+        </div>
+    </div>
