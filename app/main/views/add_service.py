@@ -167,6 +167,7 @@ def _renderTemplateStep(form, current_step: str, government_type: Optional[str])
         back_link = url_for(".add_service", current_step=STEP_ORGANISATION)
     return render_template(
         "views/add-service.html",
+        sending_domain=current_app.config["SENDING_DOMAIN"],
         form=form,
         heading=_(WIZARD_DICT[current_step]["header"]),  # type: ignore
         step_num=step_num,
