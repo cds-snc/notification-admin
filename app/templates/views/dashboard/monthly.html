@@ -26,21 +26,23 @@
     ) }}
   </div>
 
-  <h2 class="heading-medium mt-12">
-    {{ _('Annual limit overview') }}
-    <br />
-    <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
-      {{ _('Fiscal year begins April 1, ') ~ selected_year ~ _(' and ends March 31, ') ~ (selected_year + 1) }}
-    </small> 
-  </h2>
-  <div class="grid-row contain-floats mb-10">
-    <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-      {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=annual_data['email']) }}
+  {% if config["FF_ANNUAL_LIMIT"] %}
+    <h2 class="heading-medium mt-12">
+      {{ _('Annual limit overview') }}
+      <br />
+      <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
+        {{ _('Fiscal year begins April 1, ') ~ selected_year ~ _(' and ends March 31, ') ~ (selected_year + 1) }}
+      </small> 
+    </h2>
+    <div class="grid-row contain-floats mb-10">
+      <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=annual_data['email']) }}
+      </div>
+      <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=annual_data['sms']) }}
+      </div>
     </div>
-    <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-      {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=annual_data['sms']) }}
-    </div>
-  </div>
+  {% endif %}
 
   {% if months %}
    {% set spend_txt = _('Total spend') %}
