@@ -215,7 +215,7 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
     FF_RTL = True
-    FF_ANNUAL_LIMIT = False
+    FF_ANNUAL_LIMIT = True
 
 
 class ProductionFF(Config):
