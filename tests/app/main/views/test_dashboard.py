@@ -1,7 +1,9 @@
 import copy
 import re
+from unittest.mock import ANY
 
 import pytest
+from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
 
@@ -1403,3 +1405,194 @@ def test_dashboard_daily_limits(
             )
             == 2
         )
+
+
+class TestAnnualLimits:
+    def test_daily_usage_uses_muted_component(
+        self,
+        logged_in_client,
+        mocker,
+        mock_get_service_templates_when_no_templates_exist,
+        mock_get_jobs,
+        mock_get_service_statistics,
+        mock_get_usage,
+    ):
+        mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
+
+        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+        response = logged_in_client.get(url)
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        # ensure both email + sms widgets are muted
+        assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
+
+    def test_annual_usage_uses_muted_component(
+        self,
+        logged_in_client,
+        mocker,
+        mock_get_service_templates_when_no_templates_exist,
+        mock_get_jobs,
+        mock_get_service_statistics,
+        mock_get_usage,
+    ):
+        mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
+
+        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+        response = logged_in_client.get(url)
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+        # ensure both email + sms widgets are muted
+        assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
+
+    @freeze_time("2024-11-25 12:12:12")
+    @pytest.mark.parametrize(
+        "redis_daily_data, monthly_data, expected_data",
+        [
+            (
+                {"notifications": {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500}},
+                {
+                    "data": {
+                        "2024-04": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-05": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-06": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-07": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-08": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-09": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-10": {
+                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
+                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
+                            "letter": {},
+                        },
+                        "2024-11": {
+                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
+                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
+                            "letter": {},
+                        },
+                    }
+                },
+                {"email": 990, "letter": 0, "sms": 1420},
+            ),
+            (
+                {"notifications": {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6}},
+                {
+                    "data": {
+                        "2024-10": {
+                            "sms": {"delivered": 6, "permanent-failure": 6, "sending": 6, "technical-failure": 6},
+                            "email": {"delivered": 6, "permanent-failure": 6, "sending": 6, "technical-failure": 6},
+                            "letter": {},
+                        },
+                    }
+                },
+                {"email": 36, "letter": 0, "sms": 36},
+            ),
+        ],
+    )
+    def test_usage_report_aggregates_calculated_properly_with_redis(
+        self,
+        logged_in_client,
+        mocker,
+        mock_get_service_templates_when_no_templates_exist,
+        mock_get_jobs,
+        mock_get_service_statistics,
+        mock_get_usage,
+        redis_daily_data,
+        monthly_data,
+        expected_data,
+    ):
+        # mock annual_limit_client.get_all_notification_counts
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value=redis_daily_data,
+        )
+
+        mocker.patch(
+            "app.service_api_client.get_monthly_notification_stats",
+            return_value=copy.deepcopy(monthly_data),
+        )
+
+        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+
+        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        logged_in_client.get(url)
+
+        mock_render_template.assert_called_with(
+            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+        )
+
+    @freeze_time("2024-11-25 12:12:12")
+    @pytest.mark.parametrize(
+        "daily_data, monthly_data, expected_data",
+        [
+            (
+                {
+                    "sms": {"requested": 100, "delivered": 50, "failed": 50},
+                    "email": {"requested": 100, "delivered": 50, "failed": 50},
+                    "letter": {"requested": 0, "delivered": 0, "failed": 0},
+                },
+                {
+                    "data": {
+                        "2024-04": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-05": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-06": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-07": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-08": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-09": {"sms": {}, "email": {}, "letter": {}},
+                        "2024-10": {
+                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
+                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
+                            "letter": {},
+                        },
+                        "2024-11": {
+                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
+                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
+                            "letter": {},
+                        },
+                    }
+                },
+                {"email": 540, "letter": 0, "sms": 420},
+            )
+        ],
+    )
+    def test_usage_report_aggregates_calculated_properly_without_redis(
+        self,
+        logged_in_client,
+        mocker,
+        mock_get_service_templates_when_no_templates_exist,
+        mock_get_jobs,
+        mock_get_service_statistics,
+        mock_get_usage,
+        daily_data,
+        monthly_data,
+        expected_data,
+    ):
+        # mock annual_limit_client.get_all_notification_counts
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value={},
+        )
+
+        mocker.patch(
+            "app.service_api_client.get_service_statistics",
+            return_value=copy.deepcopy(daily_data),
+        )
+
+        mocker.patch(
+            "app.service_api_client.get_monthly_notification_stats",
+            return_value=copy.deepcopy(monthly_data),
+        )
+
+        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+
+        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        logged_in_client.get(url)
+
+        mock_render_template.assert_called_with(
+            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+        )
+        #
