@@ -79,9 +79,9 @@ jobs:
         TERRAGRUNT_VERSION: 0.66.9
         TF_SUMMARIZE_VERSION: 0.2.3                           
 
-      - name: Fetch VPN
-        run: |
-          curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s staging
+    - name: Fetch VPN
+      run: |
+        curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s staging
 
     - name: Connect to VPN
       uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
