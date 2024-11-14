@@ -384,6 +384,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_service_history(self, service_id):
         return self.get("/service/{0}/history".format(service_id))
 
+    @flask_cache.memoize(timeout=_seconds_until_midnight())
     def get_monthly_notification_stats(self, service_id, year, exclude_today=False):
         return self.get(url="/service/{}/notifications/monthly?year={}&exclude_today={}".format(service_id, year, exclude_today))
 
