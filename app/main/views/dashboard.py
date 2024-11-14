@@ -229,21 +229,86 @@ def usage(service_id):
 @main.route("/services/<service_id>/monthly")
 @user_has_permissions("view_activity")
 def monthly(service_id):
+    def combine_daily_to_annual(daily, annual, mode):
+        if mode == 'redis':
+            annual["sms"] += daily["sms_delivered"] + daily["sms_failed"]
+            annual["email"] += daily["email_delivered"] + daily["email_failed"]
+        elif mode == 'db':
+            annual["sms"] += daily["sms"]["requested"]
+            annual["email"] += daily["email"]["requested"]
+
+        return annual
+
+    def combine_daily_to_monthly(daily, monthly, mode):
+        if mode == 'redis':
+            monthly[0]["sms_counts"]["failed"] += daily["sms_failed"]
+            monthly[0]["sms_counts"]["requested"] += daily["sms_failed"] + daily["sms_delivered"]
+            monthly[0]["email_counts"]["failed"] += daily["email_failed"]
+            monthly[0]["email_counts"]["requested"] += daily["email_failed"] + daily["email_delivered"]
+        elif mode == 'db':
+            monthly[0]["sms_counts"]["failed"] += daily["sms"]["failed"]
+            monthly[0]["sms_counts"]["requested"] += daily["sms"]["requested"]
+            monthly[0]["email_counts"]["failed"] += daily["email"]["failed"]
+            monthly[0]["email_counts"]["requested"] += daily["email"]["requested"]
+
+        return monthly
+
+    def aggregate_by_type(notification_data):
+        counts = {"sms": 0, "email": 0, "letter": 0}
+        for month_data in notification_data["data"].values():
+            for message_type, message_counts in month_data.items():
+                if isinstance(message_counts, dict):
+                    counts[message_type] += sum(message_counts.values())
+
+        # return the result
+        return counts
     year, current_financial_year = requested_and_current_financial_year(request)
-    monthly_data = (service_api_client.get_monthly_notification_stats(service_id, year),)
-    annual_aggregate_data = service_api_client.aggregate_by_type(monthly_data[0])
-    months = (format_monthly_stats_to_list(monthly_data[0]["data"]),)
+    monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
+    annual_data = aggregate_by_type(monthly_data)
+
+    #  notifications: {
+    #         sms_delivered: int,
+    #         email_delivered: int,
+    #         sms_failed: int,
+    #         email_failed: int
+    #     },
+
+    # todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
+    todays_data = {
+        "snotifications": {
+            "sms_delivered": 0,
+            "email_delivered": 1,
+            "sms_failed": 0,
+            "email_failed": 0
+        }
+    }
+    # if redis is empty, query the db
+    if todays_data.get("notifications") is None:
+        todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
+        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
+
+        months = (format_monthly_stats_to_list(monthly_data["data"]),)
+        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
+    else:
+        # aggregate daily + annual
+        annual_data_aggregate = combine_daily_to_annual(todays_data["notifications"], annual_data, 'redis')
+
+        months = (format_monthly_stats_to_list(monthly_data["data"]),)
+        monthly_data_aggregate = combine_daily_to_monthly(todays_data["notifications"], months[0], "redis")
+
+    # add today's data to monthly data
 
     return render_template(
         "views/dashboard/monthly.html",
-        months=months[0],
+        months=monthly_data_aggregate,
         years=get_tuples_of_financial_years(
             partial_url=partial(url_for, ".monthly", service_id=service_id),
             start=current_financial_year - 2,
             end=current_financial_year,
         ),
-        annual_data=annual_aggregate_data,
+        annual_data=annual_data_aggregate,
         selected_year=year,
+        current_financial_year=current_financial_year,
     )
 
 
@@ -344,6 +409,18 @@ def get_dashboard_partials(service_id):
 
 
 def _get_daily_stats(service_id):
+    # TODO: get from redis, else fallback to template_statistics_client.get_template_statistics_for_service
+    # daily_stats = annual_limit_client.get_all_notification_counts(current_service.id)
+
+    # notifications: {
+    #         sms_delivered: int,
+    #         email_delivered: int,
+    #         sms_failed: int,
+    #         email_failed: int
+    #     },
+    # if daily_stats.get("notifications") is None:
+    #     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     stats_daily = aggregate_notifications_stats(all_statistics_daily)
     dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
