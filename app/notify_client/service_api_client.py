@@ -5,7 +5,6 @@ from flask import current_app
 from flask_login import current_user
 from notifications_utils.decorators import requires_feature
 
-from app import cache as flask_cache
 from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
@@ -384,14 +383,14 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_service_history(self, service_id):
         return self.get("/service/{0}/history".format(service_id))
 
-    @flask_cache.memoize(timeout=_seconds_until_midnight())
-    def get_monthly_notification_stats(self, service_id, year, exclude_today=False):
-        return self.get(url="/service/{}/notifications/monthly?year={}&exclude_today={}".format(service_id, year, exclude_today))
-
-    @flask_cache.memoize(timeout=_seconds_until_midnight())
-    def get_monthly_notification_stats_excluding_today(self, service_id, year):
-        notification_data = self.get(url="/service/{}/notifications/monthly?year={}&exclude_today=True".format(service_id, year))
-        return self.aggregate_by_type(notification_data)
+    # @flask_cache.memoize(timeout=_seconds_until_midnight())
+    def get_monthly_notification_stats(self, service_id, year):
+        return self.get(
+            url="/service/{}/notifications/monthly?year={}".format(
+                service_id,
+                year,
+            )
+        )
 
     def get_safelist(self, service_id):
         return self.get(url="/service/{}/safelist".format(service_id))
