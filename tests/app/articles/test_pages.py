@@ -1,5 +1,5 @@
 import json
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, call
 
 import pytest
 import requests
@@ -40,7 +40,7 @@ def test_get_page_by_slug_with_cache_retrieve_from_cache(app_, mocker):
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 1
-            assert mock_redis_method.get.called_with(cache_key)
+            mock_redis_method.get.assert_called_with(cache_key)
             assert mock_redis_method.get(cache_key) is not None
 
             assert not request_mock.called
@@ -54,6 +54,7 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
     mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
 
     mocker.patch("app.articles.pages.redis_client", mock_redis_method)
+    # mocker.patch("app.extensions.redis_client", mock_redis_method)
 
     with app_.test_request_context():
         mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
@@ -68,10 +69,14 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 2
-            assert mock_redis_method.get.called_with(cache_key)
+            
+            calls = [call(cache_key), call(fallback_cache_key)]
+            mock_redis_method.get.assert_has_calls(calls)
+
+            # mock_redis_method.get.assert_called_with(cache_key)
 
             """ Should fall through to the fallback cache """
-            assert mock_redis_method.get.called_with(fallback_cache_key)
+            # assert mock_redis_method.get.called_with(fallback_cache_key)
             assert mock_redis_method.get(fallback_cache_key) is not None
             assert mock_redis_method.get(fallback_cache_key) == json.dumps(response_json)
 
@@ -97,8 +102,8 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 2
-            assert mock_redis_method.get.called_with(cache_key)
-            assert mock_redis_method.get.called_with(fallback_cache_key)
+            mock_redis_method.get.assert_called_with(cache_key)
+            mock_redis_method.get.assert_called_with(fallback_cache_key)
             assert not mock_redis_method.set.called
 
 

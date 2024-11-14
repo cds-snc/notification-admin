@@ -71,5 +71,5 @@ def test_retrieve_existing_from_fallback_cache_on_http_error(app_, mocker):
             get_content(endpoint, {"slug": "mypage", "lang": "en"}, cacheable=True)
 
             assert mock_redis_method.get.called
-            assert mock_redis_method.get.called_with(cache_key)
+            mock_redis_method.get.assert_called_with(cache_key)
             assert mock_redis_method.get(cache_key) == json.dumps(response_json)
