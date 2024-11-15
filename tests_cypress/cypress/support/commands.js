@@ -3,7 +3,6 @@ import "cypress-real-events";
 import config from "../../config";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
-import { Admin } from "../Notify/NotifyAPI";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
