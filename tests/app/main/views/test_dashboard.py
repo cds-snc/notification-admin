@@ -23,6 +23,7 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
+    set_config,
 )
 
 stub_template_stats = [
@@ -1405,18 +1406,20 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        app_
     ):
-        mocker.patch(
-            "app.template_statistics_client.get_template_statistics_for_service",
-            return_value=copy.deepcopy(stub_template_stats),
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+            mocker.patch(
+                "app.template_statistics_client.get_template_statistics_for_service",
+                return_value=copy.deepcopy(stub_template_stats),
+            )
 
-        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-        response = logged_in_client.get(url)
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+            response = logged_in_client.get(url)
+            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-        # ensure both email + sms widgets are muted
-        assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
+            # ensure both email + sms widgets are muted
+            assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
 
     def test_annual_usage_uses_muted_component(
         self,
@@ -1426,18 +1429,20 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        app_
     ):
-        mocker.patch(
-            "app.template_statistics_client.get_template_statistics_for_service",
-            return_value=copy.deepcopy(stub_template_stats),
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+            mocker.patch(
+                "app.template_statistics_client.get_template_statistics_for_service",
+                return_value=copy.deepcopy(stub_template_stats),
+            )
 
-        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-        response = logged_in_client.get(url)
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+            response = logged_in_client.get(url)
+            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-        # ensure both email + sms widgets are muted
-        assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
+            # ensure both email + sms widgets are muted
+            assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
 
     @freeze_time("2024-11-25 12:12:12")
     @pytest.mark.parametrize(
@@ -1490,29 +1495,31 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        app_,
         redis_daily_data,
         monthly_data,
         expected_data,
     ):
-        # mock annual_limit_client.get_all_notification_counts
-        mocker.patch(
-            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-            return_value=redis_daily_data,
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+            # mock annual_limit_client.get_all_notification_counts
+            mocker.patch(
+                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+                return_value=redis_daily_data,
+            )
 
-        mocker.patch(
-            "app.service_api_client.get_monthly_notification_stats",
-            return_value=copy.deepcopy(monthly_data),
-        )
+            mocker.patch(
+                "app.service_api_client.get_monthly_notification_stats",
+                return_value=copy.deepcopy(monthly_data),
+            )
 
-        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
-        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-        logged_in_client.get(url)
+            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+            logged_in_client.get(url)
 
-        mock_render_template.assert_called_with(
-            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-        )
+            mock_render_template.assert_called_with(
+                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+            )
 
     @freeze_time("2024-11-25 12:12:12")
     @pytest.mark.parametrize(
@@ -1556,32 +1563,34 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        app_,
         daily_data,
         monthly_data,
         expected_data,
     ):
-        # mock annual_limit_client.get_all_notification_counts
-        mocker.patch(
-            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-            return_value=None,
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+            # mock annual_limit_client.get_all_notification_counts
+            mocker.patch(
+                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+                return_value=None,
+            )
 
-        mocker.patch(
-            "app.service_api_client.get_service_statistics",
-            return_value=copy.deepcopy(daily_data),
-        )
+            mocker.patch(
+                "app.service_api_client.get_service_statistics",
+                return_value=copy.deepcopy(daily_data),
+            )
 
-        mocker.patch(
-            "app.service_api_client.get_monthly_notification_stats",
-            return_value=copy.deepcopy(monthly_data),
-        )
+            mocker.patch(
+                "app.service_api_client.get_monthly_notification_stats",
+                return_value=copy.deepcopy(monthly_data),
+            )
 
-        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
-        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-        logged_in_client.get(url)
+            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+            logged_in_client.get(url)
 
-        mock_render_template.assert_called_with(
-            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-        )
-        #
+            mock_render_template.assert_called_with(
+                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+            )
+
