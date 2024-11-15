@@ -101,7 +101,7 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 Cypress.Commands.add('login', (agreeToTerms = true) => {
     cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
         cy.session([acct.regular.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.regular.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
+            LoginPage.Login(acct.regular.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
         });
     });
 });
@@ -110,7 +110,7 @@ Cypress.Commands.add('login', (agreeToTerms = true) => {
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
     cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
         cy.session([acct.admin.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.admin.email_address, Cypress.env('NOTIFY_PASSWORD'), agreeToTerms);
+            LoginPage.Login(acct.admin.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
         });
     });
 });
