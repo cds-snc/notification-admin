@@ -64,6 +64,8 @@ describe("Remaining Messages Summary Component", () => {
 
     it("shows thousands separator in FR for today’s remaining", () => {
       cy.get("#header-lang").click();
+      // assert html node has lang attribute = fr
+      cy.get("html").should("have.attr", "lang", "fr");
       cy.visit(PageURL);
       RMS.Below()
         .find('*[data-testid="rms"]')
@@ -82,6 +84,7 @@ describe("Remaining Messages Summary Component", () => {
 
     it("shows thousands separator in FR for the year’s remaining", () => {
       cy.get("#header-lang").click();
+      cy.get("html").should("have.attr", "lang", "fr");
       cy.visit(PageURL);
       RMS.Below()
         .find('*[data-testid="rms"]')
