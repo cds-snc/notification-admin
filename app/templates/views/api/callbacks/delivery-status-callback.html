@@ -41,13 +41,13 @@
           autocomplete='new-password'
         ) }}
         {% set test_response_txt = _('Test response time')  if has_callback_config else None %}
-        {% set test_response_value = _('test_response_time') if has_callback_config else None %}
+        {% set test_response_value = 'test_response_time' if has_callback_config else None %}
         {% set display_footer = is_deleting if is_deleting else False %}
         {% set delete_link = url_for('.delete_delivery_status_callback', service_id=current_service.id) if has_callback_config else None%}
         {% if not display_footer %}
           {{ sticky_page_footer_two_submit_buttons_and_delete_link(
             button1_text=_('Save'),
-            button1_value=_('save'),
+            button1_value='save',
             button2_text=test_response_txt,
             button2_value=test_response_value,
             delete_link=delete_link,
