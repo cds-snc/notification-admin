@@ -316,6 +316,7 @@ def test_anyone_can_see_monthly_breakdown(
     service_one,
     mocker,
     mock_get_monthly_notification_stats,
+    mock_get_service_statistics
 ):
     validate_route_permission_with_client(
         mocker,
@@ -333,13 +334,14 @@ def test_monthly_shows_letters_in_breakdown(
     client_request,
     service_one,
     mock_get_monthly_notification_stats,
+    mock_get_service_statistics
 ):
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
 
-    assert normalize_spaces(columns[0].text) == "emails"
-    assert normalize_spaces(columns[1].text) == "text messages"
+    assert normalize_spaces(columns[2].text) == "emails"
+    assert normalize_spaces(columns[3].text) == "text messages"
 
 
 @pytest.mark.parametrize(
@@ -355,6 +357,7 @@ def test_stats_pages_show_last_3_years(
     endpoint,
     mock_get_monthly_notification_stats,
     mock_get_monthly_template_usage,
+    mock_get_service_statistics
 ):
     page = client_request.get(
         endpoint,
@@ -370,6 +373,7 @@ def test_monthly_has_equal_length_tables(
     client_request,
     service_one,
     mock_get_monthly_notification_stats,
+    mock_get_service_statistics
 ):
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
@@ -1574,7 +1578,7 @@ class TestAnnualLimits:
         # mock annual_limit_client.get_all_notification_counts
         mocker.patch(
             "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-            return_value={},
+            return_value=None,
         )
 
         mocker.patch(
