@@ -270,7 +270,7 @@ def monthly(service_id):
     todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
 
     # if redis is empty, query the db
-    if todays_data.get("notifications") is None:
+    if todays_data is None:
         todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
         annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
 
