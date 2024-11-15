@@ -59,6 +59,9 @@ class AdminNavigation(Navigation):
         "find_users_by_email": {
             "find_users_by_email",
         },
+        "find_ids": {
+            "find_ids",
+        },
         "platform_admin_list_complaints": {
             "platform_admin_list_complaints",
         },
@@ -510,6 +513,7 @@ class MainNavigation(Navigation):
         "template_categories",
         "find_services_by_name",
         "find_users_by_email",
+        "find_ids",
         "letter_branding",
         "live_api_keys",
         "live_services",
@@ -634,6 +638,7 @@ class OrgNavigation(Navigation):
         "contact",
         "find_services_by_name",
         "find_users_by_email",
+        "find_ids",
         "forgot_password",
         "forced-password-reset",
         "get_example_csv",
