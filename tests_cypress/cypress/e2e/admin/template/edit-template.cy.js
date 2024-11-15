@@ -113,7 +113,6 @@ describe("Edit template", () => {
   context("FF ON", () => {
     // Override the process_type -> new process type should be saved for an existing template
     it("Should allow platform admin to override process type", () => {
-      cy.log("CONMFIG", config);
       // Admin user 1.
       // login as admin
       cy.loginAsPlatformAdmin();
@@ -131,10 +130,9 @@ describe("Edit template", () => {
 
       // use api to check that it was set
       Admin.GetTemplate({
-        templateId: config.Templates.SMOKE_TEST_SMS,
+        templateId: config.Templates.SMOKE_TEST_EMAIL,
         serviceId: config.Services.Cypress,
       }).then((response) => {
-        console.log("response", response);
         expect(response.body.data.process_type_column).to.equal("bulk");
       });
     });
