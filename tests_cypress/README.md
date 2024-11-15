@@ -28,17 +28,23 @@ npx cypress install
 - `config.js`: this file contains non-sensitive items like template ids and hostnames that you'll need to run the tests
 
 ### `cypress.env.json` contents
-| key             | description                                     |
-| --------------- | ----------------------------------------------- |
-| ADMIN_SECRET    | Secret admin uses to authenticate against API   |
-| ADMIN_USERNAME  | Username admin uses to authenticate against API |
-| NOTIFY_USER     | Notify user used by the tests                   |
-| NOTIFY_PASSWORD | Password of NOTIFY_USER                         |
-| IMAP_PASSWORD   | IMAP password of gmail account for NOTIFY_USER  |
+| key                        | description                                     |
+| -------------------------- | ----------------------------------------------- |
+| ADMIN_SECRET               | Secret admin uses to authenticate against API   |
+| ADMIN_USERNAME             | Username admin uses to authenticate against API |
+| NOTIFY_USER                | Notify user used by the tests                   |
+| NOTIFY_PASSWORD            | Password of NOTIFY_USER (deprecated)            |
+| IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
+| CYPRESS_AUTH_USER_NAME     | Username for the Cypress auth client            | 
+| CYPRESS_AUTH_CLIENT_SECRET | Secret for the Cypress auth client              |
+| NOTIFY_USER                | Actual notify user CDS email account            |
+| NOTIFY_PASSWORD            | Password of NOTIFY_USER (deprecated)            |
+| CYPRESS_USER_PASSWORD      | Password for the Cypress user                   |
+| IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
 
 ### Target environment 🎯
 The tests are configured to run against the staging environment by default.  To run the tests against your local environment, you'll need to create a local service and API keys and store these values in your config.  You will also need to update the `ConfigToUse` variable in `config.js` file:
 ```js
-const ConfigToUse = config.LOCAL;
+const ConfigToUse = { ...config.COMMON, ...config.LOCAL };
 ```
 
