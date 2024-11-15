@@ -71,7 +71,7 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 3
-            
+
             """ Should fall through to the fallback cache """
             calls = [call(cache_key), call(cache_key), call(fallback_cache_key)]
             mock_redis_method.get.assert_has_calls(calls)
@@ -96,7 +96,7 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
             # note that there's a get here
             assert mock_redis_method.get(cache_key) is None
 
-            # should be just one get here - no fallback since we connected to articles and got a 404
+            # should be just one get here - no fallback since we connect to articles and got a 404
             get_page_by_slug_with_cache(endpoint, params)
 
             assert request_mock.called
