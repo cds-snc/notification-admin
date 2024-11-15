@@ -53,7 +53,7 @@ describe("Remaining Messages Summary Component", () => {
     });
   });
 
-  describe.only("Thousands separator", () => {
+  describe("Thousands separator", () => {
     it("shows thousands separator in EN for today’s remaining", () => {
       RMS.Below()
         .find('*[data-testid="rms"]')
