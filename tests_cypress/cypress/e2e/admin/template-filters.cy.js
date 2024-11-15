@@ -14,8 +14,8 @@ const categories = {
 };
 
 const catEmpty = {
-  en: "Authentication",
-  fr: "Authentification",
+  en: "Test",
+  fr: "Test",
 };
 
 describe("Template filters", () => {
@@ -166,7 +166,7 @@ describe("Template filters", () => {
         Page.Components.EmptyState().should("not.be.visible");
 
         Page.ToggleFilters();
-        Page.ApplyTypeFilter(types[lang][0]);
+        Page.ApplyTypeFilter(types[lang][1]);
         Page.ApplyCategoryFilter(catEmpty[lang]);
 
         // Empty state should be visible
