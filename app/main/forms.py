@@ -544,7 +544,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
             self.service_id = service_id
 
     email_from = StringField(
-        _l("Sending email address name"),
+        _l("Enter the part before ‘@notification.canada.ca’"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
@@ -1349,6 +1349,13 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
         _l("Search by name or email address"),
         validators=[DataRequired(_l("You need to enter full or partial email address to search by."))],
+    )
+
+
+class SearchIds(StripWhitespaceForm):
+    search = SearchField(
+        _l("List of UUIDs"),
+        validators=[DataRequired(_l("You need to enter one or more UUIDs to search by."))],
     )
 
 
