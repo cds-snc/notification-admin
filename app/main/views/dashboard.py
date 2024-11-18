@@ -288,10 +288,10 @@ def monthly(service_id):
     else:
         # aggregate daily + annual
         current_app.logger.info("todays data" + str(todays_data))
-        annual_data_aggregate = combine_daily_to_annual(todays_data["notifications"], annual_data, "redis")
+        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "redis")
 
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
-        monthly_data_aggregate = combine_daily_to_monthly(todays_data["notifications"], months[0], "redis")
+        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
 
     # add today's data to monthly data
 
