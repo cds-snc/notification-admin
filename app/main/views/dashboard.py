@@ -231,25 +231,32 @@ def usage(service_id):
 def monthly(service_id):
     def combine_daily_to_annual(daily, annual, mode):
         if mode == "redis":
-            annual["sms"] += daily["sms_delivered"] + daily["sms_failed"]
-            annual["email"] += daily["email_delivered"] + daily["email_failed"]
+            # the redis client omits properties if there are no counts yet, so account for this here\
+            daily_counts = {field: daily.get(field, 0) for field in
+                 ['sms_delivered', 'sms_failed', 'email_delivered', 'email_failed']}
+            annual["sms"] += daily_counts["sms_delivered"] + daily_counts["sms_failed"]
+            annual["email"] += daily_counts["email_delivered"] + daily_counts["email_failed"]
         elif mode == "db":
-            annual["sms"] += daily["sms"]["requested"]
-            annual["email"] += daily["email"]["requested"]
+            annual["sms"] += daily_counts["sms"]["requested"]
+            annual["email"] += daily_counts["email"]["requested"]
 
         return annual
 
     def combine_daily_to_monthly(daily, monthly, mode):
         if mode == "redis":
-            monthly[0]["sms_counts"]["failed"] += daily["sms_failed"]
-            monthly[0]["sms_counts"]["requested"] += daily["sms_failed"] + daily["sms_delivered"]
-            monthly[0]["email_counts"]["failed"] += daily["email_failed"]
-            monthly[0]["email_counts"]["requested"] += daily["email_failed"] + daily["email_delivered"]
+            # the redis client omits properties if there are no counts yet, so account for this here\
+            daily_counts = {field: daily.get(field, 0) for field in
+                 ['sms_delivered', 'sms_failed', 'email_delivered', 'email_failed']}
+
+            monthly[0]["sms_counts"]["failed"] += daily_counts["sms_failed"]
+            monthly[0]["sms_counts"]["requested"] += daily_counts["sms_failed"] + daily_counts["sms_delivered"]
+            monthly[0]["email_counts"]["failed"] += daily_counts["email_failed"]
+            monthly[0]["email_counts"]["requested"] += daily_counts["email_failed"] + daily_counts["email_delivered"]
         elif mode == "db":
-            monthly[0]["sms_counts"]["failed"] += daily["sms"]["failed"]
-            monthly[0]["sms_counts"]["requested"] += daily["sms"]["requested"]
-            monthly[0]["email_counts"]["failed"] += daily["email"]["failed"]
-            monthly[0]["email_counts"]["requested"] += daily["email"]["requested"]
+            monthly[0]["sms_counts"]["failed"] += daily_counts["sms"]["failed"]
+            monthly[0]["sms_counts"]["requested"] += daily_counts["sms"]["requested"]
+            monthly[0]["email_counts"]["failed"] += daily_counts["email"]["failed"]
+            monthly[0]["email_counts"]["requested"] += daily_counts["email"]["requested"]
 
         return monthly
 
