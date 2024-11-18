@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from flask import current_app
 from flask_login import current_user
@@ -10,7 +10,7 @@ from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
 
 
 def _seconds_until_midnight():
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     midnight = datetime.combine(now + timedelta(days=1), datetime.min.time())
     return int((midnight - now).total_seconds())
 
