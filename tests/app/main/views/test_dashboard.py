@@ -1449,7 +1449,7 @@ class TestAnnualLimits:
         "redis_daily_data, monthly_data, expected_data",
         [
             (
-                {"notifications": {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500}},
+                {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500},
                 {
                     "data": {
                         "2024-04": {"sms": {}, "email": {}, "letter": {}},
@@ -1473,7 +1473,7 @@ class TestAnnualLimits:
                 {"email": 990, "letter": 0, "sms": 1420},
             ),
             (
-                {"notifications": {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6}},
+                {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6},
                 {
                     "data": {
                         "2024-10": {
