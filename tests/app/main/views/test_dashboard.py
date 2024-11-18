@@ -1406,9 +1406,9 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
-        app_
+        app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             mocker.patch(
                 "app.template_statistics_client.get_template_statistics_for_service",
                 return_value=copy.deepcopy(stub_template_stats),
@@ -1429,9 +1429,9 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
-        app_
+        app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             mocker.patch(
                 "app.template_statistics_client.get_template_statistics_for_service",
                 return_value=copy.deepcopy(stub_template_stats),
@@ -1500,7 +1500,7 @@ class TestAnnualLimits:
         monthly_data,
         expected_data,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             # mock annual_limit_client.get_all_notification_counts
             mocker.patch(
                 "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
@@ -1568,7 +1568,7 @@ class TestAnnualLimits:
         monthly_data,
         expected_data,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True): # REMOVE LINE WHEN FF REMOVED
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             # mock annual_limit_client.get_all_notification_counts
             mocker.patch(
                 "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
@@ -1593,4 +1593,3 @@ class TestAnnualLimits:
             mock_render_template.assert_called_with(
                 ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
             )
-
