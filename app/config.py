@@ -80,7 +80,7 @@ class Config(object):
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_RTL = env.bool("FF_RTL", True)
-    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", True)
+    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 10_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 25_000)
