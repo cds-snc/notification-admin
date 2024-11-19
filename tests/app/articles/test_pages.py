@@ -75,7 +75,6 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
             """ Should fall through to the fallback cache """
             calls = [call(cache_key), call(cache_key), call(fallback_cache_key)]
             mock_redis_method.get.assert_has_calls(calls)
-            assert mock_redis_method.get(fallback_cache_key) is not None
             assert mock_redis_method.get(fallback_cache_key) == json.dumps(response_json)
 
 
