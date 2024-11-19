@@ -1,5 +1,5 @@
 import json
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, call
 
 import pytest
 import requests
@@ -54,25 +54,27 @@ def test_get_page_by_slug_with_cache_miss_with_fallback(app_, mocker):
     mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
 
     mocker.patch("app.articles.pages.redis_client", mock_redis_method)
+    mocker.patch("app.articles.api.redis_client", mock_redis_method)
 
     with app_.test_request_context():
         mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
         with requests_mock.mock() as request_mock:
             request_mock.get(request_url, exc=requests.exceptions.ConnectionError)
 
+            # note that there's a get here
             assert mock_redis_method.get(cache_key) is None
 
+            # should be 2 gets here, one for the cache, one for the fallback
             get_page_by_slug_with_cache(endpoint, params)
 
             assert request_mock.called
 
             assert mock_redis_method.get.called
-            assert mock_redis_method.get.call_count == 2
-            assert mock_redis_method.get.called_with(cache_key)
+            assert mock_redis_method.get.call_count == 3
 
             """ Should fall through to the fallback cache """
-            assert mock_redis_method.get.called_with(fallback_cache_key)
-            assert mock_redis_method.get(fallback_cache_key) is not None
+            calls = [call(cache_key), call(cache_key), call(fallback_cache_key)]
+            mock_redis_method.get.assert_has_calls(calls)
             assert mock_redis_method.get(fallback_cache_key) == json.dumps(response_json)
 
 
@@ -83,22 +85,25 @@ def test_bad_slug_doesnt_save_empty_cache_entry(app_, mocker):
     mock_redis_method.set = Mock(side_effect=mock_redis_obj.set)
 
     mocker.patch("app.articles.pages.redis_client", mock_redis_method)
+    mocker.patch("app.articles.api.redis_client", mock_redis_method)
 
     with app_.test_request_context():
         mocker.patch.dict("app.current_app.config", values={"GC_ARTICLES_API": gc_articles_api})
         with requests_mock.mock() as request_mock:
             request_mock.get(request_url, json={}, status_code=404)
 
+            # note that there's a get here
             assert mock_redis_method.get(cache_key) is None
 
+            # should be just one get here - no fallback since we connect to articles and got a 404
             get_page_by_slug_with_cache(endpoint, params)
 
             assert request_mock.called
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 2
-            assert mock_redis_method.get.called_with(cache_key)
-            assert mock_redis_method.get.called_with(fallback_cache_key)
+            calls = [call(cache_key), call(cache_key)]
+            mock_redis_method.get.assert_has_calls(calls)
             assert not mock_redis_method.set.called
 
 
