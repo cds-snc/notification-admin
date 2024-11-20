@@ -1838,9 +1838,7 @@ class OptionalIntegerRange:
             return True
 
 
-
 class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
-    
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
