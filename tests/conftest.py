@@ -3669,12 +3669,12 @@ def mock_update_message_limit(mocker):
 
 @pytest.fixture(scope="function")
 def mock_update_email_annual_limit(mocker):
-    return mocker.patch("app.service_api_client.update_email_annual_limit", return_value=10000000)
+    return mocker.patch("app.service_api_client.update_email_annual_limit", return_value=20000000)
 
 
 @pytest.fixture(scope="function")
 def mock_update_sms_annual_limit(mocker):
-    return mocker.patch("app.service_api_client.update_sms_annual_limit", return_value=25000)
+    return mocker.patch("app.service_api_client.update_sms_annual_limit", return_value=100000)
 
 
 @pytest.fixture(scope="function")
