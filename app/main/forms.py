@@ -43,7 +43,7 @@ from wtforms.validators import (
 )
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from app import format_thousands, format_thousands_localized
+from app import current_service, format_thousands, format_thousands_localized
 from app.main.validators import (
     Blocklist,
     CsvFileValidator,
@@ -1838,8 +1838,9 @@ class OptionalIntegerRange:
             return True
 
 
-class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
-    # todo: How can we program a pre-approved stretched daily limit? *10? *X? Another config constant?
+
+class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
+    
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
@@ -1857,7 +1858,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         return [
             ("0", _l("None")),
             (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (f"{limit}-{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
+            (f"{limit}+", _l("More than {}").format(format_thousands_localized(limit))),
         ]
 
     def more_validators(self, limit, notification_type):
@@ -1865,7 +1866,7 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
             OptionalIntegerRange(
                 trigger_field=f"daily_{notification_type}_volume",
                 trigger_value=f"more_{notification_type}",
-                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
+                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and equal to) the previous option
             )
         ]
 
@@ -1896,17 +1897,22 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         default="",
     )
 
-    # todo: update with new annual limits app config when available
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Choices for daily/annual emails
         self.daily_email_volume.choices = self.volume_choices(
             limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"], notification_type="email"
         )
-        self.annual_email_volume.choices = self.volume_choices_restricted(limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"])
+        self.annual_email_volume.choices = self.volume_choices_restricted(limit=current_service.email_annual_limit)
+
+        # Choices for daily/annual sms
         self.daily_sms_volume.choices = self.volume_choices(
             limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"], notification_type="sms"
         )
-        self.annual_sms_volume.choices = self.volume_choices_restricted(limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"])
+        self.annual_sms_volume.choices = self.volume_choices_restricted(limit=current_service.sms_annual_limit)
+
+        # Validators for daily emails/sms
         self.how_many_more_email.validators = self.more_validators(
             limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"], notification_type="email"
         )
@@ -1919,85 +1925,14 @@ class GoLiveAboutNotificationsForm(GoLiveAboutServiceForm):
         return {"more_email": self.how_many_more_email, "more_sms": self.how_many_more_sms}
 
 
-class GoLiveAboutNotificationsFormNoOrg(GoLiveAboutServiceFormNoOrg):
-    # todo: How can we program a pre-approved stretched daily limit? *10? *X? Another config constant?
-    def volume_choices(self, limit, notification_type):
-        return [
-            ("0", _l("None")),
-            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (
-                f"{limit}-{limit*10}",
-                _l("{min} to {max}").format(
-                    min=format_thousands_localized(limit + 1), max=format_thousands_localized(limit * 10)
-                ),
-            ),
-            (f"more_{notification_type}", _l("More than {}").format(format_thousands_localized(limit * 10))),
-        ]
-
-    def volume_choices_restricted(self, limit):
-        return [
-            ("0", _l("None")),
-            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (f"{limit}-{limit*10}", _l("More than {}").format(format_thousands_localized(limit * 10))),
-        ]
-
-    def more_validators(self, limit, notification_type):
-        return [
-            OptionalIntegerRange(
-                trigger_field=f"daily_{notification_type}_volume",
-                trigger_value=f"more_{notification_type}",
-                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
-            )
-        ]
-
-    daily_email_volume = RadioField(
-        _l("How many emails do you expect to send on a busy day?"),
-        validators=[DataRequired()],
-    )
-    annual_email_volume = RadioField(
-        _l("How many emails do you expect to send in a year?"),
-        validators=[DataRequired()],
-    )
-    daily_sms_volume = RadioField(
-        _l("How many text messages do you expect to send on a busy day?"),
-        validators=[DataRequired()],
-    )
-    annual_sms_volume = RadioField(
-        _l("How many text messages do you expect to send in a year?"),
-        validators=[DataRequired()],
-    )
-
-    # bug: how_many_more persists if user changes their input to one of the preset radios.
-    how_many_more_email = IntegerField(
-        label=_l("How many?"),
-        default="",
-    )
-    how_many_more_sms = IntegerField(
-        label=_l("How many?"),
-        default="",
-    )
-
-    # todo: update with new annual limits app config when available
+class GoLiveAboutNotificationsForm(BaseGoLiveAboutNotificationsForm, GoLiveAboutServiceForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.daily_email_volume.choices = self.volume_choices(
-            limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"], notification_type="email"
-        )
-        self.annual_email_volume.choices = self.volume_choices_restricted(limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"])
-        self.daily_sms_volume.choices = self.volume_choices(
-            limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"], notification_type="sms"
-        )
-        self.annual_sms_volume.choices = self.volume_choices_restricted(limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"])
-        self.how_many_more_email.validators = self.more_validators(
-            limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"], notification_type="email"
-        )
-        self.how_many_more_sms.validators = self.more_validators(
-            limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"], notification_type="sms"
-        )
 
-    @property
-    def volume_conditionals(self):
-        return {"more_email": self.how_many_more_email, "more_sms": self.how_many_more_sms}
+
+class GoLiveAboutNotificationsFormNoOrg(BaseGoLiveAboutNotificationsForm, GoLiveAboutServiceFormNoOrg):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class BrandingGOCForm(StripWhitespaceForm):
