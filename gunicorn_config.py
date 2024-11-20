@@ -26,6 +26,28 @@ on_aws = environment in ["production", "staging", "scratch", "dev"]
 if on_aws:
     keepalive = 75
 
+    # The default graceful timeout period for Kubernetes is 30 seconds, so
+    # make sure that the timeouts defined here are less than the configured
+    # Kubernetes timeout. This ensures that the gunicorn worker will exit
+    # before the Kubernetes pod is terminated. This is important because
+    # Kubernetes will send a SIGKILL to the pod if it does not terminate
+    # within the grace period. If the worker is still processing requests
+    # when it receives the SIGKILL, it will be terminated abruptly and
+    # will not be able to finish processing the request. This can lead to
+    # 502 errors being returned to the client.
+    #
+    # Also, some libraries such as NewRelic might need some time to finish
+    # initialization before the worker can start processing requests. The
+    # timeout values should consider these factors.
+    #
+    # Gunicorn config:
+    # https://docs.gunicorn.org/en/stable/settings.html#graceful-timeout
+    #
+    # Kubernetes config:
+    # https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+    graceful_timeout = 85
+    timeout = 90
+
 # Start timer for total running time
 start_time = time.time()
 
