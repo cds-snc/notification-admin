@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from flask import current_app
 from flask_login import current_user
@@ -7,6 +7,12 @@ from notifications_utils.decorators import requires_feature
 
 from app.extensions import redis_client
 from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
+
+
+def _seconds_until_midnight():
+    now = datetime.now(timezone.utc)
+    midnight = datetime.combine(now + timedelta(days=1), datetime.min.time())
+    return int((midnight - now).total_seconds())
 
 
 class ServiceAPIClient(NotifyAdminAPIClient):
@@ -377,8 +383,15 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_service_history(self, service_id):
         return self.get("/service/{0}/history".format(service_id))
 
+    # TODO: cache this once the backend is updated to exlude data from the current day
+    # @flask_cache.memoize(timeout=_seconds_until_midnight())
     def get_monthly_notification_stats(self, service_id, year):
-        return self.get(url="/service/{}/notifications/monthly?year={}".format(service_id, year))
+        return self.get(
+            url="/service/{}/notifications/monthly?year={}".format(
+                service_id,
+                year,
+            )
+        )
 
     def get_safelist(self, service_id):
         return self.get(url="/service/{}/safelist".format(service_id))
@@ -621,6 +634,16 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
     def _tos_key_name(self, service_id):
         return f"tos-accepted-{service_id}"
+
+    def aggregate_by_type(self, notification_data):
+        counts = {"sms": 0, "email": 0, "letter": 0}
+        for month_data in notification_data["data"].values():
+            for message_type, message_counts in month_data.items():
+                if isinstance(message_counts, dict):
+                    counts[message_type] += sum(message_counts.values())
+
+        # return the result
+        return counts
 
 
 service_api_client = ServiceAPIClient()
