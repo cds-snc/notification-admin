@@ -1843,9 +1843,9 @@ class BaseGoLiveAboutNotificationsForm():
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
-            ("within-limit", _l("1 to {}").format(format_thousands_localized(limit))),
+            ("within_limit", _l("1 to {}").format(format_thousands_localized(limit))),
             (
-                "above-limit",
+                "above_limit",
                 _l("{min} to {max}").format(
                     min=format_thousands_localized(limit + 1), max=format_thousands_localized(limit * 10)
                 ),
@@ -1856,8 +1856,8 @@ class BaseGoLiveAboutNotificationsForm():
     def volume_choices_restricted(self, limit):
         return [
             ("0", _l("None")),
-            ("within-limit", _l("1 to {}").format(format_thousands_localized(limit))),
-            ("above-limit", _l("More than {}").format(format_thousands_localized(limit))),
+            ("within_limit", _l("1 to {}").format(format_thousands_localized(limit))),
+            ("above_limit", _l("More than {}").format(format_thousands_localized(limit))),
         ]
 
     def more_validators(self, limit, notification_type):
