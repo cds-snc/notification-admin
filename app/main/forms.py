@@ -1821,6 +1821,7 @@ class OptionalIntegerRange:
 
         # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
+            field.process(formdata=None) # Clear the field
             field.errors = []  # Delete any errors
             return StopValidation()  # Stop validation chain
 
@@ -1838,13 +1839,13 @@ class OptionalIntegerRange:
             return True
 
 
-class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
+class BaseGoLiveAboutNotificationsForm():
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
-            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
+            ("within-limit", _l("1 to {}").format(format_thousands_localized(limit))),
             (
-                f"{limit}-{limit*10}",
+                "above-limit",
                 _l("{min} to {max}").format(
                     min=format_thousands_localized(limit + 1), max=format_thousands_localized(limit * 10)
                 ),
@@ -1855,8 +1856,8 @@ class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
     def volume_choices_restricted(self, limit):
         return [
             ("0", _l("None")),
-            (f"1-{limit}", _l("1 to {}").format(format_thousands_localized(limit))),
-            (f"{limit}+", _l("More than {}").format(format_thousands_localized(limit))),
+            ("within-limit", _l("1 to {}").format(format_thousands_localized(limit))),
+            ("above-limit", _l("More than {}").format(format_thousands_localized(limit))),
         ]
 
     def more_validators(self, limit, notification_type):
@@ -1864,7 +1865,7 @@ class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
             OptionalIntegerRange(
                 trigger_field=f"daily_{notification_type}_volume",
                 trigger_value=f"more_{notification_type}",
-                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and equal to) the previous option
+                min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
             )
         ]
 
@@ -1885,7 +1886,6 @@ class BaseGoLiveAboutNotificationsForm(StripWhitespaceForm):
         validators=[DataRequired()],
     )
 
-    # bug: how_many_more persists if user changes their input to one of the preset radios.
     how_many_more_email = IntegerField(
         label=_l("How many?"),
         default="",

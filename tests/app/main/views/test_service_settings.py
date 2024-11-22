@@ -1047,9 +1047,9 @@ def test_request_to_go_live_use_case_page(
         _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID),
         _data={
             "daily_email_volume": "0",
-            "annual_email_volume": "1-10000",
+            "annual_email_volume": "within-limit",
             "daily_sms_volume": "more_sms",
-            "annual_sms_volume": "1000-10000",
+            "annual_sms_volume": "above-limit",
             "how_many_more_email": None,
             "how_many_more_sms": 25000,
             # Need to submit intended_recipients again because otherwise
@@ -1070,9 +1070,9 @@ def test_request_to_go_live_use_case_page(
                 "intended_recipients": ["public"],
                 "purpose": "Purpose",
                 "daily_email_volume": "0",
-                "annual_email_volume": "1-10000",
+                "annual_email_volume": "within-limit",
                 "daily_sms_volume": "more_sms",
-                "annual_sms_volume": "1000-10000",
+                "annual_sms_volume": "above-limit",
                 "how_many_more_email": None,
                 "how_many_more_sms": 25000,
             },
