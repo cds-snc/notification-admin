@@ -1,29 +1,8 @@
 {% from "components/big-number.html" import big_number %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from 'components/remaining-messages.html' import remaining_messages %}
-{% from "components/show-more.html" import show_more %}
 
-{% if config["FF_ANNUAL_LIMIT"] %}
-  <div class="ajax-block-container" data-testid="daily-usage">
-      <h2 class="heading-medium mt-8">
-        {{ _('Daily usage') }}
-        <br />
-        <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
-          {{ _('resets at 7pm Eastern Time') }}
-        </small> 
-      </h2>
-      <div class="grid-row contain-floats mb-10">
-        <div class="{{column_width}}">
-          {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], muted=true) }}
-        </div>
-        <div class="{{column_width}}">
-          {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], muted=true) }}
-        </div>
-      </div>
-      {{ show_more(url_for('main.contact'), _('Request a daily limit increase')) }}  
-  </div>
-{% else %}
-  <div class="ajax-block-container">
+<div class="ajax-block-container">
     <h2 class="heading-medium mt-8">
       {{ _('Daily usage') }}
       <br />
@@ -39,5 +18,4 @@
         {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested']) }}
       </div>
     </div>
-  </div>
-{% endif %}
+</div>

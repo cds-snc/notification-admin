@@ -1,9 +1,7 @@
 import copy
 import re
-from unittest.mock import ANY
 
 import pytest
-from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
 
@@ -23,7 +21,6 @@ from tests.conftest import (
     create_active_caseworking_user,
     create_active_user_view_permissions,
     normalize_spaces,
-    set_config,
 )
 
 stub_template_stats = [
@@ -140,7 +137,6 @@ def test_task_shortcuts_are_visible_based_on_permissions(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
-    mock_get_service_statistics,
     permissions: list,
     text_in_page: list,
     text_not_in_page: list,
@@ -174,7 +170,6 @@ def test_survey_widget_presence(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
-    mock_get_service_statistics,
     mocker,
     admin_url,
     is_widget_present,
@@ -198,7 +193,6 @@ def test_sending_link_has_query_param(
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
-    mock_get_service_statistics,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
     client_request.login(active_user_with_permissions)
@@ -215,7 +209,6 @@ def test_no_sending_link_if_no_templates(
     client_request: ClientRequest,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_statistics,
-    mock_get_service_statistics,
     mock_get_jobs,
 ):
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
@@ -312,7 +305,11 @@ def test_should_show_monthly_breakdown_of_template_usage(
 
 
 def test_anyone_can_see_monthly_breakdown(
-    client, api_user_active, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client,
+    api_user_active,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
 ):
     validate_route_permission_with_client(
         mocker,
@@ -327,14 +324,16 @@ def test_anyone_can_see_monthly_breakdown(
 
 
 def test_monthly_shows_letters_in_breakdown(
-    client_request, service_one, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mock_get_monthly_notification_stats,
 ):
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
 
-    assert normalize_spaces(columns[2].text) == "emails"
-    assert normalize_spaces(columns[3].text) == "text messages"
+    assert normalize_spaces(columns[0].text) == "emails"
+    assert normalize_spaces(columns[1].text) == "text messages"
 
 
 @pytest.mark.parametrize(
@@ -346,7 +345,10 @@ def test_monthly_shows_letters_in_breakdown(
 )
 @freeze_time("2015-01-01 15:15:15.000000")
 def test_stats_pages_show_last_3_years(
-    client_request, endpoint, mock_get_monthly_notification_stats, mock_get_monthly_template_usage, mock_get_service_statistics
+    client_request,
+    endpoint,
+    mock_get_monthly_notification_stats,
+    mock_get_monthly_template_usage,
 ):
     page = client_request.get(
         endpoint,
@@ -359,7 +361,9 @@ def test_stats_pages_show_last_3_years(
 
 
 def test_monthly_has_equal_length_tables(
-    client_request, service_one, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mock_get_monthly_notification_stats,
 ):
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
@@ -395,6 +399,31 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
     assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
     assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
+
+
+@pytest.mark.parametrize(
+    "permissions, column_name, expected_column_count",
+    [
+        (["email", "sms"], ".w-1\\/2", 6),
+        (["email", "sms"], ".w-1\\/2", 6),
+    ],
+)
+def test_correct_columns_display_on_dashboard_v15(
+    client_request: ClientRequest,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    service_one,
+    permissions,
+    expected_column_count,
+    column_name,
+    app_,
+):
+    service_one["permissions"] = permissions
+
+    page = client_request.get("main.service_dashboard", service_id=service_one["id"])
+    assert len(page.select(column_name)) == expected_column_count
 
 
 def test_daily_usage_section_shown(
@@ -1395,201 +1424,3 @@ def test_dashboard_daily_limits(
             )
             == 2
         )
-
-
-class TestAnnualLimits:
-    def test_daily_usage_uses_muted_component(
-        self,
-        logged_in_client,
-        mocker,
-        mock_get_service_templates_when_no_templates_exist,
-        mock_get_jobs,
-        mock_get_service_statistics,
-        mock_get_usage,
-        app_,
-    ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            mocker.patch(
-                "app.template_statistics_client.get_template_statistics_for_service",
-                return_value=copy.deepcopy(stub_template_stats),
-            )
-
-            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-            response = logged_in_client.get(url)
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-
-            # ensure both email + sms widgets are muted
-            assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
-
-    def test_annual_usage_uses_muted_component(
-        self,
-        logged_in_client,
-        mocker,
-        mock_get_service_templates_when_no_templates_exist,
-        mock_get_jobs,
-        mock_get_service_statistics,
-        mock_get_usage,
-        app_,
-    ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            mocker.patch(
-                "app.template_statistics_client.get_template_statistics_for_service",
-                return_value=copy.deepcopy(stub_template_stats),
-            )
-
-            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-            response = logged_in_client.get(url)
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-
-            # ensure both email + sms widgets are muted
-            assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
-
-    @freeze_time("2024-11-25 12:12:12")
-    @pytest.mark.parametrize(
-        "redis_daily_data, monthly_data, expected_data",
-        [
-            (
-                {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500},
-                {
-                    "data": {
-                        "2024-04": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-05": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-06": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-07": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-08": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-09": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-10": {
-                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
-                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
-                            "letter": {},
-                        },
-                        "2024-11": {
-                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
-                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
-                            "letter": {},
-                        },
-                    }
-                },
-                {"email": 990, "letter": 0, "sms": 1420},
-            ),
-            (
-                {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6},
-                {
-                    "data": {
-                        "2024-10": {
-                            "sms": {"delivered": 6, "permanent-failure": 6, "sending": 6, "technical-failure": 6},
-                            "email": {"delivered": 6, "permanent-failure": 6, "sending": 6, "technical-failure": 6},
-                            "letter": {},
-                        },
-                    }
-                },
-                {"email": 36, "letter": 0, "sms": 36},
-            ),
-        ],
-    )
-    def test_usage_report_aggregates_calculated_properly_with_redis(
-        self,
-        logged_in_client,
-        mocker,
-        mock_get_service_templates_when_no_templates_exist,
-        mock_get_jobs,
-        mock_get_service_statistics,
-        mock_get_usage,
-        app_,
-        redis_daily_data,
-        monthly_data,
-        expected_data,
-    ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            # mock annual_limit_client.get_all_notification_counts
-            mocker.patch(
-                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value=redis_daily_data,
-            )
-
-            mocker.patch(
-                "app.service_api_client.get_monthly_notification_stats",
-                return_value=copy.deepcopy(monthly_data),
-            )
-
-            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
-
-            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-            logged_in_client.get(url)
-
-            mock_render_template.assert_called_with(
-                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-            )
-
-    @freeze_time("2024-11-25 12:12:12")
-    @pytest.mark.parametrize(
-        "daily_data, monthly_data, expected_data",
-        [
-            (
-                {
-                    "sms": {"requested": 100, "delivered": 50, "failed": 50},
-                    "email": {"requested": 100, "delivered": 50, "failed": 50},
-                    "letter": {"requested": 0, "delivered": 0, "failed": 0},
-                },
-                {
-                    "data": {
-                        "2024-04": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-05": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-06": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-07": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-08": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-09": {"sms": {}, "email": {}, "letter": {}},
-                        "2024-10": {
-                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
-                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
-                            "letter": {},
-                        },
-                        "2024-11": {
-                            "sms": {"delivered": 5, "permanent-failure": 50, "sending": 5, "technical-failure": 100},
-                            "email": {"delivered": 10, "permanent-failure": 110, "sending": 50, "technical-failure": 50},
-                            "letter": {},
-                        },
-                    }
-                },
-                {"email": 540, "letter": 0, "sms": 420},
-            )
-        ],
-    )
-    def test_usage_report_aggregates_calculated_properly_without_redis(
-        self,
-        logged_in_client,
-        mocker,
-        mock_get_service_templates_when_no_templates_exist,
-        mock_get_jobs,
-        mock_get_service_statistics,
-        mock_get_usage,
-        app_,
-        daily_data,
-        monthly_data,
-        expected_data,
-    ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            # mock annual_limit_client.get_all_notification_counts
-            mocker.patch(
-                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value=None,
-            )
-
-            mocker.patch(
-                "app.service_api_client.get_service_statistics",
-                return_value=copy.deepcopy(daily_data),
-            )
-
-            mocker.patch(
-                "app.service_api_client.get_monthly_notification_stats",
-                return_value=copy.deepcopy(monthly_data),
-            )
-
-            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
-
-            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-            logged_in_client.get(url)
-
-            mock_render_template.assert_called_with(
-                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-            )
