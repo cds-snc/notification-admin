@@ -80,7 +80,7 @@ class Config(object):
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_RTL = env.bool("FF_RTL", True)
-    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
+    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", True)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
@@ -215,7 +215,7 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
     FF_RTL = True
-    FF_ANNUAL_LIMIT = True
+    FF_ANNUAL_LIMIT = False
 
 
 class ProductionFF(Config):

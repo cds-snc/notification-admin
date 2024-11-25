@@ -1,23 +1,22 @@
-{% from "components/big-number.html" import big_number_with_status, big_number, big_number_simple %}
+{% from "components/big-number.html" import big_number_with_status, big_number %}
 {% from "components/pill.html" import pill %}
 {% from "components/table.html" import list_table, field, hidden_field_heading, right_aligned_field_heading, row_heading %}
 {% from "components/message-count-label.html" import message_count_label %}
-{% from 'components/remaining-messages.html' import remaining_messages %}
 
 {% extends "admin_template.html" %}
 
 {% block service_page_title %}
-  {{ _('Usage report') }}
+  {{ _('Messages sent,') }}
   {{ selected_year }} {{ _('to') }} {{ selected_year + 1 }} {{ _('fiscal year') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large">
-    {{ _('Usage report') }}
+    {{ _('Messages sent') }}
   </h1>
 
-  <div class="mb-12">
+  <div class="mb-6">
     {{ pill(
       items=years,
       current_value=selected_year,
@@ -25,50 +24,6 @@
       label=_("Filter by year")
     ) }}
   </div>
-
-  {% if config["FF_ANNUAL_LIMIT"] %}
-    <h2 class="heading-medium mt-12">
-      {% if selected_year == current_financial_year %}
-        {{ _('Annual limit overview') }}
-      {% else %}
-        {{ _('Annual overview') }}
-      {% endif %}
-      <br />
-      <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
-        {{ _('Fiscal year begins April 1, ') ~ selected_year ~ _(' and ends March 31, ') ~ (selected_year + 1) }}
-      </small> 
-    </h2>
-    <div class="grid-row contain-floats mb-10">
-      {% if selected_year == current_financial_year %}
-        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=annual_data['email']) }}
-        </div>
-        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=annual_data['sms']) }}
-        </div>
-      {% else %}
-        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ big_number_simple(
-              annual_data['email'],
-              _('emails'),
-              
-            )
-          }}
-        </div>
-        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
-          {{ big_number_simple(
-              annual_data['sms'],
-              _('text messages'),
-              
-            )
-          }}
-        </div>
-      {% endif %}
-    </div>
-    <h2 class="heading-medium mt-12">
-      {{ _('Month by month totals') }}
-    </h2>
-  {% endif %}
 
   {% if months %}
    {% set spend_txt = _('Total spend') %}
