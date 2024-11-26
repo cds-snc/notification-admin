@@ -279,7 +279,7 @@ def monthly(service_id):
         monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
         annual_data = aggregate_by_type(monthly_data)
 
-        todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
+        todays_data = annual_limit_client.get_all_notification_counts(current_service.id) if current_app.config["REDIS_ENABLED"] else None
 
         # if redis is empty, query the db
         if todays_data is None:
