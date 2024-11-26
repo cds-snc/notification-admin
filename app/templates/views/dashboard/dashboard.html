@@ -26,7 +26,10 @@
 
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
     {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
-    
+    {% if config["FF_ANNUAL_LIMIT"] %}
+      {{ ajax_block(partials, updates_url, 'annual_totals', interval=5) }}
+    {% endif %}
+
     <hr />
 
     {% if partials['has_template_statistics'] %}

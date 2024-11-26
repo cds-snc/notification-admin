@@ -1,0 +1,25 @@
+{% from "components/big-number.html" import big_number %}
+{% from "components/message-count-label.html" import message_count_label %}
+{% from 'components/remaining-messages.html' import remaining_messages %}
+{% from "components/show-more.html" import show_more %}
+
+<div class="ajax-block-container" data-testid="annual-usage">
+    <h2 class="heading-medium mt-8">
+      {{ _('Annual usage') }}
+      <br />
+      <small class="text-gray-600 text-small font-normal" style="color: #5E6975">
+        {% set current_year = current_year or (now().year if now().month < 4 else now().year + 1) %}
+        {{ _('resets on April 1, ') ~ current_year }}
+      </small> 
+    </h2>
+    <div class="grid-row contain-floats mb-10">
+      <div class="{{column_width}}">
+        {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=statistics_annual['email'], muted=true) }}
+      </div>
+      <div class="{{column_width}}">
+        {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=statistics_annual['sms'], muted=true) }}
+      </div>
+    </div>
+    {{ show_more(url_for('.monthly', service_id=current_service.id), _('Visit usage report')) }}
+</div>
+
