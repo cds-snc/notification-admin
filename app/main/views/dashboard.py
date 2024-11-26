@@ -300,6 +300,7 @@ def monthly(service_id):
             format_monthly_stats_to_list(service_api_client.get_monthly_notification_stats(service_id, year)["data"]),
         )
         monthly_data_aggregate = monthly_data_aggregate[0]
+        annual_data_aggregate = None
 
     return render_template(
         "views/dashboard/monthly.html",
@@ -309,7 +310,7 @@ def monthly(service_id):
             start=current_financial_year - 2,
             end=current_financial_year,
         ),
-        annual_data=annual_data_aggregate if current_app.config["FF_ANNUAL_LIMIT"] else None,
+        annual_data=annual_data_aggregate,
         selected_year=year,
         current_financial_year=current_financial_year,
     )
