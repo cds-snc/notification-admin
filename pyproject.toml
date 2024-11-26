@@ -52,13 +52,14 @@ awscli-cwlogs = "^1.4.6"
 notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", branch = "task/pythonupgrade"}
 
 
+
 # Pinned dependencies
 certifi = "^2024.0.0" # Pinned for security reasons: https://github.com/cds-snc/notification-admin/security/dependabot/169
 redis = "3.5.3" # pinned for now
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
-newrelic = "8.10.0" # Pinned to 8.10.0 for now, 8.11.0 caused a performance regression: https://gcdigital.slack.com/archives/C012W5K734Y/p1709668046344929
+newrelic = "10.3.0"
 aws-xray-sdk = "^2.14.0"
 
 validators = "^0.28.3"

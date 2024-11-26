@@ -24,7 +24,8 @@
         {% call form_wrapper() %}
           {{ radios(form.goc_branding, hide_legend=True, testid="goc_branding") }}
           
-          {{ _('<a class="-mt-12 block" data-testid="goto-pool" href="{}">{}</a>').format(url_for('main.review_branding_pool', service_id=current_service.id), _('Select alternate logo')) }}
+          <a class="-mt-12 block" data-testid="goto-pool"
+            href="{{ url_for('main.review_branding_pool', service_id=current_service.id) }}">{{ _('Select alternate logo') }}</a>
           
           <div class="mt-10">
             {{ page_footer(
