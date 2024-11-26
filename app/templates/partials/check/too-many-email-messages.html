@@ -4,6 +4,12 @@
   {%- if current_service.trial_mode %}
     {{ _("Your service is in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {% else %}
-    {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
+    {% if send_exceeds_annual_limit %}
+      {{ _("To request an annual limit above {} emails, {}").format(current_service.email_annual_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
+    {% endif %}
+    {% if send_exceeds_daily_limit %}
+      {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
+    {% endif %}
+    
   {%- endif -%}
 </p>

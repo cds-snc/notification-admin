@@ -246,7 +246,7 @@ select = [
     "I001",
     "I002"
 ]
-ignore = ["E203", "E501", "E402"]
+ignore = ["E203", "E501", "E402", "F401"]
 
 # Provide line length leeway for docstrings
 [tool.ruff.lint.pycodestyle]
