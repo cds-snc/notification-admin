@@ -314,6 +314,7 @@ def test_should_show_monthly_breakdown_of_template_usage(
 def test_anyone_can_see_monthly_breakdown(
     client, api_user_active, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
+    mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     validate_route_permission_with_client(
         mocker,
         client,
@@ -327,8 +328,9 @@ def test_anyone_can_see_monthly_breakdown(
 
 
 def test_monthly_shows_letters_in_breakdown(
-    client_request, service_one, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
+    mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
@@ -346,8 +348,9 @@ def test_monthly_shows_letters_in_breakdown(
 )
 @freeze_time("2015-01-01 15:15:15.000000")
 def test_stats_pages_show_last_3_years(
-    client_request, endpoint, mock_get_monthly_notification_stats, mock_get_monthly_template_usage, mock_get_service_statistics
+    client_request, endpoint, service_one, mocker, mock_get_monthly_notification_stats, mock_get_monthly_template_usage, mock_get_service_statistics
 ):
+    mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     page = client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,
@@ -359,8 +362,9 @@ def test_stats_pages_show_last_3_years(
 
 
 def test_monthly_has_equal_length_tables(
-    client_request, service_one, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
+    mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     assert page.select_one(".table-field-headings th")["style"] == "width: 33%"
