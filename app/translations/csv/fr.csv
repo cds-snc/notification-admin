@@ -2028,3 +2028,7 @@
 "resets at 7pm Eastern Time","Réinitialisation à 19 h, heure de l’Est"
 "Visit usage report","Consulter le rapport d’utilisation"
 "Month by month totals","Totaux mensuels"
+"<strong>{}</strong> can only send <strong>{}</strong> more email messages until annual limit resets","FR: <strong>{}</strong> can only send <strong>{}</strong> more email messages until annual limit resets"
+"To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. ","FR: To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. "
+"To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.","FR: To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way"
+"These messages exceed the annual limit","FR: These messages exceed the annual limit"
