@@ -4,7 +4,6 @@ from notifications_utils.clients.redis import (
 )
 
 from app import redis_client, service_api_client, template_statistics_client
-from app.utils import DELIVERED_STATUSES, FAILURE_STATUSES
 
 
 class NotificationCounts:
