@@ -825,8 +825,12 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if data["errors"] or data["trying_to_send_letters_in_trial_mode"]:
         return render_template("views/check/column-errors.html", **data)
 
-    if data["send_exceeds_daily_limit"] or data["send_exceeds_annual_limit"]:
+    if data["send_exceeds_daily_limit"]:
         return render_template("views/check/column-errors.html", **data)
+
+    if current_app.config["FF_ANNUAL_LIMIT"]:
+        if data["send_exceeds_annual_limit"]:
+            return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
