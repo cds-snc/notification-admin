@@ -171,17 +171,8 @@
       {% elif recipients.more_rows_than_can_send %}
           {% call banner_wrapper(type='dangerous') %}
             {% include "partials/check/too-many-email-messages.html" %}
-          {% endcall %}
-          <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
-          <p>
-            {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-            content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
-          </p>
-            
-          
+          {% endcall %}           
       {% endif %}
-
-    
   </div>
 
   {% if not send_exceeds_daily_limit %}
