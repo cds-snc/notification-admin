@@ -797,14 +797,14 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
             if remaining_email_this_year < data["count_of_recipients"]:
                 data["recipients_remaining_messages"] = remaining_email_this_year
                 data["send_exceeds_annual_limit"] = True
-            else:
-                data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
         else:
             if remaining_sms_this_year < data["count_of_recipients"]:
                 data["recipients_remaining_messages"] = remaining_sms_this_year
                 data["send_exceeds_annual_limit"] = True
-            else:
-                data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+
+        data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+    else:
+         data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
