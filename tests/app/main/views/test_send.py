@@ -3483,49 +3483,53 @@ class TestAnnualLimitsSend:
         num_sent_this_year,
         expect_to_see_annual_limit_msg,
         expect_to_see_daily_limit_msg,
+        app_,
     ):
-        mocker.patch(
-            "app.main.views.send.s3download",
-            return_value=",\n".join(["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_being_sent)),
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):
+            mocker.patch(
+                "app.main.views.send.s3download",
+                return_value=",\n".join(
+                    ["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_being_sent)
+                ),
+            )
 
-        # mock that `num_sent_this_year` have already been sent this year
-        mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-            "sms": 1000,  # not used in test but needs a value
-            "email": num_sent_this_year,
-        }
-
-        # mock that we've already sent `emails_sent_today` emails today
-        mock_daily_email_count.return_value = num_sent_today
-        mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
-
-        with client_request.session_transaction() as session:
-            session["file_uploads"] = {
-                fake_uuid: {
-                    "template_id": fake_uuid,
-                    "notification_count": 1,
-                    "valid": True,
-                }
+            # mock that `num_sent_this_year` have already been sent this year
+            mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
+                "sms": 1000,  # not used in test but needs a value
+                "email": num_sent_this_year,
             }
 
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
+            # mock that we've already sent `emails_sent_today` emails today
+            mock_daily_email_count.return_value = num_sent_today
+            mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
 
-        if expect_to_see_annual_limit_msg:
-            assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+            with client_request.session_transaction() as session:
+                session["file_uploads"] = {
+                    fake_uuid: {
+                        "template_id": fake_uuid,
+                        "notification_count": 1,
+                        "valid": True,
+                    }
+                }
 
-        if expect_to_see_daily_limit_msg:
-            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+            page = client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="valid.csv",
+                _test_page_title=False,
+            )
+
+            if expect_to_see_annual_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+
+            if expect_to_see_daily_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
 
     @pytest.mark.parametrize(
         "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
@@ -3571,46 +3575,50 @@ class TestAnnualLimitsSend:
         num_sent_this_year,
         expect_to_see_annual_limit_msg,
         expect_to_see_daily_limit_msg,
+        app_,
     ):
-        mocker.patch(
-            "app.main.views.send.s3download",
-            return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * num_being_sent)),
-        )
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
+            mocker.patch(
+                "app.main.views.send.s3download",
+                return_value=",\n".join(
+                    ["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * num_being_sent)
+                ),
+            )
 
-        # mock that `num_sent_this_year` have already been sent this year
-        mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-            "sms": num_sent_this_year,
-            "email": 1000,  # not used in test but needs a value
-        }
-
-        # mock that we've already sent `emails_sent_today` emails today
-        mock_daily_email_count.return_value = 900  # not used in test but needs a value
-        mock_daily_sms_fragment_count.return_value = num_sent_today
-
-        with client_request.session_transaction() as session:
-            session["file_uploads"] = {
-                fake_uuid: {
-                    "template_id": fake_uuid,
-                    "notification_count": 1,
-                    "valid": True,
-                }
+            # mock that `num_sent_this_year` have already been sent this year
+            mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
+                "sms": num_sent_this_year,
+                "email": 1000,  # not used in test but needs a value
             }
 
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="valid.csv",
-            _test_page_title=False,
-        )
+            # mock that we've already sent `emails_sent_today` emails today
+            mock_daily_email_count.return_value = 900  # not used in test but needs a value
+            mock_daily_sms_fragment_count.return_value = num_sent_today
 
-        if expect_to_see_annual_limit_msg:
-            assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+            with client_request.session_transaction() as session:
+                session["file_uploads"] = {
+                    fake_uuid: {
+                        "template_id": fake_uuid,
+                        "notification_count": 1,
+                        "valid": True,
+                    }
+                }
 
-        if expect_to_see_daily_limit_msg:
-            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+            page = client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="valid.csv",
+                _test_page_title=False,
+            )
+
+            if expect_to_see_annual_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+
+            if expect_to_see_daily_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
