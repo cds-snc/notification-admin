@@ -17,6 +17,7 @@ RUN apt-get update \
     emacs \
     exa \
     fd-find \
+    fzf \
     git \
     iputils-ping \
     iproute2 \

@@ -578,7 +578,40 @@ def mock_get_service_statistics(mocker, api_user_active):
             "letter": {"requested": 0, "delivered": 0, "failed": 0},
         }
 
+    # mock these stats at the same time
+    def _get_monthly_stats(service_id, year):
+        return {
+            "data": {
+                "2024-04": {"sms": {}, "email": {}, "letter": {}},
+                "2024-05": {"sms": {}, "email": {}, "letter": {}},
+                "2024-06": {"sms": {}, "email": {}, "letter": {}},
+                "2024-07": {"sms": {}, "email": {}, "letter": {}},
+                "2024-08": {"sms": {}, "email": {}, "letter": {}},
+                "2024-09": {"sms": {}, "email": {}, "letter": {}},
+                "2024-10": {"sms": {}, "email": {}, "letter": {}},
+                "2024-11": {
+                    "sms": {"sent": 1},
+                    "email": {"delivered": 1, "permanent-failure": 1, "sending": 3, "technical-failure": 1},
+                    "letter": {},
+                },
+            }
+        }
+
+    mocker.patch("app.service_api_client.get_monthly_notification_stats", side_effect=_get_monthly_stats)
+
     return mocker.patch("app.service_api_client.get_service_statistics", side_effect=_get)
+
+
+@pytest.fixture(scope="function")
+def mock_get_annual_statistics(mocker, api_user_active):
+    def _get(service_id, year):
+        return {
+            "email": 100,
+            "sms": 200,
+            "letter": 300,
+        }
+
+    return mocker.patch("app.service_api_client.get_monthly_notification_stats", side_effect=_get)
 
 
 @pytest.fixture(scope="function")
@@ -3636,12 +3669,12 @@ def mock_update_message_limit(mocker):
 
 @pytest.fixture(scope="function")
 def mock_update_email_annual_limit(mocker):
-    return mocker.patch("app.service_api_client.update_email_annual_limit", return_value=10000000)
+    return mocker.patch("app.service_api_client.update_email_annual_limit", return_value=20000000)
 
 
 @pytest.fixture(scope="function")
 def mock_update_sms_annual_limit(mocker):
-    return mocker.patch("app.service_api_client.update_sms_annual_limit", return_value=25000)
+    return mocker.patch("app.service_api_client.update_sms_annual_limit", return_value=100000)
 
 
 @pytest.fixture(scope="function")

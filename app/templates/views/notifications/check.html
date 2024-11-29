@@ -43,7 +43,8 @@
       {% endcall %}
       <h2 class="heading-medium">{{_('You cannot send this text message today') }}</h2>
       <p class="mb-12">
-        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang], content_link(_("your current local time"), 'https://nrc.canada.ca/en/web-clock/', is_external_link=true))}}
+        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
       </p>
     </div>
   {% elif error == 'too-many-messages' %}
@@ -61,7 +62,8 @@
       {% endcall %}
       <h2 class="heading-medium">{{_('You cannot send this email message today') }}</h2>
       <p class="mb-12">
-        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang], content_link(_("your current local time"), 'https://nrc.canada.ca/en/web-clock/', is_external_link=true))}}
+        {{ _("You can try sending this message after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
       </p>
     </div>
   {% elif error == 'message-too-long' %}

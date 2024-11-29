@@ -29,7 +29,8 @@
               <div class="js-stick-at-bottom-when-scrolling">
                 <div class="flex flex-row-reverse justify-end items-center">
                   <div class="ml-10">
-                    {{ _('<a href="{}" data-testid="goto-request">{}</a>').format(url_for('main.create_branding_request', service_id=current_service.id), _('Request a new logo')) }}
+                    <a href="{{ url_for('main.create_branding_request', service_id=current_service.id) }}" data-testid="goto-request">{{
+                      _('Request a new logo') }}</a>
                   </div>
                   <div class="">
                     {{ page_footer(_('Preview'), testid="preview") }}

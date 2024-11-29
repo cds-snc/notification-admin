@@ -174,7 +174,7 @@ def service_name_change_confirm(service_id):
 @main.route("/services/<service_id>/service-settings/email_from", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_email_from_change(service_id):
-    form = ChangeEmailFromServiceForm(service_id=service_id)
+    form = ChangeEmailFromServiceForm(service_id=service_id, sending_domain=current_app.config["SENDING_DOMAIN"])
 
     if request.method == "GET":
         form.email_from.data = current_service.email_from
