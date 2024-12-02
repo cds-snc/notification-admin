@@ -52,7 +52,6 @@ awscli-cwlogs = "^1.4.6"
 notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.0.0"}
 
 
-
 # Pinned dependencies
 certifi = "^2024.0.0" # Pinned for security reasons: https://github.com/cds-snc/notification-admin/security/dependabot/169
 redis = "3.5.3" # pinned for now
