@@ -1574,7 +1574,7 @@ pypdf2 = "1.28.6"
 python-json-logger = "2.0.7"
 pytz = "2021.3"
 PyYAML = "6.0.1"
-requests = "2.31.0"
+requests = "2.32.2"
 smartypants = "2.0.1"
 statsd = "3.3.0"
 werkzeug = "3.0.4"
@@ -1582,8 +1582,8 @@ werkzeug = "3.0.4"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "task/pythonupgrade"
-resolved_reference = "f62f02fd58e2a38c68be3515ebc59b59b3143a69"
+reference = "53.0.0"
+resolved_reference = "25d632978500bd4f729f3b2ecafb3f0fc9498b1c"
 
 [[package]]
 name = "openpyxl"
@@ -2134,13 +2134,13 @@ hiredis = ["hiredis (>=0.1.3)"]
 
 [[package]]
 name = "requests"
-version = "2.31.0"
+version = "2.32.2"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "requests-2.31.0-py3-none-any.whl", hash = "sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f"},
-    {file = "requests-2.31.0.tar.gz", hash = "sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1"},
+    {file = "requests-2.32.2-py3-none-any.whl", hash = "sha256:fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c"},
+    {file = "requests-2.32.2.tar.gz", hash = "sha256:dd951ff5ecf3e3b3aa26b40703ba77495dab41da839ae72ef3c8e5d8e2433289"},
 ]
 
 [package.dependencies]
@@ -2750,4 +2750,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "e2a5a30a505f56fcfa3aa612f57cd4a33390b8db12212517ed9d117e8dd5f250"
+content-hash = "2c2d72caef8cda6643bb0137dfe65e4dc1af59d85e5f81b704252149e83de1ba"
