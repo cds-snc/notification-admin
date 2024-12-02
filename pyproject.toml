@@ -79,6 +79,7 @@ jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
 mypy = "1.11.2"
 monkeytype = "23.3.0"
 poethepoet = "^0.24.4"
+pre-commit = "^3.7.1"
 ruff = "^0.6.9"
 
 # stubs libraries to keep mypy happy
