@@ -1,3 +1,4 @@
+{% from "components/banner.html" import banner_wrapper %}
 {% from "components/links.html" import content_link %}
 
 <p>
@@ -13,8 +14,10 @@
       </p>
       
     {% elif send_exceeds_daily_limit or recipients.more_rows_than_can_send %}
-      {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
-
+      {% call banner_wrapper(type='dangerous') %}
+        {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
+      {% endcall %}
+      
       <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
       <p data-testid="exceeds-daily">
         {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],

@@ -171,9 +171,7 @@
           {% include "partials/check/too-many-email-messages.html" %}
         {% endcall %}
       {% elif recipients.more_rows_than_can_send or  send_exceeds_annual_limit %}
-          {% call banner_wrapper(type='dangerous') %}
-            {% include "partials/check/too-many-email-messages.html" %}
-          {% endcall %}           
+          {% include "partials/check/too-many-email-messages.html" %}
       {% endif %}
   </div>
 
