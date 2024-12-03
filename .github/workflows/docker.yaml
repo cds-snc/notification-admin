@@ -8,7 +8,7 @@ env:
   AWS_REGION: ca-central-1
   DOCKER_ORG: public.ecr.aws/v6b8u5o6
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-admin
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 permissions:
   id-token: write   # This is required for requesting the OIDC JWT
@@ -108,15 +108,15 @@ jobs:
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
-    - name: Docker generate SBOM
-      uses: cds-snc/security-tools/.github/actions/generate-sbom@34794baf2af592913bb5b51d8df4f8d0acc49b6f # v3.2.0
-      env:
-        TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
-      with:
-        docker_image: "${{ env.DOCKER_SLUG }}:latest"
-        dockerfile_path: "ci/Dockerfile"
-        sbom_name: "notification-admin"
-        token: "${{ secrets.GITHUB_TOKEN }}"
+    #- name: Docker generate SBOM
+    #  uses: cds-snc/security-tools/.github/actions/generate-sbom@34794baf2af592913bb5b51d8df4f8d0acc49b6f # v3.2.0
+    #  env:
+    #    TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
+    #  with:
+    #    docker_image: "${{ env.DOCKER_SLUG }}:latest"
+    #    dockerfile_path: "ci/Dockerfile"
+    #    sbom_name: "notification-admin"
+    #    token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}
