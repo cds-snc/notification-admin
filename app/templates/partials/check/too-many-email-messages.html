@@ -1,29 +1,9 @@
-{% from "components/banner.html" import banner_wrapper %}
 {% from "components/links.html" import content_link %}
 
 <p>
   {%- if current_service.trial_mode %}
     {{ _("Your service is in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {% else %}
-    {% if send_exceeds_annual_limit %}
-
-      <p data-testid="exceeds-annual">{{ _('<strong>{}</strong> can only send <strong>{}</strong> more email messages until annual limit resets'.format(current_service.name, recipients_remaining_messages)) }}</p>
-      <p>
-        {{ _('To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. '.format(recipients_remaining_messages)) }}
-        {{ _('To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.'.format(now().year)) }}
-      </p>
-      
-    {% elif send_exceeds_daily_limit or recipients.more_rows_than_can_send %}
-      {% call banner_wrapper(type='dangerous') %}
-        {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
-      {% endcall %}
-      
-      <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
-      <p data-testid="exceeds-daily">
-        {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
-      </p>
-    {% endif %}
-    
+    {{ _("To request a daily limit above {} emails, {}").format(current_service.message_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
   {%- endif -%}
 </p>

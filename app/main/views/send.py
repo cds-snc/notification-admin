@@ -809,6 +809,8 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     else:
         data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
 
+    data["send_exceeds_annual_limit"] = False
+
     if (
         data["recipients"].too_many_rows
         or not data["count_of_recipients"]
@@ -1113,6 +1115,10 @@ def get_template_error_dict(exception):
         error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
         error = "message-too-long"
+    elif "Exceeded annual email sending limit" in exception.message:
+        error = "too-many-email-annual"
+    elif "Exceeded annual SMS sending limit" in exception.message:
+        error = "too-many-sms-annual"
     else:
         raise exception
 
