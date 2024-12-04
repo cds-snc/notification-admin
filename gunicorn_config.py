@@ -51,7 +51,6 @@ if on_aws:
 # Start timer for total running time
 start_time = time.time()
 
-
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
 
