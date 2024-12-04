@@ -1,6 +1,5 @@
 import itertools
 import json
-from datetime import datetime, timezone
 from string import ascii_uppercase
 from zipfile import BadZipFile
 
@@ -787,29 +786,22 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
 
     if current_app.config["FF_ANNUAL_LIMIT"]:
-        # Override the remaining messages counts with the remaining annual counts, if the latter are lower
-        stats_ytd = notification_counts_client.get_all_notification_counts_for_year(service_id, datetime.now(timezone.utc).year)
-        remaining_sms_this_year = current_service.sms_annual_limit - stats_ytd["sms"]
-        remaining_email_this_year = current_service.email_annual_limit - stats_ytd["email"]
-
-        # Show annual limit validation over the daily one (even if both are true)
         data["send_exceeds_annual_limit"] = False
         data["send_exceeds_daily_limit"] = False
-        if data["template"].template_type == "email":
-            if remaining_email_this_year < data["count_of_recipients"]:
-                data["recipients_remaining_messages"] = remaining_email_this_year
-                data["send_exceeds_annual_limit"] = True
+        # determine the remaining sends for daily + annual
+        limit_stats = notification_counts_client.get_limit_stats(current_service)
+        remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
+
+        if remaining_annual < data["count_of_recipients"]:
+            data["recipients_remaining_messages"] = remaining_annual
+            data["send_exceeds_annual_limit"] = True
         else:
-            if remaining_sms_this_year < data["count_of_recipients"]:
-                data["recipients_remaining_messages"] = remaining_sms_this_year
-                data["send_exceeds_annual_limit"] = True
-            else:
+            # if they arent over their limit, and its sms, check if they are over their daily limit
+            if data["template"].template_type == "sms":
                 data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
 
     else:
         data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
-
-    data["send_exceeds_annual_limit"] = False
 
     if (
         data["recipients"].too_many_rows
