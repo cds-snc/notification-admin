@@ -40,7 +40,7 @@ def test_get_page_by_slug_with_cache_retrieve_from_cache(app_, mocker):
 
             assert mock_redis_method.get.called
             assert mock_redis_method.get.call_count == 1
-            assert mock_redis_method.get.called_with(cache_key)
+            mock_redis_method.get.assert_called_with(cache_key)
             assert mock_redis_method.get(cache_key) is not None
 
             assert not request_mock.called
