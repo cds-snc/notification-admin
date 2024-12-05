@@ -16,7 +16,6 @@ from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
-from notifications_utils.decorators import requires_feature
 
 from app import (
     billing_api_client,
@@ -1131,7 +1130,6 @@ def set_sms_message_limit(service_id):
 
 @main.route("/service/<service_id>/service_settings/set-sms-annual-limit", methods=["GET", "POST"])
 @user_is_platform_admin
-@requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
 def set_sms_annual_limit(service_id):
     form = SMSAnnualMessageLimit(message_limit=current_service.sms_annual_limit)
 
@@ -1150,7 +1148,6 @@ def set_sms_annual_limit(service_id):
 
 @main.route("/service/<service_id>/service_settings/set-email-annual.html", methods=["GET", "POST"])
 @user_is_platform_admin
-@requires_feature("FF_ANNUAL_LIMIT")  # TODO: FF_ANNUAL_LIMIT removal
 def set_email_annual_limit(service_id):
     form = EmailAnnualMessageLimit(message_limit=current_service.email_annual_limit)
 
