@@ -348,7 +348,13 @@ def test_monthly_shows_letters_in_breakdown(
 )
 @freeze_time("2015-01-01 15:15:15.000000")
 def test_stats_pages_show_last_3_years(
-    client_request, endpoint, service_one, mocker, mock_get_monthly_notification_stats, mock_get_monthly_template_usage, mock_get_service_statistics
+    client_request,
+    endpoint,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_monthly_template_usage,
+    mock_get_service_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     page = client_request.get(
