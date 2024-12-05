@@ -1147,6 +1147,39 @@ def mock_update_service_template_400_content_too_big(mocker):
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
 
 
+@pytest.fixture(scope="function")
+def mock_get_limit_stats(mocker):
+    def _get_data(svc):
+        return {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+        }
+
+    return mocker.patch("app.main.views.templates.notification_counts_client.get_limit_stats", side_effect=_get_data)
+
+
 def create_template(
     service_id=SERVICE_ONE_ID,
     template_id=None,
