@@ -49,6 +49,7 @@ class TestNotificationCounts:
             ([None, None], {"sms": 10, "email": 10}),
             ([None, 10], {"sms": 10, "email": 10}),  # Falls back to API if either is None
             ([10, None], {"sms": 10, "email": 10}),  # Falls back to API if either is None
+            ([25, 25], {"sms": 25, "email": 25}),  # Falls back to API if either is None
         ],
     )
     def test_get_all_notification_counts_for_today_redis_missing_data(
@@ -69,8 +70,10 @@ class TestNotificationCounts:
         result = wrapper.get_all_notification_counts_for_today("service-123")
 
         # Assert
-        assert result == {"sms": 10, "email": 10}
-        mock_template_stats.get_template_statistics_for_service.assert_called_once()
+        assert result == expected_result
+
+        if None in redis_side_effect:
+            mock_template_stats.get_template_statistics_for_service.assert_called_once()
 
     def test_get_all_notification_counts_for_year(self, mock_service_api):
         # Setup
