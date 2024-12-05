@@ -12,8 +12,8 @@ from app.models.service import Service
 class NotificationCounts:
     def get_all_notification_counts_for_today(self, service_id):
         # try to get today's stats from redis
-        todays_sms = redis_client.get(sms_daily_count_cache_key(service_id))
-        todays_email = redis_client.get(email_daily_count_cache_key(service_id))
+        todays_sms = int(redis_client.get(sms_daily_count_cache_key(service_id)))
+        todays_email = int(redis_client.get(email_daily_count_cache_key(service_id)))
 
         if todays_sms is not None and todays_email is not None:
             return {"sms": todays_sms, "email": todays_email}
