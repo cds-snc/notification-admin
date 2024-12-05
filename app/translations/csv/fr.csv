@@ -2034,7 +2034,7 @@
 "These messages exceed the annual limit","FR: These messages exceed the annual limit"
 "<strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>","FR: <strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>"
 "For more information, visit the <a href={}>usage report for {}</a>.","FR: For more information, visit the <a href={}>usage report for {}</a>."
-"This message exceeds your annual limit", "FR: This message exceeds your annual limit"
+"This message exceeds your annual limit","FR: This message exceeds your annual limit"
 "email messages","courriels"
 "Sending paused until annual limit resets","FR: Sending paused until annual limit resets"
 "Sending paused until 7pm ET. You can schedule more messages to send later.","FR: Sending paused until 7pm ET. You can schedule more messages to send later."
