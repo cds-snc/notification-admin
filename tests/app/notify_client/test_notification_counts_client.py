@@ -1,4 +1,5 @@
-from unittest.mock import patch
+from datetime import datetime
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -20,6 +21,12 @@ def mock_template_stats():
 @pytest.fixture
 def mock_service_api():
     with patch("app.notify_client.notification_counts_client.service_api_client") as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_get_all_notification_counts_for_today():
+    with patch("app.notify_client.notification_counts_client.get_all_notification_counts_for_today") as mock:
         yield mock
 
 
@@ -87,3 +94,106 @@ class TestNotificationCounts:
             # Assert
             assert result["sms"] == 29  # 1 + 22 + 1 + 5
             assert result["email"] == 21  # 1 + 1 + 12 + 1 + 1 + 5
+
+    def test_get_limit_stats(self, mocker):
+        # Setup
+        mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
+
+        mock_notification_client = NotificationCounts()
+
+        # Mock the dependency methods
+
+        mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_today", return_value={"email": 20, "sms": 10}
+        )
+        mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_year", return_value={"email": 200, "sms": 100}
+        )
+
+        # Execute
+        result = mock_notification_client.get_limit_stats(mock_service)
+
+        # Assert
+        assert result == {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 200,
+                    "remaining": 800,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 20,
+                    "remaining": 80,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 500,
+                    "sent": 100,
+                    "remaining": 400,
+                },
+                "daily": {
+                    "limit": 50,
+                    "sent": 10,
+                    "remaining": 40,
+                },
+            },
+        }
+
+    @pytest.mark.parametrize(
+        "today_counts,year_counts,expected_remaining",
+        [
+            (
+                {"email": 0, "sms": 0},
+                {"email": 0, "sms": 0},
+                {"email": {"annual": 1000, "daily": 100}, "sms": {"annual": 500, "daily": 50}},
+            ),
+            (
+                {"email": 100, "sms": 50},
+                {"email": 1000, "sms": 500},
+                {"email": {"annual": 0, "daily": 0}, "sms": {"annual": 0, "daily": 0}},
+            ),
+            (
+                {"email": 50, "sms": 25},
+                {"email": 500, "sms": 250},
+                {"email": {"annual": 500, "daily": 50}, "sms": {"annual": 250, "daily": 25}},
+            ),
+        ],
+    )
+    def test_get_limit_stats_remaining_calculations(self, mocker, today_counts, year_counts, expected_remaining):
+        # Setup
+        mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
+
+        mock_notification_client = NotificationCounts()
+
+        mocker.patch.object(mock_notification_client, "get_all_notification_counts_for_today", return_value=today_counts)
+        mocker.patch.object(mock_notification_client, "get_all_notification_counts_for_year", return_value=year_counts)
+
+        # Execute
+        result = mock_notification_client.get_limit_stats(mock_service)
+
+        # Assert remaining counts
+        assert result["email"]["annual"]["remaining"] == expected_remaining["email"]["annual"]
+        assert result["email"]["daily"]["remaining"] == expected_remaining["email"]["daily"]
+        assert result["sms"]["annual"]["remaining"] == expected_remaining["sms"]["annual"]
+        assert result["sms"]["daily"]["remaining"] == expected_remaining["sms"]["daily"]
+
+    def test_get_limit_stats_dependencies_called(self, mocker):
+        # Setup
+        mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
+        mock_notification_client = NotificationCounts()
+
+        mock_today = mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_today", return_value={"email": 0, "sms": 0}
+        )
+        mock_year = mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_year", return_value={"email": 0, "sms": 0}
+        )
+
+        # Execute
+        mock_notification_client.get_limit_stats(mock_service)
+
+        # Assert dependencies called
+        mock_today.assert_called_once_with(mock_service.id)
+        mock_year.assert_called_once_with(mock_service.id, datetime.now().year)

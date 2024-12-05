@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import partial
-from unittest.mock import ANY, MagicMock, Mock
+from unittest.mock import ANY, MagicMock, Mock, patch
 
 import pytest
 from flask import url_for
@@ -52,6 +52,12 @@ from tests.conftest import (
 )
 
 DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
+
+
+@pytest.fixture
+def mock_notification_counts_client():
+    with patch("app.main.views.templates.notification_counts_client") as mock:
+        yield mock
 
 
 class TestRedisPreviewUtilities:
@@ -2742,3 +2748,64 @@ def test_should_hide_category_name_from_template_list_if_marked_hidden(
     # assert that "HIDDEN_CATEGORY" is not found anywhere in the page using beautifulsoup
     assert "HIDDEN_CATEGORY" not in page.text
     assert not page.find(text="HIDDEN_CATEGORY")
+
+
+class TestAnnualLimits:
+    @pytest.mark.parametrize(
+        "remaining_daily, remaining_annual, buttons_shown",
+        [
+            (10, 100, True),  # Within both limits
+            (0, 100, False),  # Exceeds daily limit
+            (10, 0, False),  # Exceeds annual limit
+            (0, 0, False),  # Exceeds both limits
+            (1, 1, True),  # Exactly at both limits
+        ],
+    )
+    def test_should_hide_send_buttons_when_appropriate(
+        self,
+        client_request,
+        mock_get_service_template,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        remaining_daily,
+        remaining_annual,
+        buttons_shown,
+    ):
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_annual,  # The number of email notifications remaining this year
+                },
+                "daily": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_daily,  # The number of email notifications remaining today
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_annual,  # The number of email notifications remaining this year
+                },
+                "daily": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_daily,  # The number of email notifications remaining today
+                },
+            },
+        }
+
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+        if buttons_shown:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is None
