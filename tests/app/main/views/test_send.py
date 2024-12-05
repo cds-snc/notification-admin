@@ -6,7 +6,6 @@ from glob import glob
 from io import BytesIO
 from itertools import repeat
 from os import path
-from unittest.mock import patch
 from uuid import uuid4
 from zipfile import BadZipFile
 
@@ -2545,7 +2544,6 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     mock_get_jobs,
     mock_s3_download,
     mock_s3_set_metadata,
-    mock_notification_counts_client,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2563,10 +2561,6 @@ def test_check_messages_shows_too_many_sms_messages_errors(
         },
     )
 
-    mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-        "sms": 0,
-        "email": 0,
-    }
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -2591,30 +2585,6 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     assert details == expected_msg
 
 
-@pytest.fixture
-def mock_notification_counts_client():
-    with patch("app.main.views.send.notification_counts_client") as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_daily_sms_fragment_count():
-    with patch("app.main.views.send.daily_sms_fragment_count") as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_daily_email_count():
-    with patch("app.main.views.send.daily_email_count") as mock:
-        yield mock
-
-
-@pytest.fixture
-def mock_get_service_template_annual_limits():
-    with patch("app.service_api_client.get_service_template") as mock:
-        yield mock
-
-
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
@@ -2632,7 +2602,6 @@ def test_check_messages_shows_too_many_email_messages_errors(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
-    mock_notification_counts_client,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2649,10 +2618,7 @@ def test_check_messages_shows_too_many_email_messages_errors(
             "email": {"requested": num_requested, "delivered": 0, "failed": 0},
         },
     )
-    mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-        "sms": 0,
-        "email": 0,
-    }
+
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {

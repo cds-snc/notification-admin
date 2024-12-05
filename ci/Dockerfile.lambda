@@ -5,7 +5,7 @@ ARG POETRY_VERSION="1.7.1"
 ARG POETRY_VIRTUALENVS_CREATE="false"
 
 # Build image
-FROM python:3.10-alpine3.18@sha256:d5ee9613c89c9bd4c4112465d2136512ea8629bce6ff15fa27144f3cc16b5c6b as base
+FROM python:3.12-alpine3.20@sha256:5049c050bdc68575a10bcb1885baa0689b6c15152d8a56a7e399fb49f783bf98 as base
 
 ARG APP_DIR
 ARG APP_VENV
@@ -68,7 +68,7 @@ RUN . ${APP_VENV}/bin/activate \
     && make generate-version-file
 
 # Final image
-FROM python:3.10-alpine3.18@sha256:d5ee9613c89c9bd4c4112465d2136512ea8629bce6ff15fa27144f3cc16b5c6b as lambda
+FROM python:3.12-alpine3.20@sha256:5049c050bdc68575a10bcb1885baa0689b6c15152d8a56a7e399fb49f783bf98 as lambda
 
 ARG APP_DIR
 ARG APP_VENV

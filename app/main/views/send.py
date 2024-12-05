@@ -53,7 +53,7 @@ from app.main.forms import (
 )
 from app.main.views.dashboard import aggregate_notifications_stats
 from app.models.user import Users
-from app.notify_client.notification_counts_client import notification_counts_client
+from app.notify_client import notification_counts_client
 from app.s3_client.s3_csv_client import (
     copy_bulk_send_file_to_uploads,
     list_bulk_send_uploads,
@@ -650,8 +650,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     sms_fragments_sent_today = daily_sms_fragment_count(service_id)
     emails_sent_today = daily_email_count(service_id)
-    remaining_sms_message_fragments_today = current_service.sms_daily_limit - sms_fragments_sent_today
-    remaining_email_messages_today = current_service.message_limit - emails_sent_today
+    remaining_sms_message_fragments = current_service.sms_daily_limit - sms_fragments_sent_today
+    remaining_email_messages = current_service.message_limit - emails_sent_today
 
     contents = s3download(service_id, upload_id)
 
@@ -660,7 +660,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     email_reply_to = None
     sms_sender = None
     recipients_remaining_messages = (
-        remaining_email_messages_today if db_template["template_type"] == "email" else remaining_sms_message_fragments_today
+        remaining_email_messages if db_template["template_type"] == "email" else remaining_sms_message_fragments
     )
 
     if db_template["template_type"] == "email":
@@ -744,8 +744,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
-        remaining_messages=remaining_email_messages_today,
-        remaining_sms_message_fragments=remaining_sms_message_fragments_today,
+        remaining_messages=remaining_email_messages,
+        remaining_sms_message_fragments=remaining_sms_message_fragments,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
@@ -821,10 +821,6 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     if data["send_exceeds_daily_limit"]:
         return render_template("views/check/column-errors.html", **data)
-
-    if current_app.config["FF_ANNUAL_LIMIT"]:
-        if data["send_exceeds_annual_limit"]:
-            return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
