@@ -2165,6 +2165,7 @@ def test_route_permissions(
     mock_get_template_folders,
     mock_get_template_statistics_for_template,
     mock_get_template_categories,
+    mock_get_limit_stats,
     fake_uuid,
 ):
     validate_route_permission(
@@ -2431,6 +2432,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
 def test_should_show_message_before_redacting_template(
     client_request,
     mock_get_service_template,
+    mock_get_limit_stats,
     service_one,
     fake_uuid,
 ):
