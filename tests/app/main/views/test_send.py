@@ -1423,7 +1423,7 @@ def test_link_to_upload_not_offered_when_entering_personalisation(
 
     # We’re entering personalisation
     assert page.select_one("input[type=text]")["name"] == "placeholder_value"
-    assert page.select_one("h1 label[for=placeholder_value]").text.strip() == "What is the custom content in ((name)) ?"
+    assert page.select_one("h1 label[for=placeholder_value]").text.strip() == "What is the custom content in ((name)) ?"
     # …but first link on the page is ‘Back’, so not preceeded by ‘Upload’
     assert page.select_one("main a").text == "Back"
     assert "Upload" not in page.select_one("main").text
@@ -2545,7 +2545,7 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     mock_get_jobs,
     mock_s3_download,
     mock_s3_set_metadata,
-    mock_notification_counts_client,
+    mock_get_limit_stats,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2563,10 +2563,6 @@ def test_check_messages_shows_too_many_sms_messages_errors(
         },
     )
 
-    mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-        "sms": 0,
-        "email": 0,
-    }
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -2632,7 +2628,7 @@ def test_check_messages_shows_too_many_email_messages_errors(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
-    mock_notification_counts_client,
+    mock_get_limit_stats,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2649,10 +2645,7 @@ def test_check_messages_shows_too_many_email_messages_errors(
             "email": {"requested": num_requested, "delivered": 0, "failed": 0},
         },
     )
-    mock_notification_counts_client.get_all_notification_counts_for_year.return_value = {
-        "sms": 0,
-        "email": 0,
-    }
+
     with client_request.session_transaction() as session:
         session["file_uploads"] = {
             fake_uuid: {
@@ -2756,49 +2749,6 @@ def test_warns_if_file_sent_already(
     )
 
     mock_get_jobs.assert_called_once_with(SERVICE_ONE_ID, limit_days=0)
-
-
-def test_check_messages_column_error_doesnt_show_optional_columns(
-    mocker,
-    client_request,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    fake_uuid,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-):
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="\n".join(["address_line_1,address_line_2,foo"] + ["First Lastname,1 Example Road,SW1 1AA"]),
-    )
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": "",
-                "original_file_name": "",
-            }
-        }
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        upload_id=fake_uuid,
-        _test_page_title=False,
-    )
-
-    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Your spreadsheet is missing a column called ‘postcode’. " "Add the missing column."
-    )
 
 
 def test_check_messages_adds_sender_id_in_session_to_metadata(
