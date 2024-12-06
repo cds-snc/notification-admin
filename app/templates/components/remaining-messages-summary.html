@@ -1,4 +1,4 @@
-{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, textOnly=None) %}
+{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None) %}
   <!-- Validate textOnly param -->
   {% set textOnly_allowed_values = ['text', 'emoji'] %}
   {% if textOnly not in textOnly_allowed_values %}
@@ -95,13 +95,13 @@
     </div>
   {% endif %}
 
-  {% if sections[0].skip %}
+  {% if not headingMode and sections[0].skip %}
     <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="yearly-sending-paused">
-      Sending paused until annual limit resets
+      {{ _('Sending paused until annual limit resets') }}
     </p>
-  {% elif sections[0].remaining == "0" %}
+  {% elif not headingMode and sections[0].remaining == "0" %}
     <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="daily-sending-paused">
-      Sending paused until 7pm ET. You can schedule more messages to send later.
+      {{ _('Sending paused until 7pm ET. You can schedule more messages to send later.') }}      
     </p>
   {% endif %}
   

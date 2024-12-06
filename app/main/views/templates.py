@@ -57,6 +57,7 @@ from app.models.template_list import (
     TemplateList,
     TemplateLists,
 )
+from app.notify_client.notification_counts_client import notification_counts_client
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -125,6 +126,31 @@ def get_char_limit_error_msg():
     return _("Too many characters")
 
 
+def get_limit_stats(notification_type):
+    # get the limit stats for the current service
+    limit_stats = notification_counts_client.get_limit_stats(current_service)
+
+    # transform the stats into a format that can be used in the template
+    limit_stats = {
+        "dailyLimit": limit_stats[notification_type]["daily"]["limit"],
+        "dailyUsed": limit_stats[notification_type]["daily"]["sent"],
+        "dailyRemaining": limit_stats[notification_type]["daily"]["remaining"],
+        "yearlyLimit": limit_stats[notification_type]["annual"]["limit"],
+        "yearlyUsed": limit_stats[notification_type]["annual"]["sent"],
+        "yearlyRemaining": limit_stats[notification_type]["annual"]["remaining"],
+        "notification_type": notification_type,
+        "heading": _("Ready to send?"),
+    }
+
+    # determine ready to send heading
+    if limit_stats["yearlyRemaining"] == 0:
+        limit_stats["heading"] = _("Sending paused until annual limit resets")
+    elif limit_stats["dailyRemaining"] == 0:
+        limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
+
+    return limit_stats
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>")
 @user_has_permissions()
 def view_template(service_id, template_id):
@@ -142,6 +168,7 @@ def view_template(service_id, template_id):
         template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
+        **get_limit_stats(template["template_type"]),
     )
 
 
@@ -1072,6 +1099,7 @@ def delete_service_template(service_id, template_id):
         "views/templates/template.html",
         template=get_email_preview_template(template, template["id"], service_id),
         user_has_template_permission=True,
+        **get_limit_stats(template["template_type"]),
     )
 
 
@@ -1085,6 +1113,7 @@ def confirm_redact_template(service_id, template_id):
         template=get_email_preview_template(template, template["id"], service_id),
         user_has_template_permission=True,
         show_redaction_message=True,
+        **get_limit_stats(template["template_type"]),
     )
 
 

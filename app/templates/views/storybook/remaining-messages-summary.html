@@ -53,33 +53,33 @@
     <h3 class="heading-medium">Text only</h3>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-below">below limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(10000, 700, 10000, 750, "email", "text") }}
+            {{ remaining_messages_summary(10000, 700, 10000, 750, "email", False, "text") }}
         </div>
     </div>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-warning">near limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", "text") }}
+            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", False, "text") }}
         </div>  
     </div>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-text-limit">at limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", "text") }}
+            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", False, "text") }}
         </div>
     </div>
 
     <h3 class="heading-medium">Text only emoji</h3>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-below">below limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(1000, 700, 1000, 750, "email", "emoji") }}
+            {{ remaining_messages_summary(1000, 700, 1000, 750, "email", False, "emoji") }}
         </div>
     </div>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-warning">near limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", "emoji") }}
+            {{ remaining_messages_summary(1000, 800, 1000, 900, "email", False, "emoji") }}
         </div>
     </div>
     <div class="grid grid-cols-2 gap-6 bg-gray p-6" data-testid="rms-emoji-limit">at limit
         <div class="mb-6 bg-white p-4">
-            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", "emoji") }}
+            {{ remaining_messages_summary(1000, 1000, 1000, 1000, "email", False, "emoji") }}
         </div>
     </div>
