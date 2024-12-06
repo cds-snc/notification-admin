@@ -16,9 +16,10 @@
     {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
       <h2 class="heading-medium">{{ heading }}</h2>
 
-      {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0) }}
-
-      {% if yearlyRemaining > 0 and dailyRemaining > 0 %}
+      {% if config["FF_ANNUAL_LIMIT"] %}
+        {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0) }}
+      {% endif %}
+      {% if not config["FF_ANNUAL_LIMIT"] or (yearlyRemaining > 0 and dailyRemaining > 0) %}
         <div class="mb-12 mt-12" data-testid="send-buttons">
           <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
             {{ _('Yes, add recipients') }}
