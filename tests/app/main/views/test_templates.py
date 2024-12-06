@@ -49,6 +49,7 @@ from tests.conftest import (
     fake_uuid,
     mock_get_service_template_with_process_type,
     normalize_spaces,
+    set_config,
 )
 
 DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
@@ -2703,41 +2704,43 @@ class TestAnnualLimits:
         remaining_daily,
         remaining_annual,
         buttons_shown,
+        app_,
     ):
-        mock_notification_counts_client.get_limit_stats.return_value = {
-            "email": {
-                "annual": {
-                    "limit": 1,  # doesn't matter for our test
-                    "sent": 1,  # doesn't matter for our test
-                    "remaining": remaining_annual,  # The number of email notifications remaining this year
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
+            mock_notification_counts_client.get_limit_stats.return_value = {
+                "email": {
+                    "annual": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_annual,  # The number of email notifications remaining this year
+                    },
+                    "daily": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_daily,  # The number of email notifications remaining today
+                    },
                 },
-                "daily": {
-                    "limit": 1,  # doesn't matter for our test
-                    "sent": 1,  # doesn't matter for our test
-                    "remaining": remaining_daily,  # The number of email notifications remaining today
+                "sms": {
+                    "annual": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_annual,  # The number of email notifications remaining this year
+                    },
+                    "daily": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_daily,  # The number of email notifications remaining today
+                    },
                 },
-            },
-            "sms": {
-                "annual": {
-                    "limit": 1,  # doesn't matter for our test
-                    "sent": 1,  # doesn't matter for our test
-                    "remaining": remaining_annual,  # The number of email notifications remaining this year
-                },
-                "daily": {
-                    "limit": 1,  # doesn't matter for our test
-                    "sent": 1,  # doesn't matter for our test
-                    "remaining": remaining_daily,  # The number of email notifications remaining today
-                },
-            },
-        }
+            }
 
-        page = client_request.get(
-            ".view_template",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            _test_page_title=False,
-        )
-        if buttons_shown:
-            assert page.find(attrs={"data-testid": "send-buttons"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "send-buttons"}) is None
+            page = client_request.get(
+                ".view_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                _test_page_title=False,
+            )
+            if buttons_shown:
+                assert page.find(attrs={"data-testid": "send-buttons"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "send-buttons"}) is None
