@@ -10,7 +10,9 @@
 {% set prefix_txt = _('a column called') %}
 {% set prefix_plural_txt = _('columns called') %}
 
-{% if send_exceeds_daily_limit and (sms_parts_remaining <= 0) %}
+{% if send_exceeds_annual_limit %}
+  {% set page_title = _('These messages exceed the annual limit') %}
+{% elif send_exceeds_daily_limit and (sms_parts_remaining <= 0) %}
   {% set page_title = _('These messages exceed your daily limit') %}
 {% elif send_exceeds_daily_limit or recipients.more_rows_than_can_send %}
   {% set page_title = _('These messages exceed your daily limit') %}
@@ -164,24 +166,20 @@
             {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
             content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
           </p>
-      {% elif recipients.more_rows_than_can_send and false %}
+      {% elif send_exceeds_annual_limit %}
+        {% call banner_wrapper(type='dangerous') %}
+          {% include "partials/check/too-many-messages-annual.html" %}
+        {% endcall %}
+      {% elif recipients.more_rows_than_can_send %}
         {% call banner_wrapper(type='dangerous') %}
           {% include "partials/check/too-many-email-messages.html" %}
         {% endcall %}
-      {% elif recipients.more_rows_than_can_send %}
-          {% call banner_wrapper(type='dangerous') %}
-            {% include "partials/check/too-many-email-messages.html" %}
-          {% endcall %}
-          <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
-          <p>
-            {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-            content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
-          </p>
-            
-          
+        <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
+        <p>
+          {{ _("You can try sending these messages after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+          content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true))}}
+        </p>
       {% endif %}
-
-    
   </div>
 
   {% if not send_exceeds_daily_limit %}
