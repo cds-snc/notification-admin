@@ -95,7 +95,7 @@ jobs:
     - name: Update images in staging
       run: |
         DOCKER_TAG=${GITHUB_SHA::7}
-        kubectl set image deployment.apps/notify-admin admin=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+        kubectl set image deployment.apps/notify-admin notify-admin=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
 
     - name: my-app-install token
       id: notify-pr-bot
