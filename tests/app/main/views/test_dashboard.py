@@ -1582,7 +1582,7 @@ class TestAnnualLimits:
             # mock annual_limit_client.get_all_notification_counts
             mocker.patch(
                 "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value=None,
+                return_value={"sms_delivered": 0, "email_delivered": 0, "sms_failed": 0, "email_failed": 0},
             )
 
             mocker.patch(
