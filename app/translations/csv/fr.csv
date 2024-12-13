@@ -26,6 +26,7 @@
 "Message has been accepted by phone","Le numéro de téléphone a accepté le message"
 "Phone number not accepting messages right now","Le numéro de téléphone n’accepte pas de messages à l’heure actuelle"
 "Phone carrier is currently unreachable/unavailable","Le fournisseur téléphonique ne peut pas être rejoint ou est indisponible"
+"Phone is currently unreachable/unavailable","Le téléphone ne peut pas être joint ou est indisponible"
 "Sent","Envoyé"
 "Email address","Adresse courriel"
 "email address","adresse courriel"
