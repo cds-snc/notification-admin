@@ -61,7 +61,7 @@ run-gunicorn:
 
 .PHONY: format
 format:
-	ruff check --select I --fix .
+	ruff check --fix .
 	ruff check
 	ruff format .
 	mypy ./
