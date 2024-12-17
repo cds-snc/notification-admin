@@ -2038,4 +2038,3 @@
 "To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.","Pour envoyer des messages aux destinataires, attendez <strong> le 1er avril {}</strong> ou optez pour une autre méthode de contact."
 "For more information, visit the <a href={}>usage report for {}</a>.","FR: For more information, visit the <a href={}>usage report for {}</a>."
 "<strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>","FR: <strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>"
-"To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. ","FR: To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. "
