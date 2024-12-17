@@ -1235,8 +1235,12 @@ def test_submit_go_live_request(
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
                 "purpose": "Purpose",
-                "expected_volume": "1-10k",
-                "notification_types": ["email"],
+                "daily_email_volume": "0",
+                "annual_email_volume": "within_limit",
+                "daily_sms_volume": "more_sms",
+                "annual_sms_volume": "above_limit",
+                "how_many_more_email": None,
+                "how_many_more_sms": 25000,
             },
             "step": "about-notifications",
         },
@@ -1256,7 +1260,6 @@ def test_submit_go_live_request(
 
     expected_data = {
         "name": "Test User",
-        "expected_volume": "1-10k",
         "department_org_name": "Org name",
         "service_url": f"http://localhost/services/{SERVICE_ONE_ID}",
         "support_type": "go_live_request",
@@ -1265,7 +1268,12 @@ def test_submit_go_live_request(
         "intended_recipients": "public",
         "main_use_case": "Purpose",
         "email_address": "test@user.canada.ca",
-        "notification_types": "email",
+        "daily_email_volume": "0",
+        "annual_email_volume": "within_limit",
+        "daily_sms_volume": "more_sms",
+        "annual_sms_volume": "above_limit",
+        "how_many_more_email": None,
+        "how_many_more_sms": 25000,
     }
 
     mock_contact.assert_called_once_with(expected_data)
