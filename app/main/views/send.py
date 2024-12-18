@@ -892,7 +892,10 @@ def start_job(service_id, upload_id):
         job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
     except HTTPError as exception:
         return render_template(
-            "views/notifications/check.html", **(get_template_error_dict(exception) if exception else {}), template=None
+            "views/notifications/check.html",
+            time_to_reset=get_limit_reset_time_et(),
+            **(get_template_error_dict(exception) if exception else {}),
+            template=None,
         )
     session.pop("sender_id", None)
 
