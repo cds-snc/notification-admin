@@ -88,7 +88,9 @@
     ) }}
   {% endif %}
 
-  {{ template|string|translate_preview_template }}
+  {% if template %}
+    {{ template|string|translate_preview_template }}
+  {% endif %}
 
   <div class="js-stick-at-bottom-when-scrolling">
     <form method="post" enctype="multipart/form-data" action="{{url_for(
