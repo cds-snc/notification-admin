@@ -888,8 +888,12 @@ def check_notification_preview(service_id, template_id, filetype):
 @main.route("/services/<service_id>/start-job/<upload_id>", methods=["POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def start_job(service_id, upload_id):
-    job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
-
+    try:
+        job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
+    except HTTPError as exception:
+        return render_template(
+            "views/notifications/check.html", **(get_template_error_dict(exception) if exception else {}), template=None
+        )
     session.pop("sender_id", None)
 
     return redirect(
@@ -1107,11 +1111,12 @@ def get_template_error_dict(exception):
         error = "too-many-sms-messages"
     elif "Content for template has a character count greater than the limit of" in exception.message:
         error = "message-too-long"
-    elif "Exceeded annual email sending limit" in exception.message:
+    elif "Exceeded annual email sending" in exception.message:
         error = "too-many-email-annual"
-    elif "Exceeded annual SMS sending limit" in exception.message:
+    elif "Exceeded annual SMS sending" in exception.message:
         error = "too-many-sms-annual"
     else:
+        current_app.logger.error("Unhandled exception from API: {}".format(exception))
         raise exception
 
     return {
