@@ -6,7 +6,7 @@
   {% set units = _('text messages') %}
 {% endif %}
 
-<p data-testid="exceeds-annual">
+<div data-testid="exceeds-annual" class="text-title">
   {%- if current_service.trial_mode %}
     {{ _("Your service is in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {% else %}
@@ -21,4 +21,4 @@
       <p>{{ _('For more information, visit the <a href={}>usage report for {}</a>.').format(url_for('.monthly', service_id=current_service.id), current_service.name) }}</p>
     {% endif %}
   {%- endif -%}
-</p>
+</div>
