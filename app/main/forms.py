@@ -553,7 +553,11 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
 
 
 class SendingDomainForm(StripWhitespaceForm):
-    sending_domain = StringField(_l("Sending domain"), validators=[])
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sending_domain.choices = kwargs["sending_domain_choices"]
+
+    sending_domain = SelectField(_l("Sending domain"), validators=[])
 
 
 class RenameOrganisationForm(StripWhitespaceForm):

@@ -2,6 +2,7 @@ from collections import OrderedDict
 from csv import DictReader
 from io import StringIO
 from pathlib import Path
+from unittest.mock import Mock, patch
 from urllib.parse import unquote
 
 import pytest
@@ -23,6 +24,7 @@ from app.utils import (
     get_new_default_reply_to_address,
     get_remote_addr,
     get_template,
+    get_verified_ses_domains,
     printing_today_or_tomorrow,
     report_security_finding,
 )
@@ -759,3 +761,52 @@ def test_get_new_default_reply_to_address_returns_none_if_one_reply_to(mocker: M
 
     new_default = get_new_default_reply_to_address(email_reply_tos, reply_to_1)  # type: ignore
     assert new_default is None
+
+
+class TestGetSESDomains:
+    @pytest.fixture
+    def mock_ses_client(self):
+        with patch("boto3.client") as mock_client:
+            mock_ses = Mock()
+            mock_client.return_value = mock_ses
+            yield mock_ses
+
+    @pytest.fixture(autouse=True)
+    def mock_cache_decorator(self):
+        with patch("app.utils.cache.memoize", lambda *args, **kwargs: lambda f: f):
+            yield
+
+    def test_get_verified_ses_domains(self, app_, mock_ses_client):
+        # Setup mock return values
+        mock_ses_client.list_identities.return_value = {"Identities": ["domain1.com", "domain2.com", "domain3.com"]}
+
+        mock_ses_client.get_identity_verification_attributes.return_value = {
+            "VerificationAttributes": {
+                "domain1.com": {"VerificationStatus": "Success"},
+                "domain2.com": {"VerificationStatus": "Failed"},
+                "domain3.com": {"VerificationStatus": "Pending"},
+            }
+        }
+
+        # Execute within app context
+        with app_.test_request_context():
+            result = get_verified_ses_domains()
+
+            # Assert
+            assert result == ["domain1.com"]
+            mock_ses_client.list_identities.assert_called_once_with(IdentityType="Domain")
+            mock_ses_client.get_identity_verification_attributes.assert_called_once_with(
+                Identities=["domain1.com", "domain2.com", "domain3.com"]
+            )
+
+    def test_get_verified_ses_domains_no_domains(self, app_, mock_ses_client):
+        # Setup empty response
+        mock_ses_client.list_identities.return_value = {"Identities": []}
+        mock_ses_client.get_identity_verification_attributes.return_value = {"VerificationAttributes": {}}
+
+        # Execute within app context
+        with app_.test_request_context():
+            result = get_verified_ses_domains()
+
+            # Assert
+            assert result == []

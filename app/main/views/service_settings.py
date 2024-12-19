@@ -72,6 +72,7 @@ from app.utils import (
     email_safe,
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
+    get_verified_ses_domains,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
@@ -549,7 +550,7 @@ def service_set_reply_to_email(service_id):
 @main.route("/services/<service_id>/service-settings/sending-domain", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_sending_domain(service_id):
-    form = SendingDomainForm()
+    form = SendingDomainForm(sending_domain_choices=get_verified_ses_domains())
 
     if request.method == "GET":
         form.sending_domain.data = current_service.sending_domain
