@@ -1,3 +1,5 @@
+from unittest.mock import call
+
 from app.salesforce import salesforce_account
 
 
@@ -5,8 +7,8 @@ def test_get_accounts_requests_correct_url(mocker, app_):
     with app_.app_context():
         mock_request = mocker.patch("app.salesforce.salesforce_account.requests.get")
     salesforce_account.get_accounts("www.test_url.ca", "secret_token", app_.logger)
-    assert mock_request.called_with("www.test_url.ca")
-    assert mock_request.called_with(headers={"Authorization": "token secret_token"})
+    calls = [call("www.test_url.ca", headers={"Authorization": "token secret_token"})]
+    mock_request.assert_has_calls(calls)
 
 
 def test_get_accounts_sorts_alphabetically(mocker, app_):

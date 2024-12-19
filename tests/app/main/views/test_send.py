@@ -6,6 +6,7 @@ from glob import glob
 from io import BytesIO
 from itertools import repeat
 from os import path
+from unittest.mock import patch
 from uuid import uuid4
 from zipfile import BadZipFile
 
@@ -41,6 +42,7 @@ from tests.conftest import (
     mock_get_service_letter_template,
     mock_get_service_template,
     normalize_spaces,
+    set_config,
 )
 
 template_types = ["email", "sms"]
@@ -2543,6 +2545,7 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     mock_get_jobs,
     mock_s3_download,
     mock_s3_set_metadata,
+    mock_get_limit_stats,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2584,6 +2587,30 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     assert details == expected_msg
 
 
+@pytest.fixture
+def mock_notification_counts_client():
+    with patch("app.main.views.send.notification_counts_client") as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_daily_sms_fragment_count():
+    with patch("app.main.views.send.daily_sms_fragment_count") as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_daily_email_count():
+    with patch("app.main.views.send.daily_email_count") as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_get_service_template_annual_limits():
+    with patch("app.service_api_client.get_service_template") as mock:
+        yield mock
+
+
 @pytest.mark.parametrize(
     "num_requested,expected_msg",
     [
@@ -2601,6 +2628,7 @@ def test_check_messages_shows_too_many_email_messages_errors(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_get_limit_stats,
     fake_uuid,
     num_requested,
     expected_msg,
@@ -2721,49 +2749,6 @@ def test_warns_if_file_sent_already(
     )
 
     mock_get_jobs.assert_called_once_with(SERVICE_ONE_ID, limit_days=0)
-
-
-def test_check_messages_column_error_doesnt_show_optional_columns(
-    mocker,
-    client_request,
-    mock_get_service_letter_template,
-    mock_has_permissions,
-    fake_uuid,
-    mock_get_users_by_service,
-    mock_get_service_statistics,
-    mock_get_template_statistics,
-    mock_get_job_doesnt_exist,
-    mock_get_jobs,
-):
-    mocker.patch(
-        "app.main.views.send.s3download",
-        return_value="\n".join(["address_line_1,address_line_2,foo"] + ["First Lastname,1 Example Road,SW1 1AA"]),
-    )
-
-    mocker.patch(
-        "app.main.views.send.get_page_count_for_letter",
-        return_value=5,
-    )
-
-    with client_request.session_transaction() as session:
-        session["file_uploads"] = {
-            fake_uuid: {
-                "template_id": "",
-                "original_file_name": "",
-            }
-        }
-
-    page = client_request.get(
-        "main.check_messages",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        upload_id=fake_uuid,
-        _test_page_title=False,
-    )
-
-    assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Your spreadsheet is missing a column called ‘postcode’. " "Add the missing column."
-    )
 
 
 def test_check_messages_adds_sender_id_in_session_to_metadata(
@@ -3401,3 +3386,394 @@ def test_s3_send_shows_available_files(
     multiple_choise_options = [x.text.strip() for x in options]
 
     assert multiple_choise_options == expected_filenames
+
+
+class TestAnnualLimitsSend:
+    @pytest.mark.parametrize(
+        "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
+        [
+            # annual limit for mock_get_live_service is 10,000email/10,000sms
+            # daily limit for mock_get_live_service is 1,000email/1,000sms
+            # 1000 have already been sent today, trying to send 100 more [over both limits]
+            (100, 1000, 10000, True, False),
+            # No sent yet today or this year, trying to send 1001 [over both limits]
+            (10001, 0, 0, True, False),
+            # 600 have already been sent this year, trying to send 500 more [over annual limit but not daily]
+            (500, 0, 9600, True, False),
+            # No sent yet today or this year, trying to send 1001 [over daily limit but not annual]
+            (1001, 0, 0, False, True),
+            # No sent yet today or this year, trying to send 100 [over neither limit]
+            (100, 0, 0, False, False),
+        ],
+        ids=[
+            "email_over_both_limits",
+            "email_over_both_limits2",
+            "email_over_annual_but_not_daily",
+            "email_over_daily_but_not_annual",
+            "email_over_neither",
+        ],
+    )
+    def test_email_send_fails_approrpiately_when_over_limits(
+        self,
+        mocker,
+        client_request,
+        mock_get_live_service,  # set email_annual_limit and sms_annual_limit to 1000
+        mock_get_users_by_service,
+        mock_get_service_email_template_without_placeholders,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        mock_notification_counts_client,
+        mock_daily_sms_fragment_count,
+        mock_daily_email_count,
+        fake_uuid,
+        num_being_sent,
+        num_sent_today,
+        num_sent_this_year,
+        expect_to_see_annual_limit_msg,
+        expect_to_see_daily_limit_msg,
+        app_,
+    ):
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):
+            mocker.patch(
+                "app.main.views.send.s3download",
+                return_value=",\n".join(
+                    ["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_being_sent)
+                ),
+            )
+
+            mock_notification_counts_client.get_limit_stats.return_value = {
+                "email": {
+                    "annual": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": 10000
+                        - num_sent_this_year
+                        - num_sent_today,  # The number of email notifications remaining this year
+                    },
+                    "daily": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
+                    },
+                }
+            }
+
+            # mock that we've already sent `emails_sent_today` emails today
+            mock_daily_email_count.return_value = num_sent_today
+            mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
+
+            with client_request.session_transaction() as session:
+                session["file_uploads"] = {
+                    fake_uuid: {
+                        "template_id": fake_uuid,
+                        "notification_count": 1,
+                        "valid": True,
+                    }
+                }
+
+            page = client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="valid.csv",
+                _test_page_title=False,
+            )
+
+            if expect_to_see_annual_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+
+            if expect_to_see_daily_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+
+    @pytest.mark.parametrize(
+        "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
+        [
+            # annual limit for mock_get_live_service is 10,000email/10,000sms
+            # daily limit for mock_get_live_service is 1,000email/1,000sms
+            # 1000 have already been sent today, trying to send 100 more [over both limits]
+            (100, 1000, 10000, True, False),
+            # No sent yet today or this year, trying to send 1001 [over both limits]
+            (10001, 0, 0, True, False),
+            # 600 have already been sent this year, trying to send 500 more [over annual limit but not daily]
+            (500, 0, 9600, True, False),
+            # No sent yet today or this year, trying to send 1001 [over daily limit but not annual]
+            (1001, 0, 0, False, True),
+            # No sent yet today or this year, trying to send 100 [over neither limit]
+            (100, 0, 0, False, False),
+        ],
+        ids=[
+            "sms_over_both_limits",
+            "sms_over_both_limits2",
+            "sms_over_annual_but_not_daily",
+            "sms_over_daily_but_not_annual",
+            "sms_over_neither",
+        ],
+    )
+    def test_sms_send_fails_approrpiately_when_over_limits(
+        self,
+        mocker,
+        client_request,
+        mock_get_live_service,  # set email_annual_limit and sms_annual_limit to 1000
+        mock_get_users_by_service,
+        mock_get_service_sms_template_without_placeholders,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        mock_notification_counts_client,
+        mock_daily_sms_fragment_count,
+        mock_daily_email_count,
+        fake_uuid,
+        num_being_sent,
+        num_sent_today,
+        num_sent_this_year,
+        expect_to_see_annual_limit_msg,
+        expect_to_see_daily_limit_msg,
+        app_,
+    ):
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
+            mocker.patch(
+                "app.main.views.send.s3download",
+                return_value=",\n".join(
+                    ["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * num_being_sent)
+                ),
+            )
+            mock_notification_counts_client.get_limit_stats.return_value = {
+                "sms": {
+                    "annual": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": 10000
+                        - num_sent_this_year
+                        - num_sent_today,  # The number of email notifications remaining this year
+                    },
+                    "daily": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
+                    },
+                }
+            }
+            # mock that we've already sent `num_sent_today` emails today
+            mock_daily_email_count.return_value = 900  # not used in test but needs a value
+            mock_daily_sms_fragment_count.return_value = num_sent_today
+
+            with client_request.session_transaction() as session:
+                session["file_uploads"] = {
+                    fake_uuid: {
+                        "template_id": fake_uuid,
+                        "notification_count": 1,
+                        "valid": True,
+                    }
+                }
+
+            page = client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="valid.csv",
+                _test_page_title=False,
+            )
+
+            if expect_to_see_annual_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+
+            if expect_to_see_daily_limit_msg:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            else:
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+
+    @pytest.mark.parametrize(
+        "num_to_send, remaining_daily, remaining_annual, error_shown",
+        [
+            (2, 2, 2, "none"),
+            (5, 5, 4, "annual"),
+            (5, 4, 5, "daily"),
+            (5, 4, 4, "annual"),
+        ],
+    )
+    def test_correct_error_displayed(
+        self,
+        mocker,
+        client_request,
+        mock_get_live_service,  # set email_annual_limit and sms_annual_limit to 1000
+        mock_get_users_by_service,
+        mock_get_service_email_template_without_placeholders,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        mock_daily_email_count,
+        mock_notification_counts_client,
+        fake_uuid,
+        num_to_send,
+        remaining_daily,
+        remaining_annual,
+        error_shown,
+        app_,
+    ):
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
+            # mock that `num_sent_this_year` have already been sent this year
+            mock_notification_counts_client.get_limit_stats.return_value = {
+                "email": {
+                    "annual": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_annual,  # The number of email notifications remaining this year
+                    },
+                    "daily": {
+                        "limit": 1,  # doesn't matter for our test
+                        "sent": 1,  # doesn't matter for our test
+                        "remaining": remaining_daily,  # The number of email notifications remaining today
+                    },
+                }
+            }
+
+            # only change this value when we're expecting an error
+            if error_shown != "none":
+                mock_daily_email_count.return_value = 1000 - (
+                    num_to_send - 1
+                )  # svc limit is 1000 - exceeding the daily limit is calculated based off of this
+            else:
+                mock_daily_email_count.return_value = 0  # none sent
+
+            mocker.patch(
+                "app.main.views.send.s3download",
+                return_value=",\n".join(
+                    ["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_to_send)
+                ),
+            )
+            with client_request.session_transaction() as session:
+                session["file_uploads"] = {
+                    fake_uuid: {
+                        "template_id": fake_uuid,
+                        "notification_count": 1,
+                        "valid": True,
+                    }
+                }
+            page = client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="valid.csv",
+                _test_page_title=False,
+            )
+
+            if error_shown == "annual":
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+            elif error_shown == "daily":
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            elif error_shown == "none":
+                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+
+    @pytest.mark.parametrize(
+        "notification_type, exception_msg_api, expected_error_msg_admin",
+        [
+            ("email", "Exceeded annual email sending", "These messages exceed the annual limit"),
+            ("sms", "Exceeded annual SMS sending", "These messages exceed the annual limit"),
+        ],
+    )
+    def test_error_msgs_from_api_for_one_off(
+        self,
+        client_request,
+        service_one,
+        fake_uuid,
+        mocker,
+        mock_get_service_template_with_placeholders,
+        mock_get_template_statistics,
+        notification_type,
+        exception_msg_api,
+        expected_error_msg_admin,
+    ):
+        class MockHTTPError(HTTPError):
+            message = exception_msg_api
+
+        mocker.patch(
+            "app.notification_api_client.send_notification",
+            side_effect=MockHTTPError(),
+        )
+
+        if notification_type == "sms":
+            with client_request.session_transaction() as session:
+                session["recipient"] = "6502532223"
+                session["placeholders"] = {"name": "a" * 600}
+        elif notification_type == "email":
+            with client_request.session_transaction() as session:
+                session["recipient"] = "test@example.com"
+                session["placeholders"] = {"name": "a" * 600}
+
+        page = client_request.post(
+            "main.send_notification",
+            service_id=service_one["id"],
+            template_id=fake_uuid,
+            _expected_status=200,
+        )
+
+        assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
+
+    @pytest.mark.parametrize(
+        "exception_msg_api, expected_error_msg_admin",
+        [
+            # ("email","Exceeded annual email sending", "These messages exceed the annual limit"),
+            ("Exceeded annual SMS sending", "These messages exceed the annual limit")
+        ],
+    )
+    def test_error_msgs_from_api_for_bulk(
+        self,
+        client_request,
+        mock_create_job,
+        mock_get_job,
+        mock_get_notifications,
+        mock_get_service_template,
+        mock_get_service_data_retention,
+        mocker,
+        fake_uuid,
+        exception_msg_api,
+        expected_error_msg_admin,
+    ):
+        class MockHTTPError(HTTPError):
+            message = exception_msg_api
+
+        data = mock_get_job(SERVICE_ONE_ID, fake_uuid)["data"]
+        job_id = data["id"]
+        original_file_name = data["original_file_name"]
+        template_id = data["template"]
+        notification_count = data["notification_count"]
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {
+                fake_uuid: {
+                    "template_id": template_id,
+                    "notification_count": notification_count,
+                    "valid": True,
+                }
+            }
+
+        mocker.patch(
+            "app.job_api_client.create_job",
+            side_effect=MockHTTPError(),
+        )
+        page = client_request.post(
+            "main.start_job",
+            service_id=SERVICE_ONE_ID,
+            upload_id=job_id,
+            original_file_name=original_file_name,
+            _data={},
+            _follow_redirects=True,
+            _expected_status=200,
+        )
+
+        assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin

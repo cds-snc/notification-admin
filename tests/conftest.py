@@ -550,7 +550,14 @@ def fake_uuid():
 @pytest.fixture(scope="function")
 def mock_get_service(mocker, api_user_active):
     def _get(service_id):
-        service = service_json(service_id, users=[api_user_active["id"]], message_limit=50, sms_daily_limit=20)
+        service = service_json(
+            service_id,
+            users=[api_user_active["id"]],
+            message_limit=50,
+            sms_daily_limit=20,
+            email_annual_limit=1000,
+            sms_annual_limit=1000,
+        )
         return {"data": service}
 
     return mocker.patch("app.service_api_client.get_service", side_effect=_get)
@@ -675,7 +682,9 @@ def mock_service_email_from_is_unique(mocker):
 @pytest.fixture(scope="function")
 def mock_get_live_service(mocker, api_user_active):
     def _get(service_id):
-        service = service_json(service_id, users=[api_user_active["id"]], restricted=False)
+        service = service_json(
+            service_id, users=[api_user_active["id"]], restricted=False, sms_annual_limit=10000, email_annual_limit=10000
+        )
         return {"data": service}
 
     return mocker.patch("app.service_api_client.get_service", side_effect=_get)
@@ -972,6 +981,21 @@ def mock_get_service_email_template_without_placeholders(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_get_service_sms_template_without_placeholders(mocker):
+    def _get(service_id, template_id, version=None):
+        template = template_json(
+            service_id,
+            template_id,
+            "Two week reminder",
+            "sms",
+            "Yo.",
+        )
+        return {"data": template}
+
+    return mocker.patch("app.service_api_client.get_service_template", side_effect=_get)
+
+
+@pytest.fixture(scope="function")
 def mock_get_service_letter_template(mocker, content=None, subject=None, postage="second"):
     def _get(service_id, template_id, version=None, postage=postage):
         template = template_json(
@@ -1121,6 +1145,39 @@ def mock_update_service_template_400_content_too_big(mocker):
         raise http_error
 
     return mocker.patch("app.service_api_client.update_service_template", side_effect=_update)
+
+
+@pytest.fixture(scope="function")
+def mock_get_limit_stats(mocker):
+    def _get_data(svc):
+        return {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+        }
+
+    return mocker.patch("app.main.views.templates.notification_counts_client.get_limit_stats", side_effect=_get_data)
 
 
 def create_template(

@@ -33,12 +33,11 @@
 				"vsliveshare.vsliveshare"
 			],
 			"settings": {
+				"ruff.lint.ignore": ["F401"],
 				"ruff.lint.run": "onSave",
-				"ruff.configurationPreference": "filesystemFirst",
-				"editor.defaultFormatter": "charliermarsh.ruff",
-				"editor.formatOnSave": true,
-				"editor.codeActionsOnSave": {
-					"source.fixAll": "explicit"
+				"ruff.organizeImports": false,
+				"[python]": {
+					"editor.defaultFormatter": "charliermarsh.ruff"
 				}
 			}
 		}

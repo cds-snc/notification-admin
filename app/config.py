@@ -188,7 +188,6 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", True)
 
 
 class Test(Development):
@@ -252,7 +251,6 @@ class Production(Config):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
-    FF_ANNUAL_LIMIT = False
 
 
 class Staging(Production):
@@ -260,7 +258,6 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    FF_ANNUAL_LIMIT = True
 
 
 class Scratch(Production):

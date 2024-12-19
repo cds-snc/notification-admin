@@ -273,27 +273,34 @@ def monthly(service_id):
         return counts
 
     year, current_financial_year = requested_and_current_financial_year(request)
-    monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
-    annual_data = aggregate_by_type(monthly_data)
 
-    todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
+    # if FF_ANNUAL is on
+    if current_app.config["FF_ANNUAL_LIMIT"]:
+        monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
+        annual_data = aggregate_by_type(monthly_data)
 
-    # if redis is empty, query the db
-    if todays_data is None:
-        todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
-        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
+        todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
 
-        months = (format_monthly_stats_to_list(monthly_data["data"]),)
-        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
+        # if redis is empty, query the db
+        if all(value == 0 for value in todays_data.values()):
+            todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
+            annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
+
+            months = (format_monthly_stats_to_list(monthly_data["data"]),)
+            monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
+        else:
+            # aggregate daily + annual
+            current_app.logger.info("todays data" + str(todays_data))
+            annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "redis")
+
+            months = (format_monthly_stats_to_list(monthly_data["data"]),)
+            monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
     else:
-        # aggregate daily + annual
-        current_app.logger.info("todays data" + str(todays_data))
-        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "redis")
-
-        months = (format_monthly_stats_to_list(monthly_data["data"]),)
-        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
-
-    # add today's data to monthly data
+        monthly_data_aggregate = (
+            format_monthly_stats_to_list(service_api_client.get_monthly_notification_stats(service_id, year)["data"]),
+        )
+        monthly_data_aggregate = monthly_data_aggregate[0]
+        annual_data_aggregate = None
 
     return render_template(
         "views/dashboard/monthly.html",
