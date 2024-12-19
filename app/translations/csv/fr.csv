@@ -2036,5 +2036,5 @@
 "To send some of these messages now, edit the spreadsheet to <strong>{}</strong> recipients maximum. ","Pour envoyer certains de ces courriels maintenant, modifiez la feuille de calcul pour n’inclure que <strong>{}</strong> destinataires au maximum."
 "<strong>{}</strong> can only send <strong>{}</strong> more {} until annual limit resets","<strong>{}</strong> ne peut envoyer que <strong>{}</strong> {} d'ici la réinitialisation de la limite annuelle"
 "To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.","Pour envoyer des messages aux destinataires, attendez <strong> le 1er avril {}</strong> ou optez pour une autre méthode de contact."
-"For more information, visit the <a href={}>usage report for {}</a>.","FR: For more information, visit the <a href={}>usage report for {}</a>."
-"<strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>","FR: <strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>"
+"For more information, visit <a href={}>usage reports</a>.","Pour plus de détails, <a href={}>consulter les rapports d’utilisation</a>."
+"{} cannot send any more {} until April 1, {}","{} ne peut plus envoyer de {} d’ici le 1<sup>er</sup> avril {}."
