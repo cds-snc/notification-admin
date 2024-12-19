@@ -17,7 +17,7 @@
         {{ _('To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.').format(now().year) }}
       </p>
     {% else %}
-      <p>{{ _('<strong>{}</strong> cannot send any more {} until <strong>April 1, {}</strong>').format(current_service.name, units, now().year) }}</p>
+      <p class="text-title">{{ _('{} cannot send any more {} until April 1, {}').format(current_service.name, units, now().year) }}</p>
       <p>{{ _('For more information, visit the <a href={}>usage report for {}</a>.').format(url_for('.monthly', service_id=current_service.id), current_service.name) }}</p>
     {% endif %}
   {%- endif -%}
