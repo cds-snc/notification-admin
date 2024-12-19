@@ -41,7 +41,7 @@ describe("Go Live Form", () => {
     cy.a11yScan();
   });
 
-  it.only("Forces user to fill required fields fields", () => {
+  it("Forces user to fill required fields fields", () => {
     // clear all fields on page 1
     Page.Components.DeptName().clear();
     Page.Components.Purpose().clear();
