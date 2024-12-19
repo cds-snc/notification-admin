@@ -1821,7 +1821,7 @@ class OptionalIntegerRange:
 
         # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
-            field.process(formdata=None) # Clear the field
+            field.process(formdata=None)  # Clear the field
             field.errors = []  # Delete any errors
             return StopValidation()  # Stop validation chain
 
@@ -1839,7 +1839,7 @@ class OptionalIntegerRange:
             return True
 
 
-class BaseGoLiveAboutNotificationsForm():
+class BaseGoLiveAboutNotificationsForm:
     def volume_choices(self, limit, notification_type):
         return [
             ("0", _l("None")),
