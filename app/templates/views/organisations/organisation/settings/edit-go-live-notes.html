@@ -1,14 +1,21 @@
-{% from "components/form.html" import form_wrapper %} {% from
-"components/page-footer.html" import page_footer %} {% from
-"components/page-header.html" import page_header %} {% from
-"components/textbox.html" import textbox %} {% extends "org_template.html" %} {%
-block org_page_title %} Edit request to go live notes {% endblock %} {% block
-maincolumn_content %} {{ page_header( "Edit request to go live notes",
+{% from "components/form.html" import form_wrapper %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/textbox.html" import textbox %}
+{% extends "org_template.html" %}
+
+{% block org_page_title %}
+{{ _("Edit request to go live notes") }}
+{% endblock %}
+
+{% block maincolumn_content %}
+{{ page_header( _("Edit request to go live notes"),
 back_link=url_for('.organisation_settings', org_id=current_org.id) ) }}
 <div class="grid-row contain-floats">
   <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
     <p>
-      {{ _('When you turn a service live please log which services have been turned live and why you approved the change.') }}
+      {{ _('When you turn a service live please log which services have been turned live and why you approved the
+      change.') }}
     </p>
     {% call form_wrapper() %} {{ textbox(form.request_to_go_live_notes,
     width='w-full', rows=3) }} {{ page_footer(_('Save')) }} {% endcall %}
