@@ -6,7 +6,7 @@
   {% set units = _('text messages') %}
 {% endif %}
 
-<div data-testid="exceeds-annual" class="text-title">
+<div data-testid="exceeds-annual">
   {%- if current_service.trial_mode %}
     {{ _("Your service is in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {% else %}
