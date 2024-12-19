@@ -3679,3 +3679,101 @@ class TestAnnualLimitsSend:
             elif error_shown == "none":
                 assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
                 assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+
+    @pytest.mark.parametrize(
+        "notification_type, exception_msg_api, expected_error_msg_admin",
+        [
+            ("email", "Exceeded annual email sending", "These messages exceed the annual limit"),
+            ("sms", "Exceeded annual SMS sending", "These messages exceed the annual limit"),
+        ],
+    )
+    def test_error_msgs_from_api_for_one_off(
+        self,
+        client_request,
+        service_one,
+        fake_uuid,
+        mocker,
+        mock_get_service_template_with_placeholders,
+        mock_get_template_statistics,
+        notification_type,
+        exception_msg_api,
+        expected_error_msg_admin,
+    ):
+        class MockHTTPError(HTTPError):
+            message = exception_msg_api
+
+        mocker.patch(
+            "app.notification_api_client.send_notification",
+            side_effect=MockHTTPError(),
+        )
+
+        if notification_type == "sms":
+            with client_request.session_transaction() as session:
+                session["recipient"] = "6502532223"
+                session["placeholders"] = {"name": "a" * 600}
+        elif notification_type == "email":
+            with client_request.session_transaction() as session:
+                session["recipient"] = "test@example.com"
+                session["placeholders"] = {"name": "a" * 600}
+
+        page = client_request.post(
+            "main.send_notification",
+            service_id=service_one["id"],
+            template_id=fake_uuid,
+            _expected_status=200,
+        )
+
+        assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
+
+    @pytest.mark.parametrize(
+        "exception_msg_api, expected_error_msg_admin",
+        [
+            # ("email","Exceeded annual email sending", "These messages exceed the annual limit"),
+            ("Exceeded annual SMS sending", "These messages exceed the annual limit")
+        ],
+    )
+    def test_error_msgs_from_api_for_bulk(
+        self,
+        client_request,
+        mock_create_job,
+        mock_get_job,
+        mock_get_notifications,
+        mock_get_service_template,
+        mock_get_service_data_retention,
+        mocker,
+        fake_uuid,
+        exception_msg_api,
+        expected_error_msg_admin,
+    ):
+        class MockHTTPError(HTTPError):
+            message = exception_msg_api
+
+        data = mock_get_job(SERVICE_ONE_ID, fake_uuid)["data"]
+        job_id = data["id"]
+        original_file_name = data["original_file_name"]
+        template_id = data["template"]
+        notification_count = data["notification_count"]
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {
+                fake_uuid: {
+                    "template_id": template_id,
+                    "notification_count": notification_count,
+                    "valid": True,
+                }
+            }
+
+        mocker.patch(
+            "app.job_api_client.create_job",
+            side_effect=MockHTTPError(),
+        )
+        page = client_request.post(
+            "main.start_job",
+            service_id=SERVICE_ONE_ID,
+            upload_id=job_id,
+            original_file_name=original_file_name,
+            _data={},
+            _follow_redirects=True,
+            _expected_status=200,
+        )
+
+        assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
