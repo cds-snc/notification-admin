@@ -524,8 +524,8 @@ def test_shows_archived_label_instead_of_live_or_research_mode_label(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
     table_body = page.find_all("table")[0].find_all("tbody")[0]
-    service_mode = table_body.find_all("tbody")[0].find_all("tr")[1].td.text.strip()
-    # get second column, which contains flags as text.
+    # get first column as table header, which contains flags as span.
+    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].th.span.text.strip()
     assert service_mode == "archived"
 
 
@@ -602,9 +602,9 @@ def test_should_order_services_by_usage_with_inactive_last(
     table_body = page.find_all("table")[0].find_all("tbody")[0]
     services = [service.tr for service in table_body.find_all("tbody")]
     assert len(services) == 3
-    assert services[0].td.text.strip() == "My Service 2"
-    assert services[1].td.text.strip() == "My Service 1"
-    assert services[2].td.text.strip() == "My Service 3"
+    assert services[0].th.a.text.strip() == "My Service 2"
+    assert services[1].th.a.text.strip() == "My Service 1"
+    assert services[2].th.a.text.strip() == "My Service 3"
 
 
 def test_sum_service_usage_is_sum_of_all_activity(fake_uuid):
