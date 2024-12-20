@@ -6,13 +6,13 @@
 {% from "components/live-search.html" import live_search %}
 
 {% block org_page_title %}
-  Team members
+  {{ _("Team members") }}
 {% endblock %}
 
 {% block org_content %}
 
   <h1 class="heading-medium">
-    Team members
+    {{ _("Team members") }}
   </h1>
 
   {% if show_search_box %}
@@ -24,13 +24,13 @@
   <div class="user-list">
     {% for user in users %}
       <div class="user-list-item">
-        <h3>
+        <h3 class="flex justify-between">
           {%- if user.name -%}
-            <span class="heading-small">{{ user.name }}</span>&ensp;
+            <span class="heading-small m-0">{{ user.name }}</span>&ensp;
           {%- endif -%}
           <span class="hint">
             {%- if user.status == 'pending' -%}
-              {{ user.email_address }} (invited)
+              {{ user.email_address }} ({{ _("invited") }})
             {%- elif user.status == 'cancelled' -%}
               {{ user.email_address }} ({{ _('cancelled invite') }})
             {%- elif user.id == current_user.id -%}
@@ -43,7 +43,9 @@
         <ul class="tick-cross-list grid-row contain-floats relative">
           <li class="tick-cross-list-edit-link">
             {% if user.status == 'pending' %}
-              <a href="{{ url_for('.cancel_invited_org_user', org_id=current_org.id, invited_user_id=user.id)}}">Cancel invitation</a>
+              <a href="{{ url_for('.cancel_invited_org_user', org_id=current_org.id, invited_user_id=user.id)}}">
+                {{ _("Cancel invitation")}}
+              </a>
             {% endif %}
           </li>
         </ul>
@@ -52,7 +54,8 @@
   </div>
 
   <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.invite_org_user', org_id=current_org.id) }}" class="button button-secondary">Invite team member</a>
+    <a href="{{ url_for('.invite_org_user', org_id=current_org.id) }}" class="button button-secondary">{{ ("Invite team
+      member") }}</a>
   </div>
 
 {% endblock %}

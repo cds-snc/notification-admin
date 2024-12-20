@@ -45,11 +45,15 @@ module.exports = {
     },
     colors: {
       red: {
-        default: "#b10e1e",
-        hover: "#990c1a",
-        border: "#6a0812",
-        mellow: "#df3034",
-        300: "#D74D42",
+        default: "#9F331A",
+        hover: "#9F331A",
+        border: "#9F331A",
+        mellow: "#D74224",
+        100: "#FFC6C3",
+        300: "#FB6252",
+        500: "#D74224",
+        700: "#9F331A",
+        900: "#471A0A",
       },
       white: {
         default: "#FFF",
@@ -68,6 +72,13 @@ module.exports = {
         500: "#4C8CE6",
         700: "#24508F",
         800: "#213045" /* Brand blue (default)*/,
+      },
+      lightBlue: {
+        100: "#B3E4FB",
+        300: "#509DC4",
+        500: "#427D9F",
+        700: "#2C5E79",
+        900: "#0E2A3C",
       },
       gray: {
         default: "#eee",
@@ -189,6 +200,7 @@ module.exports = {
       },
       minHeight: {
         target: "45px",
+        emptyState: "190px",
       },
       minWidth: {
         target: "45px",
