@@ -93,9 +93,9 @@ def test_should_show_research_and_restricted_mode(
     assert response.status_code == 200
     mock_get_detailed_services.assert_called_once_with({"detailed": True, "include_from_test_key": True, "only_active": False})
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    # get first column in second row, which contains flags as text.
+    # get first column in first row, which contains service name and flags as a span in a single th.
     table_body = page.find_all("table")[0].find_all("tbody")[0]
-    service_mode = table_body.find_all("tbody")[0].find_all("tr")[1].find_all("td")[0].text.strip()
+    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].find_all("th")[0].find_all("span")[0].text.strip()
     assert service_mode == displayed
 
 
