@@ -503,9 +503,9 @@ def test_should_show_archived_services_last(
     table_body = page.find_all("table")[0].find_all("tbody")[0]
     services = [service.tr for service in table_body.find_all("tbody")]
     assert len(services) == 3
-    assert services[0].td.text.strip() == "A"
-    assert services[1].td.text.strip() == "B"
-    assert services[2].td.text.strip() == "C"
+    assert services[0].th.a.text.strip() == "A"
+    assert services[1].th.a.text.strip() == "B"
+    assert services[2].th.a.text.strip() == "C"
 
 
 @pytest.mark.parametrize("research_mode", (True, False))
