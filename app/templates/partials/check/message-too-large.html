@@ -1,0 +1,15 @@
+{% from "components/banner.html" import banner_wrapper %}
+
+<div class="mb-12 clear-both contain-floats">
+  {% call banner_wrapper(type='dangerous') %}
+    <h1 class='banner-title'>
+      {{ _('Your message exceeds the size limit of 256KB') }}
+    </h1>
+    <p>
+        {{ _("{} holds the most content. You may be able to send your message if you reduce or remove that content.")
+            .format(
+            largest_element
+        ) }}
+    </p>
+  {% endcall %}
+</div>

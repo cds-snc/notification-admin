@@ -81,6 +81,11 @@
         {% include "partials/check/message-too-long.html" %}
       {% endcall %}
     </div>
+  {% elif error == 'message-too-large' %}
+    {{ govuk_back_link(back_link) }}
+    <div class="mb-12 clear-both contain-floats">
+      {% include "partials/check/message-too-large.html" %}
+    </div>
   {% else %}
     {{ page_header(
       _('Review before sending'),
