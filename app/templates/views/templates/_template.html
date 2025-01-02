@@ -27,6 +27,10 @@
           <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary">{{ _('No, send yourself this message') }}</a>
         </div>
       {% endif %}
+    {% elif current_user.platform_admin %}
+    <p class="hint">
+      {{ _("You cannot send messages from this service. Only team members can send messages.") }}
+    </p>
     {% endif %}
   {% endif %}
 </div>
