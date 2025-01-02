@@ -439,10 +439,10 @@ def test_should_show_job_from_api(
     )
     job_info_table = page.find_all("table")[0]
 
-    assert normalize_spaces(job_info_table.select("th")[0].text) == "Sent by:"
+    assert normalize_spaces(job_info_table.select("th")[0].text) == "Sent by"
     assert normalize_spaces(job_info_table.select("td")[0].text) == f"API key '{JOB_API_KEY_NAME}'"
 
-    assert normalize_spaces(job_info_table.select("th")[1].text) == "Started:"
+    assert normalize_spaces(job_info_table.select("th")[1].text) == "Started"
     assert normalize_spaces(job_info_table.select("td")[1].text) == "2016-01-01T00:00:00.061258+0000"
 
 
