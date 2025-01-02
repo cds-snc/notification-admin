@@ -1822,6 +1822,7 @@
 "Try creating {} in a different application","Essayez de créer {} dans une application différente."
 "Sent by:","Envoyé par&nbsp;:"
 "Started:","Début&nbsp;:"
+"Started","Début"
 "Spreadsheet:","Feuille de calcul&nbsp;:"
 "API request name:","Nom de la requête API&nbsp;:"
 "GC Notify disposed of the information in this report on <time class='local-datetime-short'>{}</time>","Notification GC a supprimé les renseignements de ce rapport le <time class='local-datetime-short'>{}</time>"
