@@ -2032,3 +2032,4 @@
 "Sending paused until 7pm ET. You can schedule more messages to send later.","FR: Sending paused until 7pm ET. You can schedule more messages to send later."
 "Sending paused until annual limit resets","FR: Sending paused until annual limit resets"
 "These messages exceed the annual limit","FR: These messages exceed the annual limit"
+"You cannot send messages from this service. Only team members can send messages.","Vous ne pouvez pas envoyer de messages à partir de ce service. Seuls les membres de l’équipe peuvent envoyer des messages."
