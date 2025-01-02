@@ -1,7 +1,7 @@
 {% extends "org_template.html" %}
 {% from "components/form.html" import form_wrapper %}
 {% block org_page_title %}
-{{ _("Preview email branding") }}
+  {{ _("Preview email branding") }}
 {% endblock %}
 
 {% block org_content %}
@@ -9,12 +9,11 @@
 <h1 class="heading-large">{{ _("Preview email branding") }}</h1>
 <div class="grid-row contain-floats">
   <div class="w-full float-left py-0 px-0 px-gutterHalf box-border">
-    <iframe src="{{ url_for('main.email_template', branding_style=form.branding_style.data) }}"
-      class="branding-preview"></iframe>
+    <iframe src="{{ url_for('main.email_template', branding_style=form.branding_style.data) }}" class="branding-preview"></iframe>
     {% call form_wrapper(action=action) %}
-    <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-      {{ form.hidden_tag() }}
-      <div class="page-footer">
+      <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
+        {{ form.hidden_tag() }}
+        <div class="page-footer">
         <button type="submit" class="button">{{ _("Save") }}</button>
       </div>
     </div>

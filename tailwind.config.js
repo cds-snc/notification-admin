@@ -73,13 +73,6 @@ module.exports = {
         700: "#24508F",
         800: "#213045" /* Brand blue (default)*/,
       },
-      lightBlue: {
-        100: "#B3E4FB",
-        300: "#509DC4",
-        500: "#427D9F",
-        700: "#2C5E79",
-        900: "#0E2A3C",
-      },
       gray: {
         default: "#eee",
         button: "#dee0e2" /* grey3 */,

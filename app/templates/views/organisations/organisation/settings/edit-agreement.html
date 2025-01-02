@@ -17,15 +17,15 @@ back_link=url_for('.organisation_settings', org_id=current_org.id)
 <div class="grid-row contain-floats">
   <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
     {% call form_wrapper() %}
-    {{ radios(
-    form.agreement_signed,
-    option_hints={
-    'yes': _('Users will be told their organisation has already signed the agreement'),
-    'no': _('Users will be prompted to sign the agreement before they can go live'),
-    'unknown': _('Users won’t be prompted to sign the agreement')
-    }
-    ) }}
-    {{ page_footer(_('Save')) }}
+      {{ radios(
+        form.agreement_signed,
+        option_hints={
+          'yes': _('Users will be told their organisation has already signed the agreement'),
+          'no': _('Users will be prompted to sign the agreement before they can go live'),
+          'unknown': _('Users won’t be prompted to sign the agreement')
+        }
+        ) }}
+      {{ page_footer(_('Save')) }}
     {% endcall %}
   </div>
 </div>
