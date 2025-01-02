@@ -2032,3 +2032,5 @@
 "Sending paused until 7pm ET. You can schedule more messages to send later.","FR: Sending paused until 7pm ET. You can schedule more messages to send later."
 "Sending paused until annual limit resets","FR: Sending paused until annual limit resets"
 "These messages exceed the annual limit","FR: These messages exceed the annual limit"
+"Your message exceeds the size limit of 256KB","FR: Your messages exceeds the size limit of 256KB"
+"{} holds the most content. You may be able to send your message if you reduce or remove that content.","FR: {} holds the most content. You may be able to send your message if you reduce or remove that content."

@@ -20,6 +20,7 @@ from notifications_utils.clients.redis import (
 )
 from notifications_utils.recipients import RecipientCSV
 from notifications_utils.template import LetterImageTemplate, LetterPreviewTemplate
+from requests import Response
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
@@ -3029,6 +3030,7 @@ def test_send_notification_redirects_to_view_page(
 TRIAL_MODE_MSG = "Can’t send to this recipient when service is in trial mode"
 TOO_LONG_MSG = "Content for template has a character count greater than the limit of 612"
 SERVICE_DAILY_LIMIT_MSG = "Exceeded send limits (1000) for today"
+SQS_LIMIT_MSG = "Notification size cannot exceed 256Kb"
 
 
 @pytest.mark.parametrize(
@@ -3049,6 +3051,11 @@ SERVICE_DAILY_LIMIT_MSG = "Exceeded send limits (1000) for today"
             "These messages exceed your daily limit",
             "Your service is in trial mode. To send more messages, request to go live",
         ),
+        (
+            SQS_LIMIT_MSG,
+            "Your message exceeds the size limit of 256KB",
+            "((name)) holds the most content. You may be able to send your message if you reduce or remove that content.",
+        ),
     ],
 )
 def test_send_notification_shows_error_if_400(
@@ -3062,8 +3069,12 @@ def test_send_notification_shows_error_if_400(
     expected_h1,
     expected_err_details,
 ):
+    class MockResponse(Response):
+        content = b'{"fields":[{"largest_element": "((name))"}]}'
+
     class MockHTTPError(HTTPError):
         message = exception_msg
+        args = [MockResponse()]
 
     mocker.patch(
         "app.notification_api_client.send_notification",
@@ -3071,7 +3082,7 @@ def test_send_notification_shows_error_if_400(
     )
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
-        session["placeholders"] = {"name": "a" * 600}
+        session["placeholders"] = {"name": "a" * 256000 if exception_msg == SQS_LIMIT_MSG else "a" * 600}
 
     page = client_request.post(
         "main.send_notification",
@@ -3079,6 +3090,7 @@ def test_send_notification_shows_error_if_400(
         template_id=fake_uuid,
         _expected_status=200,
     )
+
     if exception_msg == SERVICE_DAILY_LIMIT_MSG:
         # assert normalize_spaces(page.select("h1")[0].text) == expected_h1
         assert normalize_spaces(page.select(".banner-dangerous p")[0].text) == expected_err_details

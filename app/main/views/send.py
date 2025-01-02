@@ -1103,6 +1103,7 @@ def _check_notification(service_id, template_id, exception=None):
 
 
 def get_template_error_dict(exception):
+    exception_fields = {}
     # TODO: Make API return some computer-friendly identifier as well as the end user error messages
     if "service is in trial mode" in exception.message:
         error = "not-allowed-to-send-to"
@@ -1118,6 +1119,9 @@ def get_template_error_dict(exception):
         error = "too-many-email-annual"
     elif "Exceeded annual SMS sending" in exception.message:
         error = "too-many-sms-annual"
+    elif "Notification size cannot exceed 256Kb" in exception.message:
+        error = "message-too-large"  # Catches when variables, in conjunction with content are too long
+        exception_fields = json.loads(exception.args[0].content).get("fields", [{}])[0]
     else:
         current_app.logger.error("Unhandled exception from API: {}".format(exception))
         raise exception
@@ -1128,6 +1132,8 @@ def get_template_error_dict(exception):
         "current_service": current_service,
         # used to trigger CSV specific err msg content, so not needed for single notification errors.
         "original_file_name": False,
+        # Used when the notification size > 256KB, guides the user to the largest part of their message
+        "largest_element": exception_fields.get("largest_element", None),
     }
 
 
