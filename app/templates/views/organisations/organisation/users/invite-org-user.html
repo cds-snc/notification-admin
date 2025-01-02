@@ -6,7 +6,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
-  Invite a team member
+  {{ _("Invite a team member") }}
 {% endblock %}
 
 {% block org_content %}
@@ -20,11 +20,11 @@
 
     <div class="mb-12 clear-both contain-floats">
 		  <p class="form-label">
-		    {{ current_org.name }} team members can:
+        {{ _("{} team members can:").format(current_org.name)}}
 		  </p>
 		  <ul class="list list-bullet">
-		    <li>see usage for and team members for each service</li>
-        <li>invite other team members</li>
+        <li>{{ _("see usage for and team members for each service") }}</li>
+        <li>{{ _("invite other team members") }}</li>
 		  </ul>
 		</div>
 

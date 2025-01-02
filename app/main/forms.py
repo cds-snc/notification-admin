@@ -558,33 +558,33 @@ class SendingDomainForm(StripWhitespaceForm):
 
 class RenameOrganisationForm(StripWhitespaceForm):
     name = StringField(
-        "Organisation name",
+        _l("Organisation name"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
 
 
 class OrganisationOrganisationTypeForm(StripWhitespaceForm):
-    org_type = OrganisationTypeField("What type of organisation is this?")
+    org_type = OrganisationTypeField(_l("What type of organisation is this?"))
 
 
 class OrganisationCrownStatusForm(StripWhitespaceForm):
     crown_status = RadioField(
-        ("Is this organisation a crown body?"),
+        _l("Is this organisation a crown body?"),
         choices=[
-            ("crown", "Yes"),
-            ("non-crown", "No"),
-            ("unknown", "Not sure"),
+            ("crown", _l("Yes")),
+            ("non-crown", _l("No")),
+            ("unknown", _l("Not sure")),
         ],
     )
 
 
 class OrganisationAgreementSignedForm(StripWhitespaceForm):
     agreement_signed = RadioField(
-        ("Has this organisation signed the agreement?"),
+        _l("Has this organisation signed the agreement?"),
         choices=[
-            ("yes", "Yes"),
-            ("no", "No"),
-            ("unknown", "No (but we have some service-specific agreements in place)"),
+            ("yes", _l("Yes")),
+            ("no", _l("No")),
+            ("unknown", _l("No (but we have some service-specific agreements in place)")),
         ],
     )
 
