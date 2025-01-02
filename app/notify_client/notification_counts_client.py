@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from notifications_utils.clients.redis import (
     email_daily_count_cache_key,
     sms_daily_count_cache_key,
@@ -7,6 +5,7 @@ from notifications_utils.clients.redis import (
 
 from app import redis_client, service_api_client, template_statistics_client
 from app.models.service import Service
+from app.utils import get_current_financial_year
 
 
 class NotificationCounts:
@@ -83,8 +82,10 @@ class NotificationCounts:
                 }
         """
 
+        current_financial_year = get_current_financial_year()
         sent_today = self.get_all_notification_counts_for_today(service.id)
-        sent_thisyear = self.get_all_notification_counts_for_year(service.id, datetime.now().year)
+        # We are interested in getting data for the financial year, not the calendar year
+        sent_thisyear = self.get_all_notification_counts_for_year(service.id, current_financial_year)
 
         limit_stats = {
             "email": {
