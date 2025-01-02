@@ -1,34 +1,52 @@
+{% from "components/table.html" import mapping_table, row, row_heading, text_field, link_field, with context %}
+
 <div class="ajax-block-container"> 
-  <p class='mb-12 clear-both contain-floats'>
-   
-      <div data-test-id="dr_header">
-        <div class="pb-4">
-          {{ _('Sent by:') }}
-          {% if job.api_key %}
-            {{ _("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name) }}
-          {% else %}
-            {{ job.created_by.name }}
-          {% endif %}
-        </div>
-        <div class="pb-4">
-          {{ _('Started:') }}
-          <time class="local-datetime-short">{{ job.created_at }}</time>
-        </div>
-        <div class="pb-4">
-          {% if job.api_key %}
-            {{ _('API request name:')}} 
-          {% else %}
-            {{ _('Spreadsheet:') }}
-          {% endif %}
-          {{ job.original_file_name }}
-        </div>
-      </div>        
-      
-      
-      {% if template_type == "letter" %}
-        <p id="printing-info">
-          {{ letter_print_day }}
-        </p>
+  <div class="flex flex-wrap mb-8">
+    {% set caption = _("Scheduled messages") %}
+
+    {% call mapping_table(
+      caption=caption,
+      field_headings_visible=False,
+      caption_visible=False,
+      font_size='table-font-small',
+    ) %}
+
+    {% call row() %}
+      {% call row_heading(cell_width="sm:w-1/3") %}
+        {{ _('Sent by:') }}
+      {% endcall %}
+      {% if job.api_key %}
+          {{ text_field(_("API key '<a href='{}'>{}</a>'").format(url_for('.api_keys', service_id=current_service.id), job.api_key.name)) }}
+      {% else %}
+        {{ text_field(job.created_by.name) }}
       {% endif %}
-  </p>
+    {% endcall %}
+
+    {% call row() %}
+      {% call row_heading(cell_width="sm:w-1/3") %}
+        {{ _('Started:') }}
+      {% endcall %}
+      {{ text_field(text=job.created_at, date_format="local-datetime-short") }}
+    {% endcall %}
+
+    {% call row() %}
+      {% call row_heading(cell_width="sm:w-1/3") %}
+        {% if job.api_key %}
+          {{ _('API request name:')}} 
+        {% else %}
+          {{ _('Spreadsheet:') }}
+        {% endif %}
+      {% endcall %}
+      {{ text_field(job.original_file_name) }}
+    {% endcall %}
+
+    {% call row() %}
+      {% call row_heading(cell_width="sm:w-1/3") %}
+        {{ _('Template:') }} 
+      {% endcall %}
+      {{ link_field(template.name, url_for('.view_template', service_id=job.service, template_id=template.id)) }}
+    {% endcall %}
+    {% endcall %}
+  
+  </div>
 </div>
