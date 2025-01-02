@@ -1160,7 +1160,7 @@ def set_email_annual_limit(service_id):
     return render_template(
         "views/service-settings/set-message-limit.html",
         form=form,
-        heading=_("Annual email message limit"),
+        heading=_("Annual email limit"),
     )
 
 
