@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from app.notify_client.notification_counts_client import NotificationCounts
+from app.utils import get_current_financial_year
 
 
 @pytest.fixture
@@ -199,4 +200,7 @@ class TestNotificationCounts:
 
         # Assert dependencies called
         mock_today.assert_called_once_with(mock_service.id)
-        mock_year.assert_called_once_with(mock_service.id, datetime.now().year)
+        mock_year.assert_called_once_with(
+            mock_service.id,
+            get_current_financial_year(),
+        )
