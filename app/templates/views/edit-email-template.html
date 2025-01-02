@@ -30,11 +30,9 @@
   ) %}
   <div class="grid-row contain-floats">
     <div class="md:w-2/3 px-gutterHalf">
-      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the
-      template when you need it.'), rows=10, testid="template-name") }}
+      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
   
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is
-      about. Try to use less than 10 words.", testid="template-subject")) }}
+      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
   
       {{ template_content(form.template_content, form.text_direction_rtl) }}
   
