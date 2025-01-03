@@ -101,3 +101,7 @@ node_modules/
 tests_cypress/cypress/videos/
 tests_cypress/cypress/screenshots/
 .ruff_cache/
+
+# Local notification-utils package
+notifier-utils/
+notification-utils/
