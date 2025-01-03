@@ -9,6 +9,7 @@
   module=None,
   show_validation_summary=False,
   form=None,
+  field_order=None,
   data_kwargs={}
 ) %}
   <form
@@ -26,7 +27,7 @@
     novalidate
   >
     {% if show_validation_summary %}
-      {{ validation_summary(form) }}
+      {{ validation_summary(form, field_order) }}
     {% endif %}
     {{ caller() }}
   </form>
