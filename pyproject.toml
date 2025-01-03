@@ -49,7 +49,10 @@ unidecode = "^1.3.8"
 
 # PaaS
 awscli-cwlogs = "^1.4.6"
+# Choose whether utils comes from git or local. Also check docker-compose.yml
+# notifications-utils = { path = "/workspace/notifier-utils" }
 notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.0.1"}
+
 
 
 # Pinned dependencies
