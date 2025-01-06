@@ -905,3 +905,24 @@ def get_limit_reset_time_et() -> dict[str, str]:
 
     limit_reset_time_et = {"en": next_midnight_utc_in_et.strftime("%-I%p"), "fr": next_midnight_utc_in_et.strftime("%H")}
     return limit_reset_time_et
+
+
+@cache.memoize(timeout=5 * 60)
+def get_verified_ses_domains():
+    """Query AWS SES for verified domain identities"""
+    ses = boto3.client("ses", region_name="ca-central-1")
+
+    # Get all identities
+    identities = ses.list_identities(
+        IdentityType="Domain"  # Only get domains, not email addresses
+    )
+
+    # Get verification status for each domain
+    verification_attrs = ses.get_identity_verification_attributes(Identities=identities["Identities"])["VerificationAttributes"]
+
+    # Format results
+    domains = [
+        domain for domain in identities["Identities"] if verification_attrs.get(domain, {}).get("VerificationStatus") == "Success"
+    ]
+
+    return domains
