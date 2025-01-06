@@ -1,4 +1,5 @@
 {% from 'components/message-count-label.html' import message_count_label %}
+{% from 'components/remaining-messages-summary.html' import remaining_messages_summary with context %}
 
 <div>
   {% if template._template.archived %}
@@ -13,20 +14,27 @@
     </p>
   {% else %}
     {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
-    <h2 class="heading-medium">{{ _('Ready to send?') }}</h2>
+      <h2 class="heading-medium">{{ heading }}</h2>
 
-    <div class="mb-12">
-      <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
-        {{ _('Yes, add recipients') }}
-      </a>
-      <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary">{{ _('No, send yourself this message') }}</a>
-    </div>
+      {% if config["FF_ANNUAL_LIMIT"] %}
+        {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0) }}
+      {% endif %}
+      {% if not config["FF_ANNUAL_LIMIT"] or (yearlyRemaining > 0 and dailyRemaining > 0) %}
+        <div class="mb-12 mt-12" data-testid="send-buttons">
+          <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
+            {{ _('Yes, add recipients') }}
+          </a>
+          <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary">{{ _('No, send yourself this message') }}</a>
+        </div>
+      {% endif %}
+    {% elif current_user.platform_admin %}
+    <p class="hint">
+      {{ _("You cannot send messages from this service. Only team members can send messages.") }}
+    </p>
     {% endif %}
   {% endif %}
 </div>
 
-<div class="w-full template-container">
+<div class="w-full template-container mt-10">
   {{ template|string|translate_preview_template }}
 </div>
-
-
