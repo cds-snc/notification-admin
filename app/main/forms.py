@@ -765,7 +765,7 @@ class SMSAnnualMessageLimit(StripWhitespaceForm):
 
 class EmailAnnualMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
-        _l("Annual email message limit"),
+        _l("Annual email limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),

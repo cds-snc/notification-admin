@@ -39,7 +39,7 @@ describe("Platform Admin Service Settings", () => {
 
   it("Saves and displays new email annual limit", () => {
     ServiceSettingsPage.ClickChangeEmailAnnualLimitLink();
-    cy.get("h1").contains("Annual email message limit").should("be.visible");
+    cy.get("h1").contains("Annual email limit").should("be.visible");
     ServiceSettingsPage.SetMessageLimit(250000);
     ServiceSettingsPage.Submit();
     ServiceSettingsPage.Components.EmailAnnualLimit().contains(
