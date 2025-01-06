@@ -4377,3 +4377,69 @@ class TestSuspendingCallbackApi:
             _data={"updated_by_id": platform_admin_user["id"], "suspend_unsuspend": False},
             _expected_status=200,
         )
+
+
+class TestSendingDomain:
+    def test_sending_domain_page_shows_dropdown_of_verified_domains(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker
+    ):
+        client_request.login(platform_admin_user)
+        mock_get_domains = mocker.patch(
+            "app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"]
+        )
+
+        page = client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _test_page_title=False)
+
+        assert [option["value"] for option in page.select("select[name=sending_domain] option")] == ["domain1.com", "domain2.com"]
+
+        mock_get_domains.assert_called_once()
+
+    def test_sending_domain_page_populates_with_current_domain(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one
+    ):
+        service_one["sending_domain"] = "domain1.com"
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        page = client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _test_page_title=False)
+
+        assert page.select_one("select[name=sending_domain] option[selected]")["value"] == "domain1.com"
+
+    def test_sending_domain_page_updates_domain_and_redirects_when_posted(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one, mock_update_service
+    ):
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        client_request.post(
+            "main.service_sending_domain",
+            service_id=SERVICE_ONE_ID,
+            _data={"sending_domain": "domain2.com"},
+            _expected_redirect=url_for(
+                "main.service_settings",
+                service_id=SERVICE_ONE_ID,
+            ),
+            _test_page_title=False,
+        )
+
+        mock_update_service.assert_called_once_with(service_one["id"], sending_domain="domain2.com")
+
+    def test_sending_domain_page_doesnt_update_if_domain_not_in_allowed_list(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one, mock_update_service
+    ):
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        page = client_request.post(
+            "main.service_sending_domain",
+            service_id=SERVICE_ONE_ID,
+            _data={"sending_domain": "domain3.com"},
+            _expected_status=200,
+            _test_page_title=False,
+        )
+
+        assert mock_update_service.called is False
+        assert "Not a valid choice" in page.text
+
+    def test_sending_domain_page_404s_for_non_platform_admin(self, client_request, mock_get_service_settings_page_common, mocker):
+        client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _expected_status=403)
