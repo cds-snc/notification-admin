@@ -2037,3 +2037,4 @@
 "To send to recipients you removed, wait until <strong>April 1, {}</strong> or contact them some other way.","Pour envoyer des messages aux destinataires, attendez <strong> le 1er avril {}</strong> ou optez pour une autre méthode de contact."
 "For more information, visit <a href={}>usage reports</a>.","Pour plus de détails, <a href={}>consulter les rapports d’utilisation</a>."
 "{} cannot send any more {} until April 1, {}","{} ne peut plus envoyer de {} d’ici le 1<sup>er</sup> avril {}."
+"You cannot send messages from this service. Only team members can send messages.","Vous ne pouvez pas envoyer de messages à partir de ce service. Seuls les membres de l’équipe peuvent envoyer des messages."
