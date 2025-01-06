@@ -175,7 +175,7 @@ def validate_callback_url(service_callback_url, bearer_token):
         response = requests.post(
             url=service_callback_url,
             allow_redirects=True,
-            data={"health_check": "true"},
+            json={"health_check": "true"},
             headers={"Content-Type": "application/json", "Authorization": f"Bearer {bearer_token}"},
             timeout=2,
         )
@@ -184,7 +184,7 @@ def validate_callback_url(service_callback_url, bearer_token):
 
         if response.status_code < 500 and response.status_code >= 400:
             current_app.logger.warning(
-                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
+                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}. Status code: {response.status_code}, Response: {response.text}"
             )
             raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
 
