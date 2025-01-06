@@ -1,9 +1,22 @@
-{% macro validation_summary(form=None)  %}
+{% macro validation_summary(form=None, field_order=None) %}
   {% if form and form.errors %}
     <div role="alert" tabindex="-1" class="border-4 border-red focus:outline-yellow mb-gutter p-gutter space-y-gutterHalf" id="validation-summary" data-testid="validation_summary" autofocus>
       <h2 class="heading-medium m-0">{{ _('There was a problem') }}</h2>
       <ol class="list list-number list-outside m-0">
-        {% for field in form.errors %}
+        {# Get a list of error keys #}
+        {% set error_fields = form.errors.keys()|list %}
+        {% if field_order %}
+          {# Get the fields given the field order. #}
+          {% set ordered_fields = (field_order|list)|select('in', error_fields)|list %}
+          {# Get the remaining fields. #}
+          {% set remaining_fields = error_fields|reject('in', field_order)|list %}
+          {# Combine the ordered fields and the remaining fields. #}
+          {% set fields_to_display = ordered_fields + remaining_fields %}
+        {% else %}
+          {# If no field order is given, display all fields. #}
+          {% set fields_to_display = form.errors %}
+        {% endif %}
+        {% for field in fields_to_display %}
           {% if form[field].type != 'HiddenField' %}
             <li>
               <a class="link:text-red text-red visited:text-red" href="#{{ field }}">
