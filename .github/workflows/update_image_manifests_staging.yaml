@@ -22,7 +22,6 @@ jobs:
         run: |
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
-          git config --unset-all http.https://github.com/.extraheader
 
       - name: Checkout target repository
         uses: actions/checkout@v2
