@@ -15,14 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup git config
-        run: |
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
-
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
@@ -30,6 +22,11 @@ jobs:
           token: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
           path: notification-manifests
           ref: main
+
+      - name: Setup git config
+        run: |
+            git config user.name "Notify PR Bot"
+            git config user.email "action@github.com"
 
       - name: Make changes to the file
         run: |
