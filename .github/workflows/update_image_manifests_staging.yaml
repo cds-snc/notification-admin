@@ -18,7 +18,7 @@ jobs:
       - name: Update version file
         run: |
           echo "Updating docker tag in staging.env"
-          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' notification-manifests/helmfile/overrides/staging.env
+          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' z.env
 
       - name: setup git config
         run: |
@@ -30,24 +30,14 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: | 
-            null
-          required_linear_history: |
-            null
-          enforce_admins: |
-            null
-          required_pull_request_reviews: |
-            null
-          restrictions: | 
-            null 
         env:
           GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
           
       - name: commit
         run: |
-          git add VERSION
-          git commit -m "New release: ${CURRENT_VERSION} -> ${NEW_VERSION}"
-          git push origin main
+          git add z.env
+          git commit -m "New image tag ${GITHUB_SHA::7}"
+          git push origin helm-tagging
 
       - name: Branch protection ON
         if: always()
@@ -55,17 +45,5 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: | 
-            strict: true
-            checks:
-              - context: testing_manifest
-          required_linear_history: |
-            true
-          enforce_admins: |
-            true
-          required_pull_request_reviews: |
-            required_approving_review_count: 1
-          restrictions: | 
-            null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
