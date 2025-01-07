@@ -1,4 +1,4 @@
-name: "Tag and release to production"
+name: "Update Image Manifests Staging"
 
 on: 
   workflow_dispatch:
