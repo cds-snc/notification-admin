@@ -41,15 +41,14 @@ jobs:
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
-          route: PUT /repos/:repository/branches/main/protection
-          repository: cds-snc/notification-manifests
+          route: PUT /repos/cds-snc/notification-manifests/branches/main/protection
           required_status_checks: null
           required_linear_history: null
           enforce_admins: null
           required_pull_request_reviews: null
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit
         run: |
