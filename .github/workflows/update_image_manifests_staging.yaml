@@ -1,53 +1,56 @@
-name: "Update Image Manifests in Staging"
+name: Update docker image for manifests in staging
 
-on: 
+on:
   workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  tag-release:
+  update-image:
     runs-on: ubuntu-latest
-    
     steps:
-
-      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
-        run: |
-          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }})"
-          echo "::add-mask::$TOKEN"
-          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
-
-      - name: Checkout branch
-        uses: actions/checkout@v3
+    
+      - name: Checkout target repository
+        uses: actions/checkout@v2
         with:
-          token: ${{ env.GITHUB_TOKEN }}
-
-      - name: Update version file
-        run: |
-          echo "Updating docker tag in staging.env"
-          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' z.env
+          repository: cds-snc/notification-manifests
+          token: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
+          path: notification-manifests
+          ref: main
 
       - name: Setup git config
         run: |
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
 
+      - name: Make changes to the file
+        run: |
+          echo "Updating docker tag in staging.env"
+          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' notification-manifests/helmfile/overrides/staging.env
+
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
-          repository: ${{ github.repository }}
+          repository: cds-snc/notification-manifests
           required_status_checks: null
           required_linear_history: null
           enforce_admins: null
           required_pull_request_reviews: null
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-          
+          GITHUB_TOKEN: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
+
       - name: Commit
         run: |
-          git add VERSION
-          git commit -m "New image tag ${GITHUB_SHA::7}"
-          git push origin helm-tagging
+          git add notification-manifests/helmfile/overrides/staging.env
+          git commit -m "Update Admin docker image tag to ${GITHUB_SHA::7}"
+          git push
 
       - name: Branch protection ON
         if: always()
@@ -55,10 +58,14 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: null
+          required_status_checks: |
+            strict: true
+            checks:
+              - context: testing_manifest
           required_linear_history: true
           enforce_admins: true
-          required_pull_request_reviews: null
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
