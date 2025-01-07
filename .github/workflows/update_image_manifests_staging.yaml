@@ -53,7 +53,7 @@ jobs:
 
       - name: Commit
         run: |
-          git add notification-manifests/helmfile/overrides/staging.env
+          git add helmfile/overrides/staging.env
           git commit -m "Update Admin docker image tag to ${GITHUB_SHA::7}"
           git push
 
