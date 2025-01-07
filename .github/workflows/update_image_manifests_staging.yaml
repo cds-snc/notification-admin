@@ -16,13 +16,12 @@ jobs:
     steps:
     
       - name: Checkout target repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: cds-snc/notification-manifests
           token: ${{ secrets.MANIFESTS_TOKEN_STAGING }}
-          path: notification-manifests
           ref: main
-
+          
       - name: setup git config
         run: |
           git config --unset-all http.https://github.com/.extraheader || echo "No extraheader set"
