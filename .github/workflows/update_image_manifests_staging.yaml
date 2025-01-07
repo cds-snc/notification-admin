@@ -36,7 +36,7 @@ jobs:
       - name: Make changes to the file
         run: |
           echo "Updating docker tag in staging.env"
-          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' notification-manifests/helmfile/overrides/staging.env
+          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' helmfile/overrides/staging.env
 
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
