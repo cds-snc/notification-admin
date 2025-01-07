@@ -44,11 +44,16 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: null
-          required_linear_history: null
-          enforce_admins: null
-          required_pull_request_reviews: null
-          restrictions: null
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
