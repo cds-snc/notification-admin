@@ -14,12 +14,6 @@ jobs:
   update-image:
     runs-on: ubuntu-latest
     steps:
-
-      - name: setup git config
-        run: |
-          git config --unset-all http.https://github.com/.extraheader || echo "No extraheader set"
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
     
       - name: Checkout target repository
         uses: actions/checkout@v2
@@ -28,6 +22,12 @@ jobs:
           token: ${{ secrets.MANIFESTS_TOKEN_STAGING }}
           path: notification-manifests
           ref: main
+
+      - name: setup git config
+        run: |
+          git config --unset-all http.https://github.com/.extraheader || echo "No extraheader set"
+          git config user.name "Notify PR Bot"
+          git config user.email "action@github.com"
 
       - name: Make changes to the file
         run: |
