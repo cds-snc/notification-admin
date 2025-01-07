@@ -9,10 +9,16 @@ jobs:
     
     steps:
 
+      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }})"
+          echo "::add-mask::$TOKEN"
+          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
+
       - name: Checkout branch
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+          token: ${{ env.GITHUB_TOKEN }}
 
       - name: Update version file
         run: |
@@ -35,7 +41,7 @@ jobs:
           required_pull_request_reviews: null
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           
       - name: Commit
         run: |
@@ -55,4 +61,4 @@ jobs:
           required_pull_request_reviews: null
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ env.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
