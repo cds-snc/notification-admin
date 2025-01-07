@@ -15,11 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_MANIFEST_STAGING }})"
+          echo "::add-mask::$TOKEN"
+          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
+
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
           repository: cds-snc/notification-manifests
-          token: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
+          token: ${{ env.GITHUB_TOKEN }}
           ref: main
 
       - name: Setup git config
@@ -43,7 +49,7 @@ jobs:
           required_pull_request_reviews: null
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
       - name: Commit
         run: |
@@ -56,7 +62,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
-          repository: ${{ github.repository }}
+          repository: cds-snc/notification-manifests
           required_status_checks: |
             strict: true
             checks:
@@ -67,4 +73,4 @@ jobs:
             required_approving_review_count: 1
           restrictions: null
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
