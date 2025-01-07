@@ -1,7 +1,7 @@
 name: "Update Image Manifests Staging"
 
 on: 
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   tag-release:
@@ -10,17 +10,17 @@ jobs:
     steps:
 
       - name: Checkout branch
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-          ref: 
+          ref: main
 
       - name: Update version file
         run: |
           echo "Updating docker tag in staging.env"
           sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' z.env
 
-      - name: setup git config
+      - name: Setup git config
         run: |
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
@@ -30,20 +30,15 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: | 
-            null
-          required_linear_history: |
-            null
-          enforce_admins: |
-            null
-          required_pull_request_reviews: |
-            null
-          restrictions: | 
-            null 
+          required_status_checks: null
+          required_linear_history: null
+          enforce_admins: null
+          required_pull_request_reviews: null
+          restrictions: null
         env:
           GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
           
-      - name: commit
+      - name: Commit
         run: |
           git add VERSION
           git commit -m "New image tag ${GITHUB_SHA::7}"
@@ -55,15 +50,10 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: | 
-            null
-          required_linear_history: |
-            true
-          enforce_admins: |
-            true
-          required_pull_request_reviews: |
-            required_approving_review_count: 1
-          restrictions: | 
-            null 
+          required_status_checks: null
+          required_linear_history: true
+          enforce_admins: true
+          required_pull_request_reviews: null
+          restrictions: null
         env:
           GITHUB_TOKEN: ${{ env.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
