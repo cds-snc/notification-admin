@@ -1,55 +1,71 @@
-name: Update docker image for manifests in staging
+name: "Tag and release to production"
 
-on:
+on: 
   workflow_dispatch:
-#   push:
-#     branches:
-#       - main
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
-  update-image:
+  tag-release:
     runs-on: ubuntu-latest
-    steps:
     
-      - name: Checkout target repository
-        uses: actions/checkout@v4
-        with:
-          repository: cds-snc/notification-manifests
-          token: ${{ secrets.MANIFESTS_TOKEN_STAGING }}
-          ref: main
-          
-      - name: setup git config
-        run: |
-          git config --unset-all http.https://github.com/.extraheader || echo "No extraheader set"
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
+    steps:
 
-      - name: Make changes to the file
+      - name: Checkout branch
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+          ref: helm-tagging
+
+      - name: Update version file
         run: |
           echo "Updating docker tag in staging.env"
           sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' notification-manifests/helmfile/overrides/staging.env
+
+      - name: setup git config
+        run: |
+          git config user.name "Notify PR Bot"
+          git config user.email "action@github.com"
 
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
-          repository: cds-snc/notification-manifests
-          required_status_checks: null
-          required_linear_history: null
-          enforce_admins: null
-          required_pull_request_reviews: null
-          restrictions: null
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
         env:
           GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-
-      - name: Commit
+          
+      - name: commit
         run: |
           git add VERSION
-          git commit -m "Update Admin docker image tag to ${GITHUB_SHA::7}"
+          git commit -m "New release: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+          git push origin main
 
-
-  
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: testing_manifest
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
