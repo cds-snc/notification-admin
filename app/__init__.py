@@ -80,6 +80,7 @@ from app.notify_client.platform_stats_api_client import platform_stats_api_clien
 from app.notify_client.provider_client import provider_client
 from app.notify_client.service_api_client import service_api_client
 from app.notify_client.status_api_client import status_api_client
+from app.notify_client.support_api_client import support_api_client
 from app.notify_client.template_api_prefill_client import template_api_prefill_client
 from app.notify_client.template_category_api_client import template_category_api_client
 from app.notify_client.template_folder_api_client import template_folder_api_client
@@ -165,6 +166,7 @@ def create_app(application):
         provider_client,
         service_api_client,
         status_api_client,
+        support_api_client,
         template_category_api_client,
         template_folder_api_client,
         template_statistics_client,
@@ -224,6 +226,7 @@ def create_app(application):
     application.jinja_env.globals["show_tou_prompt"] = show_tou_prompt
     application.jinja_env.globals["parse_ua"] = parse
     application.jinja_env.globals["events_key"] = EVENTS_KEY
+    application.jinja_env.globals["now"] = datetime.utcnow
 
     # Initialize Salesforce Account list
     if application.config["FF_SALESFORCE_CONTACT"]:

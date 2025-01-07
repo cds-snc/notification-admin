@@ -814,6 +814,7 @@ def test_notification_page_has_expected_template_link_for_letter(
         assert link is None
 
 
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_image_of_precompiled_letter_notification(
     logged_in_client,
     fake_uuid,

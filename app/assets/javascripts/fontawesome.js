@@ -15,6 +15,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
@@ -32,6 +33,7 @@ let FontAwesomeIconLoader = () => {
     faCircleQuestion,
     faTriangleExclamation,
     faCircleExclamation,
+    faCircleCheck,
     faInfoCircle,
     faPaperPlane,
     faXmark,

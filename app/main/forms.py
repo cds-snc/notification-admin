@@ -544,7 +544,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
             self.service_id = service_id
 
     email_from = StringField(
-        _l("Sending email address name"),
+        _l("Enter the part before ‘@notification.canada.ca’"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
@@ -553,7 +553,11 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
 
 
 class SendingDomainForm(StripWhitespaceForm):
-    sending_domain = StringField(_l("Sending domain"), validators=[])
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sending_domain.choices = kwargs["sending_domain_choices"]
+
+    sending_domain = SelectField(_l("Sending domain"), validators=[])
 
 
 class RenameOrganisationForm(StripWhitespaceForm):
@@ -746,6 +750,26 @@ class SMSMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
         _l("Daily text message limit"),
         validators=[DataRequired(message=_l("This cannot be empty")), validators.NumberRange(min=1)],
+    )
+
+
+class SMSAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual text message limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
+    )
+
+
+class EmailAnnualMessageLimit(StripWhitespaceForm):
+    message_limit = IntegerField(
+        _l("Annual email limit"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            validators.NumberRange(min=1),
+        ],
     )
 
 
@@ -1329,6 +1353,13 @@ class SearchUsersByEmailForm(StripWhitespaceForm):
     search = SearchField(
         _l("Search by name or email address"),
         validators=[DataRequired(_l("You need to enter full or partial email address to search by."))],
+    )
+
+
+class SearchIds(StripWhitespaceForm):
+    search = SearchField(
+        _l("List of UUIDs"),
+        validators=[DataRequired(_l("You need to enter one or more UUIDs to search by."))],
     )
 
 

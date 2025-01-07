@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:1-3.10@sha256:c5b379b09a94ac1ccb437e000dd54c96164a8322d0c53d2bcb25f225e27924e6
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.12
 
 ENV POETRY_VERSION="1.7.1"
 
@@ -17,7 +17,9 @@ RUN apt-get update \
     emacs \
     exa \
     fd-find \
+    fzf \
     git \
+    iputils-ping \
     iproute2 \
     less \
     libsodium-dev \
@@ -51,7 +53,8 @@ RUN apt-get update \
 # Upgrade pip
 RUN pip install --upgrade pip
 
-COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+COPY --chown=vscode:vscode .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/notify-dev-entrypoint.sh
 
 COPY --chown=vscode:vscode .devcontainer/scripts/installations.sh /usr/local/bin/
 RUN chmod -R 765 /usr/local/bin/installations.sh

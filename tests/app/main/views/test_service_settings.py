@@ -71,13 +71,13 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 100,000 text messages",
             ],
         ),
         (
@@ -95,19 +95,21 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 100,000 text messages",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
                 "Daily email limit 1,000 Change",
                 "Daily text message limit 1,000 Change",
+                "Annual email limit 20,000,000 Change",
+                "Annual text message limit 100,000 Change",
                 "API rate limit per minute 100",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
@@ -135,31 +137,33 @@ def test_should_show_overview_inc_sms_daily_limit(
     mock_get_service_settings_page_common,
     app_,
 ):
-    service_one = service_json(
-        SERVICE_ONE_ID,
-        users=[api_user_active["id"]],
-        permissions=["sms", "email"],
-        organisation_id=ORGANISATION_ID,
-        restricted=False,
-        sending_domain=sending_domain,
-    )
-    mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        service_one = service_json(
+            SERVICE_ONE_ID,
+            users=[api_user_active["id"]],
+            permissions=["sms", "email"],
+            organisation_id=ORGANISATION_ID,
+            restricted=False,
+            sending_domain=sending_domain,
+        )
+        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
-    client.login(user, mocker, service_one)
-    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-    assert response.status_code == 200
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.find("h1").text == "Settings"
-    rows = page.select("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-        visible = rows[index]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(rows[index].text.split())
-    app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+        client.login(user, mocker, service_one)
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("h1").text == "Settings"
+        rows = page.select("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            visible = rows[index]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(rows[index].text.split())
+        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
 def test_no_go_live_link_for_service_without_organisation(
@@ -229,13 +233,13 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
                 "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 100,000 text messages",
             ],
         ),
         (
@@ -251,13 +255,13 @@ def test_organisation_name_links_to_org_dashboard(
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
                 "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 10 million emails",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
                 "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 25,000 text messages",
+                "Annual maximum(April 1 to March 31) 100,000 text messages",
             ],
         ),
     ],
@@ -277,20 +281,22 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     expected_rows,
     app_,
 ):
-    client.login(active_user_with_permissions, mocker, service_one)
-    service_one["permissions"] = permissions
-    service_one["email_branding"] = uuid4()
-    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    rows = page.find_all("tr")
-    for index, row in enumerate(expected_rows):
-        formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-        visible = rows[index + 1]
-        sr_only = visible.find("span", "sr-only")
-        if sr_only:
-            sr_only.extract()
-            assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-        assert formatted_row == " ".join(visible.text.split())
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        client.login(active_user_with_permissions, mocker, service_one)
+        service_one["permissions"] = permissions
+        service_one["email_branding"] = uuid4()
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        rows = page.find_all("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+            visible = rows[index + 1]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -3077,6 +3083,61 @@ def test_should_set_sms_message_limit(
     mock_update_sms_message_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
 
 
+@pytest.mark.parametrize(
+    "limit, expected_limit",
+    [
+        ("1", 1),
+        ("1000", 1_000),
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
+        pytest.param("foo", "foo", marks=pytest.mark.xfail),
+    ],
+)
+def test_should_set_email_annual_limit(platform_admin_client, limit, expected_limit, mock_update_email_annual_limit, app_):
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        response = platform_admin_client.post(
+            url_for("main.set_email_annual_limit", service_id=SERVICE_ONE_ID),
+            data={"message_limit": limit},
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
+
+        mock_update_email_annual_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
+
+
+@pytest.mark.parametrize(
+    "limit, expected_limit",
+    [
+        ("1", 1),
+        ("1000", 1_000),
+        pytest.param("10_001", 10_000, marks=pytest.mark.xfail),
+        pytest.param("foo", "foo", marks=pytest.mark.xfail),
+    ],
+)
+def test_should_set_sms_annual_limit(
+    platform_admin_client,
+    limit,
+    expected_limit,
+    mock_update_sms_annual_limit,
+    app_,
+):
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        response = platform_admin_client.post(
+            url_for(
+                "main.set_sms_annual_limit",
+                service_id=SERVICE_ONE_ID,
+            ),
+            data={
+                "message_limit": limit,
+            },
+        )
+
+        assert response.status_code == 302
+        assert response.location == url_for("main.service_settings", service_id=SERVICE_ONE_ID)
+
+        mock_update_sms_annual_limit.assert_called_with(SERVICE_ONE_ID, expected_limit)
+
+
 def test_should_show_page_to_set_sms_allowance(platform_admin_client, mock_get_free_sms_fragment_limit):
     response = platform_admin_client.get(url_for("main.set_free_sms_allowance", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
@@ -3174,7 +3235,7 @@ def test_unknown_channel_404s(
         ),
         (
             "sms",
-            "You can send up to 25,000 text messages per fiscal year.",
+            "You can send up to 100,000 text messages per fiscal year.",
             "Send text messages",
             [],
             "False",
@@ -3183,7 +3244,7 @@ def test_unknown_channel_404s(
         ),
         (
             "email",
-            "You can send up to 10 million emails per fiscal year for free.",
+            "You can send up to 20 million emails per fiscal year for free.",
             "Send emails",
             [],
             "False",
@@ -3192,7 +3253,7 @@ def test_unknown_channel_404s(
         ),
         (
             "email",
-            "You can send up to 10 million emails per fiscal year for free.",
+            "You can send up to 20 million emails per fiscal year for free.",
             "Send emails",
             ["email", "sms", "letter"],
             "True",
@@ -4316,3 +4377,69 @@ class TestSuspendingCallbackApi:
             _data={"updated_by_id": platform_admin_user["id"], "suspend_unsuspend": False},
             _expected_status=200,
         )
+
+
+class TestSendingDomain:
+    def test_sending_domain_page_shows_dropdown_of_verified_domains(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker
+    ):
+        client_request.login(platform_admin_user)
+        mock_get_domains = mocker.patch(
+            "app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"]
+        )
+
+        page = client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _test_page_title=False)
+
+        assert [option["value"] for option in page.select("select[name=sending_domain] option")] == ["domain1.com", "domain2.com"]
+
+        mock_get_domains.assert_called_once()
+
+    def test_sending_domain_page_populates_with_current_domain(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one
+    ):
+        service_one["sending_domain"] = "domain1.com"
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        page = client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _test_page_title=False)
+
+        assert page.select_one("select[name=sending_domain] option[selected]")["value"] == "domain1.com"
+
+    def test_sending_domain_page_updates_domain_and_redirects_when_posted(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one, mock_update_service
+    ):
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        client_request.post(
+            "main.service_sending_domain",
+            service_id=SERVICE_ONE_ID,
+            _data={"sending_domain": "domain2.com"},
+            _expected_redirect=url_for(
+                "main.service_settings",
+                service_id=SERVICE_ONE_ID,
+            ),
+            _test_page_title=False,
+        )
+
+        mock_update_service.assert_called_once_with(service_one["id"], sending_domain="domain2.com")
+
+    def test_sending_domain_page_doesnt_update_if_domain_not_in_allowed_list(
+        self, client_request, platform_admin_user, mock_get_service_settings_page_common, mocker, service_one, mock_update_service
+    ):
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["domain1.com", "domain2.com"])
+
+        client_request.login(platform_admin_user)
+        page = client_request.post(
+            "main.service_sending_domain",
+            service_id=SERVICE_ONE_ID,
+            _data={"sending_domain": "domain3.com"},
+            _expected_status=200,
+            _test_page_title=False,
+        )
+
+        assert mock_update_service.called is False
+        assert "Not a valid choice" in page.text
+
+    def test_sending_domain_page_404s_for_non_platform_admin(self, client_request, mock_get_service_settings_page_common, mocker):
+        client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _expected_status=403)

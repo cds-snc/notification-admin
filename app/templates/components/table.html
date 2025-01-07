@@ -99,7 +99,7 @@
   </td>
 {%- endmacro %}
 
-{% macro text_field(text, status='', truncate=false, date_format=None, cell_width=None) -%}
+{% macro text_field(text, status='', truncate=false, date_format=None, cell_width=None, attributes=None) -%}
   {% call field(status=status, cell_width=cell_width) %}
     {% if text is iterable and text is not string %}
       <ul>
@@ -112,15 +112,15 @@
     {% else %}
       {% if truncate %}
         {% if date_format %}
-          <time class="truncate-text {{date_format if date_format}}">{{text}}</time>
+          <time class="truncate-text {{date_format if date_format}}" {% if attributes %} {{ attributes }} {% endif %}>{{text}}</time>
         {% else %}
-          <div class="truncate-text {{date_format if date_format}}">{{text}}</div>
+          <div class="truncate-text {{date_format if date_format}}" {% if attributes %} {{ attributes }} {% endif %}>{{text}}</div>
         {% endif %}
       {% else %}
         {% if date_format %}
-          <time class="do-not-truncate-text {{date_format}}">{{text}}</time>
+          <time class="do-not-truncate-text {{date_format}}" {% if attributes %} {{ attributes }} {% endif %}>{{text}}</time>
         {% else %}
-          <div class="do-not-truncate-text">{{text}}</div>
+          <div class="do-not-truncate-text" {% if attributes %} {{ attributes }} {% endif %}>{{text}}</div>
         {% endif %}
       {% endif %}
     {% endif %}

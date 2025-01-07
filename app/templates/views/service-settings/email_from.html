@@ -3,6 +3,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/confirmation-preview.html" import confirmation_preview %}
 
 {% block service_page_title %}
   {{ _('Change your sending email address')  }}
@@ -18,14 +19,21 @@
   <div class="form-group">
     <p>{{ _('Users will see your sending email address in the \'From\' field of the emails you send.') }}</p>
     <p>{{ _('Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.') }}</p>
-    <p>{{ _('You may use letters, numbers, dots, dashes or underscores.') }}</p>
   </div>
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {% set hint_txt = _('Up to 64 characters. Enter what comes before the at symbol, without spaces.') %}
-    {% set suffix_txt = '@' + sending_domain %}
-    {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt) }}
+    {% set hint_txt = _('Maximum 64 characters with no spaces. Characters can include letters, numbers, dots, dashes, and underscores.') %}
+    {{ textbox(form.email_from, hint=hint_txt) }}
+    <div id="preview" class="focus:outline-yellow mb-gutter" tabindex="0">
+      {% call confirmation_preview() %}
+      <p class="m-0">{{_("Check that your email address is formatted correctly.")}}</p>
+      <p class="m-0">
+        {{_("Your service’s email address will be: ")}}
+        <b><span id='fixed-email-address'>{{form.email_from.data}}</span>@{{sending_domain}}</b>
+      </p>
+      {% endcall %}
+    </div>
     {{ page_footer(save_txt) }}
   {% endcall %}
 

@@ -4,16 +4,14 @@
   }
 
   details summary {
-    border-color: theme("colors.blue.DEFAULT");
-    @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative;
+    @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative border-blue
   }
   details summary:before {
     content: "";
-    @apply absolute top-0 bottom-0 left-0 m-auto block w-0 h-0 border-solid border-transparent;
-    -webkit-clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
     border-width: 7px 0 7px 12.124px;
     border-left-color: inherit;
+    @apply absolute top-0 bottom-0 left-0 m-auto block w-0 h-0 border-solid border-transparent;
   }
   details summary:hover {
     @apply text-blue-lightblue;

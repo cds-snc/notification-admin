@@ -55,9 +55,13 @@ coverage: venv ## Create coverage report
 run-dev:
 	poetry run flask run -p 6012 --host=localhost
 
+.PHONY: run-gunicorn
+run-gunicorn:
+	PORT=6012 poetry run gunicorn -c gunicorn_config.py application
+
 .PHONY: format
 format:
-	ruff check --select I --fix .
+	ruff check --fix .
 	ruff check
 	ruff format .
 	mypy ./

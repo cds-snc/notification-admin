@@ -9,7 +9,7 @@ text_field, boolean_field, right_aligned_field_heading %} {% from
 "components/api-key.html" import api_key %} {% from
 "components/template-filter.html" import template_filter with context %} {%
 block per_page_title %} Styleguide {% endblock %} {% block maincolumn_content %}
-
+{% from 'components/remaining-messages-summary.html' import remaining_messages_summary with context %}
 <h2 class="heading-large">Banner</h2>
 <div class="grid-row contain-floats">
   <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
@@ -388,5 +388,4 @@ block per_page_title %} Styleguide {% endblock %} {% block maincolumn_content %}
   </fieldset>
 </nav>
 <hr />
-
 {% endblock %}

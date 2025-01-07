@@ -32,6 +32,7 @@ from app.main import main
 from app.main.forms import (
     ChangeEmailFromServiceForm,
     ConfirmPasswordForm,
+    EmailAnnualMessageLimit,
     FieldWithLanguageOptions,
     FreeSMSAllowance,
     GoLiveAboutNotificationsForm,
@@ -57,6 +58,7 @@ from app.main.forms import (
     ServiceSwitchChannelForm,
     SetEmailBranding,
     SetLetterBranding,
+    SMSAnnualMessageLimit,
     SMSMessageLimit,
     SMSPrefixForm,
 )
@@ -70,6 +72,7 @@ from app.utils import (
     email_safe,
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
+    get_verified_ses_domains,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
@@ -107,7 +110,8 @@ def service_settings(service_id: str):
     return render_template(
         "views/service-settings.html",
         service_permissions=PLATFORM_ADMIN_SERVICE_PERMISSIONS,
-        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],  # type: ignore
+        # type: ignore
+        sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
         limits=limits,
         callback_api=callback_api,
     )
@@ -170,7 +174,7 @@ def service_name_change_confirm(service_id):
 @main.route("/services/<service_id>/service-settings/email_from", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def service_email_from_change(service_id):
-    form = ChangeEmailFromServiceForm(service_id=service_id)
+    form = ChangeEmailFromServiceForm(service_id=service_id, sending_domain=current_app.config["SENDING_DOMAIN"])
 
     if request.method == "GET":
         form.email_from.data = current_service.email_from
@@ -546,7 +550,7 @@ def service_set_reply_to_email(service_id):
 @main.route("/services/<service_id>/service-settings/sending-domain", methods=["GET", "POST"])
 @user_is_platform_admin
 def service_sending_domain(service_id):
-    form = SendingDomainForm()
+    form = SendingDomainForm(sending_domain_choices=get_verified_ses_domains())
 
     if request.method == "GET":
         form.sending_domain.data = current_service.sending_domain
@@ -733,7 +737,8 @@ def service_edit_email_reply_to(service_id, reply_to_email_id):
             new_default_reply_to_address = get_new_default_reply_to_address(
                 current_service.email_reply_to_addresses, reply_to_email_address
             )
-            email_address = new_default_reply_to_address["email_address"]  # type: ignore
+            # type: ignore
+            email_address = new_default_reply_to_address["email_address"]
             message: str = _("You're about to delete your default reply-to address.") + _(
                 " The new default will be the next email on your list of reply-to addresses: ‘{}’"
             ).format(email_address)
@@ -978,10 +983,7 @@ def service_make_blank_default_letter_contact(service_id):
     return redirect(url_for(".service_letter_contact_details", service_id=service_id))
 
 
-@main.route(
-    "/services/<service_id>/service-settings/letter-contact/<letter_contact_id>/delete",
-    methods=["POST"],
-)
+@main.route("/services/<service_id>/service-settings/letter-contact/<letter_contact_id>/delete", methods=["POST"])
 @user_has_permissions("manage_service")
 def service_delete_letter_contact(service_id, letter_contact_id):
     service_api_client.delete_letter_contact(
@@ -1041,7 +1043,7 @@ def service_edit_sms_sender(service_id, sms_sender_id):
         service_api_client.update_sms_sender(
             current_service.id,
             sms_sender_id=sms_sender_id,
-            sms_sender=sms_sender["sms_sender"] if is_inbound_number else form.sms_sender.data.replace("\r", ""),
+            sms_sender=(sms_sender["sms_sender"] if is_inbound_number else form.sms_sender.data.replace("\r", "")),
             is_default=True if sms_sender["is_default"] else form.is_default.data,
         )
         return redirect(url_for(".service_sms_senders", service_id=service_id))
@@ -1106,11 +1108,7 @@ def set_message_limit(service_id):
             flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
-    return render_template(
-        "views/service-settings/set-message-limit.html",
-        form=form,
-        heading=_("Daily email limit"),
-    )
+    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily email limit"))
 
 
 @main.route("/services/<service_id>/service-settings/set-sms-message-limit", methods=["GET", "POST"])
@@ -1124,13 +1122,50 @@ def set_sms_message_limit(service_id):
             flash(_("An email has been sent to service users"), "default_with_tick")
         return redirect(url_for(".service_settings", service_id=service_id))
 
-    return render_template("views/service-settings/set-message-limit.html", form=form, heading=_("Daily text message limit"))
+    return render_template(
+        "views/service-settings/set-message-limit.html",
+        form=form,
+        heading=_("Daily text message limit"),
+    )
 
 
-@main.route(
-    "/services/<service_id>/service-settings/set-free-sms-allowance",
-    methods=["GET", "POST"],
-)
+@main.route("/service/<service_id>/service_settings/set-sms-annual-limit", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_sms_annual_limit(service_id):
+    form = SMSAnnualMessageLimit(message_limit=current_service.sms_annual_limit)
+
+    if form.validate_on_submit():
+        service_api_client.update_sms_annual_limit(service_id, form.message_limit.data)
+        if current_service.live:
+            flash(_("An email has been sent to service users"), "default_with_tick")
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template(
+        "views/service-settings/set-message-limit.html",
+        form=form,
+        heading=_("Annual text message limit"),
+    )
+
+
+@main.route("/service/<service_id>/service_settings/set-email-annual.html", methods=["GET", "POST"])
+@user_is_platform_admin
+def set_email_annual_limit(service_id):
+    form = EmailAnnualMessageLimit(message_limit=current_service.email_annual_limit)
+
+    if form.validate_on_submit():
+        service_api_client.update_email_annual_limit(service_id, form.message_limit.data)
+        if current_service.live:
+            flash(_("An email has been sent to service users"), "default_with_tick")
+        return redirect(url_for(".service_settings", service_id=service_id))
+
+    return render_template(
+        "views/service-settings/set-message-limit.html",
+        form=form,
+        heading=_("Annual email limit"),
+    )
+
+
+@main.route("/services/<service_id>/service-settings/set-free-sms-allowance", methods=["GET", "POST"])
 @user_is_platform_admin
 def set_free_sms_allowance(service_id):
     form = FreeSMSAllowance(free_sms_allowance=current_service.free_sms_fragment_limit)

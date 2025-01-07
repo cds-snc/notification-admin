@@ -13,6 +13,10 @@ echo -e "alias ll='exa -alh@ --git'" >> ~/.zshrc
 echo -e "alias lt='exa -al -T -L 2'" >> ~/.zshrc
 echo -e "alias poe='poetry run poe'" >> ~/.zshrc
 
+echo -e "# fzf key bindings and completion" >> ~/.zshrc
+echo -e "source /usr/share/doc/fzf/examples/key-bindings.zsh" >> ~/.zshrc
+echo -e "source /usr/share/doc/fzf/examples/completion.zsh" >> ~/.zshrc
+
 # Poetry autocomplete
 echo -e "fpath+=/.zfunc" >> ~/.zshrc
 echo -e "autoload -Uz compinit && compinit"
@@ -26,13 +30,16 @@ which poetry
 poetry --version
 
 # Initialize poetry autocompletions
-mkdir ~/.zfunc
+mkdir -p ~/.zfunc
 touch ~/.zfunc/_poetry
 poetry completions zsh > ~/.zfunc/_poetry
 
 # Install dependencies
-cd /workspaces/notification-admin
+cd /workspace
 poetry install
+
+# Install pre-commit hooks
+poetry run pre-commit install
 
 # Poe the Poet plugin tab completions
 touch ~/.zfunc/_poe
