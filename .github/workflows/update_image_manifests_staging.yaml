@@ -15,17 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
-        run: |
-          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }})"
-          echo "::add-mask::$TOKEN"
-          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
-
-      - name: Checkout main branch
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
-        with:
-          token: ${{ env.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
