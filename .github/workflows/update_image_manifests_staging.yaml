@@ -1,0 +1,81 @@
+name: Update docker image for manifests in staging
+on:
+  push:
+    branches:
+      - main
+
+env:
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+
+permissions:
+  id-token: write   # This is required for requesting the OIDC JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: setup git config
+      run: |
+        git config user.name "Notify PR Bot"
+        git config user.email "action@github.com"
+
+
+    - name: Checkout code
+      uses: octokit/request-action@v2.x
+      with:
+            route: GET /repos/:repository/contents/VERSION
+            repository: ${{ github.repository }}
+            env:
+            GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+
+
+    - name: Branch protection OFF
+      uses: octokit/request-action@v2.x
+      with:
+        route: PUT /repos/:repository/branches/main/protection
+        repository: ${{ github.repository }}
+        required_status_checks: | 
+        null
+        required_linear_history: |
+        null
+        enforce_admins: |
+        null
+        required_pull_request_reviews: |
+        null
+        restrictions: | 
+        null 
+        env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          
+      - name: commit
+        env:
+          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+        run: |
+          git add VERSION
+          git commit -m "New release: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+          git push origin main
+
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: testing_manifest
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
