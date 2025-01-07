@@ -14,7 +14,13 @@ jobs:
   update-image:
     runs-on: ubuntu-latest
     steps:
-    
+
+      - name: Setup git config
+        run: |
+          git config user.name "Notify PR Bot"
+          git config user.email "action@github.com"
+          git config --unset-all http.https://github.com/.extraheader
+
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
@@ -22,11 +28,6 @@ jobs:
           token: ${{ secrets.PR_BOT_MANIFEST_STAGING }}
           path: notification-manifests
           ref: main
-
-      - name: Setup git config
-        run: |
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
 
       - name: Make changes to the file
         run: |
