@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: cds-snc/notification-manifests
-          token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+          token: ${{ secrets.MANIFESTS_TOKEN_STAGING }}
           path: notification-manifests
           ref: main
 
