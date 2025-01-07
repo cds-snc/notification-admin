@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-          ref: helm-tagging
+          ref: 
 
       - name: Update version file
         run: |
@@ -30,12 +30,22 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
         env:
           GITHUB_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
           
       - name: commit
         run: |
-          git add z.env
+          git add VERSION
           git commit -m "New image tag ${GITHUB_SHA::7}"
           git push origin helm-tagging
 
@@ -45,5 +55,15 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
