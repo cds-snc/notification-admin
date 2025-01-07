@@ -1,4 +1,4 @@
-name: "Update Image Manifests Staging"
+name: "Update Image Manifests in Staging"
 
 on: 
   workflow_dispatch:
