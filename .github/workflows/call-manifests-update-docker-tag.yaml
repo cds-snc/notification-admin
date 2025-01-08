@@ -1,6 +1,7 @@
 name: Call Manifests Update Docker Tag
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
