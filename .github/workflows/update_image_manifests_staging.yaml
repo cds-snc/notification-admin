@@ -27,7 +27,6 @@ jobs:
         with:
           repository: cds-snc/notification-manifests
           token: ${{ env.GITHUB_TOKEN }}
-          ref: main
 
       - name: Setup git config
         run: |
@@ -38,7 +37,8 @@ jobs:
         run: |
           echo "Updating docker tag in staging.env"
           sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: ${GITHUB_SHA::7}/' helmfile/overrides/staging.env
-
+          cat helmfile/overrides/staging.env
+          
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
