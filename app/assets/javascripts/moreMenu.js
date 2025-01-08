@@ -53,8 +53,8 @@
     // Substract another one to account for the "Plus" item
     fitCount = Math.floor((elemWidth / varWidth) * ctr) - 2;
 
-    // Reset display and width on all menu items.
-    $menuItems.children().css({ display: "flex", width: "auto" });
+    // Reset display and width on all menu items. Except "More menu"
+    $menuItems.children().not("#more-menu").css({ display: "flex", width: "auto" });
 
     // Get the menu items that don't fit in the limited space, if any,
     // make sure to exclude the 'More' menu itself though.
@@ -84,7 +84,7 @@
       // in the menu anymore.
       collectedSet.css({ display: "none", width: "0" });
       // Make sure we are displaying the More menu when it contains items.
-      $moreMenu.css({ display: moreMenuDisplay, width: moreMenuWidth });
+      $moreMenu.css({ width: moreMenuWidth });
       // Need to adjust re-alignment..
       $moreMenuItems.children().removeClass();
       $moreMenuItems.children().addClass("text-right px-5");
