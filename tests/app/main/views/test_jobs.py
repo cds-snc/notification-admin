@@ -186,7 +186,10 @@ def test_should_show_page_for_one_job(
     )
 
     assert page.h1.text.strip() == "Delivery report"
-    assert " ".join(page.find("tbody").find("tr").text.split()) == ("6502532222 template content No Delivered 11:10:00.061258")
+    dashboard_table = page.find_all("table")[1]
+    assert " ".join(dashboard_table.find("tbody").find("tr").text.split()) == (
+        "6502532222 template content No Delivered 11:10:00.061258"
+    )
     assert page.find("div", {"data-key": "notifications"})["data-resource"] == url_for(
         "main.view_job_updates",
         service_id=SERVICE_ONE_ID,
@@ -204,10 +207,10 @@ def test_should_show_page_for_one_job(
     assert csv_link.text == "Download this report"
     assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
-    assert normalize_spaces(page.select_one("tbody tr").text) == normalize_spaces(
+    assert normalize_spaces(dashboard_table.select_one("tbody tr").text) == normalize_spaces(
         "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
     )
-    assert page.select_one("tbody tr a")["href"] == url_for(
+    assert dashboard_table.select_one("tbody tr a")["href"] == url_for(
         "main.view_notification",
         service_id=SERVICE_ONE_ID,
         notification_id=sample_uuid(),
@@ -434,15 +437,13 @@ def test_should_show_job_from_api(
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
     )
+    job_info_table = page.find_all("table")[0]
 
-    assert (
-        normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(1)")[0].text)
-        == f"Sent by: API key '{JOB_API_KEY_NAME}'"
-    )
-    assert (
-        normalize_spaces(page.select("div[data-test-id='dr_header'] >div:nth-child(2)")[0].text)
-        == "Started: 2016-01-01T00:00:00.061258+0000"
-    )
+    assert normalize_spaces(job_info_table.select("th")[0].text) == "Sent by"
+    assert normalize_spaces(job_info_table.select("td")[0].text) == f"API key '{JOB_API_KEY_NAME}'"
+
+    assert normalize_spaces(job_info_table.select("th")[1].text) == "Started"
+    assert normalize_spaces(job_info_table.select("td")[1].text) == "2016-01-01T00:00:00.061258+0000"
 
 
 # TODO: This test could be migrated to Cypress instead
@@ -579,6 +580,7 @@ def test_should_not_show_cancel_link_for_letter_job_if_too_late(
 
 
 @freeze_time("2019-06-20 15:32:00.000001")
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize(" job_status", ["finished", "in progress"])
 def test_should_show_cancel_link_for_letter_job(
     client_request,

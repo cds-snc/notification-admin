@@ -553,7 +553,11 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
 
 
 class SendingDomainForm(StripWhitespaceForm):
-    sending_domain = StringField(_l("Sending domain"), validators=[])
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sending_domain.choices = kwargs["sending_domain_choices"]
+
+    sending_domain = SelectField(_l("Sending domain"), validators=[])
 
 
 class RenameOrganisationForm(StripWhitespaceForm):
@@ -761,7 +765,7 @@ class SMSAnnualMessageLimit(StripWhitespaceForm):
 
 class EmailAnnualMessageLimit(StripWhitespaceForm):
     message_limit = IntegerField(
-        _l("Annual email message limit"),
+        _l("Annual email limit"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validators.NumberRange(min=1),

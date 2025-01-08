@@ -1387,22 +1387,6 @@ files = [
 ]
 
 [[package]]
-name = "mixpanel"
-version = "4.10.1"
-description = "Official Mixpanel library for Python"
-optional = false
-python-versions = ">=2.7, !=3.4.*"
-files = [
-    {file = "mixpanel-4.10.1-py2.py3-none-any.whl", hash = "sha256:a7a338b7197327e36356dbc1903086e7626db6d88367ccdd732b3f3c60d3b3ed"},
-    {file = "mixpanel-4.10.1.tar.gz", hash = "sha256:29a6b5773dd34f05cf8e249f4e1d16e7b6280d6b58894551ce9a5aad7700a115"},
-]
-
-[package.dependencies]
-requests = ">=2.4.2"
-six = ">=1.9.0"
-urllib3 = "*"
-
-[[package]]
 name = "monkeytype"
 version = "23.3.0"
 description = "Generating type annotations from sampled production types"
@@ -1546,7 +1530,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.0.1"
+version = "53.0.3"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1582,8 +1566,8 @@ werkzeug = "3.0.4"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.0.1"
-resolved_reference = "8ee66e4ed598a694b778283573715d7d5b9eeb9c"
+reference = "53.0.3"
+resolved_reference = "e137e9f57ac60c46505cb0611118bcfe3fdf9117"
 
 [[package]]
 name = "openpyxl"
@@ -2750,4 +2734,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "8dde551218693f0c7fbcf66efd7c34b508f5d3007d00a91f14d41058e23a09ab"
+content-hash = "a27d5771cdbf73ac0bca3cb9f4700ac2b5378960ec43b88fa76d289195a25806"
