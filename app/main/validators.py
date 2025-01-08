@@ -175,7 +175,7 @@ def validate_callback_url(service_callback_url, bearer_token):
         response = requests.post(
             url=service_callback_url,
             allow_redirects=True,
-            data={"health_check": "true"},
+            json={"health_check": True},
             headers={"Content-Type": "application/json", "Authorization": f"Bearer {bearer_token}"},
             timeout=2,
         )
