@@ -43,7 +43,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
-          repository: cds-snc/notification-manifests
+          repository: notification-manifests
           required_status_checks: | 
             null
           required_linear_history: |
@@ -68,7 +68,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
-          repository: cds-snc/notification-manifests
+          repository: notification-manifests
           required_status_checks: |
             strict: true
             checks:
