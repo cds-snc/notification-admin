@@ -18,7 +18,7 @@ jobs:
         run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
         env:
           GITHUB_SHA: ${{ github.sha }}
-          COMPONENT: ADMIN
+          COMPONENT: "ADMIN"
 
       - name: Trigger repository_dispatch
         run: |
