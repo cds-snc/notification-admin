@@ -10,8 +10,8 @@
     content: "";
     clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
     border-width: 7px 0 7px 12.124px;
-    border-left-color: inherit;
     @apply absolute top-0 bottom-0 left-0 m-auto block w-0 h-0 border-solid border-transparent;
+    border-left-color: inherit;
   }
   details summary:hover {
     @apply text-blue-lightblue;

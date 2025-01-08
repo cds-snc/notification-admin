@@ -81,6 +81,7 @@ module.exports = {
         slightlight: "#284162",
         /* trying to slowly implement a more consistent scale below */
         200: "#D7E5F5",
+        300: "#71A7F3",
         500: "#004AB2",
         600: "#6584A6",
         700: "#425A76",
