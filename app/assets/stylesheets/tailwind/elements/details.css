@@ -4,7 +4,7 @@
   }
 
   details summary {
-    @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative border-blue
+    @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative border-blue;
   }
   details summary:before {
     content: "";
