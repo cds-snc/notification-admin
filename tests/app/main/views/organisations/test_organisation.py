@@ -157,8 +157,8 @@ def test_organisation_services_shows_live_services_only(
 
     assert normalize_spaces(services[0].text) == "1"
     assert normalize_spaces(services[1].text) == "5"
-    assert services[0].find("a")["href"] == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-    assert services[1].find("a")["href"] == url_for("main.service_dashboard", service_id=SERVICE_TWO_ID)
+    assert services[0].find("a")["href"] == url_for("main.usage", service_id=SERVICE_ONE_ID)
+    assert services[1].find("a")["href"] == url_for("main.usage", service_id=SERVICE_TWO_ID)
 
 
 def test_organisation_trial_mode_services_shows_all_non_live_services(

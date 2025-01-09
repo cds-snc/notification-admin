@@ -8,7 +8,7 @@
   table th,
   table td {
     padding: 0.632em 1.05em 0.4743em 0;
-    @apply leading-tight text-smaller text-left border-solid border-0 border-b-1 border-gray-300 align-baseline;
+    @apply leading-tight text-smaller text-left border-solid border-0 border-b-1 border-gray-300;
   }
   thead th {
     @apply font-bold;
@@ -130,7 +130,7 @@
   }
   .table-field-headings th,
   .table-field-headings-visible th {
-    @apply text-smaller leading-tight font-bold align-baseline;
+    @apply text-smaller leading-tight font-bold;
   }
   .dashboard-table .table-field-heading-first,
   .dashboard-table .table-field-headings-first,
