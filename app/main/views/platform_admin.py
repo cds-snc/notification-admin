@@ -4,6 +4,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from flask import abort, flash, redirect, render_template, request, url_for
+from flask_babel import lazy_gettext as _l
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
 
@@ -624,20 +625,20 @@ def clear_cache():
                     "live-service-and-organisation-counts",
                 ],
             ),
-            ("gc-articles", ["gc-articles--*", "gc-articles-fallback--*"]),
+            ("gc_articles", ["gc-articles--*", "gc-articles-fallback--*"]),
         ]
     )
 
     form = ClearCacheForm()
-    form.model_type.choices = [(key, key.replace("_", " ").title()) for key in CACHE_KEYS]
+    form.model_type.choices = [(key, _l(key.replace("_", " ").title())) for key in CACHE_KEYS]
 
     if form.validate_on_submit():
         to_delete = form.model_type.data
 
         num_deleted = max(redis_client.delete_cache_keys_by_pattern(pattern) for pattern in CACHE_KEYS[to_delete])
-        msg = "Removed {} {} object{} from redis"
+        msg = _l("Removed {count} {name} object{plural} from redis")
         flash(
-            msg.format(num_deleted, to_delete, "s" if num_deleted != 1 else ""),
+            msg.format(count=num_deleted, name=to_delete, plural="s" if num_deleted != 1 else ""),
             category="default",
         )
 
