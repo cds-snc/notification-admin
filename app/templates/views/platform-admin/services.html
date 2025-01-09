@@ -11,11 +11,9 @@ hidden_field_heading, text_field %}
 {% macro stats_fields(channel, data) -%}
 
   {% call field(border=False) %}
-<<<<<<< HEAD
-      <span class="text-small font-bold">{{ _(channel.title()) }}</span>
-=======
-      <span class="heading-medium" style="margin: 0px;">{{ _(channel.title()) }}</span>
->>>>>>> main
+    <span class="text-small font-bold">
+      {{ _(channel.title()) }}
+    </span>
   {% endcall %}
 
   {% call field(align='right', border=False) %}
