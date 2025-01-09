@@ -10,7 +10,7 @@
 {% macro stats_fields(channel, data) -%}
 
   {% call field(border=False) %}
-      <span class="heading-medium" style="margin: 0px;">{{ channel.title() }}</span>
+      <span class="heading-medium" style="margin: 0px;">{{ _(channel.title()) }}</span>
   {% endcall %}
 
   {% call field(align='right', border=False) %}
@@ -32,11 +32,11 @@
     caption=caption,
     caption_visible=False,
     field_headings=[
-    'Service',
-    hidden_field_heading('Type'),
-    right_aligned_field_heading('Sending'),
-    right_aligned_field_heading('Delivered'),
-    right_aligned_field_heading('Failed')
+    _('Service'),
+    hidden_field_heading(_('Type')),
+    right_aligned_field_heading(_('Sending')),
+    right_aligned_field_heading(_('Delivered')),
+    right_aligned_field_heading(_('Failed'))
     ],
     field_headings_visible=True
   ) %}
@@ -56,15 +56,15 @@
         {% call row() %}
           {% if not service['active'] %}
             {% call field(status='default', border=False) %}
-              <span class="heading-medium" style="margin: 0px;">archived</span>
+              <span class="heading-medium" style="margin: 0px;">{{ _("archived") }}</span>
             {% endcall %}
           {% elif service['research_mode'] %}
             {% call field(border=False) %}
-              <span class="research-mode" style="margin: 0px;">research mode</span>
+              <span class="research-mode" style="margin: 0px;">{{ _("research mode") }}</span>
             {% endcall %}
           {% elif not service['restricted'] %}
             {% call field(status='error', border=False) %}
-              <span class="heading-medium" style="margin: 0px;">Live</span>
+              <span class="heading-medium" style="margin: 0px;">{{ _("Live") }}</span>
             {% endcall %}
           {% else %}
             {% call field(border=False) %}
@@ -91,13 +91,13 @@
 
 
 {% block per_page_title %}
-  {{ page_title|capitalize }}
+  {{ _(page_title|capitalize) }}
 {% endblock %}
 
 {% block platform_admin_content %}
 
   <h1 class="heading-large">
-    {{ page_title|capitalize }}
+    {{ _(page_title|capitalize) }}
   </h1>
 
     <details>
