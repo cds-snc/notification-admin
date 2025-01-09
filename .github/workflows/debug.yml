@@ -12,7 +12,5 @@ jobs:
     steps:
     - name: Debug Slack Webhook
       run: |
-        json="{\"text\": \"<!here> CI is failing in <https://github.com/cds-snc/notification-admin/actions/runs/${{ github.run_id }}|notification-admin> !\"}"
+        json="{\"text\": \"<!here> CI is failing in <https://github.com/cds-snc/notification-admin/actions/runs/${{ GITHUB_RUN_ID }}|notification-admin> !\"}"
         echo "Sending: $json"  # Debug print
-      env:
-        GITHUB_RUN_ID: ${{ github.run_id }}
