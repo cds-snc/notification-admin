@@ -95,6 +95,10 @@
   .settings-table .table-heading {
     @apply mb-8;
   }
+
+  .table-field {
+    @apply align-top;
+  }
   .table-field-index {
     width: 15px;
     @apply relative text-smaller leading-tight font-bold;
