@@ -11,6 +11,10 @@ export const Weeks = () => {
       id="Calendar-dates"
       onKeyDown={(event) => {
         const key = event.key.replace("Arrow", "");
+        // Prevent up and down scrolling with arrows
+        if (key.match(/Up|Down/)) {
+          event.preventDefault();
+        }
         onKeyDown({ key, dispatch });
       }}
       aria-label={translate("calendar_dates")}
