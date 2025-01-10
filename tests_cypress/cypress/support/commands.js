@@ -10,8 +10,8 @@ let svgs_checked = [];
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
-    // bypass rate limiting
-    cy.intercept(`${current_hostname}/*`, (req) => {
+    // bypass rate limiting for requests hitting our server
+    cy.intercept(`${current_hostname}/**`, (req) => {
         req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
     });
 
