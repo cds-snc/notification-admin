@@ -10,11 +10,7 @@ let svgs_checked = [];
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
-    // bypass rate limiting for requests hitting our server
-    cy.intercept(`${current_hostname}/**`, (req) => {
-        req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
-    });
-
+    
     if (url) {
         cy.visit(url);
     }
@@ -101,4 +97,15 @@ Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
     cy.session([username, password, agreeToTerms], () => {
         LoginPage.Login(username, password, agreeToTerms);
     });
+});
+
+Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
+    const mergedOptions = {
+        ...options,
+        headers: {
+            ...options.headers,
+            'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET
+        }
+    };
+    return originalFn(url, mergedOptions);
 });
