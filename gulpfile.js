@@ -6,6 +6,7 @@
 // 1. LIBRARIES
 // - - - - - - - - - - - - - - -
 const { src, pipe, dest, series, parallel, watch } = require("gulp");
+const { merge } = require("jquery");
 
 const plugins = {};
 plugins.addSrc = require("gulp-add-src");
@@ -26,6 +27,7 @@ const paths = {
   templates: "app/templates/",
   npm: "node_modules/",
   toolkit: "node_modules/govuk_frontend_toolkit/",
+  gcds: "node_modules/@cdssnc/gcds-components/",
 };
 
 // 3. TASKS
@@ -117,6 +119,22 @@ const static_css = () => {
     );
 };
 
+// copy gcds
+const gcds_styles = () => {
+  return src(
+      paths.gcds + "/dist/gcds/gcds.css"
+    )
+    .pipe(dest(paths.dist + "stylesheets/"));}
+
+  const gcds_scripts = () => {
+    return src(
+      [
+        paths.gcds + "/dist/gcds/gcds.esm.js", 
+        paths.gcds + "/dist/gcds/gcds.js"
+      ]
+    )
+    .pipe(dest(paths.dist + "javascripts/"));}
+
 // Copy images
 
 const images = () => {
@@ -144,9 +162,11 @@ const watchFiles = {
 
 // Default: compile everything
 const defaultTask = parallel(
-  series(javascripts),
-  series(images),
-  series(static_css),
+  javascripts,
+  images,
+  gcds_scripts,
+  gcds_styles,
+  static_css,
 );
 
 // Watch for changes and re-run tasks

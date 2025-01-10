@@ -18,6 +18,9 @@
   <div id="main_content" class="container px-gutterHalf contain-floats flex-grow">
       <div class="grid-row contain-floats">
         <main role="main" class="w-full float-left {% block main_content_class %}py-10{% endblock %} px-gutterHalf box-border column-main">
+        <gcds-details details-title="Learn more about this topic">
+          Additional information.
+        </gcds-details>
           {% if show_tou_prompt() %}
             {{ tou_prompt() }}    
           {% else %}
