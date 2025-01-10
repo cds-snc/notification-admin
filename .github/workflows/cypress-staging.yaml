@@ -3,6 +3,9 @@ name: Cypress staging a11y tests
 on:
   schedule:
     - cron: 0 */3 * * *
+  push:
+    branches:
+      - fix/bypass-rate-limit-for-static-files-cypress
   workflow_dispatch:
 defaults:
   run:
@@ -24,6 +27,10 @@ jobs:
         # is simply inserted as a string into the command
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
+          WAF_SECRET=$(jq -r '.STAGING.WAF_SECRET' tests_cypress/cypress.env.json)
+          first_part=$(echo "$WAF_SECRET" | cut -c12-13)
+          last_part=$(echo "$WAF_SECRET" | rev | cut -c1-3 | rev)
+          echo "WAF_SECRET pattern: ${first_part}...${last_part}"
 
       - name: Run the cypress tests
         uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
