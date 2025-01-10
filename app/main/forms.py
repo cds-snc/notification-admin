@@ -1122,7 +1122,7 @@ class ServiceSmsSenderForm(StripWhitespaceForm):
 
 
 class ServiceEditInboundNumberForm(StripWhitespaceForm):
-    is_default = BooleanField("Make this text message sender the default")
+    is_default = BooleanField(_l("Make this text message sender the default"))
 
 
 class ServiceLetterContactBlockForm(StripWhitespaceForm):
@@ -1194,16 +1194,16 @@ class ServiceSwitchChannelForm(ServiceOnOffSettingForm):
 
 class SetEmailBranding(StripWhitespaceForm):
     branding_style = RadioFieldWithNoneOption(
-        "Branding style",
+        _l("Branding style"),
     )
 
     DEFAULT_EN = (
         FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
-        "English Government of Canada signature",
+        _l("English Government of Canada signature"),
     )
     DEFAULT_FR = (
         FieldWithLanguageOptions.FRENCH_OPTION_VALUE,
-        "French Government of Canada signature",
+        _l("French Government of Canada signature"),
     )
 
     def __init__(self, all_branding_options, current_branding):
@@ -1230,57 +1230,57 @@ class PreviewBranding(StripWhitespaceForm):
 
 
 class ServiceUpdateEmailBranding(StripWhitespaceForm):
-    name = StringField("Name of brand")
-    text = StringField("Text")
+    name = StringField(_l("Name of brand"))
+    text = StringField(_l("Text"))
     colour = StringField(
-        "Colour",
+        _l("Colour"),
         validators=[
             Regexp(
                 regex="^$|^#(?:[0-9a-fA-F]{3}){1,2}$",
-                message="Must be a valid color hex code (starting with #)",
+                message=_l("Must be a valid color hex code (starting with #)"),
             )
         ],
     )
-    file = FileField_wtf("Upload a PNG logo")
+    file = FileField_wtf(_l("Upload a PNG logo"))
     brand_type = RadioField(
-        "Brand type",
+        _l("Brand type"),
         choices=[
-            ("both_english", "English Government of Canada signature and custom logo"),
-            ("both_french", "French Government of Canada signature and custom logo"),
-            ("custom_logo", "Custom Logo"),
+            ("both_english", _l("English Government of Canada signature and custom logo")),
+            ("both_french", _l("French Government of Canada signature and custom logo")),
+            ("custom_logo", _l("Custom Logo")),
             (
                 "custom_logo_with_background_colour",
-                "Custom Logo on a background colour",
+                _l("Custom Logo on a background colour"),
             ),
-            ("no_branding", "No branding"),
+            ("no_branding", _l("No branding")),
         ],
     )
-    organisation = RadioField("Select an organisation", choices=[])
-    alt_text_en = StringField("Alternative text for English logo")
-    alt_text_fr = StringField("Alternative text for French logo")
+    organisation = RadioField(_l("Select an organisation"), choices=[])
+    alt_text_en = StringField(_l("Alternative text for English logo"))
+    alt_text_fr = StringField(_l("Alternative text for French logo"))
 
     def validate_name(form, name):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.name.data:
-            raise ValidationError("This field is required")
+            raise ValidationError(_l("This field is required"))
 
     def validate_alt_text_en(form, alt_text_en):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.alt_text_en.data:
-            raise ValidationError("This field is required")
+            raise ValidationError(_l("This field is required"))
 
     def validate_alt_text_fr(form, alt_text_fr):
         op = request.form.get("operation")
         if op == "email-branding-details" and not form.alt_text_fr.data:
-            raise ValidationError("This field is required")
+            raise ValidationError(_l("This field is required"))
 
 
 class SVGFileUpload(StripWhitespaceForm):
     file = FileField_wtf(
-        "Upload an SVG logo",
+        _l("Upload an SVG logo"),
         validators=[
-            FileAllowed(["svg"], "SVG Images only!"),
-            DataRequired(message="You need to upload a file to submit"),
+            FileAllowed(["svg"], _l("SVG Images only!")),
+            DataRequired(message=_l("You need to upload a file to submit")),
         ],
     )
 
@@ -1704,13 +1704,13 @@ class TemplateAndFoldersSelectionForm(Form):
 
 class ClearCacheForm(StripWhitespaceForm):
     model_type = RadioField(
-        "What do you want to clear today",
+        _l("What do you want to clear today"),
     )
 
 
 class GoLiveNotesForm(StripWhitespaceForm):
     request_to_go_live_notes = TextAreaField(
-        "Go live notes",
+        _l("Go live notes"),
         filters=[lambda x: x or None],
     )
 
@@ -1732,18 +1732,18 @@ class AcceptAgreementForm(StripWhitespaceForm):
             on_behalf_of_email=org.agreement_signed_on_behalf_of_email_address,
         )
 
-    version = StringField("Which version of the agreement do you want to accept?")
+    version = StringField(_l("Which version of the agreement do you want to accept?"))
 
     who = RadioField(
-        "Who are you accepting the agreement for?",
+        _l("Who are you accepting the agreement for?"),
         choices=(
             (
                 "me",
-                "Yourself",
+                _l("Yourself"),
             ),
             (
                 "someone-else",
-                "Someone else",
+                _l("Someone else"),
             ),
         ),
     )
@@ -1770,7 +1770,7 @@ class AcceptAgreementForm(StripWhitespaceForm):
         try:
             float(field.data)
         except (TypeError, ValueError):
-            raise ValidationError("Must be a number")
+            raise ValidationError(_l("Must be a number"))
 
 
 class GoLiveAboutServiceForm(StripWhitespaceForm):
