@@ -6,7 +6,6 @@
 // 1. LIBRARIES
 // - - - - - - - - - - - - - - -
 const { src, pipe, dest, series, parallel, watch } = require("gulp");
-const { merge } = require("jquery");
 
 const plugins = {};
 plugins.addSrc = require("gulp-add-src");
