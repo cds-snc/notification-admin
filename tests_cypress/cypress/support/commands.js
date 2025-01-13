@@ -99,13 +99,24 @@ Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
     });
 });
 
+// this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
-    const mergedOptions = {
-        ...options,
-        headers: {
-            ...options.headers,
-            'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET
-        }
-    };
-    return originalFn(url, mergedOptions);
+     // Get full URL by combining baseUrl with path
+    const fullUrl = url.startsWith('http') 
+        ? url 
+        : `${Cypress.config('baseUrl')}${url}`;
+       
+    // Only add headers if URL matches admin hostname
+    if (fullUrl.includes(config.Hostnames.Admin)) {
+        const mergedOptions = {
+            ...options,
+            headers: {
+                ...options.headers,
+                'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET
+            }
+        };
+        return originalFn(url, mergedOptions);
+    }
+    
+    return originalFn(url, options);
 });
