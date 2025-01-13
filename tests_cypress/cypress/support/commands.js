@@ -8,6 +8,14 @@ import LoginPage from "../Notify/Admin/Pages/LoginPage";
 let links_checked = [];
 let svgs_checked = [];
 
+// if the tests failed, reset the arrays so the links are re-checked and a link failure is treated as a real failure
+afterEach(function() {
+    if (this.currentTest.state === 'failed') {
+        links_checked = [];
+        svgs_checked = [];
+    }
+});
+
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
     
