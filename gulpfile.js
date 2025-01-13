@@ -129,8 +129,7 @@ const gcds_styles = () => {
   const gcds_scripts = () => {
     return src(
       [
-        paths.gcds + "/dist/gcds/gcds.esm.js", 
-        paths.gcds + "/dist/gcds/gcds.js"
+        paths.gcds + "/dist/gcds/**/*.js",
       ]
     )
     .pipe(dest(paths.dist + "javascripts/"));}
