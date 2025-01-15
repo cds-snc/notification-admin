@@ -29,6 +29,7 @@ const fullPageList = [
   { en: "/using-a-spreadsheet", fr: "/utiliser-une-feuille-de-calcul" },
   { en: "/why-gc-notify", fr: "/pourquoi-notification-gc" },
   { en: "/new-features", fr: "/nouvelles-fonctionnalites" },
+  { en: "/terms", fr: "/terms" },
 ];
 
 describe(`GCA a11y tests [${config.CONFIG_NAME}]`, () => {

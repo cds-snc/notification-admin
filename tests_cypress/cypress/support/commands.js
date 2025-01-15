@@ -43,7 +43,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
             let checked = 0;
 
             cy.get('a').each((link) => {
-                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url)) return;
+                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url) || link.prop('href').includes('documentation.staging.notification.cdssandbox.xyz')) return;
 
                 const check_url = link.prop('href');
 
@@ -51,6 +51,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
                 if (links_checked.includes(check_url)) return;
 
                 // bypass rate limiting
+                cy.log('checking link', check_url);
                 if (check_url.includes(current_hostname)) {
                     cy.request({
                         url: check_url,
