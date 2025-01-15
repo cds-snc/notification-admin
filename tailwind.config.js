@@ -5,6 +5,12 @@ module.exports = {
   theme: {
     container: {
       center: true,
+      xs: "var(--gcds-container-xs)",
+      smaller: "var(--gcds-container-sm)",
+      sm: "var(--gcds-container-sm)",
+      md: "var(--gcds-container-md)",
+      lg: "var(--gcds-container-lg)",
+      xl: "var(--gcds-container-xl)",
     },
     boxShadow: {
       outline: "0 0 0 3px rgba(255, 191, 71, 1)" /* yellow */,
@@ -34,11 +40,12 @@ module.exports = {
       xxl: "3.25rem",
     },
     screens: {
-      xs: "320px",
-      smaller: "375px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
+      xs: "20rem",
+      smaller: "20rem",
+      sm: "30rem",
+      md: "48rem",
+      lg: "62rem",
+      xl: "71.25rem",
     },
     spacing: {
       0: "0rem",

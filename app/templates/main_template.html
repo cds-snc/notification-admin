@@ -135,35 +135,18 @@
 
 {% block body_start %}{% endblock %}
 
-<div id="skiplink-container">
-  <div>
-    <a
-      href="#main_content"
-      class="skiplink"
-    >{{ _('Skip to main content') }}</a>
-  </div>
-</div>
 {% block gc_header %}
+  {% set set_lang_url = lang_url or request.path %}
+  <gcds-header lang-href="{{ url_for('main.set_lang') + "?from=" + set_lang_url }}" skip-to-href="#main_content">
+    <div slot="menu">
+      {% include "partials/nav/main_nav.html" %}
+    </div>
+  </gcds-header>
+  {% endblock gc_header %}
 
-{% if g.preview_url %}
-  <div class="preview-fullpage-border"></div>
-{% endif %}
-
-<header>
-
-{% if g.preview_url %}
-  {% include 'components/preview-banner.html' %}
-{% endif %}
-
-{% include 'partials/nav/gc_header.html' %}
-
-{% include 'partials/nav/gc_header_nav.html' %}
-
-</header>
+{% block after_header %}
+{% include "partials/nav/account_nav.html" %}
 {% endblock %}
-
-
-{% block after_header %}{% endblock %}
 
 
 {% block content %}{% endblock %}

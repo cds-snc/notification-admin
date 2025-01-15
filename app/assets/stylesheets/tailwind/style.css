@@ -53,6 +53,7 @@
 @import "./views/notification.css";
 
 @import "./toolkit/wp.css";
+@import "./toolkit/gcds.css";
 
 /*! purgecss start ignore */
 @-ms-viewport {
@@ -102,7 +103,8 @@ section {
 }
 
 main {
-  @apply block;
+  width: 90%;
+  @apply mx-auto block max-w-screen-xl;
 }
 
 input[type="search"]::-webkit-search-cancel-button {

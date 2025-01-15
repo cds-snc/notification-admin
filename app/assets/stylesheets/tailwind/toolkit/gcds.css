@@ -1,0 +1,9 @@
+gcds-header {
+  --gcds-header-margin: 0;
+  --gcds-nav-link-top-nav-padding: theme("spacing.5")
+    theme("spacing.gutterHalf") theme("spacing.5") 0;
+}
+
+nav#account gcds-nav-group[open] {
+  @apply bg-white border-1 border-t-0 border-gray-300;
+}
