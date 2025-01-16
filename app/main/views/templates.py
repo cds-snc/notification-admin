@@ -571,6 +571,7 @@ def choose_template_to_copy(
     from_service=None,
     from_folder=None,
 ):
+    example_service = Service(service_api_client.get_service(service_id="66a4ae1b-653f-4699-8675-fe86e6b147e7")["data"])
     if from_folder and from_service is None:
         from_service = service_id
 
@@ -584,6 +585,7 @@ def choose_template_to_copy(
             template_folder_path=service.get_template_folder_path(from_folder),
             from_service=service,
             search_form=SearchByNameForm(),
+            example_service_templates=TemplateList(example_service),
         )
 
     else:
@@ -591,6 +593,7 @@ def choose_template_to_copy(
             "views/templates/copy.html",
             services_templates_and_folders=TemplateLists(current_user),
             search_form=SearchByNameForm(),
+            example_service=TemplateList(example_service),
         )
 
 
