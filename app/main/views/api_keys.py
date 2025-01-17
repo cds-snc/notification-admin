@@ -192,7 +192,7 @@ def delete_delivery_status_callback(service_id):
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
-        bearer_token=dummy_bearer_token if delivery_status_callback else "",
+        bearer_token=delivery_status_callback.get("bearer") if delivery_status_callback else "",
     )
 
     return render_template(
@@ -216,7 +216,7 @@ def delivery_status_callback(service_id):
 
     form = ServiceDeliveryStatusCallbackForm(
         url=delivery_status_callback.get("url") if delivery_status_callback else "",
-        bearer_token=dummy_bearer_token if delivery_status_callback else "",
+        bearer_token=delivery_status_callback.get("bearer") if delivery_status_callback else "",
     )
 
     if form.validate_on_submit():

@@ -6,12 +6,12 @@
 {% extends "org_template.html" %}
 
 {% block org_page_title %}
-  Organisation sector
+  {{ _("Organisation sector") }}
 {% endblock %}
 
 {% block org_content %}
   {{ page_header(
-    "Organisation sector",
+    _("Organisation sector"),
     back_link=url_for('.organisation_settings', org_id=current_org.id)
   ) }}
   {% call form_wrapper() %}
