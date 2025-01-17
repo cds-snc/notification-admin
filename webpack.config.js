@@ -7,12 +7,7 @@ module.exports = {
   // mode: "development", //development
   mode: "production",
   entry: {
-    main: ["./app/assets/javascripts/index.js", "./app/assets/stylesheets/tailwind/style.css"],
-    branding_request: ["./app/assets/javascripts/branding_request.js"],
-    formValidateRequired: ["./app/assets/javascripts/formValidateRequired.js"],
-    sessionRedirect: ["./app/assets/javascripts/sessionRedirect.js"],
-    touDialog: ["./app/assets/javascripts/touDialog.js"],
-    templateFilters: ["./app/assets/javascripts/templateFilters.js"],
+    main: ["./app/assets/javascripts/index.js"],
     scheduler: {
       import: './app/assets/javascripts/scheduler/scheduler.js',
       library: {
@@ -43,17 +38,6 @@ module.exports = {
           path.resolve(__dirname, "app/assets/javascripts")
         ],
         use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.css$/i,
-        include: [
-          path.resolve(__dirname, "app/assets/stylesheets/tailwind")
-        ],
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader"
-        ]
       },
       { test: /\.(png|svg|jpg|gif|ico)$/, use: ["file-loader"] },
       {
