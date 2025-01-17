@@ -12,7 +12,7 @@ plugins.addSrc = require("gulp-add-src");
 plugins.babel = require("gulp-babel");
 plugins.base64 = require("gulp-base64-inline");
 plugins.concat = require("gulp-concat");
-plugins.faMinify = require("gulp-fa-minify");
+plugins.cleanCSS = require('gulp-clean-css');
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
@@ -105,16 +105,13 @@ const javascripts = () => {
 // copy static css
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css")
-    .pipe(
-      plugins.addSrc.prepend([
-        paths.npm + "accessible-autocomplete/dist/accessible-autocomplete.min.css",
-        paths.src + "stylesheets/fa-svg-with-js.css",
-      ])
-    )
     .pipe(plugins.concat("index.css"))
-    .pipe(
-      dest(paths.dist + "stylesheets/")
-    );
+    .pipe(plugins.cleanCSS({ 
+      level: 2,
+    }, (details) => {
+      console.log(`${details.name}: Original size:${details.stats.originalSize} - Minified size: ${details.stats.minifiedSize}`)
+    }))
+    .pipe(dest(paths.dist + "stylesheets/"));
 };
 
 // Copy images
