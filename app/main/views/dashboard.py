@@ -390,7 +390,7 @@ def get_dashboard_partials(service_id):
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
     # get annual data from fact table (all data this year except today)
-    annual_data = service_api_client.get_monthly_notification_stats(service_id, year=get_current_financial_year())
+    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
     annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
 
     return {
