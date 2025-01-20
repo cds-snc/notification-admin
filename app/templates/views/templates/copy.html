@@ -14,7 +14,7 @@
       {{ copy_folder_path(template_folder_path, current_service.id, from_service, current_user) }}
     </div>
     <h1 class="heading-medium">{{ _('Example Service') }}</h1>
-    {% for item in example_service_templates %}
+    {% for item in example_service %}
       <div class="template-list-item {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}">
         <h2 class="message-name">
           {% for ancestor in item.ancestors %}

@@ -139,6 +139,9 @@ def user_has_permissions(*permissions, **permission_kwargs):
             if not current_user.is_authenticated:
                 return current_app.login_manager.unauthorized()
 
+            if current_user.has_permissions(*permissions, **permission_kwargs):
+                return func(*args, **kwargs)
+
             service_id = kwargs.get("service_id") or request.view_args.get("service_id")
             if service_id == "66a4ae1b-653f-4699-8675-fe86e6b147e7":
                 if request.method in ["GET", "HEAD", "OPTIONS"]:
