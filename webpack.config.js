@@ -7,7 +7,7 @@ module.exports = {
   // mode: "development", //development
   mode: "production",
   entry: {
-    main: ["./app/assets/javascripts/index.js"],
+    index: ["./app/assets/javascripts/index.js"],
     scheduler: {
       import: './app/assets/javascripts/scheduler/scheduler.js',
       library: {
