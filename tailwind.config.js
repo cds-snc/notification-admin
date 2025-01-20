@@ -13,21 +13,14 @@ module.exports = {
       xl: "var(--gcds-container-xl)",
     },
     boxShadow: {
-      outline: "0 0 0 3px rgba(255, 191, 71, 1)" /* yellow */,
-      outline2: "0 0 0 2px rgb(38, 55, 74, 1)", // blue-default
-      outline4: "0 0 0 4px rgba(255, 191, 71, 1)",
-      inset1: "inset -1px 0 0 0 rgb(191, 193, 195)", // theme gray.grey2
+      outline: "0 0 0 2px white, 0 0 0 5px theme('colors.yellow.300')",
+      inset1: "inset -1px 0 0 0 theme('colors.gray.300')",
       inset3: "inset -3px 0 0 0 rgba(191, 193, 195, 0.2)",
       outset1: "1px 0 0 0 rgb(191, 193, 195)",
       outset2: "0 2px 0 0 rgba(191, 193, 195, 0.2)",
       outset2neg: "0 -2px 0 0 rgba(191, 193, 195, 0.2)",
       outset3: "3px 0 0 0 rgba(191, 193, 195, 0.2)",
-      yellow3:
-        "-3px 0 0 0 rgba(255, 191, 71, 1), 3px 0 0 0 rgba(255, 191, 71, 1)",
-      focusLine2: "0 2px 0 3px #1A3152",
-      insetLine2: "inset 0 -2px 0 0 rgb(38, 55, 74, 1)",
-      button2: "0 2px 0 rgb(38, 55, 74, 1)",
-      none: "none",
+      none: "0 0 #0000",
     },
     fontSize: {
       xs: "0.875rem",
@@ -71,11 +64,14 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       red: {
-        DEFAULT: "#b10e1e",
+        DEFAULT: "#9F331A",
         hover: "#990c1a",
-        border: "#6a0812",
-        mellow: "#df3034",
+        border: "#D74224",
+        mellow: "#D74224",
         300: "#D74D42",
+        500: "#D74224",
+        700: "#9F331A",
+        900: "#471A0A",
       },
       white: "#FFF",
       blue: {
@@ -86,6 +82,7 @@ module.exports = {
         lightblue25: "#d5e8f3",
         lightblue: "#0154B0",
         slightlight: "#284162",
+        focus: "var(--gcds-color-blue-850)",
         /* trying to slowly implement a more consistent scale below */
         200: "#D7E5F5",
         300: "#71A7F3",
@@ -119,8 +116,8 @@ module.exports = {
         900: "#21262C",
       },
       yellow: {
-        DEFAULT: "#ffbf47",
-        light: "#FFE7BB",
+        DEFAULT: "#FFDA3D",
+        300: "#B79000",
       },
       green: {
         DEFAULT: "#00672F",
@@ -183,10 +180,8 @@ module.exports = {
       lineHeight: {
         "extra-tight": "0.9",
       },
-      outline: {
-        yellow: "3px solid #ffbf47",
-        white: "1px solid rgba(255, 255, 255, 0.1)",
-        black: "1px solid black",
+      outlineWidth: {
+        3: "3px"
       },
       transitionDuration: {
         600: "600ms",

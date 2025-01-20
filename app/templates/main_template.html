@@ -137,16 +137,23 @@
 
 {% block gc_header %}
   {% set set_lang_url = lang_url or request.path %}
-  <gcds-header lang-href="{{ url_for('main.set_lang') + "?from=" + set_lang_url }}" skip-to-href="#main_content">
+  <gcds-header signature-has-link="false" lang-href="{{ url_for('main.set_lang') + "?from=" + set_lang_url }}"
+    skip-to-href="#main_content">
     <div slot="menu">
       {% include "partials/nav/main_nav.html" %}
+    </div>
+    <div slot="search" class="relative">
+      {% if current_user.is_authenticated %}
+      {% include "partials/nav/account_menu.html" %}
+      {% else %}
+      <gcds-link size="regular" href="{{ url_for('main.sign_in')}} ">{{ _('Sign in') }}</gcds-link>
+      {% endif %}
     </div>
   </gcds-header>
   {% endblock gc_header %}
 
 {% block after_header %}
-{% include "partials/nav/account_nav.html" %}
-{% endblock %}
+{% endblock after_header %}
 
 
 {% block content %}{% endblock %}

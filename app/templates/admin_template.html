@@ -17,7 +17,7 @@
 
 {% block content %}
 <main role="main" id="main_content"
-  class="box-border column-main {% block main_content_class %} py-10 space-y-doubleGutter {% endblock %}">
+  class="box-border column-main container max-w-screen-xl {% block main_content_class %} py-10 space-y-doubleGutter {% endblock %}">
   {% if show_tou_prompt() %}
   {{ tou_prompt() }}
   {% else %}
