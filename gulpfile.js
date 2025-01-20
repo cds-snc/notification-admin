@@ -16,7 +16,7 @@ plugins.cleanCSS = require('gulp-clean-css');
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
-//plugins.uglify = require("gulp-uglify");
+plugins.uglify = require("gulp-uglify");
 
 // 2. CONFIGURATION
 // - - - - - - - - - - - - - - -
@@ -86,19 +86,31 @@ const javascripts = () => {
           "accessible-autocomplete/dist/accessible-autocomplete.min.js",
       ])
     )
-    //.pipe(plugins.uglify())
+    .pipe(plugins.uglify())
     .pipe(plugins.concat("all.min.js"))
     .pipe(
       plugins.addSrc.prepend([
-        paths.src + "javascripts/main.min.js",
+        paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
-        paths.src + "javascripts/branding_request.min.js",
-        paths.src + "javascripts/formValidateRequired.min.js",
-        paths.src + "javascripts/sessionRedirect.min.js",
-        paths.src + "javascripts/touDialog.min.js",
-        paths.src + "javascripts/templateFilters.min.js",
       ])
     )
+    .pipe(dest(paths.dist + "javascripts/"));
+};
+
+const minifyIndividualJs = () => {
+  return src([
+    paths.src + "javascripts/branding_request.js",
+    paths.src + "javascripts/formValidateRequired.js",
+    paths.src + "javascripts/sessionRedirect.js",
+    paths.src + "javascripts/touDialog.js",
+    paths.src + "javascripts/templateFilters.js"
+  ])
+    .pipe(plugins.prettyerror())
+    .pipe(plugins.babel({
+      presets: ["@babel/preset-env"]
+    }))
+    .pipe(plugins.uglify())
+    .pipe(plugins.rename({ suffix: '.min' }))
     .pipe(dest(paths.dist + "javascripts/"));
 };
 
@@ -141,7 +153,7 @@ const watchFiles = {
 
 // Default: compile everything
 const defaultTask = parallel(
-  series(javascripts),
+  series(minifyIndividualJs, javascripts),
   series(images),
   series(static_css),
 );
