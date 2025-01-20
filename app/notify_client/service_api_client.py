@@ -382,13 +382,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
     # TODO: cache this once the backend is updated to exlude data from the current day
     # @flask_cache.memoize(timeout=_seconds_until_midnight())
-    def get_monthly_notification_stats(self, service_id: str, year: int):
+    def get_monthly_notification_stats(self, service_id: str, financial_year: int):
         """
         Retrieve monthly notification statistics for a specific service and year.
 
         Args:
             service_id (str): UUID of the service to get statistics for
-            year (int): The financial year to fetch statistics for (YYYY format)
+            financial_year (int): The financial year to fetch statistics for (YYYY format)
 
         Returns:
             dict: Monthly notification statistics like this:
@@ -403,7 +403,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.get(
             url="/service/{}/notifications/monthly?year={}".format(
                 service_id,
-                year,
+                financial_year,
             )
         )
 
