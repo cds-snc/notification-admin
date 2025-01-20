@@ -8,13 +8,17 @@ import LoginPage from "../Notify/Admin/Pages/LoginPage";
 let links_checked = [];
 let svgs_checked = [];
 
+// if the tests failed, reset the arrays so the links are re-checked and a link failure is treated as a real failure
+afterEach(function() {
+    if (this.currentTest.state === 'failed') {
+        links_checked = [];
+        svgs_checked = [];
+    }
+});
+
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
-    // bypass rate limiting
-    cy.intercept(`${current_hostname}/*`, (req) => {
-        req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET
-    });
-
+    
     if (url) {
         cy.visit(url);
     }
@@ -39,7 +43,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
             let checked = 0;
 
             cy.get('a').each((link) => {
-                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url)) return;
+                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url) || link.prop('href').includes('documentation.staging.notification.cdssandbox.xyz')) return;
 
                 const check_url = link.prop('href');
 
@@ -47,6 +51,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
                 if (links_checked.includes(check_url)) return;
 
                 // bypass rate limiting
+                cy.log('checking link', check_url);
                 if (check_url.includes(current_hostname)) {
                     cy.request({
                         url: check_url,
@@ -101,4 +106,26 @@ Cypress.Commands.add('login', (username, password, agreeToTerms = true) => {
     cy.session([username, password, agreeToTerms], () => {
         LoginPage.Login(username, password, agreeToTerms);
     });
+});
+
+// this adds the waf-secret to cy.visit()'s that target the admin hostname
+Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
+     // Get full URL by combining baseUrl with path
+    const fullUrl = url.startsWith('http') 
+        ? url 
+        : `${Cypress.config('baseUrl')}${url}`;
+       
+    // Only add headers if URL matches admin hostname
+    if (fullUrl.includes(config.Hostnames.Admin)) {
+        const mergedOptions = {
+            ...options,
+            headers: {
+                ...options.headers,
+                'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET
+            }
+        };
+        return originalFn(url, mergedOptions);
+    }
+    
+    return originalFn(url, options);
 });

@@ -17,8 +17,19 @@
 import './commands'
 import 'cypress-axe'
 import 'cypress-html-validate/commands'
+import config from "../../config";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 console.log("config", Cypress.config('baseUrl'));
+
+before(() => {
+    // Bypass rate-limit in staging for any requests not using cy.visit (css, js, etc)
+    cy.intercept('**/*', (req) => {
+      if (req.url.includes(config.Hostnames.Admin)) {
+        req.headers['waf-secret'] = Cypress.env(config.CONFIG_NAME).WAF_SECRET;
+      }
+    }).as('allRequests');
+    
+});
