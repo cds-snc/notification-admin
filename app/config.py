@@ -48,7 +48,6 @@ class Config(object):
 
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
     CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
@@ -155,7 +154,6 @@ class Config(object):
         return [
             "ADMIN_CLIENT_SECRET",
             "ANTIVIRUS_API_KEY",
-            "CRM_GITHUB_PERSONAL_ACCESS_TOKEN",
             "DANGEROUS_SALT",
             "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
@@ -197,7 +195,6 @@ class Test(Development):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"
@@ -223,8 +220,6 @@ class ProductionFF(Config):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
-    CRM_ORG_LIST_URL = "test-domain-dot-com"
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"

@@ -238,6 +238,7 @@ def add_service():
         organisation_notes = data["other_organisation_name"]
     else:
         organisation_notes = None
+    print("organisation_notes", organisation_notes)
     service_result: ServiceResult = _create_service(
         service_name,
         DEFAULT_ORGANISATION_TYPE,

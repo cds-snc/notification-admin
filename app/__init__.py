@@ -229,7 +229,7 @@ def create_app(application):
     application.jinja_env.globals["now"] = datetime.utcnow
 
     # Initialize the GC Organisation list
-    application.config["CRM_ORG_LIST"] = get_gc_organisations()
+    application.config["CRM_ORG_LIST"] = get_gc_organisations(application)
 
     # Specify packages to be traced by MonkeyType. This can be overriden
     # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:
