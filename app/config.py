@@ -187,8 +187,6 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
-    FF_SALESFORCE_CONTACT = False
 
 
 class Test(Development):
@@ -236,7 +234,7 @@ class ProductionFF(Config):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-
+    GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
 
