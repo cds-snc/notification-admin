@@ -188,6 +188,7 @@ class Development(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
+    FF_SALESFORCE_CONTACT = False
 
 
 class Test(Development):
