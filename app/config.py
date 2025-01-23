@@ -85,7 +85,9 @@ class Config(object):
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
-    GC_ORGANISATIONS_BUCKET_NAME = os.environ.get("GC_ORGANISATIONS_BUCKET_NAME")
+    GC_ORGANISATIONS_BUCKET_NAME = os.environ.get(
+        "GC_ORGANISATIONS_BUCKET_NAME", "notification-canada-ca-staging-gc-organisations"
+    )
     GC_ORGANISATIONS_FILENAME = os.getenv("GC_ORGANISATIONS_FILENAME", "all.json")
     GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "UA-102484926-14")
     GOOGLE_TAG_MANAGER_ID = os.getenv("GOOGLE_TAG_MANAGER_ID", "GTM-KRKRZQV")
