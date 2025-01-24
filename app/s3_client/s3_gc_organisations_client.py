@@ -14,9 +14,9 @@ def get_gc_organisations_from_s3(current_app):
         data_str = key.get()["Body"].read().decode("utf-8")
         org_data = json.loads(data_str)
         return org_data
-    except botocore.exceptions.ClientError as exception:
+    except botocore.exceptions.ClientError:
         current_app.logger.error("Unable to download s3 file {}/{}".format(bucket, filename))
-        raise exception
+        return []
 
 
 def parse_gc_organisations_data(org_data):
