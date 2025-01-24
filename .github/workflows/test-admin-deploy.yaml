@@ -123,7 +123,6 @@ jobs:
                 SENDING_DOMAIN=staging.notification.cdssandbox.xyz,\
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL,\
-                GC_ORGANISATIONS_BUCKET_NAME=notification-canada-ca-staging-gc-organisations,\
                 AWS_XRAY_SDK_ENABLED=False
               }" > /dev/null 2>&1
 
