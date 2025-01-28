@@ -16,10 +16,13 @@ def get_gc_organisations_from_s3(current_app):
         return org_data
     except (botocore.exceptions.ClientError, botocore.exceptions.ParamValidationError, ValueError):
         current_app.logger.error("Unable to download s3 file {}/{}".format(bucket, filename))
-        # use the fallback data
-        with open("app/assets/data/gc-organisations-all.json") as json_file:
-            fallback_data = json.load(json_file)
-            return fallback_data
+    except Exception as e:
+        current_app.logger.error(e)
+
+    # use the fallback data if there has been an exception above
+    with open("app/assets/data/gc-organisations-all.json") as json_file:
+        fallback_data = json.load(json_file)
+        return fallback_data
 
 
 def parse_gc_organisations_data(org_data):
