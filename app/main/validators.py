@@ -70,7 +70,7 @@ class ValidTeamMemberDomain:
 
         if email_domain not in g.team_member_email_domains:
             message = _(
-                "{} is not a domain used by your service's team members. Use an email address with a domain used by one of your team members: {}."
+                "{} is not an email domain used by team members of this service. Only email domains found in your team list can be used as an email reply-to: {}."
             ).format(email_domain, ", ".join(g.team_member_email_domains))
             raise ValidationError(message)
 

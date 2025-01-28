@@ -1585,7 +1585,7 @@ def test_incorrect_reply_to_domain_not_in_team_member_list(
 
     assert (
         normalize_spaces(page.select_one(".error-message").text)
-        == "not-team-member-domain.ca is not a domain used by your service's team members. Use an email address with a domain used by one of your team members: {}.".format(
+        == "not-team-member-domain.ca is not an email domain used by team members of this service. Only email domains found in your team list can be used as an email reply-to: {}.".format(
             ", ".join(set([member.email_domain for member in mock_team_members]))
         )
     )
