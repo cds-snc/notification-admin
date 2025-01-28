@@ -62,6 +62,19 @@ class CsvFileValidator:
             )
 
 
+class ValidTeamMemberDomain:
+    def __call__(self, form, field):
+        if not field.data:
+            return
+        email_domain = field.data.split("@")[-1]
+
+        if email_domain not in g.team_member_email_domains:
+            message = _(
+                "{} is not a domain used by your service's team members. Use an email address with a domain used by one of your team members: {}."
+            ).format(email_domain, ", ".join(g.team_member_email_domains))
+            raise ValidationError(message)
+
+
 class ValidGovEmail:
     def __call__(self, form, field):
         if not field.data:
