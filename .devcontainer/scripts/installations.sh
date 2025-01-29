@@ -38,9 +38,6 @@ poetry completions zsh > ~/.zfunc/_poetry
 cd /workspace
 poetry install
 
-# Install pre-commit hooks
-poetry run pre-commit install
-
 # Poe the Poet plugin tab completions
 touch ~/.zfunc/_poe
 poetry run poe _zsh_completion > ~/.zfunc/_poe
@@ -54,3 +51,6 @@ npm run build
 
 # install npm deps (i.e. cypress)
 cd tests_cypress && npm install && npx cypress install && cd ..
+
+# Install pre-commit hooks
+poetry run pre-commit install
