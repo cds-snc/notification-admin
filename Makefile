@@ -19,7 +19,7 @@ generate-version-file: ## Generates the app version file
 
 .PHONY: test
 test:
-	./scripts/run_tests.sh
+	poetry run ./scripts/run_tests.sh
 
 .PHONY: babel-test
 test-translations: babel
@@ -62,10 +62,10 @@ run-gunicorn:
 
 .PHONY: format
 format:
-	ruff check --fix .
-	ruff check
-	ruff format .
-	mypy ./
+	poetry run ruff check --fix .
+	poetry run ruff check
+	poetry run ruff format .
+	poetry run mypy ./
 	npx prettier --write app/assets/javascripts app/assets/stylesheets tests_cypress/cypress/e2e
 
 .PHONY: tailwind
