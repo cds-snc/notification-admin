@@ -43,7 +43,7 @@ npx cypress install
 | IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
 
 ### Target environment 🎯
-The tests are configured to run against the staging environment by default.  To run the tests against your local environment, you'll need to create a local service and API keys and store these values in your config.  You will also need to update the `ConfigToUse` variable in `config.js` file:
+The tests are configured to run against the staging environment by default.  To run the tests against your local environment, you will need to update the `ConfigToUse` variable in `config.js` file to use `LOCAL` instead of `STAGING`.  For example:
 ```js
 const ConfigToUse = { ...config.COMMON, ...config.LOCAL };
 ```
