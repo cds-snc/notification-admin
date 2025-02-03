@@ -38,8 +38,96 @@
 				"ruff.organizeImports": false,
 				"[python]": {
 					"editor.defaultFormatter": "charliermarsh.ruff"
+				},
+				"useAdminDebug": true,
+				"debug.default.configuration": "Python: Remote Attach",
+				"debug.toolBarLocation": "docked",
+				"launch": {
+					"configurations": [
+						{
+							"name": "Python: Remote Attach",
+							"type": "debugpy",
+							"request": "attach",
+							"connect": {
+								"host": "localhost",
+								"port": 5678
+							},
+							"pathMappings": [
+								{
+									"localRoot": "${workspaceFolder}",
+									"remoteRoot": "${workspaceFolder}"
+								}
+							],
+							"justMyCode": false
+						}
+					]
+				},
+				"tasks": {
+					"version": "2.0.0",
+					"tasks": [
+						{
+							"label": "Dev Environment",
+							"dependsOrder": "parallel",
+							"dependsOn": [
+								"Watch Tailwind",
+								"Run Flask Debug",
+								"Attach Debugger"
+							],
+							"group": {
+								"kind": "build",
+								"isDefault": true
+							},
+							"problemMatcher": []
+						},
+						{
+							"label": "Watch Tailwind",
+							"type": "shell",
+							"command": "npm run watch",
+							"problemMatcher": [],
+							"presentation": {
+								"group": "groupA",
+								"panel": "new"
+							}
+						},
+						{
+							"label": "Run Flask Debug",
+							"type": "shell",
+							"command": "FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=localhost",
+							"isBackground": true,
+							"problemMatcher": {
+								"pattern": {
+								"regexp": "Debug mode: on",
+								"file": 1,
+								"line": 1,
+								"column": 1,
+								"message": 1
+								},
+								"background": {
+								"activeOnStart": true,
+								"beginsPattern": "Serving Flask app",
+								"endsPattern": "Debug mode: on"
+								}
+							},
+							"presentation": {
+								"group": "groupA",
+								"panel": "new"
+							}
+						},
+						{
+							"label": "Attach Debugger",
+							"type": "process",
+							"command": "${command:workbench.action.debug.start}",
+							"dependsOn": [
+								"Run Flask Debug"
+							],
+							"args": [
+								"Python: Remote Attach"
+							],
+							"problemMatcher": []
+						}
+					]
 				}
-			}
+			}			
 		}
 	},
 	"features": {
