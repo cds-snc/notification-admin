@@ -48,8 +48,6 @@ class Config(object):
 
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("CRM_GITHUB_PERSONAL_ACCESS_TOKEN")
-    CRM_ORG_LIST_URL = os.getenv("CRM_ORG_LIST_URL")
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)
     CSV_MAX_ROWS_BULK_SEND = env.int("CSV_MAX_ROWS_BULK_SEND", 100_000)
     CSV_UPLOAD_BUCKET_NAME = os.getenv("CSV_UPLOAD_BUCKET_NAME", "notification-alpha-canada-ca-csv-upload")
@@ -87,6 +85,8 @@ class Config(object):
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
+    GC_ORGANISATIONS_BUCKET_NAME = os.environ.get("GC_ORGANISATIONS_BUCKET_NAME")
+    GC_ORGANISATIONS_FILENAME = os.getenv("GC_ORGANISATIONS_FILENAME", "all.json")
     GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "UA-102484926-14")
     GOOGLE_TAG_MANAGER_ID = os.getenv("GOOGLE_TAG_MANAGER_ID", "GTM-KRKRZQV")
     HC_EN_SERVICE_ID = os.getenv("HC_EN_SERVICE_ID")
@@ -154,7 +154,6 @@ class Config(object):
         return [
             "ADMIN_CLIENT_SECRET",
             "ANTIVIRUS_API_KEY",
-            "CRM_GITHUB_PERSONAL_ACCESS_TOKEN",
             "DANGEROUS_SALT",
             "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
@@ -196,8 +195,6 @@ class Test(Development):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
-    CRM_ORG_LIST_URL = "test-domain-dot-com"
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"
@@ -212,7 +209,7 @@ class Test(Development):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-
+    GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_RTL = True
     FF_ANNUAL_LIMIT = True
 
@@ -223,8 +220,6 @@ class ProductionFF(Config):
     ANTIVIRUS_API_KEY = "test-antivirus-secret"
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
-    CRM_ORG_LIST_URL = "test-domain-dot-com"
-    CRM_GITHUB_PERSONAL_ACCESS_TOKEN = "not-a-real-token"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"
@@ -239,7 +234,7 @@ class ProductionFF(Config):
     FF_SALESFORCE_CONTACT = False
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-
+    GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
 

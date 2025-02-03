@@ -86,7 +86,7 @@ from app.notify_client.template_category_api_client import template_category_api
 from app.notify_client.template_folder_api_client import template_folder_api_client
 from app.notify_client.template_statistics_api_client import template_statistics_client
 from app.notify_client.user_api_client import user_api_client
-from app.salesforce import salesforce_account
+from app.s3_client.s3_gc_organisations_client import get_gc_organisations
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
 from app.tou import EVENTS_KEY, show_tou_prompt
 from app.utils import documentation_url, id_safe
@@ -228,11 +228,9 @@ def create_app(application):
     application.jinja_env.globals["events_key"] = EVENTS_KEY
     application.jinja_env.globals["now"] = datetime.utcnow
 
-    # Initialize Salesforce Account list
+    # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:
-        application.config["CRM_ORG_LIST"] = salesforce_account.get_accounts(
-            application.config["CRM_ORG_LIST_URL"], application.config["CRM_GITHUB_PERSONAL_ACCESS_TOKEN"], application.logger
-        )
+        application.config["CRM_ORG_LIST"] = get_gc_organisations(application)
 
     # Specify packages to be traced by MonkeyType. This can be overriden
     # via the MONKEYTYPE_TRACE_MODULES environment variable. e.g:

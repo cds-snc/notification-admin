@@ -4,11 +4,7 @@
     @apply border-t-1 border-solid border-gray-grey2 my-gutter mx-0;
   }
   .task-list-item {
-    @apply relative border-b-1 border-solid border-gray-grey2 pb-3;
-
-    @screen md {
-      @apply pb-0;
-    }
+    @apply relative border-b-1 border-solid border-gray-grey2 pb-3 md:pb-0;
   }
   .task-list-item a {
     padding-right: 20%;
@@ -36,11 +32,7 @@
     margin-top: -15px;
     padding: 3px 8px 1px 0px;
     top: 28px; /* gutter - 2px */
-    @apply text-small leading-tight font-bold inline-block absolute right-0 pointer-events-none text-right static;
-
-    @screen md {
-      @apply absolute;
-    }
+    @apply text-small leading-tight font-bold inline-block right-0 pointer-events-none text-right static md:absolute;
   }
 
   .task-list-indicator-completed {

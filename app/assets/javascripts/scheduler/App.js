@@ -28,9 +28,7 @@ export const App = () => {
         <ErrorMessage />
         <p className="messageTextStyle">{translate("select_date")}</p>
         <div className="schedule">
-          <div>
-            <Calendar />
-          </div>
+          <Calendar />
           <DateTime />
           <SetDateTime />
         </div>

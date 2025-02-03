@@ -15,7 +15,7 @@
   .fullscreen-content th,
   .fullscreen-content .table-field-error-label,
   .fullscreen-content .table-field-left-aligned {
-    @apply whitespace-no-wrap;
+    @apply whitespace-nowrap;
   }
 
   .fullscreen-right-shadow {
