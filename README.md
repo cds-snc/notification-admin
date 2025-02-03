@@ -246,6 +246,58 @@ application' startup. When that endpoint is reached with the proper `DEBUG_KEY` 
 a `500` HTTP error will be generated. When an incorrect or empty secret is provided, a classic '404'
 not found error will get returned.
 
+## Static resource build pipeline
+```mermaid
+graph LR
+    subgraph tw[Tailwind]
+        direction TB
+        TW1[Compile CSS @imports]
+        TW1 --> TW2[Remove unused CSS]
+        TW2 --> TW3[Minify CSS]
+    end
+
+    subgraph js[Webpack / JS Pipeline]
+        direction TB
+        J0[style-loader: extract CSS from JS]
+        J0 --> J1[babel-loader: Convert ES6+ to ES5]
+        J1 --> J2[minification: Compress JS]
+    end
+
+    subgraph Gulp[Gulp]
+        
+        
+        subgraph Assets
+            direction TB
+            E1[Copy Images] --> E2
+            E2[Copy Fonts] --> E3
+            E3[Copy Gov Assets]
+        end
+        
+        subgraph JavaScript - all.min.js
+            direction TB
+            D1[Concatenate most internal js files] --> D2
+            D2[Babel plugin] --> D3
+            D3[Concatenate js from libs we depend on] --> D4
+            D4[Minify] --> D5
+            D5[Output to /static/javascripts/all.min.js]
+        end
+        
+        subgraph JavaScript - indiviual components
+            direction TB
+            JS2[Babel plugin] --> JS4
+            JS4[Minify using Uglify] --> JS5
+            JS5[Output invidual files to /static/javascripts]
+        end
+        
+        subgraph CSS
+            direction TB
+            C1[Minify using cleanCSS] --> C3
+            C3[Output to /static/stylesheets/index.css]
+        end
+    end
+    tw --> js --> Gulp
+```
+
 =======
 
 

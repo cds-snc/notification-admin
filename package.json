@@ -9,9 +9,9 @@
     "test": "jest --config tests/javascripts/jest.config.js tests/javascripts",
     "webpack": "webpack --config webpack.config.js",
     "build": "gulp",
-    "watch": "gulp watch",
+    "watch": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/static/stylesheets/index.css --watch ",
     "heroku-postbuild": "gulp && make generate-version-file && export ADMIN_BASE_URL=${HEROKU_APP_NAME}.herokuapp.com",
-    "tailwind": "webpack --config webpack.config.js && gulp"
+    "tailwind": "npx tailwindcss  -i ./app/assets/stylesheets/tailwind/style.css   -o ./app/assets/stylesheets/index.css  --minify  && webpack --config webpack.config.js && gulp"
   },
   "repository": {
     "type": "git",
@@ -57,6 +57,7 @@
     "gulp-add-src": "1.0.0",
     "gulp-babel": "8.0.0",
     "gulp-base64-inline": "1.0.6",
+    "gulp-clean-css": "^4.3.0",
     "gulp-concat": "2.6.1",
     "gulp-fa-minify": "^6.0.1",
     "gulp-include": "2.4.1",
