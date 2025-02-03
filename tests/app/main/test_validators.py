@@ -94,7 +94,7 @@ def test_valid_list_of_white_list_email_domains(
 )
 def test_valid_team_only_email_domains(email, app_, raises):
     with app_.app_context(), app_.test_request_context():
-        g.team_member_email_domains = ["team-domain.ca", "cds-snc.ca"]
+        g.team_member_email_domains = set(["team-domain.ca", "cds-snc.ca"])
 
         team_only_domain_validator = ValidTeamMemberDomain()
 

@@ -1583,10 +1583,14 @@ def test_incorrect_reply_to_domain_not_in_team_member_list(
         _expected_status=200,
     )
 
+    valid_domains = set([member.email_domain for member in mock_team_members]).union(
+        set(app_.config.get("REPLY_TO_DOMAINS_SAFELIST", []))
+    )
+
     assert (
         normalize_spaces(page.select_one(".error-message").text)
         == "not-team-member-domain.ca is not an email domain used by team members of this service. Only email domains found in your team list can be used as an email reply-to: {}.".format(
-            ", ".join(set([member.email_domain for member in mock_team_members]))
+            ", ".join(valid_domains)
         )
     )
 
