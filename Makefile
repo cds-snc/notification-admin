@@ -56,6 +56,10 @@ run-dev:
 	npm run watch & \
     poetry run flask run -p 6012 --host=localhost
 
+.PHONY: watch
+watch:
+	npm run watch
+
 .PHONY: run-gunicorn
 run-gunicorn:
 	PORT=6012 poetry run gunicorn -c gunicorn_config.py application
