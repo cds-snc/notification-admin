@@ -1,7 +1,6 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
-  content: ["./app/**/*.{html,css,js}"],
   safelist: [
     "line-under",
     "flip",
@@ -38,6 +37,10 @@ module.exports = {
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
+  ],
+  content: [
+    "./app/**/*.{html,css,js}",
+    "./app/assets/javascripts/fontawesome.js"
   ],
   theme: {
     container: {
