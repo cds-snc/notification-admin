@@ -136,11 +136,43 @@ def remove_user_from_service(service_id, user_id):
         current_app.logger.info(
             "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
         )
+        # throwaway demo code
+        flash(
+            [
+                f"You cannot leave the team for “{current_service.name}”",
+                f"“{current_service.name}” has only 2 team members, the minimum for a live service. You’ll be able to leave once someone else accepts an invitation to join the team for this service.",
+            ],
+            "info",
+        )
+        return redirect(url_for(".manage_users", service_id=service_id))
+
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
         msg = "You cannot remove the only user for a service"
         if e.status_code == 400 and msg in e.message:
             flash(_l(msg), "info")
+            return redirect(url_for(".manage_users", service_id=service_id))
+        elif e.status_code == 400 and "abcd" in e.message:
+            flash(
+                [
+                    "You cannot leave this team at this time",
+                    f"""“{current_service.name}” has only 2 team members, the minimum for a live service.
+                    You’ll be able to leave once someone else accepts an invitation to join the team for
+                    this service.""",
+                ],
+                "info",
+            )
+            return redirect(url_for(".manage_users", service_id=service_id))
+        elif e.status_code == 400 and "xyz" in e.message:
+            flash(
+                [
+                    "You cannot leave this team at this time",
+                    f"""You're the only team member of “{current_service.name}” with permission to
+                    "Manage settings and team". To leave this service, you must first give another
+                    team member this permission.""",
+                ],
+                "info",
+            )
             return redirect(url_for(".manage_users", service_id=service_id))
         else:
             abort(500, e)
