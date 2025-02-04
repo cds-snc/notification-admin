@@ -350,8 +350,8 @@ def send_go_live_request(service, user, go_live_data) -> None:
         "annual_email_volume",
         "daily_sms_volume",
         "annual_sms_volume",
-        "how_many_more_email",
-        "how_many_more_sms",
+        "exact_daily_email",
+        "exact_daily_sms",
     }
     data = {key: go_live_data[key] for key in of_interest if key in go_live_data}
     data["intended_recipients"] = ", ".join(data["intended_recipients"])

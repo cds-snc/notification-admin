@@ -1018,8 +1018,8 @@ def test_request_to_go_live_use_case_page(
             "annual_email_volume": None,
             "daily_sms_volume": None,
             "annual_sms_volume": None,
-            "how_many_more_email": None,
-            "how_many_more_sms": None,
+            "exact_daily_email": None,
+            "exact_daily_sms": None,
         },
         "step": "about-notifications",
     }
@@ -1040,6 +1040,7 @@ def test_request_to_go_live_use_case_page(
     assert page.select_one(".back-link")["href"] == url_for(".use_case", service_id=SERVICE_ONE_ID, current_step="about-service")
 
     # Submitting second and final step
+
     page = client_request.post(
         ".use_case",
         service_id=SERVICE_ONE_ID,
@@ -1050,8 +1051,8 @@ def test_request_to_go_live_use_case_page(
             "annual_email_volume": "within_limit",
             "daily_sms_volume": "more_sms",
             "annual_sms_volume": "above_limit",
-            "how_many_more_email": None,
-            "how_many_more_sms": 25000,
+            "exact_daily_email": 5,
+            "exact_daily_sms": 25000,
             # Need to submit intended_recipients again because otherwise
             # the form thinks we removed this value (it's checkboxes).
             # On the real form, this field is hidden on the second step
@@ -1073,8 +1074,8 @@ def test_request_to_go_live_use_case_page(
                 "annual_email_volume": "within_limit",
                 "daily_sms_volume": "more_sms",
                 "annual_sms_volume": "above_limit",
-                "how_many_more_email": None,
-                "how_many_more_sms": 25000,
+                "exact_daily_email": 0,
+                "exact_daily_sms": 25000,
             },
             "step": "about-notifications",
         },
@@ -1239,8 +1240,8 @@ def test_submit_go_live_request(
                 "annual_email_volume": "within_limit",
                 "daily_sms_volume": "more_sms",
                 "annual_sms_volume": "above_limit",
-                "how_many_more_email": None,
-                "how_many_more_sms": 25000,
+                "exact_daily_email": None,
+                "exact_daily_sms": 25000,
             },
             "step": "about-notifications",
         },
@@ -1272,8 +1273,8 @@ def test_submit_go_live_request(
         "annual_email_volume": "within_limit",
         "daily_sms_volume": "more_sms",
         "annual_sms_volume": "above_limit",
-        "how_many_more_email": None,
-        "how_many_more_sms": 25000,
+        "exact_daily_email": None,
+        "exact_daily_sms": 25000,
     }
 
     mock_contact.assert_called_once_with(expected_data)

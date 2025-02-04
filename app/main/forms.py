@@ -1813,7 +1813,7 @@ class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
 
 
 class OptionalIntegerRange:
-    def __init__(self, trigger_field, trigger_value, min=None, max=None, message=None):
+    def __init__(self, trigger_field, trigger_value, min=None, max=None, limit=None, message=None):
         self.trigger_field = trigger_field
         self.trigger_value = trigger_value
         self.min = min
@@ -1822,10 +1822,18 @@ class OptionalIntegerRange:
 
     def __call__(self, form, field):
         trigger_data = getattr(form, self.trigger_field).data
+        trigger_map = {
+            "0": 0,
+            "within_limit": (self.min - 1) / 10,
+            "above_limit": self.min - 1,
+        }
 
         # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
-            field.process(formdata=None)  # Clear the field
+            # Set exact value to avoid null, and make limits more readable through data.
+            exact_value = trigger_map[trigger_data]
+            field.data = exact_value
+            field.process_data(exact_value)
             field.errors = []  # Delete any errors
             return StopValidation()  # Stop validation chain
 
@@ -1890,11 +1898,11 @@ class BaseGoLiveAboutNotificationsForm:
         validators=[DataRequired()],
     )
 
-    how_many_more_email = IntegerField(
+    exact_daily_email = IntegerField(
         label=_l("How many?"),
         default="",
     )
-    how_many_more_sms = IntegerField(
+    exact_daily_sms = IntegerField(
         label=_l("How many?"),
         default="",
     )
@@ -1915,16 +1923,16 @@ class BaseGoLiveAboutNotificationsForm:
         self.annual_sms_volume.choices = self.volume_choices_restricted(limit=current_service.sms_annual_limit)
 
         # Validators for daily emails/sms
-        self.how_many_more_email.validators = self.more_validators(
+        self.exact_daily_email.validators = self.more_validators(
             limit=current_app.config["DEFAULT_LIVE_SERVICE_LIMIT"], notification_type="email"
         )
-        self.how_many_more_sms.validators = self.more_validators(
+        self.exact_daily_sms.validators = self.more_validators(
             limit=current_app.config["DEFAULT_LIVE_SMS_DAILY_LIMIT"], notification_type="sms"
         )
 
     @property
     def volume_conditionals(self):
-        return {"more_email": self.how_many_more_email, "more_sms": self.how_many_more_sms}
+        return {"more_email": self.exact_daily_email, "more_sms": self.exact_daily_sms}
 
 
 class GoLiveAboutNotificationsForm(BaseGoLiveAboutNotificationsForm, GoLiveAboutServiceForm):
