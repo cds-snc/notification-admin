@@ -1,4 +1,4 @@
-import Notice from "../../Notify/Admin/Components/Notice";
+import Notice from "../../../../Notify/Admin/Components/Notice";
 
 let PageURL = "/_storybook?component=notice";
 
@@ -14,7 +14,7 @@ describe("Notice component", () => {
 
   it("Should use the correct icon depending on type", () => {
     cy.visit(PageURL);
-    
+
     // info notice component should be info
     Notice.Components.Icon("info").should("have.class", "fa-circle-info");
 
@@ -22,11 +22,16 @@ describe("Notice component", () => {
     Notice.Components.Icon("success").should("have.class", "fa-circle-check");
 
     // warning notice component should be warning
-    Notice.Components.Icon("warning").should("have.class", "fa-circle-exclamation");
+    Notice.Components.Icon("warning").should(
+      "have.class",
+      "fa-circle-exclamation",
+    );
 
     // error notice component should be error
-    Notice.Components.Icon("error").should("have.class", "fa-triangle-exclamation");
-
+    Notice.Components.Icon("error").should(
+      "have.class",
+      "fa-triangle-exclamation",
+    );
   });
 
   it("Should the correct alternative text for the icon", () => {
