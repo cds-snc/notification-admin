@@ -4,7 +4,7 @@
 {% from "components/tick-cross.html" import tick_cross %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/live-search.html" import live_search %}
-{% from "components/banner.html" import banner %}
+{% from "components/banner.html" import banner_wrapper %}
 
 {% block service_page_title %}
   {{ _('Team members') }}
@@ -15,19 +15,18 @@
 
 {% block maincolumn_content %}
 
-  <div class="banner-dangerous banner" role-"alert" tabindex="-1">
-    <div>You’re leaving the team for “{service name}”</div>
-    <div>For this service, you will not be able to:</div>
-    <ul>
-      <li>- View dashboard statistics, reports and usage data</li>
-      <li>- Create and edit message templates</li>
-      <li>- Send messages</li>
-      <li>- Manage settings and team members</li>
-      <li>- Manage API integration</li>
+  {% call banner_wrapper(type="dangerous", delete_button="Yes, leave team", subhead="You’re leaving the team for “{service name}”") %}
+    <p>For this service, you will not be able to:</p>
+    <ul class="list list-bullet ml-10">
+      <li>View dashboard statistics, reports and usage data</li>
+      <li>Create and edit message templates</li>
+      <li>Send messages</li>
+      <li>Manage settings and team members</li>
+      <li>Manage API integration</li>
     </ul>
-    <div>To rejoin this team, you’ll need an invitation from a team member.</div>
-    <button type="submit" class="button button-red mt-4" name="delete">Yes, leave team</button>
-    </div>
+    <p>To rejoin this team, you’ll need an invitation from a team member.</p>
+  {% endcall %}
+  
   <h1 class="heading-medium">
     {{ _('Team members') }}
   </h1>
