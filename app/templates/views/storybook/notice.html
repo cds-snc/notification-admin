@@ -1,0 +1,48 @@
+{% from 'components/remaining-messages.html' import remaining_messages with context %}
+{% from "components/notice.html" import notice %}
+
+<h1 class="heading-large">Notice component</h1>
+
+<hr />
+
+<h2 class="heading-medium">Info notice</h2>
+{{ 
+  notice(
+    type="info", 
+    title="What is a service?",
+    headingLevel=3, 
+    message="A service is a shared space where you and your team can write messages and track sending. Your service will start out in trial mode."
+  )
+}}
+
+
+<h2 class="heading-medium">Success notice</h2>
+{{ 
+  notice(
+    type="success", 
+    title="What is a service?",
+    headingLevel=3, 
+    message="A service is a shared space where you and your team can write messages and track sending. Your service will start out in trial mode."
+  )
+}}
+
+<h2 class="heading-medium">Warning notice</h2>
+{{ 
+  notice(
+    type="warning", 
+    title="What is a service?",
+    headingLevel=3, 
+    message="A service is a shared space where you and your team can write messages and track sending. Your service will start out in trial mode."
+  )
+}}
+
+
+<h2 class="heading-medium">Error notice</h2>
+{{ 
+  notice(
+    type="error", 
+    title="What is a service?",
+    headingLevel=3, 
+    message="A service is a shared space where you and your team can write messages and track sending. Your service will start out in trial mode."
+  )
+}}
