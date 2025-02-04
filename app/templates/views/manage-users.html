@@ -15,18 +15,25 @@
 
 {% block maincolumn_content %}
 
-  {% call banner_wrapper(type="dangerous", delete_button="Yes, leave team", subhead="You’re leaving the team for “{service name}”") %}
-    <p>For this service, you will not be able to:</p>
-    <ul class="list list-bullet ml-10">
-      <li>View dashboard statistics, reports and usage data</li>
-      <li>Create and edit message templates</li>
-      <li>Send messages</li>
-      <li>Manage settings and team members</li>
-      <li>Manage API integration</li>
-    </ul>
-    <p>To rejoin this team, you’ll need an invitation from a team member.</p>
-  {% endcall %}
-  
+  {% if leave_service %}
+    {% call banner_wrapper(
+      type="dangerous",
+      delete_button="Yes, leave team",
+      subhead='{} “{}”'.format("You’re leaving the team for", current_service.name),
+      action=url_for('.remove_user_from_service', service_id=current_service.id, user_id=current_user.id)
+      ) %}
+      <p>For this service, you will not be able to:</p>
+      <ul class="list list-bullet banner-list-bullet ml-10">
+        <li>View dashboard statistics, reports and usage data</li>
+        <li>Create and edit message templates</li>
+        <li>Send messages</li>
+        <li>Manage settings and team members</li>
+        <li>Manage API integration</li>
+      </ul>
+      <p>To rejoin this team, you’ll need an invitation from a team member.</p>
+    {% endcall %}
+  {% endif %}
+
   <h1 class="heading-medium">
     {{ _('Team members') }}
   </h1>
@@ -116,7 +123,7 @@
                   <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id)}}" aria-label="{{ _('Change details for') }} {{ user.name }}" >{{ _('Change details') }}</a>
                 {% elif user.state == 'active' and current_user.id == user.id %}
                   <span class="delete-link">
-                    <a href="{{ url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id, delete='yes') }}" aria-label="{{ _('Leave team') }}" >{{ _('Leave team') }}</a>
+                    <a href="{{ url_for('.manage_users', service_id=current_service.id, leave_service=True) }}" aria-label="{{ _('Leave team') }}" >{{ _('Leave team') }}</a>
                   </span>
                 {% endif %}
               </li>

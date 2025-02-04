@@ -42,6 +42,7 @@ def manage_users(service_id):
         show_search_box=(len(current_service.team_members) > 7),
         form=SearchUsersForm(),
         permissions=permissions,
+        leave_service=request.args.get("leave_service"),
     )
 
 
@@ -144,6 +145,10 @@ def remove_user_from_service(service_id, user_id):
         else:
             abort(500, e)
 
+    if current_user.id == user_id:
+        # the user has removed themselves from the service
+        # redirect to the "your services" page
+        return redirect(url_for("main.choose_account"))
     return redirect(url_for(".manage_users", service_id=service_id))
 
 
