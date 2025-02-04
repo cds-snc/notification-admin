@@ -1,4 +1,4 @@
-import Notice from "../../../../Notify/Admin/Components/Notice";
+import Notice from "../../../Notify/Admin/Components/Notice";
 
 let PageURL = "/_storybook?component=notice";
 
