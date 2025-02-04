@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 from wtforms import ValidationError
+from wtforms.validators import StopValidation
 
 from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm
 from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail
@@ -184,12 +185,12 @@ def test_sms_sender_form_validation(
     "trigger_data, field_data, expected_error",
     [
         # Case 1: Trigger not activated
-        ("option_a", "invalid", None),
-        ("option_a", None, None),
-        ("option_a", "", None),
+        ("option_a", "invalid", "StopValidation"),
+        ("option_a", None, "StopValidation"),
+        ("option_a", "", "StopValidation"),
         # Case 2: Trigger activated, valid values
-        ("trigger_value", 1000, None),
-        ("trigger_value", 5000, None),
+        ("trigger_value", 1000, "StopValidation"),
+        ("trigger_value", 5000, "StopValidation"),
         # Case 3: Trigger actived, empty values
         ("trigger_value", None, "This cannot be empty"),
         ("trigger_value", "", "This cannot be empty"),
@@ -220,9 +221,13 @@ def test_optional_integer_range_validation(trigger_data, field_data, expected_er
 
     if expected_error:
         # Test when we expect an error
-        with pytest.raises(ValidationError) as error:
-            validator(form, field)
-        assert str(error.value) == expected_error
+        if expected_error == "StopValidation":
+            with pytest.raises(StopValidation):
+                validator(form, field)
+        else:
+            with pytest.raises(ValidationError) as error:
+                validator(form, field)
+            assert str(error.value) == expected_error
     else:
         # Test when we expect no error
         validator(form, field)

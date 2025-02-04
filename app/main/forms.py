@@ -1813,29 +1813,28 @@ class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
 
 
 class OptionalIntegerRange:
-    def __init__(self, trigger_field, trigger_value, min=None, max=None, limit=None, message=None):
+    def __init__(self, trigger_field, trigger_value, autofill_by_key=None, min=None, max=None, limit=None, message=None):
         self.trigger_field = trigger_field
         self.trigger_value = trigger_value
+        self.autofill_by_key = autofill_by_key
         self.min = min
         self.max = max
         self.message = message
 
     def __call__(self, form, field):
         trigger_data = getattr(form, self.trigger_field).data
-        trigger_map = {
-            "0": 0,
-            "within_limit": (self.min - 1) / 10,
-            "above_limit": self.min - 1,
-        }
 
         # If trigger radio isn't selected, Stop Validation
+        # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
-            # Set exact value to avoid null, and make limits more readable through data.
-            exact_value = trigger_map[trigger_data]
-            field.data = exact_value
-            field.process_data(exact_value)
+            if self.autofill_by_key:
+                # look into key to see if there is a value to set
+                field.data = self.autofill_by_key[trigger_data]
+                field.process_data(self.autofill_by_key[trigger_data])
+            else:
+                field.process(formdata=None)  # Clear the field
             field.errors = []  # Delete any errors
-            return StopValidation()  # Stop validation chain
+            raise StopValidation()  # Stop validation chain
 
         # Only validate if the trigger condition is met
         if trigger_data == self.trigger_value:
@@ -1847,8 +1846,9 @@ class OptionalIntegerRange:
                 raise ValidationError(_l("Number must be more than {min}").format(min=format_thousands_localized(self.min)))
             if self.max is not None and field.data > self.max:
                 raise ValidationError(_l("Number must be less than {max}").format(max=format_thousands_localized(self.max)))
-        else:
-            return True
+            else:
+                # If nothing wrong found, stop validation
+                raise StopValidation()
 
 
 class BaseGoLiveAboutNotificationsForm:
@@ -1878,6 +1878,11 @@ class BaseGoLiveAboutNotificationsForm:
                 trigger_field=f"daily_{notification_type}_volume",
                 trigger_value=f"more_{notification_type}",
                 min=limit * 10 + 1,  # +1 because we want the value to be greater than (and not equal to) the previous option
+                autofill_by_key={
+                    "0": 0,
+                    "within_limit": limit,
+                    "above_limit": limit * 10,
+                },
             )
         ]
 
