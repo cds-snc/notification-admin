@@ -53,7 +53,12 @@ coverage: venv ## Create coverage report
 
 .PHONY: run-dev
 run-dev:
-	poetry run flask run -p 6012 --host=localhost
+	npm run watch & \
+    poetry run flask run -p 6012 --host=localhost
+
+.PHONY: watch
+watch:
+	npm run watch
 
 .PHONY: run-gunicorn
 run-gunicorn:

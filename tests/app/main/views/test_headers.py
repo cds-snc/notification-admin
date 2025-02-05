@@ -100,7 +100,7 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
             "public, max-age=31536000, immutable",
         ),
         (
-            "javascripts/main.min.js",
+            "javascripts/index.min.js",
             True,
             "public, max-age=31536000, immutable",
         ),
