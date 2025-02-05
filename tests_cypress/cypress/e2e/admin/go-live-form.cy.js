@@ -45,7 +45,8 @@ describe("Go Live Form", () => {
   it("Forces user to fill required fields fields", () => {
     // clear all fields on page 1
     Page.Components.DeptName().clear();
-    Page.Components.Purpose().clear();
+    Page.Components.MainUseCase().uncheck();
+    Page.Components.OtherUseCase().clear();
     Page.Components.IntendedRecipientsInternal().uncheck();
 
     // Submit and ensure there are three elements with the class 'error-message'
