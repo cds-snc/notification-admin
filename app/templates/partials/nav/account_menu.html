@@ -24,6 +24,7 @@ link:text-blue no-underline text-small">
         </a>
       </li>
     {% endif %}
+    <p>Hi hi</p>
     <li>
       <a href="{{ url_for('main.choose_account') }}" class="flex justify-end items-center min-h-target px-8 py-4 leading-none no-underline text-smaller border-transparent border-b-0 focus:border-b-0 focus:outline-none focus:shadow-insetLine2 {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
         {{ _('Your services') }}

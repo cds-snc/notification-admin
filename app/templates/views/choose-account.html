@@ -59,7 +59,8 @@
   </h1>
 
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 block clear-both contain-floats{% endif %}" aria-label="{{ _('Your services') }}">
-
+    <p> HELM_TEST_ADMIN: "{{ config["HELM_TEST_ADMIN"] }}" </p>
+    <p> HELM_TEST_API: "{{ config["HELM_TEST_API"] }}" </p>
     {% if current_user.platform_admin %}
       <div class="grid-row contain-floats">
         <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
@@ -77,7 +78,7 @@
         </ul>
       </div>
       <div class="keyline-block"></div>
-    {% endif %}
+    {% endif %}    
     {% set heading_txt = _('Live services') %}
     {% if current_user.organisations %}
       {{ service_list(

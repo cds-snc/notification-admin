@@ -148,6 +148,9 @@ class Config(object):
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
+    HELM_TEST_ADMIN = os.environ.get("HELM_TEST_ADMIN", "HELM_TEST_ADMIN-default-value")
+    HELM_TEST_API = os.environ.get("HELM_TEST_API", "HELM_TEST_API-default-value")
+
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
         "List of config keys that contain sensitive information"
