@@ -75,6 +75,8 @@ describe("Go Live Form", () => {
     Page.SetEmailYearlyVolume("above_limit");
     Page.SetSMSDailyVolume("more_sms");
     Page.SetSMSYearlyVolume("above_limit");
+    Page.Components.MoreEmailsDaily().clear();
+    Page.Components.MoreSMSDaily().clear();
 
     // Submit and ensure there are 2 elements with the class 'error-message'
     Page.GoNext();
