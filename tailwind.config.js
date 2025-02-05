@@ -1,7 +1,10 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
-  content: ["./app/**/*.{html,css,js}"],
+  content: [
+    "./app/**/*.{html,css,js}",
+    "./app/assets/javascripts/fontawesome.js"
+  ],
   theme: {
     container: {
       center: true,
