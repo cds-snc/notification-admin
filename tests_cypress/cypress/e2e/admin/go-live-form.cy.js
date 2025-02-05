@@ -4,7 +4,8 @@ import Page from "../../Notify/Admin/Pages/GoLiveFormPage";
 function CompletePage1() {
   // complete page 1
   Page.Components.DeptName().type("Department of Testing");
-  Page.Components.Purpose().type("Testing purposes");
+  Page.Components.MainUseCase().check();
+  Page.Components.OtherUseCase().type("Testing purposes");
   Page.Components.IntendedRecipientsInternal().check();
   Page.GoNext();
 }

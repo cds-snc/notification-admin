@@ -1774,38 +1774,85 @@ class AcceptAgreementForm(StripWhitespaceForm):
             raise ValidationError(_l("Must be a number"))
 
 
-class GoLiveAboutServiceForm(StripWhitespaceForm):
-    department_org_name = StringField(
-        _l("Name of department or organisation"),
-        validators=[DataRequired(), Length(max=500)],
-    )
-    purpose = TextAreaField(
+class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
+    main_use_case = MultiCheckboxField(
         _l("For what purpose are you using GC Notify?"),
-        validators=[DataRequired(), Length(max=2000)],
+        default="",
+        choices=[
+            ("service", _l("Government service or program delivery")),
+            ("account_management", _l("Account management and verification")),
+            ("broadcast", _l("Informational broadcasts")),
+            ("alerts", _l("Monitoring and alerts")),
+            ("scheduling", _l("Scheduling and booking")),
+            ("workflow", _l("Workflow management")),
+        ],
+        validators=[DataRequired()],
     )
+    main_use_case_hints = {
+        "service": _l("Applications, permits, licenses, official documents, and benefit claims"),
+        "account_management": _l("User authentication, password resets, profile updates"),
+        "broadcast": _l("Newsletters, digests, announcements, policy updates, general communications"),
+        "alerts": _l("System status, maintenance windows, outages, closures, emergency notices"),
+        "scheduling": _l("Appointments, reservations, confirmations, availability updates, reminders"),
+        "workflow": _l("Shift scheduling, inventory tracking, access requests, automated responses"),
+    }
+
+    other_use_case = TextAreaField(
+        _l("Tell us about any additional uses not listed"),
+        validators=[Length(max=2000)],
+    )
+
     intended_recipients = MultiCheckboxField(
         _l("Who are the intended recipients of notifications?"),
         default="",
         choices=[
-            ("internal", _l("Colleagues within your department (internal)")),
-            ("external", _l("Partners from other organisations (external)")),
+            ("internal", _l("Colleagues within your department")),
+            ("external", _l("Partners from other organisations")),
             ("public", _l("Public")),
         ],
         validators=[DataRequired()],
     )
 
 
-class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
-    purpose = TextAreaField(
-        _l("For what purpose are you using GC Notify?"),
-        validators=[DataRequired(), Length(max=2000)],
+class GoLiveAboutServiceForm(StripWhitespaceForm):
+    department_org_name = StringField(
+        _l("Name of department or organisation"),
+        validators=[DataRequired(), Length(max=500)],
     )
+
+    main_use_case = MultiCheckboxField(
+        _l("For what purpose are you using GC Notify?"),
+        default="",
+        choices=[
+            ("service", _l("Government service or program delivery")),
+            ("account_management", _l("Account management and verification")),
+            ("broadcast", _l("Informational broadcasts")),
+            ("alerts", _l("Monitoring and alerts")),
+            ("scheduling", _l("Scheduling and booking")),
+            ("workflow", _l("Workflow management")),
+        ],
+        validators=[DataRequired()],
+    )
+    main_use_case_hints = {
+        "service": _l("Applications, permits, licenses, official documents, and benefit claims"),
+        "account_management": _l("User authentication, password resets, profile updates"),
+        "broadcast": _l("Newsletters, digests, announcements, policy updates, general communications"),
+        "alerts": _l("System status, maintenance windows, outages, closures, emergency notices"),
+        "scheduling": _l("Appointments, reservations, confirmations, availability updates, reminders"),
+        "workflow": _l("Shift scheduling, inventory tracking, access requests, automated responses"),
+    }
+
+    other_use_case = TextAreaField(
+        _l("Tell us about any additional uses not listed"),
+        validators=[Length(max=2000)],
+    )
+
     intended_recipients = MultiCheckboxField(
         _l("Who are the intended recipients of notifications?"),
         default="",
         choices=[
-            ("internal", _l("Colleagues within your department (internal)")),
-            ("external", _l("Partners from other organisations (external)")),
+            ("internal", _l("Colleagues within your department")),
+            ("external", _l("Partners from other organisations")),
             ("public", _l("Public")),
         ],
         validators=[DataRequired()],

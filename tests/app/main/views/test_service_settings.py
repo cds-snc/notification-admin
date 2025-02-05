@@ -983,7 +983,7 @@ def test_request_to_go_live_use_case_page(
         _expected_status=200,
         _data={
             "department_org_name": "",
-            "purpose": "",
+            "other_use_case": "",  # This one is optional
         },
     )
 
@@ -991,7 +991,7 @@ def test_request_to_go_live_use_case_page(
     assert store_mock.call_count == 1
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("department_org_name", "This field is required."),
-        ("purpose", "This field is required."),
+        ("main_use_case", "This field is required."),
         ("intended_recipients", "This field is required."),
     ]
 
@@ -1001,7 +1001,8 @@ def test_request_to_go_live_use_case_page(
         _expected_status=200,
         _data={
             "department_org_name": "Org name",
-            "purpose": "Purpose",
+            "main_use_case": ["account_management"],
+            "other_use_case": "Something else",
             "intended_recipients": ["public"],
         },
     )
@@ -1013,7 +1014,8 @@ def test_request_to_go_live_use_case_page(
         "form_data": {
             "department_org_name": "Org name",
             "intended_recipients": ["public"],
-            "purpose": "Purpose",
+            "main_use_case": ["account_management"],
+            "other_use_case": "Something else",
             "daily_email_volume": None,
             "annual_email_volume": None,
             "daily_sms_volume": None,
@@ -1053,9 +1055,10 @@ def test_request_to_go_live_use_case_page(
             "annual_sms_volume": "above_limit",
             "exact_daily_email": 5,
             "exact_daily_sms": 25000,
-            # Need to submit intended_recipients again because otherwise
-            # the form thinks we removed this value (it's checkboxes).
-            # On the real form, this field is hidden on the second step
+            # Need to submit intended_recipients, main_use_case and any checkbox
+            # again because otherwise the form thinks we removed checkbox values.
+            # On the real form, these fields are hidden on the second step
+            "main_use_case": expected_use_case_data["form_data"]["main_use_case"],
             "intended_recipients": expected_use_case_data["form_data"]["intended_recipients"],
         },
     )
@@ -1069,7 +1072,8 @@ def test_request_to_go_live_use_case_page(
             "form_data": {
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
-                "purpose": "Purpose",
+                "main_use_case": ["account_management"],
+                "other_use_case": "Something else",
                 "daily_email_volume": "0",
                 "annual_email_volume": "within_limit",
                 "daily_sms_volume": "more_sms",
@@ -1235,7 +1239,8 @@ def test_submit_go_live_request(
             "form_data": {
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
-                "purpose": "Purpose",
+                "main_use_case": ["account_management"],
+                "other_use_case": "Something else",
                 "daily_email_volume": "0",
                 "annual_email_volume": "within_limit",
                 "daily_sms_volume": "more_sms",
@@ -1267,7 +1272,8 @@ def test_submit_go_live_request(
         "service_id": SERVICE_ONE_ID,
         "service_name": "service one",
         "intended_recipients": "public",
-        "main_use_case": "Purpose",
+        "main_use_case": ["account_management"],
+        "other_use_case": "Something else",
         "email_address": "test@user.canada.ca",
         "daily_email_volume": "0",
         "annual_email_volume": "within_limit",
