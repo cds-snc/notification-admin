@@ -136,15 +136,6 @@ def remove_user_from_service(service_id, user_id):
         current_app.logger.info(
             "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
         )
-        # throwaway demo code
-        flash(
-            [
-                f"You cannot leave the team for “{current_service.name}”",
-                f"“{current_service.name}” has only 2 team members, the minimum for a live service. You’ll be able to leave once someone else accepts an invitation to join the team for this service.",
-            ],
-            "info",
-        )
-        return redirect(url_for(".manage_users", service_id=service_id))
 
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
@@ -152,7 +143,7 @@ def remove_user_from_service(service_id, user_id):
         if e.status_code == 400 and msg in e.message:
             flash(_l(msg), "info")
             return redirect(url_for(".manage_users", service_id=service_id))
-        elif e.status_code == 400 and "abcd" in e.message:
+        elif e.status_code == 400 and "SERVICE_CANNOT_HAVE_LT_2_MEMBERS" in e.message:
             flash(
                 [
                     "You cannot leave this team at this time",
@@ -163,7 +154,7 @@ def remove_user_from_service(service_id, user_id):
                 "info",
             )
             return redirect(url_for(".manage_users", service_id=service_id))
-        elif e.status_code == 400 and "xyz" in e.message:
+        elif e.status_code == 400 and "SERVICE_NEEDS_USER_W_MANAGE_SETTINGS_PERM" in e.message:
             flash(
                 [
                     "You cannot leave this team at this time",
