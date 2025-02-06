@@ -29,7 +29,8 @@ from tests.conftest import (
                 "Can Create and edit message templates "
                 "Can Send message templates "
                 "Can Manage settings and team "
-                "Can Manage API integration"
+                "Can Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
@@ -49,7 +50,8 @@ from tests.conftest import (
                 "Cannot Create and edit message templates "
                 "Cannot Send message templates "
                 "Cannot Manage settings and team "
-                "Cannot Manage API integration"
+                "Cannot Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
@@ -68,7 +70,8 @@ from tests.conftest import (
                 "Cannot Create and edit message templates "
                 "Cannot Send message templates "
                 "Cannot Manage settings and team "
-                "Cannot Manage API integration"
+                "Cannot Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
@@ -87,7 +90,8 @@ from tests.conftest import (
                 "Can Create and edit message templates "
                 "Cannot Send message templates "
                 "Cannot Manage settings and team "
-                "Cannot Manage API integration"
+                "Cannot Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
@@ -106,7 +110,8 @@ from tests.conftest import (
                 "Can Create and edit message templates "
                 "Cannot Send message templates "
                 "Cannot Manage settings and team "
-                "Cannot Manage API integration"
+                "Cannot Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "
@@ -193,7 +198,8 @@ def test_should_show_caseworker_on_overview_page(
         "Cannot Create and edit message templates "
         "Cannot Send message templates "
         "Cannot Manage settings and team "
-        "Cannot Manage API integration"
+        "Cannot Manage API integration "
+        "Leave team"
     )
     # [1:5] are invited users
     assert normalize_spaces(page.select(".user-list-item")[6].text) == (
