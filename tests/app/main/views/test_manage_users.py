@@ -1134,7 +1134,9 @@ def test_remove_user_from_service(
     active_user_with_permissions,
     service_one,
     mock_remove_user_from_service,
+    mocker,
 ):
+    mocker.patch("app.main.views.manage_users.current_user", id="1")
     client_request.post(
         "main.remove_user_from_service",
         service_id=service_one["id"],
