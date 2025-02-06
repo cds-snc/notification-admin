@@ -1152,6 +1152,23 @@ def test_remove_user_from_service(
     mock_remove_user_from_service.assert_called_once_with(service_one["id"], str(active_user_with_permissions["id"]))
 
 
+def test_remove_yourself_from_service_redirects_to_my_services(
+    client_request,
+    active_user_with_permissions,
+    service_one,
+    mock_remove_user_from_service,
+    mocker,
+):
+    mocker.patch("app.main.views.manage_users.current_user", id=active_user_with_permissions["id"])
+    client_request.post(
+        "main.remove_user_from_service",
+        service_id=service_one["id"],
+        user_id=active_user_with_permissions["id"],
+        _expected_redirect=url_for("main.choose_account"),
+    )
+    mock_remove_user_from_service.assert_called_once_with(service_one["id"], str(active_user_with_permissions["id"]))
+
+
 def test_can_invite_user_as_platform_admin(
     client_request,
     service_one,
