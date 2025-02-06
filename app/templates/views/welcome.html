@@ -14,8 +14,21 @@
             <li class="pt-4 leading-tight">{{ _('Send messages to yourself and team members.') }}</li>
             <li class="pt-4 leading-tight">{{ _('Send up to {} messages per day.').format(default_limit | format_number) }}</li>
         </ul>
-        <p class="pt-10">{{ _("Once you've set up your team and tried out sending, you can request to go live in Settings.") }}</p>
+        <p class="pt-10">{{ _("When you’re ready to send more than 50 messages per day, you can request to go live in settings.") }}</p>
         <a href="{{ url_for('main.add_service', first='first') }}" class="mt-4 button">{{ _('Create your first service') }}</a>
     </div>
 
+    <div class="grid-row contain-floats py-10 px-6">
+        <p data-testid="guidance-join-existing-service">{{ _("To join an existing service, check your email for an invitation from the team for that service.  GC Notify staff cannot send these invitations.") }}</p>
+        <details data-testid="details-join-existing-service">
+          <summary class="flex gap-10 py-2">{{ _("If you do not have an invitation") }}</summary>
+          <div class="details-body">
+            <p>{{ _('Ask which team members have permission to invite you. If the team is unsure, from a GC Notify account visit the main menu and select “Team members.” That page:') }}</p>
+            <ul class="list list-bullet">
+              <li>{{ _('Includes an invitation button at the top of the page, if the member is permitted to send invitations.') }}</li>
+              <li>{{ _('Lists permitted tasks under the name of each member.') }}</li>
+            </ul>
+          </div>
+        </details>
+      </div>
 {% endblock %}
