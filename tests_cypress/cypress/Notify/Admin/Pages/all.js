@@ -15,7 +15,7 @@ import ServiceSettingsPage from "./ServiceSettingsPage";
 import TemplateFiltersPage from "./TemplateFiltersPage";
 import TemplateCategoriesPage from "./admin/TemplateCategoriesPage";
 import ManageTemplateCategoryPage from "./admin/ManageTemplateCategoryPage";
-
+import WelcomePage from "./WelcomePage";
 export default {
     LoginPage,
     TwoFactorPage,
@@ -24,6 +24,7 @@ export default {
     Navigation,
     TemplatesPage,
     AccountsPage,
+    WelcomePage,
     CreateAccountPage,
     BrandingSettingsPage,
     EditBrandingPage,
