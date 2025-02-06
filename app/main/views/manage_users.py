@@ -136,7 +136,6 @@ def remove_user_from_service(service_id, user_id):
         current_app.logger.info(
             "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
         )
-
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
         msg = "You cannot remove the only user for a service"
