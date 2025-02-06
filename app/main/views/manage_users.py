@@ -146,10 +146,10 @@ def remove_user_from_service(service_id, user_id):
         elif e.status_code == 400 and "SERVICE_CANNOT_HAVE_LT_2_MEMBERS" in e.message:
             flash(
                 [
-                    "You cannot leave this team at this time",
-                    f"""“{current_service.name}” has only 2 team members, the minimum for a live service.
-                    You’ll be able to leave once someone else accepts an invitation to join the team for
-                    this service.""",
+                    _l("You cannot leave this team at this time"),
+                    _l(
+                        "“{}” has only 2 team members, the minimum for a live service. You’ll be able to leave once someone else accepts an invitation to join the team for this service."
+                    ).format(current_service.name),
                 ],
                 "info",
             )
@@ -157,10 +157,10 @@ def remove_user_from_service(service_id, user_id):
         elif e.status_code == 400 and "SERVICE_NEEDS_USER_W_MANAGE_SETTINGS_PERM" in e.message:
             flash(
                 [
-                    "You cannot leave this team at this time",
-                    f"""You're the only team member of “{current_service.name}” with permission to
-                    "Manage settings and team". To leave this service, you must first give another
-                    team member this permission.""",
+                    _l("You cannot leave this team at this time"),
+                    _l(
+                        "You're the only team member of “{}” with permission to “Manage settings and team”. To leave this service, you must first give another team member this permission."
+                    ).format(current_service.name),
                 ],
                 "info",
             )
