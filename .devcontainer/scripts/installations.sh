@@ -21,13 +21,19 @@ echo -e "source /usr/share/doc/fzf/examples/completion.zsh" >> ~/.zshrc
 echo -e "fpath+=/.zfunc" >> ~/.zshrc
 echo -e "autoload -Uz compinit && compinit"
 
-# Install Poetry
+# Install and configure Poetry
 pip install poetry==${POETRY_VERSION} poetry-plugin-sort
 echo "PATH=$PATH"
 #echo "/home/vscode/.local/bin/.."
 export PATH=$PATH:/home/vscode/.local/bin/
 which poetry
 poetry --version
+# Disable poetry auto-venv creation
+poetry config virtualenvs.create false
+
+# Manually create and activate a virtual environment with a static path
+python -m venv /home/vscode/.venvs/notification-admin
+source /home/vscode/.venvs/notification-admin/bin/activate
 
 # Initialize poetry autocompletions
 mkdir -p ~/.zfunc
@@ -40,6 +46,9 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 # Install dependencies
 poetry install
+
+# Ensure newly created shells activate the poetry venv
+echo "source /home/vscode/.venvs/notification-admin/bin/activate" >> ~/.zshrc
 
 # Poe the Poet plugin tab completions
 touch ~/.zfunc/_poe
