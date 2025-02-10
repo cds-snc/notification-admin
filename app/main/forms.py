@@ -1604,7 +1604,7 @@ class CreateTemplateForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Will you send the message by email or text?"))
 
 
 class AddEmailRecipientsForm(Form):
@@ -1612,7 +1612,7 @@ class AddEmailRecipientsForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Add recipients"))
     placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
 
 
@@ -1621,7 +1621,7 @@ class AddSMSRecipientsForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Add recipients"))
     placeholder_value = international_phone_number(_l("Phone number of recipient"))
 
 
@@ -1798,8 +1798,7 @@ class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     }
 
     other_use_case = TextAreaField(
-        _l("Tell us about any additional uses not listed"),
-        validators=[Length(max=2000)],
+        _l("Tell us about any additional uses not listed"), validators=[Length(max=2000)], render_kw={"autocomplete": "off"}
     )
 
     intended_recipients = MultiCheckboxField(
@@ -1843,8 +1842,7 @@ class GoLiveAboutServiceForm(StripWhitespaceForm):
     }
 
     other_use_case = TextAreaField(
-        _l("Tell us about any additional uses not listed"),
-        validators=[Length(max=2000)],
+        _l("Tell us about any additional uses not listed"), validators=[Length(max=2000)], render_kw={"autocomplete": "off"}
     )
 
     intended_recipients = MultiCheckboxField(
