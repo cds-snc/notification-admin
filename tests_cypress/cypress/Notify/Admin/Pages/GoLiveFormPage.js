@@ -10,10 +10,10 @@ let Components = {
 
     // page 2
     EmailDailyVolume: () => cy.get("input[name='daily_email_volume']"),
-    MoreEmailsDaily: () => cy.get("#how_many_more_email"),
+    MoreEmailsDaily: () => cy.get("#exact_daily_email"),
     EmailYearlyVolume: () => cy.get("[name='annual_email_volume']"),
     SMSDailyVolume: () => cy.get("[name='daily_sms_volume']"),
-    MoreSMSDaily: () => cy.get("#how_many_more_sms"),
+    MoreSMSDaily: () => cy.get("#exact_daily_sms"),
     SMSYearlyVolume: () => cy.get("[name='annual_sms_volume']"),
 };
 
