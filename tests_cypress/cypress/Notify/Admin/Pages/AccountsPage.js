@@ -5,6 +5,8 @@ let Components = {
     ServiceName: () => cy.get('#name'),
     SendingAddress: () => cy.get('#email_from'),
     DepartmentName: () => cy.get('#parent_organisation_name'),
+    GuidanceJoinService: () => cy.getByTestId('guidance-join-existing-service'),
+    DetailsJoinService: () => cy.getByTestId('details-join-existing-service'),
     SubmitButton: () => cy.get('button[type="submit"]'),
 };
 
@@ -13,7 +15,7 @@ let Actions = {
     AddService: (branding, ) => {
         Components.AddServiceButton().click();
         cy.contains('h1', 'Choose order for official languages').should('be.visible');
-        
+
         Components.DefaultBranding().check();
         Components.SubmitButton().click();
         cy.contains('h1', 'Create service name and email address').should('be.visible');
@@ -26,7 +28,10 @@ let Actions = {
         Components.DepartmentName().type('Treasury Board of Canada Secretariat');
         Components.SubmitButton().click();
         cy.contains('h1', 'Dashboard').should('be.visible');
-    }   
+    },
+    ExpandDetailsJoinService: () => {
+        Components.DetailsJoinService().click();
+    },
 
 };
 

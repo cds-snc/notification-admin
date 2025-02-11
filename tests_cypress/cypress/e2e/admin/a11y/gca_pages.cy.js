@@ -11,7 +11,6 @@ const fullPageList = [
   { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
   { en: "/guidance", fr: "/guides-reference" },
   { en: "/home", fr: "/accueil" },
-  { en: "/message-delivery-status", fr: "/etat-livraison-messages" },
   { en: "/other-services", fr: "/autres-services" },
   { en: "/privacy", fr: "/confidentialite" },
   { en: "/security", fr: "/securite" },
