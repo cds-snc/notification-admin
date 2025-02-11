@@ -130,12 +130,15 @@ def edit_user_permissions(service_id, user_id):
 
 
 @main.route("/services/<service_id>/users/<user_id>/delete", methods=["POST"])
-@user_has_permissions("manage_service")
 def remove_user_from_service(service_id, user_id):
     try:
         current_app.logger.info(
             "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
         )
+        # if the user is trying to remove someone else from the service,
+        # they need to have the "manage_settings" permission
+        if current_user.id != user_id and not current_service.has_permission("manage_settings"):
+            return redirect(url_for(".manage_users", service_id=service_id))
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
         msg = "You cannot remove the only user for a service"
