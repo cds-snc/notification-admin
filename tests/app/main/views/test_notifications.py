@@ -58,14 +58,14 @@ from tests.conftest import (
         ),
         (
             None,
-            "pinpoint-failure",
+            "provider-failure",
             None,
             "NO_ORIGINATION_IDENTITIES_FOUND",
             "Can't send to this international number",
         ),
         (
             None,
-            "pinpoint-failure",
+            "provider-failure",
             None,
             "DESTINATION_COUNTRY_BLOCKED",
             "Can't send to this international number",

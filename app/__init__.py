@@ -464,9 +464,9 @@ def format_notification_status(status, template_type, provider_response=None, fe
             return {
                 "NO_ORIGINATION_IDENTITIES_FOUND": _("Can't send to this international number"),
                 "DESTINATION_COUNTRY_BLOCKED": _("Can't send to this international number"),
-            }.get(feedback_reason, "No such number")
+            }.get(feedback_reason, _("No such number"))
         else:
-            return "No such number"
+            return _("No such number")
 
     return {
         "email": {
@@ -488,7 +488,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
             "technical-failure": _("Tech issue"),
             "temporary-failure": _("Carrier issue"),
             "permanent-failure": _("No such number"),
-            "pinpoint-failure": _get_sms_status_by_feedback_reason(),
+            "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
             "created": _("In transit"),
