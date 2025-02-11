@@ -2,7 +2,7 @@
 let Components = {
     // page 1
     DeptName: () => cy.get('#department_org_name'),
-    MainUseCase: () => cy.getByTestId('scheduling'),
+    MainUseCaseScheduling: () => cy.getByTestId('scheduling'),
     OtherUseCase: () => cy.get('#other_use_case'),
     IntendedRecipientsInternal: () => cy.getByTestId('internal'),
     NextPageButton: () => cy.get('button[type="submit"]'),

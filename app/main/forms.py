@@ -1865,14 +1865,14 @@ class OptionalIntegerRange:
         self.min = min
         self.max = max
         self.message = message
+        self.limit = limit
 
     def __call__(self, form, field):
         trigger_data = getattr(form, self.trigger_field).data
 
         # If trigger radio isn't selected, Stop Validation
-        # If trigger radio isn't selected, Stop Validation
         if trigger_data != self.trigger_value:
-            if self.autofill_by_key:
+            if self.autofill_by_key and trigger_data in self.autofill_by_key:
                 # look into key to see if there is a value to set
                 field.data = self.autofill_by_key[trigger_data]
                 field.process_data(self.autofill_by_key[trigger_data])

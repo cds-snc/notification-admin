@@ -4,7 +4,7 @@ import Page from "../../Notify/Admin/Pages/GoLiveFormPage";
 function CompletePage1() {
   // complete page 1
   Page.Components.DeptName().type("Department of Testing");
-  Page.Components.MainUseCase().check();
+  Page.Components.MainUseCaseScheduling().check();
   Page.Components.OtherUseCase().type("Testing purposes");
   Page.Components.IntendedRecipientsInternal().check();
   Page.GoNext();
@@ -45,7 +45,7 @@ describe("Go Live Form", () => {
   it("Forces user to fill required fields fields", () => {
     // clear all fields on page 1
     Page.Components.DeptName().clear();
-    Page.Components.MainUseCase().uncheck();
+    Page.Components.MainUseCaseScheduling().uncheck();
     Page.Components.OtherUseCase().clear();
     Page.Components.IntendedRecipientsInternal().uncheck();
 
