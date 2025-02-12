@@ -54,9 +54,16 @@ describe("Branding request", () => {
     RequestBrandingPage.Components.SubmitButton().should("be.enabled");
   });
 
-  it("Displays branding preview", () => {
+  it("Displays branding preview and uploaded branding image", () => {
+    RequestBrandingPage.EnterAltText("txtEN", "txtFR");
     RequestBrandingPage.UploadBrandImage("cds2.png", "image/png");
     RequestBrandingPage.Components.BrandPreview().should("be.visible");
+    RequestBrandingPage.Components.BrandPreviewImage().should("be.visible");
+    RequestBrandingPage.Components.BrandPreviewImage().should(
+      "have.attr",
+      "alt",
+      "txtEN / txtFR",
+    );
   });
 
   // it('[NOT IMPLEMENTED] Rejects malicious files', () => {

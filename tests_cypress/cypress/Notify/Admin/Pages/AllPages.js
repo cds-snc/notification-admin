@@ -12,7 +12,6 @@ import BrandingSettings from "./branding/BrandingSettingsPage"
 import ServiceSettingsPage from "./ServiceSettingsPage";
 import ReviewPoolPage from "./branding/ReviewPoolPage";
 import PreviewBrandingPage from "./branding/PreviewBrandingPage";
-import ClearCachePage from "./admin/ClearCachePage";
 
 export default {
     LoginPage,
@@ -29,5 +28,4 @@ export default {
     ServiceSettingsPage,
     ReviewPoolPage,
     PreviewBrandingPage,
-    ClearCachePage,
 }
