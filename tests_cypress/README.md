@@ -37,8 +37,6 @@ npx cypress install
 | IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
 | CYPRESS_AUTH_USER_NAME     | Username for the Cypress auth client            | 
 | CYPRESS_AUTH_CLIENT_SECRET | Secret for the Cypress auth client              |
-| NOTIFY_USER                | Actual notify user CDS email account            |
-| NOTIFY_PASSWORD            | Password of NOTIFY_USER (deprecated)            |
 | CYPRESS_USER_PASSWORD      | Password for the Cypress user                   |
 | IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
 
