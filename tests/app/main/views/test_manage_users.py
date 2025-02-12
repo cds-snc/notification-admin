@@ -110,7 +110,8 @@ from tests.conftest import (
                 "Can Create and edit message templates "
                 "Cannot Send messages "
                 "Cannot Manage settings and team members "
-                "Cannot Manage API integration"
+                "Cannot Manage API integration "
+                "Leave team"
             ),
             (
                 "ZZZZZZZZ zzzzzzz@example.canada.ca "

@@ -138,7 +138,7 @@ def remove_user_from_service(service_id, user_id):
         )
         # if the user is trying to remove someone else from the service,
         # they need to have the "manage_service" permission
-        if current_user.id != user_id and not current_service.has_permission("manage_service"):
+        if current_user.id != user_id and not current_user.has_permission("manage_service"):
             return redirect(url_for(".manage_users", service_id=service_id))
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
