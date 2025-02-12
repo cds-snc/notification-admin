@@ -54,7 +54,7 @@
     };
 
     // Trigger when the document is ready.
-    if (document.readyState === 'complete') {
+    if (document.readyState === "complete") {
       calculateOverflows();
     } else {
       $(window).on("load", calculateOverflows);

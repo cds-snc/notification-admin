@@ -48,10 +48,10 @@
   function toggleMenu($menu, $items) {
     // Get all the menus on the page that are open excluding the currently open menu and close them
     const openMenus = Array.from(
-      document.querySelectorAll("button[data-module='menu']")
+      document.querySelectorAll("button[data-module='menu']"),
     ).filter(
       (menu) =>
-        menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0]
+        menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0],
     );
     openMenus.forEach((menu) => {
       close($(menu), $(`ul[id=${$(menu).attr("data-menu-items")}]`));
@@ -150,13 +150,13 @@
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
-      handleKeyBasedMenuNavigation(event, $menu, $items)
+      handleKeyBasedMenuNavigation(event, $menu, $items),
     );
 
     // Bind blur events to each menu button and it's anchor link items.
     registerDisclosureMenuBlur(
       [...$items.children().find("a"), ...$menu, window],
-      (event) => handleMenuBlur(event, $menu, $items)
+      (event) => handleMenuBlur(event, $menu, $items),
     );
 
     // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu
