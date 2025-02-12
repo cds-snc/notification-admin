@@ -18,17 +18,11 @@
     $menu.attr("aria-expanded", true);
     $menu.isExpanded = true;
     $items.children()[0].querySelector("a").focus();
-
-    window.setTimeout(function () {
-      $items.removeClass("opacity-0");
-      $items.addClass("opacity-100");
-    }, 1);
   }
 
   function close($menu, $items) {
     $items.toggleClass("hidden", true);
-    $items.removeClass("opacity-100");
-    $items.addClass("opacity-0");
+
     const $arrow = $menu.find(".arrow");
     if ($arrow.length > 0) {
       $arrow.toggleClass("flip", false);
@@ -54,10 +48,10 @@
   function toggleMenu($menu, $items) {
     // Get all the menus on the page that are open excluding the currently open menu and close them
     const openMenus = Array.from(
-      document.querySelectorAll("button[data-module='menu']"),
+      document.querySelectorAll("button[data-module='menu']")
     ).filter(
       (menu) =>
-        menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0],
+        menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0]
     );
     openMenus.forEach((menu) => {
       close($(menu), $(`ul[id=${$(menu).attr("data-menu-items")}]`));
@@ -140,10 +134,9 @@
         close($menu, $items);
         $menu.focus();
       }
+      // Once we've determined the new selected menu item, we need to focus on it
+      $($items.children()[$menu.selectedMenuItem]).find("a").focus();
     }
-
-    // Once we've determined the new selected menu item, we need to focus on it
-    $($items.children()[$menu.selectedMenuItem]).find("a").focus();
   }
 
   function init($menu) {
@@ -157,13 +150,13 @@
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
-      handleKeyBasedMenuNavigation(event, $menu, $items),
+      handleKeyBasedMenuNavigation(event, $menu, $items)
     );
 
     // Bind blur events to each menu button and it's anchor link items.
     registerDisclosureMenuBlur(
       [...$items.children().find("a"), ...$menu, window],
-      (event) => handleMenuBlur(event, $menu, $items),
+      (event) => handleMenuBlur(event, $menu, $items)
     );
 
     // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu

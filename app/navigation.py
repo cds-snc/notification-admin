@@ -99,12 +99,17 @@ class HeaderNavigation(Navigation):
         },
         "features": {
             "features",
+            "fonctionnalites",
         },
         "home": {
             "index",
+            "accueil",
+            "home",
         },
-        "why-notify": {
-            "why-notify",
+        "why-notify": {"why-notify", "why-gc-notify", "pourquoi-notification-gc"},
+        "guidance": {
+            "guidance",
+            "guides-reference",
         },
         "contact": {
             "contact",
@@ -242,6 +247,23 @@ class HeaderNavigation(Navigation):
         "bulk-sends": {
             "view_jobs",
             "view_job",
+        },
+        "admin_panel": {
+            "live_services",
+            "trial_services",
+            "organisations",
+            "live_api_keys",
+            "email_branding",
+            "template_categories",
+            "template_category",
+            "find_services_by_name",
+            "find_users_by_email",
+            "find_ids",
+            "platform_admin_list_complaints",
+            "platform_admin_reports",
+            "inbound_sms_admin",
+            "view_providers",
+            "clear_cache",
         },
     }
 
