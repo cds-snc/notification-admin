@@ -1,15 +1,45 @@
 {% from "components/nav_menu_item.html" import nav_menu_item with context %}
 
-{% set lang_switch = 'EN' %}
-{% set long_lang_switch = 'English' %}
-
-{% if session["userlang"] == "en" %}
-  {% set lang_switch = 'FR' %}
-  {% set long_lang_switch = 'Français' %}
-{% endif %}
-
 <hr class="m-0 md:hidden bg-blue border-blue border-0 border-b-2"/>
 
 {% if withnav %}
-  {% include 'partials/nav/main_nav.html' %}
+  <nav class="bg-gray" aria-label="{{ _('Main menu') }}">
+    <div id="proposition-links" class="container px-gutterHalf flex flex-row flex-wrap md:flex-nowrap justify-between">
+        <button aria-expanded="false" aria-haspopup="true" id="menu" data-module="menu"
+            data-menu-items="main-menu-nav"
+            class="nav-menu-item md:hidden bg-blue text-white px-4 hover:border-blue-900 focus:text-black"
+            type="button">
+            {{ _("Menu") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+        </button>
+        <ul id="main-menu-nav" class="hidden menu-overlay md:flex flex-nowrap items-baseline gap-gutterHalf w-full">
+            {% if nav_items %}
+                {% for i in nav_items %}
+                    {% if 'main' in i.description %}
+                    <li class="flex-shrink-0">
+                        {{ nav_menu_item(i.url, i.title, is_external_link=i.target, is_active=i.active) }}
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for item in main_navigation_items %}
+                    <li class="flex-shrink-0">
+                        {{ nav_menu_item(url=item.url, localised_txt=item.name, is_active=header_navigation.is_selected(item.key)) }}
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+        <button id="more-menu" type="button"
+            aria-expanded="false" aria-haspopup="true"
+            class="nav-menu-item justify-end px-4 w-min"
+            data-module-menu-container="more-menu-container" data-has-items="false"
+            data-module="more-menu" data-module-menu-items="main-menu-nav">
+            {{ _("More") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+        </button>
+        <div id="more-menu-container" class="relative hidden">
+            <ul id="more-menu-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
+        </div>
+    </div>
+  </nav>
 {% endif %}
