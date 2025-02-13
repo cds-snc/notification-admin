@@ -11,3 +11,4 @@ import "./template/edit-template.cy";
 import "./template/text-direction.cy";
 import "./components/remaining_messages_summary.cy";
 import "./go-live-form.cy";
+import "./components/notice.cy";
