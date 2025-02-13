@@ -26,15 +26,15 @@
                     </li>
                 {% endfor %}
             {% endif %}
-            <button id="more-menu" type="button"
-                class="nav-menu-item justify-end px-4 w-min"
-                aria-expanded="false" aria-haspopup="true"
-                data-module="more-menu" data-module-menu-items="main-menu-nav"
-                data-module-menu-container="more-menu-container" data-has-items="false">
-                {{ _("More") }}
-                <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
-            </button>
         </ul>
+        <button id="more-menu" type="button"
+            aria-expanded="false" aria-haspopup="true"
+            class="nav-menu-item justify-end px-4 w-min"
+            data-module-menu-container="more-menu-container" data-has-items="false"
+            data-module="more-menu" data-module-menu-items="main-menu-nav">
+            {{ _("More") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+        </button>
         <div id="more-menu-container" class="relative hidden"></div>
     </div>
 </nav>

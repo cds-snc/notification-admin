@@ -1,0 +1,19 @@
+<h2 class="heading-medium">Disclosure Menu</h2>
+<nav class="relative">
+    <button aria-expanded="false" aria-haspopup="true" id="menu" data-module="menu"
+            data-menu-items="disclosure-menu-story"
+            class="nav-menu-item gap-2 px-4"
+            type="button">
+            {{ _("Menu") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+    </button>
+    <ul id="disclosure-menu-story" class="hidden menu-overlay">
+        {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
+            <li>
+                <a href="#" class="nav-menu-item">
+                    {{ item }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

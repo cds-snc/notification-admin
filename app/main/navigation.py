@@ -118,6 +118,6 @@ def get_account_nav():
     # Admin panel if admin
     if current_user.is_authenticated:
         if current_user.platform_admin:
-            nav.insert(0, {"name": _("Admin panel"), "url": url_for("main.live_services")})
+            nav.insert(0, {"key": "live_services", "name": _("Admin panel"), "url": url_for("main.live_services")})
 
     return nav
