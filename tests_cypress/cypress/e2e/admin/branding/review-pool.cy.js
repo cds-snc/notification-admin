@@ -12,12 +12,24 @@ import {
 import { Admin } from "../../../Notify/NotifyAPI";
 
 describe("Review Pool", () => {
-  beforeEach(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    cy.visit(`/services/${config.Services.Cypress}/review-pool`);
-  });
-
   context("General page functionality", () => {
+    before(() => {
+      // Link the test service to the org without branding
+      Admin.LinkOrganisationToService({
+        orgId: config.Organisations.DEFAULT_ORG_ID,
+        serviceId: config.Services.Cypress,
+      });
+
+      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
+      // Make sure we're logged out
+      cy.clearCookie("notify_admin_session");
+    });
+
+    beforeEach(() => {
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+      cy.visit(`/services/${config.Services.Cypress}/review-pool`);
+    });
+
     it("Loads review pool page", () => {
       cy.contains("h1", "Select another logo").should("be.visible");
       ReviewPoolPage.Components.AvailableLogos().each((element) => {
@@ -49,12 +61,8 @@ describe("Review Pool", () => {
       });
 
       Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
-
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-      cy.visit(
-        config.Hostnames.Admin +
-          `/services/${config.Services.Cypress}/review-pool`,
-      );
+      cy.visit(`/services/${config.Services.Cypress}/review-pool`);
     });
 
     it("Displays a banner indicating there is no custom branding associated with their organisation and a link to request custom branding", () => {
@@ -74,11 +82,10 @@ describe("Review Pool", () => {
       });
       // Clear the Cypress service cache so we pick up the new org
       Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
-
-      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
     });
 
     beforeEach(() => {
+      cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
       cy.visit(
         config.Hostnames.Admin +
           `/services/${config.Services.Cypress}/review-pool`,
