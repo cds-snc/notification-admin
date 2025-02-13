@@ -54,7 +54,7 @@
   }
 
   .table-row-group {
-    @apply bg-white odd:bg-gray-100 border-0 border-b-1 border-solid border-gray-300 ;
+    @apply bg-white odd:bg-gray-100 border-0 border-b-1 border-solid border-gray-300;
   }
 
   .dashboard-table .heading-medium {
