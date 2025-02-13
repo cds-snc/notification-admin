@@ -1,0 +1,11 @@
+##################################################################
+## This file lists commits that should be ignored by git blame. ##
+## e.g. Formatting commits, non-functional changes, etc.        ##
+##################################################################
+
+# Experiment: Formatting all python files with black https://github.com/cds-snc/notification-admin/commit/9e2a1effa7730ed8d54c3c723540856b50fe3f14
+9e2a1effa7730ed8d54c3c723540856b50fe3f14
+# Migration to Ruff: https://github.com/cds-snc/notification-admin/commit/1a94276ddde1d4c1ad2d62698d781ea14a1daaa5
+1a94276ddde1d4c1ad2d62698d781ea14a1daaa5
+# Ruff formatting: https://github.com/cds-snc/notification-admin/commit/c36701742e65a9bf99e93ddfcfcbf4e38335a573
+c36701742e65a9bf99e93ddfcfcbf4e38335a573

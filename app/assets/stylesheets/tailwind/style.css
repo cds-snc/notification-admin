@@ -55,6 +55,9 @@
 
 @import "./toolkit/wp.css";
 
+@import "../fa-svg-with-js.css";
+@import "../../../../node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css";
+
 /*! purgecss start ignore */
 @-ms-viewport {
   width: device-width;

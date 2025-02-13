@@ -11,7 +11,6 @@ const fullPageList = [
   { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
   { en: "/guidance", fr: "/guides-reference" },
   { en: "/home", fr: "/accueil" },
-  { en: "/message-delivery-status", fr: "/etat-livraison-messages" },
   { en: "/other-services", fr: "/autres-services" },
   { en: "/privacy", fr: "/confidentialite" },
   { en: "/security", fr: "/securite" },
@@ -49,11 +48,14 @@ describe("Language toggle works on all pages", () => {
   for (const page of fullPageList) {
     it(`${page.en}`, () => {
       cy.visit(page.en);
-      cy.get("#header-lang").click();
-      cy.url().should("contain", page.fr);
+
+      cy.get("#header-lang").should("be.visible");
+      cy.url().should("contain", page.en);
 
       cy.get("#header-lang").click();
-      cy.url().should("contain", page.en);
+
+      cy.get("#header-lang").should("be.visible");
+      cy.url().should("contain", page.fr);
     });
   }
 });

@@ -34,12 +34,12 @@ mkdir -p ~/.zfunc
 touch ~/.zfunc/_poetry
 poetry completions zsh > ~/.zfunc/_poetry
 
-# Install dependencies
+# Set up git blame to ignore certain revisions e.g. sweeping code formatting changes.
 cd /workspace
-poetry install
+git config blame.ignoreRevsFile .git-blame-ignore-revs
 
-# Install pre-commit hooks
-poetry run pre-commit install
+# Install dependencies
+poetry install
 
 # Poe the Poet plugin tab completions
 touch ~/.zfunc/_poe
@@ -54,3 +54,6 @@ npm run build
 
 # install npm deps (i.e. cypress)
 cd tests_cypress && npm install && npx cypress install && cd ..
+
+# Install pre-commit hooks
+poetry run pre-commit install
