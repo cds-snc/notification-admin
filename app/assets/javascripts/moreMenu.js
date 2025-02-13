@@ -6,7 +6,6 @@
     const isExpanded = $moreMenuButton.attr("aria-expanded") == "true";
     // Toggle the aria-expanded attribute FIRST
     $moreMenuButton.attr("aria-expanded", !isExpanded);
-    console.log("isExpanded", !isExpanded);
     // If true, class is added. To show the menu, we toggle with the inverse of isExpanded.
     $moreMenu.toggleClass("hidden", isExpanded);
   }
