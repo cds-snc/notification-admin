@@ -31,5 +31,4 @@
   .nav-menu-item[data-module="menu"][aria-expanded="true"] {
     @apply border-b-gray-300;
   }
-
 }
