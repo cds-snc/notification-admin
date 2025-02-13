@@ -26,7 +26,7 @@ let STAGING = {
         SimulatedPhone: ['+16132532222', '+16132532223', '+16132532224']
     },
     Organisations: {
-        'DEFAULT_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16',
+        'DEFAULT_ORG_ID': '8d9f3813-791f-463c-b3dc-22007ef362be',
         'NO_CUSTOM_BRANDING_ORG_ID': '4eef762f-383d-4068-81ca-c2c5c186eb16'
     },
     ReplyTos: {
