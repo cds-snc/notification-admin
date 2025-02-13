@@ -42,6 +42,7 @@ def manage_users(service_id):
         show_search_box=(len(current_service.team_members) > 7),
         form=SearchUsersForm(),
         permissions=permissions,
+        leave_service=request.args.get("leave_service"),
     )
 
 
@@ -129,21 +130,51 @@ def edit_user_permissions(service_id, user_id):
 
 
 @main.route("/services/<service_id>/users/<user_id>/delete", methods=["POST"])
-@user_has_permissions("manage_service")
+@user_has_permissions(allow_org_user=True)
 def remove_user_from_service(service_id, user_id):
     try:
         current_app.logger.info(
             "User {} is removing user: {} from service: {}".format(current_user.id, user_id, current_service.id)
         )
+        # if the user is trying to remove someone else from the service,
+        # they need to have the "manage_service" permission
+        if current_user.id != user_id and not current_user.has_permissions("manage_service"):
+            return redirect(url_for(".manage_users", service_id=service_id))
         service_api_client.remove_user_from_service(service_id, user_id)
     except HTTPError as e:
         msg = "You cannot remove the only user for a service"
         if e.status_code == 400 and msg in e.message:
             flash(_l(msg), "info")
             return redirect(url_for(".manage_users", service_id=service_id))
+        elif e.status_code == 400 and "SERVICE_CANNOT_HAVE_LT_2_MEMBERS" in e.message:
+            flash(
+                [
+                    _l("You cannot leave this team at this time"),
+                    _l(
+                        "“{}” has only 2 team members, the minimum for a live service. You’ll be able to leave once someone else accepts an invitation to join the team for this service."
+                    ).format(current_service.name),
+                ],
+                "info",
+            )
+            return redirect(url_for(".manage_users", service_id=service_id))
+        elif e.status_code == 400 and "SERVICE_NEEDS_USER_W_MANAGE_SETTINGS_PERM" in e.message:
+            flash(
+                [
+                    _l("You cannot leave this team at this time"),
+                    _l(
+                        "You're the only team member of “{}” with permission to “Manage settings and team”. To leave this service, you must first give another team member this permission."
+                    ).format(current_service.name),
+                ],
+                "info",
+            )
+            return redirect(url_for(".manage_users", service_id=service_id))
         else:
             abort(500, e)
 
+    if current_user.id == user_id:
+        # the user has removed themselves from the service
+        # redirect to the "your services" page
+        return redirect(url_for("main.choose_account"))
     return redirect(url_for(".manage_users", service_id=service_id))
 
 
