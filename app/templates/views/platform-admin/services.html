@@ -53,11 +53,11 @@ hidden_field_heading, text_field %}
           <a href="{{ url_for('main.service_dashboard', service_id=service['id']) }}" class="browse-list-link block mb-2">{{
             service['name']|truncate(35) }}</a>
           {% if not service['active'] %}
-          <span class="block text-small">{{ _("archived") }}</span>
+          <span class="text-small">{{ _("archived") }}</span>
           {% elif service['research_mode'] %}
-          <span class="block text-small">{{ _("research mode") }}</span>
+          <span class="text-small">{{ _("research mode") }}</span>
           {% elif not service['restricted'] %}
-          <span class="text-small text-red-700 font-bold">{{ _("Live") }}</span>
+          <span class="text-small text-red-700">{{ _("Live") }}</span>
           {% else %}
           <span></span>
           {% endif %}
