@@ -38,7 +38,7 @@ touch ~/.zfunc/_poetry
 poetry completions zsh > ~/.zfunc/_poetry
 
 # Manually create and activate a virtual environment with a static path
-python -m venv /home/vscode/.venvs/notification-admin
+python -m venv ${POETRY_VENV_PATH}
 source ${POETRY_VENV_PATH}/bin/activate
 
 # Set up git blame to ignore certain revisions e.g. sweeping code formatting changes.
