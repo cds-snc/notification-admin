@@ -14,15 +14,12 @@ import { Admin } from "../../../Notify/NotifyAPI";
 describe("Review Pool", () => {
   context("General page functionality", () => {
     before(() => {
+      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
       // Link the test service to the org without branding
       Admin.LinkOrganisationToService({
         orgId: config.Organisations.DEFAULT_ORG_ID,
         serviceId: config.Services.Cypress,
       });
-
-      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
-      // Make sure we're logged out
-      cy.clearCookie("notify_admin_session");
     });
 
     beforeEach(() => {
@@ -52,15 +49,13 @@ describe("Review Pool", () => {
 
   context("Service's org has no custom branding", () => {
     before(() => {
-      // Make sure we're logged out
-      cy.clearCookie("notify_admin_session");
+      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
       // Link the test service to the org without branding
       Admin.LinkOrganisationToService({
         orgId: config.Organisations.NO_CUSTOM_BRANDING_ORG_ID,
         serviceId: config.Services.Cypress,
       });
 
-      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
       cy.visit(`/services/${config.Services.Cypress}/review-pool`);
     });
@@ -73,15 +68,12 @@ describe("Review Pool", () => {
 
   context("Service's org has custom branding", () => {
     before(() => {
-      // Make sure we're logged out
-      cy.clearCookie("notify_admin_session");
-      // Link the test service to the org without branding
+      // Clear the Cypress service cache so we pick up the new org
+      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
       Admin.LinkOrganisationToService({
         orgId: config.Organisations.DEFAULT_ORG_ID,
         serviceId: config.Services.Cypress,
       });
-      // Clear the Cypress service cache so we pick up the new org
-      Admin.ClearCache({ pattern: `service-${config.Services.Cypress}` });
     });
 
     beforeEach(() => {
