@@ -2,7 +2,7 @@
 set -ex
 
 export POETRY_VERSION="1.7.1"
-export POETRY_VENV_PATH="/home/vscode/.venv/notification-admin"
+export POETRY_VENV_PATH="/home/vscode/.venv/workspace"
 
 # Define aliases
 echo -e "\n\n# User's Aliases" >> ~/.zshrc
