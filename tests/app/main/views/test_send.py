@@ -661,6 +661,7 @@ def test_upload_valid_csv_shows_preview_and_table(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
     extra_args,
     expected_recipient,
@@ -810,6 +811,7 @@ def test_file_name_truncated_to_fit_in_s3_metadata(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -855,6 +857,7 @@ def test_check_messages_replaces_invalid_characters_in_file_name(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -898,6 +901,7 @@ def test_show_all_columns_if_there_are_duplicate_recipient_columns(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -2690,6 +2694,7 @@ def test_check_messages_shows_trial_mode_error(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
     mocker,
 ):
