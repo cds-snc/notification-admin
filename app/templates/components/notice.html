@@ -2,33 +2,25 @@
   @param type - One of: 'info', 'success', 'error', 'warning'
   @param message - Text to display in notice (can include HTML)
 #}
-{% macro notice(type, title, headingLevel) %}
+{% macro notice(type, title, headingLevel=2) %}
   {# set icon/colors based on type #}
   {% 
     set display = {
       'info': {
         'icon': 'fa-circle-info',
-        'color': 'text-blue-500',
-        'border': 'border-blue-500',
-        'bg': 'bg-blue-100'
+        'label': _('Information'),
       },
       'success': {
         'icon': 'fa-circle-check',
-        'color': 'text-green',
-        'border': 'border-green',
-        'bg': 'bg-green-light'
+        'label': _('Success'),
       },
       'error': {
         'icon': 'fa-triangle-exclamation',
-        'color': 'text-red',
-        'border': 'border-red',
-        'bg': 'bg-red-light'
+        'label': _('Error'),
       },
       'warning': {
         'icon': 'fa-circle-exclamation',
-        'color': 'text-orange',
-        'border': 'border-orange',
-        'bg': 'bg-orange-light'
+        'label': _('Warning'),
       }
     }
   %}
@@ -36,25 +28,20 @@
   {%
     set screen_reader_text = {
       'info': _('Information'),
-      'success': _('Success'),
-      'error': _('Error'),
-      'warning': _('Warning'),
     }
   %}
-  <div class="notice notice-{{ type }} overflow-hidden rounded-lg px-12 pt-12 border-4 {{display[type]['border']}} {{display[type]['bg']}}" role="alert" data-testid="notice">
-    <div class="flex gap-4 items-baseline">
-        <div class="notice-icon {{ display[type]['color'] }}" data-testid="notice-icon">
-          <i aria-hidden="true" class="mb-2 fa-solid fa-lg {{ display[type]['icon'] }}"></i>
-          <span class="sr-only" data-testid="notice-icon-text">{{ screen_reader_text[type] }}: </span>
-        </div>
-        <div class="notice-content ml-6 pb-12">
-            {% if headingLevel is defined and headingLevel is number and headingLevel >= 1 and headingLevel <= 3 %}
-                <h{{ headingLevel }} class="notice-heading heading-small md:heading-large mt-4" >{{ title }}</h{{ headingLevel }} data-testid="notice-heading">
-            {% else %}
-                <div data-testid="notice-heading">{{ title }}</div>
-            {% endif %}
-            <div data-testid="notice-message">{{ caller() }}</div>
-        </div>
+  <div class="notice notice-{{ type }} flex gap-gutterHalf items-baseline" role="alert" data-testid="notice">
+    <div class="notice-icon border-l-[6px] translate-x-gutterHalf self-stretch py-gutterHalf" data-testid="notice-icon">
+      <i aria-hidden="true" class="fa-solid fa-lg -translate-x-1/2 -mx-[3px] bg-white py-2 {{ display[type]['icon'] }}"></i>
+      <span class="sr-only" data-testid="notice-icon-text">{{ display[type]['label'] }}: </span>
+    </div>
+    <div class="notice-content text-black flex flex-col gap-gutterHalf pt-gutterHalf">
+        {% if headingLevel is number and headingLevel >= 1 and headingLevel <= 3 %}
+            <h{{ headingLevel }} class="text-title" >{{ title }}</h{{ headingLevel }} data-testid="notice-heading">
+        {% else %}
+            <div class="text-large" data-testid="notice-heading">{{ title }}</div>
+        {% endif %}
+        <div class="*:last:mb-0" data-testid="notice-message">{{ caller() }}</div>
     </div>
   </div>
 {% endmacro %}
