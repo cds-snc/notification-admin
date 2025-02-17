@@ -29,6 +29,7 @@ from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.models.enum.notification_statuses import NotificationStatuses
 from app.models.enum.template_types import TemplateType
+from app.notify_client.notification_counts_client import notification_counts_client
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
@@ -390,8 +391,7 @@ def get_dashboard_partials(service_id):
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
     # get annual data from fact table (all data this year except today)
-    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-    annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
+    annual_data = notification_counts_client.get_total_notification_count(current_service)
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
