@@ -59,6 +59,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             params={"today_only": today_only, "limit_days": limit_days},
         )["data"]
 
+    def get_year_to_date_service_statistics(self, service_id):
+        return self.get(
+            "/service/{0}/annual-limit-stats/".format(service_id),
+        )
+
     def get_services(self, params_dict=None):
         """
         Retrieve a list of services.
