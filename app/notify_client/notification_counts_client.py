@@ -1,50 +1,35 @@
-from notifications_utils.clients.redis import (
-    email_daily_count_cache_key,
-    sms_daily_count_cache_key,
-)
-
-from app import redis_client, service_api_client, template_statistics_client
+from app import service_api_client
+from app.extensions import annual_limit_client
 from app.models.service import Service
-from app.utils import get_current_financial_year
 
 
 class NotificationCounts:
-    def get_all_notification_counts_for_today(self, service_id):
-        # try to get today's stats from redis
-        todays_sms = redis_client.get(sms_daily_count_cache_key(service_id))
-        todays_sms = int(todays_sms) if todays_sms is not None else None
+    def get_total_notification_count(self, service: Service):
+        """
+        Get the total number of notifications sent by a service
+        Args:
+            service_id (str): The ID of the service
+        Returns:
+            int: The total number of notifications sent by the service
+        """
 
-        todays_email = redis_client.get(email_daily_count_cache_key(service_id))
-        todays_email = int(todays_email) if todays_email is not None else None
-
-        if todays_sms is not None and todays_email is not None:
-            return {"sms": todays_sms, "email": todays_email}
-        # fallback to the API if the stats are not in redis
+        annual_limit_data = ""
+        if annual_limit_client.was_seeded_today(service.id):
+            # get data from redis
+            annual_limit_data = annual_limit_client.get_all_notification_counts(service.id)
         else:
-            stats = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-            transformed_stats = _aggregate_notifications_stats(stats)
+            # get data from db
+            annual_limit_data = service_api_client.get_year_to_date_service_statistics(service.id)
 
-            return transformed_stats
-
-    def get_all_notification_counts_for_year(self, service_id, year):
-        """
-        Get total number of notifications by type for the current service for the current year
-
-        Return value:
-        {
-            'sms': int,
-            'email': int
+        # transform data so dashboard can use it
+        return {
+            "sms": annual_limit_data["total_sms_fiscal_year_to_yesterday"]
+            + annual_limit_data["sms_failed_today"]
+            + annual_limit_data["sms_delivered_today"],
+            "email": annual_limit_data["total_email_fiscal_year_to_yesterday"]
+            + annual_limit_data["email_failed_today"]
+            + annual_limit_data["email_delivered_today"],
         }
-
-        """
-        stats_today = self.get_all_notification_counts_for_today(service_id)
-        stats_this_year = service_api_client.get_monthly_notification_stats(service_id, year)["data"]
-        stats_this_year = _aggregate_stats_from_service_api(stats_this_year)
-        # aggregate stats_today and stats_this_year
-        for template_type in ["sms", "email"]:
-            stats_this_year[template_type] += stats_today[template_type]
-
-        return stats_this_year
 
     def get_limit_stats(self, service: Service):
         """
@@ -82,69 +67,66 @@ class NotificationCounts:
                 }
         """
 
-        current_financial_year = get_current_financial_year()
-        sent_today = self.get_all_notification_counts_for_today(service.id)
-        # We are interested in getting data for the financial year, not the calendar year
-        sent_thisyear = self.get_all_notification_counts_for_year(service.id, current_financial_year)
+        annual_limit_data = ""
+        if annual_limit_client.was_seeded_today(service.id):
+            # get data from redis
+            annual_limit_data = annual_limit_client.get_all_notification_counts(service.id)
+        else:
+            # get data from db
+            annual_limit_data = service_api_client.get_year_to_date_service_statistics(service.id)
 
+        # notifications_v2: {
+        #     sms_delivered_today: int,
+        #     email_delivered_today: int,
+        #     sms_failed_today: int,
+        #     email_failed_today: int,
+        #     total_sms_fiscal_year_to_yesterday: int,
+        #     total_email_fiscal_year_to_yesterday: int,
+        # }
         limit_stats = {
             "email": {
                 "annual": {
                     "limit": service.email_annual_limit,
-                    "sent": sent_thisyear["email"],
-                    "remaining": service.email_annual_limit - sent_thisyear["email"],
+                    "sent": annual_limit_data["total_email_fiscal_year_to_yesterday"]
+                    + annual_limit_data["email_failed_today"]
+                    + annual_limit_data["email_delivered_today"],
+                    "remaining": service.email_annual_limit
+                    - (
+                        annual_limit_data["total_email_fiscal_year_to_yesterday"]
+                        + annual_limit_data["email_failed_today"]
+                        + annual_limit_data["email_delivered_today"]
+                    ),
                 },
                 "daily": {
                     "limit": service.message_limit,
-                    "sent": sent_today["email"],
-                    "remaining": service.message_limit - sent_today["email"],
+                    "sent": annual_limit_data["email_failed_today"] + annual_limit_data["email_delivered_today"],
+                    "remaining": service.message_limit
+                    - (annual_limit_data["email_delivered_today"] + annual_limit_data["email_failed_today"]),
                 },
             },
             "sms": {
                 "annual": {
                     "limit": service.sms_annual_limit,
-                    "sent": sent_thisyear["sms"],
-                    "remaining": service.sms_annual_limit - sent_thisyear["sms"],
+                    "sent": annual_limit_data["total_sms_fiscal_year_to_yesterday"]
+                    + annual_limit_data["sms_failed_today"]
+                    + annual_limit_data["sms_delivered_today"],
+                    "remaining": service.sms_annual_limit
+                    - (
+                        annual_limit_data["total_sms_fiscal_year_to_yesterday"]
+                        + annual_limit_data["sms_failed_today"]
+                        + annual_limit_data["sms_delivered_today"]
+                    ),
                 },
                 "daily": {
                     "limit": service.sms_daily_limit,
-                    "sent": sent_today["sms"],
-                    "remaining": service.sms_daily_limit - sent_today["sms"],
+                    "sent": annual_limit_data["sms_failed_today"] + annual_limit_data["sms_delivered_today"],
+                    "remaining": service.sms_daily_limit
+                    - (annual_limit_data["sms_delivered_today"] + annual_limit_data["sms_failed_today"]),
                 },
             },
         }
 
         return limit_stats
-
-
-# TODO: consolidate this function and other functions that transform the results of template_statistics_client calls
-def _aggregate_notifications_stats(template_statistics):
-    template_statistics = _filter_out_cancelled_stats(template_statistics)
-    notifications = {"sms": 0, "email": 0}
-    for stat in template_statistics:
-        notifications[stat["template_type"]] += stat["count"]
-
-    return notifications
-
-
-def _filter_out_cancelled_stats(template_statistics):
-    return [s for s in template_statistics if s["status"] != "cancelled"]
-
-
-def _aggregate_stats_from_service_api(stats):
-    """Aggregate monthly notification stats excluding cancelled"""
-    total_stats = {"sms": {}, "email": {}}
-
-    for month_data in stats.values():
-        for msg_type in ["sms", "email"]:
-            if msg_type in month_data:
-                for status, count in month_data[msg_type].items():
-                    if status != "cancelled":
-                        if status not in total_stats[msg_type]:
-                            total_stats[msg_type][status] = 0
-                        total_stats[msg_type][status] += count
-
-    return {msg_type: sum(counts.values()) for msg_type, counts in total_stats.items()}
 
 
 notification_counts_client = NotificationCounts()
