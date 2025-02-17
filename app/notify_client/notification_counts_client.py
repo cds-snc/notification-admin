@@ -13,7 +13,7 @@ class NotificationCounts:
             int: The total number of notifications sent by the service
         """
 
-        annual_limit_data = ""
+        annual_limit_data = {}
         if annual_limit_client.was_seeded_today(service.id):
             # get data from redis
             annual_limit_data = annual_limit_client.get_all_notification_counts(service.id)
@@ -67,7 +67,7 @@ class NotificationCounts:
                 }
         """
 
-        annual_limit_data = ""
+        annual_limit_data = {}
         if annual_limit_client.was_seeded_today(service.id):
             # get data from redis
             annual_limit_data = annual_limit_client.get_all_notification_counts(service.id)
