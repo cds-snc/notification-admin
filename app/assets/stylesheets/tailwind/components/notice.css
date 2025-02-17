@@ -1,11 +1,11 @@
 .notice-info .notice-icon {
-    @apply text-blue-500 border-blue-300
+    @apply text-blue-slightlight border-blue-border
 }
 .notice-success .notice-icon {
-    @apply text-green-500 border-green-300
+    @apply text-green border-green-border
 }
 .notice-error .notice-icon {
-    @apply text-red-500 border-red-300
+    @apply text-red-mellow border-red-300
 }
 .notice-warning .notice-icon {
     @apply text-yellow-500 border-yellow-300
