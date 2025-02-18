@@ -30,7 +30,7 @@
     @apply text-blue;
   }
 
-  a:focus-within {
+  a:focus-visible {
     @apply bg-yellow border-b-2 border-blue no-underline outline outline-offset-0 outline-2 outline-yellow;
   }
 
