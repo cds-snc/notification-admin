@@ -1601,8 +1601,8 @@ werkzeug = "3.0.4"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "update-redis-client"
-resolved_reference = "818d6f5b72f32364a153f42ab3040eec5b5bb237"
+reference = "53.2.0"
+resolved_reference = "4f16210a5f0346351cb0a13ad31cc5c796e97ec6"
 
 [[package]]
 name = "openpyxl"
@@ -2769,4 +2769,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "f26522b362b4f7ccf80a119b7fd6fb1d05c5d70f63f3a567e7978cd93d3446e6"
+content-hash = "c5c99693d0e04c4c0c660a0b3995a27737f67d71ed477dbc41569443a127e22a"
