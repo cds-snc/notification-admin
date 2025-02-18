@@ -16,7 +16,7 @@
     {{ body }}
     {% if context %}
     <p class="banner-context">
-      {{ context }}
+      {{ context|safe }}
     </p>
     {% endif %}
     {% if delete_button %}
