@@ -1587,11 +1587,10 @@ def test_incorrect_reply_to_domain_not_in_team_member_list(
         set(app_.config.get("REPLY_TO_DOMAINS_SAFELIST", []))
     )
 
-    assert (
-        normalize_spaces(page.select_one(".error-message").text)
-        == "not-team-member-domain.ca is not an email domain used by team members of this service. Only email domains found in your team list can be used as an email reply-to: {}.".format(
-            ", ".join(valid_domains)
-        )
+    assert normalize_spaces(
+        page.select_one(".error-message").text
+    ) == "not-team-member-domain.ca is not a government or team email addressUse one of the following domains:{}".format(
+        "".join([f"@{domain}" for domain in valid_domains])
     )
 
 
