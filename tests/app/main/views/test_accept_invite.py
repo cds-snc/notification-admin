@@ -163,6 +163,17 @@ def test_accepting_invite_removes_invite_from_session(
 
     mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
     mocker.patch("app.billing_api_client.get_billable_units", return_value="")
+    mocker.patch(
+        "app.notify_client.notification_counts_client.service_api_client.get_year_to_date_service_statistics",
+        return_value={
+            "sms_delivered_today": 5,
+            "email_delivered_today": 10,
+            "sms_failed_today": 5,
+            "email_failed_today": 10,
+            "total_sms_fiscal_year_to_yesterday": 90,
+            "total_email_fiscal_year_to_yesterday": 180,
+        },
+    )
 
     client_request.login(user)
 
@@ -504,6 +515,17 @@ def test_new_invited_user_verifies_and_added_to_service(
     mocker,
 ):
     # visit accept token page
+    mocker.patch(
+        "app.notify_client.notification_counts_client.service_api_client.get_year_to_date_service_statistics",
+        return_value={
+            "sms_delivered_today": 5,
+            "email_delivered_today": 10,
+            "sms_failed_today": 5,
+            "email_failed_today": 10,
+            "total_sms_fiscal_year_to_yesterday": 90,
+            "total_email_fiscal_year_to_yesterday": 180,
+        },
+    )
     response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
     assert response.status_code == 302
     assert response.location == url_for("main.register_from_invite")

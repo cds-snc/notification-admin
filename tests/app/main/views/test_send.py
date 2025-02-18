@@ -386,6 +386,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     mocker.patch(
@@ -501,6 +502,7 @@ def test_upload_csv_file_with_missing_columns_shows_error(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     service_one,
     fake_uuid,
     file_contents,
@@ -561,6 +563,7 @@ def test_upload_csv_variables_too_long_shows_banner_and_inline_cell_errors(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     service_one,
     fake_uuid,
     file_contents,
@@ -658,6 +661,7 @@ def test_upload_valid_csv_shows_preview_and_table(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
     extra_args,
     expected_recipient,
@@ -807,6 +811,7 @@ def test_file_name_truncated_to_fit_in_s3_metadata(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -852,6 +857,7 @@ def test_check_messages_replaces_invalid_characters_in_file_name(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -895,6 +901,7 @@ def test_show_all_columns_if_there_are_duplicate_recipient_columns(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     with client_request.session_transaction() as session:
@@ -942,6 +949,7 @@ def test_404_for_previewing_a_row_out_of_range(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
     row_index,
     expected_status,
@@ -1232,6 +1240,7 @@ def test_send_one_off_or_test_shows_placeholders_in_correct_order(
     fake_uuid,
     mock_has_no_jobs,
     mock_get_service_template_with_multiple_placeholders,
+    mock_annual_limit_client_stats,
     endpoint,
     step_index,
     prefilled,
@@ -2082,6 +2091,7 @@ def test_upload_csvfile_with_valid_phone_shows_all_numbers(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     service_one,
     fake_uuid,
     mock_s3_upload,
@@ -2138,6 +2148,7 @@ def test_upload_csvfile_with_international_validates(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
     international_sms_permission,
     should_allow_international,
@@ -2176,6 +2187,7 @@ def test_test_message_can_only_be_sent_now(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     content = client_request.get(
@@ -2485,6 +2497,7 @@ def test_check_messages_back_link(
     mock_get_jobs,
     mock_s3_download,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
     mocker,
     template_type,
@@ -2681,6 +2694,7 @@ def test_check_messages_shows_trial_mode_error(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
     mocker,
 ):
@@ -2729,6 +2743,7 @@ def test_warns_if_file_sent_already(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     fake_uuid,
     mocker,
     uploaded_file_name,
@@ -2762,6 +2777,7 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_set_metadata,
+    mock_annual_limit_client_stats,
     fake_uuid,
 ):
     mocker.patch("app.main.views.send.s3download", return_value=("phone number,\n+16502532222"))
@@ -2801,6 +2817,7 @@ def test_check_messages_shows_over_max_row_error(
     mock_get_job_doesnt_exist,
     mock_get_jobs,
     mock_s3_download,
+    mock_annual_limit_client_stats,
     fake_uuid,
     mocker,
 ):
@@ -3153,6 +3170,7 @@ def test_reply_to_is_previewed_if_chosen(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     get_default_reply_to_email_address,
     fake_uuid,
     endpoint,
@@ -3241,6 +3259,7 @@ def test_sms_sender_is_previewed(
     mock_get_template_statistics,
     mock_get_job_doesnt_exist,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     get_default_sms_sender,
     fake_uuid,
     endpoint,
