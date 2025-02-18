@@ -15,6 +15,12 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+from notifications_utils.clients.redis.annual_limit import (
+    EMAIL_DELIVERED_TODAY,
+    EMAIL_FAILED_TODAY,
+    SMS_DELIVERED_TODAY,
+    SMS_FAILED_TODAY,
+)
 from werkzeug.utils import redirect
 
 from app import (
@@ -234,10 +240,11 @@ def monthly(service_id):
         if mode == "redis":
             # the redis client omits properties if there are no counts yet, so account for this here\
             daily_redis = {
-                field: daily.get(field, 0) for field in ["sms_delivered", "sms_failed", "email_delivered", "email_failed"]
+                field: daily.get(field, 0)
+                for field in [SMS_DELIVERED_TODAY, SMS_FAILED_TODAY, EMAIL_DELIVERED_TODAY, EMAIL_FAILED_TODAY]
             }
-            annual["sms"] += daily_redis["sms_delivered"] + daily_redis["sms_failed"]
-            annual["email"] += daily_redis["email_delivered"] + daily_redis["email_failed"]
+            annual["sms"] += daily_redis[SMS_DELIVERED_TODAY] + daily_redis[SMS_FAILED_TODAY]
+            annual["email"] += daily_redis[EMAIL_DELIVERED_TODAY] + daily_redis[EMAIL_FAILED_TODAY]
         elif mode == "db":
             annual["sms"] += daily["sms"]["requested"]
             annual["email"] += daily["email"]["requested"]
@@ -248,13 +255,14 @@ def monthly(service_id):
         if mode == "redis":
             # the redis client omits properties if there are no counts yet, so account for this here\
             daily_redis = {
-                field: daily.get(field, 0) for field in ["sms_delivered", "sms_failed", "email_delivered", "email_failed"]
+                field: daily.get(field, 0)
+                for field in [SMS_DELIVERED_TODAY, SMS_FAILED_TODAY, EMAIL_DELIVERED_TODAY, EMAIL_FAILED_TODAY]
             }
 
-            monthly[0]["sms_counts"]["failed"] += daily_redis["sms_failed"]
-            monthly[0]["sms_counts"]["requested"] += daily_redis["sms_failed"] + daily_redis["sms_delivered"]
-            monthly[0]["email_counts"]["failed"] += daily_redis["email_failed"]
-            monthly[0]["email_counts"]["requested"] += daily_redis["email_failed"] + daily_redis["email_delivered"]
+            monthly[0]["sms_counts"]["failed"] += daily_redis[SMS_FAILED_TODAY]
+            monthly[0]["sms_counts"]["requested"] += daily_redis[SMS_FAILED_TODAY] + daily_redis[SMS_DELIVERED_TODAY]
+            monthly[0]["email_counts"]["failed"] += daily_redis[EMAIL_FAILED_TODAY]
+            monthly[0]["email_counts"]["requested"] += daily_redis[EMAIL_FAILED_TODAY] + daily_redis[EMAIL_DELIVERED_TODAY]
         elif mode == "db":
             monthly[0]["sms_counts"]["failed"] += daily["sms"]["failed"]
             monthly[0]["sms_counts"]["requested"] += daily["sms"]["requested"]
