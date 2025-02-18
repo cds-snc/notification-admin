@@ -171,13 +171,23 @@ jobs:
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
 
       - name: Run the cypress tests
-        uses: cypress-io/github-action@d79d2d530a66e641eb4a5f227e13bc985c60b964 # v4.2.2
+        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         env:
           CYPRESS_BASE_URL: ${{needs.deploy-test-admin.outputs.LAMBDA_URL}}
         with:
           record: false
-          config: "video=false,screenshotOnRunFailure=false"
+          config: "video=true,screenshotOnRunFailure=true"
           build: npx cypress info
           working-directory: tests_cypress
           spec: |
             cypress/e2e/admin/ci.cy.js
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-artifacts
+          path: |
+            tests_cypress/cypress/videos
+            tests_cypress/cypress/screenshots
+          retention-days: 30
