@@ -390,7 +390,7 @@ def get_dashboard_partials(service_id):
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
-    # get annual data from fact table (all data this year except today)
+    # get annual data (either from redis or the api)
     annual_data = notification_counts_client.get_total_notification_count(current_service)
 
     return {
