@@ -32,7 +32,7 @@
         {% endif %}
         {% set set_lang_url = lang_url or request.path %}
         <li lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
-          <a class="nav-menu-item min-w-target justify-center" href="{{ url_for('main.set_lang') + '?from=' + set_lang_url }}">
+          <a id="header-lang" class="nav-menu-item min-w-target justify-center" href="{{ url_for('main.set_lang') + '?from=' + set_lang_url }}">
             <span class="sr-only sm:not-sr-only">{{ long_lang_switch }}</span>
             <abbr class="sm:hidden" title="{{ long_lang_switch }}">{{ lang_switch }}</abbr>
           </a>
