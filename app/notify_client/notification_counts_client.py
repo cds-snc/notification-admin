@@ -1,3 +1,12 @@
+from notifications_utils.clients.redis.annual_limit import (
+    EMAIL_DELIVERED_TODAY,
+    EMAIL_FAILED_TODAY,
+    SMS_DELIVERED_TODAY,
+    SMS_FAILED_TODAY,
+    TOTAL_EMAIL_FISCAL_YEAR_TO_YESTERDAY,
+    TOTAL_SMS_FISCAL_YEAR_TO_YESTERDAY,
+)
+
 from app import service_api_client
 from app.extensions import annual_limit_client
 from app.models.service import Service
@@ -23,12 +32,12 @@ class NotificationCounts:
 
         # transform data so dashboard can use it
         return {
-            "sms": annual_limit_data["total_sms_fiscal_year_to_yesterday"]
-            + annual_limit_data["sms_failed_today"]
-            + annual_limit_data["sms_delivered_today"],
-            "email": annual_limit_data["total_email_fiscal_year_to_yesterday"]
-            + annual_limit_data["email_failed_today"]
-            + annual_limit_data["email_delivered_today"],
+            "sms": annual_limit_data[TOTAL_SMS_FISCAL_YEAR_TO_YESTERDAY]
+            + annual_limit_data[SMS_FAILED_TODAY]
+            + annual_limit_data[SMS_DELIVERED_TODAY],
+            "email": annual_limit_data[TOTAL_EMAIL_FISCAL_YEAR_TO_YESTERDAY]
+            + annual_limit_data[EMAIL_FAILED_TODAY]
+            + annual_limit_data[EMAIL_DELIVERED_TODAY],
         }
 
     def get_limit_stats(self, service: Service):
@@ -72,56 +81,48 @@ class NotificationCounts:
             # get data from redis
             annual_limit_data = annual_limit_client.get_all_notification_counts(service.id)
         else:
-            # get data from db
+            # get data from the api
             annual_limit_data = service_api_client.get_year_to_date_service_statistics(service.id)
 
-        # notifications_v2: {
-        #     sms_delivered_today: int,
-        #     email_delivered_today: int,
-        #     sms_failed_today: int,
-        #     email_failed_today: int,
-        #     total_sms_fiscal_year_to_yesterday: int,
-        #     total_email_fiscal_year_to_yesterday: int,
-        # }
         limit_stats = {
             "email": {
                 "annual": {
                     "limit": service.email_annual_limit,
-                    "sent": annual_limit_data["total_email_fiscal_year_to_yesterday"]
-                    + annual_limit_data["email_failed_today"]
-                    + annual_limit_data["email_delivered_today"],
+                    "sent": annual_limit_data[TOTAL_EMAIL_FISCAL_YEAR_TO_YESTERDAY]
+                    + annual_limit_data[EMAIL_FAILED_TODAY]
+                    + annual_limit_data[EMAIL_DELIVERED_TODAY],
                     "remaining": service.email_annual_limit
                     - (
-                        annual_limit_data["total_email_fiscal_year_to_yesterday"]
-                        + annual_limit_data["email_failed_today"]
-                        + annual_limit_data["email_delivered_today"]
+                        annual_limit_data[TOTAL_EMAIL_FISCAL_YEAR_TO_YESTERDAY]
+                        + annual_limit_data[EMAIL_FAILED_TODAY]
+                        + annual_limit_data[EMAIL_DELIVERED_TODAY]
                     ),
                 },
                 "daily": {
                     "limit": service.message_limit,
-                    "sent": annual_limit_data["email_failed_today"] + annual_limit_data["email_delivered_today"],
+                    "sent": annual_limit_data[EMAIL_FAILED_TODAY] + annual_limit_data[EMAIL_DELIVERED_TODAY],
                     "remaining": service.message_limit
-                    - (annual_limit_data["email_delivered_today"] + annual_limit_data["email_failed_today"]),
+                    - (annual_limit_data[EMAIL_DELIVERED_TODAY] + annual_limit_data[EMAIL_FAILED_TODAY]),
                 },
             },
             "sms": {
                 "annual": {
                     "limit": service.sms_annual_limit,
-                    "sent": annual_limit_data["total_sms_fiscal_year_to_yesterday"]
-                    + annual_limit_data["sms_failed_today"]
-                    + annual_limit_data["sms_delivered_today"],
+                    "sent": annual_limit_data[TOTAL_SMS_FISCAL_YEAR_TO_YESTERDAY]
+                    + annual_limit_data[SMS_FAILED_TODAY]
+                    + annual_limit_data[SMS_DELIVERED_TODAY],
                     "remaining": service.sms_annual_limit
                     - (
-                        annual_limit_data["total_sms_fiscal_year_to_yesterday"]
-                        + annual_limit_data["sms_failed_today"]
-                        + annual_limit_data["sms_delivered_today"]
+                        annual_limit_data[TOTAL_SMS_FISCAL_YEAR_TO_YESTERDAY]
+                        + annual_limit_data[SMS_FAILED_TODAY]
+                        + annual_limit_data[SMS_DELIVERED_TODAY]
                     ),
                 },
                 "daily": {
                     "limit": service.sms_daily_limit,
-                    "sent": annual_limit_data["sms_failed_today"] + annual_limit_data["sms_delivered_today"],
+                    "sent": annual_limit_data[SMS_FAILED_TODAY] + annual_limit_data[SMS_DELIVERED_TODAY],
                     "remaining": service.sms_daily_limit
-                    - (annual_limit_data["sms_delivered_today"] + annual_limit_data["sms_failed_today"]),
+                    - (annual_limit_data[SMS_DELIVERED_TODAY] + annual_limit_data[SMS_FAILED_TODAY]),
                 },
             },
         }
