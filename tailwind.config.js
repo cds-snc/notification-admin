@@ -1,6 +1,43 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
+  safelist: [
+    "line-under",
+    "flip",
+    "phone",
+    "bottom-2",
+    "bg-red",
+    "list-entry-remove",
+    "shim",
+    "content-fixed",
+    "text-gray-grey1",
+    "border-gray-grey2",
+    "pl-doubleGutter",
+    "px-doubleGutter",
+    "pt-gutterHalf",
+    "mb-12",
+    "clear-both",
+    "w-auto",
+    "text-right",
+    "template-list-selected-counter",
+    "w-2/3",
+    "mb-8",
+    "focus:outline-none",
+    "w-3/6",
+    "pr-gutter",
+    "mt-0",
+    "max-w-xl",
+    "bg-emptyBird",
+    "bg-emptyBirdHole",
+    "bg-emptyFlower",
+    "bg-emptyTruck",
+    "bg-emptyBirdCurious",
+    "sm:bg-emptyBird",
+    "sm:bg-emptyBirdHole",
+    "sm:bg-emptyFlower",
+    "sm:bg-emptyTruck",
+    "sm:bg-emptyBirdCurious",
+  ],
   content: [
     "./app/**/*.{html,css,js}",
     "./app/assets/javascripts/fontawesome.js"
@@ -71,10 +108,12 @@ module.exports = {
         hover: "#990c1a",
         border: "#6a0812",
         mellow: "#df3034",
+        light: "#fef6f6",
         300: "#D74D42",
       },
       white: "#FFF",
       blue: {
+        light: "#f5f9ff",
         lighter: "#B2E3FF",
         DEFAULT: "#213045",
         border: "#1A3152",
@@ -103,6 +142,7 @@ module.exports = {
         lightgrey: "#C0C1C3",
         visitedlight: "#929AA4",
         visiteddark: "#C8CDD1",
+        light: "#f5fff9",
         /* trying to slowly implement a more consistent scale below */
         100: "#F0F2F5",
         200: "#CFD5DD",
@@ -132,6 +172,10 @@ module.exports = {
         100: "#D3E766",
         700: "#545E00",
       },
+      orange: {
+        light: "#fef9f6",
+        DEFAULT: "#C86117",
+      }
     },
     extend: {
       animation: {
