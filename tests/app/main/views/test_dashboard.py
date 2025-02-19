@@ -6,6 +6,12 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
+from notifications_utils.clients.redis.annual_limit import (
+    EMAIL_DELIVERED_TODAY,
+    EMAIL_FAILED_TODAY,
+    SMS_DELIVERED_TODAY,
+    SMS_FAILED_TODAY,
+)
 
 from app.main.views.dashboard import (
     aggregate_notifications_stats,
@@ -141,6 +147,7 @@ def test_task_shortcuts_are_visible_based_on_permissions(
     mock_get_jobs,
     mock_get_template_statistics,
     mock_get_service_statistics,
+    mock_annual_limit_client_stats,
     permissions: list,
     text_in_page: list,
     text_not_in_page: list,
@@ -175,6 +182,7 @@ def test_survey_widget_presence(
     mock_get_jobs,
     mock_get_template_statistics,
     mock_get_service_statistics,
+    mock_annual_limit_client_stats,
     mocker,
     admin_url,
     is_widget_present,
@@ -199,6 +207,7 @@ def test_sending_link_has_query_param(
     mock_get_jobs,
     mock_get_template_statistics,
     mock_get_service_statistics,
+    mock_annual_limit_client_stats,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
     client_request.login(active_user_with_permissions)
@@ -217,6 +226,7 @@ def test_no_sending_link_if_no_templates(
     mock_get_template_statistics,
     mock_get_service_statistics,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
 ):
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
@@ -232,6 +242,7 @@ def test_should_show_recent_templates_on_dashboard(
     mock_get_service_statistics,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    mock_annual_limit_client_stats,
     app_,
 ):
     mock_template_stats = mocker.patch(
@@ -386,6 +397,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
     mock_get_jobs,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    mock_annual_limit_client_stats,
 ):
     page = client_request.get(
         "main.service_dashboard",
@@ -414,6 +426,7 @@ def test_daily_usage_section_shown(
     mock_get_template_statistics,
     mock_get_service_statistics,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     service_one,
     app_,
 ):
@@ -458,6 +471,7 @@ def test_correct_font_size_for_big_numbers(
     mock_get_template_statistics,
     mock_get_service_statistics,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     service_one,
     permissions,
     totals,
@@ -567,6 +581,7 @@ def test_dashboard_single_and_plural_v15(
     mock_get_template_statistics,
     mock_get_service_statistics,
     mock_get_jobs,
+    mock_annual_limit_client_stats,
     service_one,
     permissions,
     totals,
@@ -597,6 +612,7 @@ def test_should_show_recent_jobs_on_dashboard(
     mock_get_jobs,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    mock_annual_limit_client_stats,
 ):
     page = client_request.get(
         "main.service_dashboard",
@@ -967,6 +983,7 @@ def test_menu_all_services_for_platform_admin_user(
     mock_get_usage,
     mock_get_inbound_sms_summary,
     mock_get_free_sms_fragment_limit,
+    mock_annual_limit_client_stats,
 ):
     with app_.test_request_context():
         resp = _test_dashboard_menu(mocker, app_, platform_admin_user, service_one, [])
@@ -1006,6 +1023,7 @@ def test_route_for_service_permissions(
     mock_get_service_statistics,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    mock_annual_limit_client_stats,
 ):
     with app_.test_request_context():
         validate_route_permission(
@@ -1050,6 +1068,7 @@ def test_service_dashboard_updates_gets_dashboard_totals(
     mock_get_jobs,
     mock_get_usage,
     mock_get_inbound_sms_summary,
+    mock_annual_limit_client_stats,
 ):
     mocker.patch(
         "app.main.views.dashboard.get_dashboard_totals",
@@ -1372,6 +1391,7 @@ def test_dashboard_daily_limits(
     mock_get_service_templates,
     mock_get_template_statistics,
     mock_get_service_statistics,
+    mock_annual_limit_client_stats,
     mock_get_jobs,
     service_one,
     totals,
@@ -1416,6 +1436,7 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        mock_annual_limit_client_stats,
         app_,
     ):
         with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
@@ -1439,6 +1460,7 @@ class TestAnnualLimits:
         mock_get_jobs,
         mock_get_service_statistics,
         mock_get_usage,
+        mock_annual_limit_client_stats,
         app_,
     ):
         with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
@@ -1459,7 +1481,7 @@ class TestAnnualLimits:
         "redis_daily_data, monthly_data, expected_data",
         [
             (
-                {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500},
+                {SMS_DELIVERED_TODAY: 100, EMAIL_DELIVERED_TODAY: 50, SMS_FAILED_TODAY: 1000, EMAIL_FAILED_TODAY: 500},
                 {
                     "data": {
                         "2024-04": {"sms": {}, "email": {}, "letter": {}},
@@ -1483,7 +1505,7 @@ class TestAnnualLimits:
                 {"email": 990, "letter": 0, "sms": 1420},
             ),
             (
-                {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6},
+                {SMS_DELIVERED_TODAY: 6, EMAIL_DELIVERED_TODAY: 6, SMS_FAILED_TODAY: 6, EMAIL_FAILED_TODAY: 6},
                 {
                     "data": {
                         "2024-10": {
@@ -1582,7 +1604,7 @@ class TestAnnualLimits:
             # mock annual_limit_client.get_all_notification_counts
             mocker.patch(
                 "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value={"sms_delivered": 0, "email_delivered": 0, "sms_failed": 0, "email_failed": 0},
+                return_value={SMS_DELIVERED_TODAY: 0, EMAIL_DELIVERED_TODAY: 0, SMS_FAILED_TODAY: 0, EMAIL_FAILED_TODAY: 0},
             )
 
             mocker.patch(
