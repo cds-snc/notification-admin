@@ -6,6 +6,12 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
+from notifications_utils.clients.redis.annual_limit import (
+    EMAIL_DELIVERED_TODAY,
+    EMAIL_FAILED_TODAY,
+    SMS_DELIVERED_TODAY,
+    SMS_FAILED_TODAY,
+)
 
 from app.main.views.dashboard import (
     aggregate_notifications_stats,
@@ -1475,7 +1481,7 @@ class TestAnnualLimits:
         "redis_daily_data, monthly_data, expected_data",
         [
             (
-                {"sms_delivered": 100, "email_delivered": 50, "sms_failed": 1000, "email_failed": 500},
+                {SMS_DELIVERED_TODAY: 100, EMAIL_DELIVERED_TODAY: 50, SMS_FAILED_TODAY: 1000, EMAIL_FAILED_TODAY: 500},
                 {
                     "data": {
                         "2024-04": {"sms": {}, "email": {}, "letter": {}},
@@ -1499,7 +1505,7 @@ class TestAnnualLimits:
                 {"email": 990, "letter": 0, "sms": 1420},
             ),
             (
-                {"sms_delivered": 6, "email_delivered": 6, "sms_failed": 6, "email_failed": 6},
+                {SMS_DELIVERED_TODAY: 6, EMAIL_DELIVERED_TODAY: 6, SMS_FAILED_TODAY: 6, EMAIL_FAILED_TODAY: 6},
                 {
                     "data": {
                         "2024-10": {
@@ -1598,7 +1604,7 @@ class TestAnnualLimits:
             # mock annual_limit_client.get_all_notification_counts
             mocker.patch(
                 "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value={"sms_delivered": 0, "email_delivered": 0, "sms_failed": 0, "email_failed": 0},
+                return_value={SMS_DELIVERED_TODAY: 0, EMAIL_DELIVERED_TODAY: 0, SMS_FAILED_TODAY: 0, EMAIL_FAILED_TODAY: 0},
             )
 
             mocker.patch(
