@@ -1383,16 +1383,21 @@ def add_template_category():
     form = TemplateCategoryForm()
 
     if form.validate_on_submit():
-        template_category_api_client.create_template_category(
-            name_en=form.data["name_en"],
-            name_fr=form.data["name_fr"],
-            description_en=form.data["description_en"],
-            description_fr=form.data["description_fr"],
-            hidden=form.data["hidden"],
-            email_process_type=form.data["email_process_type"],
-            sms_process_type=form.data["sms_process_type"],
-            sms_sending_vehicle=form.data["sms_sending_vehicle"],
-        )
+        try:
+            template_category_api_client.create_template_category(
+                name_en=form.data["name_en"],
+                name_fr=form.data["name_fr"],
+                description_en=form.data["description_en"],
+                description_fr=form.data["description_fr"],
+                hidden=form.data["hidden"],
+                email_process_type=form.data["email_process_type"],
+                sms_process_type=form.data["sms_process_type"],
+                sms_sending_vehicle=form.data["sms_sending_vehicle"],
+            )
+        except HTTPError as e:
+            if e.status_code == 400 and "already exists" in e.message:
+                flash(_(e.message), "error")
+                return redirect(url_for(".add_template_category"))
         flash(
             _("Template category '{}' added.").format(
                 form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
@@ -1420,17 +1425,22 @@ def template_category(template_category_id):
     )
 
     if form.validate_on_submit():
-        template_category_api_client.update_template_category(
-            template_category_id,
-            name_en=form.data["name_en"],
-            name_fr=form.data["name_fr"],
-            description_en=form.data["description_en"],
-            description_fr=form.data["description_fr"],
-            hidden=form.data["hidden"],
-            email_process_type=form.data["email_process_type"],
-            sms_process_type=form.data["sms_process_type"],
-            sms_sending_vehicle=form.data["sms_sending_vehicle"],
-        )
+        try:
+            template_category_api_client.update_template_category(
+                template_category_id,
+                name_en=form.data["name_en"],
+                name_fr=form.data["name_fr"],
+                description_en=form.data["description_en"],
+                description_fr=form.data["description_fr"],
+                hidden=form.data["hidden"],
+                email_process_type=form.data["email_process_type"],
+                sms_process_type=form.data["sms_process_type"],
+                sms_sending_vehicle=form.data["sms_sending_vehicle"],
+            )
+        except HTTPError as e:
+            if e.status_code == 400 and "already exists" in e.message:
+                flash(_(e.message), "error")
+                return redirect(url_for(".add_template_category"))
         flash(
             _("Template category '{}' saved.").format(
                 form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]

@@ -2121,3 +2121,6 @@
 "Ask which team members have permission to invite you. If the team is unsure, from a GC Notify account visit the main menu and select “Team members.” That page:","Demandez quels ou quelles membres de l’équipe ont la permission de vous inviter. Si l’équipe n’en est pas certaine, utilisez un compte Notification GC pour visiter le menu principal et rendez-vous dans la section « Votre équipe ». Cette page comprend :"
 "Includes an invitation button at the top of the page, if the member is permitted to send invitations.","un bouton d’invitation au haut de la page si le ou la membre de l’équipe a la permission d’envoyer des invitations; et"
 "Lists permitted tasks under the name of each member.","sous le nom de chaque membre de l’équipe, une liste des tâches que cette personne a l’autorisation de réaliser."
+"Email branding already exists, name must be unique","L'image de marque du courriel existe déjà. Le nom doit être unique."
+"Template category already exists, name_en and name_fr must be unique","La catégorie de gabarit existe déjà. Les noms en anglais et en français doivent être uniques."
+"Entity already exists","L'entité existe déjà"
