@@ -6,8 +6,11 @@ let Components = {
 
 
 let Actions = {
-    EditTemplateCategory: (id) => {
-        Components.EditTemplateCategoryLink(id).click();
+    EditTemplateCategoryById: (id) => {
+        cy.getByTestId(`edit-category-${id}`).click();
+    },
+    EditTemplateCategoryByName: (name) => {
+        cy.get('a').contains(name).click();
     },
     CreateTemplateCategory: () => {
         Components.AddTemplateCategoryButton().click();
