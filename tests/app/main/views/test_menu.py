@@ -32,7 +32,6 @@ def test_selected_menus(
     mock_get_all_letter_branding,
     mock_get_inbound_number_for_service,
     mock_get_service_data_retention,
-    mock_annual_limit_client_stats,
     single_reply_to_email_address,
     single_letter_contact_block,
     mock_get_service_organisation,
