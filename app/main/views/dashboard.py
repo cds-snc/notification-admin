@@ -15,6 +15,12 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+from notifications_utils.clients.redis.annual_limit import (
+    EMAIL_DELIVERED_TODAY,
+    EMAIL_FAILED_TODAY,
+    SMS_DELIVERED_TODAY,
+    SMS_FAILED_TODAY,
+)
 from werkzeug.utils import redirect
 
 from app import (
@@ -29,6 +35,7 @@ from app.main import main
 from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.models.enum.notification_statuses import NotificationStatuses
 from app.models.enum.template_types import TemplateType
+from app.notify_client.notification_counts_client import notification_counts_client
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
     DELIVERED_STATUSES,
@@ -233,10 +240,11 @@ def monthly(service_id):
         if mode == "redis":
             # the redis client omits properties if there are no counts yet, so account for this here\
             daily_redis = {
-                field: daily.get(field, 0) for field in ["sms_delivered", "sms_failed", "email_delivered", "email_failed"]
+                field: daily.get(field, 0)
+                for field in [SMS_DELIVERED_TODAY, SMS_FAILED_TODAY, EMAIL_DELIVERED_TODAY, EMAIL_FAILED_TODAY]
             }
-            annual["sms"] += daily_redis["sms_delivered"] + daily_redis["sms_failed"]
-            annual["email"] += daily_redis["email_delivered"] + daily_redis["email_failed"]
+            annual["sms"] += daily_redis[SMS_DELIVERED_TODAY] + daily_redis[SMS_FAILED_TODAY]
+            annual["email"] += daily_redis[EMAIL_DELIVERED_TODAY] + daily_redis[EMAIL_FAILED_TODAY]
         elif mode == "db":
             annual["sms"] += daily["sms"]["requested"]
             annual["email"] += daily["email"]["requested"]
@@ -247,13 +255,14 @@ def monthly(service_id):
         if mode == "redis":
             # the redis client omits properties if there are no counts yet, so account for this here\
             daily_redis = {
-                field: daily.get(field, 0) for field in ["sms_delivered", "sms_failed", "email_delivered", "email_failed"]
+                field: daily.get(field, 0)
+                for field in [SMS_DELIVERED_TODAY, SMS_FAILED_TODAY, EMAIL_DELIVERED_TODAY, EMAIL_FAILED_TODAY]
             }
 
-            monthly[0]["sms_counts"]["failed"] += daily_redis["sms_failed"]
-            monthly[0]["sms_counts"]["requested"] += daily_redis["sms_failed"] + daily_redis["sms_delivered"]
-            monthly[0]["email_counts"]["failed"] += daily_redis["email_failed"]
-            monthly[0]["email_counts"]["requested"] += daily_redis["email_failed"] + daily_redis["email_delivered"]
+            monthly[0]["sms_counts"]["failed"] += daily_redis[SMS_FAILED_TODAY]
+            monthly[0]["sms_counts"]["requested"] += daily_redis[SMS_FAILED_TODAY] + daily_redis[SMS_DELIVERED_TODAY]
+            monthly[0]["email_counts"]["failed"] += daily_redis[EMAIL_FAILED_TODAY]
+            monthly[0]["email_counts"]["requested"] += daily_redis[EMAIL_FAILED_TODAY] + daily_redis[EMAIL_DELIVERED_TODAY]
         elif mode == "db":
             monthly[0]["sms_counts"]["failed"] += daily["sms"]["failed"]
             monthly[0]["sms_counts"]["requested"] += daily["sms"]["requested"]
@@ -389,9 +398,8 @@ def get_dashboard_partials(service_id):
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
 
-    # get annual data from fact table (all data this year except today)
-    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-    annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
+    # get annual data (either from redis or the api)
+    annual_data = notification_counts_client.get_total_notification_count(current_service)
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),

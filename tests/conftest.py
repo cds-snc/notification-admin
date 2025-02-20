@@ -2971,6 +2971,50 @@ def mock_get_template_categories(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_annual_limit_client_stats(
+    mocker,
+    sms_delivered_today=None,
+    email_delivered_today=None,
+    sms_failed_today=None,
+    email_failed_today=None,
+    total_sms_fiscal_year_to_yesterday=None,
+    total_email_fiscal_year_to_yesterday=None,
+):
+    def _get_stats(
+        sms_delivered_today,
+        email_delivered_today,
+        sms_failed_today,
+        email_failed_today,
+        total_sms_fiscal_year_to_yesterday,
+        total_email_fiscal_year_to_yesterday,
+    ):
+        return {
+            "sms_delivered_today": 5 if sms_delivered_today is None else sms_delivered_today,
+            "email_delivered_today": 10 if email_delivered_today is None else email_delivered_today,
+            "sms_failed_today": 5 if sms_failed_today is None else sms_failed_today,
+            "email_failed_today": 10 if email_failed_today is None else email_failed_today,
+            "total_sms_fiscal_year_to_yesterday": 90
+            if total_sms_fiscal_year_to_yesterday is None
+            else total_sms_fiscal_year_to_yesterday,
+            "total_email_fiscal_year_to_yesterday": 180
+            if total_email_fiscal_year_to_yesterday is None
+            else total_email_fiscal_year_to_yesterday,
+        }
+
+    mocker.patch(
+        "app.notify_client.notification_counts_client.service_api_client.get_year_to_date_service_statistics",
+        return_value=_get_stats(
+            sms_delivered_today,
+            email_delivered_today,
+            sms_failed_today,
+            email_failed_today,
+            total_sms_fiscal_year_to_yesterday,
+            total_email_fiscal_year_to_yesterday,
+        ),
+    )
+
+
+@pytest.fixture(scope="function")
 def mock_get_template_statistics(mocker, service_one, fake_uuid):
     template = template_json(
         service_one["id"],
