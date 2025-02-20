@@ -3,8 +3,11 @@ let Components = {
     BrandName: () => cy.getByTestId('brand_name'),
     BrandImage: () => cy.getByTestId('brand_image'),
     BrandPreview: () => cy.getByTestId('brand_preview'),
+    BrandPreviewImage: () => cy.getByTestId('template-preview').shadow().find('img'),
+    BrandAltTextEn: () => cy.getByTestId('alt-en'),
+    BrandAltTextFr: () => cy.getByTestId('alt-fr'),
     SubmitButton: () => cy.get('button[type="submit"]'),
-    BrandErrorMessage: () => cy.getByTestId('name-error'), 
+    BrandErrorMessage: () => cy.getByTestId('name-error'),
     LogoErrorMessage: () => cy.getByTestId('file-error'),
 };
 
@@ -12,6 +15,10 @@ let Components = {
 let Actions = {
     EnterBrandName: (brandName) => {
         Components.BrandName().type(brandName);
+    },
+    EnterAltText: (altEn, altFR) => {
+        Components.BrandAltTextEn().type(altEn);
+        Components.BrandAltTextFr().type(altFR);
     },
     UploadBrandImage: (imagePath, mimeType) => {
         cy.fixture(imagePath, null).as('imageUpload');
@@ -22,7 +29,7 @@ let Actions = {
                 mimeType: mimeType,
                 lastModified: new Date('Feb 18 1989').valueOf(),
             },
-            { 
+            {
                 force: true
             }
         );
@@ -35,8 +42,8 @@ let Actions = {
                 mimeType: 'image/png',
                 lastModified: Date.now(),
             },
-            { 
-                force: true 
+            {
+                force: true
             }
         );
     },
