@@ -61,14 +61,14 @@ from tests.conftest import (
             "provider-failure",
             None,
             "NO_ORIGINATION_IDENTITIES_FOUND",
-            "Can't send to this international number",
+            "GC Notify cannot send text messages to some international numbers",
         ),
         (
             None,
             "provider-failure",
             None,
             "DESTINATION_COUNTRY_BLOCKED",
-            "Can't send to this international number",
+            "GC Notify cannot send text messages to some international numbers",
         ),
         (
             None,

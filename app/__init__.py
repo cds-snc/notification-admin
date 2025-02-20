@@ -462,8 +462,8 @@ def format_notification_status(status, template_type, provider_response=None, fe
         """Return the status of a notification based on the feedback reason"""
         if feedback_reason:
             return {
-                "NO_ORIGINATION_IDENTITIES_FOUND": _("Can't send to this international number"),
-                "DESTINATION_COUNTRY_BLOCKED": _("Can't send to this international number"),
+                "NO_ORIGINATION_IDENTITIES_FOUND": _("GC Notify cannot send text messages to some international numbers"),
+                "DESTINATION_COUNTRY_BLOCKED": _("GC Notify cannot send text messages to some international numbers"),
             }.get(feedback_reason, _("No such number"))
         else:
             return _("No such number")
