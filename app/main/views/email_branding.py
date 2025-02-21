@@ -105,7 +105,7 @@ def update_email_branding(branding_id, logo=None):
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:
                 flash(_(e.message), "error")
-                return redirect(url_for(".create_email_branding"))
+                return redirect(url_for(".update_email_branding", branding_id=branding_id))
 
         if logo:
             persist_logo(logo, updated_logo_name)
