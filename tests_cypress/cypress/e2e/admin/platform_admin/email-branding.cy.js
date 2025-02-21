@@ -4,7 +4,6 @@ import {
   EmailBrandingPage,
   ManageEmailBrandingPage,
 } from "../../../Notify/Admin/Pages/all";
-import { Admin, API } from "../../../Notify/NotifyAPI";
 
 describe("Email Branding", () => {
   context("Branding Validation", () => {
@@ -21,7 +20,7 @@ describe("Email Branding", () => {
         ManageEmailBrandingPage.SetBrandName(nameToDuplicate);
         ManageEmailBrandingPage.SetBrandAltTextEn("Alt Text EN");
         ManageEmailBrandingPage.SetBrandAltTextFr("Alt Text FR");
-        ManageEmailBrandingPage.BrandingTypes.BOTH_ENGLISH;
+        ManageEmailBrandingPage.SetBrandType(ManageEmailBrandingPage.BrandingTypes.BOTH_ENGLISH);
         ManageEmailBrandingPage.Submit();
 
         cy.get(".banner-dangerous")
@@ -50,7 +49,7 @@ describe("Email Branding", () => {
         ManageEmailBrandingPage.SetBrandName(nameToDuplicate);
         ManageEmailBrandingPage.SetBrandAltTextEn("Alt Text EN");
         ManageEmailBrandingPage.SetBrandAltTextFr("Alt Text FR");
-        ManageEmailBrandingPage.BrandingTypes.BOTH_ENGLISH;
+        ManageEmailBrandingPage.SetBrandType(ManageEmailBrandingPage.BrandingTypes.BOTH_ENGLISH);
         ManageEmailBrandingPage.Submit();
 
         cy.get(".banner-dangerous")
