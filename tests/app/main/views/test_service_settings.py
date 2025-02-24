@@ -1583,15 +1583,13 @@ def test_incorrect_reply_to_domain_not_in_team_member_list(
         _expected_status=200,
     )
 
-    valid_domains = set([member.email_domain for member in mock_team_members]).union(
-        set(app_.config.get("REPLY_TO_DOMAINS_SAFELIST", []))
-    )
+    valid_domains = ["canada.ca", "gc.ca"]
+    valid_domains.extend([member.email_domain for member in mock_team_members])
 
-    assert normalize_spaces(
-        page.select_one(".error-message").text
-    ) == "not-team-member-domain.ca is not a government or team email addressUse one of the following domains:{}".format(
-        "".join([f"@{domain}" for domain in valid_domains])
-    )
+    errorMsg = normalize_spaces(page.select_one(".error-message").text)
+    assert "not-team-member-domain.ca is not a government or team email addressUse one of the following domains:" in errorMsg
+    for domain in valid_domains:
+        assert f"@{domain}" in errorMsg
 
 
 @pytest.mark.parametrize(
