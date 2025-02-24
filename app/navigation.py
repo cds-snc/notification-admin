@@ -115,6 +115,10 @@ class HeaderNavigation(Navigation):
         "documentation": {
             "documentation",
         },
+        "guidance": {
+            "guidance",
+            "guide-de-reference",
+        },
         "design_content": {
             "design_content",
         },
