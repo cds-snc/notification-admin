@@ -1440,7 +1440,7 @@ def template_category(template_category_id):
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:
                 flash(_(e.message), "error")
-                return redirect(url_for(".add_template_category"))
+                return redirect(url_for(".template_category", template_category_id=template_category_id))
         flash(
             _("Template category '{}' saved.").format(
                 form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
