@@ -72,8 +72,9 @@ class ValidTeamMemberDomain:
         valid_domains = g.team_member_email_domains.union(safelisted_domains)
 
         if email_domain not in valid_domains:
+            safelist_domains_to_display = ["canada.ca", "gc.ca"]
             message = _("{} is not a government or team email address</br>Use one of the following domains:</br>{}").format(
-                email_domain, "<br>".join([f"@{domain}" for domain in valid_domains])
+                email_domain, "<br>".join([f"@{domain}" for domain in safelist_domains_to_display])
             )
             raise ValidationError(message)
 
