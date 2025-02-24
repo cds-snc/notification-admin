@@ -1380,7 +1380,7 @@ def delete_template_category(template_category_id):
 @main.route("/template-category/add", methods=["GET", "POST"])
 @user_is_platform_admin
 def add_template_category():
-    form = TemplateCategoryForm()
+    form = TemplateCategoryForm(**session["form_data"]) if session.get("form_data") else TemplateCategoryForm()
 
     if form.validate_on_submit():
         try:
@@ -1396,6 +1396,16 @@ def add_template_category():
             )
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:
+                session["form_data"] = {
+                    "name_en": form.data["name_en"],
+                    "name_fr": form.data["name_fr"],
+                    "description_en": form.data["description_en"],
+                    "description_fr": form.data["description_fr"],
+                    "hidden": form.data["hidden"],
+                    "email_process_type": form.data["email_process_type"],
+                    "sms_process_type": form.data["sms_process_type"],
+                    "sms_sending_vehicle": form.data["sms_sending_vehicle"],
+                }
                 flash(_(e.message), "error")
                 return redirect(url_for(".add_template_category"))
         flash(
