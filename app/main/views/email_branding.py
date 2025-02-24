@@ -9,6 +9,7 @@ from flask import (
 )
 from flask_babel import _
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 from notifications_utils.template import HTMLEmailTemplate
 
 from app import current_service, email_branding_client, organisations_client
@@ -89,17 +90,22 @@ def update_email_branding(branding_id, logo=None):
 
         updated_logo_name = permanent_email_logo_name(logo, session["user_id"]) if logo else None
 
-        email_branding_client.update_email_branding(
-            branding_id=branding_id,
-            logo=updated_logo_name,
-            name=form.name.data,
-            text=form.text.data,
-            colour=form.colour.data,
-            brand_type=form.brand_type.data,
-            organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
-            alt_text_en=form.alt_text_en.data,
-            alt_text_fr=form.alt_text_fr.data,
-        )
+        try:
+            email_branding_client.update_email_branding(
+                branding_id=branding_id,
+                logo=updated_logo_name,
+                name=form.name.data,
+                text=form.text.data,
+                colour=form.colour.data,
+                brand_type=form.brand_type.data,
+                organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
+                alt_text_en=form.alt_text_en.data,
+                alt_text_fr=form.alt_text_fr.data,
+            )
+        except HTTPError as e:
+            if e.status_code == 400 and "already exists" in e.message:
+                flash(_(e.message), "error")
+                return redirect(url_for(".update_email_branding", branding_id=branding_id))
 
         if logo:
             persist_logo(logo, updated_logo_name)
@@ -122,7 +128,11 @@ def update_email_branding(branding_id, logo=None):
 @user_is_platform_admin
 def create_email_branding(logo=None):
     all_organisations = organisations_client.get_organisations()
-    form = ServiceUpdateEmailBranding(brand_type="custom_logo", organisation="-1")
+    form = (
+        ServiceUpdateEmailBranding(**session["form_data"])
+        if session.get("form.data")
+        else ServiceUpdateEmailBranding(brand_type="custom_logo", organisation="-1")
+    )
 
     form.organisation.choices = [(org["id"], org["name"]) for org in all_organisations]
     # add the option for no org
@@ -144,16 +154,31 @@ def create_email_branding(logo=None):
 
         updated_logo_name = permanent_email_logo_name(logo, session["user_id"]) if logo else None
 
-        email_branding_client.create_email_branding(
-            logo=updated_logo_name,
-            name=form.name.data,
-            text=form.text.data,
-            colour=form.colour.data,
-            brand_type=form.brand_type.data,
-            organisation_id=None if form.organisation.data == "-1" else form.organisation.data,
-            alt_text_en=form.alt_text_en.data,
-            alt_text_fr=form.alt_text_fr.data,
-        )
+        try:
+            email_branding_client.create_email_branding(
+                logo=updated_logo_name,
+                name=form.name.data,
+                text=form.text.data,
+                colour=form.colour.data,
+                brand_type=form.brand_type.data,
+                organisation_id=None if form.organisation.data == "-1" else form.organisation.data,
+                alt_text_en=form.alt_text_en.data,
+                alt_text_fr=form.alt_text_fr.data,
+            )
+        except HTTPError as e:
+            if e.status_code == 400 and "already exists" in e.message:
+                session["form_data"] = {
+                    "logo": updated_logo_name,
+                    "name": form.name.data,
+                    "text": form.text.data,
+                    "colour": form.colour.data,
+                    "brand_type": form.brand_type.data,
+                    "organisation": form.organisation.data,
+                    "alt_text_en": form.alt_text_en.data,
+                    "alt_text_fr": form.alt_text_fr.data,
+                }
+                flash(_(e.message), "error")
+                return redirect(url_for(".create_email_branding"))
 
         if logo:
             persist_logo(logo, updated_logo_name)

@@ -26,20 +26,21 @@
       <p>
         {{ _('Logos should be PNG files, 108px high') }}
       </p>
-      {{ file_upload(form.file, button_text='{} logo'.format('Update' if email_branding else 'Upload')) }}
+      {{ file_upload(form.file, button_text='{} logo'.format('Update' if email_branding else 'Upload'), testid='upload-branding') }}
       {% call form_wrapper() %}
         <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
-          <div style='margin-top:15px;'>{{textbox(form.name)}}</div>
-          <div style='margin-top:15px;'>{{textbox(form.text)}}</div>
-          <div style='margin-top:15px;'>{{textbox(form.alt_text_en)}}</div>
-          <div style='margin-top:15px;'>{{textbox(form.alt_text_fr)}}</div>
-          {{ textbox(form.colour, width='w-full md:w-1/4', colour_preview=True) }}
-          {{ radios(form.brand_type) }}
+          <div style='margin-top:15px;'>{{textbox(form.name, testid='branding-name')}}</div>
+          <div style='margin-top:15px;'>{{textbox(form.text, testid='branding-text')}}</div>
+          <div style='margin-top:15px;'>{{textbox(form.alt_text_en, testid='branding-alt-text-en')}}</div>
+          <div style='margin-top:15px;'>{{textbox(form.alt_text_fr, testid='branding-alt-text-fr')}}</div>
+          {{ textbox(form.colour, width='w-full md:w-1/4', colour_preview=True, testid='branding-color') }}
+          {{ radios(form.brand_type, testid='') }}
           {{ radios(form.organisation) }}
           {{ page_footer(
             _('Save'),
             button_name='operation',
-            button_value='email-branding-details'
+            button_value='email-branding-details',
+            testid='save-branding'
           ) }}
         </div>
       {% endcall %}
