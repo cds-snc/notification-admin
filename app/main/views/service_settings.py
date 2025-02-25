@@ -425,7 +425,7 @@ def service_switch_upload_document(service_id):
     title = _("Send files by email")
     form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
     help = _(
-        "This feature is only available when sending through the API.<br>" "Learn more in the <a href='{}'>API documentation</a>."
+        "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>."
     ).format(documentation_url("send", section="sending-a-file-by-email"))
 
     if form.validate_on_submit():
