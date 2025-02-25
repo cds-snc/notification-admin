@@ -24,14 +24,8 @@
       }
     }
   %}
-  {# Text for screen readers instead of icon #}
-  {%
-    set screen_reader_text = {
-      'info': _('Information'),
-    }
-  %}
   <div class="notice notice-{{ type }} flex gap-gutterHalf items-baseline" role="alert" data-testid="notice">
-    <div class="notice-icon border-l-[6px] translate-x-gutterHalf self-stretch py-gutterHalf" data-testid="notice-icon">
+    <div class="notice-icon border-l-[6px] translate-x-gutterHalf self-stretch py-gutterHalf min-w-10" data-testid="notice-icon">
       <i aria-hidden="true" class="fa-solid fa-lg -translate-x-1/2 -mx-[3px] bg-white py-2 {{ display[type]['icon'] }}"></i>
       <span class="sr-only" data-testid="notice-icon-text">{{ display[type]['label'] }}: </span>
     </div>
