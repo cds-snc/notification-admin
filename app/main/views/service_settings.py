@@ -356,6 +356,7 @@ def send_go_live_request(service, user, go_live_data) -> None:
     }
     data = {key: go_live_data[key] for key in of_interest if key in go_live_data}
     data["intended_recipients"] = ", ".join(data["intended_recipients"])
+    data["main_use_case"] = ", ".join(data["main_use_case"])
     user_api_client.send_contact_request(data)
 
 
