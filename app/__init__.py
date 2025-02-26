@@ -442,7 +442,7 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
-def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None):
+def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None, feedback_reason=None):
     if template_type == "sms" and provider_response:
         return _(provider_response)
 
@@ -457,6 +457,16 @@ def format_notification_status(status, template_type, provider_response=None, fe
             }[template_type].get(feedback_subtype, _("No such address"))
         else:
             return _("No such address")
+
+    def _get_sms_status_by_feedback_reason():
+        """Return the status of a notification based on the feedback reason"""
+        if feedback_reason:
+            return {
+                "NO_ORIGINATION_IDENTITIES_FOUND": _("GC Notify cannot send text messages to some international numbers"),
+                "DESTINATION_COUNTRY_BLOCKED": _("GC Notify cannot send text messages to some international numbers"),
+            }.get(feedback_reason, _("No such number"))
+        else:
+            return _("No such number")
 
     return {
         "email": {
@@ -478,6 +488,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
             "technical-failure": _("Tech issue"),
             "temporary-failure": _("Carrier issue"),
             "permanent-failure": _("No such number"),
+            "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
             "created": _("In transit"),
