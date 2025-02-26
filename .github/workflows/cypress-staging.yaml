@@ -29,13 +29,14 @@ jobs:
         uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         with:
           record: false
-          config: video=false,screenshotOnRunFailure=false
+          config: "video=true,screenshotOnRunFailure=true"
           build: npx cypress info
           working-directory: tests_cypress
           spec: |
             cypress/e2e/admin/a11y/app_pages.cy.js
             cypress/e2e/admin/a11y/gca_pages.cy.js
-            - name: Upload test artifacts
+
+      - name: Upload test artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
