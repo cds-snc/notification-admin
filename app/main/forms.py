@@ -1774,7 +1774,12 @@ class AcceptAgreementForm(StripWhitespaceForm):
             raise ValidationError(_l("Must be a number"))
 
 
-class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
+class GoLiveAboutServiceForm(StripWhitespaceForm):
+    department_org_name = StringField(
+        _l("Name of department or organisation"),
+        validators=[DataRequired(), Length(max=500)],
+    )
+
     main_use_case = MultiCheckboxField(
         _l("For what purpose are you using GC Notify?"),
         default="",
@@ -1813,12 +1818,7 @@ class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     )
 
 
-class GoLiveAboutServiceForm(StripWhitespaceForm):
-    department_org_name = StringField(
-        _l("Name of department or organisation"),
-        validators=[DataRequired(), Length(max=500)],
-    )
-
+class GoLiveAboutServiceFormNoOrg(StripWhitespaceForm):
     main_use_case = MultiCheckboxField(
         _l("For what purpose are you using GC Notify?"),
         default="",
