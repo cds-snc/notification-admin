@@ -43,7 +43,7 @@
     <fieldset id="{{ field.id }}" class="contain-floats w-full" role="{{ group }}" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %}>
       <legend id="{{ field.id }}-label"  class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }} {% endif %}">
         {% if is_page_heading %}<h1 class="heading-large">{% endif %}
-        {% if hide_legend %}<span class="visually-hidden {{ 'hidden' if is_page_heading }}">{% endif %}
+        {% if hide_legend %}<span class="visually-hidden">{% endif %}
         {{ field.label.text|safe }}
         {% if hide_legend %}</span>{% endif %}
         {% if is_page_heading %}</h1>{% endif %}
