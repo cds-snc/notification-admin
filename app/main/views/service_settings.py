@@ -289,6 +289,12 @@ def use_case(service_id):
     step, form_data = current_service.use_case_data
 
     current_step = request.args.get("current_step", step or DEFAULT_STEP)
+
+    # If the form data has the wrong expected format, start at the begining
+    # Temporary while we move to a new go live form
+    if not service_api_client.is_valid_use_case_format(form_data):
+        current_step = DEFAULT_STEP
+
     try:
         form_details = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
