@@ -174,6 +174,12 @@ def remove_user_from_service(service_id, user_id):
     if current_user.id == user_id:
         # the user has removed themselves from the service
         # redirect to the "your services" page
+        flash(
+            [
+                _l("You're no longer on the team for “{}”").format(current_service.name),
+            ],
+            "default_with_tick",
+        )
         return redirect(url_for("main.choose_account"))
     return redirect(url_for(".manage_users", service_id=service_id))
 
