@@ -623,12 +623,13 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
         # Check if there's existing use case data and validate its structure
         use_case_data = self.get_use_case_data(service_id)
-        if use_case_data and self.is_valid_use_case_format(use_case_data):
+        is_submitted = redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+        if is_submitted and self.is_valid_use_case_format(use_case_data):
             # Existing data is valid, so mark as submitted
             self.register_submit_use_case(service_id)
-            return True
+            return is_submitted
 
-        return False
+        return is_submitted
 
     def is_valid_use_case_format(self, data):
         # Define the required fields or format for valid use case data

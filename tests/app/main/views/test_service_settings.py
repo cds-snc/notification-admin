@@ -1127,6 +1127,8 @@ def test_request_to_go_live_can_resume_use_case_page(
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
                 "purpose": "Purpose",
+                "exact_daily_email": 25,  # Mocking new data
+                "exact_daily_sms": 25,  # Mocking new data
             },
             "step": "about-notifications",
         },
