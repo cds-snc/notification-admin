@@ -76,6 +76,7 @@
             {{ nav_menu_item(url=gca_url_for('whynotify'), localised_txt=_('Why GC Notify'), id_key='nav-head-why-notify', is_active=header_navigation.is_selected('why-notify')) }}
             {{ nav_menu_item(url=gca_url_for('features'), localised_txt=_('Features'), id_key='nav-head-features', is_active=header_navigation.is_selected('features')) }}
             {{ nav_menu_item(url=documentation_url(), localised_txt=_('API documentation'), id_key='nav-head-doc', is_active=header_navigation.is_selected('documentation')) }}
+            {{ nav_menu_item(url=gca_url_for('guidance'), localised_txt=_('Guidance'), id_key='nav-head-doc', is_active=header_navigation.is_selected('guidance')) }}
             {{ nav_menu_item(url=url_for('main.contact'), localised_txt=_('Contact us'), id_key='nav-head-contact', is_active=header_navigation.is_selected('contact')) }}
           {% endif %}
         {% else %}

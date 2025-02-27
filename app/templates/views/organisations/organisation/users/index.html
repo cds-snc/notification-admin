@@ -21,12 +21,12 @@
     </div>
   {% endif %}
 
-  <div class="user-list">
+  <ul class="user-list">
     {% for user in users %}
-      <div class="user-list-item">
-        <h3 class="flex justify-between">
+      <li class="user-list-item border-b-1 border-gray-300 flex flex-col gap-2 items-baseline justify-between">
+        <h3 class="flex flex-col gap-2 text-balance">
           {%- if user.name -%}
-            <span class="heading-small m-0">{{ user.name }}</span>&ensp;
+            <span class="heading-small m-0">{{ user.name }}</span>
           {%- endif -%}
           <span class="hint">
             {%- if user.status == 'pending' -%}
@@ -40,8 +40,8 @@
             {% endif %}
           </span>
         </h3>
-        <ul class="tick-cross-list grid-row contain-floats relative">
-          <li class="tick-cross-list-edit-link">
+        <ul class="tick-cross-list">
+          <li class="tick-cross-list-edit-link text-nowrap">
             {% if user.status == 'pending' %}
               <a href="{{ url_for('.cancel_invited_org_user', org_id=current_org.id, invited_user_id=user.id)}}">
                 {{ _("Cancel invitation")}}
@@ -49,9 +49,9 @@
             {% endif %}
           </li>
         </ul>
-      </div>
+      </li>
     {% endfor %}
-  </div>
+    </ul>
 
   <div class="js-stick-at-bottom-when-scrolling">
     <a href="{{ url_for('.invite_org_user', org_id=current_org.id) }}" class="button button-secondary">
