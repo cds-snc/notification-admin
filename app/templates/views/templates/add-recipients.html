@@ -3,9 +3,10 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
+{% set header_txt = _('Add recipients') %}
 
 {% block service_page_title %}
-  {{ form.what_type.label.text | safe }}
+  {{ header_txt }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -13,8 +14,9 @@
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
   {{ page_header(
-      form.what_type.label.text | safe,
-      back_link=back_url
+    header_txt,
+    back_link=back_url,
+    id_text=form.what_type.id + "-label"
       ) }}
 
   <div class="grid-row contain-floats">
@@ -22,14 +24,14 @@
     <div class="md:w-2/3 float-left px-gutterHalf">
 
       {% if current_service.trial_mode %}
-      <p>{{ _("In trial mode, you can only send to your team members on GC Notify.") }}</p>
       <p>
+        {{ _("In trial mode, you can only send to your team members on GC Notify.") }} 
         {{ _("To send to more recipients, <a href='{}'>request to go live</a>.").format(url_for('.request_to_go_live', service_id=current_service.id)) }}
       </p>
       {% endif %}
 
       {% call form_wrapper() %}
-        {{ select( form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals, hide_legend=True) }}
+        {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals) }}
         {{ page_footer(_('Continue')) }}
       {% endcall %}
     </div>
