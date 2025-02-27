@@ -33,6 +33,7 @@
 @import "./components/previous-next-navigation.css";
 @import "./components/list-entry.css";
 @import "./components/message.css";
+@import "./components/notice.css";
 @import "./components/fullscreen-table.css";
 @import "./components/tick-cross.css";
 @import "./components/stick-at-top-when-scrolling.css";
