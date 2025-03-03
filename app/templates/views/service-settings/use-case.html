@@ -29,9 +29,9 @@
         {% if display_org_question %}
           {{ textbox(form.department_org_name, autocomplete='organization') }}
         {% endif %}
-        {{ checkboxes(form.main_use_case, option_hints=form.main_use_case_hints) }}
+        {{ checkboxes(form.main_use_case, option_hints=form.main_use_case_hints, use_aria_labelledby=false) }}
         {{ textbox(form.other_use_case, width="w-full", rows=3, required=false) }}
-        {{ checkboxes(form.intended_recipients) }}
+        {{ checkboxes(form.intended_recipients, use_aria_labelledby=false) }}
 
       {% elif current_step == "about-notifications" %}
 
