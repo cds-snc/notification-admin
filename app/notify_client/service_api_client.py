@@ -617,19 +617,16 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     def has_submitted_use_case(self, service_id):
-        # submitted_key = redis_client.get(self._submitted_use_case_key_name(service_id))
-        # if submitted_key is not None:
-        # return True
+        # todo: switch this function to just be line 621 a month or so after this change goes in
+        # return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
 
         # Check if there's existing use case data and validate its structure
         use_case_data = self.get_use_case_data(service_id)
         is_submitted = redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
         if is_submitted and self.is_valid_use_case_format(use_case_data):
-            # Existing data is valid, so mark as submitted
-            self.register_submit_use_case(service_id)
-            return is_submitted
+            return True
 
-        return is_submitted
+        return False
 
     def is_valid_use_case_format(self, data):
         # Define the required fields or format for valid use case data
@@ -660,7 +657,6 @@ class ServiceAPIClient(NotifyAdminAPIClient):
                             break
 
         return has_required_fields
-        # return all(field in data for field in required_fields)
 
     def register_submit_use_case(self, service_id):
         redis_client.set(
