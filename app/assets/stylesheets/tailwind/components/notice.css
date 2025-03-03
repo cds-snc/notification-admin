@@ -1,0 +1,12 @@
+.notice-info .notice-icon {
+  @apply text-blue-slightlight border-blue-border;
+}
+.notice-success .notice-icon {
+  @apply text-green border-green-border;
+}
+.notice-error .notice-icon {
+  @apply text-red-mellow border-red-300;
+}
+.notice-warning .notice-icon {
+  @apply text-yellow-500 border-yellow-300;
+}
