@@ -1,16 +1,16 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
-
 import {
   ReviewPoolPage,
   EditBrandingPage,
 } from "../../../Notify/Admin/Pages/all";
 
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+
 describe("Review Pool", () => {
   beforeEach(() => {
     cy.login();
-    cy.visit(`/services/${config.Services.Cypress}/review-pool`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/review-pool`);
   });
   context("General page functionality", () => {
     it("Loads review pool page", () => {
@@ -23,7 +23,7 @@ describe("Review Pool", () => {
     });
 
     it("Returns to edit branding page when back link is clicked", () => {
-      cy.visit(`/services/${config.Services.Cypress}/edit-branding`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/edit-branding`);
       EditBrandingPage.ClickBrandPool();
       ReviewPoolPage.ClickBackLink();
       cy.get("h1").contains("Change your logo").should("be.visible");
@@ -41,7 +41,7 @@ describe("Review Pool", () => {
   //       // Link the test service to the org without branding
   //       Admin.LinkOrganisationToService({
   //         orgId: config.Organisations.NO_CUSTOM_BRANDING_ORG_ID,
-  //         serviceId: config.Services.Cypress,
+  //         serviceId: CYPRESS_SERVICE_ID,
   //       });
   //       // Login as admin
   //       cy.login(
@@ -57,7 +57,7 @@ describe("Review Pool", () => {
   //       cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
   //       cy.visit(
   //         config.Hostnames.Admin +
-  //           `/services/${config.Services.Cypress}/review-pool`,
+  //           `/services/${CYPRESS_SERVICE_ID}/review-pool`,
   //       );
   //     });
 
@@ -74,7 +74,7 @@ describe("Review Pool", () => {
   //       // Link the test service to the org without branding
   //       Admin.LinkOrganisationToService({
   //         orgId: config.Organisations.DEFAULT_ORG_ID,
-  //         serviceId: config.Services.Cypress,
+  //         serviceId: CYPRESS_SERVICE_ID,
   //       });
   //       // Login as admin
   //       cy.login(
@@ -93,7 +93,7 @@ describe("Review Pool", () => {
   //     beforeEach(() => {
   //       cy.visit(
   //         config.Hostnames.Admin +
-  //           `/services/${config.Services.Cypress}/review-pool`,
+  //           `/services/${CYPRESS_SERVICE_ID}/review-pool`,
   //       );
   //     });
 

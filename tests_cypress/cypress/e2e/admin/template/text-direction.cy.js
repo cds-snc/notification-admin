@@ -1,4 +1,3 @@
-import config from "../../../../config";
 import { TemplatesPage as Page } from "../../../Notify/Admin/Pages/all";
 
 // TODO: dont hardcode these
@@ -13,10 +12,12 @@ const templates = {
   },
 };
 
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+
 describe("Template text direction", () => {
   beforeEach(() => {
     cy.login();
-    cy.visit(`/services/${config.Services.Cypress}/templates`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
   });
 
   it("Should align content to the right when clicked", () => {

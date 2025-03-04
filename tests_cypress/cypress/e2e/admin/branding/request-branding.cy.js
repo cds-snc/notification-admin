@@ -1,7 +1,8 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
 import { RequestBrandingPage } from "../../../Notify/Admin/Pages/all";
+
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 describe("Branding request", () => {
   // Login to notify before the test suite starts
@@ -9,7 +10,7 @@ describe("Branding request", () => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
     cy.login();
-    cy.visit(`/services/${config.Services.Cypress}/branding-request`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/branding-request`);
   });
 
   it("Loads request branding page", () => {

@@ -1,7 +1,7 @@
-import config from "../../config";
 import { customAlphabet } from "nanoid";
 
-const BASE_URL = config.Hostnames.API
+const CYPRESS_SERVICE_ID  = Cypress.env('CYPRESS_SERVICE_ID');
+const BASE_URL = Cypress.env("Environment")[Cypress.env("ENV")].Hostnames.API;
 
 const Utilities = {
     CreateJWT: () => {
@@ -34,7 +34,7 @@ const Admin = {
 
         var token = Utilities.CreateJWT();
         return cy.request({
-            url: `/service/${config.Services.Cypress}/send-notification`,
+            url: `/service/${CYPRESS_SERVICE_ID}/send-notification`,
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
