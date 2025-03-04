@@ -42,7 +42,6 @@ module.exports = defineConfig({
 
       config.baseUrl = config.env.Environment[envName].Hostnames.Admin;
 
-
       htmlvalidate.install(on, {
         rules: {
           "form-dup-name": "off",
@@ -92,6 +91,8 @@ module.exports = defineConfig({
         }
         return launchOptions;
       });
+
+      return config;
     },
     specPattern: '**/e2e/**/*.cy.js',
     watchForFileChanges: false,
