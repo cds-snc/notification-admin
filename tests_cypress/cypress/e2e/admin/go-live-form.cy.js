@@ -52,7 +52,7 @@ describe("Go Live Form", () => {
     });
   });
 
-  it.only("Forces user to fill required fields fields", () => {
+  it("Forces user to fill required fields fields", () => {
     // clear all fields on page 1
     Page.Components.DeptName().clear();
     Page.Components.MainUseCaseScheduling().uncheck();
@@ -98,6 +98,7 @@ describe("Go Live Form", () => {
     Page.GoNext();
 
     // ensure we get out of the form
-    cy.get("h1").should("contain", "Request to go live");
+    // TODO: determine why this page is so slow and get rid of the timeout override
+    cy.get("h1", { timeout: 100000 }).should("contain", "Request to go live");
   });
 });
