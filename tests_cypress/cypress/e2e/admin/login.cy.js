@@ -5,7 +5,7 @@ import { LoginPage } from "../../Notify/Admin/Pages/all";
 describe("Basic login", () => {
   // Login to notify before the test suite starts
   before(() => {
-    LoginPage.Login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    LoginPage.Login();
 
     // ensure we logged in correctly
     cy.contains("h1", "Sign-in history").should("be.visible");

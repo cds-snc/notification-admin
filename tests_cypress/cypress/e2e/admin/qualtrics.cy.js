@@ -5,7 +5,7 @@ import { LoginPage } from "../../Notify/Admin/Pages/all";
 describe("Qualtrics", () => {
   // Login to notify before the test suite starts
   before(() => {
-    LoginPage.Login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    LoginPage.Login();
   });
 
   // Before each test, persist the auth cookie so we don't have to login again

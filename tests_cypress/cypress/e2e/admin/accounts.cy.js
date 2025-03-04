@@ -2,7 +2,7 @@ import { AccountsPage } from "../../Notify/Admin/Pages/all";
 
 describe("Accounts Page", () => {
   before(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login();
     cy.visit(`/accounts`);
   });
 

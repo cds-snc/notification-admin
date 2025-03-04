@@ -2,7 +2,7 @@ import { WelcomePage } from "../../Notify/Admin/Pages/all";
 
 describe("Welcome Page", () => {
   before(() => {
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
+    cy.login();
     cy.visit(`/welcome`);
   });
 
