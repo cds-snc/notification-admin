@@ -13,7 +13,8 @@
     "jsrsasign": "^11.0.0",
     "mailparser": "^3.7.1",
     "nanoid": "^5.0.4",
-    "nodemailer": "^6.9.15"
+    "nodemailer": "^6.9.15",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
