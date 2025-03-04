@@ -31,7 +31,8 @@ describe("Go Live Form", () => {
 
   it("Passes a11y", () => {
     // a11y scan page 1
-    cy.a11yScan(null, { // null since we are performing a cy.visit in the beforeEach
+    cy.a11yScan(null, {
+      // null since we are performing a cy.visit in the beforeEach
       a11y: true,
       htmlValidate: true,
       deadLinks: false,
