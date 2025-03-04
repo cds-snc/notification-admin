@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
 import { LoginPage } from "../../Notify/Admin/Pages/all";
 
 describe("Basic login", () => {
@@ -32,7 +31,7 @@ describe("Basic login", () => {
   });
 
   it("displays notify service page", () => {
-    cy.visit(`/services/${config.Services.Cypress}`);
+    cy.visit(`/services/${Cypress.env("Services").Cypress}`);
     cy.contains("h1", "Dashboard").should("be.visible");
   });
 });

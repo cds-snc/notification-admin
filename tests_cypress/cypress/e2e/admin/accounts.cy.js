@@ -1,10 +1,9 @@
-import config from "../../../config";
 import { AccountsPage } from "../../Notify/Admin/Pages/all";
 
 describe("Accounts Page", () => {
   before(() => {
     cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    cy.visit(config.Hostnames.Admin + `/accounts`);
+    cy.visit(`/accounts`);
   });
 
   it("Contains guidance for joining an existing service", () => {
