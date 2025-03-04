@@ -1,10 +1,11 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
 import {
   EditBrandingPage,
   BrandingSettingsPage,
 } from "../../../Notify/Admin/Pages/all";
+
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 describe("Edit Branding", () => {
   beforeEach(() => {
@@ -13,11 +14,11 @@ describe("Edit Branding", () => {
 
     cy.login();
 
-    cy.visit(`/services/${config.Services.Cypress}/edit-branding`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/edit-branding`);
   });
 
   it("Loads branding settings page", () => {
-    cy.visit(`/services/${config.Services.Cypress}/branding`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/branding`);
     cy.get("h1").contains("Email logo").should("be.visible");
   });
 
@@ -39,7 +40,7 @@ describe("Edit Branding", () => {
   });
 
   it("Loads edit-branding when choose logo is clicked", () => {
-    cy.visit(`/services/${config.Services.Cypress}/branding`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/branding`);
     BrandingSettingsPage.ChooseDifferentLogo();
     cy.get("h1").contains("Change your logo").should("be.visible");
   });

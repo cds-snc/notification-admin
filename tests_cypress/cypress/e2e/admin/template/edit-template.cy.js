@@ -1,8 +1,11 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
+import { getTemplateID } from "../../../support/utils";
+
 import { TemplatesPage as Page } from "../../../Notify/Admin/Pages/all";
 import { Admin } from "../../../Notify/NotifyAPI";
+
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 const categories = {
   OTHER: "Other",
@@ -17,12 +20,12 @@ describe("Edit template", () => {
     it("Should allow platform admin to override process type", () => {
       // login as admin
       cy.loginAsPlatformAdmin();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
 
       // set template priority to use TC
       Page.SelectTemplateById(
-        config.Services.Cypress,
-        config.Templates.SMOKE_TEST_SMS,
+        CYPRESS_SERVICE_ID,
+        getTemplateID('SMOKE_TEST_SMS'),
       );
       Page.EditCurrentTemplate();
       Page.SetTemplatePriority("bulk");
@@ -30,8 +33,8 @@ describe("Edit template", () => {
 
       // use api to check that it was set
       Admin.GetTemplate({
-        templateId: config.Templates.SMOKE_TEST_SMS,
-        serviceId: config.Services.Cypress,
+        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
         expect(response.body.data.process_type_column).to.equal("bulk");
@@ -44,8 +47,8 @@ describe("Edit template", () => {
 
       // use api to check that it was overridden
       Admin.GetTemplate({
-        templateId: config.Templates.SMOKE_TEST_SMS,
-        serviceId: config.Services.Cypress,
+        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
         expect(response.body.data.process_type_column).to.equal("normal");
@@ -58,8 +61,8 @@ describe("Edit template", () => {
 
       // use api to check that it was overridden
       Admin.GetTemplate({
-        templateId: config.Templates.SMOKE_TEST_SMS,
-        serviceId: config.Services.Cypress,
+        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
         expect(response.body.data.process_type_column).to.equal("priority");
@@ -72,7 +75,7 @@ describe("Edit template", () => {
 
       // seed data
       cy.login();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
       Page.CreateTemplate();
       Page.SelectTemplateType("email");
       Page.Continue();
@@ -89,7 +92,7 @@ describe("Edit template", () => {
         let templateId = url.split("/templates/")[1];
 
         // update category
-        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
         Page.SelectTemplate(template_name);
         Page.EditCurrentTemplate();
         Page.Components.TemplateSubject().type("a");
@@ -97,13 +100,13 @@ describe("Edit template", () => {
 
         Admin.GetTemplate({
           templateId: templateId,
-          serviceId: config.Services.Cypress,
+          serviceId: CYPRESS_SERVICE_ID,
         }).then((response) => {
           let template = response.body.data;
           expect(template.process_type_column).to.equal("bulk");
           Admin.DeleteTemplate({
             templateId: templateId,
-            serviceId: config.Services.Cypress,
+            serviceId: CYPRESS_SERVICE_ID,
           });
         });
       });
@@ -116,12 +119,12 @@ describe("Edit template", () => {
       // Admin user 1.
       // login as admin
       cy.loginAsPlatformAdmin();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
 
       // set template priority to use TC
       Page.SelectTemplateById(
-        config.Services.Cypress,
-        config.Templates.SMOKE_TEST_EMAIL,
+        CYPRESS_SERVICE_ID,
+        getTemplateID('SMOKE_TEST_EMAIL'),
       );
       Page.EditCurrentTemplate();
       Page.Components.TemplateSubject().type("a");
@@ -130,8 +133,8 @@ describe("Edit template", () => {
 
       // use api to check that it was set
       Admin.GetTemplate({
-        templateId: config.Templates.SMOKE_TEST_EMAIL,
-        serviceId: config.Services.Cypress,
+        templateId: getTemplateID('SMOKE_TEST_EMAIL'),
+        serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         expect(response.body.data.process_type_column).to.equal("bulk");
       });
@@ -139,7 +142,7 @@ describe("Edit template", () => {
 
     it("Should set process_type to null and use category's process_type when non-admin changes a template's category", () => {
       cy.login();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
 
       // Seed data with a template before we start with the test.
       Page.SeedTemplate(
@@ -156,7 +159,7 @@ describe("Edit template", () => {
 
         Admin.GetTemplate({
           templateId: templateId,
-          serviceId: config.Services.Cypress,
+          serviceId: CYPRESS_SERVICE_ID,
         }).then((response) => {
           let template = response.body.data;
           expect(template.process_type_column).to.be.a("null");
@@ -164,7 +167,7 @@ describe("Edit template", () => {
           expect(template.process_type).to.be.equal("priority"); // Computed process_type will be Auth's process type = priority
           Admin.DeleteTemplate({
             templateId: templateId,
-            serviceId: config.Services.Cypress,
+            serviceId: CYPRESS_SERVICE_ID,
           });
         });
       });
@@ -172,7 +175,7 @@ describe("Edit template", () => {
 
     it("Should override process_type when a template has a category and user is admin", () => {
       cy.loginAsPlatformAdmin();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
 
       // Seed data with a template before we start with the test.
       Page.SeedTemplate(
@@ -188,7 +191,7 @@ describe("Edit template", () => {
 
         Admin.GetTemplate({
           templateId: templateId,
-          serviceId: config.Services.Cypress,
+          serviceId: CYPRESS_SERVICE_ID,
         }).then((response) => {
           let template = response.body.data;
           expect(template.process_type_column).to.not.be.a("priority");
@@ -196,7 +199,7 @@ describe("Edit template", () => {
           expect(template.process_type).to.be.equal("priority"); // Computed process_type will be Auth's process type = priority
           Admin.DeleteTemplate({
             templateId: templateId,
-            serviceId: config.Services.Cypress,
+            serviceId: CYPRESS_SERVICE_ID,
           });
         });
       });
@@ -204,7 +207,7 @@ describe("Edit template", () => {
 
     it("Should set the process type to null when a category is changed and user is admin", () => {
       cy.loginAsPlatformAdmin();
-      cy.visit(`/services/${config.Services.Cypress}/templates`);
+      cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
 
       // seed data with a template before we start with the test.
       Page.SeedTemplate(
@@ -221,7 +224,7 @@ describe("Edit template", () => {
 
         Admin.GetTemplate({
           templateId: templateId,
-          serviceId: config.Services.Cypress,
+          serviceId: CYPRESS_SERVICE_ID,
         }).then((response) => {
           let template = response.body.data;
           expect(template.process_type_column).to.be.a("null");
@@ -229,7 +232,7 @@ describe("Edit template", () => {
           expect(template.process_type).to.be.equal("priority"); // Computed process_type will be Auth's process type = priority
           Admin.DeleteTemplate({
             templateId: templateId,
-            serviceId: config.Services.Cypress,
+            serviceId: CYPRESS_SERVICE_ID,
           });
         });
       });

@@ -1,8 +1,9 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
 import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage";
 import { EditBrandingPage } from "../../../Notify/Admin/Pages/all";
+
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 describe("Branding settings", () => {
   beforeEach(() => {
@@ -11,7 +12,7 @@ describe("Branding settings", () => {
 
     cy.login();
 
-    cy.visit(`/services/${config.Services.Cypress}/service-settings`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/service-settings`);
   });
 
   it("Loads branding settings page", () => {
