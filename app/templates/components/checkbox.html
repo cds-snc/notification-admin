@@ -24,8 +24,8 @@
 {% endmacro %}
 
 
-{% macro checkboxes(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}) %}
-  {{ select(field, hint, disable, option_hints, hide_legend, collapsible_opts, input="checkbox") }}
+{% macro checkboxes(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, use_aria_labelledby=True) %}
+  {{ select(field, hint, disable, option_hints, hide_legend, collapsible_opts, input="checkbox", use_aria_labelledby=use_aria_labelledby) }}
 {% endmacro %}
 
 

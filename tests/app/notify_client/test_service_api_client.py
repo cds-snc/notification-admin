@@ -530,10 +530,15 @@ def test_accept_tos(app_, mocker, monkeypatch, logged_in_client):
 )
 def test_has_submitted_use_case(mocker, redis_return, expected):
     mock_redis_get = mocker.patch("app.extensions.RedisClient.get", return_value=redis_return)
+    mocker.patch(
+        "app.notify_client.service_api_client.ServiceAPIClient.get_use_case_data",
+        return_value={"exact_daily_sms": 100, "exact_daily_email": 200},
+    )
+    mocker.patch("app.notify_client.service_api_client.ServiceAPIClient.is_valid_use_case_format", return_value=True)
 
     assert service_api_client.has_submitted_use_case(SERVICE_ONE_ID) == expected
 
-    mock_redis_get.assert_called_once_with(f"use-case-submitted-{SERVICE_ONE_ID}")
+    mock_redis_get.assert_called_with(f"use-case-submitted-{SERVICE_ONE_ID}")
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
