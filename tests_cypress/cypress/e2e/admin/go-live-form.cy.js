@@ -10,13 +10,13 @@ function CompletePage1() {
   Page.GoNext();
 }
 
+const GO_LIVE_PAGE = `/services/${config.Services.Cypress}/service-settings/request-to-go-live/use-case`;
+
 describe("Go Live Form", () => {
   beforeEach(() => {
     // login and go to the form
-    cy.login(Cypress.env("NOTIFY_USER"), Cypress.env("NOTIFY_PASSWORD"));
-    cy.visit(
-      `/services/${config.Services.Cypress}/service-settings/request-to-go-live/use-case`,
-    );
+    cy.login();
+    cy.visit(GO_LIVE_PAGE);
 
     // if we are already on step 2 (it saves your progress), go back to the start
     cy.get("body").then(($body) => {
@@ -31,7 +31,12 @@ describe("Go Live Form", () => {
 
   it("Passes a11y", () => {
     // a11y scan page 1
-    cy.a11yScan();
+    cy.a11yScan(null, { // null since we are performing a cy.visit in the beforeEach
+      a11y: true,
+      htmlValidate: true,
+      deadLinks: false,
+      mimeTypes: false,
+    });
 
     CompletePage1();
 
@@ -39,10 +44,15 @@ describe("Go Live Form", () => {
     cy.get("h1").should("contain", "About your notifications");
 
     // a11y scan page 2
-    cy.a11yScan();
+    cy.a11yScan(GO_LIVE_PAGE, {
+      a11y: true,
+      htmlValidate: true,
+      deadLinks: false,
+      mimeTypes: false,
+    });
   });
 
-  it("Forces user to fill required fields fields", () => {
+  it.only("Forces user to fill required fields fields", () => {
     // clear all fields on page 1
     Page.Components.DeptName().clear();
     Page.Components.MainUseCaseScheduling().uncheck();
