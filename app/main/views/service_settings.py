@@ -64,6 +64,7 @@ from app.main.forms import (
     SMSPrefixForm,
 )
 from app.main.views.email_branding import get_preview_template
+from app.models.user import User
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
     DELIVERED_STATUSES,
@@ -592,7 +593,9 @@ def service_add_email_reply_to(service_id):
     form = ServiceReplyToEmailForm()
     first_email_address = current_service.count_email_reply_to_addresses == 0
     is_default = first_email_address if first_email_address else form.is_default.data
-    g.team_member_email_domains = set([team_member.email_domain for team_member in current_service.team_members])
+    g.team_member_email_domains = set(
+        [team_member.email_domain for team_member in current_service.team_members if isinstance(team_member, User)]
+    )
     if form.validate_on_submit():
         try:
             notification_id = service_api_client.verify_reply_to_email_address(service_id, form.email_address.data)["data"]["id"]
