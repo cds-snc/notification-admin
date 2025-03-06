@@ -1,7 +1,9 @@
 import { customAlphabet } from "nanoid";
 
 const CYPRESS_SERVICE_ID  = Cypress.env('CYPRESS_SERVICE_ID');
-const BASE_URL = Cypress.env("Environment")[Cypress.env("ENV")].Hostnames.API;
+const ENV_CONFIG = Cypress.env("Environment")[Cypress.env("ENV")];
+const SECRETS_CONFIG = Cypress.env(Cypress.env("ENV"));
+const BASE_URL = ENV_CONFIG.Hostnames.API;
 
 const Utilities = {
     CreateJWT: () => {
@@ -12,7 +14,7 @@ const Utilities = {
         }
 
         const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('ADMIN_SECRET'));
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), SECRETS_CONFIG.ADMIN_SECRET);
     },
     GenerateID: (length = 10) => {
         const nanoid = customAlphabet('1234567890abcdef', length)
@@ -21,12 +23,12 @@ const Utilities = {
     CreateCacheClearJWT: () => {
         const jwt = require('jsrsasign');
         const claims = {
-            'iss': Cypress.env('CACHE_CLEAR_USER_NAME'),
+            'iss': ENV_CONFIG.CACHE_CLEAR_USER_NAME,
             'iat': Math.round(Date.now() / 1000)
         }
 
         const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('CACHE_CLEAR_CLIENT_SECRET'));
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), SECRETS_CONFIG.CACHE_CLEAR_CLIENT_SECRET);
     }
 };
 const Admin = {
