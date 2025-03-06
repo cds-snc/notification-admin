@@ -29,21 +29,29 @@ npx cypress install
 - `support/utils.js`: this file contains utility functions that are used by the tests to get service IDs, template IDs, and hostnames
 
 ### `cypress.env.json` contents
-| key                        | description                                     |
-| -------------------------- | ----------------------------------------------- |
-| ADMIN_SECRET               | Secret admin uses to authenticate against API   |
-| ADMIN_USERNAME             | Username admin uses to authenticate against API |
-| NOTIFY_USER                | Notify email account used by the tests          |
-| NOTIFY_PASSWORD            | Password of NOTIFY_USER (gmail)                 |
-| IMAP_PASSWORD              | IMAP password of gmail account for NOTIFY_USER  |
-| CYPRESS_AUTH_USER_NAME     | Username for the Cypress auth client            | 
-| CYPRESS_AUTH_CLIENT_SECRET | Secret for the Cypress auth client              |
-| CYPRESS_USER_PASSWORD      | Password for the Cypress user                   |
 
+#### Top-level values, same between environments
+
+| key                           | description                                     |
+| ----------------------------- | ----------------------------------------------- |
+| ENV                           | The environment to run the tests against        |
+| ADMIN_USERNAME                | Username admin uses to authenticate against API |
+| CYPRESS_AUTH_USER_NAME        | Username for the Cypress auth client            | 
+| CACHE_CLEAR_USER_NAME         | Username for the cache clearing auth client     |
+| NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests          |
+| NOTIFY_PASSWORD               | Password of NOTIFY_USER (gmail)                 |
+| IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER  |
+
+### Environment-specific values
+
+| key                           | description                                     |
+| ----------------------------- | ----------------------------------------------- |
+| ADMIN_SECRET                  | Secret admin uses to authenticate against API   |
+| CYPRESS_AUTH_CLIENT_SECRET    | Secret for the Cypress auth client              |
+| CYPRESS_USER_PASSWORD         | Password for the cypress notify user            |
+| CACHE_CLEAR_CLIENT_SECRET     | Secret for the cache clearing auth client       |
+| WAF_SECRET                    | Secret to bypass WAF rate limits                |
 
 ### Setting target environment 🎯
-The tests are configured to run against the staging environment by default.  To run the tests against your local environment, you will need to update the `ConfigToUse` variable in `config.js` file to use `LOCAL` instead of `STAGING`.  For example:
-```js
-const ConfigToUse = { ...config.COMMON, ...config.LOCAL };
-```
 
+To control which environment cypress targets, change the value of `ENV` at the top of your `cypress.env.json` class.  Valid values are `LOCAL` and `STAGING`.
