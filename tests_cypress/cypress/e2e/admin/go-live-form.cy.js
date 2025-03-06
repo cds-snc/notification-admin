@@ -1,4 +1,3 @@
-import config from "../../../config";
 import Page from "../../Notify/Admin/Pages/GoLiveFormPage";
 
 function CompletePage1() {
@@ -10,7 +9,8 @@ function CompletePage1() {
   Page.GoNext();
 }
 
-const GO_LIVE_PAGE = `/services/${config.Services.Cypress}/service-settings/request-to-go-live/use-case`;
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+const GO_LIVE_PAGE = `/services/${CYPRESS_SERVICE_ID}/service-settings/request-to-go-live/use-case`;
 
 describe("Go Live Form", () => {
   beforeEach(() => {
