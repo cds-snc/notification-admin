@@ -8,6 +8,9 @@ module.exports = defineConfig({
     // static values for all environments
     env: {
       CYPRESS_SERVICE_ID: 'd4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b',
+      ADMIN_USERNAME: "notify-admin",
+      CYPRESS_AUTH_USER_NAME: "CYPRESS_AUTH_USER",
+      CACHE_CLEAR_USER_NAME: "CACHE_CLEAR_USER",
       Services: {
         GCNotify: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
       },
@@ -34,7 +37,7 @@ module.exports = defineConfig({
     },
     setupNodeEvents: async (on, config) => {
       // Set baseUrl dynamically based on ENV
-      const envName = config.env.ENV || 'LOCAL';
+      const envName = config.env.ENV || 'STAGING';
       // add error handling if config.env.ENV value doesnt exist in config.env.Environment
       if (!config.env.Environment[envName]) {
         throw new Error(`Environment configuration for '${envName}' does not exist.  Check the 'ENV' value in the cypress.env.json and ensure a configuration exists for that environment.`);
