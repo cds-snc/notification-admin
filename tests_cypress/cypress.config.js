@@ -43,7 +43,9 @@ module.exports = defineConfig({
         throw new Error(`Environment configuration for '${envName}' does not exist.  Check the 'ENV' value in the cypress.env.json and ensure a configuration exists for that environment.`);
       }
 
-      config.baseUrl = config.env.Environment[envName].Hostnames.Admin;
+      // Set the baseUrl to the correct environment if no override is specified (this is how CI overrides the baseUrl for each PR review env)
+      if (!config.baseUrl)
+        config.baseUrl = config.env.Environment[envName].Hostnames.Admin;
 
       htmlvalidate.install(on, {
         rules: {
