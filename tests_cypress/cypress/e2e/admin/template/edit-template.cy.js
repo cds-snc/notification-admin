@@ -25,7 +25,7 @@ describe("Edit template", () => {
       // set template priority to use TC
       Page.SelectTemplateById(
         CYPRESS_SERVICE_ID,
-        getTemplateID('SMOKE_TEST_SMS'),
+        getTemplateID("SMOKE_TEST_SMS"),
       );
       Page.EditCurrentTemplate();
       Page.SetTemplatePriority("bulk");
@@ -33,7 +33,7 @@ describe("Edit template", () => {
 
       // use api to check that it was set
       Admin.GetTemplate({
-        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        templateId: getTemplateID("SMOKE_TEST_SMS"),
         serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
@@ -47,7 +47,7 @@ describe("Edit template", () => {
 
       // use api to check that it was overridden
       Admin.GetTemplate({
-        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        templateId: getTemplateID("SMOKE_TEST_SMS"),
         serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
@@ -61,7 +61,7 @@ describe("Edit template", () => {
 
       // use api to check that it was overridden
       Admin.GetTemplate({
-        templateId: getTemplateID('SMOKE_TEST_SMS'),
+        templateId: getTemplateID("SMOKE_TEST_SMS"),
         serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         console.log("response", response);
@@ -124,7 +124,7 @@ describe("Edit template", () => {
       // set template priority to use TC
       Page.SelectTemplateById(
         CYPRESS_SERVICE_ID,
-        getTemplateID('SMOKE_TEST_EMAIL'),
+        getTemplateID("SMOKE_TEST_EMAIL"),
       );
       Page.EditCurrentTemplate();
       Page.Components.TemplateSubject().type("a");
@@ -133,7 +133,7 @@ describe("Edit template", () => {
 
       // use api to check that it was set
       Admin.GetTemplate({
-        templateId: getTemplateID('SMOKE_TEST_EMAIL'),
+        templateId: getTemplateID("SMOKE_TEST_EMAIL"),
         serviceId: CYPRESS_SERVICE_ID,
       }).then((response) => {
         expect(response.body.data.process_type_column).to.equal("bulk");

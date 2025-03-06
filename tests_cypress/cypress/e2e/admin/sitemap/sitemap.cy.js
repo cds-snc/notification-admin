@@ -20,7 +20,7 @@ describe(`Sitemap`, () => {
 
         cy.log(`Checking sitemap link: ${link_text}/${link_url}`);
         if (
-          link_url.includes(getHostname('Admin')) &&
+          link_url.includes(getHostname("Admin")) &&
           !link_url.includes("/#")
         ) {
           cy.visit(link_url);

@@ -29,7 +29,7 @@ const fullPageList = [
   { en: "/terms", fr: "/terms" },
 ];
 
-describe(`GCA a11y tests [${Cypress.env('ENV')}]`, () => {
+describe(`GCA a11y tests [${Cypress.env("ENV")}]`, () => {
   for (const lang of langs) {
     const currentLang = lang === "en" ? "English" : "Francais";
     context(currentLang, () => {
