@@ -83,7 +83,7 @@ const pages = [
 
 describe(`A11Y - App pages [${Cypress.env('ENV')}]`, () => {
   for (const page of pages) {
-    it.only(`${page.name}`, () => {
+    it(`${page.name}`, () => {
       cy.login();
       cy.a11yScan(page.route, {
         a11y: true,
