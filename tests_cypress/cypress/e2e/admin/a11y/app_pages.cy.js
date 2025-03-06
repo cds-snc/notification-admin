@@ -2,7 +2,7 @@
 
 import { getTemplateID } from "../../../support/utils";
 
-const CYPRESS_SERVICE_ID = Cypress.env('CYPRESS_SERVICE_ID');
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 const pages = [
   { name: "Landing page", route: "/accounts" },
@@ -64,15 +64,15 @@ const pages = [
   },
   {
     name: "Template > View template",
-    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID('SMOKE_TEST_EMAIL')}`,
+    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID("SMOKE_TEST_EMAIL")}`,
   },
   {
     name: "Template > Edit template",
-    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID('SMOKE_TEST_EMAIL')}/edit`,
+    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID("SMOKE_TEST_EMAIL")}/edit`,
   },
   {
     name: "Template > Preview template",
-    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID('SMOKE_TEST_EMAIL')}/preview`,
+    route: `/services/${CYPRESS_SERVICE_ID}/templates/${getTemplateID("SMOKE_TEST_EMAIL")}/preview`,
   },
   { name: "GC Notify Activity", route: "/activity" },
   { name: "Contact us", route: "/contact" },
@@ -81,7 +81,7 @@ const pages = [
   { name: "Terms of use", route: "/terms" },
 ];
 
-describe(`A11Y - App pages [${Cypress.env('ENV')}]`, () => {
+describe(`A11Y - App pages [${Cypress.env("ENV")}]`, () => {
   for (const page of pages) {
     it(`${page.name}`, () => {
       cy.login();

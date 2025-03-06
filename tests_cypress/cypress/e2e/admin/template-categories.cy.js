@@ -2,7 +2,7 @@
 
 import { TemplatesPage as Page } from "../../Notify/Admin/Pages/all";
 
-const CYPRESS_SERVICE_ID = Cypress.env('CYPRESS_SERVICE_ID');
+const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
 
 describe("Template categories", () => {
   beforeEach(() => {
