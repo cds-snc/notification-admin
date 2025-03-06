@@ -35,9 +35,6 @@ npx cypress install
 | key                           | description                                     |
 | ----------------------------- | ----------------------------------------------- |
 | ENV                           | The environment to run the tests against        |
-| ADMIN_USERNAME                | Username admin uses to authenticate against API |
-| CYPRESS_AUTH_USER_NAME        | Username for the Cypress auth client            | 
-| CACHE_CLEAR_USER_NAME         | Username for the cache clearing auth client     |
 | NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests          |
 | NOTIFY_PASSWORD               | Password of NOTIFY_USER (gmail)                 |
 | IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER  |
