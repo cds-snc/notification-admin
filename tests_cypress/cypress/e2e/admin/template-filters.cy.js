@@ -1,7 +1,9 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../support/utils";
+
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 const types = {
   en: ["Email", "Text message"],
@@ -26,8 +28,8 @@ describe("Template filters", () => {
   ["en", "fr"].forEach((lang) => {
     const url =
       lang == "en"
-        ? `/services/${config.Services.Cypress}/templates`
-        : `/set-lang?from=/services/${config.Services.Cypress}/templates`;
+        ? `/services/${CYPRESS_SERVICE_ID}/templates`
+        : `/set-lang?from=/services/${CYPRESS_SERVICE_ID}/templates`;
     context(`App language: ${lang.toUpperCase()}`, () => {
       it("should be collapsed and set to all by default", () => {
         cy.visit(url);

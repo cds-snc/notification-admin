@@ -1,4 +1,6 @@
-import config from "../../../../config";
+import { getServiceID } from "../../../support/utils";
+
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 const BrandingRoutes = [
   "/edit-branding",
@@ -19,21 +21,18 @@ describe("Branding A11Y", () => {
   // perform a11yScan on all pages in the branding_pages array
   BrandingRoutes.forEach((page) => {
     it(`${page} is accessible and has valid HTML`, () => {
-      cy.a11yScan(
-        config.Hostnames.Admin + `/services/${config.Services.Cypress}${page}`,
-        {
-          a11y: true,
-          htmlValidate: true,
-          deadLinks: false,
-          mimeTypes: false,
-          axeConfig: [
-            {
-              id: "aria-allowed-role",
-              enabled: false,
-            },
-          ],
-        },
-      );
+      cy.a11yScan(`/services/${CYPRESS_SERVICE_ID}${page}`, {
+        a11y: true,
+        htmlValidate: true,
+        deadLinks: false,
+        mimeTypes: false,
+        axeConfig: [
+          {
+            id: "aria-allowed-role",
+            enabled: false,
+          },
+        ],
+      });
     });
   });
 });

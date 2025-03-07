@@ -1,7 +1,9 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
 import { ServiceSettingsPage } from "../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../support/utils";
+
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Service Settings", () => {
   beforeEach(() => {
@@ -10,10 +12,7 @@ describe("Service Settings", () => {
 
     cy.login();
 
-    cy.visit(
-      config.Hostnames.Admin +
-        `/services/${config.Services.Cypress}/service-settings`,
-    );
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/service-settings`);
   });
 
   it("Loads service settings page", () => {
@@ -31,10 +30,7 @@ describe("Platform Admin Service Settings", () => {
     // stop the recurring dashboard fetch requests
     cy.intercept("GET", "**/dashboard.json", {});
     cy.login();
-    cy.visit(
-      config.Hostnames.Admin +
-        `/services/${config.Services.Cypress}/service-settings`,
-    );
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/service-settings`);
   });
 
   it("Saves and displays new email annual limit", () => {
