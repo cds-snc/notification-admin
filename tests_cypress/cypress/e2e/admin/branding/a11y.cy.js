@@ -1,4 +1,6 @@
-const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+import { getServiceID } from "../../../support/utils";
+
+const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
 
 const BrandingRoutes = [
   "/edit-branding",

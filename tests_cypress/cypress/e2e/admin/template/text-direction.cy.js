@@ -1,4 +1,5 @@
 import { TemplatesPage as Page } from "../../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../../support/utils";
 
 // TODO: dont hardcode these
 const templates = {
@@ -12,7 +13,7 @@ const templates = {
   },
 };
 
-const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
 
 describe("Template text direction", () => {
   beforeEach(() => {

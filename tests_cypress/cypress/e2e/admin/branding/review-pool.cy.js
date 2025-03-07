@@ -4,8 +4,9 @@ import {
   ReviewPoolPage,
   EditBrandingPage,
 } from "../../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../../support/utils";
 
-const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
 
 describe("Review Pool", () => {
   beforeEach(() => {

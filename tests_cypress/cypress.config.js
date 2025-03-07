@@ -2,17 +2,18 @@ const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");
 const CreateAccount = require("./cypress/plugins/create-account");
 const htmlvalidate = require("cypress-html-validate/plugin");
+const { getConfig } = require("./cypress/support/utils");
 
 module.exports = defineConfig({
   e2e: {
     // static values for all environments
     env: {
-      CYPRESS_SERVICE_ID: 'd4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b',
       ADMIN_USERNAME: "notify-admin",
       CYPRESS_AUTH_USER_NAME: "CYPRESS_AUTH_USER",
       CACHE_CLEAR_USER_NAME: "CACHE_CLEAR_USER",
       Services: {
-        GCNotify: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553'
+        GC_NOTIFY: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553',
+        CYPRESS: 'd4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b',
       },
       Templates: {
         'SMOKE_TEST_EMAIL': 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
@@ -105,6 +106,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    retries: 3
+    // retries: 3
   },
 });

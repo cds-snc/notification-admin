@@ -2,8 +2,9 @@
 
 import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage";
 import { EditBrandingPage } from "../../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../../support/utils";
 
-const CYPRESS_SERVICE_ID = Cypress.env("CYPRESS_SERVICE_ID");
+const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
 
 describe("Branding settings", () => {
   beforeEach(() => {
