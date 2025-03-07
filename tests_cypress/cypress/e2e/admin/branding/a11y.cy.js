@@ -1,6 +1,6 @@
 import { getServiceID } from "../../../support/utils";
 
-const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 const BrandingRoutes = [
   "/edit-branding",

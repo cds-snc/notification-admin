@@ -5,7 +5,7 @@ import { getTemplateID, getServiceID } from "../../../support/utils";
 import { TemplatesPage as Page } from "../../../Notify/Admin/Pages/all";
 import { Admin } from "../../../Notify/NotifyAPI";
 
-const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 const categories = {
   OTHER: "Other",

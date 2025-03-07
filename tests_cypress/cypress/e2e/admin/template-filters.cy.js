@@ -3,7 +3,7 @@
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 import { getServiceID } from "../../support/utils";
 
-const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 const types = {
   en: ["Email", "Text message"],

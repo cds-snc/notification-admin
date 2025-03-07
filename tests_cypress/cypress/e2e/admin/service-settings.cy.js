@@ -3,7 +3,7 @@
 import { ServiceSettingsPage } from "../../Notify/Admin/Pages/all";
 import { getServiceID } from "../../support/utils";
 
-const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Service Settings", () => {
   beforeEach(() => {

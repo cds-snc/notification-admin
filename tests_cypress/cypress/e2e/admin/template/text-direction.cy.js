@@ -13,7 +13,7 @@ const templates = {
   },
 };
 
-const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Template text direction", () => {
   beforeEach(() => {
