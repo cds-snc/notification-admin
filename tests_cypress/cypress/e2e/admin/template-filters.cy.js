@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 
-import { name } from "file-loader";
 import config from "../../../config";
-import { TemplatesPage as TemplatesPage } from "../../Notify/Admin/Pages/all";
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 import { Admin, API } from "../../Notify/NotifyAPI";
 
