@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import config from "../../../../config";
+import { getHostname } from "../../../support/utils";
+
 let sitemaplinks = [];
 const path = "/sitemap";
 const sitemap_footer_id = "nav-footer-sitemap";
@@ -19,7 +20,7 @@ describe(`Sitemap`, () => {
 
         cy.log(`Checking sitemap link: ${link_text}/${link_url}`);
         if (
-          link_url.includes(config.Hostnames.Admin) &&
+          link_url.includes(getHostname("Admin")) &&
           !link_url.includes("/#")
         ) {
           cy.visit(link_url);
