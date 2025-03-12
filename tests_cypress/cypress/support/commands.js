@@ -18,7 +18,7 @@ afterEach(function() {
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = config.Hostnames.Admin;
-    
+
     if (url) {
         cy.visit(url);
     }
@@ -105,6 +105,8 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 Cypress.Commands.add('login', (agreeToTerms = true) => {
     cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
         cy.session([acct.regular.email_address, agreeToTerms], () => {
+            Cypress.env('ADMIN_USER_ID', acct.admin.id)
+            Cypress.env('REGULAR_USER_ID', acct.regular.id)
             LoginPage.Login(acct.regular.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
         });
     });
@@ -114,6 +116,8 @@ Cypress.Commands.add('login', (agreeToTerms = true) => {
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
     cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
         cy.session([acct.admin.email_address, agreeToTerms], () => {
+            Cypress.env('ADMIN_USER_ID', acct.admin.id)
+            Cypress.env('REGULAR_USER_ID', acct.regular.id)
             LoginPage.Login(acct.admin.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
         });
     });
@@ -122,10 +126,10 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
 // this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
      // Get full URL by combining baseUrl with path
-    const fullUrl = url.startsWith('http') 
-        ? url 
+    const fullUrl = url.startsWith('http')
+        ? url
         : `${Cypress.config('baseUrl')}${url}`;
-       
+
     // Only add headers if URL matches admin hostname
     if (fullUrl.includes(config.Hostnames.Admin)) {
         const mergedOptions = {
@@ -137,6 +141,6 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
         };
         return originalFn(url, mergedOptions);
     }
-    
+
     return originalFn(url, options);
 });
