@@ -16,7 +16,7 @@
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
 
-  {% call notice(type="info", title=_("Secure your API keys"), headingLevel=3) %}
+  {% call notice(type="info", title=_('Secure your <a href="https://documentation.notification.canada.ca/en/keys.html#security" class="govuk-link">API keys</a>'), headingLevel=3) %}
     <ul class="list list-bullet ml-10">
       <li>{{ _('Keep API keys in an encrypted file that’s only for authorized staff. Do not share by email, support tickets or put in plain text in a source code repository.')}}</li>
       <li>{{ _('Rotate keys whenever anyone with key access leaves your team.')}}</li>
