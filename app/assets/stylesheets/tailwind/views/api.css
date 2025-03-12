@@ -8,7 +8,7 @@
     @apply flex align-baseline gap-2 border-t-1 border-solid border-gray-300 p-0;
   }
   .api-notifications-item::before {
-    width: 2ch;
+    width: 3ch;
     @apply text-right bg-gray-200 text-gray-800 font-normal p-2 border-0 border-r-1 border-solid border-gray-300;
   }
   .api-notifications-item-title {

@@ -85,11 +85,11 @@ const Admin = {
             }
         })
     },
-    CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
+    CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null, created_by = null }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
             url: `${BASE_URL}/service/${service_id}/template`,
-            method: 'GET',
+            method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": 'application/json'
@@ -97,10 +97,12 @@ const Admin = {
             body: {
                 "name": name,
                 "template_type": type,
+                "subject": subject,
                 "content": content,
                 "service": service_id,
                 "process_type": process_type,
                 "template_category_id": template_category_id,
+                "created_by": created_by
             }
         });
     },
