@@ -3,6 +3,8 @@
 {% from "components/api-key.html" import api_key %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/empty-list.html" import empty_list  %}
+
 
 {% block service_page_title %}
   {{ _('API keys') }}
@@ -26,7 +28,7 @@
   <h2 class="heading-small">
      {{ _('Existing API keys') }}
   </h2>
-  {% set empty_txt = _('You have not created any API keys yet') %}
+  {% set empty_txt = empty_list(heading=_('You have not created any API keys yet')) %}
   {% set keys_txt = _('API keys') %}
   {% set heading_1 = _('API keys') %}
   {% set heading_2 = _('Action') %}

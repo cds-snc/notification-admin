@@ -2,6 +2,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/previous-next-navigation.html" import previous_next_navigation %}
 {% from "components/table.html" import list_table, field, text_field, link_field, right_aligned_field_heading, hidden_field_heading %}
+{% from "components/empty-list.html" import empty_list  %}
 
 {% block per_page_title %}
   {{ page_title|capitalize }}
@@ -18,7 +19,7 @@
       complaints,
       caption=_("Complaints"),
       caption_visible=False,
-      empty_message=_('No complaints'),
+      empty_message=empty_list(heading=_('No complaints')),
       field_headings=[_('Notification Id'), _('Service'), _('Complaint type'), _('Complaint Date')],
       field_headings_visible=True
   ) %}
