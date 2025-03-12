@@ -192,12 +192,10 @@ describe("Template filters", () => {
             // Empty state should NOT be visible
             Page.Components.EmptyState().should("not.be.visible");
 
-            if (lang == "fr") {
-              Admin.DeleteTemplate({
-                templateId: resp.body.data.id,
-                serviceId: config.Services.Cypress,
-              });
-            }
+            Admin.DeleteTemplate({
+              templateId: resp.body.data.id,
+              serviceId: config.Services.Cypress,
+            });
           });
         });
       });
