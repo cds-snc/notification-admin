@@ -36,15 +36,19 @@
 
     // Strip accents, diacritics etc
     string = string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      
+
     // Replace spaces with the whitespace character (default ".")
     string = string.trim().replace(/\s+/g, whitespace);
 
     // Keep only alphanumeric, whitespace character, hyphen and underscore
-    string = string.split('').map(char => {
-      return /[a-zA-Z0-9]/.test(char) || [whitespace, "-", "_"].includes(char) ? 
-            char.toLowerCase() : "";
-    }).join('');
+    string = string
+      .split("")
+      .map((char) => {
+        return /[a-zA-Z0-9]/.test(char) || [whitespace, "-", "_"].includes(char)
+          ? char.toLowerCase()
+          : "";
+      })
+      .join("");
 
     // Replace multiple consecutive dots with a single dot
     string = string.replace(/\.{2,}/g, ".");

@@ -3,7 +3,7 @@
   const emailSafe = window.utils.emailSafe;
 
   Modules.UrlTyper = $("input#email_from").on("keyup", function () {
-    var inputValue = $(this).val()
+    var inputValue = $(this).val();
     inputValue = emailSafe(inputValue);
 
     // if there is an input value at all
