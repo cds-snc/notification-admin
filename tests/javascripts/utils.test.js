@@ -8,66 +8,87 @@ describe('Utils - emailSafe', () => {
     global.emailSafe = window.utils.emailSafe;
   });
 
-  test('strips accents and diacritics', () => {
-    expect(emailSafe('café')).toBe('cafe');
-    expect(emailSafe('résumé')).toBe('resume');
-    expect(emailSafe('naïve')).toBe('naive');
-    expect(emailSafe('äöüß')).toBe('aou');
-  });
+  const testCases = [
+    // Accents and diacritics
+    ['café', 'cafe'],
+    ['résumé', 'resume'],
+    ['naïve', 'naive'],
+    ['äöü', 'aou'],
+    
+    // Spaces with default dot replacement
+    ['first last', 'first.last'],
+    ['  extra  spaces  ', 'extra.spaces'],
+    ['multiple   spaces', 'multiple.spaces'],
+    
+    // Custom whitespace character
+    ['first last', 'first-last', '-'],
+    ['first last', 'first_last', '_'],
+    ['  extra  spaces  ', 'extra*spaces', '*'],
+    
+    // Non-alphanumeric filtering
+    ['user@example.com', 'userexample.com'],
+    ['first!#$%^&*()last', 'firstlast'],
+    ['valid-name_123', 'valid-name_123'],
+    ['symbols!@#$%^123', 'symbols123'],
+    
+    // Case conversion
+    ['UserName', 'username'],
+    ['UPPER.CASE', 'upper.case'],
+    ['MiXeD_CaSe', 'mixed_case'],
+    
+    // Consecutive special characters
+    ['double..dots', 'double.dots'],
+    ['triple...dots', 'triple.dots'],
+    ['dot.-.dot', 'dot-dot'],
+    ['dot._.dot', 'dot_dot'],
+    ['a--b__c', 'a-b_c'],
+    ['a.-._.-b', 'a-b'],
+    
+    // Beginning and end cleanup
+    ['.leading', 'leading'],
+    ['trailing.', 'trailing'],
+    ['.both.ends.', 'both.ends'],
+    
+    // Edge cases
+    ['', ''],
+    ['   ', ''],
+    ['....', ''],
+    ['!@#$%^&*()', ''],
+    ['...a...', 'a'],
+    
+    // Underscores and hyphens preservation
+    ['sending_domain', 'sending_domain'],
+    ['sending-domain', 'sending-domain'],
+    ['sending_domain_', 'sending_domain_'],
+    ['sending-domain-', 'sending-domain-'],
+  ];
 
-  test('replaces spaces with dots by default', () => {
-    expect(emailSafe('first last')).toBe('first.last');
-    expect(emailSafe('  extra  spaces  ')).toBe('extra.spaces');
-    expect(emailSafe('multiple   spaces')).toBe('multiple.spaces');
-  });
+  test.each(testCases)(
+    'emailSafe(%s) should return %s',
+    (input, expected, whitespace = '.') => {
+      expect(emailSafe(input, whitespace)).toBe(expected);
+    }
+  );
 
-  test('replaces spaces with custom whitespace character', () => {
-    expect(emailSafe('first last', '-')).toBe('first-last');
-    expect(emailSafe('first last', '_')).toBe('first_last');
-    expect(emailSafe('  extra  spaces  ', '*')).toBe('extra*spaces');
-  });
+  // Add additional test cases from Python test_email_safe_return_dot_separated_email_domain
+  const pythonTestCases = [
+    ['name with spaces', 'name.with.spaces'],
+    ['singleword', 'singleword'],
+    ['UPPER CASE', 'upper.case'],
+    ['Service - with dash', 'service-with.dash'],
+    ['lots      of spaces', 'lots.of.spaces'],
+    ['name.with.dots', 'name.with.dots'],
+    ['name-with-other-delimiters', 'name-with-other-delimiters'],
+    ['name_with_other_delimiters', 'name_with_other_delimiters'],
+    ['üńïçödë wördś', 'unicode.words'],
+    ['foo--bar', 'foo-bar'],
+    ['a-_-_-_-b', 'a-b']
+  ];
 
-  test('filters out non-alphanumeric characters except whitespace, hyphens, underscores', () => {
-    expect(emailSafe('user@example.com')).toBe('userexample.com');
-    expect(emailSafe('first!#$%^&*()last')).toBe('firstlast');
-    expect(emailSafe('valid-name_123')).toBe('valid-name_123');
-    expect(emailSafe('symbols!@#$%^123')).toBe('symbols123');
-  });
-
-  test('converts characters to lowercase', () => {
-    expect(emailSafe('UserName')).toBe('username');
-    expect(emailSafe('UPPER.CASE')).toBe('upper.case');
-    expect(emailSafe('MiXeD_CaSe')).toBe('mixed_case');
-  });
-
-  test('handles consecutive dots and special characters', () => {
-    expect(emailSafe('double..dots')).toBe('double.dots');
-    expect(emailSafe('triple...dots')).toBe('triple.dots');
-    expect(emailSafe('dot.-.dot')).toBe('dot-dot');
-    expect(emailSafe('dot._.dot')).toBe('dot_dot');
-    expect(emailSafe('a--b__c')).toBe('a-b_c');
-    expect(emailSafe('a.-._.-b')).toBe('a-b');
-  });
-
-  test('removes dots from beginning and end', () => {
-    expect(emailSafe('.leading')).toBe('leading');
-    expect(emailSafe('trailing.')).toBe('trailing');
-    expect(emailSafe('.both.ends.')).toBe('both.ends');
-  });
-
-  test('handles edge cases', () => {
-    expect(emailSafe('')).toBe('');
-    expect(emailSafe('   ')).toBe('');
-    expect(emailSafe('....')).toBe('');
-    expect(emailSafe('!@#$%^&*()')).toBe('');
-    expect(emailSafe('...a...')).toBe('a');
-  });
-
-  test('does not replace underscores and hyphens with dots', () => {
-    expect(emailSafe('sending_domain')).toBe('sending_domain');
-    expect(emailSafe('sending-domain')).toBe('sending-domain');
-    expect(emailSafe('sending_domain_')).toBe('sending_domain_');
-    expect(emailSafe('sending-domain-')).toBe('sending-domain-');
-  });
-
+  test.each(pythonTestCases)(
+    'emailSafe(%s) matches Python implementation with result %s',
+    (input, expected) => {
+      expect(emailSafe(input)).toBe(expected);
+    }
+  );
 });
