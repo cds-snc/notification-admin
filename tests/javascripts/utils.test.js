@@ -62,4 +62,12 @@ describe('Utils - emailSafe', () => {
     expect(emailSafe('!@#$%^&*()')).toBe('');
     expect(emailSafe('...a...')).toBe('a');
   });
+
+  test('does not replace underscores and hyphens with dots', () => {
+    expect(emailSafe('sending_domain')).toBe('sending_domain');
+    expect(emailSafe('sending-domain')).toBe('sending-domain');
+    expect(emailSafe('sending_domain_')).toBe('sending_domain_');
+    expect(emailSafe('sending-domain-')).toBe('sending-domain-');
+  });
+
 });
