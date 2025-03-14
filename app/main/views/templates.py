@@ -1393,6 +1393,7 @@ def add_template_category():
                 email_process_type=form.data["email_process_type"],
                 sms_process_type=form.data["sms_process_type"],
                 sms_sending_vehicle=form.data["sms_sending_vehicle"],
+                created_by_id=current_user.id,
             )
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:
@@ -1405,6 +1406,7 @@ def add_template_category():
                     "email_process_type": form.data["email_process_type"],
                     "sms_process_type": form.data["sms_process_type"],
                     "sms_sending_vehicle": form.data["sms_sending_vehicle"],
+                    "created_by_id": current_user.id,
                 }
                 flash(_(e.message), "error")
                 return redirect(url_for(".add_template_category"))
@@ -1446,6 +1448,7 @@ def template_category(template_category_id):
                 email_process_type=form.data["email_process_type"],
                 sms_process_type=form.data["sms_process_type"],
                 sms_sending_vehicle=form.data["sms_sending_vehicle"],
+                updated_by_id=current_user.id,
             )
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:

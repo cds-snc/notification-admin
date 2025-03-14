@@ -11,7 +11,7 @@ def template_category_client(mocker):
     return TemplateCategoryClient()
 
 
-def test_create_template_category(template_category_client, mocker):
+def test_create_template_category(template_category_client, fake_uuid, mocker):
     mock_post = mocker.patch("app.notify_client.template_category_api_client.TemplateCategoryClient.post")
     template_category_client.create_template_category(
         name_en="Test Name EN",
@@ -22,6 +22,7 @@ def test_create_template_category(template_category_client, mocker):
         email_process_type="email_process",
         hidden="True",
         sms_sending_vehicle="long_code",
+        created_by_id=fake_uuid,
     )
     data = {
         "name_en": "Test Name EN",
@@ -32,6 +33,7 @@ def test_create_template_category(template_category_client, mocker):
         "email_process_type": "email_process",
         "hidden": True,
         "sms_sending_vehicle": "long_code",
+        "created_by_id": fake_uuid,
     }
     mock_post.assert_called_once_with(url="/template-category", data=data)
 
@@ -80,7 +82,7 @@ def test_get_all_template_categories(template_category_client, mocker, fake_uuid
     )
 
 
-def test_update_template_category(template_category_client, mocker):
+def test_update_template_category(template_category_client, fake_uuid, mocker):
     mock_post = mocker.patch("app.notify_client.template_category_api_client.TemplateCategoryClient.post", return_value=None)
     mock_redis_delete = mocker.patch(
         "app.extensions.RedisClient.delete",
@@ -96,6 +98,7 @@ def test_update_template_category(template_category_client, mocker):
         email_process_type="email_process",
         hidden="hidden",
         sms_sending_vehicle="long_code",
+        updated_by_id=fake_uuid,
     )
     data = {
         "name_en": "Test Name EN",
@@ -106,6 +109,7 @@ def test_update_template_category(template_category_client, mocker):
         "email_process_type": "email_process",
         "hidden": "hidden",
         "sms_sending_vehicle": "long_code",
+        "updated_by_id": fake_uuid,
     }
     mock_post.assert_called_once_with(url="/template-category/template_category_id", data=data)
     assert call("template_categories") in mock_redis_delete.call_args_list
