@@ -117,6 +117,46 @@ def _get_notifications_csv_mock(mocker, api_user_active, job_id=fake_uuid):
         ("üńïçödë wördś", "unicode.words"),
         ("foo--bar", "foo-bar"),
         ("a-_-_-_-b", "a-b"),
+        # Accents and diacritics
+        ("café", "cafe"),
+        ("résumé", "resume"),
+        ("naïve", "naive"),
+        ("äöü", "aou"),
+        # Spaces with default dot replacement
+        ("first last", "first.last"),
+        ("  extra  spaces  ", "extra.spaces"),
+        ("multiple   spaces", "multiple.spaces"),
+        # Non-alphanumeric filtering
+        ("user@example.com", "userexample.com"),
+        ("first!#$%^&*()last", "firstlast"),
+        ("valid-name_123", "valid-name_123"),
+        ("symbols!@#$%^123", "symbols123"),
+        # Case conversion
+        ("UserName", "username"),
+        ("UPPER.CASE", "upper.case"),
+        ("MiXeD_CaSe", "mixed_case"),
+        # Consecutive special characters
+        ("double..dots", "double.dots"),
+        ("triple...dots", "triple.dots"),
+        ("dot.-.dot", "dot-dot"),
+        ("dot._.dot", "dot_dot"),
+        ("a--b__c", "a-b_c"),
+        ("a.-._.-b", "a-b"),
+        # Beginning and end cleanup
+        (".leading", "leading"),
+        ("trailing.", "trailing"),
+        (".both.ends.", "both.ends"),
+        # Edge cases
+        ("", ""),
+        ("   ", ""),
+        ("....", ""),
+        ("!@#$%^&*()", ""),
+        ("...a...", "a"),
+        # Underscores and hyphens preservation
+        ("sending_domain", "sending_domain"),
+        ("sending-domain", "sending-domain"),
+        ("sending_domain_", "sending_domain_"),
+        ("sending-domain-", "sending-domain-"),
     ],
 )
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
