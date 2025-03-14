@@ -101,6 +101,7 @@ def update_email_branding(branding_id, logo=None):
                 organisation_id=form.organisation.data if form.organisation.data != "-1" else None,
                 alt_text_en=form.alt_text_en.data,
                 alt_text_fr=form.alt_text_fr.data,
+                updated_by_id=current_user.id,
             )
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:
@@ -164,6 +165,7 @@ def create_email_branding(logo=None):
                 organisation_id=None if form.organisation.data == "-1" else form.organisation.data,
                 alt_text_en=form.alt_text_en.data,
                 alt_text_fr=form.alt_text_fr.data,
+                created_by_id=current_user.id,
             )
         except HTTPError as e:
             if e.status_code == 400 and "already exists" in e.message:

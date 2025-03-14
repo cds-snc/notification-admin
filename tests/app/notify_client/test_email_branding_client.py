@@ -69,7 +69,7 @@ def test_get_all_email_branding_filter_organisation(mocker):
     )
 
 
-def test_create_email_branding(mocker):
+def test_create_email_branding(mocker, fake_uuid):
     org_data = {
         "logo": "test.png",
         "name": "test name",
@@ -79,6 +79,7 @@ def test_create_email_branding(mocker):
         "organisation_id": "org-id-123",
         "alt_text_en": "test",
         "alt_text_fr": "test2",
+        "created_by_id": fake_uuid,
     }
 
     mock_post = mocker.patch("app.notify_client.email_branding_client.EmailBrandingClient.post")
@@ -92,6 +93,7 @@ def test_create_email_branding(mocker):
         organisation_id=org_data["organisation_id"],
         alt_text_en=org_data["alt_text_en"],
         alt_text_fr=org_data["alt_text_fr"],
+        created_by_id=fake_uuid,
     )
 
     mock_post.assert_called_once_with(url="/email-branding", data=org_data)
@@ -125,6 +127,7 @@ def t_update_email_branding(mocker, fake_uuid):
         organisation_id=org_data["organisation_id"],
         alt_text_en=org_data["alt_text_en"],
         alt_text_fr=org_data["alt_text_fr"],
+        updated_by_id=fake_uuid,
     )
 
     mock_post.assert_called_once_with(url="/email-branding/{}".format(fake_uuid), data=org_data)
