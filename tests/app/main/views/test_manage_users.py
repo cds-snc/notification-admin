@@ -347,7 +347,7 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
             None,
             """
             Text message code
-            Not available because this team member has not added a
+            Not available because Test User has not added a
             phone number to their profile
         """,
         ),
