@@ -4,7 +4,7 @@
   .banner-default,
   .banner-with-tick,
   .banner-default-with-tick {
-    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-smaller border-4 border-solid border-green leading-tight text-green;
+    @apply block relative p-gutterHalf mx-0 mt-gutter mb-gutterHalf clear-both text-left font-bold text-base border-4 border-solid border-green leading-tight text-green;
   }
 
   .banner:focus,

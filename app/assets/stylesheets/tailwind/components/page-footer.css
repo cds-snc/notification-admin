@@ -58,11 +58,11 @@
   }
 
   .page-footer-delete-link-without-button {
-    @apply ml-0 inline-block leading-tight text-smaller;
+    @apply ml-0 inline-block leading-tight text-base;
   }
 
   .page-footer-secondary-link {
-    @apply block mt-gutter w-max-content;
+    @apply block mt-gutter w-max;
   }
 
   .page-footer-right-aligned-link {

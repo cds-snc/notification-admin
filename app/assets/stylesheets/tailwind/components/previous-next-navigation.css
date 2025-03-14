@@ -15,7 +15,7 @@
     @apply flex p-gutterHalf  no-underline;
   }
   .previous-and-next-navigation .pagination-part-title {
-    @apply block text-titlelarge leading-tight font-bold ml-gutterHalf;
+    @apply block text-title leading-tight font-bold ml-gutterHalf;
   }
   .previous-and-next-navigation .page a:visited {
     @apply text-blue;

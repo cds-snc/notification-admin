@@ -33,7 +33,7 @@
   }
 
   .js-enabled .file-upload-filename {
-    @apply text-smaller leading-tight font-bold inline-block pl-gutterHalf;
+    @apply text-base leading-tight font-bold inline-block pl-gutterHalf;
   }
 
   .js-enabled .file-upload-submit {
@@ -44,7 +44,7 @@
     @apply inline-block leading-loose;
   }
   .js-enabled .file-upload-alternate-link a {
-    @apply text-smaller leading-tight font-bold;
+    @apply text-base leading-tight font-bold;
   }
   /*! purgecss end ignore */
 }

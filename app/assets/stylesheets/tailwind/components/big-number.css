@@ -5,7 +5,7 @@
   }
 
   .big-number-number {
-    @apply block text-titlelarge pb-4 font-bold leading-none;
+    @apply block text-big pb-4 font-bold leading-none;
   }
 
   .big-number-dark {
@@ -13,11 +13,11 @@
   }
 
   .big-number-label {
-    @apply text-smaller inline-block;
+    @apply text-base inline-block;
   }
 
   .big-number-status {
-    @apply text-smaller block text-white bg-green-darker;
+    @apply text-base block text-white bg-green-darker;
   }
 
   .big-number-status:hover > div {

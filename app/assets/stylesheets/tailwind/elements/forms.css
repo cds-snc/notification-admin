@@ -19,10 +19,10 @@
     @apply block text-black;
   }
   .form-label {
-    @apply mb-2 text-smaller leading-tight font-normal;
+    @apply mb-2 text-base leading-tight font-normal;
   }
   .form-label.heading-small {
-    @apply text-smaller leading-tight font-bold mb-2 mt-0;
+    @apply text-base leading-tight font-bold mb-2 mt-0;
   }
   .form-label + .hint {
     margin-top: -5px;
@@ -35,7 +35,7 @@
   .form-hint {
     margin-top: -2px;
     padding-bottom: 2px;
-    @apply text-smaller leading-tight font-normal block text-gray-grey1;
+    @apply text-base leading-tight font-normal block text-gray-grey1;
   }
   .form-label .form-hint,
   .form-label-bold .form-hint {
@@ -44,14 +44,14 @@
 
   .input {
     border-color: #000;
-    @apply border-solid border-2 py-3 px-2 text-smaller;
+    @apply border-solid border-2 py-3 px-2 text-base;
   }
   /* By default, form controls are 50% width for desktop,
      and 100% width for mobile
   */
   .form-control {
     padding: 5px 4px 4px;
-    @apply box-border text-smaller leading-tight font-normal font-body w-full border-2 border-solid border-black;
+    @apply box-border text-base leading-tight font-normal font-body w-full border-2 border-solid border-black;
   }
   @screen md {
     .form-control {

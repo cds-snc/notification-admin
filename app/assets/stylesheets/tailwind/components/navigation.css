@@ -31,13 +31,13 @@
     padding-top: 14px;
     padding-bottom: 11px;
     max-width: 50%;
-    @apply text-smaller leading-tight font-bold px-0 inline-block;
+    @apply text-base leading-tight font-bold px-0 inline-block;
   }
 
   .navigation-service-switch {
     padding-top: 14px;
     padding-bottom: 11px;
-    @apply text-smaller leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf;
+    @apply text-base leading-tight font-normal text-right absolute top-0 right-0 pr-0 pl-gutterHalf;
   }
   .navigation-service-switch:hover {
     @apply underline text-blue-lightblue;
@@ -52,14 +52,14 @@
   .navigation-service-back-to {
     padding-top: 14px;
     padding-bottom: 11px;
-    @apply text-smaller leading-tight font-normal pr-gutterHalf pl-0 inline-block no-underline;
+    @apply text-base leading-tight font-normal pr-gutterHalf pl-0 inline-block no-underline;
   }
   .navigation-service-back-to:hover {
     @apply underline text-blue-lightblue;
   }
 
   .navigation li {
-    @apply text-smaller leading-tight font-normal m-0 list-none;
+    @apply text-base leading-tight font-normal m-0 list-none;
   }
   .navigation a {
     top: 5px;
@@ -80,7 +80,7 @@
         between selected and unselected states */
     left: -0.5px;
     letter-spacing: -0.01em;
-    @apply text-smaller leading-tight font-bold relative;
+    @apply text-base leading-tight font-bold relative;
   }
 
   /* https://github.com/alphagov/product-page-example/blob/master/source/stylesheets/modules/_sub-navigation.scss */

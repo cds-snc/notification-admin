@@ -112,7 +112,7 @@
   .folder-heading-folder {
     background-size: auto 19px;
     background-position: 0px 4px;
-    @apply inline bg-no-repeat align-top text-smaller min-h-12;
+    @apply inline bg-no-repeat align-top text-base min-h-12;
   }
   .folder-heading-folder {
     @apply p-0 pl-gutter bg-folderBlackPng bg-folderBlack;

@@ -46,7 +46,7 @@
       "</div>",
   );
   ListEntry.prototype.addButtonTemplate = Hogan.compile(
-    '<button type="button" class="button button-secondary list-entry-add m-0 mb-8 text-smaller leading-tight">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>',
+    '<button type="button" class="button button-secondary list-entry-add m-0 mb-8 text-base leading-tight">{{addAnotherTranslation}} {{listItemName}} ({{entriesLeft}} {{remainingTranslation}})</button>',
   );
   ListEntry.prototype.getSharedAttributes = function () {
     var $inputs = this.$wrapper.find("input"),
