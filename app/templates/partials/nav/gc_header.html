@@ -30,7 +30,7 @@
     </div>
     <!-- start sub nav -->
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
-         class="xs:hidden smaller:hidden sm:hidden md:flex">
+         class="hidden md:flex">
       <ul class="flex w-full justify-end">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu.html' %}
@@ -64,7 +64,7 @@
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
           <span id="gc-title"
-                class="text-titlelarge text-black visited:text-black"
+                class="text-title text-black visited:text-black"
           >
           {{ _("GC Notify") }}
         </span>
@@ -83,7 +83,7 @@
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
       <div class="flex flex-col items-start md:flex-row md:items-center">
-        <h2 class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
+        <h2 class="heading-medium inline mr-gutterHalf ">
           {{ url_text }}
         </h2>
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}

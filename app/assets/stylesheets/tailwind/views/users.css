@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   .user-list {
-    @apply text-smaller leading-tight font-normal my-12;
+    @apply text-base leading-tight font-normal my-12;
   }
   .user-list-item {
     @apply py-gutterHalf pl-0 align-baseline;

@@ -6,7 +6,7 @@
 {% block maincolumn_content %}
 
   <div class="flex flex-row">
-    <div class="xs:hidden smaller:hidden sm:hidden md:flex flex-col">
+    <div class="hidden md:flex flex-col">
           {% for link_text, view in [
           ('Your services', 'choose_account'),
           ('Live services', 'live_services'),
@@ -28,7 +28,7 @@
             <a
               aria-label="{{ _(link_text) }}" 
               href="{{ url_for('main.'+view) }}"
-              class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
+              class="no-underline text-blue visited:text-blue link:text-blue text-base"
               {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
               >
               {{ _(link_text) }}

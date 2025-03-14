@@ -12,7 +12,7 @@
   }
 
   .notification-status-cancelled {
-    @apply text-smaller leading-tight font-bold text-red;
+    @apply text-base leading-tight font-bold text-red;
   }
   /*! purgecss end ignore */
 }

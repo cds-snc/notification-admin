@@ -1,4 +1,8 @@
-const plugin = require("tailwindcss/plugin");
+import plugin from "tailwindcss/plugin";
+import tokens from "@cdssnc/gcds-tokens/build/tailwind/tailwind.tokens.json";
+
+const { blue, grayscale, green, orange, purple, red, yellow } = tokens.Tokens.color;
+const { bg, border, container, danger, focus, font, fontFamilies, fontSizes, fontWeights, lineHeights, link, outline, spacing, text } = tokens.Tokens;
 
 module.exports = {
   safelist: [
@@ -37,6 +41,7 @@ module.exports = {
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
+    "text-h1-mobile"
   ],
   content: [
     "./app/**/*.{html,css,js}",
@@ -63,22 +68,34 @@ module.exports = {
       button2: "0 2px 0 rgb(38, 55, 74, 1)",
       none: "none",
     },
+    fontFamily: {
+      sans: fontFamilies.body.value,
+      mono: fontFamilies.monospace.value,
+      body: fontFamilies.body.value,
+      heading: fontFamilies.heading.value,
+    },
     fontSize: {
-      xs: "0.875rem",
       small: "1.0625rem",
-      smaller: "1.25rem",
       base: "1.25rem",
       title: "1.5rem",
-      titlelarge: "1.75rem",
+      big: "1.75rem",
+      'h3-mobile': fontSizes.h3Mobile.value,
+      'h3': fontSizes.h3.value,
+      'h2-mobile': fontSizes.h2Mobile.value,
+      'h2': "2.08rem",
+      'h1-mobile': fontSizes.h1Mobile.value,
+      'h1': fontSizes.h1.value,
+      // Remove these later
       lg: "2.25rem",
       xxl: "3.25rem",
     },
     screens: {
-      xs: "320px",
-      smaller: "375px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
+      xs: container.xs.value,
+      sm: container.sm.value,
+      md: container.md.value,
+      lg: container.lg.value,
+      xl: container.xl.value,
+      full: container.full.value,
     },
     spacing: {
       0: "0rem",
@@ -101,6 +118,15 @@ module.exports = {
       doubleGutter: "3.75rem",
     },
     colors: {
+      semantic: {
+        light: text.light.value, // Main light text colour.
+        DEFAULT: text.primary.value, // Main text colour.
+        secondary: text.secondary.value, // Contrast text colour (alternative to primary).
+        link: link.default.value, // Link text colour.
+        visited: link.visited.value, // Visited link text colour.
+        hover: link.hover.value, // Hover link text colour
+        danger: danger.text.value, // Danger text colour.
+      },
       transparent: "transparent",
       current: "currentColor",
       red: {
@@ -209,11 +235,6 @@ module.exports = {
         1: "1px",
         10: "10px",
       },
-      fontFamily: {
-        sans: ["lato"],
-        body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"],
-      },
       inset: {
         2: "2px",
         5: "5px",
@@ -226,7 +247,13 @@ module.exports = {
         },
       },
       lineHeight: {
-        "extra-tight": "0.9",
+        'text': lineHeights.text.value,
+        'h3-mobile': lineHeights.h3Mobile.value,
+        'h3': lineHeights.h3.value,
+        'h2-mobile': lineHeights.h2Mobile.value,
+        'h2': "144%",
+        'h1-mobile': lineHeights.h1Mobile.value,
+        'h1': lineHeights.h1.value,
       },
       outline: {
         yellow: "3px solid #ffbf47",

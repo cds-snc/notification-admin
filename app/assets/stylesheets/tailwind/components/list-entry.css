@@ -18,7 +18,7 @@
   }
 
   .list-entry-remove {
-    @apply block mb-6 mt-2 static overflow-hidden text-smaller leading-tight;
+    @apply block mb-6 mt-2 static overflow-hidden text-base leading-tight;
   }
   @media (min-width: theme("screens.sm")) {
     .list-entry-remove {
@@ -31,7 +31,7 @@
     width: 1.6em;
     margin: 6px -1.6em 0 0;
     left: 10px;
-    @apply text-smaller relative pointer-events-none float-left font-bold text-gray-grey1;
+    @apply text-base relative pointer-events-none float-left font-bold text-gray-grey1;
   }
   /*! purgecss end ignore */
 }

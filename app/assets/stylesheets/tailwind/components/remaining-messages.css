@@ -10,11 +10,11 @@
   }
 
   .rm-header {
-    @apply text-smaller inline-block;
+    @apply text-base inline-block;
   }
 
   .rm-used {
-    @apply text-titlelarge pb-4 font-bold leading-none;
+    @apply text-title pb-4 font-bold leading-none;
   }
 
   .rm-total {

@@ -8,7 +8,7 @@
   a.button:active {
     padding: 0.55em 1em 0.45em;
     box-shadow: 0 2px 0 theme("colors.blue.border");
-    @apply no-underline inline-flex items-center text-white text-smaller leading-tight align-top bg-blue min-h-target;
+    @apply no-underline inline-flex items-center text-white text-base leading-tight align-top bg-blue min-h-target;
   }
   .button.shadow-none,
   a.button.shadow-none,

@@ -5,7 +5,7 @@
     background-position: 0 6px;
     padding: 6px 0 5px 25px;
     background-size: 19px 19px;
-    @apply text-smaller leading-tight font-normal inline-block bg-no-repeat;
+    @apply text-base leading-tight font-normal inline-block bg-no-repeat;
   }
 
   .tick-cross-tick {
