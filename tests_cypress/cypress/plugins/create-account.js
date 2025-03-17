@@ -57,7 +57,6 @@ const createAccount = async (baseUrl, username, secret) => {
     
     // Step 1: Call cleanup endpoint
     const cleanupUrl = `${baseUrl}/cypress/cleanup`;
-    console.log('calling cleanup')
     const options = {
         headers: {
             Authorization: `Bearer ${token}`,

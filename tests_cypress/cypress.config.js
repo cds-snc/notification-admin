@@ -2,7 +2,6 @@ const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");
 const CreateAccount = require("./cypress/plugins/create-account");
 const htmlvalidate = require("cypress-html-validate/plugin");
-const { getConfig } = require("./cypress/support/utils");
 
 module.exports = defineConfig({
   e2e: {

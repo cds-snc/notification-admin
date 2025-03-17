@@ -106,8 +106,6 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
-    console.log('CONFIG', getConfig());
-    getConfig
     cy.task('createAccount', { 
         baseUrl: CONFIG.Hostnames.API, 
         username: CONFIG.CYPRESS_AUTH_USER_NAME, 
