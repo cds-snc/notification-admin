@@ -287,6 +287,7 @@ def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
     assert "Virus detected\n" in error_description
 
 
+@pytest.mark.skip(reason="letters: unused functionality")
 @pytest.mark.parametrize("letter_status", ["pending-virus-check", "virus-scan-failed"])
 def test_should_not_show_preview_link_for_precompiled_letters_in_virus_states(
     mocker,
