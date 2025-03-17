@@ -2,7 +2,10 @@
 
 import config from "../../../../config";
 import ServiceSettingsPage from "../../../Notify/Admin/Pages/ServiceSettingsPage";
-import { EditBrandingPage } from "../../../Notify/Admin/Pages/all";
+import {
+  EditBrandingPage,
+  BrandingSettingsPage,
+} from "../../../Notify/Admin/Pages/all";
 
 describe("Branding settings", () => {
   beforeEach(() => {
@@ -19,7 +22,15 @@ describe("Branding settings", () => {
     cy.get("h1").contains("Email logo").should("be.visible");
   });
 
-  // Broken currently
+  it("Shows the current branding image preview", () => {
+    ServiceSettingsPage.ClickChangeEmailBrandingLink();
+    BrandingSettingsPage.Components.TemplatePreview().should("be.visible");
+    BrandingSettingsPage.Components.TemplatePreview().should(
+      "have.attr",
+      "alt",
+    );
+  });
+
   it("returns to service settings page when back link is clicked", () => {
     ServiceSettingsPage.ClickChangeEmailBrandingLink();
     EditBrandingPage.ClickBackLink();

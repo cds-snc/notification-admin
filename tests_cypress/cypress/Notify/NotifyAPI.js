@@ -218,7 +218,21 @@ const Admin = {
                 "Content-Type": 'application/json'
             }
         })
-    }
+    },
+    ClearCache: ({ pattern }) => {
+        var token = Utilities.CreateCacheClearJWT();
+        return cy.request({
+            url: `${BASE_URL}/cache-clear`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                pattern: pattern
+            }
+        });
+    },
 }
 // const Admin = {
 //     CreateService: () => {
