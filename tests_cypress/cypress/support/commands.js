@@ -133,10 +133,10 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
 // this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
      // Get full URL by combining baseUrl with path
-    const fullUrl = url.startsWith('http') 
-        ? url 
+    const fullUrl = url.startsWith('http')
+        ? url
         : `${Cypress.config('baseUrl')}${url}`;
-       
+
     // Only add headers if URL matches admin hostname
     if (fullUrl.includes(getHostname('Admin'))) {
         const mergedOptions = {
@@ -148,6 +148,6 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
         };
         return originalFn(url, mergedOptions);
     }
-    
+
     return originalFn(url, options);
 });

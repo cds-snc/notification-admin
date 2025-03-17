@@ -2,9 +2,9 @@
 
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
 import { getServiceID } from "../../support/utils";
+import { Admin, API } from "../../Notify/NotifyAPI";
 
 const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
-
 const types = {
   en: ["Email", "Text message"],
   fr: ["Courriel", "Message texte"],
@@ -162,24 +162,43 @@ describe("Template filters", () => {
       });
 
       it("Filtering to 0 results shows empty message", () => {
-        cy.visit(url);
+        Admin.CreateTemplate({
+          service_id: config.Services.Cypress,
+          name: "Test Name",
+          type: "email",
+          subject: "Test Subject",
+          content: "Test Content",
+          template_category_id: "7c16aa95-e2e1-4497-81d6-04c656520fe4", // Test category id
+          process_type: "bulk",
+          created_by: Cypress.env("REGULAR_USER_ID"),
+        }).then((resp) => {
+          API.ClearCache({
+            pattern: `service-${config.Services.Cypress}-templates`,
+          }).then(() => {
+            cy.visit(url);
+            // Empty state should NOT be visible
+            Page.Components.EmptyState().should("not.be.visible");
 
-        // Empty state should NOT be visible
-        Page.Components.EmptyState().should("not.be.visible");
+            Page.ToggleFilters();
+            Page.ApplyTypeFilter(types[lang][1]);
+            Page.ApplyCategoryFilter(catEmpty[lang]);
 
-        Page.ToggleFilters();
-        Page.ApplyTypeFilter(types[lang][1]);
-        Page.ApplyCategoryFilter(catEmpty[lang]);
+            // Empty state should be visible
+            Page.Components.EmptyState().should("be.visible");
 
-        // Empty state should be visible
-        Page.Components.EmptyState().should("be.visible");
+            // Clear filters
+            Page.ApplyTypeFilterAll();
+            Page.ApplyCategoryFilterAll();
 
-        // Clear filters
-        Page.ApplyTypeFilterAll();
-        Page.ApplyCategoryFilterAll();
+            // Empty state should NOT be visible
+            Page.Components.EmptyState().should("not.be.visible");
 
-        // Empty state should NOT be visible
-        Page.Components.EmptyState().should("not.be.visible");
+            Admin.DeleteTemplate({
+              templateId: resp.body.data.id,
+              serviceId: config.Services.Cypress,
+            });
+          });
+        });
       });
     });
   });
