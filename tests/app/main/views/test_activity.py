@@ -287,6 +287,7 @@ def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
     assert "Virus detected\n" in error_description
 
 
+@pytest.mark.skip(reason="letters: unused functionality")
 @pytest.mark.parametrize("letter_status", ["pending-virus-check", "virus-scan-failed"])
 def test_should_not_show_preview_link_for_precompiled_letters_in_virus_states(
     mocker,
@@ -583,9 +584,9 @@ def test_redacts_templates_that_should_be_redacted(
 
 @pytest.mark.parametrize(
     "message_type, tablist_visible, search_bar_visible",
-    [("email", True, True), ("sms", True, True), ("letter", False, False)],
+    [("email", True, True), ("sms", True, True)],
 )
-def test_big_numbers_and_search_dont_show_for_letters(
+def test_big_numbers_and_search_show_for_email_sms(
     client_request,
     service_one,
     mock_get_notifications,
@@ -648,54 +649,6 @@ def test_big_numbers_and_search_dont_show_for_letters(
             False,
         ),
         ("sms", "delivered", None, "Delivered 16:31:00", True),
-        ("letter", "created", None, "2017-09-27T16:30:00+00:00", True),
-        ("letter", "pending-virus-check", None, "2017-09-27T16:30:00+00:00", True),
-        ("letter", "sending", None, "2017-09-27T16:30:00+00:00", True),
-        ("letter", "delivered", None, "2017-09-27T16:30:00+00:00", True),
-        ("letter", "received", None, "2017-09-27T16:30:00+00:00", True),
-        ("letter", "accepted", None, "2017-09-27T16:30:00+00:00", True),
-        (
-            "letter",
-            "cancelled",
-            None,
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # The API won’t return cancelled letters
-        (
-            "letter",
-            "permanent-failure",
-            None,
-            "16:31:00",
-            False,
-        ),  # Deprecated for ‘cancelled’
-        (
-            "letter",
-            "temporary-failure",
-            None,
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # Not currently a real letter status
-        (
-            "letter",
-            "virus-scan-failed",
-            None,
-            "Virus detected 2017-09-27T16:30:00+00:00",
-            False,
-        ),
-        (
-            "letter",
-            "validation-failed",
-            None,
-            "Validation failed 2017-09-27T16:30:00+00:00",
-            False,
-        ),
-        (
-            "letter",
-            "technical-failure",
-            None,
-            "Technical failure 2017-09-27T16:30:00+00:00",
-            False,
-        ),
     ],
 )
 def test_sending_status_hint_displays_correctly_on_notifications_page_new_statuses(
