@@ -40,7 +40,7 @@
         {{ page_footer(
           _('Save'),
           delete_link=url_for('.edit_user_permissions', service_id=current_service.id, user_id=user.id, delete='yes'),
-          delete_link_text=_('Remove this team member')
+          delete_link_text=_('Remove {} from this team').format(user.name or user.email_localpart)
         ) }}
 
     {% endcall %}
