@@ -227,6 +227,9 @@ def view_job_updates(service_id, job_id):
 @main.route("/services/<service_id>/notifications/<message_type>", methods=["GET", "POST"])
 @user_has_permissions()
 def view_notifications(service_id, message_type=None):
+    if message_type not in ["email", "sms", None]:
+        abort(404)
+
     service_data_retention_days = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
 
     if message_type is not None:

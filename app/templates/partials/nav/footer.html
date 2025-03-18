@@ -81,7 +81,7 @@
             {{ nav_link_light(id_key='nav-footer-secondary-a11y', class="whitespace-nowrap",label=_('Accessibility'), href=gca_url_for('accessibility')) }}
             {{ separator() }}</li>
           <li>
-            {{ nav_link_light(id_key='nav-footer-secondary-terms', class="whitespace-nowrap",label=_('Terms of use'), href=gca_url_for('terms')) }}
+            {{ nav_link_light(id_key='nav-footer-secondary-terms', class="whitespace-nowrap",label=_('Terms of use'), href=url_for('main.terms')) }}
             {{ separator() }}</li>
           <li>
             {{ nav_link_light(id_key='nav-footer-secondary-sla', class="whitespace-nowrap",label=_('Service level agreement'), href=gca_url_for('service-level-agreement')) }}
