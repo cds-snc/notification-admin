@@ -437,7 +437,7 @@ PermissionsAbstract = type(
 
 
 class PermissionsForm(PermissionsAbstract):  # type: ignore
-    def __init__(self, all_template_folders=None, *args, **kwargs):
+    def __init__(self, all_template_folders=None, user_name=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.folder_permissions.choices = []
         if all_template_folders is not None:
@@ -446,6 +446,11 @@ class PermissionsForm(PermissionsAbstract):  # type: ignore
                 (item["id"], item["name"]) for item in ([{"name": _l("Templates"), "id": None}] + all_template_folders)
             ]
 
+        # If user_name is provided, update the field label
+        if user_name:
+            self.folder_permissions.label.text = _l("Folders {} can see").format(user_name)
+
+    # Use a generic label that will be updated in __init__
     folder_permissions = NestedCheckboxesField(_l("Folders this team member can see"))
 
     login_authentication = RadioField(
@@ -467,6 +472,7 @@ class PermissionsForm(PermissionsAbstract):  # type: ignore
     @classmethod
     def from_user(cls, user, service_id, **kwargs):
         return cls(
+            user_name=user.name,  # Pass the user name to the constructor
             **kwargs,
             **{role: user.has_permission_for_service(service_id, role) for role in roles.keys()},
             login_authentication=user.auth_type,
@@ -1608,7 +1614,7 @@ class CreateTemplateForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("email", _l("Email")), ("sms", _l("Text"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Will you send the message by email or text?"))
 
 
 class AddEmailRecipientsForm(Form):
@@ -1616,7 +1622,7 @@ class AddEmailRecipientsForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Add recipients"))
     placeholder_value = email_address(_l("Email address of recipient"), gov_user=False)
 
 
@@ -1625,7 +1631,7 @@ class AddSMSRecipientsForm(Form):
         super().__init__(*args, **kwargs)
         self.what_type.choices = [("many_recipients", _l("Many recipients")), ("one_recipient", _l("One recipient"))]
 
-    what_type = RadioField("")
+    what_type = RadioField(_l("Add recipients"))
     placeholder_value = international_phone_number(_l("Phone number of recipient"))
 
 
