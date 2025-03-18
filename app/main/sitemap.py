@@ -48,7 +48,7 @@ def get_sitemap():
                 "title": _("Policy"),
                 "pages": [
                     {"href": gca_url_for("accessibility"), "link_text": _("Accessibility")},
-                    {"href": gca_url_for("terms"), "link_text": _("GC Notify terms of use")},
+                    {"href": url_for("main.terms"), "link_text": _("GC Notify terms of use")},
                     {"href": gca_url_for("privacy"), "link_text": _("Privacy notice for staff using GC Notify")},
                     {"href": gca_url_for("security"), "link_text": _("Security")},
                     {"href": gca_url_for("service-level-agreement"), "link_text": _("GC Notify service level agreement")},

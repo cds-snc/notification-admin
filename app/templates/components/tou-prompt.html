@@ -42,7 +42,7 @@
     <div data-testid="tou-terms">
       <p>
         {{ _('By using GC Notify, you accept our ') }}
-        {{ content_link(_("terms of use"), gca_url_for('terms'), is_external_link=true) }}.
+        {{ content_link(_("terms of use"), url_for('main.terms'), is_external_link=true) }}.
         {{ _('This includes your agreement to:') }}
       </p>
       <ul class="list list-bullet ml-5">
