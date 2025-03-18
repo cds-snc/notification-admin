@@ -41,7 +41,9 @@ module.exports = {
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
-    "text-h1-mobile"
+    "text-h1-mobile",
+    "font-arabic",
+    "font-syllabic"
   ],
   content: [
     "./app/**/*.{html,css,js}",
@@ -73,6 +75,8 @@ module.exports = {
       mono: fontFamilies.monospace.value,
       body: fontFamilies.body.value,
       heading: fontFamilies.heading.value,
+      arabic: '"Noto Sans Arabic", sans-serif',
+      syllabic: '"Noto Sans Canadian Aboriginal", sans-serif',
     },
     fontSize: {
       small: "1.0625rem",

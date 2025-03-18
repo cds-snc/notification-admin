@@ -118,6 +118,16 @@
     font-weight: normal;
   }
 
+html,
+body,
+button,
+input,
+table,
+td,
+th {
+  @apply font-body;
+}
+
   abbr[title],
   acronym[title] {
     @apply no-underline;

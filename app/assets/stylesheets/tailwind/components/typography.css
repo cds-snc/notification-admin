@@ -10,8 +10,11 @@
   p + p {
     @apply mt-gutterHalf
   }
-  p + * {
+  p + :where(ul, ol, blockquote, figure, img) {
     @apply mt-gutter
+  }
+  .page-content :where(p, ul, ol, blockquote, figure, img) + :where(h2, h3) {
+    @apply mt-doubleGutter
   }
 
   a {
@@ -53,18 +56,18 @@
 
   .page-content h3,
   .heading-small {
-    @apply font-heading font-bold block text-h3-mobile leading-h3-mobile md:text-h3 md:leading-h3;
+    @apply font-heading font-bold block text-h3-mobile leading-h3-mobile md:text-h3 md:leading-h3 mb-gutterHalf;
   }
 
   .page-content h2,
   .heading-medium {
-    @apply font-heading font-bold block text-h2-mobile leading-h2-mobile md:text-h2 md:leading-h2;
+    @apply font-heading font-bold block text-h2-mobile leading-h2-mobile md:text-h2 md:leading-h2 mb-gutterHalf;
   }
 
   .page-content h1,
   .page-content.home h2,
   .heading-large {
-    @apply font-heading font-bold block text-h1-mobile leading-h1-mobile md:text-h1 md:leading-h1;
+    @apply font-heading font-bold block text-h1-mobile leading-h1-mobile md:text-h1 md:leading-h1 mb-gutterAndAHalf;
   }
 
   main {

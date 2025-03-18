@@ -77,35 +77,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html,
-body,
-button,
-input,
-table,
-td,
-th {
-  @apply font-body;
-}
-
-html,
-body,
-div,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-article,
-aside,
-footer,
-header,
-hgroup,
-nav,
-section {
-  @apply m-0 p-0 align-baseline;
-}
-
 main {
   @apply block;
 }

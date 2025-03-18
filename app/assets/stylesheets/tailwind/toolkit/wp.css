@@ -174,7 +174,11 @@
 
   /* Semantic styling for content pages */
   .page-content ul {
-    @apply list list-bullet pl-8;
+    @apply list list-bullet pl-8 my-gutter;
+  }
+
+  .page-content li {
+    @apply text-balance;
   }
 
   .page-content ul ul {
@@ -187,7 +191,7 @@
 
   .page-content ul li + li,
   .page-content ol li + li {
-    @apply pt-4;
+    @apply pt-0;
   }
 
   .page-content ol {
