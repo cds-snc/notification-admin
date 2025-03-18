@@ -30,7 +30,7 @@ class Navigation:
 
     def get_admin_nav(self):
         return {
-            "choose_account": {"label": _l("Choose account"), "view": "choose_account"},
+            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
             "live_services": {"label": _l("Live services"), "view": "live_services"},
             "trial_services": {"label": _l("Trial services"), "view": "trial_services"},
             "organisations": {"label": _l("Organisations"), "view": "organisations"},
@@ -105,7 +105,7 @@ class Navigation:
 
         return {
             "home": {"label": _l("Home"), "url": gca_url_for(_l("home"))},
-            "why-notify": {"label": _l("Why GC Notify"), "url": gca_url_for(_l("whynotify"))},
+            "why-notify": {"label": _l("Why GC Notify"), "url": gca_url_for(_l("why-gc-notify"))},
             "features": {"label": _l("Features"), "url": gca_url_for(_l("features"))},
             "documentation": {"label": _l("API documentation"), "url": documentation_url()},
             "guidance": {"label": _l("Guidance"), "url": gca_url_for(_l("guidance"))},
