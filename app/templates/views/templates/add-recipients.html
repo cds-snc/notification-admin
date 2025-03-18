@@ -6,18 +6,14 @@
 {% set header_txt = _('Add recipients') %}
 
 {% block service_page_title %}
-  {{ header_txt }}
+  {{ form.what_type.label.text | safe }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {% set choose_url = url_for('main.view_template', service_id=service_id, template_id=template_id) %}
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
-  {{ page_header(
-    header_txt,
-    back_link=back_url,
-    id_text=form.what_type.id + "-label"
-      ) }}
+  {{ page_header(form.what_type.label.text | safe, back_link=back_url ) }}
 
   <div class="grid-row contain-floats">
 
@@ -25,13 +21,13 @@
 
       {% if current_service.trial_mode %}
       <p>
-        {{ _("In trial mode, you can only send to your team members on GC Notify.") }} 
+        {{ _("In trial mode, you can only send to your team members on GC Notify.") }}
         {{ _("To send to more recipients, <a href='{}'>request to go live</a>.").format(url_for('.request_to_go_live', service_id=current_service.id)) }}
       </p>
       {% endif %}
 
       {% call form_wrapper() %}
-        {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals) }}
+        {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals, hide_legend=True) }}
         {{ page_footer(_('Continue')) }}
       {% endcall %}
     </div>
