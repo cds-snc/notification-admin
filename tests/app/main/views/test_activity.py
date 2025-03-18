@@ -287,6 +287,7 @@ def test_letters_with_status_virus_scan_failed_shows_a_failure_description(
     assert "Virus detected\n" in error_description
 
 
+@pytest.mark.skip(reason="letters: unused functionality")
 @pytest.mark.parametrize("letter_status", ["pending-virus-check", "virus-scan-failed"])
 def test_should_not_show_preview_link_for_precompiled_letters_in_virus_states(
     mocker,
@@ -583,9 +584,9 @@ def test_redacts_templates_that_should_be_redacted(
 
 @pytest.mark.parametrize(
     "message_type, tablist_visible, search_bar_visible",
-    [("email", True, True), ("sms", True, True), ("letter", False, False)],
+    [("email", True, True), ("sms", True, True)],
 )
-def test_big_numbers_and_search_dont_show_for_letters(
+def test_big_numbers_and_search_show_for_email_sms(
     client_request,
     service_one,
     mock_get_notifications,
@@ -610,70 +611,44 @@ def test_big_numbers_and_search_dont_show_for_letters(
 
 @freeze_time("2017-09-27 16:30:00.000000")
 @pytest.mark.parametrize(
-    "message_type, status, expected_hint_status, single_line",
+    "message_type, status, feedback_reason, expected_hint_status, single_line",
     [
-        ("email", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
-        ("email", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "created", None, "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "sending", None, "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "email",
             "temporary-failure",
+            None,
             "Content or inbox issue 16:31:00",
             False,
         ),
-        ("email", "permanent-failure", "No such address 16:31:00", False),
-        ("email", "delivered", "Delivered 16:31:00", True),
-        ("sms", "created", "In transit since 2017-09-27T16:30:00+00:00", True),
-        ("sms", "sending", "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "permanent-failure", None, "No such address 16:31:00", False),
+        ("email", "delivered", None, "Delivered 16:31:00", True),
+        ("sms", "created", None, "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "sending", None, "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "sms",
             "temporary-failure",
+            None,
             "Carrier issue 16:31:00",
             False,
         ),
-        ("sms", "permanent-failure", "No such number 16:31:00", False),
-        ("sms", "delivered", "Delivered 16:31:00", True),
-        ("letter", "created", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "pending-virus-check", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "sending", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "delivered", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "received", "2017-09-27T16:30:00+00:00", True),
-        ("letter", "accepted", "2017-09-27T16:30:00+00:00", True),
+        ("sms", "permanent-failure", None, "No such number 16:31:00", False),
         (
-            "letter",
-            "cancelled",
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # The API won’t return cancelled letters
-        (
-            "letter",
-            "permanent-failure",
-            "16:31:00",
-            False,
-        ),  # Deprecated for ‘cancelled’
-        (
-            "letter",
-            "temporary-failure",
-            "2017-09-27T16:30:00+00:00",
-            False,
-        ),  # Not currently a real letter status
-        (
-            "letter",
-            "virus-scan-failed",
-            "Virus detected 2017-09-27T16:30:00+00:00",
+            "sms",
+            "provider-failure",
+            "DESTINATION_COUNTRY_BLOCKED",
+            "GC Notify cannot send text messages to some international numbers 16:31:00",
             False,
         ),
         (
-            "letter",
-            "validation-failed",
-            "Validation failed 2017-09-27T16:30:00+00:00",
+            "sms",
+            "provider-failure",
+            "NO_ORIGINATION_IDENTITIES_FOUND",
+            "GC Notify cannot send text messages to some international numbers 16:31:00",
             False,
         ),
-        (
-            "letter",
-            "technical-failure",
-            "Technical failure 2017-09-27T16:30:00+00:00",
-            False,
-        ),
+        ("sms", "delivered", None, "Delivered 16:31:00", True),
     ],
 )
 def test_sending_status_hint_displays_correctly_on_notifications_page_new_statuses(
@@ -684,12 +659,13 @@ def test_sending_status_hint_displays_correctly_on_notifications_page_new_status
     mock_get_service_data_retention,
     message_type,
     status,
+    feedback_reason,
     expected_hint_status,
     single_line,
     mocker,
     app_,
 ):
-    notifications = create_notifications(template_type=message_type, status=status)
+    notifications = create_notifications(template_type=message_type, feedback_reason=feedback_reason, status=status)
     mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
 
     page = client_request.get(

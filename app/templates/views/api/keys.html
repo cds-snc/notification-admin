@@ -3,6 +3,7 @@
 {% from "components/api-key.html" import api_key %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/notice.html" import notice %}
 
 {% block service_page_title %}
   {{ _('API keys') }}
@@ -15,6 +16,14 @@
     back_link=url_for('main.api_integration', service_id=current_service.id)
   ) }}
 
+  {% call notice(type="info", title=_("Secure your <a href='https://documentation.notification.canada.ca/en/keys.html#security' class='govuk-link' target='_blank' rel='noopener noreferrer'>API keys</a>"), headingLevel=2) %}
+    <ul class="list list-bullet ml-10">
+      <li>{{ _('Keep API keys in an encrypted file that’s only for authorized staff. Do not share by email, support tickets or put in plain text in a source code repository.')}}</li>
+      <li>{{ _('Rotate keys whenever anyone with key access leaves your team.')}}</li>
+      <li>{{ _('Give third-party users a unique API key.')}}</li>
+    </ul>
+  {% endcall %}
+  <br>
   <p>
     {{ _("Create an API key to connect your web application or back-office system with GC Notify. Learn more in the <a href='{}'>API key documentation</a>.").format(documentation_url('keys')) }}
   </p>

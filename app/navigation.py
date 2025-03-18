@@ -51,7 +51,7 @@ class Navigation:
         from app import current_service
 
         return {
-            "live_services": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
             "dashboard": {
                 "label": _l("Dashboard"),
                 "view": "service_dashboard",
@@ -84,7 +84,7 @@ class Navigation:
 
     def get_user_nav(self):
         return {
-            "live_services": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
             "choose_account": {"label": _l("Your services"), "view": "choose_account"},
         }
 
@@ -203,10 +203,6 @@ class HeaderNavigation(Navigation):
             "why-gc-notify",
             "pourquoi-notification-gc",
         },
-        "guidance": {
-            "guidance",
-            "guides-reference",
-        },
         "contact": {
             "contact",
         },
@@ -215,6 +211,10 @@ class HeaderNavigation(Navigation):
         },
         "documentation": {
             "documentation",
+        },
+        "guidance": {
+            "guidance",
+            "guide-de-reference",
         },
         "design_content": {
             "design_content",
@@ -344,8 +344,22 @@ class HeaderNavigation(Navigation):
             "view_jobs",
             "view_job",
         },
-        "live_services": {
+        "platform_admin": {
             "live_services",
+            "trial_services",
+            "organisations",
+            "live_api_keys",
+            "email_branding",
+            "template_categories",
+            "template_category",
+            "find_services_by_name",
+            "find_users_by_email",
+            "find_ids",
+            "platform_admin_list_complaints",
+            "platform_admin_reports",
+            "inbound_sms_admin",
+            "view_providers",
+            "clear_cache",
         },
     }
 

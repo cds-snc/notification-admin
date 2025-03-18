@@ -4,7 +4,8 @@
     target_selector=None,
     show=False,
     form=None,
-    label=None
+    label=None,
+    testid=None
 ) %}
     {%- set search_label = label or form.search.label.text %}
     {% if show %}
@@ -16,6 +17,7 @@
             label=search_label,
             autocomplete="off",
             required=false,
+            testid=testid,
             **kwargs
           ) }}
         </div>

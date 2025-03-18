@@ -5,6 +5,7 @@ from flask import (
     abort,
     current_app,
     flash,
+    g,
     jsonify,
     redirect,
     render_template,
@@ -288,6 +289,12 @@ def use_case(service_id):
     step, form_data = current_service.use_case_data
 
     current_step = request.args.get("current_step", step or DEFAULT_STEP)
+
+    # If the form data has the wrong expected format, start at the begining
+    # Temporary while we move to a new go live form
+    if not service_api_client.is_valid_use_case_format(form_data):
+        current_step = DEFAULT_STEP
+
     try:
         form_details = [f for f in steps if f["current_step"] == current_step][0]
     except IndexError:
@@ -332,7 +339,7 @@ def send_go_live_request(service, user, go_live_data) -> None:
         "service_id": str(service.id),
         "service_url": url_for(".service_dashboard", service_id=service.id, _external=True),
         "support_type": "go_live_request",
-        "main_use_case": go_live_data["purpose"],
+        "main_use_case": go_live_data["main_use_case"],
         "name": user.name,
         "email_address": user.email_address,
     }
@@ -345,13 +352,18 @@ def send_go_live_request(service, user, go_live_data) -> None:
         "department_org_name",
         "intended_recipients",
         "main_use_case",
-        "notification_types",
-        "expected_volume",
+        "other_use_case",
         "support_type",
+        "daily_email_volume",
+        "annual_email_volume",
+        "daily_sms_volume",
+        "annual_sms_volume",
+        "exact_daily_email",
+        "exact_daily_sms",
     }
     data = {key: go_live_data[key] for key in of_interest if key in go_live_data}
     data["intended_recipients"] = ", ".join(data["intended_recipients"])
-    data["notification_types"] = ", ".join(data["notification_types"])
+    data["main_use_case"] = ", ".join(data["main_use_case"])
     user_api_client.send_contact_request(data)
 
 
@@ -424,7 +436,7 @@ def service_switch_upload_document(service_id):
     title = _("Send files by email")
     form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
     help = _(
-        "This feature is only available when sending through the API.<br>" "Learn more in the <a href='{}'>API documentation</a>."
+        "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>."
     ).format(documentation_url("send", section="sending-a-file-by-email"))
 
     if form.validate_on_submit():
@@ -580,6 +592,9 @@ def service_add_email_reply_to(service_id):
     form = ServiceReplyToEmailForm()
     first_email_address = current_service.count_email_reply_to_addresses == 0
     is_default = first_email_address if first_email_address else form.is_default.data
+    g.team_member_email_domains = set(
+        [team_member.email_domain for team_member in current_service.team_members if hasattr(team_member, "email_domain")]
+    )
     if form.validate_on_submit():
         try:
             notification_id = service_api_client.verify_reply_to_email_address(service_id, form.email_address.data)["data"]["id"]
@@ -696,6 +711,7 @@ def get_service_verify_reply_to_address_partials(service_id, notification_id):
 def service_edit_email_reply_to(service_id, reply_to_email_id):
     form = ServiceReplyToEmailForm()
     reply_to_email_address = current_service.get_email_reply_to_address(reply_to_email_id)
+    g.team_member_email_domains = set([team_member.email_domain for team_member in current_service.team_members])
     if request.method == "GET":
         form.email_address.data = reply_to_email_address["email_address"]
         form.is_default.data = reply_to_email_address["is_default"]

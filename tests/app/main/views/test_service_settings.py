@@ -780,7 +780,7 @@ def test_should_raise_duplicate_name_handled(
 
 
 @pytest.mark.parametrize(
-    ("count_of_users_with_manage_service," "count_of_invites_with_manage_service," "expected_user_checklist_item"),
+    ("count_of_users_with_manage_service,count_of_invites_with_manage_service,expected_user_checklist_item"),
     [
         (1, 0, "Add a team member who can manage settings Not completed"),
         (2, 0, "Add a team member who can manage settings Completed"),
@@ -983,7 +983,7 @@ def test_request_to_go_live_use_case_page(
         _expected_status=200,
         _data={
             "department_org_name": "",
-            "purpose": "",
+            "other_use_case": "",  # This one is optional
         },
     )
 
@@ -991,7 +991,7 @@ def test_request_to_go_live_use_case_page(
     assert store_mock.call_count == 1
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("department_org_name", "This field is required."),
-        ("purpose", "This field is required."),
+        ("main_use_case", "This field is required."),
         ("intended_recipients", "This field is required."),
     ]
 
@@ -1001,7 +1001,8 @@ def test_request_to_go_live_use_case_page(
         _expected_status=200,
         _data={
             "department_org_name": "Org name",
-            "purpose": "Purpose",
+            "main_use_case": ["account_management"],
+            "other_use_case": "Something else",
             "intended_recipients": ["public"],
         },
     )
@@ -1013,9 +1014,14 @@ def test_request_to_go_live_use_case_page(
         "form_data": {
             "department_org_name": "Org name",
             "intended_recipients": ["public"],
-            "purpose": "Purpose",
-            "notification_types": [],
-            "expected_volume": None,
+            "main_use_case": ["account_management"],
+            "other_use_case": "Something else",
+            "daily_email_volume": None,
+            "annual_email_volume": None,
+            "daily_sms_volume": None,
+            "annual_sms_volume": None,
+            "exact_daily_email": None,
+            "exact_daily_sms": None,
         },
         "step": "about-notifications",
     }
@@ -1036,17 +1042,23 @@ def test_request_to_go_live_use_case_page(
     assert page.select_one(".back-link")["href"] == url_for(".use_case", service_id=SERVICE_ONE_ID, current_step="about-service")
 
     # Submitting second and final step
+
     page = client_request.post(
         ".use_case",
         service_id=SERVICE_ONE_ID,
         _expected_status=302,
         _expected_redirect=url_for("main.request_to_go_live", service_id=SERVICE_ONE_ID),
         _data={
-            "notification_types": ["sms"],
-            "expected_volume": "1k-10k",
-            # Need to submit intended_recipients again because otherwise
-            # the form thinks we removed this value (it's checkboxes).
-            # On the real form, this field is hidden on the second step
+            "daily_email_volume": "0",
+            "annual_email_volume": "within_limit",
+            "daily_sms_volume": "more_sms",
+            "annual_sms_volume": "above_limit",
+            "exact_daily_email": 5,
+            "exact_daily_sms": 25000,
+            # Need to submit intended_recipients, main_use_case and any checkbox
+            # again because otherwise the form thinks we removed checkbox values.
+            # On the real form, these fields are hidden on the second step
+            "main_use_case": expected_use_case_data["form_data"]["main_use_case"],
             "intended_recipients": expected_use_case_data["form_data"]["intended_recipients"],
         },
     )
@@ -1060,9 +1072,14 @@ def test_request_to_go_live_use_case_page(
             "form_data": {
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
-                "purpose": "Purpose",
-                "notification_types": ["sms"],
-                "expected_volume": "1k-10k",
+                "main_use_case": ["account_management"],
+                "other_use_case": "Something else",
+                "daily_email_volume": "0",
+                "annual_email_volume": "within_limit",
+                "daily_sms_volume": "more_sms",
+                "annual_sms_volume": "above_limit",
+                "exact_daily_email": 0,
+                "exact_daily_sms": 25000,
             },
             "step": "about-notifications",
         },
@@ -1110,6 +1127,8 @@ def test_request_to_go_live_can_resume_use_case_page(
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
                 "purpose": "Purpose",
+                "exact_daily_email": 25,  # Mocking new data
+                "exact_daily_sms": 25,  # Mocking new data
             },
             "step": "about-notifications",
         },
@@ -1222,9 +1241,14 @@ def test_submit_go_live_request(
             "form_data": {
                 "department_org_name": "Org name",
                 "intended_recipients": ["public"],
-                "purpose": "Purpose",
-                "expected_volume": "1-10k",
-                "notification_types": ["email"],
+                "main_use_case": ["account_management"],
+                "other_use_case": "Something else",
+                "daily_email_volume": "0",
+                "annual_email_volume": "within_limit",
+                "daily_sms_volume": "more_sms",
+                "annual_sms_volume": "above_limit",
+                "exact_daily_email": 0,
+                "exact_daily_sms": 25000,
             },
             "step": "about-notifications",
         },
@@ -1244,16 +1268,21 @@ def test_submit_go_live_request(
 
     expected_data = {
         "name": "Test User",
-        "expected_volume": "1-10k",
         "department_org_name": "Org name",
         "service_url": f"http://localhost/services/{SERVICE_ONE_ID}",
         "support_type": "go_live_request",
         "service_id": SERVICE_ONE_ID,
         "service_name": "service one",
         "intended_recipients": "public",
-        "main_use_case": "Purpose",
+        "main_use_case": "account_management",
+        "other_use_case": "Something else",
         "email_address": "test@user.canada.ca",
-        "notification_types": "email",
+        "daily_email_volume": "0",
+        "annual_email_volume": "within_limit",
+        "daily_sms_volume": "more_sms",
+        "annual_sms_volume": "above_limit",
+        "exact_daily_email": 0,
+        "exact_daily_sms": 25000,
     }
 
     mock_contact.assert_called_once_with(expected_data)
@@ -1560,7 +1589,9 @@ def test_no_senders_message_shows(
         ("testtest", "Enter a valid email address"),
     ],
 )
-def test_incorrect_reply_to_email_address_input(reply_to_input, expected_error, client_request, no_reply_to_email_addresses):
+def test_incorrect_reply_to_email_address_input(
+    reply_to_input, expected_error, client_request, mock_team_members, no_reply_to_email_addresses, app_
+):
     page = client_request.post(
         "main.service_add_email_reply_to",
         service_id=SERVICE_ONE_ID,
@@ -1569,6 +1600,25 @@ def test_incorrect_reply_to_email_address_input(reply_to_input, expected_error, 
     )
 
     assert normalize_spaces(page.select_one(".error-message").text) == expected_error
+
+
+def test_incorrect_reply_to_domain_not_in_team_member_list(
+    client_request, mock_team_members, no_reply_to_email_addresses, app_, mocker
+):
+    page = client_request.post(
+        "main.service_add_email_reply_to",
+        service_id=SERVICE_ONE_ID,
+        _data={"email_address": "test@not-team-member-domain.ca"},
+        _expected_status=200,
+    )
+
+    valid_domains = ["canada.ca", "gc.ca"]
+    valid_domains.extend([member.email_domain for member in mock_team_members])
+
+    errorMsg = normalize_spaces(page.select_one(".error-message").text)
+    assert "not-team-member-domain.ca is not a government or team email addressUse one of the following domains:" in errorMsg
+    for domain in valid_domains:
+        assert f"@{domain}" in errorMsg
 
 
 @pytest.mark.parametrize(
@@ -1640,8 +1690,11 @@ def test_incorrect_sms_sender_input(
         (create_multiple_email_reply_to_addresses(), {"is_default": "y"}, True),
     ],
 )
-def test_add_reply_to_email_address_sends_test_notification(mocker, client_request, reply_to_addresses, data, api_default_args):
+def test_add_reply_to_email_address_sends_test_notification(
+    mocker, client_request, reply_to_addresses, mock_team_members, data, api_default_args
+):
     mocker.patch("app.service_api_client.get_reply_to_email_addresses", return_value=reply_to_addresses)
+
     data["email_address"] = "test@example.com"
     mock_verify = mocker.patch(
         "app.service_api_client.verify_reply_to_email_address",
@@ -1856,7 +1909,9 @@ def test_add_sms_sender(sms_senders, data, api_default_args, mocker, client_requ
         ),
     ],
 )
-def test_default_box_doesnt_show_on_first_sender(sender_page, function_to_mock, mocker, data, checkbox_present, client_request):
+def test_default_box_doesnt_show_on_first_sender(
+    sender_page, function_to_mock, mock_team_members, mocker, data, checkbox_present, client_request
+):
     mocker.patch(function_to_mock, side_effect=lambda service_id: data)
 
     page = client_request.get(sender_page, service_id=SERVICE_ONE_ID)
@@ -1877,6 +1932,7 @@ def test_edit_reply_to_email_address_sends_verification_notification_if_address_
     reply_to_address,
     data,
     api_default_args,
+    mock_team_members,
     mocker,
     fake_uuid,
     client_request,
@@ -1886,14 +1942,14 @@ def test_edit_reply_to_email_address_sends_verification_notification_if_address_
         return_value={"data": {"id": "123"}},
     )
     mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=reply_to_address)
-    data["email_address"] = "test@tbs-sct.gc.ca"
+    data["email_address"] = "test123@example.com"
     client_request.post(
         "main.service_edit_email_reply_to",
         service_id=SERVICE_ONE_ID,
         reply_to_email_id=fake_uuid,
         _data=data,
     )
-    mock_verify.assert_called_once_with(SERVICE_ONE_ID, "test@tbs-sct.gc.ca")
+    mock_verify.assert_called_once_with(SERVICE_ONE_ID, "test123@example.com")
 
 
 @pytest.mark.parametrize(
@@ -1912,6 +1968,7 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
     mocker,
     fake_uuid,
     client_request,
+    mock_team_members,
     mock_update_reply_to_email_address,
 ):
     mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=reply_to_address)
@@ -1941,6 +1998,7 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
 def test_always_shows_delete_link_for_email_reply_to_address(
     mocker: MockerFixture,
     sender_details,
+    mock_team_members,
     fake_uuid,
     client_request,
 ):
@@ -1967,7 +2025,9 @@ def test_always_shows_delete_link_for_email_reply_to_address(
     assert link["href"] == partial_href(service_id=SERVICE_ONE_ID)
 
 
-def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_non_default_reply_to_email_address):
+def test_confirm_delete_reply_to_email_address(
+    fake_uuid, client_request, mock_team_members, get_non_default_reply_to_email_address
+):
     page = client_request.get(
         "main.service_confirm_delete_email_reply_to",
         service_id=SERVICE_ONE_ID,
@@ -1976,14 +2036,14 @@ def test_confirm_delete_reply_to_email_address(fake_uuid, client_request, get_no
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Are you sure you want to delete this reply-to email address? " "Yes, delete"
+        "Are you sure you want to delete this reply-to email address? Yes, delete"
     )
     assert "action" not in page.select_one(".banner-dangerous form")
     assert page.select_one(".banner-dangerous form")["method"] == "post"
 
 
 def test_confirm_delete_default_reply_to_email_address(
-    mocker: MockerFixture, fake_uuid, client_request, get_default_reply_to_email_address
+    mocker: MockerFixture, fake_uuid, client_request, mock_team_members, get_default_reply_to_email_address
 ):
     reply_tos = create_multiple_email_reply_to_addresses()
     reply_to_for_deletion = reply_tos[1]
@@ -1998,7 +2058,7 @@ def test_confirm_delete_default_reply_to_email_address(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Are you sure you want to delete this reply-to email address? " "Yes, delete"
+        "Are you sure you want to delete this reply-to email address? Yes, delete"
     )
     assert "action" not in page.select_one(".banner-dangerous form")
     assert page.select_one(".banner-dangerous form")["method"] == "post"
@@ -2100,7 +2160,7 @@ def test_confirm_delete_letter_contact_block(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Are you sure you want to delete this contact block? " "Yes, delete"
+        "Are you sure you want to delete this contact block? Yes, delete"
     )
     assert "action" not in page.select_one(".banner-dangerous form")
     assert page.select_one(".banner-dangerous form")["method"] == "post"
@@ -2233,6 +2293,7 @@ def test_default_box_shows_on_non_default_sender_details_while_editing(
     sender_details,
     client_request,
     platform_admin_user,
+    mock_team_members,
     default_message,
     checkbox_present,
     is_platform_admin,
@@ -2321,7 +2382,7 @@ def test_confirm_delete_sms_sender(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "Are you sure you want to delete this text message sender? " "Yes, delete"
+        "Are you sure you want to delete this text message sender? Yes, delete"
     )
     assert "action" not in page.select_one(".banner-dangerous form")
     assert page.select_one(".banner-dangerous form")["method"] == "post"
@@ -3307,7 +3368,7 @@ def test_switch_service_enable_letters(
 
 
 @pytest.mark.parametrize(
-    ("initial_permissions," "expected_initial_value," "posted_value," "expected_updated_permissions"),
+    ("initial_permissions,expected_initial_value,posted_value,expected_updated_permissions"),
     [
         (
             ["email", "sms"],
@@ -3566,7 +3627,7 @@ def test_archive_service_prompts_user(
         service_id=SERVICE_ONE_ID,
     )
     assert normalize_spaces(delete_page.select_one(".banner-dangerous").text) == (
-        "Are you sure you want to delete ‘service one’? " "There’s no way to undo this. " "Yes, delete"
+        "Are you sure you want to delete ‘service one’? There’s no way to undo this. Yes, delete"
     )
     assert mocked_fn.called is False
 
@@ -4252,7 +4313,7 @@ def test_submit_email_branding_request(
         tags=["notify_action_add_branding"],
     )
     assert normalize_spaces(page.select_one(".banner-default").text) == (
-        "Thanks for your branding request. We’ll get back to you " "within one working day."
+        "Thanks for your branding request. We’ll get back to you within one working day."
     )
 
 

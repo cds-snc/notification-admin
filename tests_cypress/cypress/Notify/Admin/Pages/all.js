@@ -15,6 +15,8 @@ import ServiceSettingsPage from "./ServiceSettingsPage";
 import TemplateFiltersPage from "./TemplateFiltersPage";
 import TemplateCategoriesPage from "./admin/TemplateCategoriesPage";
 import ManageTemplateCategoryPage from "./admin/ManageTemplateCategoryPage";
+import ManageEmailBrandingPage from "./admin/ManageEmailBrandingPage";
+import EmailBrandingPage from "./admin/EmailBrandingPage";
 import WelcomePage from "./WelcomePage";
 export default {
     LoginPage,
@@ -35,4 +37,6 @@ export default {
     TemplateFiltersPage,
     TemplateCategoriesPage,
     ManageTemplateCategoryPage,
+    ManageEmailBrandingPage,
+    EmailBrandingPage
 }
