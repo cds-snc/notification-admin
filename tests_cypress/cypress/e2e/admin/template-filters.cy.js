@@ -163,7 +163,7 @@ describe("Template filters", () => {
 
       it("Filtering to 0 results shows empty message", () => {
         Admin.CreateTemplate({
-          service_id: config.Services.Cypress,
+          service_id: CYPRESS_SERVICE_ID.Cypress,
           name: "Test Name",
           type: "email",
           subject: "Test Subject",
@@ -173,7 +173,7 @@ describe("Template filters", () => {
           created_by: Cypress.env("REGULAR_USER_ID"),
         }).then((resp) => {
           API.ClearCache({
-            pattern: `service-${config.Services.Cypress}-templates`,
+            pattern: `service-${CYPRESS_SERVICE_ID.Cypress}-templates`,
           }).then(() => {
             cy.visit(url);
             // Empty state should NOT be visible
@@ -195,7 +195,7 @@ describe("Template filters", () => {
 
             Admin.DeleteTemplate({
               templateId: resp.body.data.id,
-              serviceId: config.Services.Cypress,
+              serviceId: CYPRESS_SERVICE_ID.Cypress,
             });
           });
         });
