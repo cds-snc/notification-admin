@@ -617,7 +617,46 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         )
 
     def has_submitted_use_case(self, service_id):
-        return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+        # todo: switch this function to just be line 621 a month or so after this change goes in
+        # return redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+
+        # Check if there's existing use case data and validate its structure
+        use_case_data = self.get_use_case_data(service_id)
+        is_submitted = redis_client.get(self._submitted_use_case_key_name(service_id)) is not None
+        if is_submitted and self.is_valid_use_case_format(use_case_data):
+            return True
+
+        return False
+
+    def is_valid_use_case_format(self, data):
+        # Define the required fields or format for valid use case data
+        # We need to make sure old submissions are not counted as completed. This is a temporary fix.
+        new_fields = ["exact_daily_sms", "exact_daily_email"]
+
+        # Check if data is a string (might be JSON string that needs parsing)
+        if isinstance(data, str):
+            try:
+                data_dict = json.loads(data)
+            except json.JSONDecodeError:
+                return False
+        else:
+            data_dict = data
+
+        # Check for the fields at the top level or nested
+        has_required_fields = False
+        if isinstance(data_dict, dict):
+            # Check top level
+            has_required_fields = all(field in data_dict for field in new_fields)
+
+            # If not at top level, try to check nested structures
+            if not has_required_fields:
+                for key, value in data_dict.items():
+                    if isinstance(value, dict):
+                        if all(field in value for field in new_fields):
+                            has_required_fields = True
+                            break
+
+        return has_required_fields
 
     def register_submit_use_case(self, service_id):
         redis_client.set(

@@ -256,7 +256,7 @@ def download_notifications_csv(service_id):
                 job_id=None,
                 status=filter_args.get("status"),
                 page=request.args.get("page", 1),
-                page_size=10000,
+                page_size=5000,
                 format_for_csv=True,
                 template_type=filter_args.get("message_type"),
                 limit_days=service_data_retention_days,

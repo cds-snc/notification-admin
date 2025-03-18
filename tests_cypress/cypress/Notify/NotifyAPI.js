@@ -17,6 +17,16 @@ const Utilities = {
     GenerateID: (length = 10) => {
         const nanoid = customAlphabet('1234567890abcdef', length)
         return nanoid()
+    },
+    CreateCacheClearJWT: () => {
+        const jwt = require('jsrsasign');
+        const claims = {
+            'iss': Cypress.env('CACHE_CLEAR_USER_NAME'),
+            'iat': Math.round(Date.now() / 1000)
+        }
+
+        const headers = { alg: "HS256", typ: "JWT" };
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('CACHE_CLEAR_CLIENT_SECRET'));
     }
 };
 const Admin = {
@@ -75,11 +85,11 @@ const Admin = {
             }
         })
     },
-    CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
+    CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null, created_by = null }) => {
         var token = Utilities.CreateJWT();
         return cy.request({
             url: `${BASE_URL}/service/${service_id}/template`,
-            method: 'GET',
+            method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": 'application/json'
@@ -87,10 +97,12 @@ const Admin = {
             body: {
                 "name": name,
                 "template_type": type,
+                "subject": subject,
                 "content": content,
                 "service": service_id,
                 "process_type": process_type,
                 "template_category_id": template_category_id,
+                "created_by": created_by
             }
         });
     },
@@ -144,6 +156,7 @@ const Admin = {
         return cy.request({
             url: `${BASE_URL}/template-category/${templateCategoryId}`,
             method: 'GET',
+            failOnStatusCode: false,
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": 'application/json'
@@ -347,6 +360,20 @@ const API = {
                     ["phone number"],
                     ...to
                 ],
+            }
+        });
+    },
+    ClearCache: ({ pattern }) => {
+        var token = Utilities.CreateCacheClearJWT();
+        return cy.request({
+            url: `${BASE_URL}/cache-clear`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+            body: {
+                pattern: pattern
             }
         });
     },
