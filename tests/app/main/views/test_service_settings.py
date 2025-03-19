@@ -1184,7 +1184,7 @@ def test_should_always_show_go_live_button(
         ) in paragraphs
     else:
         paragraphs = [normalize_spaces(p.text) for p in page.select("main p")]
-        assert "Once you complete all the steps, you'll be able to submit your request." in paragraphs
+        assert "Once you complete all the steps, you’ll be able to submit your request." in paragraphs
 
 
 def test_should_show_error_if_go_live_not_completed(

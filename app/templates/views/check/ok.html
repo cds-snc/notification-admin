@@ -17,7 +17,7 @@
   <section>
     {{ page_header(page_title, back_link=back_link) }}
     {{ banner(
-        _("'{}' was uploaded.").format(original_file_name),
+        _("‘{}’ was uploaded.").format(original_file_name),
         'default',
         with_tick=True
       ) }}
@@ -27,9 +27,9 @@
       <h2 class="heading-medium">{{ _('Recipients') }}</h2>
       <p>
         {% if count_of_recipients > 1 %}
-          {{ _("{} recipients in the file '{}'.").format(count_of_recipients, original_file_name) }}
+          {{ _("{} recipients in the file ‘{}’.").format(count_of_recipients, original_file_name) }}
         {% else %}
-          {{ _("1 recipient in the file '{}'.").format(original_file_name) }}
+          {{ _("1 recipient in the file ‘{}’.").format(original_file_name) }}
         {% endif %}
       </p>
       <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
