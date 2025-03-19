@@ -1,5 +1,4 @@
 {% from "components/big-number.html" import big_number %}
-{% from "components/empty-list.html" import empty_list %}
 
 {% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, font_size="table-font-xsmall", testid=None) -%}
   <section class="scrollable-table" tabindex="0">
@@ -45,7 +44,7 @@
     {% if not items %}
       {% call row() %}
         <td class="table-empty-message h-10" colspan="10">
-          {{ empty_list(heading=empty_message) }}
+          {{ empty_message }}
         </td>
       {% endcall %}
     {% endif %}
