@@ -1313,7 +1313,7 @@ def test_should_redirect_when_saving_a_template(
     )
 
     flash_banner = page.select_one(".banner-default-with-tick").string.strip()
-    assert flash_banner == f"'{name}' template saved"
+    assert flash_banner == f"‘{name}’ template saved"
     # self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
     mock_update_service_template.assert_called_with(
         fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
@@ -2298,7 +2298,7 @@ def test_can_create_email_template_with_emoji(
     assert mock_create_service_template.called is True
 
     flash_banner = page.select_one(".banner-default-with-tick").string.strip()
-    assert flash_banner == "'new name' template saved"
+    assert flash_banner == "‘new name’ template saved"
 
 
 # params
@@ -2348,7 +2348,7 @@ def test_create_template_with_process_types(
     assert mock_create_service_template.called is True
 
     flash_banner = page.select_one(".banner-default-with-tick").string.strip()
-    assert flash_banner == "'new name' template saved"
+    assert flash_banner == "‘new name’ template saved"
 
 
 def test_should_not_create_sms_template_with_emoji(

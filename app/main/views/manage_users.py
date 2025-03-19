@@ -162,7 +162,7 @@ def remove_user_from_service(service_id, user_id):
                 [
                     _l("You cannot leave this team at this time"),
                     _l(
-                        "You're the only team member of “{}” with permission to “Manage settings and team”. To leave this service, you must first give another team member this permission."
+                        "You’re the only team member of “{}” with permission to “Manage settings and team”. To leave this service, you must first give another team member this permission."
                     ).format(current_service.name),
                 ],
                 "info",
@@ -176,7 +176,7 @@ def remove_user_from_service(service_id, user_id):
         # redirect to the "your services" page
         flash(
             [
-                _l("You're no longer on the team for “{}”").format(current_service.name),
+                _l("You’re no longer on the team for “{}”").format(current_service.name),
             ],
             "default_with_tick",
         )
