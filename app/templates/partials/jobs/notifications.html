@@ -2,6 +2,8 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/is-problem-email.html" import is_probem_email %}
+{% from "components/empty-list.html" import empty_list  %}
+
 
 {% set empty_txt = _('No messages to show') %}
 {% set heading_1 = _('Recipient') %}
@@ -15,7 +17,7 @@
         notifications,
         caption=uploaded_file_name,
         caption_visible=False,
-        empty_message=_("No messages to show"),
+        empty_message=empty_list(heading=_("No messages to show")),
         field_headings=[heading_1,heading_2,heading_3],
         field_headings_visible=False if not notifications else True
       ) %}
