@@ -1,8 +1,10 @@
 import "cypress-real-events";
 
-import config from "../../config";
+import { getHostname, getConfig } from "./utils";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
+
+const CONFIG = getConfig();
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
@@ -17,8 +19,8 @@ afterEach(function() {
 });
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
-    const current_hostname = config.Hostnames.Admin;
-
+    const current_hostname = getHostname('Admin');
+    
     if (url) {
         cy.visit(url);
     }
@@ -55,7 +57,7 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
                 if (check_url.includes(current_hostname)) {
                     cy.request({
                         url: check_url,
-                        headers: { 'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET }
+                        headers: { 'waf-secret': CONFIG.WAF_SECRET }
                     }).as('link');
                 }
                 else {
@@ -102,23 +104,32 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
+
 Cypress.Commands.add('login', (agreeToTerms = true) => {
-    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
-        Cypress.env('ADMIN_USER_ID', acct.admin.id)
-        Cypress.env('REGULAR_USER_ID', acct.regular.id)
+    cy.task('createAccount', { 
+        baseUrl: CONFIG.Hostnames.API, 
+        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+    }).then((acct) => {
+        Cypress.env('ADMIN_USER_ID', acct.admin.id);
+        Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.regular.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.regular.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
+            LoginPage.Login(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
         });
     });
 });
 
 
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
-    cy.task('createAccount', { baseUrl: config.Hostnames.API, username: Cypress.env('CYPRESS_AUTH_USER_NAME'), secret: Cypress.env('CYPRESS_AUTH_CLIENT_SECRET') }).then((acct) => {
-        Cypress.env('ADMIN_USER_ID', acct.admin.id)
-        Cypress.env('REGULAR_USER_ID', acct.regular.id)
+    cy.task('createAccount', {
+        baseUrl: CONFIG.Hostnames.API, 
+        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+    }).then((acct) => {
+        Cypress.env('ADMIN_USER_ID', acct.admin.id);
+        Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.admin.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.admin.email_address, Cypress.env('CYPRESS_USER_PASSWORD'), agreeToTerms);
+            LoginPage.Login(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
         });
     });
 });
@@ -131,12 +142,12 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
         : `${Cypress.config('baseUrl')}${url}`;
 
     // Only add headers if URL matches admin hostname
-    if (fullUrl.includes(config.Hostnames.Admin)) {
+    if (fullUrl.includes(getHostname('Admin'))) {
         const mergedOptions = {
             ...options,
             headers: {
                 ...options.headers,
-                'waf-secret': Cypress.env(config.CONFIG_NAME).WAF_SECRET
+                'waf-secret': CONFIG.WAF_SECRET
             }
         };
         return originalFn(url, mergedOptions);

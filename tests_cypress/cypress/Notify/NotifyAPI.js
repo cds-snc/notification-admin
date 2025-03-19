@@ -1,18 +1,21 @@
-import config from "../../config";
 import { customAlphabet } from "nanoid";
 
-const BASE_URL = config.Hostnames.API
+import { getConfig, getServiceID } from "../support/utils";
+
+const CONFIG = getConfig();
+const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
+const BASE_URL = CONFIG.Hostnames.API;
 
 const Utilities = {
     CreateJWT: () => {
         const jwt = require('jsrsasign');
         const claims = {
-            'iss': Cypress.env('ADMIN_USERNAME'),
+            'iss': CONFIG.ADMIN_USERNAME,
             'iat': Math.round(Date.now() / 1000)
         }
 
         const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('ADMIN_SECRET'));
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), CONFIG.ADMIN_SECRET);
     },
     GenerateID: (length = 10) => {
         const nanoid = customAlphabet('1234567890abcdef', length)
@@ -21,12 +24,12 @@ const Utilities = {
     CreateCacheClearJWT: () => {
         const jwt = require('jsrsasign');
         const claims = {
-            'iss': Cypress.env('CACHE_CLEAR_USER_NAME'),
+            'iss': CONFIG.CACHE_CLEAR_USER_NAME,
             'iat': Math.round(Date.now() / 1000)
         }
 
         const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), Cypress.env('CACHE_CLEAR_CLIENT_SECRET'));
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), CONFIG.CACHE_CLEAR_CLIENT_SECRET);
     }
 };
 const Admin = {
@@ -34,7 +37,7 @@ const Admin = {
 
         var token = Utilities.CreateJWT();
         return cy.request({
-            url: `/service/${config.Services.Cypress}/send-notification`,
+            url: `/service/${CYPRESS_SERVICE_ID}/send-notification`,
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -42,7 +45,7 @@ const Admin = {
             body: {
                 'to': to,
                 'template_id': template_id,
-                'created_by': Cypress.env('NOTIFY_USER_ID'),
+                'created_by': CONFIG.NOTIFY_USER_ID,
             }
         });
     },
