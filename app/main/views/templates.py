@@ -222,7 +222,7 @@ def preview_template(service_id, template_id=None):
                     )
                     template_id = new_template["data"]["id"]
 
-                flash(_("'{}' template saved").format(template["name"]), "default_with_tick")
+                flash(_("‘{}’ template saved").format(template["name"]), "default_with_tick")
                 return redirect(
                     url_for(
                         ".view_template",
@@ -850,7 +850,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             else:
                 raise e
         else:
-            flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+            flash(_("‘{}’ template saved").format(form.name.data), "default_with_tick")
 
             return redirect(
                 url_for(
@@ -1009,7 +1009,7 @@ def edit_service_template(service_id, template_id):
                             current_app.logger.error(
                                 f"Failed to send new template category request to Freshdesk: {e} for template {template_id}, data is {form.template_category_other.data}"
                             )
-                    flash(_("'{}' template saved").format(form.name.data), "default_with_tick")
+                    flash(_("‘{}’ template saved").format(form.name.data), "default_with_tick")
                     return redirect(
                         url_for(
                             ".view_template",
@@ -1411,7 +1411,7 @@ def add_template_category():
                 flash(_(e.message), "error")
                 return redirect(url_for(".add_template_category"))
         flash(
-            _("Template category '{}' added.").format(
+            _("Template category ‘{}’ added.").format(
                 form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
             ),
             "default_with_tick",
@@ -1455,7 +1455,7 @@ def template_category(template_category_id):
                 flash(_(e.message), "error")
                 return redirect(url_for(".template_category", template_category_id=template_category_id))
         flash(
-            _("Template category '{}' saved.").format(
+            _("Template category ‘{}’ saved.").format(
                 form.data["name_en"] if session["userlang"] == "en" else form.data["name_fr"]
             ),
             "default_with_tick",

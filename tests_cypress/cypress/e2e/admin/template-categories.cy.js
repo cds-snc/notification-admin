@@ -1,12 +1,14 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
 import { TemplatesPage as Page } from "../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../support/utils";
+
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Template categories", () => {
   beforeEach(() => {
     cy.login();
-    cy.visit(`/services/${config.Services.Cypress}/templates`);
+    cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
   });
 
   const templates = [
@@ -113,7 +115,7 @@ describe("Template categories", () => {
           .should("be.visible");
 
         // re-set it
-        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
         Page.SelectTemplate(template.name);
         Page.EditCurrentTemplate();
         Page.ExpandTemplateCategories();
@@ -163,7 +165,7 @@ describe("Template categories", () => {
         Page.SaveTemplate();
 
         // remove the template
-        cy.visit(`/services/${config.Services.Cypress}/templates`);
+        cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
         Page.SelectTemplate(name);
         Page.DeleteTemplate();
       });

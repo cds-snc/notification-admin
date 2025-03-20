@@ -357,7 +357,7 @@ def get_preview_template(email_branding=None):
             _("The canada wordmark is displayed at the bottom right."),
         )
     else:
-        template_content += _("There's a custom logo at the top left and no logo at the bottom.")
+        template_content += _("There’s a custom logo at the top left and no logo at the bottom.")
 
     template = {"subject": "foo", "content": template_content}
 

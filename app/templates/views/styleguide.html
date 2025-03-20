@@ -1,14 +1,17 @@
-{% extends "admin_template.html" %} {% from "components/banner.html" import
-banner %} {% from "components/big-number.html" import big_number %} {% from
-"components/browse-list.html" import browse_list %} {% from
-"components/page-footer.html" import page_footer %} {% from
-"components/table.html" import mapping_table, list_table, row, field,
-text_field, boolean_field, right_aligned_field_heading %} {% from
-"components/textbox.html" import textbox %} {% from
-"components/file-upload.html" import file_upload %} {% from
-"components/api-key.html" import api_key %} {% from
-"components/template-filter.html" import template_filter with context %} {%
-block per_page_title %} Styleguide {% endblock %} {% block maincolumn_content %}
+{% extends "admin_template.html" %} 
+{% from "components/banner.html" import banner %} 
+{% from "components/big-number.html" import big_number %} 
+{% from "components/browse-list.html" import browse_list %} 
+{% from "components/page-footer.html" import page_footer %} 
+{% from "components/table.html" import mapping_table, list_table, row, field, text_field, boolean_field, right_aligned_field_heading %} 
+{% from "components/textbox.html" import textbox %} 
+{% from "components/file-upload.html" import file_upload %} 
+{% from "components/api-key.html" import api_key %} 
+{% from "components/template-filter.html" import template_filter with context %} 
+{% from "components/empty-list.html" import empty_list  %}
+
+{% block per_page_title %} Styleguide {% endblock %} 
+{% block maincolumn_content %}
 {% from 'components/remaining-messages-summary.html' import remaining_messages_summary with context %}
 <h2 class="heading-large">Banner</h2>
 <div class="grid-row contain-floats">
@@ -115,7 +118,7 @@ block per_page_title %} Styleguide {% endblock %} {% block maincolumn_content %}
     {{ item.status }}
     {% endcall %} {% endcall %} {% call(item, row_number) list_table( [],
     caption='Jobs', field_headings=['Job', 'Time'], caption_visible=True,
-    empty_message='You haven’t scheduled any jobs yet' ) %} {% call field() %}
+    empty_message=empty_list(heading='You haven’t scheduled any jobs yet') ) %} {% call field() %}
     {{ item.job }}
     {% endcall %} {% call field() %}
     {{ item.time }}
