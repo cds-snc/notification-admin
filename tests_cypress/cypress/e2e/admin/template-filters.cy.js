@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
 
-import config from "../../../config";
 import { TemplateFiltersPage as Page } from "../../Notify/Admin/Pages/all";
+import { getServiceID } from "../../support/utils";
 import { Admin, API } from "../../Notify/NotifyAPI";
 
+const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 const types = {
   en: ["Email", "Text message"],
   fr: ["Courriel", "Message texte"],
@@ -27,8 +28,8 @@ describe("Template filters", () => {
   ["en", "fr"].forEach((lang) => {
     const url =
       lang == "en"
-        ? `/services/${config.Services.Cypress}/templates`
-        : `/set-lang?from=/services/${config.Services.Cypress}/templates`;
+        ? `/services/${CYPRESS_SERVICE_ID}/templates`
+        : `/set-lang?from=/services/${CYPRESS_SERVICE_ID}/templates`;
     context(`App language: ${lang.toUpperCase()}`, () => {
       it("should be collapsed and set to all by default", () => {
         cy.visit(url);
@@ -162,7 +163,7 @@ describe("Template filters", () => {
 
       it("Filtering to 0 results shows empty message", () => {
         Admin.CreateTemplate({
-          service_id: config.Services.Cypress,
+          service_id: CYPRESS_SERVICE_ID,
           name: "Test Name",
           type: "email",
           subject: "Test Subject",
@@ -172,7 +173,7 @@ describe("Template filters", () => {
           created_by: Cypress.env("REGULAR_USER_ID"),
         }).then((resp) => {
           API.ClearCache({
-            pattern: `service-${config.Services.Cypress}-templates`,
+            pattern: `service-${CYPRESS_SERVICE_ID}-templates`,
           }).then(() => {
             cy.visit(url);
             // Empty state should NOT be visible
@@ -194,7 +195,7 @@ describe("Template filters", () => {
 
             Admin.DeleteTemplate({
               templateId: resp.body.data.id,
-              serviceId: config.Services.Cypress,
+              serviceId: CYPRESS_SERVICE_ID,
             });
           });
         });
