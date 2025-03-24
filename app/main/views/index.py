@@ -94,6 +94,60 @@ def verify_mobile():
     return render_template("views/verify-mobile.html")
 
 
+@main.route("/_flatpages/<name>")
+def flatpage(name):
+    lang = get_current_locale(current_app)
+
+    flatpages_dict = current_app.extensions.get("flatpages", {})
+    flatpages = flatpages_dict.get(None)
+
+    path = f"{lang}/{name}"
+    page = flatpages.get(path)
+    if page:
+        # Render with your template
+        return render_template("views/content-page.html", post=page, lang_url="_flatpages/" + page.meta["set_lang"])
+    else:
+        abort(404)
+
+
+@main.route("/debug-routes")
+def debug_routes():
+    """Print all registered routes with endpoints"""
+    rules = []
+    for rule in current_app.url_map.iter_rules():
+        methods = ",".join(sorted(rule.methods))
+        rules.append({"endpoint": rule.endpoint, "methods": methods, "route": str(rule)})
+
+    # Sort by route to see which might conflict
+    sorted_rules = sorted(rules, key=lambda x: x["route"])
+    return sorted_rules
+
+
+@main.route("/test-flatpages")
+def test_flatpages():
+    try:
+        flatpages_dict = current_app.extensions.get("flatpages", {})
+        flatpages = flatpages_dict.get(None)
+
+        if not flatpages:
+            return "FlatPages not configured"
+
+        # Try to load directly
+        all_pages = list(flatpages)
+
+        # Return debug info
+        result = {
+            "page_count": len(all_pages),
+            "page_paths": [p.path for p in all_pages],
+            "flatpages_dir": getattr(flatpages, "root", "Unknown"),
+            "config": {k: v for k, v in current_app.config.items() if k.startswith("FLATPAGES")},
+        }
+
+        return str(result)
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
 @main.route("/pricing")
 def pricing():
     return render_template(

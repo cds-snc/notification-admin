@@ -1,0 +1,12 @@
+{% extends "content_template.html" %}
+
+{% block per_page_title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content_column_content %}
+
+  <h1 class="heading-large">{{ post.title }}</h1>
+  {{ post.html|safe }}
+
+{% endblock %}

@@ -21,6 +21,7 @@ from flask import (
 )
 from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
+from flask_flatpages import FlatPages
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -107,6 +108,9 @@ navigation = {
     "main_navigation": MainNavigation(),
 }
 
+# Create FlatPages instance
+flatpages = FlatPages()
+
 
 def get_current_locale(application):
     requestLang = request.accept_languages.best_match(application.config["LANGUAGES"])
@@ -134,6 +138,14 @@ def create_app(application):
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
+
+    # Configure FlatPages
+    application.config["FLATPAGES_AUTO_RELOAD"] = True
+    application.config["FLATPAGES_EXTENSION"] = ".md"
+    application.config["FLATPAGES_ROOT"] = "pages"
+
+    # Initialize FlatPages with the app
+    flatpages.init_app(application)
 
     @babel.localeselector
     def get_locale():
