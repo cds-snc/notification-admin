@@ -35,7 +35,13 @@
             }}
         </div>
     </div>
-    <p class="mb-12">{{_("For other questions about GC Notify, use this form.")}}</p>
+    <div class="space-y-gutterHalf my-gutter">
+        {% set contact_link = '<a href="{url}" target="_blank">{title}</a>'.format(title=_("Government of Canada contacts page"), url=_("https://www.canada.ca/en/contact.html")) | safe %}
+    {% set hint_message = _("Do not include {} or personal information.").format(protected_link) %}
+        <p class="">{{_("We support government employees using GC Notify. We cannot answer questions from members of the public.")}}</p>
+        <p class="">{{_("Use this form to ask a question, get technical support, or give feedback.")}}</p>
+        <p class="">{{_("For other enquiries, go to the {} to find the department or agency that can help.").format(contact_link)}}</p>
+    </div>
     {% if not current_user.is_authenticated %}
         {{ textbox(form.name, width='md:w-2/3', autocomplete='name') }}
         {{ textbox(form.email_address, width='md:w-2/3', autocomplete='email') }}

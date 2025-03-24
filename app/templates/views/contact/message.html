@@ -1,5 +1,8 @@
 {% extends "contact_template.html" %}
 
 {% block contact_form_content %}
-    {{ textbox(form.message, width='md:w-2/3',label=message_label, hint='', rows=10) }}
+    {% set protected_link = '<a href="{url}" target="_blank">{title}</a>'.format(title=_("protected"), url=_("https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32614")) | safe %}
+    {% set hint_message = _("Do not include {} or personal information.").format(protected_link) %}
+    
+    {{ textbox(form.message, width='md:w-2/3',label=message_label, hint=hint_message|safe, rows=10) }}
 {% endblock %}
