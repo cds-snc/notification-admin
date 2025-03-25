@@ -6,7 +6,16 @@ from app.notify_client import NotifyAdminAPIClient, cache
 class TemplateCategoryClient(NotifyAdminAPIClient):
     @cache.delete("template_categories")
     def create_template_category(
-        self, name_en, name_fr, description_en, description_fr, sms_process_type, email_process_type, hidden, sms_sending_vehicle
+        self,
+        name_en,
+        name_fr,
+        description_en,
+        description_fr,
+        sms_process_type,
+        email_process_type,
+        hidden,
+        sms_sending_vehicle,
+        created_by_id,
     ):
         data = {
             "name_en": name_en,
@@ -17,6 +26,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
             "email_process_type": email_process_type,
             "hidden": True if hidden == "True" else False,
             "sms_sending_vehicle": sms_sending_vehicle,
+            "created_by_id": created_by_id,
         }
         return self.post(url="/template-category", data=data)
 
@@ -50,6 +60,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
         email_process_type,
         hidden,
         sms_sending_vehicle,
+        updated_by_id,
     ):
         data = {
             "name_en": name_en,
@@ -60,6 +71,7 @@ class TemplateCategoryClient(NotifyAdminAPIClient):
             "email_process_type": email_process_type,
             "hidden": hidden,
             "sms_sending_vehicle": sms_sending_vehicle,
+            "updated_by_id": updated_by_id,
         }
         return self.post(url="/template-category/{}".format(template_category_id), data=data)
 
