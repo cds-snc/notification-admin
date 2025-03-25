@@ -1,6 +1,8 @@
 from itertools import chain
 
-from flask import request
+from flask import request, url_for
+from flask_babel import lazy_gettext as _l
+from flask_login import current_user
 
 
 class Navigation:
@@ -25,6 +27,97 @@ class Navigation:
         if request.endpoint in self.mapping[navigation_item]:
             return self.selected_attribute
         return ""
+
+    def get_admin_nav(self):
+        return {
+            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
+            "live_services": {"label": _l("Live services"), "view": "live_services"},
+            "trial_services": {"label": _l("Trial services"), "view": "trial_services"},
+            "organisations": {"label": _l("Organisations"), "view": "organisations"},
+            "live_api_keys": {"label": _l("Live API keys"), "view": "live_api_keys"},
+            "email_branding": {"label": _l("Email branding"), "view": "email_branding"},
+            "template_categories": {"label": _l("Template categories"), "view": "template_categories"},
+            "find_services_by_name": {"label": _l("Search for service"), "view": "find_services_by_name"},
+            "find_users_by_email": {"label": _l("Search for user"), "view": "find_users_by_email"},
+            "find_ids": {"label": _l("Search for ids"), "view": "find_ids"},
+            "platform_admin_list_complaints": {"label": _l("Email complaints"), "view": "platform_admin_list_complaints"},
+            "platform_admin_reports": {"label": _l("Reports"), "view": "platform_admin_reports"},
+            "inbound_sms_admin": {"label": _l("Inbound SMS numbers"), "view": "inbound_sms_admin"},
+            "view_providers": {"label": _l("Providers"), "view": "view_providers"},
+            "clear_cache": {"label": _l("Clear cache"), "view": "clear_cache"},
+        }
+
+    def get_service_nav(self):
+        from app import current_service
+
+        return {
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "dashboard": {
+                "label": _l("Dashboard"),
+                "view": "service_dashboard",
+                "context": current_user.has_permissions("view_activity"),
+                "url": url_for("main.service_dashboard", service_id=current_service.id),
+            },
+            "templates": {
+                "label": _l("Templates"),
+                "view": "choose_template",
+                "url": url_for("main.choose_template", service_id=current_service.id),
+            },
+            "api-integration": {
+                "label": _l("API integration"),
+                "view": "api_integration",
+                "context": current_user.has_permissions("manage_api_keys"),
+                "url": url_for("main.api_integration", service_id=current_service.id),
+            },
+            "team-members": {
+                "label": _l("Team members"),
+                "view": "manage_users",
+                "url": url_for("main.manage_users", service_id=current_service.id),
+            },
+            "settings": {
+                "label": _l("Settings"),
+                "view": "service_settings",
+                "context": current_user.has_permissions("manage_api_keys", "manage_service"),
+                "url": url_for("main.service_settings", service_id=current_service.id),
+            },
+        }
+
+    def get_user_nav(self):
+        return {
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
+        }
+
+    def get_contact_nav(self):
+        return {
+            "contact": {"label": _l("Contact us"), "view": "contact"},
+        }
+
+    def get_account_nav(self):
+        return {
+            "user_profile": {"label": _l("Your profile"), "view": "user_profile"},
+            "sign_out": {"label": _l("Sign out"), "view": "sign_out"},
+        }
+
+    def get_public_nav(self):
+        from app.articles.routing import gca_url_for
+        from app.utils import documentation_url
+
+        return {
+            "home": {"label": _l("Home"), "url": gca_url_for(_l("home"))},
+            "why-notify": {"label": _l("Why GC Notify"), "url": gca_url_for(_l("why-gc-notify"))},
+            "features": {"label": _l("Features"), "url": gca_url_for(_l("features"))},
+            "documentation": {"label": _l("API documentation"), "url": documentation_url()},
+            "guidance": {"label": _l("Guidance"), "url": gca_url_for(_l("guidance"))},
+            "contact": {"label": _l("Contact us"), "view": "contact"},
+        }
+
+    def get_nav(self):
+        if current_user.is_authenticated:
+            if current_user.has_permissions():
+                return self.get_service_nav()
+            return self.get_user_nav()
+        return self.get_public_nav()
 
 
 class AdminNavigation(Navigation):
