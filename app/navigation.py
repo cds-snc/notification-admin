@@ -192,16 +192,12 @@ class HeaderNavigation(Navigation):
         },
         "features": {
             "features",
-            "fonctionnalites",
         },
         "home": {
             "index",
-            "home",
-            "accueil",
         },
         "why-notify": {
-            "why-gc-notify",
-            "pourquoi-notification-gc",
+            "why-notify",
         },
         "contact": {
             "contact",
