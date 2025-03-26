@@ -1,8 +1,6 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import list_table, field, hidden_field_heading %}
-{% from "components/message-count-label.html" import message_count_label %}
 {% from "components/empty-list.html" import empty_list  %}
-{% from "components/table.html" import list_table, field, text_field, link_field, right_aligned_field_heading, hidden_field_heading, row_heading, notification_status_field %}
+{% from "components/table.html" import list_table, text_field, right_aligned_field_heading, row_heading %}
 
 {% block service_page_title %}
   {{ _('Dowload reports') }}
