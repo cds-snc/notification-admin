@@ -1,16 +1,17 @@
 {% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
 {% from "components/empty-list.html" import empty_list  %}
-{% from "components/table.html" import list_table, text_field, right_aligned_field_heading, row_heading %}
+{% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
 
 {% block service_page_title %}
   {{ _('Dowload reports') }}
 {% endblock %}
 
 {% block maincolumn_content %}
-
-  <h1 class="heading-medium mb-12 clear-both contain-floats">
-    {{ _('Dowload reports') }}
-  </h1>
+  {{ page_header(
+       _('Dowload reports'),
+       back_link=url_for('main.service_dashboard', service_id=current_service.id)
+     ) }}
 
   <div class="mb-12">
     <p>
@@ -19,8 +20,7 @@
   </div>
   {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
   {% set heading_1 = _('Report') %}
-  {% set heading_2 = _('Available') %}
-
+  {% set heading_2 = right_aligned_field_heading(_('Available')) %}
 
   {% if reports %}
   <div class='dashboard-table'>
@@ -41,7 +41,10 @@
       </p>
     {% endcall %}
     
-    {{ text_field(item.status) }}
+    {% call field(align='right') %}
+        {{ item.status }}
+    {% endcall %}
+
 
   {% endcall %}
 {% if reports %}
