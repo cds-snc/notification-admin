@@ -22,9 +22,7 @@
   {% set heading_1 = _('Report') %}
   {% set heading_2 = right_aligned_field_heading(_('Available')) %}
 
-  {% if reports %}
-  <div class='dashboard-table'>
-{% endif %}
+  <div class='reports-table'>
   
   {% call(item, row_number) list_table(
     reports,
@@ -35,20 +33,18 @@
     field_headings_visible=False if not reports else True
   ) %}
     {% call row_heading() %}
-        <a class="file-list-filename" href="{{ item.url }}">{{ item.requested_at }} - {{ item.report_type}} - {{ current_service.name }} report</a>
+        <a class="file-list-filename" href="{{ item.url }}">{{ item.requested_at }} - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
       <p class="file-list-hint">
-        Requested by {{ item.requested_by }}
+        {{ _("Requested by") }} {{ item.requested_by }}
       </p>
     {% endcall %}
     
     {% call field(align='right') %}
-        {{ item.status }}
+        {{ _(item.status) }}
     {% endcall %}
 
 
   {% endcall %}
-{% if reports %}
   </div>
-{% endif %}
 
 {% endblock %}
