@@ -23,7 +23,7 @@
   <div>
     {% call form_wrapper(action=action) %}
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <button type="submit" class="button button-red mt-4" name="generate-report">{{ _("Generate a report for testing") }}</button>
+    <button type="submit" class="button button-red mt-4" name="generate-report">Generate a report for testing</button>
     {% endcall %}
 </div>
   {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
