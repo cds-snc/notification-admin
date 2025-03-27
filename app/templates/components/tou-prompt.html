@@ -8,7 +8,8 @@
 
   {% if config["FF_CARETAKER"] %}
     {% call notice(type="warning", title=_("Communicating during caretaker period"), headingLevel=2) %}
-      {{ _("Some communications are prohibited during a federal election. Check with your communications branch if you’re not sure you can send an announcement or other message. For more information, read the <a href='https://www.canada.ca/en/privy-council/services/publications/guidelines-conduct-ministers-state-exempt-staff-public-servants-election.html'>Guidelines</a>.") }}
+      {{ _("Some communications are prohibited during a federal election. Check with your communications branch if you’re not sure you can send an announcement or other message. For more information, read the") }}
+      {{ content_link(_("Guidelines"), _("https://www.canada.ca/en/privy-council/services/publications/guidelines-conduct-ministers-state-exempt-staff-public-servants-election.html"), is_external_link=true) }}.
     {% endcall %}    
   {% endif %}
 
