@@ -23,8 +23,8 @@ def show_tou_prompt():
         current_user.is_authenticated
         and not session.get(TERMS_KEY)
         and "/contact" not in request.url
-        and not is_gca_route
         and "/terms" not in request.url
+        and not is_gca_route
     ):
         return True
 
