@@ -106,8 +106,8 @@ jobs:
         echo 'DOCUMENTS_BUCKET=not-a-real-secret' >> .env
         echo 'NOTIFY_EMAIL_DOMAIN=staging.notification.cdssandbox.xyz' >> .env
         echo 'ADMIN_CLIENT_SECRET=local_app' >> .env
-        echo 'REDIS_URL=redis://redis:6379' >> .env
-        echo 'REDIS_PUBLISH_URL=redis://redis:6379' >> .env
+        echo 'REDIS_URL=redis://localhost:6379' >> .env
+        echo 'REDIS_PUBLISH_URL=redis://localhost:6379' >> .env
         echo 'SQLALCHEMY_DATABASE_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
         echo 'SQLALCHEMY_DATABASE_READER_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
         echo 'DOCUMENT_DOWNLOAD_API_HOST=http://host.docker.internal:7000' >> .env
