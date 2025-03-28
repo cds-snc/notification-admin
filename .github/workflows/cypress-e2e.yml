@@ -135,10 +135,16 @@ jobs:
         cp api/.env .env
         echo 'API_HOST=http://localhost:6011' >> .env
         echo 'PORT=6012' >> .env
+    
     - name: Make frontend version file
+      run: make generate-version-file
+
+    - name: Build frontend
       run: |
-        printf '__commit_sha__ = "09cfe03100443fb9071bba88d5c8775ff54a9ebc"\n__time__ = "2022-07-25:15:11:05"\n' > version.py
-        cp version.py "${{ github.workspace }}/app/"
+        make babel
+        npm ci
+        npm run build
+      
     - name: Start frontend
       run: |
         python -m poetry install
