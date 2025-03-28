@@ -142,7 +142,16 @@ jobs:
     - name: Start frontend
       run: |
         python -m poetry install
-        make run-dev &
+        make run-dev > frontend.log 2>&1 &
+        # Wait for the app to start
+        sleep 10
+
+    - name: Check if frontend is running
+      run: |
+        curl -v http://localhost:6012/ || true
+        echo "=== Frontend Logs ==="
+        cat frontend.log
+        echo "===================="
 
     - name: Write the cypress.env.json file
       run: |
