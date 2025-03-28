@@ -149,7 +149,7 @@ jobs:
         echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
 
     - name: Run the cypress tests
-        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
       env:
         CYPRESS_BASE_URL: http://localhost:6012
       with:
