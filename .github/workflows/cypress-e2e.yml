@@ -164,9 +164,11 @@ jobs:
         # Install jq if not already available
         sudo apt-get update && sudo apt-get install -y jq
         
-        # Update the ENV field to LOCAL
+        # Update the ENV field to LOCAL to match ENV vars above
         jq '.ENV = "LOCAL"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
-        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_USER_PASSWORD = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json       
+        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_USER_PASSWORD = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .LOCAL.ADMIN_SECRET = "local_app"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_AUTH_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
 
     - name: Run the cypress tests
       uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
