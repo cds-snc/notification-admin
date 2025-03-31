@@ -120,7 +120,7 @@ jobs:
         echo 'FRESH_DESK_ENABLED=false' >> .env
         echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' >> .env
         echo 'DANGEROUS_SALT=${{ secrets.DANGEROUS_SALT }}' >> .env
-        echo 'NOTIFY_ENVIRONMENT=test' >> .env
+        echo 'NOTIFY_ENVIRONMENT=development' >> .env
         echo 'FLASK_APP=application.py' >> .env
         echo 'FLASK_DEBUG=true' >> .env
         echo 'WERKZEUG_DEBUG_PIN=off' >> .env
