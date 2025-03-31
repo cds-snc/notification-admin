@@ -133,6 +133,7 @@ jobs:
       run: |
         poetry run flask db upgrade
         poetry run make run &
+        poetry run make run-celery-local-filtered &
 
     - name: Setup frontend environment
       run: |
