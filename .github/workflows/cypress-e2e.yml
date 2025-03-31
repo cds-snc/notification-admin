@@ -124,6 +124,8 @@ jobs:
         echo 'FLASK_APP=application.py' >> .env
         echo 'FLASK_DEBUG=true' >> .env
         echo 'WERKZEUG_DEBUG_PIN=off' >> .env
+        echo 'CYPRESS_AUTH_USER_NAME=CYPRESS_AUTH_USER' >> .env
+        echo 'CYPRESS_AUTH_CLIENT_SECRET=cds-not-a-real-secret' >> .env
         echo 'CYPRESS_USER_PW_SECRET=cds-not-a-real-secret' >> .env
 
     - name: Prep DB and run API
