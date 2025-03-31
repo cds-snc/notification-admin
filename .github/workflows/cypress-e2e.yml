@@ -132,8 +132,10 @@ jobs:
       working-directory: api
       run: |
         poetry run flask db upgrade
-        poetry run make run &
-        poetry run make run-celery-local-filtered &
+        poetry run make run > api.log 2>&1 &
+        poetry run make run-celery-local-filtered > celery.log 2>&1 &
+        # Give the processes a moment to start up and log initial output
+        sleep 5
 
     - name: Setup frontend environment
       run: |
@@ -162,12 +164,11 @@ jobs:
         echo "Checking API status..."
         curl http://localhost:6011/_status || echo "API service is not running properly"
         
+        echo ""
         echo "Checking frontend status..."
         curl http://localhost:6012/_status || echo "Frontend service is not running properly"
-        
-        echo "Process check (running Python processes):"
-        ps aux | grep python | grep -v grep
-        
+
+        echo ""
         echo "Frontend logs:"
         cat frontend.log || echo "No frontend logs available"
     - name: Write and modify the cypress.env.json file
@@ -202,3 +203,16 @@ jobs:
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
         retention-days: 30
+    - name: Output logs on failure
+      if: failure()
+      run: |
+        echo "==== API LOGS ===="
+        cat api/api.log || echo "No API logs available"
+        
+        echo ""
+        echo "==== CELERY LOGS ===="
+        cat api/celery.log || echo "No Celery logs available"
+
+        echo ""
+        echo "==== FRONTEND LOGS ===="
+        cat frontend.log || echo "No frontend logs available"
