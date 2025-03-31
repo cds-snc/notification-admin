@@ -193,7 +193,7 @@ jobs:
         build: npx cypress info
         working-directory: tests_cypress
         spec: |
-          cypress/e2e/admin/menu/disclosure_menu.cy.js
+          cypress/e2e/admin/ci.cy.js
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
       if: always()
