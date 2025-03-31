@@ -156,7 +156,26 @@ jobs:
         make run-dev > frontend.log 2>&1 &
         # Wait for the app to start
         sleep 10
+    - name: Start frontend
+      run: |
+        python -m poetry install
+        make run-dev > frontend.log 2>&1 &
+        # Wait for the app to start
+        sleep 10
 
+    - name: Check if services are running
+      run: |
+        echo "Checking API status..."
+        curl -v http://localhost:6011/_status || echo "API service is not running properly"
+        
+        echo "Checking frontend status..."
+        curl -v http://localhost:6012/_status || echo "Frontend service is not running properly"
+        
+        echo "Process check (running Python processes):"
+        ps aux | grep python | grep -v grep
+        
+        echo "Frontend logs:"
+        cat frontend.log || echo "No frontend logs available"
     - name: Write and modify the cypress.env.json file
       run: |
         # Write the original file from secrets
