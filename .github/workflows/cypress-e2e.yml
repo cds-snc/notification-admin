@@ -124,6 +124,7 @@ jobs:
         echo 'FLASK_APP=application.py' >> .env
         echo 'FLASK_DEBUG=true' >> .env
         echo 'WERKZEUG_DEBUG_PIN=off' >> .env
+        echo 'CYPRESS_USER_PW_SECRET = "cds-not-a-real-secret"' >> .env
 
     - name: Prep DB and run API
       working-directory: api
@@ -153,13 +154,6 @@ jobs:
         # Wait for the app to start
         sleep 10
 
-    - name: Check if frontend is running
-      run: |
-        curl -v http://localhost:6012/ || true
-        echo "=== Frontend Logs ==="
-        cat frontend.log
-        echo "===================="
-
     - name: Write and modify the cypress.env.json file
       run: |
         # Write the original file from secrets
@@ -170,7 +164,7 @@ jobs:
         
         # Update the ENV field to LOCAL
         jq '.ENV = "LOCAL"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
-        
+        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_USER_PW_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json       
 
     - name: Run the cypress tests
       uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
