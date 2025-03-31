@@ -127,6 +127,7 @@ jobs:
         echo 'CYPRESS_AUTH_USER_NAME=CYPRESS_AUTH_USER' >> .env
         echo 'CYPRESS_AUTH_CLIENT_SECRET=cds-not-a-real-secret' >> .env
         echo 'CYPRESS_USER_PW_SECRET=cds-not-a-real-secret' >> .env
+        echo 'CACHE_CLEAR_CLIENT_SECRET=cds-not-a-real-secret' >> .env
 
     - name: Prep DB and run API
       working-directory: api
@@ -184,6 +185,7 @@ jobs:
         jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_USER_PASSWORD = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
         jq '.ENV = "LOCAL" | .LOCAL.ADMIN_SECRET = "local_app"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
         jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_AUTH_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .CACHE_CLEAR_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
 
     - name: Run the cypress tests
       uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
