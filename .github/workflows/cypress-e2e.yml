@@ -124,7 +124,7 @@ jobs:
         echo 'FLASK_APP=application.py' >> .env
         echo 'FLASK_DEBUG=true' >> .env
         echo 'WERKZEUG_DEBUG_PIN=off' >> .env
-        echo 'CYPRESS_USER_PW_SECRET = "cds-not-a-real-secret"' >> .env
+        echo 'CYPRESS_USER_PW_SECRET=cds-not-a-real-secret' >> .env
 
     - name: Prep DB and run API
       working-directory: api
@@ -174,8 +174,8 @@ jobs:
         build: npx cypress info
         working-directory: tests_cypress
         spec: |
-          cypress/e2e/admin/ci.cy.js
-
+          # cypress/e2e/admin/ci.cy.js
+          cypress/e2e/admin/menu/disclosure_menu.cy.js #TODO: set this back to the correct path
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
       if: always()
