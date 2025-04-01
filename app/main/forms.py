@@ -955,8 +955,12 @@ class ChangeNonGovEmailForm(ChangeEmailForm):
     email_address = email_address(gov_user=False)
 
 
-class ChangeMobileNumberForm(StripWhitespaceForm):
+class ChangeMobileNumberForm_FF_OFF(StripWhitespaceForm):
     mobile_number = international_phone_number()
+
+
+class ChangeMobileNumberForm(StripWhitespaceForm):
+    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
 
 
 class ChooseTimeForm(StripWhitespaceForm):
