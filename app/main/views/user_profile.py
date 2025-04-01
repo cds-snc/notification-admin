@@ -21,6 +21,7 @@ from app.main import main
 from app.main.forms import (
     ChangeEmailForm,
     ChangeMobileNumberForm,
+    ChangeMobileNumberForm_FF_OFF,
     ChangeNameForm,
     ChangePasswordForm,
     ConfirmPasswordForm,
@@ -118,7 +119,10 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-    form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+    if current_app.config["FF_OPTIONAL_PHONE"]:
+        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+    else:
+        form = ChangeMobileNumberForm_FF_OFF(mobile_number=current_user.mobile_number)
 
     if form.validate_on_submit():
         session[NEW_MOBILE] = form.mobile_number.data
@@ -144,6 +148,11 @@ def user_profile_mobile_number_authenticate():
         return redirect(url_for(".user_profile_mobile_number"))
 
     if form.validate_on_submit():
+        # if they aren't setting a phone number, skip the verification
+        if not session[NEW_MOBILE]:
+            current_user.update(mobile_number=None)
+            return redirect(url_for(".user_profile"))
+
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
         current_user.send_verify_code(to=session[NEW_MOBILE])
         return redirect(url_for(".user_profile_mobile_number_confirm"))
