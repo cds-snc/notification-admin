@@ -11,6 +11,7 @@ from notifications_utils.url_safe_token import generate_token
 from tests.conftest import (
     captured_templates,
     create_api_user_active,
+    set_config,
     url_for_endpoint_with_token,
 )
 
@@ -449,17 +450,19 @@ class TestOptionalPhoneNumber:
         self,
         client_request,
         platform_admin_user,
+        app_,
         mock_verify_password,
         mock_send_change_email_verification,
     ):
-        with client_request.session_transaction() as session:
-            session["new-mob"] = ""
+        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
+            with client_request.session_transaction() as session:
+                session["new-mob"] = ""
 
-        client_request.post(
-            "main.user_profile_mobile_number_authenticate",
-            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile",
-            ),
-        )
+            client_request.post(
+                "main.user_profile_mobile_number_authenticate",
+                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.user_profile",
+                ),
+            )
