@@ -21,7 +21,7 @@ from app.main import main
 from app.main.forms import (
     ChangeEmailForm,
     ChangeMobileNumberForm,
-    ChangeMobileNumberForm_FF_OFF,
+    ChangeMobileNumberFormOptional,
     ChangeNameForm,
     ChangePasswordForm,
     ConfirmPasswordForm,
@@ -120,9 +120,9 @@ def user_profile_email_confirm(token):
 @user_is_logged_in
 def user_profile_mobile_number():
     if current_app.config["FF_OPTIONAL_PHONE"]:
-        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+        form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
     else:
-        form = ChangeMobileNumberForm_FF_OFF(mobile_number=current_user.mobile_number)
+        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
 
     if form.validate_on_submit():
         session[NEW_MOBILE] = form.mobile_number.data
