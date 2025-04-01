@@ -1,5 +1,5 @@
 import YourProfilePage from "../../Notify/Admin/Pages/YourProfilePage";
-import { getConfig } from "../../support/utils";
+// import { getConfig } from "../../support/utils";
 
 // const CONFIG = getConfig();
 
