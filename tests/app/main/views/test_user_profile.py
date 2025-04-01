@@ -442,3 +442,24 @@ def test_can_reenable_platform_admin(client_request, platform_admin_user):
 
     with client_request.session_transaction() as session:
         assert session["disable_platform_admin_view"] is False
+
+
+class TestOptionalPhoneNumber:
+    def test_should_skip_verify_when_phone_number_blank(
+        self,
+        client_request,
+        platform_admin_user,
+        mock_verify_password,
+        mock_send_change_email_verification,
+    ):
+        with client_request.session_transaction() as session:
+            session["new-mob"] = ""
+
+        client_request.post(
+            "main.user_profile_mobile_number_authenticate",
+            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.user_profile",
+            ),
+        )
