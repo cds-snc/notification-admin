@@ -124,12 +124,47 @@ def user_profile_mobile_number():
     else:
         form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
 
-    if form.validate_on_submit():
-        session[NEW_MOBILE] = form.mobile_number.data
-        return redirect(url_for(".user_profile_mobile_number_authenticate"))
+    if request.method == "POST":
+        # get button presses
+        edit_or_cancel_pressed = request.form.get("button_pressed")
+        remove_pressed = request.form.get("remove")
+
+        # if they are posting the button "edit"
+        if edit_or_cancel_pressed == "edit":
+            return render_template(
+                "views/user-profile/change.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+            )
+
+        elif remove_pressed == "remove":
+            session[NEW_MOBILE] = ""
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
+        elif edit_or_cancel_pressed == "cancel":
+            return redirect(url_for(".user_profile"))
+
+        elif form.validate_on_submit():
+            session[NEW_MOBILE] = form.mobile_number.data
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+        else:
+            if form.mobile_number.data == "":
+                return render_template(
+                    "views/user-profile/change.html",
+                    thing=_("mobile number"),
+                    form_field=form.mobile_number,
+                )
+    else:
+        # if they dont have a number set, just go right to the edit page
+        if current_user.mobile_number is None:
+            return render_template(
+                "views/user-profile/change.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+            )
 
     return render_template(
-        "views/user-profile/change.html",
+        "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
     )
@@ -162,6 +197,7 @@ def user_profile_mobile_number_authenticate():
         thing=_("mobile number"),
         form=form,
         back_link=url_for(".user_profile_mobile_number_confirm"),
+        remove=True if session[NEW_MOBILE] == "" else False,
     )
 
 

@@ -1,0 +1,43 @@
+{% extends  "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/table.html" import edit_field, text_field %}
+
+{% set title = _("Edit mobile number") %}
+
+{% block per_page_title %}
+    {{ title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    title,
+    back_link=url_for('.user_profile')
+  ) }}
+
+  {% call form_wrapper() %}
+  <div class="grid-row contain-floats mb-12">
+    <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="flex flex-wrap md:flex-nowrap items-end border-b-1 border-gray-400 py-5">
+            <div class="w-full sm:w-3/4" tabindex="0">
+                <div class="font-bold inline-block mt-2 break-words mr-5 overflow-anywhere">
+                    {% if editing %}
+                        {{ textbox(form_field, safe_error_message=True, autocomplete='change-value') }}
+                    {% else %}
+                        {{ form_field.data if form_field.data else "Not set" }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="w-full sm:w-1/4 sm:text-right">
+                <button data-button-id="btn" type="submit" name="remove" value="remove" class="button button-secondary text-base outline-none focus:shadow-outline ">Remove</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  {{ sticky_page_footer_two_submit_buttons(_('Edit number'), "edit", _('Cancel'), "cancel") }}
+{% endcall %}
+
+{% endblock %}
