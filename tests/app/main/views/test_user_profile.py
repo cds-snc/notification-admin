@@ -120,7 +120,7 @@ def test_should_show_mobile_number_page(
     client_request,
 ):
     page = client_request.get(("main.user_profile_mobile_number"))
-    assert "Change your mobile number" in page.text
+    assert "Edit mobile number" in page.text
 
 
 @pytest.mark.parametrize(
