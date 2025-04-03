@@ -5,13 +5,13 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
-  {{ _('Change your ') + thing }}
+  {{ _('Add or change your ') + thing }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Change your ') + thing,
+    _('Add or change your ') + thing,
     back_link=url_for('.user_profile')
   ) }}
 
