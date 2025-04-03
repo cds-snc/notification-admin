@@ -1,7 +1,7 @@
 {% extends  "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-header.html" import page_header %}
-{% from "components/page-footer.html" import page_footer %}
+{% from "components/page-footer.html" import page_footer, sticky_page_footer_two_submit_buttons %}
 {% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
@@ -19,7 +19,7 @@
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       {% call form_wrapper() %}
         {{ textbox(form_field, safe_error_message=True, autocomplete='change-value') }}
-        {{ page_footer(_('Save')) }}
+        {{ page_footer(_('Save'), cancel_button_link=url_for('.user_profile')) }}
       {% endcall %}
     </div>
   </div>

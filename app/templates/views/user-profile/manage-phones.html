@@ -5,7 +5,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/table.html" import edit_field, text_field %}
 
-{% set title = _("Edit mobile number") %}
+{% set title = _("Mobile number") %}
 
 {% block per_page_title %}
     {{ title }}
@@ -37,7 +37,7 @@
         </div>
     </div>
   </div>
-  {{ sticky_page_footer_two_submit_buttons(_('Edit number'), "edit", _('Cancel'), "cancel") }}
+  {{ sticky_page_footer_two_submit_buttons(_('Change number'), "edit", _('Cancel'), "cancel") }}
 {% endcall %}
 
 {% endblock %}

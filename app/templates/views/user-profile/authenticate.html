@@ -22,7 +22,7 @@
 
     {% call form_wrapper(autocomplete=True) %}
       {{ textbox(form.password, autocomplete='current-password') }}
-      {{ page_footer(_('Confirm')) }}
+      {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }}
     {% endcall %}
     </div>
   </div>
