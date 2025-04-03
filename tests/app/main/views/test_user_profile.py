@@ -33,7 +33,7 @@ def test_overview_page_shows_disable_for_platform_admin(client_request, platform
 
 def test_should_show_name_page(client_request, mock_get_security_keys):
     page = client_request.get(("main.user_profile_name"))
-    assert page.select_one("h1").text.strip() == "Change your name"
+    assert page.select_one("h1").text.strip() == "Add or change your name"
 
 
 def test_should_redirect_after_name_change(
@@ -55,7 +55,7 @@ def test_should_show_email_page(
     client_request,
 ):
     page = client_request.get("main.user_profile_email")
-    assert page.select_one("h1").text.strip() == "Change your email address"
+    assert page.select_one("h1").text.strip() == "Add or change your email address"
 
 
 def test_should_redirect_after_email_change(
@@ -81,7 +81,7 @@ def test_should_show_authenticate_after_email_change(
 
     page = client_request.get("main.user_profile_email_authenticate")
 
-    assert "Change your email address" in page.text
+    assert "Confirm change" in page.text
     assert "Confirm" in page.text
 
 
@@ -120,7 +120,7 @@ def test_should_show_mobile_number_page(
     client_request,
 ):
     page = client_request.get(("main.user_profile_mobile_number"))
-    assert "Edit mobile number" in page.text
+    assert "Mobile number" in page.text
 
 
 @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ def test_should_show_authenticate_after_mobile_number_change(
         "main.user_profile_mobile_number_authenticate",
     )
 
-    assert "Change your mobile number" in page.text
+    assert "Confirm change" in page.text
     assert "Confirm" in page.text
 
 
@@ -185,7 +185,7 @@ def test_should_show_confirm_after_mobile_number_change(
         session["new-mob-password-confirmed"] = True
     page = client_request.get("main.user_profile_mobile_number_confirm")
 
-    assert "Change your mobile number" in page.text
+    assert "Check your phone messages" in page.text
     assert "Confirm" in page.text
 
 
@@ -561,4 +561,4 @@ class TestOptionalPhoneNumber:
             )
             current_user.update(mobile_number=None)
             page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
-            assert page.select_one("h1").text.strip() == "Change your mobile number"
+            assert page.select_one("h1").text.strip() == "Add or change your mobile number"
