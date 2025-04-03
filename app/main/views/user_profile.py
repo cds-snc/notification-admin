@@ -186,6 +186,8 @@ def user_profile_mobile_number_authenticate():
         # if they aren't setting a phone number, skip the verification
         if not session[NEW_MOBILE]:
             current_user.update(mobile_number=None)
+
+            flash(_("Mobile number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
 
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
@@ -219,6 +221,9 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number)
+
+        flash(_("Mobile number {} saved to your profile".format(mobile_number)), "default_with_tick")
+
         return redirect(url_for(".user_profile"))
 
     return render_template(
