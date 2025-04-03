@@ -454,6 +454,7 @@ class TestOptionalPhoneNumber:
         app_,
         mock_verify_password,
         mock_send_change_email_verification,
+        mock_get_security_keys,
     ):
         with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
             client_request.post(
