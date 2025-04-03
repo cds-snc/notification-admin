@@ -5,12 +5,14 @@ from unittest.mock import Mock
 
 import pytest
 from flask import url_for
+from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
 from tests.conftest import (
     captured_templates,
     create_api_user_active,
+    set_config,
     url_for_endpoint_with_token,
 )
 
@@ -31,7 +33,7 @@ def test_overview_page_shows_disable_for_platform_admin(client_request, platform
 
 def test_should_show_name_page(client_request, mock_get_security_keys):
     page = client_request.get(("main.user_profile_name"))
-    assert page.select_one("h1").text.strip() == "Change your name"
+    assert page.select_one("h1").text.strip() == "Add or change your name"
 
 
 def test_should_redirect_after_name_change(
@@ -53,7 +55,7 @@ def test_should_show_email_page(
     client_request,
 ):
     page = client_request.get("main.user_profile_email")
-    assert page.select_one("h1").text.strip() == "Change your email address"
+    assert page.select_one("h1").text.strip() == "Add or change your email address"
 
 
 def test_should_redirect_after_email_change(
@@ -79,7 +81,7 @@ def test_should_show_authenticate_after_email_change(
 
     page = client_request.get("main.user_profile_email_authenticate")
 
-    assert "Change your email address" in page.text
+    assert "Confirm change" in page.text
     assert "Confirm" in page.text
 
 
@@ -118,7 +120,7 @@ def test_should_show_mobile_number_page(
     client_request,
 ):
     page = client_request.get(("main.user_profile_mobile_number"))
-    assert "Change your mobile number" in page.text
+    assert "Mobile number" in page.text
 
 
 @pytest.mark.parametrize(
@@ -154,7 +156,7 @@ def test_should_show_authenticate_after_mobile_number_change(
         "main.user_profile_mobile_number_authenticate",
     )
 
-    assert "Change your mobile number" in page.text
+    assert "Confirm change" in page.text
     assert "Confirm" in page.text
 
 
@@ -183,7 +185,7 @@ def test_should_show_confirm_after_mobile_number_change(
         session["new-mob-password-confirmed"] = True
     page = client_request.get("main.user_profile_mobile_number_confirm")
 
-    assert "Change your mobile number" in page.text
+    assert "Check your phone messages" in page.text
     assert "Confirm" in page.text
 
 
@@ -442,3 +444,121 @@ def test_can_reenable_platform_admin(client_request, platform_admin_user):
 
     with client_request.session_transaction() as session:
         assert session["disable_platform_admin_view"] is False
+
+
+class TestOptionalPhoneNumber:
+    def test_should_skip_sms_verify_when_phone_number_blank(
+        self,
+        client_request,
+        platform_admin_user,
+        app_,
+        mock_verify_password,
+        mock_send_change_email_verification,
+        mock_get_security_keys,
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"button_pressed": "edit"},
+                _expected_status=200,
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"mobile_number": ""},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number_authenticate",
+                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.user_profile",
+                ),
+            )
+
+    def test_should_verify_when_phone_number_set(
+        self,
+        client_request,
+        platform_admin_user,
+        app_,
+        mock_verify_password,
+        mock_send_change_email_verification,
+        mock_send_verify_code,
+        mock_check_verify_code,
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"button_pressed": "edit"},
+                _expected_status=200,
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"mobile_number": "6135555555"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number_authenticate",
+                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.user_profile_mobile_number_confirm",
+                ),
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number_confirm",
+                _data={"two_factor_code": "12345"},
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.user_profile",
+                ),
+            )
+
+    def test_should_skip_sms_verify_when_remove_button_pressed(
+        self,
+        client_request,
+        platform_admin_user,
+        app_,
+        mock_verify_password,
+        mock_send_change_email_verification,
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"button_pressed": "edit"},
+                _expected_status=200,
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number",
+                _data={"remove": "remove"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+            )
+
+            client_request.post(
+                "main.user_profile_mobile_number_authenticate",
+                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.user_profile",
+                ),
+            )
+
+    def test_should_jump_to_edit_page_when_phone_already_blank(
+        self, client_request, platform_admin_user, app_, mock_verify_password, mock_send_change_email_verification, mocker
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", True):
+            mocker.patch.object(
+                current_user, "update", side_effect=lambda mobile_number: setattr(current_user, "mobile_number", mobile_number)
+            )
+            current_user.update(mobile_number=None)
+            page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
+            assert page.select_one("h1").text.strip() == "Add or change your mobile number"

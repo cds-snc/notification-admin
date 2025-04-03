@@ -16,7 +16,7 @@
   
   {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}  
   {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
-  {{ profile_item(_('Mobile number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number') }}
+  {{ profile_item(_('Mobile number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number', None  if current_user.mobile_number else _('Add number')) }}
   {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
   {{ profile_item(_('Security keys'), text_field(num_keys), '.user_profile_security_keys') }}
 
