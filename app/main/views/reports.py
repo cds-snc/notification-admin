@@ -9,7 +9,7 @@ from flask_login import current_user
 
 from app import get_current_locale, reports_api_client
 from app.main import main
-from app.utils import user_has_permissions, user_is_platform_admin
+from app.utils import user_is_platform_admin
 
 
 @main.route("/services/<service_id>/reports", methods=["GET"])
@@ -45,7 +45,7 @@ def get_reports_partials(reports):
 
 
 @main.route("/services/<service_id>/reports/reports.json")
-@user_has_permissions()
+@user_is_platform_admin
 def view_reports_updates(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
 
