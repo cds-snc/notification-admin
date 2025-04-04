@@ -3,6 +3,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/empty-list.html" import empty_list  %}
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
+{% from "components/ajax-block.html" import ajax_block %}
 
 {% block service_page_title %}
   {{ _('Dowload reports') }}
@@ -30,29 +31,6 @@
   {% set heading_1 = _('Report') %}
   {% set heading_2 = right_aligned_field_heading(_('Available')) %}
 
-  <div class='reports-table'>
-  
-  {% call(item, row_number) list_table(
-    reports,
-    caption="Recent activity",
-    caption_visible=False,
-    empty_message=empty_txt,
-    field_headings=[heading_1,heading_2],
-    field_headings_visible=False if not reports else True
-  ) %}
-    {% call row_heading() %}
-        <a class="file-list-filename" href="{{ item.url }}">{{ item.requested_at }} - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
-      <p class="file-list-hint">
-        {{ _("Requested by") }} {{ item.requested_by }}
-      </p>
-    {% endcall %}
-    
-    {% call field(align='right') %}
-        {{ _(item.status) }}
-    {% endcall %}
-
-
-  {% endcall %}
-  </div>
+  {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
 
 {% endblock %}
