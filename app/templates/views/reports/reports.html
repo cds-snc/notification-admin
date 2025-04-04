@@ -28,8 +28,6 @@
     {% endcall %}
 </div>
   {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
-  {% set heading_1 = _('Report') %}
-  {% set heading_2 = right_aligned_field_heading(_('Available')) %}
 
   {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
 

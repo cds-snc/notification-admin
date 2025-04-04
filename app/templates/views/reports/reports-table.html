@@ -1,5 +1,7 @@
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
   
+  {% set heading_1 = _('Report') %}
+  {% set heading_2 = right_aligned_field_heading(_('Status')) %}
 
   <div class='reports-table'>
   
@@ -12,7 +14,9 @@
     field_headings_visible=False if not reports else True
   ) %}
     {% call row_heading() %}
-        <a class="file-list-filename" href="{{ item.url }}">{{ item.requested_at }} - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
+        <a class="file-list-filename" href="{{ item.url }}">
+            <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
+            - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
       <p class="file-list-hint">
         {{ _("Requested by") }} {{ item.requested_by }}
       </p>
@@ -24,6 +28,11 @@
             <div class="loading-spinner"></div>
             <span>{{ _("Preparing report") }}</span>
           </div>
+        {% elif item.status == "ready" %}
+            <div>
+                Download before
+                <span><time class="local-datetime-full">{{item.expires_at}}</time></span>
+            </div>
         {% else %}
           {{ _(item.status) }}
         {% endif %}
