@@ -19,9 +19,15 @@
     {% endcall %}
     
     {% call field(align='right') %}
-        {{ _(item.status) }}
+        {% if item.status == "requested" %}
+          <div class="status-preparing">
+            <div class="loading-spinner"></div>
+            <span>{{ _("Preparing report") }}</span>
+          </div>
+        {% else %}
+          {{ _(item.status) }}
+        {% endif %}
     {% endcall %}
-
 
   {% endcall %}
   </div>
