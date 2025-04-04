@@ -6,18 +6,18 @@
 {% from "components/ajax-block.html" import ajax_block %}
 
 {% block service_page_title %}
-  {{ _('Dowload reports') }}
+  {{ _('Delivery reports') }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {{ page_header(
-       _('Dowload reports'),
+       _('Delivery reports'),
        back_link=url_for('main.service_dashboard', service_id=current_service.id)
      ) }}
 
   <div class="mb-12">
     <p>
-      {{ _("Reports expire and are deleted 72 hours after being generated.") }}
+      {{ _("You’ll get an email when a report you requested is ready to download.  Then you have 72 hours to download it.") }}
     </p>
   </div>
 
