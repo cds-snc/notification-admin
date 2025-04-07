@@ -212,31 +212,6 @@ def test_should_show_caseworker_on_overview_page(
     )
 
 
-@pytest.mark.parametrize(
-    "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
-    [
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, False),
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
-        ("main.invite_user", {}, True, False),
-        ("main.invite_user", {}, False, True),
-    ],
-)
-def test_service_with_no_email_auth_hides_auth_type_options(
-    client_request,
-    endpoint,
-    extra_args,
-    service_has_email_auth,
-    auth_options_hidden,
-    service_one,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-):
-    if service_has_email_auth:
-        service_one["permissions"].append("email_auth")
-    page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-    assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
-
-
 @pytest.mark.parametrize("service_has_caseworking", (True, False))
 @pytest.mark.parametrize(
     "endpoint, extra_args",
@@ -340,56 +315,6 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
 
 
 @pytest.mark.parametrize(
-    "sms_option_disabled, mobile_number, expected_label",
-    [
-        (
-            True,
-            None,
-            """
-            Text message code
-            Not available because Test User has not added a
-            phone number to their profile
-        """,
-        ),
-        (
-            False,
-            "9025555555",
-            """
-            Text message code
-        """,
-        ),
-    ],
-)
-def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    api_user_active,
-    sms_option_disabled,
-    mobile_number,
-    expected_label,
-    service_one,
-    mocker,
-    fake_uuid,
-    active_user_with_permissions,
-):
-    active_user_with_permissions["mobile_number"] = mobile_number
-
-    service_one["permissions"].append("email_auth")
-    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
-
-    page = client_request.get(
-        "main.edit_user_permissions",
-        service_id=service_one["id"],
-        user_id=sample_uuid(),
-    )
-
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") == sms_option_disabled
-    assert normalize_spaces(page.select_one("label[for=login_authentication-0]").text) == normalize_spaces(expected_label)
-
-
-@pytest.mark.parametrize(
     "endpoint, extra_args, expected_checkboxes",
     [
         (
@@ -433,19 +358,6 @@ def test_should_show_page_for_one_user(
         expected_input_name, expected_checked = expected
         assert checkboxes[index]["name"] == expected_input_name
         assert checkboxes[index].has_attr("checked") == expected_checked
-
-
-def test_invite_user_allows_to_choose_auth(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    service_one,
-):
-    service_one["permissions"].append("email_auth")
-    page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
-
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") is False
 
 
 def test_invite_user_has_correct_email_field(
@@ -893,7 +805,7 @@ def test_invite_user_with_email_auth_service(
             sample_invite["service"],
             email_address,
             expected_permissions,
-            auth_type,
+            "sms_auth",
             [],
         )
     else:
