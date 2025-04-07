@@ -55,9 +55,7 @@ def invite_user(service_id):
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
 
-    service_has_email_auth = current_service.has_permission("email_auth")
-    if not service_has_email_auth:
-        form.login_authentication.data = "sms_auth"
+    form.login_authentication.data = "sms_auth"
 
     current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
     if form.validate_on_submit():
@@ -80,7 +78,6 @@ def invite_user(service_id):
     return render_template(
         "views/invite-user.html",
         form=form,
-        service_has_email_auth=service_has_email_auth,
         mobile_number=True,
     )
 
