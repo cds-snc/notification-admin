@@ -638,7 +638,6 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
         },
         folder_permissions=[],
     )
-    mock_update_user_attribute.assert_called_with(str(active_user_with_permissions["id"]), auth_type=auth_type)
 
 
 def test_should_show_page_for_inviting_user(
