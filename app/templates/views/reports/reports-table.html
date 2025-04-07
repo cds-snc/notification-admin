@@ -14,28 +14,42 @@
     field_headings_visible=False if not reports else True
   ) %}
     {% call row_heading() %}
-        <a class="file-list-filename" href="{{ item.url }}">
+      <div class="flex flex-col">
+        <div class="mb-4">
+          {% if item.status == "ready" %}
+          <a class="file-list-filename" href="{{ item.url }}">
             <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
             - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
-      <p class="file-list-hint">
-        {{ _("Requested by") }} {{ item.requested_by }}
-      </p>
+          {% else %}
+          <div class="file-list-filename text-gray-grey1">
+            <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
+            - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</div>
+          {% endif %}
+        </div>
+      <div class="file-list-hint">
+        <p>{{ _("Requested by") }} {{ item.requested_by }}</p>
+      </div>
     {% endcall %}
     
     {% call field(align='right') %}
+      <div class="flex flex-col justify-end">
         {% if item.status == "requested" %}
-          <div class="status-preparing">
-            <div class="loading-spinner"></div>
-            <span>{{ _("Preparing report") }}</span>
-          </div>
+            <div class="mb-4">
+              <div class="loading-spinner"></div>
+            </div>
+            <div class="file-list-hint">{{ _("Preparing report") }}</div>
         {% elif item.status == "ready" %}
-            <div>
-                Download before
-                <span><time class="local-datetime-full">{{item.expires_at}}</time></span>
+            <div class="mb-4">
+              <div class="size-20"></div>
+            </div>
+            <div class="file-list-hint">
+                {{ _("Download before") }}
+                <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
             </div>
         {% else %}
           {{ _(item.status) }}
         {% endif %}
+      </div>
     {% endcall %}
 
   {% endcall %}

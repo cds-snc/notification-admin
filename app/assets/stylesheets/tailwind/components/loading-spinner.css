@@ -15,10 +15,3 @@
     transform: rotate(360deg);
   }
 }
-
-/* Style for the status text when loading */
-.status-preparing {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
