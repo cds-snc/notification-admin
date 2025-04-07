@@ -901,14 +901,6 @@ def service_set_channel(service_id, channel):
     )
 
 
-@main.route("/services/<service_id>/service-settings/set-auth-type", methods=["GET"])
-@user_has_permissions("manage_service")
-def service_set_auth_type(service_id):
-    return render_template(
-        "views/service-settings/set-auth-type.html",
-    )
-
-
 @main.route("/services/<service_id>/service-settings/letter-contacts", methods=["GET"])
 @user_has_permissions("manage_service", "manage_api_keys")
 def service_letter_contact_details(service_id):

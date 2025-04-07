@@ -76,26 +76,6 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Sign-in method') %}
-          {{ text_field(txt) }}
-          {% set value = _('Email code or text message code') %}
-          {% set else_value = _('Text message code') %}
-          {{ text_field(
-            value
-            if 'email_auth' in current_service.permissions
-            else else_value
-          ) }}
-          {{ edit_field(
-              change_txt,
-              url_for('.service_set_auth_type',
-              service_id=current_service.id),
-              permissions=['manage_service'],
-              for=txt
-            )
-          }}
-        {% endcall %}
-
-        {% call row() %}
           {% set txt = _('API rate limit per minute') %}
           {{ text_field(txt) }}
           {% set minute_limit = _('{} calls').format(current_service.rate_limit | format_number) %}
