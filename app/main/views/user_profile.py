@@ -183,9 +183,9 @@ def user_profile_mobile_number_authenticate():
         return redirect(url_for(".user_profile_mobile_number"))
 
     if form.validate_on_submit():
-        # if they aren't setting a phone number, skip the verification
+        # if they are removing their phone number, skip the verification, set auth type to email
         if not session[NEW_MOBILE]:
-            current_user.update(mobile_number=None)
+            current_user.update(mobile_number=None, auth_type="email_auth")
 
             flash(_("Mobile number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
