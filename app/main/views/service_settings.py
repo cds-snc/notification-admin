@@ -89,7 +89,6 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict(
                 "endpoint": ".service_set_inbound_number",
             },
         ),
-        ("email_auth", {"title": _l("Email authentication")}),
         ("upload_letters", {"title": _l("Uploading letters"), "requires": "letter"}),
     ]
 )
