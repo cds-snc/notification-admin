@@ -27,7 +27,12 @@
           {% endif %}
         </div>
       <div class="file-list-hint">
-        <p>{{ _("Requested by") }} {{ item.requested_by }}</p>
+        <p>
+          <span>{{ _("Requested by") }} {{ item.requesting_user.name }}</span>
+          {% if item.requesting_user_id == current_user.id %}
+            <span>({{ _("You") }})</span>
+          {% endif %}
+        </p>
       </div>
     {% endcall %}
     
