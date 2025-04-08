@@ -2,11 +2,20 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/nav_menu_item.html" import nav_menu_item with context %}
+
 {% set platform_admin_view_ind = True %}
 {% block maincolumn_content %}
 
-  <div class="flex flex-row">
-    <div class="xs:hidden smaller:hidden sm:hidden md:flex flex-col">
+  <div class="flex flex-col items-start md:flex-row">
+    <button aria-expanded="false" aria-haspopup="true" id="admin-panel-menu" data-module="menu"
+            data-menu-items="admin-panel-menu-items"
+            class="nav-menu-item md:hidden self-start"
+            type="button">
+            {{ _("Admin panel") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+    </button>
+    <ul id="admin-panel-menu-items" class="hidden md:flex flex-col w-full md:basis-1/4 border-gray-300 border-1 border-b-0 md:border-0">
           {% for link_text, view in [
           ('Your services', 'choose_account'),
           ('Live services', 'live_services'),
@@ -24,20 +33,13 @@
           ('Providers', 'view_providers'),
           ('Clear cache', 'clear_cache'),
         ] %}
-          <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
-            <a
-              aria-label="{{ _(link_text) }}" 
-              href="{{ url_for('main.'+view) }}"
-              class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
-              {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
-              >
-              {{ _(link_text) }}
-              
-            </a>
-          </div>
+          <li class="px-4 adminnav--{{ admin_navigation.is_selected(view) }} ">
+            {{ nav_menu_item(url_for('main.'+view), _(link_text), is_active=admin_navigation.is_selected(view), css_classes="md:py-2 border-b-0 focus:border-b-0") }}
+          </li>
         {% endfor %}
-    </div>
-    <div class="border-l-1 p-5 w-full">
+      </ul>
+    <hr class="w-full m-0 md:hidden border-gray-300 border-0 border-b-1"/>
+    <div class="md:border-l-1 md:pl-gutterHalf w-full md:basis-3/4 self-stretch">
       {% block platform_admin_content %}{% endblock %}
     </div>
   </div>

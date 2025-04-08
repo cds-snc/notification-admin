@@ -1,7 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
 
-  header a:hover,
   .preview-banner a {
     @apply underline !important;
   }
@@ -127,11 +126,15 @@
     @apply font-bold;
   }
 
+  .nav-menu-item {
+    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-bold no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue focus:border-b-4 focus:bg-yellow focus:border-yellow focus:outline-none hover:border-gray-300;
+  }
+
+  .adminnav-- {
+    @apply border-l-4 border-l-transparent hover:border-gray-300;
+  }
   .adminnav--active {
-    @apply bg-gray;
-    @apply border-l-4;
-    @apply border-blue;
-    @apply font-extrabold;
+    @apply bg-gray border-l-4 border-blue;
   }
 
   .menu-divider {
