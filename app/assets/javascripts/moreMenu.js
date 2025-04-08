@@ -1,110 +1,126 @@
 (function (Modules) {
   "use strict";
 
-  var elemWidth = 0,
-    fitCount = 0,
-    varWidth = 1,
-    ctr = 0,
-    $moreMenu = null,
-    $menuContainer = null,
-    $menuItems = null,
-    collectedSet = [];
-
-  function menuToggle($moreMenu, $menuContainer, $arrow) {
-    const show = $menuContainer.hasClass("hidden");
-    $moreMenu.attr("aria-expanded", show);
-
-    $menuContainer.toggleClass("hidden");
-    if ($arrow) $arrow.attr("data-fa-transform", show ? "rotate-180" : "");
+  // Toggles the visibility of the more menu and updates the aria-expanded attribute.
+  function toggleMenu($moreMenuButton, $moreMenu) {
+    const isExpanded = $moreMenuButton.attr("aria-expanded") == "true";
+    // Toggle the aria-expanded attribute FIRST
+    $moreMenuButton.attr("aria-expanded", !isExpanded);
+    // If true, class is added. To show the menu, we toggle with the inverse of isExpanded.
+    $moreMenu.toggleClass("hidden", isExpanded);
   }
 
-  function init($menu) {
-    $moreMenu = $menu;
-    const menuItemsId = "#" + $moreMenu.attr("data-module-menu-items");
-    const menuContainerId = "#" + $moreMenu.attr("data-module-menu-container");
+  // Initializes the more menu functionality.
+  function init($moreMenuButton) {
+    const menuItemsId = "#" + $moreMenuButton.attr("data-module-menu-items");
+    const menuContainerId =
+      "#" + $moreMenuButton.attr("data-module-menu-container");
 
-    $menuItems = $(menuItemsId);
-    $menuContainer = $(menuContainerId);
-    $moreMenu.click(() =>
-      menuToggle($moreMenu, $menuContainer, $moreMenu.find(".fa-angle-down")),
-    );
+    const $menuItems = $(menuItemsId);
+    const $moreMenu = $(menuContainerId);
+    let itemsWidth = 0;
+    let overflowsCalculated = false;
 
-    // Take the number of menu items and calculate individual outer width
-    // of each one.
-    ctr = $menuItems.children().length;
-    $menuItems.children().each(function () {
-      varWidth += $(this).outerWidth();
-    });
-    // Making sure varWidth is never 0
-    varWidth = varWidth || 1;
+    $moreMenuButton.click(() => toggleMenu($moreMenuButton, $moreMenu));
 
-    resizeMenu();
-    $(window).resize(function () {
-      resizeMenu();
-    });
-  }
+    // Calculates the width at which each menu item overflows.
+    const calculateOverflows = () => {
+      if (window.innerWidth > 768) {
+        let gap = parseInt(window.getComputedStyle($menuItems[0]).columnGap);
+        $menuItems.children().each(function () {
+          itemsWidth += $(this).outerWidth(true) + gap;
+          $(this).attr("data-overflows-at", itemsWidth);
+        });
+        overflowsCalculated = true;
+        resizeMenu();
+      }
+    };
 
-  function resizeMenu() {
-    // Current available width of the menu.
-    elemWidth = $menuItems.width();
-
-    // Calculate how many items fit on the total width.
-    // Substract 1 as CSS :gt property is 0-based index.
-    // Substract another one to account for the "Plus" item
-    fitCount = Math.floor((elemWidth / varWidth) * ctr) - 2;
-
-    // Reset display and width on all menu items. Except "More menu"
-    $menuItems
-      .children()
-      .not("#more-menu")
-      .css({ display: "flex", width: "auto" });
-
-    // Get the menu items that don't fit in the limited space, if any,
-    // make sure to exclude the 'More' menu itself though.
-    collectedSet = $menuItems
-      .children(":gt(" + fitCount + ")")
-      .not("#more-menu");
-
-    // Empty the more menu and add the out of space menu items in
-    // a special set.
-    var $moreMenuItems = $("<div/>")
-      .attr("id", "more-menu-items")
-      .addClass(
-        "absolute right-0 flex flex-col flex-shrink-0 text-right bg-gray divide-y divide-gray-grey2 shadow z-50",
-      );
-    $menuContainer.html($moreMenuItems);
-
-    // Remember the display and width of the More menu.
-    var moreMenuDisplay = $moreMenu.css("display");
-    var moreMenuWidth = $moreMenu.css("width");
-
-    // Reset state on resize invocation.
-    $moreMenuItems.empty().append(collectedSet.clone());
-    $moreMenu.removeClass("hidden");
-
-    if (collectedSet.length > 0) {
-      // Hide items in the collection, because these sub-menus are not visible
-      // in the menu anymore.
-      collectedSet.css({ display: "none", width: "0" });
-      // Make sure we are displaying the More menu when it contains items.
-      $moreMenu.css({ width: moreMenuWidth });
-      // Need to adjust re-alignment..
-      $moreMenuItems.children().removeClass();
-      $moreMenuItems.children().addClass("text-right px-5");
-      $moreMenuItems
-        .find(".header--active")
-        .removeClass("header--active")
-        .parent()
-        .addClass("menu--active");
+    // Initialize overflows when the document is ready or loaded.
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
+      calculateOverflows();
     } else {
-      // Hide the More menu when it does not contain item(s).
-      $moreMenu.addClass("hidden");
+      $(window).on("load", calculateOverflows);
+    }
+
+    // Recalculate overflows on window resize.
+    $(window).on("resize", function () {
+      if (window.innerWidth > 768) {
+        itemsWidth = 0;
+        overflowsCalculated = false;
+
+        $menuItems.children().each(function () {
+          itemsWidth += $(this).outerWidth(true);
+          $(this).attr("data-overflows-at", itemsWidth);
+        });
+        overflowsCalculated = true;
+
+        resizeMenu();
+      } else {
+        // Make sure to empty items in the more menu. We want to keep the UL element.
+        $moreMenu.find("#more-menu-items").empty();
+        $moreMenuButton.attr("data-has-items", false);
+        $menuItems.find("[data-overflows]").attr("data-overflows", false);
+      }
+    });
+
+    // Determines whether an element overflows, excluding the more button.
+    function overflow(element, containerWidth, moreButtonWidth) {
+      return element.dataset.overflowsAt > containerWidth - moreButtonWidth
+        ? "more"
+        : "main";
+    }
+
+    // Resizes the menu, determining which items should be in the main menu and which in the more menu.
+    function resizeMenu() {
+      const containerWidth = $menuItems.width();
+      let collectedSet = {};
+
+      // Collect items that overflow and those that don't.
+      collectedSet = Object.groupBy(
+        $menuItems.children().not("#more-menu"),
+        (el) => overflow(el, containerWidth, 0),
+      );
+
+      // If there are items that overflow, run another collection to account for moreMenuButton width.
+      if (collectedSet.more) {
+        collectedSet = Object.groupBy(
+          $menuItems.children().not("#more-menu"),
+          (el) => overflow(el, containerWidth, $moreMenuButton.outerWidth()),
+        );
+      }
+
+      // Append items to the main menu and more menu.
+      const $moreMenuItems = $("#more-menu-items");
+
+      if (collectedSet.more) {
+        // Append items to the more menu.
+        $moreMenuItems.empty().append($(collectedSet.more).clone());
+        // Set state when there are items in the more menu.
+        $moreMenuButton.attr("data-has-items", true);
+        $(collectedSet.more).attr("data-overflows", true);
+        if (collectedSet.main) {
+          // Mark items that were kept in the main menu.
+          $(collectedSet.main).attr("data-overflows", false);
+        }
+      } else {
+        // Set state when there are no items in the more menu.
+        $moreMenuButton.attr("data-has-items", false);
+        if (collectedSet.main) {
+          $(collectedSet.main).attr("data-overflows", false);
+        }
+        $moreMenuItems.empty();
+      }
     }
   }
 
+  // Expose the MoreMenu module.
   Modules.MoreMenu = function () {
     this.start = function (component) {
-      let $component = $(component);
+      const $component = $(component);
       init($component);
     };
   };
