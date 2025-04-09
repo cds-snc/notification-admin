@@ -157,6 +157,7 @@ def _get_notifications_csv_mock(mocker, api_user_active, job_id=fake_uuid):
         ("sending-domain", "sending-domain"),
         ("sending_domain_", "sending_domain_"),
         ("sending-domain-", "sending-domain-"),
+        ("$", ""),
     ],
 )
 def test_email_safe_return_dot_separated_email_domain(service_name, safe_email):
