@@ -16,7 +16,6 @@
   }
   [data-module="more-menu"][data-has-items="false"] {
     @apply hidden;
-
   }
   [data-module="menu"][aria-expanded="true"] svg,
   [data-module="more-menu"][aria-expanded="true"] svg {
