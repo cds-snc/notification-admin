@@ -27,6 +27,7 @@
     const calculateOverflows = () => {
       if (window.innerWidth > 768) {
         let gap = parseInt(window.getComputedStyle($menuItems[0]).columnGap) || 0;
+        itemsWidth -= gap;
         $menuItems.children().each(function () {
           itemsWidth += $(this).outerWidth(true) + gap;
           $(this).attr("data-overflows-at", itemsWidth);
