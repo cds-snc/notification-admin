@@ -26,7 +26,8 @@
     // Calculates the width at which each menu item overflows.
     const calculateOverflows = () => {
       if (window.innerWidth > 768) {
-        let gap = parseInt(window.getComputedStyle($menuItems[0]).columnGap) || 0;
+        let gap =
+          parseInt(window.getComputedStyle($menuItems[0]).columnGap) || 0;
         itemsWidth -= gap;
         $menuItems.children().each(function () {
           itemsWidth += $(this).outerWidth(true) + gap;
