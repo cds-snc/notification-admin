@@ -1,0 +1,33 @@
+{% extends "admin_template.html" %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/empty-list.html" import empty_list  %}
+{% from "components/ajax-block.html" import ajax_block %}
+
+{% block service_page_title %}
+  {{ _('Delivery reports') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  {{ page_header(
+       _('Delivery reports'),
+       back_link=url_for('main.service_dashboard', service_id=current_service.id)
+     ) }}
+
+  <div class="mb-12">
+    <p>
+      {{ _("You’ll get an email when a report you requested is ready to download. Then you have 72 hours to download it.") }}
+    </p>
+  </div>
+
+  <div>
+    {% call form_wrapper(action=action) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <button type="submit" class="button button-red mt-4" name="generate-report">Generate a report for testing</button>
+    {% endcall %}
+</div>
+  {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
+
+  {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
+
+{% endblock %}

@@ -25,6 +25,7 @@ from app.main.views import (  # noqa isort:skip
     platform_admin,
     providers,
     register,
+    reports,
     send,
     service_settings,
     set_lang,
