@@ -9,17 +9,17 @@
     margin-top: 3.3rem;
   }
   :has(> [data-module="more-menu"]) [data-overflows="true"] {
-    display: none;
+    @apply hidden;
   }
-  #more-menu[data-has-items="true"] {
-    display: flex;
-    width: auto;
-    margin-left: auto;
+  [data-module="more-menu"][data-has-items="true"] {
+    @apply flex w-auto ml-auto;
   }
-  #more-menu[data-has-items="false"] {
-    display: none;
+  [data-module="more-menu"][data-has-items="false"] {
+    @apply hidden;
+
   }
-  #more-menu[aria-expanded="true"] svg {
+  [data-module="menu"][aria-expanded="true"] svg,
+  [data-module="more-menu"][aria-expanded="true"] svg {
     @apply transform rotate-180;
   }
 
