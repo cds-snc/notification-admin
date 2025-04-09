@@ -25,17 +25,14 @@
 
     // Calculates the width at which each menu item overflows.
     const calculateOverflows = () => {
-      if (window.innerWidth > 768) {
-        let gap =
-          parseInt(window.getComputedStyle($menuItems[0]).columnGap) || 0;
-        itemsWidth -= gap;
-        $menuItems.children().each(function () {
-          itemsWidth += $(this).outerWidth(true) + gap;
-          $(this).attr("data-overflows-at", itemsWidth);
-        });
-        overflowsCalculated = true;
-        resizeMenu();
-      }
+      let gap = parseInt(window.getComputedStyle($menuItems[0]).columnGap) || 0;
+      itemsWidth -= gap;
+      $menuItems.children().each(function () {
+        itemsWidth += $(this).outerWidth(true) + gap;
+        $(this).attr("data-overflows-at", itemsWidth);
+      });
+      overflowsCalculated = true;
+      resizeMenu();
     };
 
     // Initialize overflows when the document is ready or loaded.
@@ -43,24 +40,21 @@
       document.readyState === "complete" ||
       document.readyState === "interactive"
     ) {
-      calculateOverflows();
+      if (window.innerWidth > 768) {
+        calculateOverflows();
+      }
     } else {
-      $(window).on("load", calculateOverflows);
+      $(window).on("load", window.innerWidth > 768 && calculateOverflows);
     }
 
     // Recalculate overflows on window resize.
     $(window).on("resize", function () {
       if (window.innerWidth > 768) {
+        // Reset itemsWidth and overflowsCalculated on resize.
         itemsWidth = 0;
         overflowsCalculated = false;
 
-        $menuItems.children().each(function () {
-          itemsWidth += $(this).outerWidth(true);
-          $(this).attr("data-overflows-at", itemsWidth);
-        });
-        overflowsCalculated = true;
-
-        resizeMenu();
+        calculateOverflows();
       } else {
         // Make sure to empty items in the more menu. We want to keep the UL element.
         $moreMenu.find("#more-menu-items").empty();
