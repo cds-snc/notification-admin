@@ -2,21 +2,21 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/empty-list.html" import empty_list  %}
-{% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
+{% from "components/ajax-block.html" import ajax_block %}
 
 {% block service_page_title %}
-  {{ _('Dowload reports') }}
+  {{ _('Delivery reports') }}
 {% endblock %}
 
 {% block maincolumn_content %}
   {{ page_header(
-       _('Dowload reports'),
+       _('Delivery reports'),
        back_link=url_for('main.service_dashboard', service_id=current_service.id)
      ) }}
 
   <div class="mb-12">
     <p>
-      {{ _("Reports expire and are deleted 72 hours after being generated.") }}
+      {{ _("You’ll get an email when a report you requested is ready to download. Then you have 72 hours to download it.") }}
     </p>
   </div>
 
@@ -27,32 +27,7 @@
     {% endcall %}
 </div>
   {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
-  {% set heading_1 = _('Report') %}
-  {% set heading_2 = right_aligned_field_heading(_('Available')) %}
 
-  <div class='reports-table'>
-  
-  {% call(item, row_number) list_table(
-    reports,
-    caption="Recent activity",
-    caption_visible=False,
-    empty_message=empty_txt,
-    field_headings=[heading_1,heading_2],
-    field_headings_visible=False if not reports else True
-  ) %}
-    {% call row_heading() %}
-        <a class="file-list-filename" href="{{ item.url }}">{{ item.requested_at }} - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
-      <p class="file-list-hint">
-        {{ _("Requested by") }} {{ item.requested_by }}
-      </p>
-    {% endcall %}
-    
-    {% call field(align='right') %}
-        {{ _(item.status) }}
-    {% endcall %}
-
-
-  {% endcall %}
-  </div>
+  {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
 
 {% endblock %}
