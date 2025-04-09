@@ -63,7 +63,7 @@
 {% if withnav %}
   <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('Main menu') }}">
     <div class="container px-gutterHalf">
-      <div id="proposition-links" class="flex flex-nowrap items-baseline">
+      <ul id="proposition-links" class="flex flex-nowrap items-baseline gap-gutterHalf">
         {% if not current_user.is_authenticated %}
           {% if nav_items %}
             {% for i in nav_items %}
@@ -120,21 +120,18 @@
             
           {% endif %}
         {% endif %}
-          <a
-          href="#"
-          id="more-menu"
-          class="hidden text-smaller text-blue py-5 visited:text-blue link:text-blue font-bold no-underline focus:outline-none focus:bg-yellow focus:border-b-4 focus:border-blue ml-auto items-center flex"
-          data-module="more-menu"
-          data-module-menu-items="proposition-links"
-          data-module-menu-container="more-menu-container"
-          aria-expanded="false">
-            {{ _('More') }}
-            <i aria-hidden="true" class="p-2 fa-solid fa-angle-down"></i>
-          </a>
-      </div>
-      <!-- MD-LG menu and nav bar END -->
-    <div id="more-menu-container" class="relative hidden">
+        <button id="more-menu" type="button"
+        aria-expanded="false" aria-haspopup="true"
+        class="nav-menu-item justify-end px-4 w-min"
+        data-module-menu-container="more-menu-container" data-has-items="false"
+        data-module="more-menu" data-module-menu-items="proposition-links">
+        {{ _("More") }}
+        <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+    </button>
+  </ul>
+      <div id="more-menu-container" class="relative self-end hidden">
+        <ul id="more-menu-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
     </div>
+</div>
   </nav>
-  </div>
 {% endif %}
