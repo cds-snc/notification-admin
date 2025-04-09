@@ -1,15 +1,6 @@
 (function (Modules) {
   "use strict";
 
-  // Toggles the visibility of the more menu and updates the aria-expanded attribute.
-  function toggleMenu($moreMenuButton, $moreMenu) {
-    const isExpanded = $moreMenuButton.attr("aria-expanded") == "true";
-    // Toggle the aria-expanded attribute FIRST
-    $moreMenuButton.attr("aria-expanded", !isExpanded);
-    // If true, class is added. To show the menu, we toggle with the inverse of isExpanded.
-    $moreMenu.toggleClass("hidden", isExpanded);
-  }
-
   // Initializes the more menu functionality.
   function init($moreMenuButton) {
     const menuItemsId = "#" + $moreMenuButton.attr("data-module-menu-items");
@@ -116,6 +107,15 @@
         }
         $moreMenuItems.empty();
       }
+    }
+
+    // Toggles the visibility of the more menu and updates the aria-expanded attribute.
+    function toggleMenu($moreMenuButton, $moreMenu) {
+      const isExpanded = $moreMenuButton.attr("aria-expanded") == "true";
+      // Toggle the aria-expanded attribute FIRST
+      $moreMenuButton.attr("aria-expanded", !isExpanded);
+      // If true, class is added. To show the menu, we toggle with the inverse of isExpanded.
+      $moreMenu.toggleClass("hidden", isExpanded);
     }
   }
 
