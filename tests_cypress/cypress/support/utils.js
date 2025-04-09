@@ -63,3 +63,25 @@ export const getConfig = () => {
 
     return config;
 };
+
+/**
+ * Retrieves the user ID of the currently logged in user.
+ *
+ * When login is called during a test run, we're either logging in as an admin user or a regular user.
+ * This function retrieves the current user id set during the login command.
+ *
+ * @returns {string} The UUID of the currently logged in user.
+ */
+export const getCurrentUserId = () => {
+    const currentUserId = Cypress.env("CURRENT_USER_ID");
+
+    if (!currentUserId) {
+        throw new Error("No CURRENT_USER_ID found, please login first.")
+    }
+
+    return currentUserId;
+}
+
+export const getTemplateCategoriesCachePattern = () => {
+    return "^template_categories(-.*)?$";
+}
