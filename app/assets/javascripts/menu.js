@@ -18,17 +18,11 @@
     $menu.attr("aria-expanded", true);
     $menu.isExpanded = true;
     $items.children()[0].querySelector("a").focus();
-
-    window.setTimeout(function () {
-      $items.removeClass("opacity-0");
-      $items.addClass("opacity-100");
-    }, 1);
   }
 
   function close($menu, $items) {
     $items.toggleClass("hidden", true);
-    $items.removeClass("opacity-100");
-    $items.addClass("opacity-0");
+
     const $arrow = $menu.find(".arrow");
     if ($arrow.length > 0) {
       $arrow.toggleClass("flip", false);
@@ -140,10 +134,9 @@
         close($menu, $items);
         $menu.focus();
       }
+      // Once we've determined the new selected menu item, we need to focus on it
+      $($items.children()[$menu.selectedMenuItem]).find("a").focus();
     }
-
-    // Once we've determined the new selected menu item, we need to focus on it
-    $($items.children()[$menu.selectedMenuItem]).find("a").focus();
   }
 
   function init($menu) {
