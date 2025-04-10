@@ -15,7 +15,7 @@
   ) %}
     {% call row_heading() %}
       <div class="flex flex-col">
-        <div class="mb-4">
+        <div>
           {% if item.status == "ready" %}
           <a class="file-list-filename" href="{{ item.url }}">
             <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
@@ -38,19 +38,27 @@
     
     {% call field(align='right') %}
       <div class="flex flex-col justify-end">
-        {% if item.status == "requested" %}
-            <div class="mb-4">
-              <div class="loading-spinner"></div>
-            </div>
+        <div class="mb-4">
+          {% if item.status == "requested" %}
+            <div class="loading-spinner"></div>
+          {% else %}
+            <div class="size-12"></div>
+          {% endif %}
+        </div>
+        {% if item.status == "requested" or item.status == "generating" %}
             <div class="file-list-hint">{{ _("Preparing report") }}</div>
         {% elif item.status == "ready" %}
-            <div class="mb-4">
-              <div class="size-20"></div>
-            </div>
             <div class="file-list-hint">
                 {{ _("Download before") }}
                 <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
             </div>
+        {% elif item.status == "error" %}
+          <div class="file-list-hint text-red">{{ _("Failed. Try again") }}</div>
+        {% elif item.status == "expired" %}
+          <div class="file-list-hint text-red">
+            {{ _("Deleted at") }} 
+            <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
+          </div>
         {% else %}
           {{ _(item.status) }}
         {% endif %}
