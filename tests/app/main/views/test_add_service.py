@@ -220,10 +220,13 @@ def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
 def test_wizard_flow_with_step_3_should_create_service(
     app_: Flask,
     client_request,
+    mocker,
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
     child_organisation_name: str,
 ):
+    mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
+    mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
     app_.config["FF_SALESFORCE_CONTACT"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
@@ -233,6 +236,9 @@ def test_wizard_flow_with_step_3_should_create_service(
     client_request.post(
         "main.add_service",
         _data={
+            "email_from": "testing.the.post",
+            "name": "testing the post",
+            "default_branding": FieldWithLanguageOptions.ENGLISH_OPTION_VALUE,
             "parent_organisation_name": "Department of socks",
             "child_organisation_name": child_organisation_name,
         },
@@ -275,9 +281,12 @@ def test_wizard_flow_with_step_3_should_not_create_service_no_parent_org(
 def test_wizard_flow_with_step_3b_should_create_service(
     app_: Flask,
     client_request,
+    mocker,
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
+    mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
+    mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
     app_.config["FF_SALESFORCE_CONTACT"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
