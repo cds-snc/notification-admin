@@ -89,7 +89,6 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict(
                 "endpoint": ".service_set_inbound_number",
             },
         ),
-        ("email_auth", {"title": _l("Email authentication")}),
         ("upload_letters", {"title": _l("Uploading letters"), "requires": "letter"}),
     ]
 )
@@ -899,14 +898,6 @@ def service_set_channel(service_id, channel):
             "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
             "free_yearly_sms": current_app.config["FREE_YEARLY_SMS_LIMIT"],
         },
-    )
-
-
-@main.route("/services/<service_id>/service-settings/set-auth-type", methods=["GET"])
-@user_has_permissions("manage_service")
-def service_set_auth_type(service_id):
-    return render_template(
-        "views/service-settings/set-auth-type.html",
     )
 
 
