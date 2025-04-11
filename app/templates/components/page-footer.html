@@ -8,7 +8,8 @@
   delete_link=False,
   delete_link_text=_("Delete"),
   button_id="btn",
-  testid=None
+  testid=None,
+  cancel_button_link=None
 ) %}
   <div class="page-footer">
     {% if button_text %}
@@ -31,6 +32,9 @@
     {% endif %}
     {% if secondary_link and secondary_link_text %}
       <a class="page-footer-secondary-link" href="{{ secondary_link }}">{{ secondary_link_text }}</a>
+    {% endif %}
+    {% if cancel_button_link %}
+      <a href="{{ cancel_button_link }}" class="button button-secondary text-base outline-none focus:shadow-outline">{{ _('Cancel') }}</a>
     {% endif %}
   </div>
 {% endmacro %}

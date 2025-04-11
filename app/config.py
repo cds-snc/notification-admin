@@ -81,6 +81,7 @@ class Config(object):
     FF_RTL = env.bool("FF_RTL", True)
     FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
+    FF_OPTIONAL_PHONE = env.bool("FF_OPTIONAL_PHONE", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
@@ -214,6 +215,7 @@ class Test(Development):
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_RTL = True
     FF_ANNUAL_LIMIT = True
+    FF_OPTIONAL_PHONE = True
 
 
 class ProductionFF(Config):
@@ -239,6 +241,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
+    FF_OPTIONAL_PHONE = True
 
 
 class Production(Config):
