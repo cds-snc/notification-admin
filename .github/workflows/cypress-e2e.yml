@@ -104,10 +104,11 @@ jobs:
         echo 'ASSET_DOMAIN=example.com' >> .env
         echo 'ASSET_UPLOAD_BUCKET_NAME=not-a-real-secret' >> .env
         echo 'CSV_UPLOAD_BUCKET_NAME=notification-canada-ca-staging-csv-upload' >> .env
+        echo 'GC_ORGANISATIONS_BUCKET_NAME=notification-canada-ca-staging-gc-organisations' >> .env
         echo 'DOCUMENTS_BUCKET=not-a-real-secret' >> .env
         echo 'NOTIFY_EMAIL_DOMAIN=staging.notification.cdssandbox.xyz' >> .env
         echo 'ADMIN_CLIENT_SECRET=local_app' >> .env
-        echo 'REDIS_URL=redis://localhost:6379' >> .env
+        echo 'REDIS_URL=redis://localhost:6379' >> .envs
         echo 'REDIS_PUBLISH_URL=redis://localhost:6379' >> .env
         echo 'SQLALCHEMY_DATABASE_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
         echo 'SQLALCHEMY_DATABASE_READER_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
@@ -205,16 +206,21 @@ jobs:
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
         retention-days: 30
-    - name: Output logs on failure
+
+    - name: Output API logs on failure
       if: failure()
       run: |
         echo "==== API LOGS ===="
         cat api/api.log || echo "No API logs available"
-        
-        echo ""
+
+    - name: Output Celery logs on failure
+      if: failure()
+      run: |
         echo "==== CELERY LOGS ===="
         cat api/celery.log || echo "No Celery logs available"
 
-        echo ""
+    - name: Output Frontend logs on failure
+      if: failure()
+      run: |
         echo "==== FRONTEND LOGS ===="
         cat frontend.log || echo "No frontend logs available"
