@@ -222,7 +222,7 @@ def add_service():
     data.update(form.data)  # add newly submitted data from POST
     # iterate through all forms and validate
     for step in WIZARD_ORDER:
-        temp_form_cls = get_form_class(current_step, government_type)
+        temp_form_cls = get_form_class(step, government_type)
         temp_form = temp_form_cls(data=data)
         if not temp_form.validate():  # something isn't right, jump to the form with bad / missing data
             return redirect(url_for(".add_service", current_step=step, government_type=government_type))
