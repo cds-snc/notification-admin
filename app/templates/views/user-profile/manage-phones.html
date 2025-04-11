@@ -32,7 +32,9 @@
                 </div>
             </div>
             <div class="w-full sm:w-1/4 sm:text-right">
-                <button data-button-id="btn" type="submit" name="remove" value="remove" class="button button-secondary text-base outline-none focus:shadow-outline ">Remove</button>
+                {% if config["FF_OPTIONAL_PHONE"] %}
+                    <button data-button-id="btn" type="submit" name="remove" value="remove" class="button button-secondary text-base outline-none focus:shadow-outline ">Remove</button>
+                {% endif %}
             </div>
         </div>
     </div>
