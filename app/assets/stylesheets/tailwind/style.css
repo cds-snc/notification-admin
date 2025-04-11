@@ -32,6 +32,7 @@
 @import "./components/api-key.css";
 @import "./components/previous-next-navigation.css";
 @import "./components/list-entry.css";
+@import "./components/loading-spinner.css";
 @import "./components/message.css";
 @import "./components/notice.css";
 @import "./components/fullscreen-table.css";
