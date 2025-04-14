@@ -1,41 +1,39 @@
 import { customAlphabet } from "nanoid";
 
-import { getConfig, getServiceID } from "../support/utils";
+import { getConfig, getServiceID, getCurrentUserId } from "../support/utils";
 
 const CONFIG = getConfig();
 const CYPRESS_SERVICE_ID  = getServiceID('CYPRESS');
 const BASE_URL = CONFIG.Hostnames.API;
 
 const Utilities = {
-    CreateJWT: () => {
+    CreateJWT: (username, secret) => {
         const jwt = require('jsrsasign');
         const claims = {
-            'iss': CONFIG.ADMIN_USERNAME,
+            'iss': username,
             'iat': Math.round(Date.now() / 1000)
         }
 
         const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), CONFIG.ADMIN_SECRET);
+        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), secret);
     },
     GenerateID: (length = 10) => {
         const nanoid = customAlphabet('1234567890abcdef', length)
         return nanoid()
     },
+    CreateAdminJWT: () => {
+        return Utilities.CreateJWT(CONFIG.ADMIN_USERNAME, CONFIG.ADMIN_SECRET);
+    },
     CreateCacheClearJWT: () => {
-        const jwt = require('jsrsasign');
-        const claims = {
-            'iss': CONFIG.CACHE_CLEAR_USER_NAME,
-            'iat': Math.round(Date.now() / 1000)
-        }
-
-        const headers = { alg: "HS256", typ: "JWT" };
-        return jwt.jws.JWS.sign("HS256", JSON.stringify(headers), JSON.stringify(claims), CONFIG.CACHE_CLEAR_CLIENT_SECRET);
+        return Utilities.CreateJWT(CONFIG.CACHE_CLEAR_USER_NAME, CONFIG.CACHE_CLEAR_CLIENT_SECRET);
+    },
+    CreateCypressJWT: () => {
+        return Utilities.CreateJWT(CONFIG.CYPRESS_AUTH_USER_NAME, CONFIG.CYPRESS_AUTH_CLIENT_SECRET);
     }
 };
 const Admin = {
     SendOneOff: ({ to, template_id }) => {
-
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `/service/${CYPRESS_SERVICE_ID}/send-notification`,
             method: 'POST',
@@ -50,7 +48,7 @@ const Admin = {
         });
     },
     ArchiveUser: ({ userId }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             failOnStatusCode: false,
             url: `${BASE_URL}/user/${userId}/archive`,
@@ -62,7 +60,7 @@ const Admin = {
         })
     },
     GetUserByEmail: ({ email }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             failOnStatusCode: true,
             retryOnstatusCodeFailure: true,
@@ -75,7 +73,7 @@ const Admin = {
         })
     },
     LinkOrganisationToService: ({ orgId, serviceId }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/organisations/${orgId}/service`,
             method: 'POST',
@@ -89,7 +87,7 @@ const Admin = {
         })
     },
     CreateTemplate: ({ name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null, created_by = null }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/service/${service_id}/template`,
             method: 'POST',
@@ -110,7 +108,7 @@ const Admin = {
         });
     },
     DeleteTemplate: ({ serviceId, templateId }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/service/${serviceId}/template/${templateId}`,
             method: 'POST',
@@ -124,7 +122,7 @@ const Admin = {
         });
     },
     GetTemplate: ({ templateId, serviceId }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/service/${serviceId}/template/${templateId}`,
             method: 'GET',
@@ -135,7 +133,7 @@ const Admin = {
         });
     },
     UpdateTemplate: ({ id, name, type, content, service_id, subject = null, process_type, parent_folder_id = null, template_category_id = null }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/service/${service_id}/template/${id}`,
             method: 'POST',
@@ -155,7 +153,7 @@ const Admin = {
         });
     },
     GetTemplateCategory: ({ templateCategoryId }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/template-category/${templateCategoryId}`,
             method: 'GET',
@@ -167,7 +165,7 @@ const Admin = {
         });
     },
     CreateTemplateCategory: ({ id = null, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/template-category`,
             method: 'POST',
@@ -184,12 +182,13 @@ const Admin = {
                 "hidden": hidden,
                 "email_process_type": email_priority,
                 "sms_process_type": sms_priority,
-                "sms_sending_vehicle": sms_sending_vehicle
+                "sms_sending_vehicle": sms_sending_vehicle,
+                "created_by_id": getCurrentUserId()
             }
         });
     },
     UpdateTemplateCategory: ({ id, name_en, name_fr, desc_en, desc_fr, hidden, email_priority, sms_priority, sms_sending_vehicle }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/template-category/${templateCategoryId}`,
             method: 'POST',
@@ -206,12 +205,13 @@ const Admin = {
                 "hidden": hidden,
                 "email_process_type": email_priority,
                 "sms_process_type": sms_priority,
-                "sms_sending_vehicle": sms_sending_vehicle
+                "sms_sending_vehicle": sms_sending_vehicle,
+                "updated_by_id": getCurrentUserId()
             }
         });
     },
     DeleteTemplateCategory: ({ id, cascade = false }) => {
-        var token = Utilities.CreateJWT();
+        var token = Utilities.CreateAdminJWT();
         return cy.request({
             url: `${BASE_URL}/template-category/${id}?cascade=${cascade}`,
             method: 'DELETE',
@@ -382,4 +382,22 @@ const API = {
     },
 }
 
-export default { API, Utilities, Admin };
+const Cleanup = {
+    TemplateCategories: ({ cascade = false }) => {
+        var token = Utilities.CreateCypressJWT();
+        return cy.request({
+            url: `${BASE_URL}/cypress/template-categories/cleanup/${getCurrentUserId()}?cascade=${cascade}`,
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json'
+            },
+        })
+    },
+    EmailBranding: ({ userId}) => {
+        return "Not yet implemented";
+    }
+}
+
+
+export default { API, Utilities, Admin, Cleanup };
