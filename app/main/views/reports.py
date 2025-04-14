@@ -1,4 +1,5 @@
 from flask import (
+    current_app,
     flash,
     jsonify,
     render_template,
@@ -7,6 +8,7 @@ from flask import (
 from flask_login import current_user
 
 from app import reports_api_client
+from app.articles import get_current_locale
 from app.main import main
 from app.utils import user_is_platform_admin
 
@@ -24,7 +26,8 @@ def reports(service_id):
 @main.route("/services/<service_id>/reports", methods=["post"])
 @user_is_platform_admin
 def generate_report(service_id):
-    reports_api_client.request_report(user_id=current_user.id, service_id=service_id, report_type="email")
+    current_lang = get_current_locale(current_app)
+    reports_api_client.request_report(user_id=current_user.id, service_id=service_id, language=current_lang, report_type="email")
     flash("Test report has been requested", "default")
     reports = reports_api_client.get_reports_for_service(service_id)
     partials = get_reports_partials(reports)
