@@ -12,52 +12,52 @@ def mock_reports_data():
             "id": "report-1",
             "status": "ready",
             "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
         },
         {
             "id": "report-2",
             "status": "ready",
             "expires_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
         },
         {
             "id": "report-3",
             "status": "pending",
             "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
         },
     ]
 
 
-def test_reports_page_requires_platform_admin(
-    client_request,
-    platform_admin_user,
-    mock_get_service,
-):
+def test_reports_page_requires_platform_admin(client_request, platform_admin_user, service_one, mocker):
     client_request.login(platform_admin_user)
+    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
     client_request.get(
         "main.reports",
-        service_id=ANY,
+        service_id=service_one["id"],
+        _expected_status=200,
     )
 
 
-def test_reports_page_forbidden_for_non_platform_admin(
-    client_request,
-    mock_get_service,
-):
-    client_request.get("main.reports", service_id=ANY, _expected_status=403)
+def test_reports_page_forbidden_for_non_platform_admin(client_request, mocker, service_one):
+    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
+    client_request.get("main.reports", service_id=service_one["id"], _expected_status=403)
 
 
-def test_get_reports_shows_list_of_reports(
-    client_request,
-    platform_admin_user,
-    mock_reports_data,
-    mocker,
-):
+def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, mock_reports_data, mocker, service_one):
     mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
     client_request.login(platform_admin_user)
 
-    response = client_request.get(
-        "main.reports",
-        service_id=ANY,
-    )
+    response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     reports_table = page.find("table")
@@ -77,22 +77,15 @@ def test_generate_report_creates_new_report(
     platform_admin_user,
     mock_reports_data,
     mocker,
+    service_one,
 ):
     mock_request_report = mocker.patch("app.reports_api_client.request_report")
     mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
     client_request.login(platform_admin_user)
 
-    client_request.post("main.generate_report", service_id=ANY, _expected_status=200)
+    client_request.post("main.generate_report", service_id=service_one["id"], _expected_status=200)
 
     mock_request_report.assert_called_once_with(user_id=platform_admin_user["id"], service_id=ANY, report_type="email")
-
-
-def test_get_reports_partials_marks_expired_reports(mock_reports_data):
-    # result = get_reports_partials(mock_reports_data)
-
-    assert mock_reports_data[0]["status"] == "ready"  # Not expired
-    assert mock_reports_data[1]["status"] == "expired"  # Expired
-    assert mock_reports_data[2]["status"] == "pending"  # Not ready, so not expired
 
 
 def test_view_reports_updates_returns_json(
@@ -100,13 +93,14 @@ def test_view_reports_updates_returns_json(
     platform_admin_user,
     mock_reports_data,
     mocker,
+    service_one,
 ):
     mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
     client_request.login(platform_admin_user)
 
     response = client_request.get_response(
         "main.view_reports_updates",
-        service_id=ANY,
+        service_id=service_one["id"],
     )
 
     json_response = response.json

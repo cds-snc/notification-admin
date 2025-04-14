@@ -39,7 +39,7 @@
     {% call field(align='right') %}
       <div class="flex flex-col justify-end">
         <div class="mb-4">
-          {% if item.status == "requested" %}
+          {% if item.status == "requested" or item.status == "generating" %}
             <div class="loading-spinner"></div>
           {% else %}
             <div class="size-12"></div>
