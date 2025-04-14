@@ -4,14 +4,16 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
+{% set title = _("Check your phone messages") %}
+
 {% block per_page_title %}
-  {{ _('Change your ') + thing }}
+  {{ title }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Change your ') + thing,
+    title,
     back_link=url_for('.user_profile')
   ) }}
 
@@ -26,7 +28,7 @@
           width='form-control-5em',
           autofocus=True
         ) }}
-        {{ page_footer(_('Confirm')) }}
+        {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }}
       {% endcall %}
     </div>
   </div>
