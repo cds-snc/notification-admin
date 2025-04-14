@@ -67,8 +67,6 @@ describe("Go Live Form", () => {
 
     CompletePage1();
 
-    Page.GoNext();
-
     // ensure we are at page 2
     cy.get("h1").should("contain", "About your notifications");
 
