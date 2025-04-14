@@ -959,6 +959,10 @@ class ChangeMobileNumberForm(StripWhitespaceForm):
     mobile_number = international_phone_number()
 
 
+class ChangeMobileNumberFormOptional(StripWhitespaceForm):
+    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+
+
 class ChooseTimeForm(StripWhitespaceForm):
     def __init__(self, *args, **kwargs):
         super(ChooseTimeForm, self).__init__(*args, **kwargs)
