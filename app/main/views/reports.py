@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from flask import (
     current_app,
     flash,
@@ -37,6 +39,9 @@ def generate_report(service_id):
 
 
 def get_reports_partials(reports):
+    for report in reports:
+        if report["status"] == "ready" and datetime.fromisoformat(report["expires_at"]) < datetime.now(timezone.utc):
+            report["status"] = "expired"
     return {
         "reports": render_template(
             "views/reports/reports-table.html",
