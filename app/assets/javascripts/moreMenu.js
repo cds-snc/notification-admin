@@ -57,7 +57,7 @@
         calculateOverflows();
       } else {
         // Make sure to empty items in the more menu. We want to keep the UL element.
-        $moreMenu.find("#more-menu-items").empty();
+        $moreMenu.find(menuContainerId + " > ul").empty();
         $moreMenuButton.attr("data-has-items", false);
         $menuItems.find("[data-overflows]").attr("data-overflows", false);
       }
@@ -77,20 +77,20 @@
 
       // Collect items that overflow and those that don't.
       collectedSet = Object.groupBy(
-        $menuItems.children().not("#more-menu"),
+        $menuItems.children().not("[data-module='more-menu']"),
         (el) => overflow(el, containerWidth, 0),
       );
 
       // If there are items that overflow, run another collection to account for moreMenuButton width.
-      if (collectedSet.more) {
+      if (collectedSet.more) {        
         collectedSet = Object.groupBy(
-          $menuItems.children().not("#more-menu"),
+          $menuItems.children().not("[data-module='more-menu']"),
           (el) => overflow(el, containerWidth, $moreMenuButton.outerWidth()),
         );
       }
 
       // Append items to the main menu and more menu.
-      const $moreMenuItems = $("#more-menu-items");
+      const $moreMenuItems = $(menuContainerId + " > ul");
 
       if (collectedSet.more) {
         // Append items to the more menu.
@@ -116,7 +116,7 @@
   // Expose the MoreMenu module.
   Modules.MoreMenu = function () {
     this.start = function (component) {
-      const $component = $(component);
+      const $component = $(component);      
       init($component);
     };
   };
