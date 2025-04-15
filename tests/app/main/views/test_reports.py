@@ -82,5 +82,5 @@ def test_generate_report_creates_new_report(
     client_request.post("main.generate_report", service_id=service_one["id"], _expected_status=200)
 
     mock_request_report.assert_called_once_with(
-        user_id=platform_admin_user["id"], service_id=service_one["id"], report_type="email"
+        user_id=platform_admin_user["id"], service_id=service_one["id"], report_type="email", language="en"
     )
