@@ -21,6 +21,7 @@ from app.main import main
 from app.main.forms import (
     ChangeEmailForm,
     ChangeMobileNumberForm,
+    ChangeMobileNumberFormOptional,
     ChangeNameForm,
     ChangePasswordForm,
     ConfirmPasswordForm,
@@ -118,14 +119,52 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-    form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+    if current_app.config["FF_OPTIONAL_PHONE"]:
+        form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
+    else:
+        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
 
-    if form.validate_on_submit():
-        session[NEW_MOBILE] = form.mobile_number.data
-        return redirect(url_for(".user_profile_mobile_number_authenticate"))
+    if request.method == "POST":
+        # get button presses
+        edit_or_cancel_pressed = request.form.get("button_pressed")
+        remove_pressed = request.form.get("remove")
+
+        # if they are posting the button "edit"
+        if edit_or_cancel_pressed == "edit":
+            return render_template(
+                "views/user-profile/change.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+            )
+
+        elif remove_pressed == "remove":
+            session[NEW_MOBILE] = ""
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
+        elif edit_or_cancel_pressed == "cancel":
+            return redirect(url_for(".user_profile"))
+
+        elif form.validate_on_submit():
+            session[NEW_MOBILE] = form.mobile_number.data
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+        else:
+            if form.mobile_number.data == "":
+                return render_template(
+                    "views/user-profile/change.html",
+                    thing=_("mobile number"),
+                    form_field=form.mobile_number,
+                )
+    else:
+        # if they dont have a number set, just go right to the edit page
+        if current_user.mobile_number is None:
+            return render_template(
+                "views/user-profile/change.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+            )
 
     return render_template(
-        "views/user-profile/change.html",
+        "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
     )
@@ -144,6 +183,13 @@ def user_profile_mobile_number_authenticate():
         return redirect(url_for(".user_profile_mobile_number"))
 
     if form.validate_on_submit():
+        # if they are removing their phone number, skip the verification, set auth type to email
+        if not session[NEW_MOBILE]:
+            current_user.update(mobile_number=None, auth_type="email_auth")
+
+            flash(_("Mobile number removed from your profile"), "default_with_tick")
+            return redirect(url_for(".user_profile"))
+
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
         current_user.send_verify_code(to=session[NEW_MOBILE])
         return redirect(url_for(".user_profile_mobile_number_confirm"))
@@ -153,6 +199,7 @@ def user_profile_mobile_number_authenticate():
         thing=_("mobile number"),
         form=form,
         back_link=url_for(".user_profile_mobile_number_confirm"),
+        remove=True if session[NEW_MOBILE] == "" else False,
     )
 
 
@@ -174,6 +221,9 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number)
+
+        flash(_("Mobile number {} saved to your profile".format(mobile_number)), "default_with_tick")
+
         return redirect(url_for(".user_profile"))
 
     return render_template(
