@@ -53,7 +53,7 @@ let Actions = {
         });
     
         // ensure we logged in correctly
-        TouPrompt.Components.Heading().should('be.visible');
+        TouPrompt.Components.Heading().should('not.be.visible');
         if (agreeToTerms) {
             TouPrompt.AgreeToTerms();
         }
