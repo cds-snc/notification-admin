@@ -54,6 +54,11 @@ def verify_email(token):
         return redirect(url_for("main.sign_in"))
 
     session["user_details"] = {"email": user.email_address, "id": user.id}
+
+    # if the user has no mobile number, they can be activated straight away
+    if not user.mobile_number:
+        return activate_user(user.id)
+
     user.send_verify_code()
     return redirect(url_for("main.verify"))
 
