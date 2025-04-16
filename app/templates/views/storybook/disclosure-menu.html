@@ -21,7 +21,7 @@ With class of <code>menu-overlay</code>
 
 
 <h2 class="heading-medium">Disclosure Menu Bar</h2>
-With custom overlay appearance
+With many items in a row
 <nav aria-label="Disclosure Menu Story 2">
     <ul class="flex border-b-1 border-gray-300">
         <li class="relative">
@@ -32,7 +32,7 @@ With custom overlay appearance
             {{ _("Menu") }}
             <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
     </button>
-    <ul id="disclosure-menu-story-2" class="hidden absolute top-full w-max bg-white border-1 border-gray-300 px-4">
+    <ul id="disclosure-menu-story-2" class="hidden menu-overlay">
         {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
             <li>
                 <a href="#" class="nav-menu-item">
@@ -50,7 +50,7 @@ With custom overlay appearance
             {{ _("Templates") }}
             <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
     </button>
-    <ul id="disclosure-menu-story-templates" class="hidden absolute top-full w-max bg-white border-1 border-gray-300 px-4">
+    <ul id="disclosure-menu-story-templates" class="hidden menu-overlay">
         {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
             <li>
                 <a href="#" class="nav-menu-item">
@@ -68,7 +68,7 @@ With custom overlay appearance
             {{ _("Services") }}
             <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
     </button>
-    <ul id="disclosure-menu-story-services" class="hidden absolute top-full w-max bg-white border-1 border-gray-300 px-4">
+    <ul id="disclosure-menu-story-services" class="hidden menu-overlay">
         {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
             <li>
                 <a href="#" class="nav-menu-item">
@@ -78,5 +78,27 @@ With custom overlay appearance
         {% endfor %}
     </ul>
 </li>
+    </ul>
+</nav>
+
+<h2 class="heading-medium">Disclosure Menu Bar</h2>
+With custom appearance. This one opens without blocking content behind it.
+
+<nav class="relative" aria-label="Disclosure Menu Story 3">
+    <button aria-expanded="false" aria-haspopup="true" id="menu-overlay-3" data-module="menu"
+            data-menu-items="disclosure-menu-story-3"
+            class="button gap-2 px-4"
+            type="button">
+            {{ _("Menu") }}
+            <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+    </button>
+    <ul id="disclosure-menu-story-3" class="hidden border-1 border-gray-300 px-4">
+        {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
+            <li>
+                <a href="#" class="nav-menu-item">
+                    {{ item }}
+                </a>
+            </li>
+        {% endfor %}
     </ul>
 </nav>
