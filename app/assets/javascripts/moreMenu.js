@@ -51,7 +51,7 @@
     function resizeMenu() {
       // Get the current container width
       const containerWidth = $menuItems.width();
-      const moreButtonWidth = $moreMenuButton.outerWidth(true);
+      // const moreButtonWidth = $moreMenuButton.outerWidth(true);
       let collectedSet = {};
 
       // First pass - check if any items overflow without the more button

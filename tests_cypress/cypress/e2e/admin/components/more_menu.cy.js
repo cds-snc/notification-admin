@@ -1,5 +1,3 @@
-import Notice from "../../../Notify/Admin/Components/Notice";
-
 let PageURL = "/_storybook?component=more-menu";
 
 describe("Disclosure Menu components", () => {
