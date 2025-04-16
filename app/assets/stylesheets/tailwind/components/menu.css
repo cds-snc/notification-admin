@@ -22,6 +22,13 @@
     @apply transform rotate-180;
   }
 
+  :has > [data-module="menu"] {
+    @apply relative;
+  }
+
+  [data-module="menu"] + .menu-overlay:not(.hidden) {
+    @apply absolute top-full w-max bg-white border-1 border-gray-300 px-4;
+  }
   .menu-overlay:not(.hidden) {
     @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4;
   }
