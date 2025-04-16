@@ -389,7 +389,7 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
         ),
     ],
 )
-def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
+def test_user_with_no_mobile_number_cant_be_set_to_sms_auth_REMOVE_FF(
     client_request,
     mock_get_users_by_service,
     mock_get_template_folders,
@@ -401,21 +401,23 @@ def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
     mocker,
     fake_uuid,
     active_user_with_permissions,
+    app_,
 ):
-    active_user_with_permissions["mobile_number"] = mobile_number
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        active_user_with_permissions["mobile_number"] = mobile_number
 
-    service_one["permissions"].append("email_auth")
-    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
+        service_one["permissions"].append("email_auth")
+        mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
 
-    page = client_request.get(
-        "main.edit_user_permissions",
-        service_id=service_one["id"],
-        user_id=sample_uuid(),
-    )
+        page = client_request.get(
+            "main.edit_user_permissions",
+            service_id=service_one["id"],
+            user_id=sample_uuid(),
+        )
 
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") == sms_option_disabled
-    assert normalize_spaces(page.select_one("label[for=login_authentication-0]").text) == normalize_spaces(expected_label)
+        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
+        assert sms_auth_radio_button.has_attr("disabled") == sms_option_disabled
+        assert normalize_spaces(page.select_one("label[for=login_authentication-0]").text) == normalize_spaces(expected_label)
 
 
 @pytest.mark.parametrize(
