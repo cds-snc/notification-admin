@@ -21,7 +21,7 @@
   {% call form_wrapper() %}
   <div class="grid-row contain-floats mb-12">
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
-        <div class="flex flex-wrap md:flex-nowrap items-end border-b-1 border-gray-400 py-5">
+        <div class="flex flex-wrap md:flex-nowrap items-baseline border-b-1 border-gray-400 py-5">
             <div class="w-full sm:w-3/4" tabindex="0">
                 <div class="font-bold inline-block mt-2 break-words mr-5 overflow-anywhere">
                     {% if editing %}
@@ -33,7 +33,7 @@
             </div>
             <div class="w-full sm:w-1/4 sm:text-right">
                 {% if config["FF_OPTIONAL_PHONE"] %}
-                    <button data-button-id="btn" type="submit" name="remove" value="remove" class="button button-secondary text-base outline-none focus:shadow-outline ">Remove</button>
+                    <button data-button-id="btn" type="submit" name="remove" value="remove" class="button-link">{{_("Remove")}}</button>
                 {% endif %}
             </div>
         </div>
