@@ -241,7 +241,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
-    FF_OPTIONAL_PHONE = True
+    FF_OPTIONAL_PHONE = False
 
 
 class Production(Config):

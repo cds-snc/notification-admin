@@ -55,11 +55,20 @@ def invite_user(service_id):
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
 
+    # TODO: remove this when FF_OPTIONAL_PHONE is removed
     service_has_email_auth = current_service.has_permission("email_auth")
     if not service_has_email_auth:
         form.login_authentication.data = "sms_auth"
 
-    current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
+    # assume sms_auth - this will be updated when the user provides their phone number or not
+    if current_app.config.get("FF_OPTIONAL_PHONE"):
+        form.login_authentication.data = "email_auth"
+
+    current_app.logger.info(
+        "User {} attempting to invite user to service {} using 2FA {}".format(
+            current_user.id, service_id, form.login_authentication.data
+        )
+    )
     if form.validate_on_submit():
         email_address = form.email_address.data
         invited_user = InvitedUser.create(
@@ -80,7 +89,7 @@ def invite_user(service_id):
     return render_template(
         "views/invite-user.html",
         form=form,
-        service_has_email_auth=service_has_email_auth,
+        service_has_email_auth=service_has_email_auth,  # TODO: remove this when FF_OPTIONAL_PHONE is removed
         mobile_number=True,
     )
 

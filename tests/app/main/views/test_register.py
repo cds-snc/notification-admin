@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import url_for
 
 from app.models.user import InvitedUser, User
+from tests.conftest import set_config
 
 
 def test_render_register_returns_template_with_form(client):
@@ -78,6 +79,58 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         user_data["password"],
         user_data["auth_type"],
     )
+
+
+@pytest.mark.parametrize(
+    "phone_number_to_register_with",
+    [
+        "",
+        "",
+    ],
+)
+@pytest.mark.parametrize(
+    "password",
+    [
+        "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "rZXdoBku   z6U37DDXIa   AfpBR1OTJcS  ZOGICLCz4dMtmopS  3KsVauIrtcgq s1eU02",
+    ],
+)
+def test_register_works_without_phone_number(
+    client,
+    mock_send_verify_code,
+    mock_register_user,
+    mock_get_user_by_email_not_found,
+    mock_email_is_not_already_in_use,
+    mock_send_verify_email,
+    mock_login,
+    phone_number_to_register_with,
+    password,
+    app_,
+):
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):
+        user_data = {
+            "name": "Some One Valid",
+            "email_address": "notfound@example.canada.ca",
+            "mobile_number": phone_number_to_register_with,
+            "password": password,
+            "auth_type": "email_auth",
+        }
+        user_data["tou_agreed"] = "true"
+
+        response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
+        assert response.status_code == 200
+
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
+
+        mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
+        mock_register_user.assert_called_with(
+            user_data["name"],
+            user_data["email_address"],
+            None,
+            user_data["password"],
+            user_data["auth_type"],
+        )
 
 
 def test_register_continue_handles_missing_session_sensibly(
@@ -431,26 +484,25 @@ def test_can_register_email_auth_without_phone_number(
     mock_register_user.assert_called_once_with(ANY, ANY, None, ANY, ANY)  # mobile_number
 
 
-def test_cannot_register_with_sms_auth_and_missing_mobile_number(
-    client,
-    mock_send_verify_code,
-    mock_get_user_by_email_not_found,
-    mock_login,
+# TODO: remove this test when FF_OPTIONAL_PHONE is removed
+def test_cannot_register_with_sms_auth_and_missing_mobile_number_REMOVE_FF(
+    client, mock_send_verify_code, mock_get_user_by_email_not_found, mock_login, app_
 ):
-    response = client.post(
-        url_for("main.register"),
-        data={
-            "name": "Missing Mobile",
-            "email_address": "missing_mobile@example.canada.ca",
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        },
-    )
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        response = client.post(
+            url_for("main.register"),
+            data={
+                "name": "Missing Mobile",
+                "email_address": "missing_mobile@example.canada.ca",
+                "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+            },
+        )
 
-    assert response.status_code == 200
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    err = page.select_one(".error-message")
-    assert err.text.strip() == "This cannot be empty"
-    assert err.attrs["data-error-label"] == "mobile_number"
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        err = page.select_one(".error-message")
+        assert err.text.strip() == "This cannot be empty"
+        assert err.attrs["data-error-label"] == "mobile_number"
 
 
 def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth(client, sample_invite):
