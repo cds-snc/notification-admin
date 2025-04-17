@@ -152,7 +152,8 @@ const watchFiles = {
 
 // Default: compile everything
 const defaultTask = parallel(
-  series(minifyIndividualJs, javascripts),
+  series(minifyIndividualJs),
+  series(javascripts),
   series(images),
   series(static_css),
 );
