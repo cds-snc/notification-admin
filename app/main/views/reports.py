@@ -17,6 +17,8 @@ from app.articles import get_current_locale
 from app.main import main
 from app.utils import user_is_platform_admin
 
+CHUNK_SIZE = 1024 * 1024  # 1 MB
+
 
 @main.route("/services/<service_id>/reports", methods=["GET"])
 @user_is_platform_admin
@@ -88,7 +90,7 @@ def download_report_csv(service_id, report_id):
         "Content-Type": remote_response.headers.get("Content-Type", "text/csv"),
     }
     return Response(
-        stream_with_context(remote_response.iter_content(chunk_size=8192)),
+        stream_with_context(remote_response.iter_content(chunk_size=CHUNK_SIZE)),
         headers=headers,
         status=200,
     )
