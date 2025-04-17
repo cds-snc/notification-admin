@@ -91,11 +91,19 @@ def test_valid_list_of_white_list_email_domains(
 
 
 @pytest.mark.parametrize(
-    "email, raises", [("test@team-domain.ca", False), ("test@cds-snc.ca", False), ("test@not-my-team.ca", True)]
+    "email, raises",
+    [
+        ("test@team-domain.ca", False),
+        ("test@cds-snc.ca", False),
+        ("test@not-my-team.ca", True),
+        ("test@any.domain.gc.ca", False),
+        ("test@servicecanada.gc.ca", False),
+        ("test@trickygc.ca", True),
+    ],
 )
 def test_valid_team_only_email_domains(email, app_, raises):
     with app_.app_context(), app_.test_request_context():
-        g.team_member_email_domains = set(["team-domain.ca", "cds-snc.ca"])
+        g.team_member_email_domains = set(["team-domain.ca", "cds-snc.ca", "gc.ca"])
 
         team_only_domain_validator = ValidTeamMemberDomain()
 
