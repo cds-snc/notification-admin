@@ -4,7 +4,7 @@ from unittest.mock import ANY
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
-from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces, set_config
 
 from app.models.user import InvitedOrgUser
 
@@ -362,3 +362,43 @@ def test_verified_org_user_redirects_to_dashboard(
         "main.organisation_dashboard",
         org_id=invited_org_user["organisation"],
     )
+
+
+class TestOrgInvite:
+    def test_org_invite_removed(
+        self,
+        client_request,
+        mocker,
+        mock_get_organisation,
+        mock_get_users_for_organisation,
+        mock_get_invited_users_for_organisation,
+        fake_uuid,
+        app_,
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", True):
+            page = client_request.get(
+                ".manage_org_users",
+                org_id=ORGANISATION_ID,
+            )
+            link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
+            assert link is None
+
+    # TODO: remove this test when FF_OPTIONAL_PHONE is removed
+    def test_org_invite_is_visible_REMOVE_FF(
+        self,
+        client_request,
+        mocker,
+        mock_get_organisation,
+        mock_get_users_for_organisation,
+        mock_get_invited_users_for_organisation,
+        fake_uuid,
+        app_,
+    ):
+        with set_config(app_, "FF_OPTIONAL_PHONE", False):
+            page = client_request.get(
+                ".manage_org_users",
+                org_id=ORGANISATION_ID,
+            )
+
+            link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
+            assert link is not None
