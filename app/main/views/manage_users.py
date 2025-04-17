@@ -55,9 +55,7 @@ def invite_user(service_id):
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
 
-    service_has_email_auth = current_service.has_permission("email_auth")
-    if not service_has_email_auth:
-        form.login_authentication.data = "sms_auth"
+    form.login_authentication.data = "sms_auth"
 
     current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
     if form.validate_on_submit():
@@ -80,7 +78,6 @@ def invite_user(service_id):
     return render_template(
         "views/invite-user.html",
         form=form,
-        service_has_email_auth=service_has_email_auth,
         mobile_number=True,
     )
 
@@ -88,7 +85,6 @@ def invite_user(service_id):
 @main.route("/services/<service_id>/users/<user_id>", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def edit_user_permissions(service_id, user_id):
-    service_has_email_auth = current_service.has_permission("email_auth")
     user = current_service.get_team_member(user_id)
 
     mobile_number = None
@@ -115,15 +111,12 @@ def edit_user_permissions(service_id, user_id):
             permissions=form.permissions,
             folder_permissions=form.folder_permissions.data,
         )
-        if service_has_email_auth:
-            user.update(auth_type=form.login_authentication.data)
         return redirect(url_for(".manage_users", service_id=service_id))
 
     return render_template(
         "views/edit-user-permissions.html",
         user=user,
         form=form,
-        service_has_email_auth=service_has_email_auth,
         mobile_number=mobile_number,
         delete=request.args.get("delete"),
     )
