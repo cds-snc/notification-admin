@@ -21,8 +21,7 @@
         </a>
         {% else %}
         <div class="file-list-filename text-gray-grey1" tabindex="0">
-          <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
-          <span> - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</span>
+          {{ item.filename_display}}
         </div>
         {% endif %}
         <div class="file-list-hint">
