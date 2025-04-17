@@ -512,7 +512,7 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    two_factor_code = TwoFactorCode(_l("Please enter the security code."))
+    two_factor_code = TwoFactorCode(_l("Enter code"))
 
     def validate(self, extra_validators=None):
         if not self.two_factor_code.validate(self):
