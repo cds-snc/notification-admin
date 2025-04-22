@@ -55,10 +55,20 @@ def invite_user(service_id):
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
 
+    # TODO: remove this when FF_OPTIONAL_PHONE is removed
     service_has_email_auth = current_service.has_permission("email_auth")
     if not service_has_email_auth:
         form.login_authentication.data = "sms_auth"
 
+    # assume email_auth - this will be updated when the user provides their phone number or not
+    if current_app.config.get("FF_OPTIONAL_PHONE"):
+        form.login_authentication.data = "email_auth"
+
+    current_app.logger.info(
+        "User {} attempting to invite user to service {} using 2FA {}".format(
+            current_user.id, service_id, form.login_authentication.data
+        )
+    )
     current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
     if form.validate_on_submit():
         email_address = form.email_address.data
