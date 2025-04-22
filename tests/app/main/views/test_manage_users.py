@@ -834,7 +834,12 @@ def test_invite_user(
     gov_user,
     mock_get_template_folders,
     mock_get_organisations,
+    app_,
 ):
+    # default auth w/o FF: "email_auth", default with FF on "sms_auth"
+    # TODO when FF_OPTIONAL_PHONE is removed this can be hardcoded as "email_auth"
+    expected_default_auth = "email_auth" if app_.config["FF_OPTIONAL_PHONE"] is True else "sms_auth"
+
     sample_invite["email_address"] = "test@tbs-sct.gc.ca"
 
     assert is_gov_user(email_address) == gov_user
@@ -865,18 +870,87 @@ def test_invite_user(
             "send_messages",
             "view_activity",
         }
-
         app.invite_api_client.create_invite.assert_called_once_with(
             sample_invite["from_user"],
             sample_invite["service"],
             email_address,
             expected_permissions,
-            "sms_auth",
+            expected_default_auth,
             [],
         )
     else:
         assert page.h1.string.strip() == "Invite a team member"
         app.invite_api_client.create_invite.assert_not_called()
+
+
+# TODO: Remove this test when FF_OPTIONAL_PHONE is removed
+@pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
+@pytest.mark.parametrize(
+    "email_address, gov_user",
+    [("test@tbs-sct.gc.ca", True), ("test@nonsafelist.com", False)],
+)
+def test_invite_user_with_email_auth_service_REMOVE_FF(
+    client_request,
+    service_one,
+    active_user_with_permissions,
+    sample_invite,
+    email_address,
+    gov_user,
+    mocker,
+    auth_type,
+    mock_get_organisations,
+    mock_get_template_folders,
+    mock_get_security_keys,
+    app_,
+):
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        service_one["permissions"].append("email_auth")
+        sample_invite["email_address"] = email_address
+
+        assert is_gov_user(email_address) is gov_user
+        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
+        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
+        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+
+        page = client_request.post(
+            "main.invite_user",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "email_address": email_address,
+                "view_activity": "y",
+                "send_messages": "y",
+                "manage_templates": "y",
+                "manage_service": "y",
+                "manage_api_keys": "y",
+                "login_authentication": auth_type,
+            },
+            _follow_redirects=True,
+            _expected_status=200,
+        )
+
+        if gov_user:
+            assert page.h1.string.strip() == "Team members"
+            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
+            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
+            expected_permissions = {
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            }
+
+            app.invite_api_client.create_invite.assert_called_once_with(
+                sample_invite["from_user"],
+                sample_invite["service"],
+                email_address,
+                expected_permissions,
+                auth_type,
+                [],
+            )
+        else:
+            assert page.h1.string.strip() == "Invite a team member"
+            app.invite_api_client.create_invite.assert_not_called()
 
 
 @pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
@@ -896,54 +970,56 @@ def test_invite_user_with_email_auth_service(
     mock_get_organisations,
     mock_get_template_folders,
     mock_get_security_keys,
+    app_,
 ):
-    service_one["permissions"].append("email_auth")
-    sample_invite["email_address"] = email_address
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):
+        service_one["permissions"].append("email_auth")
+        sample_invite["email_address"] = email_address
 
-    assert is_gov_user(email_address) is gov_user
-    mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
-    mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
-    mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+        assert is_gov_user(email_address) is gov_user
+        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
+        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
+        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
 
-    page = client_request.post(
-        "main.invite_user",
-        service_id=SERVICE_ONE_ID,
-        _data={
-            "email_address": email_address,
-            "view_activity": "y",
-            "send_messages": "y",
-            "manage_templates": "y",
-            "manage_service": "y",
-            "manage_api_keys": "y",
-            "login_authentication": auth_type,
-        },
-        _follow_redirects=True,
-        _expected_status=200,
-    )
-
-    if gov_user:
-        assert page.h1.string.strip() == "Team members"
-        flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
-        assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
-        expected_permissions = {
-            "manage_api_keys",
-            "manage_service",
-            "manage_templates",
-            "send_messages",
-            "view_activity",
-        }
-
-        app.invite_api_client.create_invite.assert_called_once_with(
-            sample_invite["from_user"],
-            sample_invite["service"],
-            email_address,
-            expected_permissions,
-            auth_type,
-            [],
+        page = client_request.post(
+            "main.invite_user",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "email_address": email_address,
+                "view_activity": "y",
+                "send_messages": "y",
+                "manage_templates": "y",
+                "manage_service": "y",
+                "manage_api_keys": "y",
+                "login_authentication": auth_type,
+            },
+            _follow_redirects=True,
+            _expected_status=200,
         )
-    else:
-        assert page.h1.string.strip() == "Invite a team member"
-        app.invite_api_client.create_invite.assert_not_called()
+
+        if gov_user:
+            assert page.h1.string.strip() == "Team members"
+            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
+            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
+            expected_permissions = {
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            }
+
+            app.invite_api_client.create_invite.assert_called_once_with(
+                sample_invite["from_user"],
+                sample_invite["service"],
+                email_address,
+                expected_permissions,
+                "email_auth",
+                [],
+            )
+        else:
+            assert page.h1.string.strip() == "Invite a team member"
+            app.invite_api_client.create_invite.assert_not_called()
 
 
 def test_cancel_invited_user_cancels_user_invitations(
