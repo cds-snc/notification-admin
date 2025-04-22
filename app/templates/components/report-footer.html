@@ -1,0 +1,40 @@
+{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0) %}
+    <div class="js-stick-at-bottom-when-scrolling">
+        <div class="flex">
+        <div class="flex-grow text-small">
+            <div class="text-gray-grey1">
+            {% set parts = [] %}
+            {% if n_generating > 0 %}
+                {% set parts = parts + [(n_generating, _('report preparing'), _('reports preparing')) | format_list] %}
+            {% endif %}
+            {% if n_ready > 0 %}
+                {% set parts = parts + [(n_ready, _('ready'), _('ready')) | format_list] %}
+            {% endif %}
+            {% if n_deleted > 0 %}
+                {% set parts = parts + [(n_deleted, _('deleted'), _('deleted')) | format_list] %}
+            {% endif %}
+            {% if parts %}
+                {{ parts | join(', ') }}{{ '.' if parts else '' }}
+            {% else %}
+                {{ _('No reports available.') }}
+            {% endif %}
+            </div>
+            <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
+        </div>
+        <div class="flex flex-grow-0">
+            {% if n_generating > 0 %}
+                <div class="loading-spinner"></div>
+            {% endif %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button 
+                type="submit" 
+                class="button button-secondary"
+                name="generate-report" 
+                {% if n_generating > 0 %}disabled{% endif %}
+            >
+                {{ _("Prepare report") }}
+            </button>
+        </div>
+        </div>
+    </div>
+{% endmacro %}

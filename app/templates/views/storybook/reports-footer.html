@@ -1,0 +1,17 @@
+{% from "components/report-footer.html" import report_footer %}
+
+<div class="heading-large">Reports Footer Examples</div>
+
+<hr />
+
+<h2 class="heading-medium">Report footer 1</h2>
+{{ report_footer(n_generating=0, n_ready=1, n_deleted=1) }}
+
+<h2 class="heading-medium">Report footer 2</h2>
+{{ report_footer(n_generating=1, n_ready=1, n_deleted=1) }}
+
+<h2 class="heading-medium">Report footer 3</h2>
+{{ report_footer(n_generating=1, n_ready=2, n_deleted=0) }}
+
+<h2 class="heading-medium">Report footer 4</h2>
+{{ report_footer(n_generating=0, n_ready=0, n_deleted=0) }}

@@ -315,6 +315,18 @@ def linkable_name(value):
     return urllib.parse.quote_plus(value)
 
 
+def format_list(items):
+    """
+    Format a tuple of (count, singular, plural) into a string with the correct pluralization.
+    Example: (1, 'report', 'reports') -> '1 report'
+             (5, 'report', 'reports') -> '5 reports'
+    """
+    count, singular, plural = items
+    if count == 1:
+        return f"{count} {singular}"
+    return f"{count} {plural}"
+
+
 def format_number(number):
     lang = get_current_locale(current_app)
 
@@ -873,5 +885,6 @@ def add_template_filters(application):
         format_phone_number_human_readable,
         format_thousands,
         id_safe,
+        format_list,
     ]:
         application.add_template_filter(fn)
