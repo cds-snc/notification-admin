@@ -1,0 +1,53 @@
+<h2 class="heading-medium">More menu</h2>
+<p class="md:hidden text-red">The more menu works above the 768px breakpoint.</p>
+<div class="hidden md:block">
+When we have a lot of menu items, we can use a more menu to hide elements into a disclosure menu.
+<nav class="relative flex flex-nowrap bg-gray-100" aria-label="Menu Story 1">
+    <ul id="more-menu-story" class="flex flex-nowrap flex-grow items-baseline gap-gutterHalf">
+        {% for item in ["Home", "About", "Services", "Time portal", "Forms & procedures", "Releases", "Contact us", "Frequently avoided questions", "Appointments", "Report issues", "Chat bots", "News", "Compliance center"] %}
+            <li class="flex-shrink-0">
+                <a href="#" class="nav-menu-item">
+                    {{ item }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <button id="more-menu-story-button" type="button"
+        aria-expanded="false" aria-haspopup="true"
+        class="nav-menu-item justify-end px-4 w-min"
+        data-module-menu-container="more-menu-story-container" data-has-items="false"
+        data-module="more-menu" data-module-menu-items="more-menu-story">
+        {{ _("More") }}
+        <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+      </button>
+      <div id="more-menu-story-container" class="relative self-end hidden">
+        <ul id="more-menu-story-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
+      </div>
+</nav>
+
+
+<h2 class="heading-medium">Shorter menu</h2>
+More menu should remove itself once items fit in the menu.
+<nav class="relative flex flex-nowrap bg-gray-100 w-1/2" aria-label="Menu Story 2">
+    <ul id="more-menu-story-2" class="flex flex-nowrap flex-grow items-baseline gap-gutterHalf">
+        {% for item in ["Italic", "Bold", "Heading 1", "Heading 2", "List item", "Link"] %}
+            <li class="flex-shrink-0">
+                <a href="#" class="nav-menu-item">
+                    {{ item }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <button id="more-menu-story-2-button" type="button"
+        aria-expanded="false" aria-haspopup="true"
+        class="nav-menu-item justify-end px-4 w-min"
+        data-module-menu-container="more-menu-story-2-container" data-has-items="false"
+        data-module="more-menu" data-module-menu-items="more-menu-story-2">
+        {{ _("More") }}
+        <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+      </button>
+      <div id="more-menu-story-2-container" class="relative self-end hidden">
+        <ul id="more-menu-story-2-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
+      </div>
+</nav>
+</div>

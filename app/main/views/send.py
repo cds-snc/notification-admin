@@ -99,9 +99,9 @@ def get_csv_max_rows(service_id):
     return int(current_app.config["CSV_MAX_ROWS"])
 
 
-def get_example_csv_fields(column_headers, use_example_as_example, submitted_fields):
+def get_example_csv_fields(column_headers, use_example_as_example, submitted_fields, current_lang):
     if use_example_as_example:
-        return ["example" for header in column_headers]
+        return ["example" for header in column_headers] if current_lang != "fr" else ["exemple" for header in column_headers]
     elif submitted_fields:
         return [submitted_fields.get(header) for header in column_headers]
     else:
@@ -109,8 +109,10 @@ def get_example_csv_fields(column_headers, use_example_as_example, submitted_fie
 
 
 def get_example_csv_rows(template, use_example_as_example=True, submitted_fields=False):
+    current_lang = get_current_locale(current_app)
+    example_email = "test@example.com" if current_lang != "fr" else "test@exemple.com"
     return {
-        "email": ["test@example.com"] if use_example_as_example else [current_user.email_address],
+        "email": [example_email] if use_example_as_example else [current_user.email_address],
         "sms": ["6502532222"] if use_example_as_example else [current_user.mobile_number],
         "letter": [
             (submitted_fields or {}).get(key, get_example_letter_address(key) if use_example_as_example else key)
@@ -124,6 +126,7 @@ def get_example_csv_rows(template, use_example_as_example=True, submitted_fields
         ),
         use_example_as_example,
         submitted_fields,
+        current_lang,
     )
 
 
