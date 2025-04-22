@@ -213,12 +213,40 @@ def test_should_show_caseworker_on_overview_page(
     )
 
 
+# TODO: remove this test when FF_OPTIONAL_PHONE is removed
 @pytest.mark.parametrize(
     "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
     [
         ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, False),
         ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
         ("main.invite_user", {}, True, False),
+        ("main.invite_user", {}, False, True),
+    ],
+)
+def test_service_with_no_email_auth_hides_auth_type_options_REMOVE_FF(
+    client_request,
+    endpoint,
+    extra_args,
+    service_has_email_auth,
+    auth_options_hidden,
+    service_one,
+    mock_get_users_by_service,
+    mock_get_template_folders,
+    app_,
+):
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        if service_has_email_auth:
+            service_one["permissions"].append("email_auth")
+        page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
+        assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
+
+
+@pytest.mark.parametrize(
+    "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
+    [
+        ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, True),
+        ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
+        ("main.invite_user", {}, True, True),
         ("main.invite_user", {}, False, True),
     ],
 )
@@ -231,11 +259,11 @@ def test_service_with_no_email_auth_hides_auth_type_options(
     service_one,
     mock_get_users_by_service,
     mock_get_template_folders,
+    app_,
 ):
-    if service_has_email_auth:
-        service_one["permissions"].append("email_auth")
-    page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-    assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):
+        page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
+        assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
 
 
 @pytest.mark.parametrize("service_has_caseworking", (True, False))
@@ -438,17 +466,31 @@ def test_should_show_page_for_one_user(
         assert checkboxes[index].has_attr("checked") == expected_checked
 
 
-def test_invite_user_allows_to_choose_auth(
+# TODO: remove this test when FF_OPTIONAL_PHONE is removed
+def test_invite_user_not_allowed_to_choose_auth(
+    client_request, mock_get_users_by_service, mock_get_template_folders, service_one, app_
+):
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):
+        service_one["permissions"].append("email_auth")
+        page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
+
+        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
+        assert sms_auth_radio_button is None
+
+
+def test_invite_user_allows_to_choose_auth_REMOVE_FF(
     client_request,
     mock_get_users_by_service,
     mock_get_template_folders,
     service_one,
+    app_,
 ):
-    service_one["permissions"].append("email_auth")
-    page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        service_one["permissions"].append("email_auth")
+        page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
 
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") is False
+        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
+        assert sms_auth_radio_button.has_attr("disabled") is False
 
 
 def test_invite_user_has_correct_email_field(
