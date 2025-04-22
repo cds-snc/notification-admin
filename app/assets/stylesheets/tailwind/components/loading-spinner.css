@@ -1,13 +1,31 @@
-.loading-spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border: 3px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #00703c; /* Green color from the image */
-  animation: spin 1s ease-in-out infinite;
-  vertical-align: middle;
+@layer components {
+  /*! purgecss start ignore */
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #00703c; /* Green color from the image */
+    animation: spin 1s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  .loading-spinner-large {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #00703c; /* Green color from the image */
+    animation: spin 1s ease-in-out infinite;
+    vertical-align: text-bottom;
+  }
+
+  /*! purgecss end ignore */
 }
 
 @keyframes spin {

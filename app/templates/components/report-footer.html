@@ -3,27 +3,38 @@
         <div class="flex">
         <div class="flex-grow text-small">
             <div class="text-gray-grey1">
-            {% set parts = [] %}
-            {% if n_generating > 0 %}
-                {% set parts = parts + [(n_generating, _('report preparing'), _('reports preparing')) | format_list] %}
-            {% endif %}
-            {% if n_ready > 0 %}
-                {% set parts = parts + [(n_ready, _('ready'), _('ready')) | format_list] %}
-            {% endif %}
-            {% if n_deleted > 0 %}
-                {% set parts = parts + [(n_deleted, _('deleted'), _('deleted')) | format_list] %}
-            {% endif %}
-            {% if parts %}
-                {{ parts | join(', ') }}{{ '.' if parts else '' }}
+            {% if n_generating > 0 or n_ready > 0 or n_deleted > 0 %}
+                {% if n_generating + n_ready + n_deleted == 1 %}
+                    {% if n_generating == 1 %}
+                        {{ _('1 report preparing') }}.
+                    {% elif n_ready == 1 %}
+                        {{ _('1 report ready') }}.
+                    {% elif n_deleted == 1 %}
+                        {{ _('1 report deleted') }}.
+                    {% endif %}
+                {% else %}
+                    {{ _('Reports:') }}
+                    {% set parts = [] %}
+                    {% if n_generating > 0 %}
+                        {% set parts = parts + [(n_generating, _('preparing'), _('preparing')) | format_list] %}
+                    {% endif %}
+                    {% if n_ready > 0 %}
+                        {% set parts = parts + [(n_ready, _('ready'), _('ready')) | format_list] %}
+                    {% endif %}
+                    {% if n_deleted > 0 %}
+                        {% set parts = parts + [(n_deleted, _('deleted'), _('deleted')) | format_list] %}
+                    {% endif %}
+                    {{ parts | join(', ') }}.
+                {% endif %}
             {% else %}
                 {{ _('No reports available.') }}
             {% endif %}
             </div>
             <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
         </div>
-        <div class="flex flex-grow-0">
+        <div class="flex flex-grow-0 items-center">
             {% if n_generating > 0 %}
-                <div class="loading-spinner"></div>
+                <div class="loading-spinner-large"></div>
             {% endif %}
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
