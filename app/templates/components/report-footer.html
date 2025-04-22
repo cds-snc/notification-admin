@@ -16,13 +16,13 @@
                     {{ _('Reports:') }}
                     {% set parts = [] %}
                     {% if n_generating > 0 %}
-                        {% set parts = parts + [(n_generating, _('preparing'), _('preparing')) | format_list] %}
+                        {% set parts = parts + [_('{} preparing').format(n_generating)] %}
                     {% endif %}
                     {% if n_ready > 0 %}
-                        {% set parts = parts + [(n_ready, _('ready'), _('ready')) | format_list] %}
+                        {% set parts = parts + [_('{} ready').format(n_ready)] %}
                     {% endif %}
                     {% if n_deleted > 0 %}
-                        {% set parts = parts + [(n_deleted, _('deleted'), _('deleted')) | format_list] %}
+                        {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
                     {% endif %}
                     {{ parts | join(', ') }}.
                 {% endif %}
