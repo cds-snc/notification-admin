@@ -45,7 +45,7 @@ def test_report_footer_example_3(client_request):
     # Check status text shows preparing reports
     status_text = example_section.select_one(".text-gray-grey1")
     assert status_text is not None
-    assert "preparing" in normalize_spaces(status_text.text)
+    assert "1 preparing and 2 ready" in normalize_spaces(status_text.text)
 
     # Check button state or other attributes specific to this example
     button = example_section.select_one("button")
