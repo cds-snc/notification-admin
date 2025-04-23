@@ -28,12 +28,15 @@ from app import (
     current_service,
     format_datetime_short,
     format_thousands,
+    get_current_locale,
     job_api_client,
     notification_api_client,
+    reports_api_client,
     service_api_client,
 )
 from app.main import main
 from app.main.forms import SearchNotificationsForm
+from app.main.views.reports import get_report_totals
 from app.statistics_utils import add_rate_to_job
 from app.utils import (
     generate_next_dict,
@@ -238,11 +241,26 @@ def view_notifications(service_id, message_type=None):
     notifications = notification_api_client.get_notifications_for_service(
         service_id=service_id, template_type=[message_type] if message_type else [], limit_days=service_data_retention_days
     )
+    status = request.args.get("status") or "sending,delivered,failed"
+    # reports = reports_api_client.get_reports_for_service(service_id)
+    # report_totals = get_report_totals(reports)
+
+    if "generate-report" in request.form.keys():
+        # the user has clicked the "prepare report" button
+        current_lang = get_current_locale(current_app)
+        reports_api_client.request_report(
+            user_id=current_user.id,
+            service_id=service_id,
+            language=current_lang,
+            report_type=message_type,
+            notification_status_list=status.split(","),
+        )
+
     return render_template(
         "views/notifications.html",
         partials=get_notifications(service_id, message_type),
         message_type=message_type,
-        status=request.args.get("status") or "sending,delivered,failed",
+        status=status,
         page=request.args.get("page", 1),
         to=request.form.get("to", ""),
         pe_filter=request.form.get("pe_filter", ""),
@@ -329,6 +347,8 @@ def get_notifications(service_id, message_type, status_override=None):
     else:
         download_link = None
 
+    reports = reports_api_client.get_reports_for_service(service_id)
+    report_totals = get_report_totals(reports)
     return {
         "service_data_retention_days": service_data_retention_days,
         "counts": render_template(
@@ -351,6 +371,7 @@ def get_notifications(service_id, message_type, status_override=None):
             message_type=message_type,
             download_link=download_link,
             service_id=service_id,
+            report_totals=report_totals,
         ),
     }
 
