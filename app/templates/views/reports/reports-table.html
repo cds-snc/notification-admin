@@ -16,14 +16,12 @@
     {% call row_heading() %}
       <div class="flex flex-col">
         {% if item.status == "ready" %}
-        <a class="file-list-filename" href="{{ item.url }}">
-          <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
-          <span> - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</span>
+        <a class="file-list-filename" href="{{ url_for('main.download_report_csv', service_id=current_service.id, report_id=item.id) }}">
+          {{ item.filename_display}}
         </a>
         {% else %}
         <div class="file-list-filename text-gray-grey1" tabindex="0">
-          <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
-          <span> - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</span>
+          {{ item.filename_display}}
         </div>
         {% endif %}
         <div class="file-list-hint">
