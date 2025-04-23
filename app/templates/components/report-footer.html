@@ -10,10 +10,18 @@
                         {% set parts = parts + [_('{} preparing').format(n_generating)] %}
                     {% endif %}
                     {% if n_ready > 0 %}
-                        {% set parts = parts + [_('{} ready').format(n_ready)] %}
+                        {% if n_ready > 1 and current_lang == "fr" %}
+                            {% set parts = parts + ['{} prêts'.format(n_ready)] %}
+                        {% else %}
+                            {% set parts = parts + [_('{} ready').format(n_ready)]] %}
+                        {% endif %}
                     {% endif %}
                     {% if n_deleted > 0 %}
-                        {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
+                        {% if n_deleted > 1 and current_lang == "fr" %}
+                            {% set parts = parts + ['{} supprimés'.format(n_deleted)] %}
+                        {% else %}
+                            {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
+                        {% endif %}
                     {% endif %}
                     {{ parts | formatted_list(
                         conjunction=_("and"),
