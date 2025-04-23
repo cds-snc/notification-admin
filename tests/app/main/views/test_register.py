@@ -386,6 +386,73 @@ def test_register_from_invite_when_user_registers_in_another_browser(
     assert response.location == url_for("main.verify")
 
 
+# TODO: remove this test when FF_OPTIONAL_PHONE is removed
+@pytest.mark.parametrize("invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"])
+def test_register_from_email_auth_invite_REMOVE_FF(
+    client,
+    sample_invite,
+    mock_email_is_not_already_in_use,
+    mock_register_user,
+    mock_get_user,
+    mock_send_verify_email,
+    mock_send_verify_code,
+    mock_accept_invite,
+    mock_create_event,
+    mock_add_user_to_service,
+    invite_email_address,
+    fake_uuid,
+    mocker,
+    app_,
+):
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        mock_login_user = mocker.patch("app.models.user.login_user")
+        sample_invite["auth_type"] = "email_auth"
+        sample_invite["email_address"] = invite_email_address
+        with client.session_transaction() as session:
+            session["invited_user"] = sample_invite
+
+        data = {
+            "name": "invited user",
+            "email_address": sample_invite["email_address"],
+            "mobile_number": "6502532222",
+            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+            "service": sample_invite["service"],
+            "auth_type": "email_auth",
+        }
+
+        data["tou_agreed"] = "true"
+
+        resp = client.post(url_for("main.register_from_invite"), data=data)
+        assert resp.status_code == 302
+        assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
+
+        # doesn't send any 2fa code
+        assert not mock_send_verify_email.called
+        assert not mock_send_verify_code.called
+        # creates user with email_auth set
+        mock_register_user.assert_called_once_with(
+            data["name"], data["email_address"], data["mobile_number"], data["password"], data["auth_type"]
+        )
+        mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
+        # just logs them in
+        mock_login_user.assert_called_once_with(
+            # This ID matches the return value of mock_register_user
+            User({"id": fake_uuid, "platform_admin": False})
+        )
+        mock_add_user_to_service.assert_called_once_with(
+            sample_invite["service"],
+            fake_uuid,  # This ID matches the return value of mock_register_user
+            {"manage_api_keys", "manage_service", "send_messages", "view_activity"},
+            [],
+        )
+
+        assert mock_add_user_to_service.called
+
+        with client.session_transaction() as session:
+            # invited user details are still there so they can get added to the service
+            assert session["invited_user"] == sample_invite
+
+
 @pytest.mark.parametrize("invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"])
 def test_register_from_email_auth_invite(
     client,
@@ -401,53 +468,52 @@ def test_register_from_email_auth_invite(
     invite_email_address,
     fake_uuid,
     mocker,
+    app_,
 ):
-    mock_login_user = mocker.patch("app.models.user.login_user")
-    sample_invite["auth_type"] = "email_auth"
-    sample_invite["email_address"] = invite_email_address
-    with client.session_transaction() as session:
-        session["invited_user"] = sample_invite
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):  # TODO: remove this line when FF_OPTIONAL_PHONE is removed
+        mock_login_user = mocker.patch("app.models.user.login_user")
+        sample_invite["auth_type"] = "email_auth"
+        sample_invite["email_address"] = invite_email_address
+        with client.session_transaction() as session:
+            session["invited_user"] = sample_invite
 
-    data = {
-        "name": "invited user",
-        "email_address": sample_invite["email_address"],
-        "mobile_number": "6502532222",
-        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "service": sample_invite["service"],
-        "auth_type": "email_auth",
-    }
+        data = {
+            "name": "invited user",
+            "email_address": sample_invite["email_address"],
+            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+            "service": sample_invite["service"],
+            "auth_type": "email_auth",
+        }
 
-    data["tou_agreed"] = "true"
+        data["tou_agreed"] = "true"
 
-    resp = client.post(url_for("main.register_from_invite"), data=data)
-    assert resp.status_code == 302
-    assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
+        resp = client.post(url_for("main.register_from_invite"), data=data)
+        assert resp.status_code == 302
+        assert resp.location == url_for("main.service_dashboard", service_id=sample_invite["service"])
 
-    # doesn't send any 2fa code
-    assert not mock_send_verify_email.called
-    assert not mock_send_verify_code.called
-    # creates user with email_auth set
-    mock_register_user.assert_called_once_with(
-        data["name"], data["email_address"], data["mobile_number"], data["password"], data["auth_type"]
-    )
-    mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
-    # just logs them in
-    mock_login_user.assert_called_once_with(
-        # This ID matches the return value of mock_register_user
-        User({"id": fake_uuid, "platform_admin": False})
-    )
-    mock_add_user_to_service.assert_called_once_with(
-        sample_invite["service"],
-        fake_uuid,  # This ID matches the return value of mock_register_user
-        {"manage_api_keys", "manage_service", "send_messages", "view_activity"},
-        [],
-    )
+        # doesn't send any 2fa code
+        assert not mock_send_verify_email.called
+        assert not mock_send_verify_code.called
+        # creates user with email_auth set
+        mock_register_user.assert_called_once_with(data["name"], data["email_address"], None, data["password"], data["auth_type"])
+        mock_accept_invite.assert_called_once_with(sample_invite["service"], sample_invite["id"])
+        # just logs them in
+        mock_login_user.assert_called_once_with(
+            # This ID matches the return value of mock_register_user
+            User({"id": fake_uuid, "platform_admin": False})
+        )
+        mock_add_user_to_service.assert_called_once_with(
+            sample_invite["service"],
+            fake_uuid,  # This ID matches the return value of mock_register_user
+            {"manage_api_keys", "manage_service", "send_messages", "view_activity"},
+            [],
+        )
 
-    assert mock_add_user_to_service.called
+        assert mock_add_user_to_service.called
 
-    with client.session_transaction() as session:
-        # invited user details are still there so they can get added to the service
-        assert session["invited_user"] == sample_invite
+        with client.session_transaction() as session:
+            # invited user details are still there so they can get added to the service
+            assert session["invited_user"] == sample_invite
 
 
 def test_can_register_email_auth_without_phone_number(
@@ -505,14 +571,30 @@ def test_cannot_register_with_sms_auth_and_missing_mobile_number_REMOVE_FF(
         assert err.attrs["data-error-label"] == "mobile_number"
 
 
-def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth(client, sample_invite):
-    sample_invite["auth_type"] = "email_auth"
-    with client.session_transaction() as session:
-        session["invited_user"] = sample_invite
+# TODO: Remove this test when FF_OPTIONAL_PHONE is removed
+def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth_REMOVE_FF(client, sample_invite, app_):
+    with set_config(app_, "FF_OPTIONAL_PHONE", False):
+        sample_invite["auth_type"] = "email_auth"
+        with client.session_transaction() as session:
+            session["invited_user"] = sample_invite
 
-    response = client.get(url_for("main.register_from_invite"))
+        response = client.get(url_for("main.register_from_invite"))
 
-    assert response.status_code == 200
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
-    assert page.find("input", attrs={"name": "mobile_number"}) is None
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
+        assert page.find("input", attrs={"name": "mobile_number"}) is None
+
+
+def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth(client, sample_invite, app_):
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):  # TODO: remove this line when FF_OPTIONAL_PHONE is removed
+        sample_invite["auth_type"] = "email_auth"
+        with client.session_transaction() as session:
+            session["invited_user"] = sample_invite
+
+        response = client.get(url_for("main.register_from_invite"))
+
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
+        assert page.find("input", attrs={"name": "mobile_number"}) is not None
