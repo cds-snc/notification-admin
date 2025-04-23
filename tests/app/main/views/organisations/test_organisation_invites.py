@@ -382,23 +382,3 @@ class TestOrgInvite:
             )
             link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
             assert link is None
-
-    # TODO: remove this test when FF_OPTIONAL_PHONE is removed
-    def test_org_invite_is_visible_REMOVE_FF(
-        self,
-        client_request,
-        mocker,
-        mock_get_organisation,
-        mock_get_users_for_organisation,
-        mock_get_invited_users_for_organisation,
-        fake_uuid,
-        app_,
-    ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", False):
-            page = client_request.get(
-                ".manage_org_users",
-                org_id=ORGANISATION_ID,
-            )
-
-            link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
-            assert link is not None
