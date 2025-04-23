@@ -13,7 +13,7 @@
                         {% if n_ready > 1 and current_lang == "fr" %}
                             {% set parts = parts + ['{} prêts'.format(n_ready)] %}
                         {% else %}
-                            {% set parts = parts + [_('{} ready').format(n_ready)]] %}
+                            {% set parts = parts + [_('{} ready').format(n_ready)] %}
                         {% endif %}
                     {% endif %}
                     {% if n_deleted > 0 %}
