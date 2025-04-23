@@ -49,11 +49,16 @@ def get_reports_partials(reports):
     for report in reports:
         set_report_expired(report)
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
+    report_totals = get_report_totals(reports)
     return {
         "reports": render_template(
             "views/reports/reports-table.html",
             reports=reports,
-        )
+        ),
+        "report-footer": render_template(
+            "views/reports/report-footer.html",
+            report_totals=report_totals,
+        ),
     }
 
 

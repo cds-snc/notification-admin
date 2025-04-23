@@ -36,7 +36,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import SearchNotificationsForm
-from app.main.views.reports import get_report_totals
+from app.main.views.reports import get_report_totals, get_reports_partials
 from app.statistics_utils import add_rate_to_job
 from app.utils import (
     generate_next_dict,
@@ -242,8 +242,6 @@ def view_notifications(service_id, message_type=None):
         service_id=service_id, template_type=[message_type] if message_type else [], limit_days=service_data_retention_days
     )
     status = request.args.get("status") or "sending,delivered,failed"
-    # reports = reports_api_client.get_reports_for_service(service_id)
-    # report_totals = get_report_totals(reports)
 
     if "generate-report" in request.form.keys():
         # the user has clicked the "prepare report" button
@@ -285,6 +283,16 @@ def view_notifications(service_id, message_type=None):
 @user_has_permissions()
 def get_notifications_as_json(service_id, message_type=None):
     return jsonify(get_notifications(service_id, message_type, status_override=request.args.get("status")))
+
+
+@main.route("/services/<service_id>/report-footer.json", methods=["GET"])
+@user_has_permissions()
+def get_report_footer(
+    service_id,
+):
+    reports = reports_api_client.get_reports_for_service(service_id)
+    report_totals = get_report_totals(reports)
+    return jsonify(report_totals)
 
 
 @main.route(
@@ -348,7 +356,7 @@ def get_notifications(service_id, message_type, status_override=None):
         download_link = None
 
     reports = reports_api_client.get_reports_for_service(service_id)
-    report_totals = get_report_totals(reports)
+    reports_partials = get_reports_partials(reports)
     return {
         "service_data_retention_days": service_data_retention_days,
         "counts": render_template(
@@ -371,8 +379,8 @@ def get_notifications(service_id, message_type, status_override=None):
             message_type=message_type,
             download_link=download_link,
             service_id=service_id,
-            report_totals=report_totals,
         ),
+        "report-footer": reports_partials["report-footer"],
     }
 
 

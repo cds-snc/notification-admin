@@ -3,8 +3,6 @@
 {% from "components/table.html" import list_table, field, text_field, link_field, right_aligned_field_heading, hidden_field_heading, row_heading, notification_status_field %}
 {% from "components/is-problem-email.html" import is_probem_email %}
 {% from "components/empty-list.html" import empty_list  %}
-{% from "components/form.html" import form_wrapper %}
-{% from "components/report-footer.html" import report_footer %}
 
 <div class="ajax-block-container" id='pill-selected-item'>
   {% set empty_txt = empty_list(_('You have not sent messages recently'), _('Messages sent within the last {} days will show up here. Start with one of your templates to send messages.').format(limit_days), 'emptyFlower', url_for('main.choose_template', service_id=service_id), _('Go to your templates')) %}
@@ -47,9 +45,5 @@
   {% endif %}
 
   {{ previous_next_navigation(prev_page, next_page) }}
-
-  {% call form_wrapper(action=action) %}
-    {{ report_footer(n_generating=report_totals["generating"], n_deleted=report_totals["expired"], n_ready=report_totals["ready"]) }}
-  {% endcall %}
 
 </div>

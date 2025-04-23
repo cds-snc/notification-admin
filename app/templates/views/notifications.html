@@ -5,6 +5,7 @@
 {% from "components/textbox.html" import textbox_search %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
+{% from "components/report-footer.html" import report_footer %}
 
 {% set title_status = (
   'Failed '
@@ -81,5 +82,15 @@
     'notifications',
     form='search-form'
   ) }}
+
+  <div class="js-stick-at-bottom-when-scrolling" >
+    {% call form_wrapper(action=action) %}
+      {{ ajax_block(
+        partials,
+        url_for('.view_reports_updates', service_id=current_service.id),
+        'report-footer',
+      ) }}
+    {% endcall %}
+  </div>
 
 {% endblock %}
