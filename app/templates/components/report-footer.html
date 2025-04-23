@@ -1,4 +1,4 @@
-{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0) %}
+{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang) %}
     {% set total_reports = n_generating + n_ready + n_deleted %}
     <div class="js-stick-at-bottom-when-scrolling">
         <div class="flex">
@@ -10,14 +10,14 @@
                         {% set parts = parts + [_('{} preparing').format(n_generating)] %}
                     {% endif %}
                     {% if n_ready > 0 %}
-                        {% if n_ready > 1 and current_lang == "fr" %}
+                        {% if n_ready > 1 and current_lang == 'fr' %}
                             {% set parts = parts + ['{} prêts'.format(n_ready)] %}
                         {% else %}
                             {% set parts = parts + [_('{} ready').format(n_ready)] %}
                         {% endif %}
                     {% endif %}
                     {% if n_deleted > 0 %}
-                        {% if n_deleted > 1 and current_lang == "fr" %}
+                        {% if n_deleted > 1 and current_lang == 'fr' %}
                             {% set parts = parts + ['{} supprimés'.format(n_deleted)] %}
                         {% else %}
                             {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
