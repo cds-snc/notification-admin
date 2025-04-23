@@ -1,19 +1,10 @@
 {% macro report_footer(n_generating=0, n_ready=0, n_deleted=0) %}
+    {% set total_reports = n_generating + n_ready + n_deleted %}
     <div class="js-stick-at-bottom-when-scrolling">
         <div class="flex">
         <div class="flex-grow text-small">
-            <div class="text-gray-grey1">
-            {% if n_generating > 0 or n_ready > 0 or n_deleted > 0 %}
-                {% if n_generating + n_ready + n_deleted == 1 %}
-                    {% if n_generating == 1 %}
-                        {{ _('1 report preparing') }}.
-                    {% elif n_ready == 1 %}
-                        {{ _('1 report ready') }}.
-                    {% elif n_deleted == 1 %}
-                        {{ _('1 report deleted') }}.
-                    {% endif %}
-                {% else %}
-                    {{ _('Reports:') }}
+            {% if total_reports > 0 %}
+                <div class="text-gray-grey1">
                     {% set parts = [] %}
                     {% if n_generating > 0 %}
                         {% set parts = parts + [_('{} preparing').format(n_generating)] %}
@@ -24,13 +15,14 @@
                     {% if n_deleted > 0 %}
                         {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
                     {% endif %}
-                    {{ parts | join(', ') }}.
-                {% endif %}
-            {% else %}
-                {{ _('No reports available.') }}
+                    {{ parts | formatted_list(
+                        conjunction=_("and"),
+                        before_each="",
+                        after_each=""
+                      ) }}.
+                </div>
+                <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
             {% endif %}
-            </div>
-            <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
         </div>
         <div class="flex flex-grow-0 items-center">
             {% if n_generating > 0 %}
