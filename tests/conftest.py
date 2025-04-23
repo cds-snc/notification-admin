@@ -3621,6 +3621,7 @@ class ClientRequest:
         _expected_redirect: str | None = None,
         _test_page_title: bool = True,
         _optional_args: str = "",
+        _return_response: bool = False,
         **endpoint_kwargs,
     ):
         return ClientRequest.get_url(
@@ -3630,6 +3631,7 @@ class ClientRequest:
             _follow_redirects=_follow_redirects,
             _expected_redirect=_expected_redirect,
             _test_page_title=_test_page_title,
+            _return_response=_return_response,
         )
 
     def get_url(
@@ -3639,6 +3641,7 @@ class ClientRequest:
         _follow_redirects: bool = False,
         _expected_redirect: str | None = None,
         _test_page_title: bool = True,
+        _return_response: bool = False,
         **endpoint_kwargs,
     ):
         resp = self.logged_in_client.get(
@@ -3648,6 +3651,8 @@ class ClientRequest:
         assert resp.status_code == _expected_status, resp.location
         if _expected_redirect:
             assert resp.location == _expected_redirect
+        if _return_response:
+            return resp
         page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
         if _test_page_title:
             count_of_h1s = len(page.select("h1"))
