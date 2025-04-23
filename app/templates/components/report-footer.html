@@ -1,6 +1,6 @@
-{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang) %}
+{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, testid=None) %}
     {% set total_reports = n_generating + n_ready + n_deleted %}
-    <div class="js-stick-at-bottom-when-scrolling">
+    <div class="js-stick-at-bottom-when-scrolling" {% if testid %}data-testid="{{ testid }}"{% endif %}>
         <div class="flex">
         <div class="flex-grow text-small">
             {% if total_reports > 0 %}
@@ -27,7 +27,7 @@
                         conjunction=_("and"),
                         before_each="",
                         after_each=""
-                      ) }}.
+                      ) }}
                 </div>
                 <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
             {% endif %}
