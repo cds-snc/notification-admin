@@ -35,7 +35,6 @@ describe("Storybook Components Accessibility Tests", () => {
             htmlValidate: true,
             deadLinks: false,
             mimeTypes: false,
-            label: component.name, // If your a11yScan command accepts a label option
           });
 
           // Log when component test is complete
