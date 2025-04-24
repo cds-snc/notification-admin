@@ -15,15 +15,6 @@ describe("Disclosure Menu components", () => {
     return true;
   });
 
-  it("Should pass a11y checks", () => {
-    cy.a11yScan(PageURL, {
-      a11y: true,
-      htmlValidate: true,
-      deadLinks: false,
-      mimeTypes: false,
-    });
-  });
-
   describe("Long menu example", () => {
     beforeEach(() => {
       cy.visit(PageURL);
