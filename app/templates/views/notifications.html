@@ -83,14 +83,16 @@
     form='search-form'
   ) }}
 
-  <div class="js-stick-at-bottom-when-scrolling" >
-    {% call form_wrapper(action=action) %}
-      {{ ajax_block(
-        partials,
-        url_for('.view_reports_updates', service_id=current_service.id),
-        'report-footer',
-      ) }}
-    {% endcall %}
-  </div>
+  {% if config["FF_ASYNC_REPORTS"] %}
+    <div class="js-stick-at-bottom-when-scrolling" >
+      {% call form_wrapper(action=action) %}
+        {{ ajax_block(
+          partials,
+          url_for('.view_reports_updates', service_id=current_service.id),
+          'report-footer',
+        ) }}
+      {% endcall %}
+    </div>
+  {% endif %}
 
 {% endblock %}
