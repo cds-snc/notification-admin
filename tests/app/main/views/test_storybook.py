@@ -16,7 +16,7 @@ def test_report_footer_example_1(client_request):
     button = example_section.select_one("button")
     assert "Prepare report" in button.text
     assert "disabled" not in button.attrs
-
+    assert example_section.select_one(".loading-spinner-large") is None
 
 def test_report_footer_example_2(client_request):
     """Test report_footer example 2: Component when a report is being prepared"""
