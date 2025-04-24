@@ -18,6 +18,7 @@ def test_report_footer_example_1(client_request):
     assert "disabled" not in button.attrs
     assert example_section.select_one(".loading-spinner-large") is None
 
+
 def test_report_footer_example_2(client_request):
     """Test report_footer example 2: Component when a report is being prepared"""
     page = client_request.get("main.storybook", component="report-footer", _test_page_title=False)
