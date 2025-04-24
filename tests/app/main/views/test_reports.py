@@ -1,49 +1,6 @@
-from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
-import pytest
 from freezegun import freeze_time
-
-
-@pytest.fixture
-@freeze_time("2025-01-01 00:01:00.000000")
-def mock_reports_data():
-    return [
-        {
-            "id": "report-1",
-            "status": "ready",
-            "language": "en",
-            "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
-            "requested_at": datetime.now(timezone.utc).isoformat(),
-            "requesting_user": {
-                "id": "user-1",
-                "name": "Test User",
-            },
-            "url": "https://example.com/report-1.csv",
-        },
-        {
-            "id": "report-2",
-            "status": "ready",
-            "language": "en",
-            "expires_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
-            "requested_at": datetime.now(timezone.utc).isoformat(),
-            "requesting_user": {
-                "id": "user-1",
-                "name": "Test User",
-            },
-        },
-        {
-            "id": "report-3",
-            "status": "generating",
-            "language": "fr",
-            "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
-            "requested_at": datetime.now(timezone.utc).isoformat(),
-            "requesting_user": {
-                "id": "user-1",
-                "name": "Test User",
-            },
-        },
-    ]
 
 
 def test_reports_page_requires_platform_admin(client_request, platform_admin_user, service_one, mocker):
@@ -62,8 +19,7 @@ def test_reports_page_forbidden_for_non_platform_admin(client_request, mocker, s
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
-def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, mock_reports_data, mocker, service_one):
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
+def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
     client_request.login(platform_admin_user)
 
     response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
@@ -83,12 +39,10 @@ def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, 
 def test_download_report_csv_streams_the_report(
     client_request,
     platform_admin_user,
-    mock_reports_data,
+    mock_get_reports,
     mocker,
     service_one,
 ):
-    mock_get_reports = mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
-
     # Create a mock response for the requests.get call
     mock_response = Mock()
     mock_response.status_code = 200
@@ -118,11 +72,10 @@ def test_download_report_csv_streams_the_report(
 def test_download_report_csv_returns_404_for_nonexistent_report(
     client_request,
     platform_admin_user,
-    mock_reports_data,
+    mock_get_reports,
     mocker,
     service_one,
 ):
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
     client_request.login(platform_admin_user)
 
     client_request.get(
@@ -137,24 +90,21 @@ def test_download_report_csv_returns_404_for_nonexistent_report(
 @freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_forbidden_for_non_platform_admin(
     client_request,
-    mock_reports_data,
+    mock_get_reports,
     mocker,
     service_one,
 ):
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
-
     client_request.get("main.download_report_csv", service_id=service_one["id"], report_id="report-1", _expected_status=403)
 
 
 def test_generate_report_creates_new_report(
     client_request,
     platform_admin_user,
-    mock_reports_data,
+    mock_get_reports,
     mocker,
     service_one,
 ):
     mock_request_report = mocker.patch("app.reports_api_client.request_report")
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data)
     client_request.login(platform_admin_user)
 
     client_request.post("main.generate_report", service_id=service_one["id"], _expected_status=200)
