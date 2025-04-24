@@ -103,3 +103,28 @@ def test_report_footer_example_6(client_request):
     # Check that the Visit delivery reports link is visible
     link = example_section.select_one("a")
     assert "Visit delivery reports" in link.text
+
+
+def test_report_footer_french_pluralization(client_request, mocker):
+    """Test report_footer with French language pluralization"""
+
+    page = client_request.get("main.storybook", component="report-footer", _test_page_title=False)
+
+    # French example with multiple ready reports
+    example_fr = page.select('[data-testid="example-7"]')[0]
+    status_text = example_fr.select_one(".text-gray-grey1")
+    assert "2 prêts" in normalize_spaces(status_text.text)
+
+    # French example with multiple deleted reports
+    example_fr_deleted = page.select('[data-testid="example-8"]')[0]
+    status_text = example_fr_deleted.select_one(".text-gray-grey1")
+    assert "2 supprimés" in normalize_spaces(status_text.text)
+
+
+def test_report_footer_singular_forms(client_request):
+    """Test report_footer with singular forms"""
+    page = client_request.get("main.storybook", component="report-footer", _test_page_title=False)
+
+    example = page.select('[data-testid="example-9"]')[0]
+    status_text = example.select_one(".text-gray-grey1")
+    assert "1 preparing, 1 ready and 1 deleted" in normalize_spaces(status_text.text)
