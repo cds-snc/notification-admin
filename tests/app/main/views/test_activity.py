@@ -175,6 +175,7 @@ def test_can_show_notifications(
         "counts",
         "notifications",
         "service_data_retention_days",
+        "report-footer",
     }
 
 
