@@ -1,0 +1,32 @@
+{% from "components/report-footer.html" import report_footer %}
+
+<div class="heading-large">Report Footer Examples</div>
+
+<hr />
+
+<h2 class="heading-medium">Example 1: not preparing report</h2>
+{{ report_footer(n_generating=0, n_ready=1, n_deleted=1, current_lang=current_lang, testid="example-1") }}
+
+<h2 class="heading-medium">Example 2: preparing report - button disabled</h2>
+{{ report_footer(n_generating=1, n_ready=1, n_deleted=1, current_lang=current_lang, testid="example-2") }}
+
+<h2 class="heading-medium">Example 3: preparing report - button disabled</h2>
+{{ report_footer(n_generating=1, n_ready=2, n_deleted=0, current_lang=current_lang, testid="example-3") }}
+
+<h2 class="heading-medium">Example 4: empty state</h2>
+{{ report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, testid="example-4") }}
+
+<h2 class="heading-medium">Example 5</h2>
+{{ report_footer(n_generating=0, n_ready=1, n_deleted=0, current_lang=current_lang, testid="example-5") }}
+
+<h2 class="heading-medium">Example 6</h2>
+{{ report_footer(n_generating=0, n_ready=2, n_deleted=0, current_lang=current_lang, testid="example-6") }}
+
+<h2 class="heading-medium">Example 8: French pluralization - multiple ready reports</h2>
+{{ report_footer(n_generating=0, n_ready=2, n_deleted=0, current_lang="fr", testid="example-7") }}
+
+<h2 class="heading-medium">Example 9: French pluralization - multiple deleted reports</h2>
+{{ report_footer(n_generating=0, n_ready=0, n_deleted=2, current_lang="fr", testid="example-8") }}
+
+<h2 class="heading-medium">Example 10: Singular forms</h2>
+{{ report_footer(n_generating=1, n_ready=1, n_deleted=1, current_lang=current_lang, testid="example-9") }}
