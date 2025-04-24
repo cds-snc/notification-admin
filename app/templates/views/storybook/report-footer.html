@@ -21,3 +21,12 @@
 
 <h2 class="heading-medium">Example 6</h2>
 {{ report_footer(n_generating=0, n_ready=2, n_deleted=0, current_lang=current_lang, testid="example-6") }}
+
+<h2 class="heading-medium">Example 8: French pluralization - multiple ready reports</h2>
+{{ report_footer(n_generating=0, n_ready=2, n_deleted=0, current_lang="fr", testid="example-7") }}
+
+<h2 class="heading-medium">Example 9: French pluralization - multiple deleted reports</h2>
+{{ report_footer(n_generating=0, n_ready=0, n_deleted=2, current_lang="fr", testid="example-8") }}
+
+<h2 class="heading-medium">Example 10: Singular forms</h2>
+{{ report_footer(n_generating=1, n_ready=1, n_deleted=1, current_lang=current_lang, testid="example-9") }}
