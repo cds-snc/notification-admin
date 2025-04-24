@@ -36,7 +36,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import SearchNotificationsForm
-from app.main.views.reports import get_report_totals, get_reports_partials
+from app.main.views.reports import get_reports_partials
 from app.statistics_utils import add_rate_to_job
 from app.utils import (
     generate_next_dict,
@@ -283,16 +283,6 @@ def view_notifications(service_id, message_type=None):
 @user_has_permissions()
 def get_notifications_as_json(service_id, message_type=None):
     return jsonify(get_notifications(service_id, message_type, status_override=request.args.get("status")))
-
-
-@main.route("/services/<service_id>/report-footer.json", methods=["GET"])
-@user_has_permissions()
-def get_report_footer(
-    service_id,
-):
-    reports = reports_api_client.get_reports_for_service(service_id)
-    report_totals = get_report_totals(reports)
-    return jsonify(report_totals)
 
 
 @main.route(
