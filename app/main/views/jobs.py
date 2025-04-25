@@ -93,12 +93,13 @@ def view_job(service_id, job_id):
             status = request.args.get("status")
             # the user has clicked the "prepare report" button
             current_lang = get_current_locale(current_app)
+            notification_statuses = status.split(",") if status else ["sending", "delivered", "failed"]
             reports_api_client.request_report(
                 user_id=current_user.id,
                 service_id=service_id,
                 language=current_lang,
                 report_type="email",  # todo: fix this
-                notification_statuses=status.split(","),
+                notification_statuses=notification_statuses,
                 job_id=job_id,
             )
         else:
