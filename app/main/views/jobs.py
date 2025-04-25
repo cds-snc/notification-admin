@@ -251,7 +251,7 @@ def view_notifications(service_id, message_type=None):
             service_id=service_id,
             language=current_lang,
             report_type=message_type,
-            notification_status_list=status.split(","),
+            notification_statuses=status.split(","),
         )
 
     return render_template(
