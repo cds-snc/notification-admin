@@ -85,9 +85,26 @@ def view_jobs(service_id):
     )
 
 
-@main.route("/services/<service_id>/jobs/<job_id>")
+@main.route("/services/<service_id>/jobs/<job_id>", methods=["GET", "POST"])
 @user_has_permissions()
 def view_job(service_id, job_id):
+    if request.method == "POST":
+        if "generate-report" in request.form.keys():
+            status = request.args.get("status")
+            # the user has clicked the "prepare report" button
+            current_lang = get_current_locale(current_app)
+            reports_api_client.request_report(
+                user_id=current_user.id,
+                service_id=service_id,
+                language=current_lang,
+                report_type="email",  # todo: fix this
+                notification_statuses=status.split(","),
+                job_id=job_id,
+            )
+        else:
+            job_api_client.cancel_job(service_id, job_id)
+            return redirect(url_for("main.service_dashboard", service_id=service_id))
+
     retention_default = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
     job = job_api_client.get_job(service_id, job_id)["data"]
     if job["job_status"] == "cancelled":
@@ -173,27 +190,6 @@ def view_job_csv(service_id, job_id):
             )
         },
     )
-
-
-# todo: rename from cancel_job
-@main.route("/services/<service_id>/jobs/<job_id>", methods=["POST"])
-@user_has_permissions("send_messages")
-def cancel_job(service_id, job_id):
-    if "generate-report" in request.form.keys():
-        status = request.args.get("status", "")
-        # the user has clicked the "prepare report" button
-        current_lang = get_current_locale(current_app)
-        reports_api_client.request_report(
-            user_id=current_user.id,
-            service_id=service_id,
-            language=current_lang,
-            report_type="email",  # todo: fix this
-            notification_statuses=status.split(","),
-            job_id=job_id,
-        )
-    else:
-        job_api_client.cancel_job(service_id, job_id)
-        return redirect(url_for("main.service_dashboard", service_id=service_id))
 
 
 @main.route("/services/<service_id>/jobs/<uuid:job_id>/cancel", methods=["GET", "POST"])
@@ -484,7 +480,7 @@ def get_job_partials(job, template):
             can_letter_job_be_cancelled = False
         else:
             can_letter_job_be_cancelled = True
-    reports = reports_api_client.get_reports_for_service(job["service_id"])
+    reports = reports_api_client.get_reports_for_service(job["service"])
     reports_partials = get_reports_partials(reports)
     return {
         "counts": counts,
