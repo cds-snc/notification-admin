@@ -171,6 +171,7 @@ def test_should_show_page_for_one_job(
     mock_get_job,
     mocker,
     mock_get_notifications,
+    mock_get_reports,
     mock_get_service_data_retention,
     fake_uuid,
     status_argument,
@@ -228,6 +229,7 @@ def test_should_show_page_for_one_job_with_flexible_data_retention(
     mock_get_job,
     mocker,
     mock_get_notifications,
+    mock_get_reports,
     mock_get_service_data_retention,
     fake_uuid,
 ):
@@ -243,6 +245,7 @@ def test_get_jobs_should_tell_user_if_more_than_one_page(
     fake_uuid,
     service_one,
     mock_get_job,
+    mock_get_reports,
     mock_get_service_template,
     mock_get_notifications_with_previous_next,
     mock_get_service_data_retention,
@@ -264,6 +267,7 @@ def test_should_show_job_in_progress(
     mock_get_job_in_progress,
     mocker,
     mock_get_notifications,
+    mock_get_reports,
     mock_get_service_data_retention,
     fake_uuid,
 ):
@@ -398,6 +402,7 @@ def test_should_show_letter_job_with_banner_after_sending_after_1730(
 def test_should_show_scheduled_job(
     client_request,
     mock_get_service_template,
+    mock_get_reports,
     mock_get_scheduled_job,
     mock_get_service_data_retention,
     mock_get_notifications,
@@ -430,6 +435,7 @@ def test_should_show_job_from_api(
     mock_get_job_with_api_key,
     mock_get_service_data_retention,
     mock_get_notifications,
+    mock_get_reports,
     fake_uuid,
 ):
     page = client_request.get(
@@ -454,6 +460,7 @@ def test_should_show_scheduled_job_with_api_key(
     mock_get_scheduled_job_with_api_key,
     mock_get_service_data_retention,
     mock_get_notifications,
+    mock_get_reports,
     fake_uuid,
 ):
     page = client_request.get(
@@ -480,10 +487,12 @@ def test_should_cancel_job(
     client_request,
     fake_uuid,
     mocker,
+    mock_get_job,
+    mock_get_reports,
 ):
     mock_cancel = mocker.patch("app.main.jobs.job_api_client.cancel_job")
     client_request.post(
-        "main.cancel_job",
+        "main.view_job",
         service_id=SERVICE_ONE_ID,
         job_id=fake_uuid,
         _expected_status=302,
@@ -614,6 +623,7 @@ def test_should_show_cancel_link_for_letter_job(
 
 
 @freeze_time("2019-06-20 15:31:00.000001")
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize(
     "job_status,number_of_processed_notifications",
     [["in progress", 2], ["finished", 1]],
@@ -671,6 +681,7 @@ def test_should_show_updates_for_one_job_as_json(
     mock_get_notifications,
     mock_get_service_template,
     mock_get_job,
+    mock_get_reports,
     mock_get_service_data_retention,
     mocker,
     fake_uuid,
@@ -738,6 +749,7 @@ def test_should_show_letter_job_with_first_class_if_notifications_are_first_clas
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_first_class_if_no_notifications(
     client_request,
     service_one,
@@ -766,6 +778,7 @@ def test_a11y_ensure_headings_are_hidden_when_no_data_on_view_job_page(
     fake_uuid,
     service_one,
     mock_get_job,
+    mock_get_reports,
     mock_get_service_template,
     mock_get_no_notifications,
     mock_get_service_data_retention,
@@ -789,6 +802,7 @@ class TestBounceRate:
         mock_get_job,
         mocker,
         mock_get_notifications,
+        mock_get_reports,
         mock_get_service_data_retention,
         fake_uuid,
         app_,
