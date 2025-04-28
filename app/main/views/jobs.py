@@ -88,6 +88,7 @@ def view_jobs(service_id):
 @main.route("/services/<service_id>/jobs/<job_id>", methods=["GET", "POST"])
 @user_has_permissions()
 def view_job(service_id, job_id):
+    job = job_api_client.get_job(service_id, job_id)["data"]
     if request.method == "POST":
         if "generate-report" in request.form.keys():
             status = request.args.get("status")
@@ -98,7 +99,7 @@ def view_job(service_id, job_id):
                 user_id=current_user.id,
                 service_id=service_id,
                 language=current_lang,
-                report_type="email",  # todo: fix this
+                report_type=job["template_type"],
                 notification_statuses=notification_statuses,
                 job_id=job_id,
             )
@@ -107,7 +108,6 @@ def view_job(service_id, job_id):
             return redirect(url_for("main.service_dashboard", service_id=service_id))
 
     retention_default = current_app.config.get("ACTIVITY_STATS_LIMIT_DAYS", None)
-    job = job_api_client.get_job(service_id, job_id)["data"]
     if job["job_status"] == "cancelled":
         abort(404)
 
