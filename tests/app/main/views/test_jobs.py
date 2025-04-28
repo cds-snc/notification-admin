@@ -487,6 +487,7 @@ def test_should_cancel_job(
     client_request,
     fake_uuid,
     mocker,
+    mock_get_job,
     mock_get_reports,
 ):
     mock_cancel = mocker.patch("app.main.jobs.job_api_client.cancel_job")
