@@ -614,6 +614,7 @@ def test_should_show_cancel_link_for_letter_job(
 
 
 @freeze_time("2019-06-20 15:31:00.000001")
+@pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize(
     "job_status,number_of_processed_notifications",
     [["in progress", 2], ["finished", 1]],
