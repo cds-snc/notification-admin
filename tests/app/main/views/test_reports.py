@@ -6,8 +6,8 @@ from freezegun import freeze_time
 from app.main.views.reports import get_report_totals, set_report_expired
 
 
-def test_reports_page_requires_platform_admin(client_request, platform_admin_user, service_one, mocker):
-    client_request.login(platform_admin_user)
+def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):
+    client_request.login(active_user_with_permissions)
     mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
     client_request.get(
         "main.reports",
@@ -16,14 +16,9 @@ def test_reports_page_requires_platform_admin(client_request, platform_admin_use
     )
 
 
-def test_reports_page_forbidden_for_non_platform_admin(client_request, mocker, service_one):
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
-    client_request.get("main.reports", service_id=service_one["id"], _expected_status=403)
-
-
 @freeze_time("2025-01-01 00:01:00.000000")
-def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
-    client_request.login(platform_admin_user)
+def test_get_reports_shows_list_of_reports(client_request, active_user_with_permissions, mock_get_reports, mocker, service_one):
+    client_request.login(active_user_with_permissions)
 
     response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
 
@@ -41,7 +36,7 @@ def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, 
 @freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_streams_the_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
@@ -53,7 +48,7 @@ def test_download_report_csv_streams_the_report(
     mock_response.iter_content.return_value = [b"csv,content,here"]
     mock_requests_get = mocker.patch("requests.get", return_value=mock_response)
 
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     response = client_request.get(
         "main.download_report_csv",
@@ -74,12 +69,12 @@ def test_download_report_csv_streams_the_report(
 @freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_returns_404_for_nonexistent_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
 ):
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     client_request.get(
         "main.download_report_csv",
@@ -90,30 +85,20 @@ def test_download_report_csv_returns_404_for_nonexistent_report(
     )
 
 
-@freeze_time("2025-01-01 00:01:00.000000")
-def test_download_report_csv_forbidden_for_non_platform_admin(
-    client_request,
-    mock_get_reports,
-    mocker,
-    service_one,
-):
-    client_request.get("main.download_report_csv", service_id=service_one["id"], report_id="report-1", _expected_status=403)
-
-
 def test_generate_report_creates_new_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
 ):
     mock_request_report = mocker.patch("app.reports_api_client.request_report")
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     client_request.post("main.generate_report", service_id=service_one["id"], _expected_status=200)
 
     mock_request_report.assert_called_once_with(
-        user_id=platform_admin_user["id"], service_id=service_one["id"], report_type="email", language="en"
+        user_id=active_user_with_permissions["id"], service_id=service_one["id"], report_type="email", language="en"
     )
 
 
