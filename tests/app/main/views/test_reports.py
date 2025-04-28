@@ -30,11 +30,11 @@ def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, 
     reports_table = response.find("table")
     rows = reports_table.find_all("tr")[1:]  # Skip header row
     assert len(rows) == 3
-    assert "2025-01-01 [en] report-1" in rows[0].text
+    assert "2024-12-31 19.01.00 EST [en]" in rows[0].text
     assert "Download before" in rows[0].text
-    assert "2025-01-01 [en] report-2" in rows[1].text
+    assert "2024-12-31 19.01.00 EST [en]" in rows[1].text
     assert "Deleted at" in rows[1].text  # Status changed due to expiration
-    assert "2025-01-01 [fr] report-3" in rows[2].text
+    assert "2024-12-31 19.01.00 HNE [fr]" in rows[2].text
     assert "Preparing report" in rows[2].text
 
 
@@ -65,7 +65,7 @@ def test_download_report_csv_streams_the_report(
 
     assert response.headers["Content-Type"] == "text/csv"
     assert "attachment; filename=" in response.headers["Content-Disposition"]
-    assert "2025-01-01 [en] report-1.csv" in response.headers["Content-Disposition"]
+    assert "2024-12-31 19.01.00 EST [en]" in response.headers["Content-Disposition"]
 
     mock_get_reports.assert_called_once_with(service_one["id"])
     mock_requests_get.assert_called_once_with("https://example.com/report-1.csv", stream=True)
