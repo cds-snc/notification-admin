@@ -26,7 +26,7 @@
     <button type="submit" class="button button-red mt-4" name="generate-report">Generate a report for testing</button>
     {% endcall %}
 </div>
-  {% set empty_txt = empty_list(_('You haven’t generated reports recently'), _('Check sent notifications or jobs to get started.'), 'emptyFlower', url_for('main.service_dashboard', service_id=current_service.id), _('Go to dashboard')) %}
+  {% set empty_txt = empty_list(_('You have not requested any delivery reports in the last week'), _('For a downloadable report, visit the dashboard. Then review sent messages or failures. At the end of those pages, use the button to ask GC Notify to prepare a report. We’ll email you when the report is ready. We delete reports 72 hours after they’re ready.'), 'emptyTruck', url_for('main.service_dashboard', service_id=current_service.id), _('Visit dashboard')) %}
 
   {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
 
