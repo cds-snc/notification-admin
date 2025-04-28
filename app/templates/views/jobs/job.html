@@ -118,7 +118,6 @@
       <div>&nbsp;</div>
     {% endif %}
 
-    {% if config["FF_ASYNC_REPORTS"] %}
     <div class="js-stick-at-bottom-when-scrolling" >
       {% call form_wrapper(action=action) %}
         {{ ajax_block(
@@ -128,6 +127,5 @@
         ) }}
       {% endcall %}
     </div>
-  {% endif %}
 
 {% endblock %}
