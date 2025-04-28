@@ -99,6 +99,7 @@ def test_can_show_notifications(
     mock_get_service_statistics,
     mock_get_service_data_retention,
     mock_has_no_jobs,
+    mock_get_reports,
     user,
     extra_args,
     expected_update_endpoint,
@@ -174,6 +175,7 @@ def test_can_show_notifications(
         "counts",
         "notifications",
         "service_data_retention_days",
+        "report-footer",
     }
 
 
@@ -182,6 +184,7 @@ def test_can_show_notifications_if_data_retention_not_available(
     mock_get_notifications,
     mock_get_service_statistics,
     mock_has_no_jobs,
+    mock_get_reports,
 ):
     page = client_request.get(
         "main.view_notifications",
@@ -239,6 +242,7 @@ def test_link_to_download_notifications(
     mock_get_service_statistics,
     mock_get_service_data_retention,
     mock_has_no_jobs,
+    mock_get_reports,
     user,
     query_parameters,
     expected_download_link,
@@ -253,6 +257,7 @@ def test_download_not_available_to_users_without_dashboard(
     client_request,
     active_caseworking_user,
     mock_has_jobs,
+    mock_get_reports,
 ):
     client_request.login(active_caseworking_user)
     client_request.get(
@@ -318,6 +323,7 @@ def test_shows_message_when_no_notifications(
     mock_get_service_statistics,
     mock_get_service_data_retention,
     mock_get_notifications_with_no_notifications,
+    mock_get_reports,
 ):
     page = client_request.get(
         "main.view_notifications",
@@ -376,6 +382,7 @@ def test_search_recipient_form(
     mock_get_notifications,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     initial_query_arguments,
     form_post_data,
     expected_search_box_label,
@@ -414,6 +421,7 @@ def test_should_show_notifications_for_a_service_with_next_previous(
     mock_get_notifications_with_previous_next,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     mocker,
 ):
     page = client_request.get(
@@ -508,6 +516,7 @@ def test_html_contains_notification_id(
     mock_get_notifications,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     mocker,
 ):
     page = client_request.get(
@@ -524,7 +533,13 @@ def test_html_contains_notification_id(
 
 
 def test_html_contains_links_for_failed_notifications(
-    client_request, active_user_with_permissions, mock_get_service_statistics, mock_get_service_data_retention, mocker, app_
+    client_request,
+    active_user_with_permissions,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mock_get_reports,
+    mocker,
+    app_,
 ):
     notifications = create_notifications(status="technical-failure")
     mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
@@ -561,6 +576,7 @@ def test_redacts_templates_that_should_be_redacted(
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     notification_type,
     expected_row_contents,
 ):
@@ -593,6 +609,7 @@ def test_big_numbers_and_search_show_for_email_sms(
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     message_type,
     tablist_visible,
     search_bar_visible,
@@ -657,6 +674,7 @@ def test_sending_status_hint_displays_correctly_on_notifications_page_new_status
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     message_type,
     status,
     feedback_reason,
@@ -685,6 +703,7 @@ def test_empty_message_display_on_notifications_report_when_none_sent(
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     mocker,
     app_,
     message_type,
@@ -715,6 +734,7 @@ def test_should_expected_hint_for_letters(
     active_user_with_permissions,
     mock_get_service_statistics,
     mock_get_service_data_retention,
+    mock_get_reports,
     mocker,
     fake_uuid,
     is_precompiled_letter,
