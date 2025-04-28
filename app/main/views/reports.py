@@ -47,14 +47,18 @@ def generate_report(service_id):
 
 def get_reports_partials(reports):
     for report in reports:
-        if report["status"] == "ready" and datetime.fromisoformat(report["expires_at"]) < datetime.now(timezone.utc):
-            report["status"] = "expired"
+        set_report_expired(report)
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
+    report_totals = get_report_totals(reports)
     return {
         "reports": render_template(
             "views/reports/reports-table.html",
             reports=reports,
-        )
+        ),
+        "report-footer": render_template(
+            "views/reports/report-footer.html",
+            report_totals=report_totals,
+        ),
     }
 
 
@@ -105,3 +109,24 @@ def get_report_filename(report, with_extension=True):
     if with_extension:
         name += ".csv"
     return name
+
+
+def set_report_expired(report):
+    if report["status"] == "ready" and datetime.fromisoformat(report["expires_at"]) < datetime.now(timezone.utc):
+        report["status"] = "expired"
+
+
+def get_report_totals(reports):
+    report_totals = {
+        "ready": 0,
+        "generating": 0,
+        "expired": 0,
+        "error": 0,
+    }
+    for report in reports:
+        set_report_expired(report)
+        if report["status"] in ["requested", "generating"]:
+            report_totals["generating"] += 1
+        else:
+            report_totals[report["status"]] += 1
+    return report_totals
