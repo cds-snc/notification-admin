@@ -3623,6 +3623,7 @@ class ClientRequest:
         _test_page_title: bool = True,
         _optional_args: str = "",
         _return_response: bool = False,
+        _headers: dict | None = None,
         **endpoint_kwargs,
     ):
         return ClientRequest.get_url(
@@ -3633,6 +3634,7 @@ class ClientRequest:
             _expected_redirect=_expected_redirect,
             _test_page_title=_test_page_title,
             _return_response=_return_response,
+            _headers=_headers,
         )
 
     def get_url(
@@ -3643,11 +3645,13 @@ class ClientRequest:
         _expected_redirect: str | None = None,
         _test_page_title: bool = True,
         _return_response: bool = False,
+        _headers: dict | None = None,
         **endpoint_kwargs,
     ):
         resp = self.logged_in_client.get(
             url,
             follow_redirects=_follow_redirects,
+            headers=_headers,
         )
         assert resp.status_code == _expected_status, resp.location
         if _expected_redirect:

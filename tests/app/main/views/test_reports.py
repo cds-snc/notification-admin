@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
+import pytest
+from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
 from app.main.views.reports import get_report_totals, set_report_expired
@@ -30,11 +32,11 @@ def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, 
     reports_table = response.find("table")
     rows = reports_table.find_all("tr")[1:]  # Skip header row
     assert len(rows) == 3
-    assert "2025-01-01 [en] report-1" in rows[0].text
+    assert "2024-12-31 19.01.00 EST [en]" in rows[0].text
     assert "Download before" in rows[0].text
-    assert "2025-01-01 [en] report-2" in rows[1].text
+    assert "2024-12-31 19.01.00 EST [en]" in rows[1].text
     assert "Deleted at" in rows[1].text  # Status changed due to expiration
-    assert "2025-01-01 [fr] report-3" in rows[2].text
+    assert "2024-12-31 19.01.00 HNE [fr]" in rows[2].text
     assert "Preparing report" in rows[2].text
 
 
@@ -65,7 +67,7 @@ def test_download_report_csv_streams_the_report(
 
     assert response.headers["Content-Type"] == "text/csv"
     assert "attachment; filename=" in response.headers["Content-Disposition"]
-    assert "2025-01-01 [en] report-1.csv" in response.headers["Content-Disposition"]
+    assert "2024-12-31 19.01.00 EST [en]" in response.headers["Content-Disposition"]
 
     mock_get_reports.assert_called_once_with(service_one["id"])
     mock_requests_get.assert_called_once_with("https://example.com/report-1.csv", stream=True)
@@ -195,3 +197,62 @@ def test_get_report_totals_marks_expired_reports_correctly():
     assert totals == {"ready": 0, "generating": 0, "expired": 1, "error": 0}
     # Check that the report's status was actually changed
     assert reports[0]["status"] == "expired"
+
+
+@pytest.mark.parametrize(
+    "referrer_page",
+    ["notifications/email?status=sending,delivered,failed", "notifications/email?status=sending", "jobs/12345"],
+)
+def test_reports_sets_back_link_when_navigating_from_different_page(
+    client_request, platform_admin_user, mock_get_reports, mocker, service_one, referrer_page
+):
+    client_request.login(platform_admin_user)
+
+    # Simulate coming from the dashboard page
+    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+
+    # Make a request to the reports page with the dashboard as referer
+    response = client_request.get(
+        "main.reports",
+        service_id=service_one["id"],
+        _expected_status=200,
+        _test_page_title=False,
+        _headers={"Referer": referring_url},
+        _return_response=True,
+    )
+
+    # Verify that the back_link was set in the session
+    with client_request.session_transaction() as session:
+        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+
+    # Verify the back link is present in the page content
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert referring_url in str(page)
+
+
+def test_reports_uses_session_back_link_after_refresh(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
+    # Set up an initial back link in the session
+    expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
+    client_request.login(platform_admin_user)
+
+    with client_request.session_transaction() as session:
+        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+
+    # Make the request with the same URL as referer to simulate a refresh
+    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    response = client_request.get(
+        "main.reports",
+        service_id=service_one["id"],
+        _expected_status=200,
+        _test_page_title=False,
+        _headers={"Referer": current_url},
+        _return_response=True,
+    )
+
+    # Verify the session still contains the original back link
+    with client_request.session_transaction() as session:
+        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+
+    # The page should still have access to the back_link
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert expected_back_link in str(page)

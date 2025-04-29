@@ -7,10 +7,13 @@ from flask import (
     flash,
     jsonify,
     render_template,
+    request,
+    session,
     stream_with_context,
     url_for,
 )
 from flask_login import current_user
+from notifications_utils.timezones import convert_utc_to_local_timezone
 
 from app import reports_api_client
 from app.articles import get_current_locale
@@ -25,8 +28,23 @@ CHUNK_SIZE = 1024 * 1024  # 1 MB
 def reports(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
     partials = get_reports_partials(reports)
+
+    # Get the referrer URL from the request
+    referer = request.referrer
+
+    # If referer exists and is not the current page (not a refresh)
+    if referer and not referer.endswith(f"/services/{service_id}/reports"):
+        # Store the referer in session
+        session[f"back_link_{service_id}_reports"] = referer
+
+    # Use stored back link from session if available, otherwise use a default
+    back_link = session.get(f"back_link_{service_id}_reports", url_for("main.service_dashboard", service_id=service_id))
+
     return render_template(
-        "views/reports/reports.html", partials=partials, updates_url=url_for(".view_reports_updates", service_id=service_id)
+        "views/reports/reports.html",
+        partials=partials,
+        updates_url=url_for(".view_reports_updates", service_id=service_id),
+        back_link=back_link,
     )
 
 
@@ -40,8 +58,15 @@ def generate_report(service_id):
     for report in reports:
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
     partials = get_reports_partials(reports)
+
+    # Use stored back link from session if available, otherwise use a default
+    back_link = session.get(f"back_link_{service_id}_reports", url_for("main.service_dashboard", service_id=service_id))
+
     return render_template(
-        "views/reports/reports.html", partials=partials, updates_url=url_for(".view_reports_updates", service_id=service_id)
+        "views/reports/reports.html",
+        partials=partials,
+        updates_url=url_for(".view_reports_updates", service_id=service_id),
+        back_link=back_link,
     )
 
 
@@ -103,12 +128,31 @@ def download_report_csv(service_id, report_id):
 def get_report_filename(report, with_extension=True):
     # Parse the ISO datetime string to a datetime object
     requested_at = datetime.fromisoformat(report["requested_at"])
-    date_str = requested_at.strftime("%Y-%m-%d")
-    partial_id = report["id"][:8]
-    name = f"{date_str} [{report["language"]}] {partial_id}"
+
+    # Convert UTC time to Eastern Time (America/Toronto) and format with timezone indicator
+    if requested_at.tzinfo is not None:
+        # If it has timezone, we can directly pass it to convert function but need to make it naive first
+        # depending on how convert_utc_to_local_timezone is implemented
+        local_time = convert_utc_to_local_timezone(requested_at.replace(tzinfo=None))
+    else:
+        # Original behavior for naive datetimes
+        local_time = convert_utc_to_local_timezone(requested_at)
+
+    # Determine if it's EDT or EST
+    timezone_name = "EDT" if local_time.dst() else "EST"
+    if report["language"] == "fr":
+        timezone_name = "HAE" if local_time.dst() else "HNE"
+
+    # Format the datetime with timezone indicator
+    formatted_datetime = local_time.strftime("%Y-%m-%d %H.%M.%S")
+
+    # Create report names with proper formatting
+    lang_indicator = f"[{report['language']}]" if report["language"] else "[en]"
+    report_name = f"{formatted_datetime} {timezone_name} {lang_indicator}"
+
     if with_extension:
-        name += ".csv"
-    return name
+        report_name += ".csv"
+    return report_name
 
 
 def set_report_expired(report):
