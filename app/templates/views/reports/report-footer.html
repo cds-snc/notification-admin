@@ -1,6 +1,6 @@
 {% from "components/report-footer.html" import report_footer %}
 
-<div class="ajax-block-container">
+<div class="ajax-block-container" data-module="report-footer">
     {{ report_footer(
         n_generating=report_totals["generating"],
         n_deleted=report_totals["expired"],
