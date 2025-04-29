@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
+import pytest
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
@@ -198,6 +199,37 @@ def test_get_report_totals_marks_expired_reports_correctly():
     assert reports[0]["status"] == "expired"
 
 
+@pytest.mark.parametrize(
+    "referrer_page",
+    ["notifications/email?status=sending,delivered,failed", "notifications/email?status=sending", "jobs/12345"],
+)
+def test_reports_sets_back_link_when_navigating_from_different_page(
+    client_request, platform_admin_user, mock_get_reports, mocker, service_one, referrer_page
+):
+    client_request.login(platform_admin_user)
+
+    # Simulate coming from the dashboard page
+    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+
+    # Make a request to the reports page with the dashboard as referer
+    response = client_request.get(
+        "main.reports",
+        service_id=service_one["id"],
+        _expected_status=200,
+        _test_page_title=False,
+        _headers={"Referer": referring_url},
+        _return_response=True,
+    )
+
+    # Verify that the back_link was set in the session
+    with client_request.session_transaction() as session:
+        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+
+    # Verify the back link is present in the page content
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert referring_url in str(page)
+
+
 def test_reports_uses_session_back_link_after_refresh(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
     # Set up an initial back link in the session
     expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
@@ -213,7 +245,7 @@ def test_reports_uses_session_back_link_after_refresh(client_request, platform_a
         service_id=service_one["id"],
         _expected_status=200,
         _test_page_title=False,
-        headers={"Referer": current_url},
+        _headers={"Referer": current_url},
         _return_response=True,
     )
 
