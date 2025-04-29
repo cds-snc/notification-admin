@@ -11,6 +11,7 @@ from flask import (
     url_for,
 )
 from flask_login import current_user
+from notifications_utils.timezones import convert_utc_to_local_timezone
 
 from app import reports_api_client
 from app.articles import get_current_locale
@@ -103,12 +104,31 @@ def download_report_csv(service_id, report_id):
 def get_report_filename(report, with_extension=True):
     # Parse the ISO datetime string to a datetime object
     requested_at = datetime.fromisoformat(report["requested_at"])
-    date_str = requested_at.strftime("%Y-%m-%d")
-    partial_id = report["id"][:8]
-    name = f"{date_str} [{report["language"]}] {partial_id}"
+
+    # Convert UTC time to Eastern Time (America/Toronto) and format with timezone indicator
+    if requested_at.tzinfo is not None:
+        # If it has timezone, we can directly pass it to convert function but need to make it naive first
+        # depending on how convert_utc_to_local_timezone is implemented
+        local_time = convert_utc_to_local_timezone(requested_at.replace(tzinfo=None))
+    else:
+        # Original behavior for naive datetimes
+        local_time = convert_utc_to_local_timezone(requested_at)
+
+    # Determine if it's EDT or EST
+    timezone_name = "EDT" if local_time.dst() else "EST"
+    if report["language"] == "fr":
+        timezone_name = "HAE" if local_time.dst() else "HNE"
+
+    # Format the datetime with timezone indicator
+    formatted_datetime = local_time.strftime("%Y-%m-%d %H.%M.%S")
+
+    # Create report names with proper formatting
+    lang_indicator = f"[{report['language']}]" if report["language"] else "[en]"
+    report_name = f"{formatted_datetime} {timezone_name} {lang_indicator}"
+
     if with_extension:
-        name += ".csv"
-    return name
+        report_name += ".csv"
+    return report_name
 
 
 def set_report_expired(report):
