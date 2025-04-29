@@ -364,14 +364,7 @@ def get_dashboard_partials(service_id):
     logger = logging.getLogger(__name__)
     timings = {}
 
-    def time_function(func_name, *args, **kwargs):
-        start = time.time()
-        result = args[0](*args[1:], **kwargs)
-        end = time.time()
-        duration = (end - start) * 1000  # Convert to milliseconds
-        timings[func_name] = duration
-        logger.info(f"TIMING: {func_name} took {duration:.2f}ms")
-        return result
+
 
     def aggregate_by_type(data, daily_data):
         counts = {"sms": 0, "email": 0, "letter": 0}
