@@ -127,7 +127,7 @@ def view_job(service_id, job_id):
         "letter has" if job["notification_count"] == 1 else "letters have",
         printing_today_or_tomorrow(),
     )
-    partials = get_job_partials(job, template)
+    partials = get_job_partials(job, template, do_something_bad=True)
     can_cancel_letter_job = partials["can_letter_job_be_cancelled"]
 
     # get service retention
@@ -264,10 +264,11 @@ def view_notifications(service_id, message_type=None):
             report_type=message_type,
             notification_statuses=status.split(","),
         )
+        do_something_bad = True
 
     return render_template(
         "views/notifications.html",
-        partials=get_notifications(service_id, message_type),
+        partials=get_notifications(service_id, message_type, do_something_bad=do_something_bad),
         message_type=message_type,
         status=status,
         page=request.args.get("page", 1),
@@ -301,7 +302,7 @@ def get_notifications_as_json(service_id, message_type=None):
     endpoint="view_notifications_csv",
 )
 @user_has_permissions()
-def get_notifications(service_id, message_type, status_override=None):
+def get_notifications(service_id, message_type, status_override=None, do_something_bad=False):
     # TODO get the api to return count of pages as well.
     page = get_page_from_request()
     if page is None:
@@ -357,7 +358,7 @@ def get_notifications(service_id, message_type, status_override=None):
         download_link = None
 
     reports = reports_api_client.get_reports_for_service(service_id)
-    reports_partials = get_reports_partials(reports)
+    reports_partials = get_reports_partials(reports, force_loading=do_something_bad)
     return {
         "service_data_retention_days": service_data_retention_days,
         "counts": render_template(
@@ -446,7 +447,7 @@ def _get_job_counts(job):
     ]
 
 
-def get_job_partials(job, template):
+def get_job_partials(job, template, do_something_bad=False):
     filter_args = parse_filter_args(request.args)
     filter_args["status"] = set_status_filters(filter_args)
     notifications = notification_api_client.get_notifications_for_service(job["service"], job["id"], status=filter_args["status"])
@@ -482,7 +483,7 @@ def get_job_partials(job, template):
         else:
             can_letter_job_be_cancelled = True
     reports = reports_api_client.get_reports_for_service(job["service"])
-    reports_partials = get_reports_partials(reports)
+    reports_partials = get_reports_partials(reports, force_loading=do_something_bad)
     return {
         "counts": counts,
         "notifications_header": render_template(

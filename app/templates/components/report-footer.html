@@ -1,4 +1,4 @@
-{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, testid=None) %}
+{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, force_loading=false, testid=None) %}
     {% set total_reports = n_generating + n_ready + n_deleted %}
     <div class="flex container mx-0 report-footer-container" {% if testid %}data-testid="{{ testid }}"{% endif %}>
         <div class="flex-grow text-small">
@@ -32,7 +32,7 @@
             {% endif %}
         </div>
         <div class="flex flex-grow-0 items-center">
-            {% if n_generating > 0 %}
+            {% if n_generating > 0 or force_loading %}
                 <div class="loading-spinner-large"></div>
             {% endif %}
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -40,7 +40,7 @@
                 type="submit" 
                 class="button button-secondary"
                 name="generate-report" 
-                {% if n_generating > 0 %}disabled{% endif %}
+                {% if n_generating > 0 or force_loading %}disabled{% endif %}
             >
                 {{ _("Prepare report") }}
             </button>

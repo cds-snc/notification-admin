@@ -70,7 +70,7 @@ def generate_report(service_id):
     )
 
 
-def get_reports_partials(reports):
+def get_reports_partials(reports, force_loading=False):
     for report in reports:
         set_report_expired(report)
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
@@ -83,6 +83,7 @@ def get_reports_partials(reports):
         "report-footer": render_template(
             "views/reports/report-footer.html",
             report_totals=report_totals,
+            force_loading=force_loading,
         ),
     }
 
