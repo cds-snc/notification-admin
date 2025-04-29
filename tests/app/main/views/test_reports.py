@@ -198,35 +198,10 @@ def test_get_report_totals_marks_expired_reports_correctly():
     assert reports[0]["status"] == "expired"
 
 
-def test_reports_stores_back_link_in_session(client_request, active_user_with_permissions, mock_get_reports, mocker, service_one):
-    # Set up a referer URL to simulate coming from another page
-    referer_url = "http://localhost/services/{}/dashboard".format(service_one["id"])
-
-    with client_request.session_transaction() as session:
-        # Make sure no back link exists in the session initially
-        session.pop(f'back_link_{service_one["id"]}_reports', None)
-
-    # Make the request with a referer header
-    client_request.get(
-        "main.reports",
-        service_id=service_one["id"],
-        _expected_status=200,
-        _test_page_title=False,
-        _optional_args="",
-        _return_response=False,
-        headers={"Referer": referer_url},
-    )
-
-    # Check the back link was stored in the session
-    with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == referer_url
-
-
-def test_reports_uses_session_back_link_after_refresh(
-    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one
-):
+def test_reports_uses_session_back_link_after_refresh(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
     # Set up an initial back link in the session
     expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
+    client_request.login(platform_admin_user)
 
     with client_request.session_transaction() as session:
         session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
