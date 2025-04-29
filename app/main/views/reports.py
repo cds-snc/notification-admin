@@ -7,6 +7,8 @@ from flask import (
     flash,
     jsonify,
     render_template,
+    request,
+    session,
     stream_with_context,
     url_for,
 )
@@ -26,8 +28,23 @@ CHUNK_SIZE = 1024 * 1024  # 1 MB
 def reports(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
     partials = get_reports_partials(reports)
+
+    # Get the referrer URL from the request
+    referer = request.referrer
+
+    # If referer exists and is not the current page (not a refresh)
+    if referer and not referer.endswith(f"/services/{service_id}/reports"):
+        # Store the referer in session
+        session[f"back_link_{service_id}_reports"] = referer
+
+    # Use stored back link from session if available, otherwise use a default
+    back_link = session.get(f"back_link_{service_id}_reports", url_for("main.service_dashboard", service_id=service_id))
+
     return render_template(
-        "views/reports/reports.html", partials=partials, updates_url=url_for(".view_reports_updates", service_id=service_id)
+        "views/reports/reports.html",
+        partials=partials,
+        updates_url=url_for(".view_reports_updates", service_id=service_id),
+        back_link=back_link,
     )
 
 
@@ -41,8 +58,15 @@ def generate_report(service_id):
     for report in reports:
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
     partials = get_reports_partials(reports)
+
+    # Use stored back link from session if available, otherwise use a default
+    back_link = session.get(f"back_link_{service_id}_reports", url_for("main.service_dashboard", service_id=service_id))
+
     return render_template(
-        "views/reports/reports.html", partials=partials, updates_url=url_for(".view_reports_updates", service_id=service_id)
+        "views/reports/reports.html",
+        partials=partials,
+        updates_url=url_for(".view_reports_updates", service_id=service_id),
+        back_link=back_link,
     )
 
 
