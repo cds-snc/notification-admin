@@ -101,8 +101,9 @@
   }
 
   /* Add padding on report-footer when it sticks */
-  .js-stick-at-bottom-when-scrolling.content-fixed .report-footer-container, 
-  .js-stick-at-bottom-when-scrolling.content-fixed-onload .report-footer-container{
+  .js-stick-at-bottom-when-scrolling.content-fixed .report-footer-container,
+  .js-stick-at-bottom-when-scrolling.content-fixed-onload
+    .report-footer-container {
     @apply pr-10;
   }
 
