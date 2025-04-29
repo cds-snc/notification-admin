@@ -26,10 +26,21 @@
         $form = $component.closest('form');
       }
       
-      // If we still can't find a form, we can't proceed
+      // If we can't find a form via DOM traversal, try to find it by more flexible means
       if ($form.length === 0) {
-        console.error('Report Footer: Cannot find form for button');
-        return;
+        // Look for any form in the parent container of the component
+        $form = $component.parents().find('form').first();
+      }
+      
+      // Last resort - if we still can't find a form, create one dynamically
+      if ($form.length === 0) {
+        console.log('Report Footer: Creating form dynamically');
+        $form = $('<form method="POST"></form>');
+        $form.attr('action', window.location.href);
+        // Wrap the button in this form
+        $button.wrap($form);
+        // Re-acquire the form reference after DOM manipulation
+        $form = $button.closest('form');
       }
       
       // Flag to track if our button triggered the submission
