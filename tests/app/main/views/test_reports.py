@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
+from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
 from app.main.views.reports import get_report_totals, set_report_expired
@@ -195,3 +196,56 @@ def test_get_report_totals_marks_expired_reports_correctly():
     assert totals == {"ready": 0, "generating": 0, "expired": 1, "error": 0}
     # Check that the report's status was actually changed
     assert reports[0]["status"] == "expired"
+
+
+def test_reports_stores_back_link_in_session(client_request, active_user_with_permissions, mock_get_reports, mocker, service_one):
+    # Set up a referer URL to simulate coming from another page
+    referer_url = "http://localhost/services/{}/dashboard".format(service_one["id"])
+
+    with client_request.session_transaction() as session:
+        # Make sure no back link exists in the session initially
+        session.pop(f'back_link_{service_one["id"]}_reports', None)
+
+    # Make the request with a referer header
+    client_request.get(
+        "main.reports",
+        service_id=service_one["id"],
+        _expected_status=200,
+        _test_page_title=False,
+        _optional_args="",
+        _return_response=False,
+        headers={"Referer": referer_url},
+    )
+
+    # Check the back link was stored in the session
+    with client_request.session_transaction() as session:
+        assert session[f'back_link_{service_one["id"]}_reports'] == referer_url
+
+
+def test_reports_uses_session_back_link_after_refresh(
+    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one
+):
+    # Set up an initial back link in the session
+    expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
+
+    with client_request.session_transaction() as session:
+        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+
+    # Make the request with the same URL as referer to simulate a refresh
+    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    response = client_request.get(
+        "main.reports",
+        service_id=service_one["id"],
+        _expected_status=200,
+        _test_page_title=False,
+        headers={"Referer": current_url},
+        _return_response=True,
+    )
+
+    # Verify the session still contains the original back link
+    with client_request.session_transaction() as session:
+        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+
+    # The page should still have access to the back_link
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert expected_back_link in str(page)
