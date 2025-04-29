@@ -364,8 +364,6 @@ def get_dashboard_partials(service_id):
     logger = logging.getLogger(__name__)
     timings = {}
 
-
-
     def aggregate_by_type(data, daily_data):
         counts = {"sms": 0, "email": 0, "letter": 0}
         # flatten out this structure to match the above
