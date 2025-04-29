@@ -63,7 +63,6 @@ def mock_get_service_settings_page_common(
                 "Label Value Action",
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -87,7 +86,6 @@ def mock_get_service_settings_page_common(
                 "Label Value Action",
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -117,7 +115,6 @@ def mock_get_service_settings_page_common(
                 "Email branding English Government of Canada signature Change",
                 "Data retention email Change",
                 "Receive inbound SMS Off Change",
-                "Email authentication Off Change",
             ],
         ),
     ],
@@ -225,7 +222,6 @@ def test_organisation_name_links_to_org_dashboard(
             [
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -247,7 +243,6 @@ def test_organisation_name_links_to_org_dashboard(
             [
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Email code or text message code Change",
                 "API rate limit per minute 100 calls",
                 "Label Value Action",
                 "Send emails On Change",
@@ -1427,7 +1422,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 5) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    assert get_row(page, 4) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(
@@ -3952,12 +3947,6 @@ def test_contact_link_is_not_displayed_without_the_upload_document_permission(
             "main.service_set_inbound_sms",
             ["sms", "inbound_sms"],
             ("Your service can receive text messages sent to 0781239871."),
-        ),
-        ("main.service_set_auth_type", [], ("Text message code")),
-        (
-            "main.service_set_auth_type",
-            ["email_auth"],
-            ("Email code or text message code"),
         ),
     ],
 )
