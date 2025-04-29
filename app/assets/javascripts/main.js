@@ -226,3 +226,70 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
     }
   }
 }).call(this);
+
+// Report form handler - prevents page reload and shows spinner immediately
+(function() {
+  "use strict";
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Find forms containing the "Prepare report" button
+    const reportForms = document.querySelectorAll('form button[name="generate-report"]');
+    
+    if (reportForms.length === 0) return;
+
+    reportForms.forEach(button => {
+      const form = button.closest('form');
+      if (!form) return;
+
+      form.addEventListener('submit', function(event) {
+        if (event.submitter && event.submitter.name === 'generate-report') {
+          event.preventDefault();
+          
+          // Disable the button immediately
+          button.disabled = true;
+          
+          // Show the loading spinner immediately
+          const reportFooterContainer = document.querySelector('.report-footer-container');
+          if (reportFooterContainer) {
+            const spinnerContainer = document.createElement('div');
+            spinnerContainer.className = 'loading-spinner-large';
+            reportFooterContainer.querySelector('.flex-grow-0').prepend(spinnerContainer);
+          }
+          
+          // Get the form data
+          const formData = new FormData(form);
+          
+          // Make sure we're passing the generate-report button name and value
+          formData.append('generate-report', '');
+          
+          // Make the AJAX request
+          fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              // Don't set Content-Type header - let the browser set it with boundary for multipart/form-data
+            },
+            credentials: 'same-origin' // Include cookies for session authentication
+          }).then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            // The ajax-block will automatically update with the new report totals
+            // via its polling mechanism
+          }).catch(error => {
+            console.error('Error preparing report:', error);
+            // Re-enable the button if there was an error
+            button.disabled = false;
+            
+            // Remove the spinner if there was an error
+            if (reportFooterContainer) {
+              const spinner = reportFooterContainer.querySelector('.loading-spinner-large');
+              if (spinner) spinner.remove();
+            }
+          });
+        }
+      });
+    });
+  });
+})();
