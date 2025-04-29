@@ -189,9 +189,9 @@ def test_get_report_totals_marks_expired_reports_correctly():
     ["notifications/email?status=sending,delivered,failed", "notifications/email?status=sending", "jobs/12345"],
 )
 def test_reports_sets_back_link_when_navigating_from_different_page(
-    client_request, platform_admin_user, mock_get_reports, mocker, service_one, referrer_page
+    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one, referrer_page
 ):
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     # Simulate coming from the dashboard page
     referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
@@ -215,10 +215,12 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
     assert referring_url in str(page)
 
 
-def test_reports_uses_session_back_link_after_refresh(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
+def test_reports_uses_session_back_link_after_refresh(
+    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one
+):
     # Set up an initial back link in the session
     expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     with client_request.session_transaction() as session:
         session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
