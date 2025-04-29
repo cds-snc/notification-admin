@@ -1,4 +1,5 @@
 import calendar
+import time
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -358,10 +359,6 @@ def aggregate_notifications_stats(template_statistics):
 
 
 def get_dashboard_partials(service_id):
-    import logging
-    import time
-
-    logger = logging.getLogger(__name__)
     timings = {}
 
     def aggregate_by_type(data, daily_data):
@@ -431,8 +428,8 @@ def get_dashboard_partials(service_id):
 
     # Calculate total time
     total_time = (time.time() - start_total) * 1000
-    logger.info(f"TIMING: Total get_dashboard_partials execution took {total_time:.2f}ms")
-    logger.info(f"TIMING SUMMARY: {timings}")
+    current_app.logger.info(f"TIMING: Total get_dashboard_partials execution took {total_time:.2f}ms")
+    current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
