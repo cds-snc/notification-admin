@@ -269,6 +269,7 @@ def test_problem_email_address_filter_only_present_when_viewing_emails(
     mock_get_service_statistics,
     mock_get_service_data_retention,
     mock_has_no_jobs,
+    mock_get_reports,
     has_problem_address_filter,
 ):
     client_request.login(create_active_user_with_permissions())

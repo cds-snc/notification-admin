@@ -1,7 +1,7 @@
 import json
 import os
 from contextlib import contextmanager
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import List
 from unittest.mock import Mock
 from uuid import UUID, uuid4
@@ -10,6 +10,7 @@ import pytest
 import requests
 from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
+from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
@@ -3621,6 +3622,8 @@ class ClientRequest:
         _expected_redirect: str | None = None,
         _test_page_title: bool = True,
         _optional_args: str = "",
+        _return_response: bool = False,
+        _headers: dict | None = None,
         **endpoint_kwargs,
     ):
         return ClientRequest.get_url(
@@ -3630,6 +3633,8 @@ class ClientRequest:
             _follow_redirects=_follow_redirects,
             _expected_redirect=_expected_redirect,
             _test_page_title=_test_page_title,
+            _return_response=_return_response,
+            _headers=_headers,
         )
 
     def get_url(
@@ -3639,15 +3644,20 @@ class ClientRequest:
         _follow_redirects: bool = False,
         _expected_redirect: str | None = None,
         _test_page_title: bool = True,
+        _return_response: bool = False,
+        _headers: dict | None = None,
         **endpoint_kwargs,
     ):
         resp = self.logged_in_client.get(
             url,
             follow_redirects=_follow_redirects,
+            headers=_headers,
         )
         assert resp.status_code == _expected_status, resp.location
         if _expected_redirect:
             assert resp.location == _expected_redirect
+        if _return_response:
+            return resp
         page = BeautifulSoup(resp.data.decode("utf-8"), "html.parser")
         if _test_page_title:
             count_of_h1s = len(page.select("h1"))
@@ -4883,3 +4893,48 @@ def create_notifications(
         postage=postage,
         to=to,
     )
+
+
+@freeze_time("2025-01-01 00:01:00.000000")
+def mock_reports_data():
+    return [
+        {
+            "id": "report-1",
+            "status": "ready",
+            "language": "en",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+            "requested_at": datetime.now(timezone.utc).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
+            "url": "https://example.com/report-1.csv",
+        },
+        {
+            "id": "report-2",
+            "status": "ready",
+            "language": "en",
+            "expires_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
+            "requested_at": datetime.now(timezone.utc).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
+        },
+        {
+            "id": "report-3",
+            "status": "generating",
+            "language": "fr",
+            "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+            "requested_at": datetime.now(timezone.utc).isoformat(),
+            "requesting_user": {
+                "id": "user-1",
+                "name": "Test User",
+            },
+        },
+    ]
+
+
+@pytest.fixture(scope="function")
+def mock_get_reports(mocker):
+    return mocker.patch("app.reports_api_client.get_reports_for_service", return_value=mock_reports_data())
