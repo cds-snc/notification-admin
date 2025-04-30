@@ -268,18 +268,6 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
           // Disable the button (redundant but ensures it's disabled)
           button.disabled = true;
 
-          // Show the loading spinner immediately
-          const reportFooterContainer = document.querySelector(
-            ".report-footer-container",
-          );
-          if (reportFooterContainer) {
-            const spinnerContainer = document.createElement("div");
-            spinnerContainer.className = "loading-spinner-large";
-            reportFooterContainer
-              .querySelector(".flex-grow-0")
-              .prepend(spinnerContainer);
-          }
-
           // Get the form data
           const formData = new FormData(form);
 
@@ -313,13 +301,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
               button.classList.remove("disabled");
               isSubmitting = false;
 
-              // Remove the spinner if there was an error
-              if (reportFooterContainer) {
-                const spinner = reportFooterContainer.querySelector(
-                  ".loading-spinner-large",
-                );
-                if (spinner) spinner.remove();
-              }
+            
             });
         }
       });
