@@ -240,12 +240,29 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
     reportForms.forEach(button => {
       const form = button.closest('form');
       if (!form) return;
+      
+      // Track submission state to prevent double submissions
+      let isSubmitting = false;
+      
+      // Add click handler to immediately disable the button
+      button.addEventListener('click', function(e) {
+        if (isSubmitting) {
+          e.preventDefault();
+          return false;
+        }
+        // Visual feedback - disable immediately
+        button.disabled = true;
+      });
 
       form.addEventListener('submit', function(event) {
         if (event.submitter && event.submitter.name === 'generate-report') {
           event.preventDefault();
           
-          // Disable the button immediately
+          // Prevent double submissions
+          if (isSubmitting) return false;
+          isSubmitting = true;
+          
+          // Disable the button (redundant but ensures it's disabled)
           button.disabled = true;
           
           // Show the loading spinner immediately
@@ -277,10 +294,14 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
             }
             // The ajax-block will automatically update with the new report totals
             // via its polling mechanism
+            button.disabled = false;
+            isSubmitting = false;
+
           }).catch(error => {
             console.error('Error preparing report:', error);
             // Re-enable the button if there was an error
             button.disabled = false;
+            isSubmitting = false;
             
             // Remove the spinner if there was an error
             if (reportFooterContainer) {
