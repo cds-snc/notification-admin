@@ -38,7 +38,7 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
                 type="submit" 
-                class="button button-secondary"
+                class="button button-secondary {% if n_generating > 0 %}disabled{% endif %}"
                 name="generate-report" 
                 {% if n_generating > 0 %}disabled{% endif %}
             >

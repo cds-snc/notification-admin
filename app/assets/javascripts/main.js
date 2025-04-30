@@ -254,6 +254,7 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
         }
         // Visual feedback - disable immediately
         button.disabled = true;
+        button.classList.add("disabled");
       });
 
       form.addEventListener("submit", function (event) {
@@ -302,12 +303,14 @@ $(() => $(".banner-dangerous").eq(0).trigger("focus"));
               // The ajax-block will automatically update with the new report totals
               // via its polling mechanism
               button.disabled = false;
+              button.classList.remove("disabled");
               isSubmitting = false;
             })
             .catch((error) => {
               console.error("Error preparing report:", error);
               // Re-enable the button if there was an error
               button.disabled = false;
+              button.classList.remove("disabled");
               isSubmitting = false;
 
               // Remove the spinner if there was an error
