@@ -148,12 +148,11 @@ def user_profile_mobile_number():
             session[NEW_MOBILE] = form.mobile_number.data
             return redirect(url_for(".user_profile_mobile_number_authenticate"))
         else:
-            if form.mobile_number.data == "":
-                return render_template(
-                    "views/user-profile/change.html",
-                    thing=_("mobile number"),
-                    form_field=form.mobile_number,
-                )
+            return render_template(
+                "views/user-profile/change.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+            )
     else:
         # if they dont have a number set, just go right to the edit page
         if current_user.mobile_number is None:
