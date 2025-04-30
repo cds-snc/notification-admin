@@ -65,16 +65,6 @@
     {% endcall %}
   {% endif %}
 
-  {% if total_notifications > 0 %}
-    {% if current_user.has_permissions('view_activity') %}
-      <div class="mb-12 mt-12 clear-both contain-floats">
-        <a href="{{ download_link }}" download="download" class="text-smaller leading-tight font-bold">
-          {{ _('Download this report') }} 
-        </a>
-        <div class="mt-2 text-small leading-tight font-normal">{{ _('Data available for') }} {{ partials.service_data_retention_days }} {{ _('days') }}</div>
-      </div>
-    {% endif %}
-  {% endif %}
   {{ ajax_block(
     partials,
     url_for('.get_notifications_as_json', service_id=current_service.id, message_type=message_type, status=status, page=page),
@@ -82,7 +72,7 @@
     form='search-form'
   ) }}
 
-  {% if config["FF_ASYNC_REPORTS"] %}
+  {% if current_user.has_permissions('view_activity') %}
     <div class="js-stick-at-bottom-when-scrolling" >
       {% call form_wrapper(action=action) %}
         {{ ajax_block(
