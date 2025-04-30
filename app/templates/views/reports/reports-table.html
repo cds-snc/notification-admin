@@ -1,8 +1,15 @@
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
+{% from "components/empty-list.html" import empty_list  %}
   
   {% set heading_1 = _('Report') %}
   {% set heading_2 = right_aligned_field_heading(_('Status')) %}
-
+  {% set empty_txt = empty_list(
+      _('You have not requested any delivery reports in the last week'),
+      _('For a downloadable report, visit the dashboard. Then review sent messages or failures. At the end of those pages, use the button to ask GC Notify to prepare a report. We’ll email you when the report is ready. We delete reports 72 hours after they’re ready.'),
+      'emptyFlower',
+      url_for('main.service_dashboard', service_id=current_service.id),
+      _('Visit dashboard'))
+  %}
   <div class='reports-table'>
   
   {% call(item, row_number) list_table(
