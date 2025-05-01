@@ -36,7 +36,6 @@ from app import (
 )
 from app.main import main
 from app.main.forms import SearchNotificationsForm
-from app.main.views.reports import get_reports_partials
 from app.statistics_utils import add_rate_to_job
 from app.utils import (
     generate_next_dict,
@@ -356,8 +355,6 @@ def get_notifications(service_id, message_type, status_override=None):
     else:
         download_link = None
 
-    reports = reports_api_client.get_reports_for_service(service_id)
-    reports_partials = get_reports_partials(reports)
     return {
         "service_data_retention_days": service_data_retention_days,
         "counts": render_template(
@@ -381,7 +378,6 @@ def get_notifications(service_id, message_type, status_override=None):
             download_link=download_link,
             service_id=service_id,
         ),
-        "report-footer": reports_partials["report-footer"],
     }
 
 
@@ -481,8 +477,6 @@ def get_job_partials(job, template):
             can_letter_job_be_cancelled = False
         else:
             can_letter_job_be_cancelled = True
-    reports = reports_api_client.get_reports_for_service(job["service"])
-    reports_partials = get_reports_partials(reports)
     return {
         "counts": counts,
         "notifications_header": render_template(
@@ -531,7 +525,6 @@ def get_job_partials(job, template):
             letter_print_day=get_letter_printing_statement("created", job["created_at"]),
         ),
         "can_letter_job_be_cancelled": can_letter_job_be_cancelled,
-        "report-footer": reports_partials["report-footer"],
     }
 
 

@@ -5,7 +5,7 @@
  * 2. Updating the report count text immediately
  * 3. Disabling the button to prevent multiple clicks
  * 4. Sending a POST request to the server
- * 5. Refreshing the component based on the server response
+ * 5. Handling the response and updating UI accordingly
  */
 (function () {
   "use strict";
@@ -58,10 +58,87 @@
     
     reportStatusText.textContent = text;
   }
+  
+  // Function to refresh the footer state from server data
+  function refreshFooterFromResponse(data, container) {
+    if (!data || !container) return;
+    
+    // Extract counts from response
+    const generating = parseInt(data.generating || data.report_totals?.generating || 0);
+    const ready = parseInt(data.ready || data.report_totals?.ready || 0);
+    const deleted = parseInt(data.deleted || data.report_totals?.expired || 0);
+    
+    // Update data attributes
+    container.dataset.generating = generating;
+    container.dataset.ready = ready;
+    container.dataset.deleted = deleted;
+    
+    // Update UI elements
+    const reportSpinner = document.getElementById("report-loader");
+    const reportButton = container.querySelector('button[name="generate-report"]');
+    
+    // Update spinner visibility
+    if (reportSpinner) {
+      if (generating > 0) {
+        reportSpinner.classList.remove("hidden");
+      } else {
+        reportSpinner.classList.add("hidden");
+      }
+    }
+    
+    // Update button state
+    if (reportButton) {
+      if (generating > 0) {
+        reportButton.setAttribute("disabled", "disabled");
+        reportButton.classList.add("disabled");
+      } else {
+        reportButton.removeAttribute("disabled");
+        reportButton.classList.remove("disabled");
+      }
+    }
+    
+    // Update the status text
+    updateReportStatusText(container, generating, ready, deleted);
+  }
+  
+  // Poll for updates until generation completes
+  function pollForUpdates(container) {
+    const generating = parseInt(container.dataset.generating || "0");
+    
+    if (generating <= 0) {
+      return; // No need to poll if nothing is generating
+    }
+    
+    // Add a timestamp to prevent caching
+    const url = `${window.location.pathname}/json?t=${Date.now()}`;
+    
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      credentials: "same-origin"
+    })
+      .then(response => response.json())
+      .then(data => {
+        refreshFooterFromResponse(data, container);
+        
+        // Continue polling if still generating
+        const updatedGenerating = parseInt(container.dataset.generating || "0");
+        if (updatedGenerating > 0) {
+          setTimeout(() => pollForUpdates(container), 2000);
+        }
+      })
+      .catch(error => {
+        console.error("Error polling for updates:", error);
+        // Continue polling despite errors, with a longer delay
+        setTimeout(() => pollForUpdates(container), 5000);
+      });
+  }
 
   // Main function to handle report generation
   document.addEventListener("DOMContentLoaded", function () {
-    // We need to attach the handler like this because the button is continually re-written to the page using ajax requests
     document.body.addEventListener("click", function (event) {
       // Check if the clicked element matches the button's selector
       if (event.target.matches('button[name="generate-report"]')) {
@@ -114,9 +191,14 @@
             return response.json();
           })
           .then((data) => {
-            // The AJAX response will refresh the component,
-            // but we'll leave our visual indicators in place until then
-            console.log("Report generation initiated successfully");
+            // Instead of relying on AJAX replacing the component,
+            // we'll update our UI based on the response data
+            refreshFooterFromResponse(data, reportFooterContainer);
+            
+            // Start polling for updates if reports are generating
+            if (parseInt(reportFooterContainer.dataset.generating || "0") > 0) {
+              setTimeout(() => pollForUpdates(reportFooterContainer), 2000);
+            }
           })
           .catch((error) => {
             console.error("Error preparing report:", error);
@@ -135,5 +217,11 @@
           });
       }
     });
+    
+    // Check for any ongoing generation when the page loads
+    const reportFooterContainer = document.querySelector(".report-footer-container");
+    if (reportFooterContainer && parseInt(reportFooterContainer.dataset.generating || "0") > 0) {
+      pollForUpdates(reportFooterContainer);
+    }
   });
 })();
