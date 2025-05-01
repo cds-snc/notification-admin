@@ -74,12 +74,17 @@ def get_reports_partials(reports):
     for report in reports:
         set_report_expired(report)
         report["filename_display"] = get_report_filename(report=report, with_extension=False)
-    report_totals = get_report_totals(reports)
     return {
         "reports": render_template(
             "views/reports/reports-table.html",
             reports=reports,
         ),
+    }
+
+
+def get_report_footer_partial(service_id):
+    report_totals = reports_api_client.get_report_totals_for_service(service_id)
+    return {
         "report-footer": render_template(
             "views/reports/report-footer.html",
             report_totals=report_totals,
@@ -158,19 +163,3 @@ def get_report_filename(report, with_extension=True):
 def set_report_expired(report):
     if report["status"] == "ready" and datetime.fromisoformat(report["expires_at"]) < datetime.now(timezone.utc):
         report["status"] = "expired"
-
-
-def get_report_totals(reports):
-    report_totals = {
-        "ready": 0,
-        "generating": 0,
-        "expired": 0,
-        "error": 0,
-    }
-    for report in reports:
-        set_report_expired(report)
-        if report["status"] in ["requested", "generating"]:
-            report_totals["generating"] += 1
-        else:
-            report_totals[report["status"]] += 1
-    return report_totals

@@ -17,5 +17,9 @@ class ReportsApiClient(NotifyAdminAPIClient):
         response = self.get(f"/service/{service_id}/report")
         return response["data"]
 
+    def get_report_totals_for_service(self, service_id):
+        response = self.get(f"/service/{service_id}/report/totals")
+        return response["data"]
+
 
 reports_api_client = ReportsApiClient()

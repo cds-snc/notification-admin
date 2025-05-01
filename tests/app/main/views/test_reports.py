@@ -5,7 +5,7 @@ import pytest
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
-from app.main.views.reports import get_report_totals, set_report_expired
+from app.main.views.reports import set_report_expired
 
 
 def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):
@@ -138,50 +138,6 @@ def test_set_report_expired_does_not_change_status_for_non_ready_reports():
 
     # Check the status was not changed
     assert report["status"] == "generating"
-
-
-def test_get_report_totals_counts_correctly():
-    # Create a list of reports with different statuses
-    reports = [
-        {"status": "ready", "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()},
-        {"status": "ready", "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()},
-        {"status": "generating", "expires_at": datetime.now(timezone.utc).isoformat()},
-        {"status": "requested", "expires_at": datetime.now(timezone.utc).isoformat()},
-        {"status": "error", "expires_at": datetime.now(timezone.utc).isoformat()},
-        {"status": "expired", "expires_at": datetime.now(timezone.utc).isoformat()},
-    ]
-
-    # Get the report totals
-    totals = get_report_totals(reports)
-
-    # Check the counts are correct
-    assert totals == {
-        "ready": 2,
-        "generating": 2,  # Combines "generating" and "requested"
-        "expired": 1,
-        "error": 1,
-    }
-
-
-def test_get_report_totals_handles_empty_list():
-    # Call with an empty list
-    totals = get_report_totals([])
-
-    # Check the counts are all zero
-    assert totals == {"ready": 0, "generating": 0, "expired": 0, "error": 0}
-
-
-def test_get_report_totals_marks_expired_reports_correctly():
-    # Create a report that should be marked as expired by get_report_totals
-    reports = [{"status": "ready", "expires_at": (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()}]
-
-    # Get the report totals
-    totals = get_report_totals(reports)
-
-    # Check the report was counted as expired
-    assert totals == {"ready": 0, "generating": 0, "expired": 1, "error": 0}
-    # Check that the report's status was actually changed
-    assert reports[0]["status"] == "expired"
 
 
 @pytest.mark.parametrize(
