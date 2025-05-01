@@ -164,7 +164,6 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     ],
 )
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="feature not in use")
 def test_should_show_page_for_one_job(
     client_request,
     active_user_with_permissions,
@@ -223,7 +222,6 @@ def test_should_show_page_for_one_job(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
-@pytest.mark.skip(reason="feature not in use")
 def test_should_show_page_for_one_job_with_flexible_data_retention(
     client_request,
     active_user_with_permissions,
