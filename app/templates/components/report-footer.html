@@ -1,9 +1,13 @@
 {% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, testid=None) %}
     {% set total_reports = n_generating + n_ready + n_deleted %}
-    <div class="flex container mx-0 report-footer-container" {% if testid %}data-testid="{{ testid }}"{% endif %}>
+    <div class="flex container mx-0 report-footer-container" 
+         {% if testid %}data-testid="{{ testid }}"{% endif %}
+         data-generating="{{ n_generating }}"
+         data-ready="{{ n_ready }}" 
+         data-deleted="{{ n_deleted }}">
         <div class="flex-grow text-small">
             {% if total_reports > 0 %}
-                <div class="text-gray-grey1" aria-live="polite">
+                <div class="text-gray-grey1" aria-live="polite" id="report-status-text">
                     <span class="visually-hidden">{{ _('Delivery reports:') }}</span>
                     {% set parts = [] %}
                     {% if n_generating > 0 %}
@@ -37,6 +41,7 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
                 class="button button-secondary {{ 'disabled' if n_generating > 0 else '' }}"
+                id="generate-report-btn"
                 name="generate-report" 
                 {% if n_generating > 0 %}disabled{% endif %}
             >
