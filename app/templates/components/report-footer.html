@@ -33,13 +33,10 @@
             {% endif %}
         </div>
         <div class="flex flex-grow-0 items-center">
-            {% if n_generating > 0 %}
-                <div class="loading-spinner-large"></div>
-            {% endif %}
+            <div id="report-loader" class="loading-spinner-large {{ '' if n_generating > 0 else 'hidden' }}"></div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
-                type="submit" 
-                class="button button-secondary"
+                class="button button-secondary {{ 'disabled' if n_generating > 0 else '' }}"
                 name="generate-report" 
                 {% if n_generating > 0 %}disabled{% endif %}
             >
