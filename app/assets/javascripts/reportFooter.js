@@ -27,6 +27,7 @@
         );
 
         if (reportSpinner) {
+          // Show the spinner and disable the button
           reportSpinner.classList.remove("hidden");
           reportButton.setAttribute("disabled", "disabled");
           reportButton.classList.add("disabled");
