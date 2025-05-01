@@ -18,13 +18,13 @@ from notifications_utils.timezones import convert_utc_to_local_timezone
 from app import reports_api_client
 from app.articles import get_current_locale
 from app.main import main
-from app.utils import user_has_permissions
+from app.utils import user_is_platform_admin
 
 CHUNK_SIZE = 1024 * 1024  # 1 MB
 
 
 @main.route("/services/<service_id>/reports", methods=["GET"])
-@user_has_permissions("view_activity")
+@user_is_platform_admin
 def reports(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
     partials = get_reports_partials(reports)
@@ -49,7 +49,7 @@ def reports(service_id):
 
 
 @main.route("/services/<service_id>/reports", methods=["post"])
-@user_has_permissions("view_activity")
+@user_is_platform_admin
 def generate_report(service_id):
     current_lang = get_current_locale(current_app)
     reports_api_client.request_report(user_id=current_user.id, service_id=service_id, language=current_lang, report_type="email")
@@ -88,14 +88,14 @@ def get_reports_partials(reports):
 
 
 @main.route("/services/<service_id>/reports/reports.json")
-@user_has_permissions("view_activity")
+@user_is_platform_admin
 def view_reports_updates(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
     return jsonify(**get_reports_partials(reports))
 
 
 @main.route("/services/<service_id>/reports/download/<report_id>", methods=["GET"])
-@user_has_permissions("view_activity")
+@user_is_platform_admin
 def download_report_csv(service_id, report_id):
     """
     Proxies the report CSV file, allowing the filename to be set via Content-Disposition.
