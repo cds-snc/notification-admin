@@ -8,7 +8,7 @@ from notifications_utils.s3 import s3upload as utils_s3upload
 from app.s3_client.s3_logo_client import get_s3_object
 
 FILE_LOCATION_STRUCTURE = "service-{}-notify/{}.csv"
-REPORTS_FILE_LOCATION_STRUCTURE = "service-{}/{}.csv"
+REPORTS_FILE_LOCATION_STRUCTURE = "reports/{}/{}.csv"
 
 # Default chunk size for streaming (1MB)
 CHUNK_SIZE = 1024 * 1024
@@ -52,17 +52,6 @@ def s3download(service_id, upload_id):
     return contents
 
 
-def s3download_report(service_id, report_id):
-    contents = ""
-    try:
-        key = get_report_location(service_id, report_id)
-        contents = key.get()["Body"].read().decode("utf-8")
-    except botocore.exceptions.ClientError as e:
-        current_app.logger.error("Unable to download s3 file {}".format(key))
-        raise e
-    return contents
-
-
 def set_metadata_on_csv_upload(service_id, upload_id, **kwargs):
     get_csv_upload(service_id, upload_id).copy_from(
         CopySource="{}/{}".format(*get_csv_location(service_id, upload_id)),
@@ -92,12 +81,11 @@ def copy_bulk_send_file_to_uploads(service_id, filekey):
     return upload_id
 
 
-def s3download_report_chunks(bucket_name, file_path, chunk_size=CHUNK_SIZE):
+def s3download_report_chunks(service_id, report_id, chunk_size=CHUNK_SIZE):
     """
     Generator function to stream S3 file data in chunks.
 
     Args:
-        bucket_name: The S3 bucket name
         file_path: The path to the file in the bucket
         chunk_size: Size of chunks to read (defaults to 1MB)
 
@@ -105,7 +93,7 @@ def s3download_report_chunks(bucket_name, file_path, chunk_size=CHUNK_SIZE):
         Chunks of binary data from the S3 file
     """
     try:
-        key = get_s3_object(bucket_name, file_path)
+        key = get_s3_object(current_app.config["REPORTS_BUCKET_NAME"], get_report_location(service_id, report_id))
         # Get the S3 object body
         body = key.get()["Body"]
         # Read and yield chunks
@@ -114,5 +102,7 @@ def s3download_report_chunks(bucket_name, file_path, chunk_size=CHUNK_SIZE):
             yield chunk
             chunk = body.read(chunk_size)
     except botocore.exceptions.ClientError as e:
-        current_app.logger.error(f"Unable to stream S3 file {bucket_name}/{file_path}")
+        current_app.logger.error(
+            f"Unable to stream S3 file {current_app.config["REPORTS_BUCKET_NAME"]}/{get_report_location(service_id, report_id)}"
+        )
         raise e

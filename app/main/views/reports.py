@@ -118,9 +118,7 @@ def download_report_csv(service_id, report_id):
 
         # Stream the data in chunks
         def generate():
-            for chunk in s3download_report_chunks(
-                current_app.config["REPORTS_BUCKET_NAME"], f"reports/{service_id}/{report_id}.csv"
-            ):
+            for chunk in s3download_report_chunks(service_id, report_id):
                 yield chunk
 
         return Response(
