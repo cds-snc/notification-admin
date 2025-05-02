@@ -22,9 +22,11 @@
         // get the pieces of the DOM we need to work with
         const reportButton = event.target;
         // Find the closest ancestor container (adjust selector if needed)
-        const container = reportButton.closest('.report-footer-container');
+        const container = reportButton.closest(".report-footer-container");
         // Find the spinner *within* that container
-        const reportSpinner = container ? container.querySelector(".report-loader") : null;
+        const reportSpinner = container
+          ? container.querySelector(".report-loader")
+          : null;
 
         const csrfTokenInput = document.querySelector(
           'input[name="csrf_token"]',
