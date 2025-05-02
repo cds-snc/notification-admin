@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 
-import requests
 from flask import (
     Response,
     current_app,
@@ -18,6 +17,7 @@ from notifications_utils.timezones import convert_utc_to_local_timezone
 from app import reports_api_client
 from app.articles import get_current_locale
 from app.main import main
+from app.s3_client.s3_csv_client import s3download_report_chunks
 from app.utils import user_has_permissions
 
 CHUNK_SIZE = 1024 * 1024  # 1 MB
@@ -104,25 +104,34 @@ def download_report_csv(service_id, report_id):
     # Fetch the report details to get the URL
     reports = reports_api_client.get_reports_for_service(service_id)
     report = next((r for r in reports if str(r.get("id")) == str(report_id)), None)
-    if not report or not report.get("url"):
+
+    if not report:
         return ("Report not found", 404)
 
-    remote_url = report["url"]
     # Stream the remote CSV file
-    remote_response = requests.get(remote_url, stream=True)
-    if remote_response.status_code != 200:
-        return ("Failed to fetch report file", 502)
+    try:
+        filename = get_report_filename(report)
+        headers = {
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Type": "text/csv",
+        }
 
-    filename = get_report_filename(report)
-    headers = {
-        "Content-Disposition": f'attachment; filename="{filename}"',
-        "Content-Type": remote_response.headers.get("Content-Type", "text/csv"),
-    }
-    return Response(
-        stream_with_context(remote_response.iter_content(chunk_size=CHUNK_SIZE)),
-        headers=headers,
-        status=200,
-    )
+        # Stream the data in chunks
+        def generate():
+            for chunk in s3download_report_chunks(
+                current_app.config["REPORTS_BUCKET_NAME"], f"reports/{service_id}/{report_id}.csv"
+            ):
+                yield chunk
+
+        return Response(
+            stream_with_context(generate()),
+            headers=headers,
+            status=200,
+        )
+    except Exception as e:
+        current_app.logger.error(f"Error streaming report file for service {service_id}, report {report_id}: {str(e)}")
+        flash("Could not download report file", "error")
+        return ("Failed to fetch report file", 502)
 
 
 def get_report_filename(report, with_extension=True):
