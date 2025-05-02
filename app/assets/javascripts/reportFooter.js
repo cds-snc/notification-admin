@@ -21,7 +21,7 @@
       if (event.target.matches('button[name="generate-report"]')) {
         // get the pieces of the DOM we need to work with
         const reportButton = event.target;
-        // Find the closest ancestor container (adjust selector if needed)
+        // Find the closest ancestor container
         const container = reportButton.closest(".report-footer-container");
         // Find the spinner *within* that container
         const reportSpinner = container
