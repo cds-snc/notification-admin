@@ -453,6 +453,18 @@ def send_test(service_id, template_id):
             )
         )
 
+    # if the user has no phone number, redirect them to the user profile page to update their phone number
+    if not current_user.mobile_number:
+        session["from_send_page"] = True
+        session["send_page_service_id"] = service_id
+        session["send_page_template_id"] = template_id
+        return redirect(url_for(".user_profile_mobile_number"))
+
+    # Clear the session flags and proceed as normal
+    session.pop("from_send_page", None)
+    session.pop("send_page_service_id", None)
+    session.pop("send_page_template_id", None)
+
     return redirect(
         url_for(
             {
