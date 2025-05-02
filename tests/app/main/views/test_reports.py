@@ -50,6 +50,9 @@ def test_download_report_csv_streams_the_report(
     mock_response.iter_content.return_value = [b"csv,content,here"]
     mock_requests_get = mocker.patch("requests.get", return_value=mock_response)
 
+    # Mock the s3download_report_chunks function to avoid S3 calls
+    mock_s3_download = mocker.patch("app.main.views.reports.s3download_report_chunks", return_value=[b"csv,content,here"])
+
     client_request.login(active_user_with_permissions)
 
     response = client_request.get(
@@ -65,7 +68,9 @@ def test_download_report_csv_streams_the_report(
     assert "2024-12-31 19.01.00 EST [en]" in response.headers["Content-Disposition"]
 
     mock_get_reports.assert_called_once_with(service_one["id"])
-    mock_requests_get.assert_called_once_with("https://example.com/report-1.csv", stream=True)
+    mock_s3_download.assert_called_once_with(service_one["id"], "report-1")
+    # The requests.get mock should not be called since we're mocking the S3 download
+    mock_requests_get.assert_not_called()
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
