@@ -21,12 +21,13 @@
       if (event.target.matches('button[name="generate-report"]')) {
         // get the pieces of the DOM we need to work with
         const reportButton = event.target;
-        const reportSpinner = document.getElementById("report-loader");
+        const reportSpinner = document.getElementsByClassName("report-loader")[0];
         const csrfTokenInput = document.querySelector(
           'input[name="csrf_token"]',
         );
 
         if (reportSpinner) {
+          console.log("Report button clicked");
           // Show the spinner and disable the button
           reportSpinner.classList.remove("hidden");
           reportButton.setAttribute("disabled", "disabled");
