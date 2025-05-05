@@ -115,6 +115,7 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = 8 * 60 * 60  # 8 hours
     REDIS_ENABLED = env.bool("REDIS_ENABLED", False)
     REDIS_URL = os.environ.get("REDIS_URL")
+    REPORTS_BUCKET_NAME = os.getenv("REPORTS_BUCKET_NAME", "notification-canada-ca-production-reports")
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
 
