@@ -125,6 +125,8 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
+    from_send_page = False
+
     if current_app.config["FF_OPTIONAL_PHONE"]:
         form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
