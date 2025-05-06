@@ -32,14 +32,20 @@ from app.main.forms import (
 from app.models.user import User
 from app.utils import user_is_gov_user, user_is_logged_in
 
+# Session keys
 NEW_EMAIL = "new-email"
 NEW_MOBILE = "new-mob"
 NEW_MOBILE_PASSWORD_CONFIRMED = "new-mob-password-confirmed"
+SEND_PAGE_CONTEXT_FLAGS = ["from_send_page", "send_page_service_id", "send_page_template_id"]
 
 
 @main.route("/user-profile")
 @user_is_logged_in
 def user_profile():
+    # Clear any flags that were set for the send page
+    for flag in SEND_PAGE_CONTEXT_FLAGS:
+        session.pop(flag, None)
+
     num_keys = len(current_user.security_keys)
     return render_template(
         "views/user-profile.html",
@@ -119,8 +125,13 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
+    from_send_page = False
+
     if current_app.config["FF_OPTIONAL_PHONE"]:
         form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
+
+        # determine if we are coming from the send page
+        from_send_page = session.get("from_send_page", False)
     else:
         form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
 
@@ -160,6 +171,7 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
             )
 
     return render_template(
@@ -223,7 +235,18 @@ def user_profile_mobile_number_confirm():
 
         flash(_("Mobile number {} saved to your profile".format(mobile_number)), "default_with_tick")
 
-        return redirect(url_for(".user_profile"))
+        # Check if we are coming from the send page, do cleanup
+        from_send_page = session.pop("from_send_page", False)
+        service_id = session.pop("send_page_service_id", None)
+        template_id = session.pop("send_page_template_id", None)
+
+        # Redirect based on where the user came from
+        if from_send_page and service_id and template_id:
+            # Redirect back to the send test page
+            return redirect(url_for(".send_test", service_id=service_id, template_id=template_id))
+        else:
+            # Default redirect to user profile
+            return redirect(url_for(".user_profile"))
 
     return render_template(
         "views/user-profile/confirm.html",

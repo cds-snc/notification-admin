@@ -27,6 +27,7 @@ from app.main.views.send import daily_email_count, daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    TEMPLATE_ONE_ID,
     create_active_caseworking_user,
     create_active_user_with_permissions,
     create_email_template,
@@ -3778,3 +3779,26 @@ class TestAnnualLimitsSend:
         )
 
         assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
+
+
+def test_send_test_redirects_to_user_profile_if_no_mobile_and_ff_on(
+    client_request,
+    app_,
+    active_user_no_mobile,
+    mocker,
+    mock_get_service_template,
+):
+    service_id = SERVICE_ONE_ID
+    template_id = TEMPLATE_ONE_ID
+
+    with set_config(app_, "FF_OPTIONAL_PHONE", True):
+        client_request.login(active_user_no_mobile)
+        mock_get_service_template.return_value = {"data": {"id": template_id, "template_type": "sms", "name": "Test Template"}}
+
+        response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+
+        assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
+        with client_request.session_transaction() as session:
+            assert session["from_send_page"] is True
+            assert session["send_page_service_id"] == service_id
+            assert session["send_page_template_id"] == template_id
