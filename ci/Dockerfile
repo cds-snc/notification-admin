@@ -7,7 +7,7 @@ ENV POETRY_VIRTUALENVS_CREATE false
 RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev rust cargo && rm -rf /var/cache/apk/*
 
 # update pip
-RUN python -m pip install wheel poetry==${POETRY_VERSION}
+RUN python -m pip install wheel poetry==${POETRY_VERSION} virtualenv==20.30.0
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
