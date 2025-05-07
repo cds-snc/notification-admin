@@ -6,7 +6,9 @@ import {
 } from "../../../Notify/Admin/Pages/all";
 import { v4 as uuid } from "uuid";
 
-import { Admin, API } from "../../../Notify/NotifyAPI";
+import { Admin, API, Cleanup } from "../../../Notify/NotifyAPI";
+
+import { getTemplateCategoriesCachePattern } from "../../../../cypress/support/utils";
 
 describe(
   "Template Categories",
@@ -38,57 +40,30 @@ describe(
     });
 
     describe("Manage Template Categories", () => {
-      before(() => {
-        // Use a static category_id so we can reliably clean up the DB state before we run the tests
-        cy.intercept("POST", `/template-category/add`, (request) => {
-          request.body.concat(`&id=${Cypress.env("TEMPLATE_CATEGORY_ID")}`);
-        });
-      });
-
       beforeEach(() => {
-        Admin.GetTemplateCategory({
-          id: Cypress.env("TEMPLATE_CATEGORY_ID"),
-        }).then((resp) => {
-          if (resp.body.template_category) {
-            Admin.DeleteTemplateCategory({
-              id: Cypress.env("TEMPLATE_CATEGORY_ID"),
-            });
-            API.ClearCache("^template_categories(-.*)?$");
-          }
+        Cleanup.TemplateCategories({ cascade: false }).then((resp) => {
+          API.ClearCache(getTemplateCategoriesCachePattern());
         });
       });
 
       it("Creates a new template category", () => {
-        TemplateCategoriesPage.Components.TemplateCategoriesTable().then(
-          (table) => {
-            const linkExists = [...table.find("a")].some(
-              (link) => link.innerText === "New Category",
-            );
-            if (linkExists) {
-              // If the "New Category" link exists, proceed with deletion
-              TemplateCategoriesPage.EditTemplateCategoryByName("New Category");
-              ManageTemplateCategoryPage.DeleteTemplateCategory();
-              ManageTemplateCategoryPage.ConfirmDeleteTemplateCategory();
-            }
-            TemplateCategoriesPage.CreateTemplateCategory();
-            ManageTemplateCategoryPage.FillForm(
-              "New Category",
-              "Nouvelle catégorie",
-              "This is a new category",
-              "C'est une nouvelle catégorie",
-              "show",
-              "low",
-              "low",
-              "short_code",
-            );
-            ManageTemplateCategoryPage.Submit();
+        TemplateCategoriesPage.CreateTemplateCategory();
+        ManageTemplateCategoryPage.FillForm(
+          "New Category",
+          "Nouvelle catégorie",
+          "This is a new category",
+          "C'est une nouvelle catégorie",
+          "show",
+          "low",
+          "low",
+          "short_code",
+        );
+        ManageTemplateCategoryPage.Submit();
 
-            cy.contains("h1", "Template categories").should("be.visible");
-            cy.contains("New Category").should("be.visible");
-            TemplateCategoriesPage.Components.ConfirmationBanner().should(
-              "be.visible",
-            );
-          },
+        cy.contains("h1", "Template categories").should("be.visible");
+        cy.contains("New Category").should("be.visible");
+        TemplateCategoriesPage.Components.ConfirmationBanner().should(
+          "be.visible",
         );
       });
 
@@ -157,15 +132,8 @@ describe(
       });
 
       beforeEach(() => {
-        Admin.GetTemplateCategory({
-          id: Cypress.env("TEMPLATE_CATEGORY_ID"),
-        }).then((resp) => {
-          if (resp.body.template_category) {
-            Admin.DeleteTemplateCategory({
-              id: Cypress.env("TEMPLATE_CATEGORY_ID"),
-            });
-          }
-          API.ClearCache("^template_categories(-.*)?$");
+        Cleanup.TemplateCategories({ cascade: false }).then((resp) => {
+          API.ClearCache(getTemplateCategoriesCachePattern());
         });
       });
 
