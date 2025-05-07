@@ -233,7 +233,7 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number)
 
-        flash(_("Mobile number {} saved to your profile".format(mobile_number)), "default_with_tick")
+        flash(_("Mobile number {} saved to your profile").format(mobile_number), "default_with_tick")
 
         # Check if we are coming from the send page, do cleanup
         from_send_page = session.pop("from_send_page", False)
