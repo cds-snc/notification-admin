@@ -255,6 +255,13 @@ def user_profile_mobile_number_confirm():
     )
 
 
+@main.route("/user-profile/mobile-number/resend", methods=["GET", "POST"])
+def sms_not_received():
+    current_user.send_verify_code(to=session[NEW_MOBILE])
+    flash(_("Verification code re-sent"), "default_with_tick")
+    return redirect(url_for(".user_profile_mobile_number_confirm"))
+
+
 @main.route("/user-profile/password", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_password():
