@@ -28,7 +28,12 @@
           width='form-control-5em',
           autofocus=True
         ) }}
-        {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }}
+        {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }} 
+        <p class="mt-16">
+          {{ _("Didn’t get a text message?") }}
+          <br />
+          <a href="{{ url_for('main.sms_not_received') }}">{{ _('Re-send security code') }}</a>
+        </p>
       {% endcall %}
     </div>
   </div>
