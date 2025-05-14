@@ -1,3 +1,5 @@
+from urllib.error import HTTPError
+
 from flask import abort, current_app, flash, redirect, render_template, session, url_for
 from flask_babel import _
 from flask_login import current_user
@@ -63,11 +65,18 @@ def accept_invite(token):
                 invited_user.auth_type == "email_auth"
             ):
                 existing_user.update(auth_type=invited_user.auth_type)
-            existing_user.add_to_service(
-                service_id=invited_user.service,
-                permissions=invited_user.permissions,
-                folder_permissions=invited_user.folder_permissions,
-            )
+                try:
+                    existing_user.add_to_service(
+                        service_id=invited_user.service,
+                        permissions=invited_user.permissions,
+                        folder_permissions=invited_user.folder_permissions,
+                    )
+                except HTTPError as e:
+                    if e.status_code == 400:
+                        flash(_("You have already been added to this service."), "error")
+                    else:
+                        flash(_("There was a problem added to this service."), "error")
+
             return redirect(url_for("main.service_dashboard", service_id=service.id))
     else:
         return redirect(url_for("main.register_from_invite"))
