@@ -813,10 +813,10 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         else:
             # if they arent over their limit, and its sms, check if they are over their daily limit
             if data["template"].template_type == "sms":
-                data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     else:
-        data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+        data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
