@@ -761,7 +761,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_email_messages_today,
-        remaining_sms_message_fragments=remaining_sms_messages_today,
+        remaining_sms_messages_today=remaining_sms_messages_today,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
