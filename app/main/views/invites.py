@@ -75,7 +75,7 @@ def accept_invite(token):
                     if e.status_code == 400:
                         flash(_("You have already been added to this service."), "error")
                     else:
-                        flash(_("There was a problem added to this service."), "error")
+                        flash(_("There was a problem adding you to this service."), "error")
 
             return redirect(url_for("main.service_dashboard", service_id=service.id))
     else:

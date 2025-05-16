@@ -734,3 +734,68 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
 
     mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
     mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="sms_auth")
+    mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
+
+
+def test_existing_user_accept_invite_with_400_error_when_adding_to_service(
+    client,
+    service_one,
+    api_user_active,
+    mock_check_invite_token,
+    mock_get_users_by_service,
+    mock_accept_invite,
+    mock_get_service,
+    mocker,
+):
+    # Mock add_user_to_service to raise an HTTPError with status_code 400
+    mock_add_to_service = mocker.patch(
+        "app.models.user.User.add_to_service",
+        side_effect=HTTPError(
+            response=Mock(status_code=400, json={"message": "User already part of service"}),
+            message="User already part of service",
+        ),
+    )
+
+    # Set up sample invite with email_auth as auth_type to trigger the code path
+    sample_invite = {
+        "id": "12345",
+        "service": SERVICE_ONE_ID,
+        "email_address": "test@user.canada.ca",
+        "from_user": "1",
+        "permissions": "manage_service,manage_api_keys,view_activity,send_messages",
+        "status": "pending",
+        "created_at": "2021-01-01T00:00:00.000000Z",
+        "auth_type": "email_auth",
+        "folder_permissions": [],
+    }
+
+    # Mock check_token to return the sample invite
+    mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
+
+    # Add email_auth permission to service_one
+    service_one["permissions"].append("email_auth")
+
+    # Set up the user email to match the invite email
+    api_user_active["email_address"] = "test@user.canada.ca"
+
+    # Patch get_user_by_email to return our api_user_active
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active)
+
+    # Follow the redirect to get the flash message
+    response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"), follow_redirects=True)
+
+    # Check that the invite validation is called
+    mock_check_invite_token.assert_called_with("thisisnotarealtoken")
+
+    # Check that the add_to_service method is called with right args
+    mock_add_to_service.assert_called_once()
+
+    # Parse the response data to check for flash message
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    flash_banner = page.find("div", class_="banner-dangerous").text.strip()
+
+    # Verify the correct error message is flashed
+    assert "You have already been added to this service." in flash_banner
+
+    # Verify we get redirected to the service dashboard
+    assert response.request.path == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
