@@ -3,7 +3,8 @@
     <div class="flex container mx-0 report-footer-container" {% if testid %}data-testid="{{ testid }}"{% endif %}>
         <div class="flex-grow text-small">
             {% if total_reports > 0 %}
-                <div class="text-gray-grey1">
+                <div class="text-gray-grey1" aria-live="polite">
+                    <span class="visually-hidden">{{ _('Delivery reports:') }}</span>
                     {% set parts = [] %}
                     {% if n_generating > 0 %}
                         {% set parts = parts + [_('{} preparing').format(n_generating)] %}
@@ -32,13 +33,11 @@
             {% endif %}
         </div>
         <div class="flex flex-grow-0 items-center">
-            {% if n_generating > 0 %}
-                <div class="loading-spinner-large"></div>
-            {% endif %}
+            <div class="report-loader loading-spinner-large {{ '' if n_generating > 0 else 'hidden' }}"></div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
-                type="submit" 
-                class="button button-secondary"
+                type="button"
+                class="button button-secondary {{ 'disabled' if n_generating > 0 else '' }}"
                 name="generate-report" 
                 {% if n_generating > 0 %}disabled{% endif %}
             >

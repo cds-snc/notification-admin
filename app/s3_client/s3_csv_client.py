@@ -8,6 +8,10 @@ from notifications_utils.s3 import s3upload as utils_s3upload
 from app.s3_client.s3_logo_client import get_s3_object
 
 FILE_LOCATION_STRUCTURE = "service-{}-notify/{}.csv"
+REPORTS_FILE_LOCATION_STRUCTURE = "reports/{}/{}.csv"
+
+# Default chunk size for streaming (1MB)
+CHUNK_SIZE = 1024 * 1024
 
 
 def get_csv_location(service_id, upload_id):
@@ -15,6 +19,10 @@ def get_csv_location(service_id, upload_id):
         current_app.config["CSV_UPLOAD_BUCKET_NAME"],
         FILE_LOCATION_STRUCTURE.format(service_id, upload_id),
     )
+
+
+def get_report_location(service_id, report_id):
+    return REPORTS_FILE_LOCATION_STRUCTURE.format(service_id, report_id)
 
 
 def get_csv_upload(service_id, upload_id):
@@ -71,3 +79,30 @@ def copy_bulk_send_file_to_uploads(service_id, filekey):
     body = obj.get()["Body"].read()
     upload_id = s3upload(service_id, {"data": body}, current_app.config["AWS_REGION"])
     return upload_id
+
+
+def s3download_report_chunks(service_id, report_id, chunk_size=CHUNK_SIZE):
+    """
+    Generator function to stream S3 file data in chunks.
+
+    Args:
+        file_path: The path to the file in the bucket
+        chunk_size: Size of chunks to read (defaults to 1MB)
+
+    Yields:
+        Chunks of binary data from the S3 file
+    """
+    try:
+        key = get_s3_object(current_app.config["REPORTS_BUCKET_NAME"], get_report_location(service_id, report_id))
+        # Get the S3 object body
+        body = key.get()["Body"]
+        # Read and yield chunks
+        chunk = body.read(chunk_size)
+        while chunk:
+            yield chunk
+            chunk = body.read(chunk_size)
+    except botocore.exceptions.ClientError as e:
+        current_app.logger.error(
+            f"Unable to stream S3 file {current_app.config["REPORTS_BUCKET_NAME"]}/{get_report_location(service_id, report_id)}"
+        )
+        raise e

@@ -76,7 +76,8 @@ from app.utils import (
 )
 
 
-def daily_sms_fragment_count(service_id):
+def daily_sms_count(service_id):
+    """Get the number of SMS messages (not fragments) sent today for a service."""
     return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
 
 
@@ -453,6 +454,18 @@ def send_test(service_id, template_id):
             )
         )
 
+    # if the user has no phone number, redirect them to the user profile page to update their phone number
+    if db_template["template_type"] == "sms" and not current_user.mobile_number:
+        session["from_send_page"] = True
+        session["send_page_service_id"] = service_id
+        session["send_page_template_id"] = template_id
+        return redirect(url_for(".user_profile_mobile_number"))
+
+    # Clear the session flags and proceed as normal
+    session.pop("from_send_page", None)
+    session.pop("send_page_service_id", None)
+    session.pop("send_page_template_id", None)
+
     return redirect(
         url_for(
             {
@@ -651,9 +664,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         if e.status_code != 404:
             raise
 
-    sms_fragments_sent_today = daily_sms_fragment_count(service_id)
+    sms_sent_today = daily_sms_count(service_id)
     emails_sent_today = daily_email_count(service_id)
-    remaining_sms_message_fragments_today = current_service.sms_daily_limit - sms_fragments_sent_today
+    remaining_sms_messages_today = current_service.sms_daily_limit - sms_sent_today
     remaining_email_messages_today = current_service.message_limit - emails_sent_today
 
     contents = s3download(service_id, upload_id)
@@ -663,7 +676,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     email_reply_to = None
     sms_sender = None
     recipients_remaining_messages = (
-        remaining_email_messages_today if db_template["template_type"] == "email" else remaining_sms_message_fragments_today
+        remaining_email_messages_today if db_template["template_type"] == "email" else remaining_sms_messages_today
     )
 
     if db_template["template_type"] == "email":
@@ -748,7 +761,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         upload_id=upload_id,
         form=CsvUploadForm(),
         remaining_messages=remaining_email_messages_today,
-        remaining_sms_message_fragments=remaining_sms_message_fragments_today,
+        remaining_sms_messages_today=remaining_sms_messages_today,
         sms_parts_to_send=sms_parts_to_send,
         is_sms_parts_estimated=is_sms_parts_estimated,
         choose_time_form=choose_time_form,
@@ -786,7 +799,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
     data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
-    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+    data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
 
     if current_app.config["FF_ANNUAL_LIMIT"]:
         data["send_exceeds_annual_limit"] = False
@@ -801,10 +814,10 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         else:
             # if they arent over their limit, and its sms, check if they are over their daily limit
             if data["template"].template_type == "sms":
-                data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     else:
-        data["send_exceeds_daily_limit"] = data["recipients"].sms_fragment_count > data["sms_parts_remaining"]
+        data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
@@ -1091,7 +1104,7 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_to_send"] = template.fragment_count
         sms_parts_data["is_sms_parts_estimated"] = False
         sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
-        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_fragment_count(service_id)
+        sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
 
     return dict(

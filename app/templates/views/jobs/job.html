@@ -117,7 +117,7 @@
     {% else %}
       <div>&nbsp;</div>
     {% endif %}
-
+  
     {% if config["FF_ASYNC_REPORTS"] %}
     <div class="js-stick-at-bottom-when-scrolling" >
       {% call form_wrapper(action=action) %}
@@ -128,6 +128,6 @@
         ) }}
       {% endcall %}
     </div>
-  {% endif %}
+    {% endif %}
 
 {% endblock %}
