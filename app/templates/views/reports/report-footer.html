@@ -1,0 +1,11 @@
+{% from "components/report-footer.html" import report_footer %}
+
+<div class="ajax-block-container">
+    {{ report_footer(
+        n_generating=report_totals["generating"],
+        n_deleted=report_totals["expired"],
+        n_ready=report_totals["ready"],
+        current_lang=current_lang,
+        )
+    }}
+</div>

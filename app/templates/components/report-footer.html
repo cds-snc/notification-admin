@@ -1,0 +1,48 @@
+{% macro report_footer(n_generating=0, n_ready=0, n_deleted=0, current_lang=current_lang, testid=None) %}
+    {% set total_reports = n_generating + n_ready + n_deleted %}
+    <div class="flex container mx-0 report-footer-container" {% if testid %}data-testid="{{ testid }}"{% endif %}>
+        <div class="flex-grow text-small">
+            {% if total_reports > 0 %}
+                <div class="text-gray-grey1" aria-live="polite">
+                    <span class="visually-hidden">{{ _('Delivery reports:') }}</span>
+                    {% set parts = [] %}
+                    {% if n_generating > 0 %}
+                        {% set parts = parts + [_('{} preparing').format(n_generating)] %}
+                    {% endif %}
+                    {% if n_ready > 0 %}
+                        {% if n_ready > 1 and current_lang == 'fr' %}
+                            {% set parts = parts + ['{} prêts'.format(n_ready)] %}
+                        {% else %}
+                            {% set parts = parts + [_('{} ready').format(n_ready)] %}
+                        {% endif %}
+                    {% endif %}
+                    {% if n_deleted > 0 %}
+                        {% if n_deleted > 1 and current_lang == 'fr' %}
+                            {% set parts = parts + ['{} supprimés'.format(n_deleted)] %}
+                        {% else %}
+                            {% set parts = parts + [_('{} deleted').format(n_deleted)] %}
+                        {% endif %}
+                    {% endif %}
+                    {{ parts | formatted_list(
+                        conjunction=_("and"),
+                        before_each="",
+                        after_each=""
+                      ) }}
+                </div>
+                <a href="{{url_for('main.reports', service_id=current_service.id)}}">{{ _("Visit delivery reports") }}</a>
+            {% endif %}
+        </div>
+        <div class="flex flex-grow-0 items-center">
+            <div class="report-loader loading-spinner-large {{ '' if n_generating > 0 else 'hidden' }}"></div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button 
+                type="button"
+                class="button button-secondary {{ 'disabled' if n_generating > 0 else '' }}"
+                name="generate-report" 
+                {% if n_generating > 0 %}disabled{% endif %}
+            >
+                {{ _("Prepare report") }}
+            </button>
+        </div>
+    </div>
+{% endmacro %}

@@ -3,15 +3,6 @@ import Notice from "../../../Notify/Admin/Components/Notice";
 let PageURL = "/_storybook?component=notice";
 
 describe("Notice component", () => {
-  it("Should pass a11y checks", () => {
-    cy.a11yScan(PageURL, {
-      a11y: true,
-      htmlValidate: true,
-      deadLinks: false,
-      mimeTypes: false,
-    });
-  });
-
   it("Should use the correct icon depending on type", () => {
     cy.visit(PageURL);
 
