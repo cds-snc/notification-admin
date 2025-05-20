@@ -23,7 +23,7 @@
 <a
     {% if id_key %}id="{{ id_key }}"{% endif %}
     href="{{ href }}"
-    class="p-2 text-white text-small no-underline line-under border-b-2 border-transparent visited:text-white link:text-white hover:underline focus:border-white focus:outline-none focus:text-blue decoration-clone flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
+    class="p-2 text-white text-small no-underline line-under border-b-2 border-transparent hover:underline focus:border-white focus:outline-none decoration-clone flex items-center min-h-target {% if class %} {{ class }} {% endif %}"
     {% if is_external_link %}target="_blank"{% endif %}
     >
     {{ label }}
