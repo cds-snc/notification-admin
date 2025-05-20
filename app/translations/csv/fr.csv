@@ -727,6 +727,7 @@
 "We've sent you a text message with a verification code.","Nous vous avons envoyé un code de vérification par message texte."
 "We’ve sent you a security code by text message.","Nous vous avons envoyé un code de sécurité par message texte."
 "We’ve sent you a security code by email.","Nous vous avons envoyé un code de sécurité par courriel."
+"We’ve sent you a security code by {}","Nous vous avons envoyé un code de sécurité par {}"
 "We’ve sent a security code to your ","Nous avons envoyé un code de sécurité à votre "
 "We’ll send you a security code by text message","Nous vous enverrons un code de sécurité par message texte."
 "Your profile","Votre profil"
