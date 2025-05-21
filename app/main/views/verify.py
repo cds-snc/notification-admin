@@ -95,8 +95,8 @@ def _add_invited_user_to_service(invited_user):
         user_api_client.add_user_to_service(service_id, user.id, invitation.permissions, invitation.folder_permissions)
         return service_id
     except HTTPError as e:
-        if e.status_code == 400:
-            flash(_("You have already been added to this service."), "error")
+        if e.status_code == 409:
+            flash(_("You've already been added to this service."), "error")
             return service_id
         else:
             raise e

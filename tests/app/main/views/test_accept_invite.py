@@ -794,7 +794,7 @@ def test_existing_user_accept_invite_with_409_error_when_adding_to_service(
     flash_banner = page.find("div", class_="banner-dangerous").text.strip()
 
     # Verify the correct error message is flashed
-    assert "You have already been added to this service." in flash_banner
+    assert "You've already been added to this service." in flash_banner
 
     # Verify we get redirected to the service dashboard
     assert response.request.path == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
