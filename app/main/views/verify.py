@@ -96,7 +96,7 @@ def _add_invited_user_to_service(invited_user):
         return service_id
     except HTTPError as e:
         if e.status_code == 409:
-            flash(_("You've already been added to this service."), "error")
+            flash(_("You've already been added to this service."), "default_with_tick")
             return service_id
         else:
             raise e
