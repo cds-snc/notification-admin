@@ -23,7 +23,7 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_email_count, daily_sms_fragment_count
+from app.main.views.send import daily_email_count, daily_sms_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -56,11 +56,11 @@ test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
-def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
+def test_daily_sms_count(mocker, redis_value, expected_result):
     mocker.patch(
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
-    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
+    assert daily_sms_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
@@ -2596,8 +2596,8 @@ def mock_notification_counts_client():
 
 
 @pytest.fixture
-def mock_daily_sms_fragment_count():
-    with patch("app.main.views.send.daily_sms_fragment_count") as mock:
+def mock_daily_sms_count():
+    with patch("app.main.views.send.daily_sms_count") as mock:
         yield mock
 
 
@@ -3427,7 +3427,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3464,7 +3464,7 @@ class TestAnnualLimitsSend:
 
             # mock that we've already sent `emails_sent_today` emails today
             mock_daily_email_count.return_value = num_sent_today
-            mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
+            mock_daily_sms_count.return_value = 900  # not used in test but needs a value
 
             with client_request.session_transaction() as session:
                 session["file_uploads"] = {
@@ -3530,7 +3530,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3565,7 +3565,7 @@ class TestAnnualLimitsSend:
             }
             # mock that we've already sent `num_sent_today` emails today
             mock_daily_email_count.return_value = 900  # not used in test but needs a value
-            mock_daily_sms_fragment_count.return_value = num_sent_today
+            mock_daily_sms_count.return_value = num_sent_today
 
             with client_request.session_transaction() as session:
                 session["file_uploads"] = {
