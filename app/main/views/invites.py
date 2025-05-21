@@ -53,7 +53,6 @@ def accept_invite(token):
     if existing_user:
         invited_user.accept_invite()
         if existing_user in Users(invited_user.service):
-            flash(_("You've already been added to this service."), "error")
             return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
         else:
             service = Service.from_id(invited_user.service)
