@@ -737,11 +737,10 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
 
 
-def test_existing_user_accept_invite_with_400_error_when_adding_to_service(
+def test_existing_user_accept_invite_with_409_error_when_adding_to_service(
     client,
     service_one,
     api_user_active,
-    mock_check_invite_token,
     mock_get_users_by_service,
     mock_accept_invite,
     mock_get_service,
@@ -751,7 +750,7 @@ def test_existing_user_accept_invite_with_400_error_when_adding_to_service(
     mock_add_to_service = mocker.patch(
         "app.models.user.User.add_to_service",
         side_effect=HTTPError(
-            response=Mock(status_code=400, json={"message": "User already part of service"}),
+            response=Mock(status_code=409, json={"message": "User already part of service"}),
             message="User already part of service",
         ),
     )
@@ -770,14 +769,14 @@ def test_existing_user_accept_invite_with_400_error_when_adding_to_service(
     }
 
     # Mock check_token to return the sample invite
-    mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
+    mock_check_invite_token = mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
 
     # Add email_auth permission to service_one
     service_one["permissions"].append("email_auth")
 
     # Set up the user email to match the invite email
     api_user_active["email_address"] = "test@user.canada.ca"
-
+    api_user_active.add_user_to_service = mock_add_to_service
     # Patch get_user_by_email to return our api_user_active
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active)
 

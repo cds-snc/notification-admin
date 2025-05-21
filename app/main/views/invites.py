@@ -43,7 +43,7 @@ def accept_invite(token):
 
     if invited_user.status == "accepted":
         session.pop("invited_user", None)
-        flash(_("You have already been added to this service."), "error")
+        flash(_("You've already been added to this service."), "error")
         return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
 
     session["invited_user"] = invited_user.serialize()
@@ -53,7 +53,7 @@ def accept_invite(token):
     if existing_user:
         invited_user.accept_invite()
         if existing_user in Users(invited_user.service):
-            flash(_("You have already been added to this service."), "error")
+            flash(_("You've already been added to this service."), "error")
             return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
         else:
             service = Service.from_id(invited_user.service)
@@ -75,9 +75,9 @@ def accept_invite(token):
                     )
                 except HTTPError as e:
                     if e.status_code == 409:
-                        flash(_("You have already been added to this service."), "error")
+                        flash(_("You've already been added to this service."), "error")
                     else:
-                        flash(_("There was a problem adding you to this service."), "error")
+                        flash(_("There was a problem adding you to this service. Try the link again."), "error")
 
             return redirect(url_for("main.service_dashboard", service_id=service.id))
     else:
