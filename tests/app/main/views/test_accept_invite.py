@@ -734,3 +734,4 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
 
     mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
     mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="sms_auth")
+    mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
