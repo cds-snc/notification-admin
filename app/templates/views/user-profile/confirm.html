@@ -20,7 +20,7 @@
   <div class="grid-row contain-floats">
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       <p>
-        {{ _('We’ve sent a security code to your ') + thing }}.
+        {{ _('We’ve sent you a security code by {}').format(thing) }}
       </p>
       {% call form_wrapper() %}
         {{ textbox(
