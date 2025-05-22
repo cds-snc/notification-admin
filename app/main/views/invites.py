@@ -1,3 +1,5 @@
+from urllib.error import HTTPError
+
 from flask import abort, current_app, flash, redirect, render_template, session, url_for
 from flask_babel import _
 from flask_login import current_user
@@ -41,6 +43,7 @@ def accept_invite(token):
 
     if invited_user.status == "accepted":
         session.pop("invited_user", None)
+        flash(_("You've already been added to this service."), "default_with_tick")
         return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
 
     session["invited_user"] = invited_user.serialize()
@@ -63,11 +66,19 @@ def accept_invite(token):
                 invited_user.auth_type == "email_auth"
             ):
                 existing_user.update(auth_type=invited_user.auth_type)
-            existing_user.add_to_service(
-                service_id=invited_user.service,
-                permissions=invited_user.permissions,
-                folder_permissions=invited_user.folder_permissions,
-            )
+
+            try:
+                existing_user.add_to_service(
+                    service_id=invited_user.service,
+                    permissions=invited_user.permissions,
+                    folder_permissions=invited_user.folder_permissions,
+                )
+            except HTTPError as e:
+                if e.status_code == 409:
+                    flash(_("You've already been added to this service."), "default_with_tick")
+                else:
+                    flash(_("There was a problem adding you to this service. Try the link again."), "error")
+
             return redirect(url_for("main.service_dashboard", service_id=service.id))
     else:
         return redirect(url_for("main.register_from_invite"))
