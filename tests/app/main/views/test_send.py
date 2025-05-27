@@ -302,7 +302,7 @@ def test_upload_files_in_different_formats(
     else:
         assert not mock_s3_upload.called
         assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-            "Could not read {}. Try using a different file format.".format(filename)
+            "Could not read {}. Try using a different file format. Ensure your file is encoded as UTF-8.".format(filename)
         )
 
 
@@ -311,15 +311,15 @@ def test_upload_files_in_different_formats(
     [
         (
             partial(UnicodeDecodeError, "codec", b"", 1, 2, "reason"),
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             BadZipFile,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLRDError,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLDateError,

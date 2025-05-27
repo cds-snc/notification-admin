@@ -205,7 +205,11 @@ def send_messages(service_id, template_id):
                 )
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash(_("Could not read {}. Try using a different file format.").format(form.file.data.filename))
+            flash(
+                _("Could not read {}. Try using a different file format. Ensure your file is encoded as UTF-8.").format(
+                    form.file.data.filename
+                )
+            )
         except XLDateError:
             flash(
                 _(
@@ -303,7 +307,11 @@ def s3_send(service_id, template_id):
                 )
             )
         except (UnicodeDecodeError, BadZipFile, XLRDError):
-            flash(_("Could not read {}. Try using a different file format.").format(form.s3_files.data))
+            flash(
+                _("Could not read {}. Try using a different file format. Ensure your file is encoded as UTF-8.").format(
+                    form.s3_files.data
+                )
+            )
         except XLDateError:
             flash(
                 _(
