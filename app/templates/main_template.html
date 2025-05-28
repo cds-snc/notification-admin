@@ -33,6 +33,11 @@
     rel="stylesheet"
   />
   <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet" />
+
+  <link rel="alternate" type="application/json+oembed" 
+      href="{{ url_for('main.oembed', url=request.url, format='json', _external=True) }}" 
+      title={{_("Activity on GC Notify")}} />
+
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta
@@ -109,6 +114,7 @@
       --opens-in-new-tab: "{{ _("Opens in a new tab") }}";
     }
   </style>
+  
   {% block head %}{% endblock %}
 </head>
 
