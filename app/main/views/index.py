@@ -5,6 +5,7 @@ from flask import (
     abort,
     current_app,
     g,
+    jsonify,
     make_response,
     redirect,
     render_template,
@@ -289,6 +290,56 @@ def sitemap():
 @main.route("/activity", endpoint="activity")
 def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
+
+
+@main.route("/oembed", endpoint="oembed")
+def oembed():
+    """oEmbed endpoint for embedding GC Notify statistics"""
+    url = request.args.get("url")
+    format_type = request.args.get("format", "json")
+
+    if not url:
+        abort(400, "URL parameter is required")
+
+        # Validate that the URL is for our statistics
+    if "/activity" not in url:
+        abort(404, "URL not found")
+
+    stats_data = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+
+    if format_type == "json":
+        return jsonify(
+            {
+                "version": "1.0",
+                "type": "rich",
+                "provider_name": "GC Notify",
+                "provider_url": url_for("main.index", _external=True),
+                "title": _("Activity on GC Notify"),
+                "html": _render_stats_embed_html(stats_data),
+                "width": 600,
+                "height": 400,
+            }
+        )
+    else:
+        abort(501, "Only JSON format is supported")
+
+
+def _render_stats_embed_html(stats_data):
+    """Render the HTML for the embedded statistics"""
+    return render_template("partials/embeds/activity.html", **stats_data)
+
+
+@main.route("/stats-embed")
+def stats_embed():
+    """Dedicated endpoint for statistics embed"""
+    stats_data = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+
+    if request.args.get("format") == "iframe":
+        # Return a full HTML page for iframe embedding
+        return render_template("embeds/stats_iframe.html", **stats_data)
+    else:
+        # Return just the embed HTML
+        return render_template("embeds/stats_embed.html", **stats_data)
 
 
 @main.route("/activity/download", endpoint="activity_download")
