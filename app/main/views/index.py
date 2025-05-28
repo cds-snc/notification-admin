@@ -292,7 +292,7 @@ def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
-@main.route("/oembed", endpoint="oembed")
+@main.route("/_preview_oembed", endpoint="oembed")
 def oembed():
     """oEmbed endpoint for embedding GC Notify statistics"""
     url = request.args.get("url")
@@ -329,7 +329,7 @@ def _render_stats_embed_html(stats_data):
     return render_template("partials/embeds/activity.html", **stats_data)
 
 
-@main.route("/stats-embed")
+@main.route("/_preview_stats-embed")
 def stats_embed():
     """Dedicated endpoint for statistics embed"""
     stats_data = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
