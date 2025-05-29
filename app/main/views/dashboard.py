@@ -381,53 +381,59 @@ def get_dashboard_partials(service_id):
 
     start = time.time()
     all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
-    timings["template_statistics_weekly"] = (time.time() - start) * 1000
+    timings["template_statistics_weekly"] = (time.time() - start, datetime.utcnow())
 
     start = time.time()
     template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
-    timings["aggregate_template_usage"] = (time.time() - start) * 1000
+    timings["aggregate_template_usage"] = (time.time() - start, datetime.utcnow())
 
+    start = time.time()
     scheduled_jobs, immediate_jobs = [], []
-    if job_api_client.has_jobs(service_id):
+    has_jobs = job_api_client.has_jobs(service_id)
+    timings["has_jobs"] = (time.time() - start, datetime.utcnow())
+
+    if has_jobs:
         start = time.time()
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
-        timings["get_scheduled_jobs"] = (time.time() - start) * 1000
+        timings["get_scheduled_jobs"] = ((time.time() - start), datetime.utcnow())
 
         start = time.time()
         immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id)
-        timings["get_immediate_jobs"] = (time.time() - start) * 1000
+        timings["get_immediate_jobs"] = ((time.time() - start), datetime.utcnow())
 
         start = time.time()
         immediate_jobs = [add_rate_to_job(job) for job in immediate_jobs_raw]
-        timings["add_rate_to_job"] = (time.time() - start) * 1000
+        timings["add_rate_to_job"] = ((time.time() - start), datetime.utcnow())
 
     # get the daily stats
     start = time.time()
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
-    timings["_get_daily_stats"] = (time.time() - start) * 1000
+    timings["_get_daily_stats"] = (time.time() - start, datetime.utcnow())
 
+    start = time.time()
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
+    timings["get_column_properties"] = (time.time() - start, datetime.utcnow())
 
     start = time.time()
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
-    timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
+    timings["weekly_stats_aggregation"] = (time.time() - start, datetime.utcnow())
 
     start = time.time()
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
-    timings["get_bounce_rate_data"] = (time.time() - start) * 1000
+    timings["get_bounce_rate_data"] = (time.time() - start), datetime.utcnow()
 
     # get annual data from fact table (all data this year except today)
     start = time.time()
     annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-    timings["get_monthly_notification_stats"] = (time.time() - start) * 1000
+    timings["get_monthly_notification_stats"] = (time.time() - start, datetime.utcnow())
 
     start = time.time()
     annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
-    timings["aggregate_by_type"] = (time.time() - start) * 1000
+    timings["aggregate_by_type"] = (time.time() - start, datetime.utcnow())
 
     # Calculate total time
-    total_time = (time.time() - start_total) * 1000
+    total_time = time.time() - start_total
     current_app.logger.info(f"TIMING: Total get_dashboard_partials execution took {total_time:.2f}ms")
     current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
