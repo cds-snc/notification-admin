@@ -342,7 +342,7 @@ def test_has_jobs_sets_cache(
 
     JobApiClient().has_jobs(fake_uuid)
 
-    mock_get.assert_called_once_with(url="/service/{}/job/has_job".format(fake_uuid))
+    mock_get.assert_called_once_with(url="/service/{}/job/has_jobs".format(fake_uuid))
     mock_redis_set.assert_called_once_with(
         "has_jobs-{}".format(fake_uuid),
         expected_cache_value,
