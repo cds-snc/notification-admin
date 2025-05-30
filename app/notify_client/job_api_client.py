@@ -98,7 +98,8 @@ class JobApiClient(NotifyAdminAPIClient):
 
     @cache.set("has_jobs-{service_id}")
     def has_jobs(self, service_id):
-        return bool(self.get_jobs(service_id)["data"])
+        response = self.get(url="/service/{}/job/has_jobs".format(service_id))
+        return bool(response["data"]["has_jobs"])
 
     def create_job(self, job_id, service_id, scheduled_for=None):
         data = {"id": job_id}
