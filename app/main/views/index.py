@@ -312,7 +312,7 @@ def oembed():
             {
                 "version": "1.0",
                 "type": "rich",
-                "provider_name": "GC Notify",
+                "provider_name": _("GC Notify"),
                 "provider_url": url_for("main.index", _external=True),
                 "title": _("Activity on GC Notify"),
                 "html": _render_stats_embed_html(stats_data),
