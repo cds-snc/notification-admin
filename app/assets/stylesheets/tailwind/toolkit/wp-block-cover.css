@@ -1,5 +1,5 @@
 @layer components {
-    /* Cover */
+  /* Cover */
   .wp-block-cover {
     position: relative;
     color: var(--text);
@@ -43,5 +43,4 @@
   main:has(> .page-content > .wp-block-cover:last-child) {
     @apply pb-0;
   }
-
 }

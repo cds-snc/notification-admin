@@ -1,17 +1,16 @@
 @layer components {
-    .is-layout-grid {
-        /* Columns are defined in GCA with the `grid-cols-x` utility class */
-        @apply grid gap-gutter;
-    }
+  .is-layout-grid {
+    /* Columns are defined in GCA with the `grid-cols-x` utility class */
+    @apply grid gap-gutter;
+  }
 
-    .is-layout-flex {
-        @apply flex gap-gutter;
-    }
-    .is-layout-flex.is-vertical {
-        @apply flex-col items-start;
-    }
-    .is-layout-flex.is-nowrap {
-        @apply flex-nowrap;
-    }
-
+  .is-layout-flex {
+    @apply flex gap-gutter;
+  }
+  .is-layout-flex.is-vertical {
+    @apply flex-col items-start;
+  }
+  .is-layout-flex.is-nowrap {
+    @apply flex-nowrap;
+  }
 }
