@@ -41,7 +41,7 @@ gunicorn = "22.0.0"
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "10.3.0"
 notifications-python-client = "6.4.1"
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.3" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.4" }
 pwnedpasswords = "2.0.0"
 pyexcel = "0.7.0"
 pyexcel-io = "0.6.6"
