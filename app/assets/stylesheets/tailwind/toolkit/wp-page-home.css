@@ -1,5 +1,8 @@
 @layer components {
     /* Home page styles. Scoped by cover ID */
+    #limits .card {
+        @apply gap-0 items-stretch;
+    }
     #limits p {
         @apply my-0;
     }
@@ -18,6 +21,9 @@
 
     #platform {
         @apply text-white;
+    }
+    #platform .wp-block-group {
+        @apply items-center;
     }
     #platform .wp-block-group p {
         @apply my-0 text-balance;

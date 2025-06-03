@@ -5,7 +5,10 @@
     }
 
     .is-layout-flex {
-        @apply flex gap-gutter items-center;
+        @apply flex gap-gutter;
+    }
+    .is-layout-flex.is-vertical {
+        @apply flex-col items-start;
     }
     .is-layout-flex.is-nowrap {
         @apply flex-nowrap;
