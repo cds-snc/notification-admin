@@ -2413,6 +2413,7 @@ def mock_get_jobs(mocker, api_user_active):
             },
         }
 
+    mocker.patch("app.job_api_client.has_jobs", return_value=True)
     return mocker.patch("app.job_api_client.get_jobs", side_effect=_get_jobs)
 
 
