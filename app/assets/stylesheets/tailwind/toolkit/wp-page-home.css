@@ -1,0 +1,34 @@
+@layer components {
+    /* Home page styles. Scoped by cover ID */
+    #limits p {
+        @apply my-0;
+    }
+
+    #limits p:is(.text-title, .text-xxl) {
+        @apply font-sans font-bold leading-tight;
+    }
+
+    #limits p.text-xxl + p {
+        @apply border-b-4 border-blue-700 pb-gutterHalf mb-gutter;
+    }
+    #limits p.text-title + p {
+        @apply border-b-1 border-blue-700 pb-gutterHalf;
+    }
+
+
+    #platform {
+        @apply text-white;
+    }
+    #platform .wp-block-group p {
+        @apply my-0 text-balance;
+    }
+    #platform .card {
+        @apply bg-blue-900 p-gutterHalf;
+    }
+    #platform .card:focus-within {
+        @apply bg-yellow text-black;
+    }
+    #platform .card a:not(:focus-visible) {
+        @apply text-blue-lighter;
+    }
+}

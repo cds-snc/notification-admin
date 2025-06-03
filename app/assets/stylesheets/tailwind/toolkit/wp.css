@@ -1,48 +1,12 @@
+@import "./wp-block-cover.css";
+@import "./wp-layout.css";
+/* Page specific styles. */
+@import "./wp-page-home.css";
+/* TODO */
+/*@import "./wp-block-columns.css";*/
+
 @layer components {
   /*! purgecss start ignore */
-  /* Cover */
-  .wp-block-cover {
-    position: relative;
-    color: var(--text);
-  }
-
-  /* Theming the cover blocks with our tokens */
-  .wp-block-cover.bg-blue-slightlight {
-    --bg: theme("colors.blue.slightlight");
-    --text: theme("colors.white");
-    --interactive: theme("colors.blue.lighter");
-  }
-
-  .wp-block-cover.bg-gray {
-    --bg: theme("colors.gray.100");
-    --text: theme("colors.black");
-    --interactive: theme("colors.blue.DEFAULT");
-  }
-
-  .wp-block-cover a:not(.button):not(:focus) {
-    color: var(--interactive);
-  }
-
-  .wp-block-cover > span {
-    margin: 0 calc(50% - 50vw);
-    max-width: 100vw;
-    width: 100vw;
-    height: 100%;
-    position: absolute;
-    background-color: var(--bg);
-  }
-
-  .wp-block-cover .wp-block-cover__inner-container {
-    position: relative;
-    @apply py-20;
-  }
-
-  .wp-block-cover.flow
-    .wp-block-cover__inner-container
-    > :not(template)
-    + :not(template) {
-    @apply mt-doubleGutter;
-  }
 
   /* Columns */
 
@@ -50,11 +14,6 @@
   /* Stacked layout (responsive) */
   .wp-block-columns {
     flex-direction: column;
-  }
-
-  /* Gives some flow spacing for all columns when stacked */
-  .wp-block-columns > :not(template) + :not(template) {
-    @apply mt-gutter;
   }
 
   /*  stack-swap usage:
@@ -77,9 +36,7 @@
 
   /* Single column */
 
-  .wp-block-column > h1:first-child,
-  .wp-block-column > h2:first-child,
-  .wp-block-column > h3:first-child {
+  .wp-block-cover .wp-block-heading {
     @apply mt-0;
   }
 
@@ -96,11 +53,6 @@
     display: flex;
     align-items: center;
     @apply h-12;
-  }
-
-  /* Hide wp-block-image if only child of a column */
-  .stack-swap .wp-block-column > .wp-block-image:only-child {
-    @apply hidden;
   }
 
   @screen lg {

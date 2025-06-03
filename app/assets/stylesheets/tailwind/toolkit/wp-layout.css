@@ -1,0 +1,14 @@
+@layer components {
+    .is-layout-grid {
+        /* Columns are defined in GCA with the `grid-cols-x` utility class */
+        @apply grid gap-gutter;
+    }
+
+    .is-layout-flex {
+        @apply flex gap-gutter items-center;
+    }
+    .is-layout-flex.is-nowrap {
+        @apply flex-nowrap;
+    }
+
+}
