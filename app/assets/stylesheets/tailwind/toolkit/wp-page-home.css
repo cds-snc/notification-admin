@@ -80,6 +80,32 @@
     @apply border-b-1 border-brand-700 pb-gutterHalf;
   }
 
+  #examples blockquote.sms-message-wrapper {
+    @apply border-0 bg-gray-200;
+  }
+  #examples blockquote.sms-message-wrapper:after {
+    @apply border-l-gray-200 border-b-gray-200;
+  }
+  #examples blockquote:not(.sms-message-wrapper) {
+    box-shadow: 0 -10px 0 theme("colors.gray.300");
+    @apply border-2 border-gray-300 bg-white p-gutterHalf rounded-lg;
+  }
+  #examples blockquote {
+    @apply max-w-screen-smaller;
+  }
+  #examples blockquote p {
+    @apply m-0;
+  }
+  #examples blockquote p + p {
+    @apply mt-gutterHalf;
+  }
+  #examples blockquote strong + p {
+    @apply mt-2;
+  }
+  #examples blockquote strong {
+    @apply text-title font-sans font-bold;
+  }
+
   #explore p {
     @apply m-0;
   }
