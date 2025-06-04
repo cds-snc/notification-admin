@@ -8,10 +8,6 @@
 @layer components {
   /*! purgecss start ignore */
 
-  a.wp-element-button.button-link {
-    @apply text-blue;
-  }
-
   a.wp-element-button.button-link:focus-visible {
     @apply bg-yellow text-black border-black;
   }
