@@ -9,28 +9,28 @@
     @apply hidden lg:block;
   }
 
+  #hero.wp-block-cover .wp-block-cover__inner-container {
+    @apply sm:pb-0;
+  }
 
-#hero.wp-block-cover .wp-block-cover__inner-container {
-	@apply sm:pb-0;
-}
-
-#quick-links {
+  #quick-links {
     @apply align-baseline bg-brand-900 sm:bg-transparent rounded-2xl p-gutter sm:p-0 lg:mt-gutter;
-}
-#quick-links .wp-block-heading {
+  }
+  #quick-links .wp-block-heading {
     @apply m-0;
-}
-#quick-links-links {
+  }
+  #quick-links-links {
     @apply flex-col;
-}
+  }
 
-@screen sm {
-#quick-links-links {
-    box-shadow: 20vw 0 0 theme("colors.brand.900"), 40vw 0 0 theme("colors.brand.900");;
-    @apply flex-row bg-brand-900 p-gutter rounded-tl-2xl grow;
-}
-}
-
+  @screen sm {
+    #quick-links-links {
+      box-shadow:
+        20vw 0 0 theme("colors.brand.900"),
+        40vw 0 0 theme("colors.brand.900");
+      @apply flex-row bg-brand-900 p-gutter rounded-tl-2xl grow;
+    }
+  }
 
   :where(#hero) a.wp-element-button.button-link:not(:focus-visible) {
     @apply bg-brand-100 text-brand-900;
@@ -54,7 +54,7 @@
     /* Overwrite the flex basis on this section specifically between sm and lg */
     /* Let the row wrap, basis 40% + grow allows for a 2 column layout considering flex gap*/
     #by-for .wp-block-columns {
-        @apply sm:flex-row flex-wrap;
+      @apply sm:flex-row flex-wrap;
     }
     #by-for .wp-block-column[style*="flex-basis"] {
       flex-basis: 40% !important;
