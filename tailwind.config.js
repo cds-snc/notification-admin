@@ -37,6 +37,7 @@ module.exports = {
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
+    "lg:flex-nowrap",
   ],
   content: [
     "./app/**/*.{html,css,js}",

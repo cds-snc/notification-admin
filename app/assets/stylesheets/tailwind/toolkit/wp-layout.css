@@ -5,7 +5,10 @@
   }
 
   .is-layout-flex {
-    @apply flex gap-gutter;
+    @apply flex flex-wrap gap-gutter;
+  }
+  .is-layout-flex.wp-block-columns {
+    @apply lg:flex-nowrap;
   }
   .is-layout-flex.is-vertical {
     @apply flex-col items-start;
