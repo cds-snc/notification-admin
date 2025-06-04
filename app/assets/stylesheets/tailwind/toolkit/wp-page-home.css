@@ -46,7 +46,7 @@
     @apply m-0;
   }
   :where(#explore) a.wp-element-button.button-link:not(:focus-visible) {
-    @apply bg-white text-brand-900;
+    @apply bg-white text-brand-900 text-title;
   }
   #explore details[open] {
     @apply bg-white pr-gutterHalf;
