@@ -36,6 +36,10 @@
   .wp-block-columns.stack-swap > :not(template) + :not(template) {
     @apply mt-0;
   }
+  /* Hide wp-block-image if only child of a column */
+  .stack-swap .wp-block-column > .wp-block-image:only-child {
+    @apply hidden;
+  }
 
   /* Gives space to columns when columns isn't first child */
   .page-content > * + .wp-block-columns {
@@ -44,7 +48,7 @@
 
   /* Single column */
 
-  .wp-block-cover .wp-block-heading {
+  :is(.wp-block-cover, .wp-block-column) .wp-block-heading {
     @apply mt-0 mb-gutterAndAHalf;
   }
 

@@ -5,6 +5,11 @@
     color: var(--text);
   }
 
+  /* Giving some space to headings in covers */
+  .wp-block-cover .wp-block-heading {
+    @apply mt-0 mb-gutterAndAHalf;
+  }
+
   /* Theming the cover blocks with our tokens */
   .wp-block-cover.bg-blue-slightlight {
     --bg: theme("colors.brand.700");
