@@ -17,8 +17,8 @@
   details summary:hover {
     @apply text-blue-lightblue;
   }
-  details summary:focus {
-    @apply outline-yellow;
+  details summary:focus, details summary:focus-visible {
+    @apply outline outline-yellow outline-4;
   }
 
   summary::-moz-details-marker,

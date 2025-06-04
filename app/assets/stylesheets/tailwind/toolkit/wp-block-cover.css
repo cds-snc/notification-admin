@@ -7,15 +7,15 @@
 
   /* Theming the cover blocks with our tokens */
   .wp-block-cover.bg-blue-slightlight {
-    --bg: theme("colors.blue.slightlight");
+    --bg: theme("colors.brand.700");
     --text: theme("colors.white");
-    --interactive: theme("colors.blue.lighter");
+    --interactive: theme("colors.brand.100");
   }
 
   .wp-block-cover.bg-gray {
     --bg: theme("colors.gray.100");
     --text: theme("colors.black");
-    --interactive: theme("colors.blue.DEFAULT");
+    --interactive: theme("colors.brand.900");
   }
 
   .wp-block-cover a:not(.button):not(:focus) {

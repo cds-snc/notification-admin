@@ -1,5 +1,29 @@
 @layer components {
   /* Home page styles. Scoped by cover ID */
+
+  #hero {
+    @apply text-white;
+  }
+
+  :where(#hero) a.wp-element-button.button-link:not(:focus-visible) {
+    @apply bg-brand-100 text-brand-900;
+  }
+
+  #by-for figcaption {
+    @apply text-title pt-gutterHalf;
+  }
+  #by-for figure + p {
+    @apply mt-gutterHalf mb-0 text-balance;
+  }
+
+  #by-for .wp-block-column:last-of-type {
+    @apply flex items-center p-gutter border-l-4 lg:border-l-1 border-gray-300;
+  }
+
+  #by-for .wp-block-column:last-of-type p {
+    @apply m-0;
+  }
+
   #limits .card {
     @apply gap-0 items-stretch;
   }
@@ -12,10 +36,26 @@
   }
 
   #limits p.text-xxl + p {
-    @apply border-b-4 border-blue-700 pb-gutterHalf mb-gutter;
+    @apply border-b-4 border-brand-700 pb-gutterHalf mb-gutter;
   }
   #limits p.text-title + p {
-    @apply border-b-1 border-blue-700 pb-gutterHalf;
+    @apply border-b-1 border-brand-700 pb-gutterHalf;
+  }
+
+  #explore p {
+    @apply m-0;
+  }
+  :where(#explore) a.wp-element-button.button-link:not(:focus-visible) {
+    @apply bg-white text-brand-900;
+  }
+  #explore details[open] {
+    @apply bg-white pr-gutterHalf;
+  }
+  #explore details p {
+    @apply text-small;
+  }
+  #explore details p + p {
+    @apply mt-gutterHalf;
   }
 
   #platform {
@@ -28,12 +68,15 @@
     @apply my-0 text-balance;
   }
   #platform .card {
-    @apply bg-blue-900 p-gutterHalf;
+    @apply bg-brand-900 p-gutterHalf;
+  }
+  #platform .card a {
+    @apply text-title;
   }
   #platform .card:focus-within {
     @apply bg-yellow text-black;
   }
   #platform .card a:not(:focus-visible) {
-    @apply text-blue-lighter;
+    @apply text-brand;
   }
 }

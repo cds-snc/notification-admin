@@ -133,6 +133,14 @@ module.exports = {
         800: "#31455C",
         900: "#26374A",
       },
+      brand: {
+        DEFAULT: "#B3E4FB",
+        100: "#B3E4FB",
+        300: "#509DC4",
+        500: "#427D9F",
+        700: "#2C5E79",
+        900: "#0E2A3C",
+      },
       gray: {
         DEFAULT: "#eee",
         button: "#dee0e2" /* grey3 */,
