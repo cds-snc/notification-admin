@@ -38,6 +38,10 @@ module.exports = {
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
     "lg:flex-nowrap",
+    "grid-cols-2",
+    "grid-cols-4",
+    "col-start-2",
+    "col-span-3",
   ],
   content: [
     "./app/**/*.{html,css,js}",

@@ -13,6 +13,9 @@
   .is-layout-flex.is-vertical {
     @apply flex-col items-start;
   }
+  .is-layout-flex.is-content-justification-stretch {
+    @apply items-stretch;
+  }
   .is-layout-flex.is-nowrap {
     @apply flex-nowrap;
   }
