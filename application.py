@@ -8,6 +8,7 @@ from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app import create_app
+from app.xray.context import NotifyContext
 
 load_dotenv()
 # Patch all supported libraries for X-Ray
@@ -16,7 +17,7 @@ patch_all()
 
 application = Flask("app")
 application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
-xray_recorder.configure(service="Notify-Admin")
+xray_recorder.configure(service="Notify-Admin", context=NotifyContext())
 XRayMiddleware(application, xray_recorder)
 create_app(application)
 
