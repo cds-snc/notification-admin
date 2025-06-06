@@ -392,9 +392,9 @@ def test_should_show_upcoming_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    second_call = mock_get_jobs.call_args_list[1]
-    assert second_call[0] == (SERVICE_ONE_ID,)
-    assert second_call[1]["statuses"] == ["scheduled"]
+    first_call = mock_get_jobs.call_args_list[0]
+    assert first_call[0] == (SERVICE_ONE_ID,)
+    assert first_call[1]["statuses"] == ["scheduled"]
 
     table_rows = page.find_all("tbody")[0].find_all("tr")
     assert len(table_rows) == 2
@@ -603,10 +603,10 @@ def test_should_show_recent_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    third_call = mock_get_jobs.call_args_list[2]
-    assert third_call[0] == (SERVICE_ONE_ID,)
-    assert third_call[1]["limit_days"] == 7
-    assert "scheduled" not in third_call[1]["statuses"]
+    second_call = mock_get_jobs.call_args_list[1]
+    assert second_call[0] == (SERVICE_ONE_ID,)
+    assert second_call[1]["limit_days"] == 7
+    assert "scheduled" not in second_call[1]["statuses"]
 
     table_rows = page.find_all("tbody")[2].find_all("tr")
 
