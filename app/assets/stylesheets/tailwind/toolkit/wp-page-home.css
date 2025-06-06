@@ -1,0 +1,179 @@
+@layer components {
+  /* Home page styles. Scoped by cover ID */
+
+  #hero {
+    @apply text-white;
+  }
+
+  #hero figure {
+    @apply hidden lg:block;
+  }
+
+  #hero.wp-block-cover .wp-block-cover__inner-container {
+    @apply sm:pb-0;
+  }
+
+  #quick-links {
+    @apply align-baseline bg-brand-900 sm:bg-transparent rounded-2xl p-gutter sm:p-0 lg:mt-gutter;
+  }
+  #quick-links .wp-block-heading {
+    @apply m-0;
+  }
+  #quick-links-links {
+    @apply flex-col;
+  }
+
+  @screen sm {
+    #quick-links-links {
+      box-shadow:
+        20vw 0 0 theme("colors.brand.900"),
+        40vw 0 0 theme("colors.brand.900");
+      @apply flex-row bg-brand-900 p-gutter rounded-tl-2xl grow;
+    }
+  }
+
+  :where(#hero) a.wp-element-button.button-link:not(:focus-visible) {
+    @apply bg-brand-100 text-brand-900;
+  }
+
+  #by-for figcaption {
+    @apply text-title pt-gutterHalf;
+  }
+  #by-for figure + p {
+    @apply mt-gutterHalf mb-0 text-balance;
+  }
+
+  #by-for .wp-block-column:last-of-type {
+    @apply flex items-center p-gutter border-l-4 lg:border-l-1 border-gray-300;
+  }
+
+  #by-for .wp-block-column:last-of-type p {
+    @apply m-0;
+  }
+  @media (max-width: theme("screens.lg")) {
+    /* Overwrite the flex basis on this section specifically between sm and lg */
+    /* Let the row wrap, basis 40% + grow allows for a 2 column layout considering flex gap*/
+    #by-for .wp-block-columns {
+      @apply sm:flex-row flex-wrap;
+    }
+    #by-for .wp-block-column[style*="flex-basis"] {
+      flex-basis: 40% !important;
+      @apply grow;
+    }
+  }
+
+  #limits .card {
+    @apply gap-0 items-stretch;
+  }
+  #limits p {
+    @apply my-0;
+  }
+
+  #limits p:is(.text-title, .text-xxl) {
+    @apply font-sans font-bold leading-tight;
+  }
+
+  #limits p.text-xxl + p {
+    @apply border-b-4 border-brand-700 pb-gutterHalf mb-gutter;
+  }
+  #limits p.text-title + p {
+    @apply border-b-1 border-brand-700 pb-gutterHalf;
+  }
+  #limits .wp-block-group:has(> #what-is-a-service) {
+    @apply gap-gutterHalf p-gutter bg-white;
+  }
+  #what-is-a-service {
+    @apply m-0;
+  }
+
+  #examples blockquote.sms-message-wrapper {
+    @apply border-0 bg-gray-200;
+  }
+  #examples blockquote.sms-message-wrapper:after {
+    @apply border-l-gray-200 border-b-gray-200;
+  }
+  #examples blockquote:not(.sms-message-wrapper) {
+    box-shadow: 0 -10px 0 theme("colors.gray.300");
+    @apply border-2 border-gray-300 bg-white p-gutterHalf rounded-lg;
+  }
+  #examples blockquote {
+    @apply max-w-screen-smaller;
+  }
+  #examples blockquote p {
+    @apply m-0;
+  }
+  #examples blockquote p + p {
+    @apply mt-gutterHalf;
+  }
+  #examples blockquote strong + p {
+    @apply mt-2;
+  }
+  #examples blockquote strong {
+    @apply text-title font-sans font-bold;
+  }
+
+  #activity {
+    @apply border-t-1 border-gray-300;
+  }
+  #activity .wp-block-rss {
+    @apply m-0 p-0 max-w-full;
+  }
+  #activity .wp-block-rss__item {
+    container: activity-item / inline-size;
+    @apply flex flex-col-reverse justify-end p-gutterHalf bg-gray-200 text-black;
+  }
+  #activity .wp-block-rss__item-excerpt {
+    font-size: min(15cqi, theme("fontSize.xxl"));
+    @apply font-sans font-bold leading-tight;
+  }
+  #activity .wp-block-rss__item-title {
+    @apply text-balance;
+  }
+  #activity .wp-block-rss__item:nth-of-type(n + 3) {
+    @apply bg-brand-900 text-brand-100;
+  }
+
+  #explore p {
+    @apply m-0;
+  }
+  #explore .equal-buttons a {
+    @apply md:grow md:shrink md:basis-1/3;
+  }
+  :where(#explore) a.wp-element-button.button-link {
+    @apply text-title;
+  }
+  :where(#explore) a.wp-element-button.button-link:not(:focus-visible) {
+    @apply bg-white text-brand-900;
+  }
+  #explore details[open] {
+    @apply bg-white pr-gutterHalf;
+  }
+  #explore details p {
+    @apply text-small;
+  }
+  #explore details p + p {
+    @apply mt-gutterHalf;
+  }
+
+  #platform {
+    @apply text-white;
+  }
+  #platform .wp-block-group {
+    @apply items-center;
+  }
+  #platform .wp-block-group p {
+    @apply my-0 text-balance;
+  }
+  #platform .card {
+    @apply bg-brand-900 p-gutterHalf;
+  }
+  #platform .card a {
+    @apply text-title;
+  }
+  #platform .card:focus-within {
+    @apply bg-yellow text-black;
+  }
+  #platform .card a:not(:focus-visible) {
+    @apply text-brand;
+  }
+}
