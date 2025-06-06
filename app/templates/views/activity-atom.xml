@@ -12,12 +12,12 @@
         <updated>{{ updated_services }}</updated>
     </entry>
     <entry>
-        <title>{{ _('Emails') }}</title>
+        <title>{{ _('Emails') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
         <summary>{{ emails_total | format_number }}</summary>
         <updated>{{ updated_emails }}</updated>
     </entry>
     <entry>
-        <title>{{ _('Text messages') }}</title>
+        <title>{{ _('Text messages') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
         <summary>{{ sms_total | format_number }}</summary>
         <updated>{{ updated_sms }}</updated>
     </entry>

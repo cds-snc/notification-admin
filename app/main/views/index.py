@@ -16,7 +16,7 @@ from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, get_current_locale, letter_branding_client
+from app import cache, email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
     _get_alt_locale,
     get_lang_url,
@@ -291,6 +291,7 @@ def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
+@cache.memoize(timeout=12 * 60 * 60)
 @main.route("/activity/atom", endpoint="activity_atom")
 def activity_atom():
     stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
@@ -312,7 +313,6 @@ def activity_atom():
         200,
     )
     response.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
-    response.headers["Cache-Control"] = "max-age=3600"
     response.headers["Content-Disposition"] = 'attachment; filename="activity.atom"'
 
     return response
