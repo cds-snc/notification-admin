@@ -119,12 +119,17 @@
     @apply m-0 p-0 max-w-full;
   }
   #activity .wp-block-rss__item {
-    @apply flex flex-col-reverse p-gutterHalf bg-gray-200 text-black;
+    container: activity-item / inline-size;
+    @apply flex flex-col-reverse justify-end p-gutterHalf bg-gray-200 text-black;
   }
   #activity .wp-block-rss__item-excerpt {
-    @apply text-xxl font-sans font-bold leading-tight;
+    font-size: min(15cqi, theme("fontSize.xxl"));
+    @apply font-sans font-bold leading-tight;
   }
-  #activity .wp-block-rss__item:nth-of-type(n+3) {
+  #activity .wp-block-rss__item-title {
+    @apply text-balance;
+  }
+  #activity .wp-block-rss__item:nth-of-type(n + 3) {
     @apply bg-brand-900 text-brand-100;
   }
 

@@ -1,11 +1,12 @@
 @layer components {
-  .is-layout-grid, .is-grid {
+  .is-layout-grid,
+  .is-grid {
     /* Columns are defined in GCA with the `grid-cols-x` utility class */
     @apply grid gap-gutter;
   }
 
   .columns-2 {
-    @apply grid-cols-2;
+    @apply md:grid-cols-2;
   }
 
   .is-layout-flex {
