@@ -1,11 +1,10 @@
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import (
     abort,
     current_app,
     g,
-    jsonify,
     make_response,
     redirect,
     render_template,
@@ -292,54 +291,20 @@ def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
 
 
-@main.route("/_preview_oembed", endpoint="oembed")
-def oembed():
-    """oEmbed endpoint for embedding GC Notify statistics"""
-    url = request.args.get("url")
-    format_type = request.args.get("format", "json")
+@main.route("/activity/atom", endpoint="activity_atom")
+def activity_atom():
+    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    updated_time = datetime.now(timezone.utc).isoformat()  # Current UTC time in ISO format
 
-    if not url:
-        abort(400, "URL parameter is required")
+    response = make_response(
+        render_template("views/activity-atom.xml", **stats, updated_time=updated_time),
+        200,
+    )
+    response.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
+    response.headers["Cache-Control"] = "max-age=3600"
+    response.headers["Content-Disposition"] = 'attachment; filename="activity.atom"'
 
-        # Validate that the URL is for our statistics
-    if "/activity" not in url:
-        abort(404, "URL not found")
-
-    stats_data = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
-
-    if format_type == "json":
-        return jsonify(
-            {
-                "version": "1.0",
-                "type": "rich",
-                "provider_name": _("GC Notify"),
-                "provider_url": url_for("main.index", _external=True),
-                "title": _("Activity on GC Notify"),
-                "html": _render_stats_embed_html(stats_data),
-                "width": 600,
-                "height": 400,
-            }
-        )
-    else:
-        abort(501, "Only JSON format is supported")
-
-
-def _render_stats_embed_html(stats_data):
-    """Render the HTML for the embedded statistics"""
-    return render_template("partials/embeds/activity.html", **stats_data)
-
-
-@main.route("/_preview_stats-embed")
-def stats_embed():
-    """Dedicated endpoint for statistics embed"""
-    stats_data = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
-
-    if request.args.get("format") == "iframe":
-        # Return a full HTML page for iframe embedding
-        return render_template("embeds/stats_iframe.html", **stats_data)
-    else:
-        # Return just the embed HTML
-        return render_template("embeds/stats_embed.html", **stats_data)
+    return response
 
 
 @main.route("/activity/download", endpoint="activity_download")

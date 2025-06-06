@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{_("Activity on GC Notify")}}</title>
+    <entry>
+        <title>{{ _("Total notifications sent") }}</title>
+        <summary>{{ notifications_total | format_number }}</summary>
+        <updated>{{ updated_time }}</updated>
+    </entry>
+    <entry>
+        <title>{{ _("Programs and services using GC Notify") }}</title>
+        <summary>{{ live_services | format_number }}</summary>
+        <updated>{{ updated_time }}</updated>
+    </entry>
+    <entry>
+        <title>{{ _('Emails') }}</title>
+        <summary>{{ emails_total | format_number }}</summary>
+        <updated>{{ updated_time }}</updated>
+    </entry>
+    <entry>
+        <title>{{ _('Text messages') }}</title>
+        <summary>{{ sms_total | format_number }}</summary>
+        <updated>{{ updated_time }}</updated>
+    </entry>
+</feed>
