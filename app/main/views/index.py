@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from flask import (
     abort,
@@ -294,10 +294,21 @@ def activity():
 @main.route("/activity/atom", endpoint="activity_atom")
 def activity_atom():
     stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
-    updated_time = datetime.now(timezone.utc).isoformat()  # Current UTC time in ISO format
+    now = datetime.now(timezone.utc)
+    updated_total = now.isoformat()
+    updated_services = (now - timedelta(minutes=2)).isoformat()
+    updated_emails = (now - timedelta(minutes=3)).isoformat()
+    updated_sms = (now - timedelta(minutes=4)).isoformat()
 
     response = make_response(
-        render_template("views/activity-atom.xml", **stats, updated_time=updated_time),
+        render_template(
+            "views/activity-atom.xml",
+            **stats,
+            updated_total=updated_total,
+            updated_services=updated_services,
+            updated_emails=updated_emails,
+            updated_sms=updated_sms,
+        ),
         200,
     )
     response.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
