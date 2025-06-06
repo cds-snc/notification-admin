@@ -79,6 +79,12 @@
   #limits p.text-title + p {
     @apply border-b-1 border-brand-700 pb-gutterHalf;
   }
+  #limits .wp-block-group:has(> #what-is-a-service) {
+    @apply gap-gutterHalf p-gutter bg-white;
+  }
+  #what-is-a-service {
+    @apply m-0;
+  }
 
   #examples blockquote.sms-message-wrapper {
     @apply border-0 bg-gray-200;
