@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from flask import (
     abort,
@@ -16,7 +16,7 @@ from flask_login import current_user
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, get_current_locale, letter_branding_client
+from app import cache, email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
     _get_alt_locale,
     get_lang_url,
@@ -289,6 +289,33 @@ def sitemap():
 @main.route("/activity", endpoint="activity")
 def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
+
+
+@cache.memoize(timeout=12 * 60 * 60)
+@main.route("/activity/atom", endpoint="activity_atom")
+def activity_atom():
+    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    now = datetime.now(timezone.utc)
+    updated_total = now.isoformat()
+    updated_services = (now - timedelta(minutes=2)).isoformat()
+    updated_emails = (now - timedelta(minutes=3)).isoformat()
+    updated_sms = (now - timedelta(minutes=4)).isoformat()
+
+    response = make_response(
+        render_template(
+            "views/activity-atom.xml",
+            **stats,
+            updated_total=updated_total,
+            updated_services=updated_services,
+            updated_emails=updated_emails,
+            updated_sms=updated_sms,
+        ),
+        200,
+    )
+    response.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
+    response.headers["Content-Disposition"] = 'attachment; filename="activity.atom"'
+
+    return response
 
 
 @main.route("/activity/download", endpoint="activity_download")
