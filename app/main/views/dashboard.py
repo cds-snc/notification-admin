@@ -698,7 +698,11 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
         annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
     # if no redis data, fallback to API call
-    if "seeded_at" not in annual_data_redis.keys() or annual_data_redis["seeded_at"] != datetime.utcnow().date():
+    if (
+        "total_email_fiscal_year_to_yesterday" not in annual_data_redis.keys()
+        or "total_sms_fiscal_year_to_yesterday" not in annual_data_redis.keys()
+    ):
+        # this means the data has not been seeded today, likely because the service has not sent any notifications today
         annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
         aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
         return aggregated_annual_data
