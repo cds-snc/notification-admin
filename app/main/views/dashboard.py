@@ -455,7 +455,7 @@ def get_dashboard_partials(service_id):
     }
 
 
-def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> dict:
+def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> AnnualData:
     counts = {"sms": 0, "email": 0, "letter": 0}
     # flatten out this structure to match the above
     for month_data in data["data"].values():
@@ -464,11 +464,10 @@ def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> dict:
                 counts[message_type] += sum(message_counts.values())
 
     # add todays data to the annual data
-    counts = {
+    return {
         "sms": counts["sms"] + daily_data["sms"]["requested"],
         "email": counts["email"] + daily_data["email"]["requested"],
     }
-    return counts
 
 
 def _get_daily_stats(service_id):
@@ -702,17 +701,16 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     annual_data_redis = {}
 
     # get annual_data from redis
-    if current_app.config("REDIS_ENABLED"):
+    if current_app.config["REDIS_ENABLED"]:
         annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
     # if no redis data, fallback to API call
     if "seeded_at" not in annual_data_redis.keys() or annual_data_redis["seeded_at"] != datetime.utcnow().date():
         annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-        annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
-        return annual_data
+        aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
+        return aggregated_annual_data
 
-    annual_data: AnnualData = {
+    return {
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
         "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
     }
-    return annual_data
