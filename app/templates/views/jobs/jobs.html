@@ -8,7 +8,7 @@
 {% block maincolumn_content %}
   <h1 class="heading-large">{{ _('Bulk sends') }}</h1>
 
-  <div class="dashboard">
+  <div>
     {% if scheduled_jobs %}
       <h2 class="heading-medium mt-8">{{ _("Scheduled messages") }}</h2>
       {{ scheduled_jobs | safe }}
