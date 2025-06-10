@@ -19,6 +19,10 @@ def accept_invite(token):
     except InviteTokenError as exception:
         flash(_(str(exception)))
         return redirect(url_for("main.sign_in"))
+    except Exception as e:
+        current_app.logger.warning(f"Error accepting invite: {e}")
+        flash(_("There was a problem adding you to this service. Try the link again."), "error")
+        return redirect(url_for("main.sign_in"))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
         message = Markup(
