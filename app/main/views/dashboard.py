@@ -403,13 +403,6 @@ def get_dashboard_partials(service_id):
     bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
     timings["get_bounce_rate_data"] = (time.time() - start) * 1000
 
-    # get annual data from fact table (all data this year except today)
-    start = time.time()
-    # annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-    # get annual_data from redis
-    annual_data = annual_limit_client.get_all_notification_counts(service_id)
-    timings["get_monthly_notification_stats"] = (time.time() - start) * 1000
-
     start = time.time()
     annual_data = get_annual_data(service_id, dashboard_totals_daily)
     timings["get_annual_data"] = (time.time() - start) * 1000
