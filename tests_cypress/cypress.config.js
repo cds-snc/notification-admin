@@ -1,7 +1,11 @@
+const fs = require('fs'); 
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");
 const CreateAccount = require("./cypress/plugins/create-account");
 const htmlvalidate = require("cypress-html-validate/plugin");
+
+// determine whether Cypress is running in a Docker container
+const isDocker = fs.existsSync('/.dockerenv');
 
 module.exports = defineConfig({
   e2e: {
@@ -28,9 +32,10 @@ module.exports = defineConfig({
         },
         LOCAL: {
           Hostnames: {
-            API: 'http://localhost:6011',
-            Admin: 'http://localhost:6012',
-            DDAPI: 'http://localhost:7000',
+            // use host.docker.internal to access localhost from a Docker container
+            API: isDocker ? 'http://host.docker.internal:6011' : 'http://localhost:6011',
+            Admin: isDocker ? 'http://host.docker.internal:6012' : 'http://localhost:6012',
+            DDAPI: isDocker ? 'http://host.docker.internal:7000' : 'http://localhost:7000',
           },
         }
       }
@@ -46,7 +51,7 @@ module.exports = defineConfig({
       // Set the baseUrl to the correct environment if no override is specified (this is how CI overrides the baseUrl for each PR review env)
       if (!config.baseUrl)
         config.baseUrl = config.env.Environment[envName].Hostnames.Admin;
-
+      
       htmlvalidate.install(on, {
         rules: {
           "form-dup-name": "off",
