@@ -686,26 +686,29 @@ def get_column_properties(number_of_columns):
 
 
 def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
-    """First try to get annual data from redis, if not available, fallback to the API call.
+    """Retrieves and combines annual notification statistics for a service.
+
+    This function attempts to fetch annual data from Redis cache. If Redis is not enabled or
+    the cache hasn't been seeded today, it falls back to an API call to fetch the data from the database.
+
+    The function then aggregates annual notification counts (from Redis or API) and combines them with
+    the daily dashboard totals to get complete annual statistics.
+
+    Args:
+        service_id: The ID of the service to get annual data for
+        dashboard_totals_daily: The daily dashboard totals containing requested counts for SMS and email
 
     Returns:
-        AnnualData: Dictionary containing annual notification counts
+        AnnualData: Dictionary containing combined annual notification counts for SMS and email
     """
-    annual_data_redis = {}
 
-    # get annual_data from redis
-    if current_app.config["REDIS_ENABLED"]:
-        annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
-
-    # if no redis data, fallback to API call
-    if (
-        "total_email_fiscal_year_to_yesterday" not in annual_data_redis.keys()
-        or "total_sms_fiscal_year_to_yesterday" not in annual_data_redis.keys()
-    ):
-        # this means the data has not been seeded today, likely because the service has not sent any notifications today
+    if not current_app.config["REDIS_ENABLED"] or not annual_limit_client.was_seeded_today(service_id):
         annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
         aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
         return aggregated_annual_data
+
+    # get annual_data from redis
+    annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
     return {
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
