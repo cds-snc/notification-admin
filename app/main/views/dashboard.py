@@ -263,16 +263,6 @@ def monthly(service_id):
 
         return monthly
 
-    def aggregate_by_type(notification_data):
-        counts = {"sms": 0, "email": 0, "letter": 0}
-        for month_data in notification_data["data"].values():
-            for message_type, message_counts in month_data.items():
-                if isinstance(message_counts, dict):
-                    counts[message_type] += sum(message_counts.values())
-
-        # return the result
-        return counts
-
     year, current_financial_year = requested_and_current_financial_year(request)
 
     # if FF_ANNUAL is on
@@ -315,6 +305,17 @@ def monthly(service_id):
         selected_year=year,
         current_financial_year=current_financial_year,
     )
+
+
+def aggregate_by_type(notification_data):
+    counts = {"sms": 0, "email": 0, "letter": 0}
+    for month_data in notification_data["data"].values():
+        for message_type, message_counts in month_data.items():
+            if isinstance(message_counts, dict):
+                counts[message_type] += sum(message_counts.values())
+
+    # return the result
+    return counts
 
 
 def filter_out_cancelled_stats(template_statistics):
@@ -419,12 +420,14 @@ def get_dashboard_partials(service_id):
 
     # get annual data from fact table (all data this year except today)
     start = time.time()
-    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
+    # annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
+    # get annual_data from redis
+    annual_data = annual_limit_client.get_all_notification_counts(service_id)
     timings["get_monthly_notification_stats"] = (time.time() - start) * 1000
 
     start = time.time()
-    annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
-    timings["aggregate_by_type"] = (time.time() - start) * 1000
+    annual_data = get_annual_data(service_id, dashboard_totals_daily)
+    timings["get_annual_data"] = (time.time() - start) * 1000
 
     # Calculate total time
     total_time = (time.time() - start_total) * 1000
@@ -687,3 +690,23 @@ def get_column_properties(number_of_columns):
         2: ("w-1/2 float-left py-0 px-0 px-gutterHalf box-border", 999999999),
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
+
+
+def get_annual_data(service_id, dashboard_totals_daily):
+    """First try to get annual data from redis, if not available, fallback to the API call."""
+    annual_data_redis = {}
+
+    # get annual_data from redis
+    if current_app.config("REDIS_ENABLED"):
+        annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
+
+    # if no redis data, fallback to API call
+    if "seeded_at" not in annual_data_redis.keys():
+        annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
+        annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
+        return annual_data
+
+    annual_data = {}
+    annual_data["email"] = annual_data_redis["email_delivered_today"] + annual_data_redis["total_email_fiscal_year_to_yesterday"]
+    annual_data["sms"] = annual_data_redis["sms_delivered_today"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"]
+    return annual_data
