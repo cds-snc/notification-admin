@@ -703,12 +703,17 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     """
 
     if not current_app.config["REDIS_ENABLED"] or not annual_limit_client.was_seeded_today(service_id):
-        annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-        aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
-        return aggregated_annual_data
+        return get_annual_data_api(service_id, dashboard_totals_daily)
 
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
+
+    if (
+        annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0
+        and annual_data_redis["total_sms_fiscal_year_to_yesterday"] == 0
+    ):
+        # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
+        return get_annual_data_api(service_id, dashboard_totals_daily)
 
     # use the daily requested totals from the api, so that this number is calculated the same
     # way regardless of whether we use api data or redis data
@@ -716,3 +721,9 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
         "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
     }
+
+
+def get_annual_data_api(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
+    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
+    aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
+    return aggregated_annual_data
