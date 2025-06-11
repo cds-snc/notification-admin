@@ -710,6 +710,8 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
+    # use the daily requested totals from the api, so that this number is calculated the same
+    # way regardless of whether we use api data or redis data
     return {
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
         "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
