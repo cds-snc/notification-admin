@@ -1,0 +1,51 @@
+@layer components {
+  /* Cover */
+  .wp-block-cover {
+    position: relative;
+    color: var(--text);
+  }
+
+  /* Giving some space to headings in covers */
+  .wp-block-cover .wp-block-heading {
+    @apply mt-0 mb-gutterAndAHalf;
+  }
+
+  /* Theming the cover blocks with our tokens */
+  .wp-block-cover.bg-blue-slightlight {
+    --bg: theme("colors.brand.700");
+    --text: theme("colors.white");
+    --interactive: theme("colors.brand.100");
+  }
+
+  .wp-block-cover.bg-gray {
+    --bg: theme("colors.gray.100");
+    --text: theme("colors.black");
+    --interactive: theme("colors.brand.900");
+  }
+
+  .wp-block-cover a:not(.button):not(:focus) {
+    color: var(--interactive);
+  }
+
+  .wp-block-cover > span {
+    margin: 0 calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+    height: 100%;
+    position: absolute;
+    background-color: var(--bg);
+  }
+
+  .wp-block-cover .wp-block-cover__inner-container {
+    position: relative;
+    @apply py-20;
+  }
+
+  /* Remove <main> padding when .page-content starts or ends with a .wp-block-cover*/
+  main:has(> .page-content > .wp-block-cover:first-child) {
+    @apply pt-0;
+  }
+  main:has(> .page-content > .wp-block-cover:last-child) {
+    @apply pb-0;
+  }
+}
