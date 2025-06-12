@@ -69,8 +69,10 @@ def accept_invite(token):
                 # we want them to start sending emails. it's always valid, so lets always update
                 invited_user.auth_type == "email_auth"
             ):
-                existing_user.update(auth_type=invited_user.auth_type)
-
+                try:
+                    existing_user.update(auth_type=invited_user.auth_type)
+                except Exception as e:
+                    current_app.logger.info(f"[UPDATE_EXISTING_USER]: Error on `existing_user.update()`: {e}")
             try:
                 existing_user.add_to_service(
                     service_id=invited_user.service,
