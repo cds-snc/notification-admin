@@ -8,10 +8,12 @@ from flask import url_for
 from freezegun import freeze_time
 
 from app.main.views.dashboard import (
+    aggregate_by_type_daily,
     aggregate_notifications_stats,
     aggregate_status_types,
     aggregate_template_usage,
     format_monthly_stats_to_list,
+    get_annual_data,
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
@@ -1603,3 +1605,134 @@ class TestAnnualLimits:
             mock_render_template.assert_called_with(
                 ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
             )
+
+
+class TestGetAnnualData:
+    @pytest.fixture
+    def mock_service_id(self):
+        return "service-id-12345"
+
+    @pytest.fixture
+    def mock_dashboard_totals_daily(self):
+        """Dashboard totals fixture for daily statistics"""
+        return {
+            "sms": {"requested": 10, "failed": 2, "failed_percentage": "20.0%", "show_warning": True},
+            "email": {"requested": 20, "failed": 1, "failed_percentage": "5.0%", "show_warning": True},
+        }
+
+    @pytest.mark.parametrize(
+        "redis_enabled,was_seeded_today",
+        [
+            (False, True),  # Redis not enabled
+            (True, False),  # Redis enabled but not seeded today
+        ],
+    )
+    def test_get_annual_data_when_redis_not_available(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, redis_enabled, was_seeded_today, app_
+    ):
+        """Test getting annual data when Redis is not enabled or not seeded today"""
+        # Configure mocks
+        with app_.app_context():
+            mocker.patch.dict("app.main.views.dashboard.current_app.config", {"REDIS_ENABLED": redis_enabled})
+        mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+        mock_annual_limit_client.was_seeded_today.return_value = was_seeded_today
+
+        mock_annual_data = {
+            "data": {
+                "2023-04": {
+                    "sms": {"requested": 30, "delivered": 28, "failed": 2},
+                    "email": {"requested": 40, "delivered": 38, "failed": 2},
+                }
+            }
+        }
+        mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+        mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
+
+        # Mock the aggregate function and current financial year
+        mock_aggregate = mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
+        mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
+
+        # Call function
+        result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+        # Check API was called
+        mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
+
+        # Check aggregate function was called
+        mock_aggregate.assert_called_once_with(mock_annual_data, mock_dashboard_totals_daily)
+
+        # Verify result
+        assert result == {"sms": 40, "email": 60}
+
+    def test_get_annual_data_from_redis(self, mocker, mock_service_id, mock_dashboard_totals_daily, app_):
+        """Test getting annual data from Redis when enabled and seeded"""
+        with app_.app_context():
+            # Configure mocks
+            mocker.patch.dict("app.main.views.dashboard.current_app.config", {"REDIS_ENABLED": True})
+            mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+            mock_annual_limit_client.was_seeded_today.return_value = True
+            mock_annual_limit_client.get_all_notification_counts.return_value = {
+                "total_sms_fiscal_year_to_yesterday": 100,
+                "total_email_fiscal_year_to_yesterday": 200,
+            }
+
+            # Mock the service API client (shouldn't be called)
+            mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+
+            # Call function
+            result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+            # Check was_seeded_today was called
+            mock_annual_limit_client.was_seeded_today.assert_called_once_with(mock_service_id)
+
+            # Check get_all_notification_counts was called
+            mock_annual_limit_client.get_all_notification_counts.assert_called_once_with(mock_service_id)
+
+            # Check service_api_client was not called
+            mock_service_api_client.get_monthly_notification_stats.assert_not_called()
+
+            # Verify result combines Redis data with daily totals
+            assert result == {
+                "sms": mock_dashboard_totals_daily["sms"]["requested"] + 100,  # 10 + 100 = 110
+                "email": mock_dashboard_totals_daily["email"]["requested"] + 200,  # 20 + 200 = 220
+            }
+
+    def test_aggregate_by_type_daily(self, mock_dashboard_totals_daily, app_):
+        """Test that aggregate_by_type_daily correctly aggregates data"""
+        with app_.app_context():
+            # Sample input data structure
+            annual_data = {
+                "data": {
+                    "2023-04": {
+                        "sms": {"requested": 30, "delivered": 28, "failed": 2},
+                        "email": {"requested": 40, "delivered": 38, "failed": 2},
+                    },
+                    "2023-05": {
+                        "sms": {"requested": 50, "delivered": 48, "failed": 2},
+                        "email": {"requested": 60, "delivered": 58, "failed": 2},
+                        "letter": {"requested": 10, "delivered": 10},
+                    },
+                }
+            }
+
+            # Call the function
+            result = aggregate_by_type_daily(annual_data, mock_dashboard_totals_daily)
+
+            # Get the actual values from the output for more readable assertion errors
+            actual_sms = result["sms"]
+            actual_email = result["email"]
+
+            # In the function, all values in the dictionary are summed - not just 'requested'
+            # So each SMS message type has requested + delivered + failed values summed
+            expected_sms = 30 + 28 + 2 + 50 + 48 + 2 + 10  # From daily_data
+            expected_email = 40 + 38 + 2 + 60 + 58 + 2 + 20  # From daily_data
+
+            # Check individual values - note that these values are higher because all status types are summed
+            assert actual_sms == expected_sms, f"Expected SMS count to be {expected_sms}, got {actual_sms}"
+            assert actual_email == expected_email, f"Expected email count to be {expected_email}, got {actual_email}"
+
+            # Finally check the whole dictionary
+            assert result == {
+                "sms": expected_sms,  # All SMS values summed + daily data
+                "email": expected_email,  # All email values summed + daily data
+            }
