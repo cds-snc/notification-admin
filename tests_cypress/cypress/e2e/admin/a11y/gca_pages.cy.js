@@ -24,7 +24,7 @@ const fullPageList = [
     fr: "/maintenir-a-jour-les-coordonnees",
   },
   { en: "/using-a-spreadsheet", fr: "/utiliser-une-feuille-de-calcul" },
-  { en: "/why-gc-notify", fr: "/pourquoi-notification-gc" },
+  { en: "/by-for-gc", fr: "/par-et-pour-gc" },
   { en: "/new-features", fr: "/nouvelles-fonctionnalites" },
   { en: "/terms", fr: "/terms" },
 ];
