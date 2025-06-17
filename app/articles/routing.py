@@ -23,7 +23,7 @@ GC_ARTICLES_ROUTES = {
     "service-level-objectives": {"en": "/service-level-objectives", "fr": "/objectifs-niveau-de-service"},
     "spreadsheets": {"en": "/using-a-spreadsheet", "fr": "/utiliser-une-feuille-de-calcul"},
     "terms-202104": {"en": "/terms-202104", "fr": "/conditions-dutilisation-202104"},
-    "whynotify": {"en": "/why-gc-notify", "fr": "/pourquoi-notification-gc"},
+    "whynotify": {"en": "/by-for-gc", "fr": "/par-et-pour-gc"},
     "incidents": {"en": "/system-status", "fr": "/etat-du-systeme"},
     "new_features": {"en": "/new-features", "fr": "/nouvelles-fonctionnalites"},
     "register_for_demo": {"en": "/register-for-a-demo", "fr": "/sinscrire-a-une-demo"},
