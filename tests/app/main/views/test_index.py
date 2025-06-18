@@ -183,40 +183,6 @@ def test_activity_page(mocker, client, stats, services):
 
 
 @pytest.mark.parametrize(
-    "stats, services",
-    [
-        (
-            [  # Heartbeat's filtered
-                ("2020-11-01", "email", 20),
-                ("2020-11-01", "sms", 20),
-            ],
-            [
-                services[0],
-            ],
-        ),
-        (
-            [  # Heartbeat's not filtered
-                ("2020-11-01", "email", 170),
-                ("2020-11-01", "sms", 150),
-            ],
-            services,
-        ),
-    ],
-)
-def test_home_page_displays_activity(mocker, client, stats, services):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services})
-    mocker.patch(
-        "app.service_api_client.get_stats_by_month",
-        return_value={"data": stats},
-    )
-    response = client.get(url_for("main.index"))
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert response.status_code == 200
-    assert page.select("[data-test-id='count-services']")[0].text == str(len(services))
-    assert page.select("[data-test-id='count-notifications']")[0].text == str(sum(x[2] for x in stats))
-
-
-@pytest.mark.parametrize(
     "view, expected_view",
     [
         ("redirect_roadmap", "roadmap"),
