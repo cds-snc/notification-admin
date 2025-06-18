@@ -2,22 +2,22 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>{{_("Activity on GC Notify")}}</title>
     <entry>
-        <title>{{ _("Total notifications sent") }}</title>
+        <title>{{ _("total notifications sent") }}</title>
         <summary>{{ notifications_total | format_number }}</summary>
         <updated>{{ updated_total }}</updated>
     </entry>
     <entry>
-        <title>{{ _("Programs and services using GC Notify") }}</title>
+        <title>{{ _("programs and services using GC Notify") }}</title>
         <summary>{{ live_services | format_number }}</summary>
         <updated>{{ updated_services }}</updated>
     </entry>
     <entry>
-        <title>{{ _('Emails') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
+        <title>{{ _('emails') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
         <summary>{{ emails_total | format_number }}</summary>
         <updated>{{ updated_emails }}</updated>
     </entry>
     <entry>
-        <title>{{ _('Text messages') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
+        <title>{{ _('text messages') ~ ' ' ~ _("sent-dashboard-plural") }}</title>
         <summary>{{ sms_total | format_number }}</summary>
         <updated>{{ updated_sms }}</updated>
     </entry>
