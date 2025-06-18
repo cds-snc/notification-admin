@@ -1,0 +1,25 @@
+@layer components {
+  /* Global #explore styles */
+
+  #explore p {
+    @apply m-0;
+  }
+  #explore .equal-buttons a {
+    @apply md:grow md:shrink md:basis-1/3;
+  }
+  #explore a.wp-element-button.button-link {
+    @apply text-title;
+  }
+  #explore a.wp-element-button.button-link:not(:focus-visible) {
+    @apply bg-white text-brand-900;
+  }
+  #explore details[open] {
+    @apply bg-white pr-gutterHalf;
+  }
+  #explore details p {
+    @apply text-small;
+  }
+  #explore details p + p {
+    @apply mt-gutterHalf;
+  }
+}

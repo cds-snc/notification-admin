@@ -3,6 +3,7 @@
 @import "./wp-layout.css";
 /* Page specific styles. */
 @import "./wp-page-home.css";
+@import "./wp-explore-shared.css";
 @import "./wp-page-why.css";
 /* TODO */
 /*@import "./wp-block-columns.css";*/
