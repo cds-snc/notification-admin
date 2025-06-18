@@ -1,6 +1,6 @@
 from urllib.error import HTTPError
 
-from flask import abort, current_app, flash, redirect, render_template, session, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user
 from markupsafe import Markup
@@ -14,6 +14,9 @@ from app.notify_client import InviteTokenError
 
 @main.route("/invitation/<token>")
 def accept_invite(token):
+    # For HEAD requests, just return a 200 OK without processing the invitation
+    if request.method == "HEAD":
+        return "", 200
     try:
         invited_user = InvitedUser.from_token(token)
     except InviteTokenError as exception:
