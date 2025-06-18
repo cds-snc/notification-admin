@@ -19,8 +19,4 @@
   <div class="page-content {{ slug }}">
     {{ html_content | safe }}
   </div>
-  {% if slug == "home" %}
-    {% include 'partials/page-content/counter.html' %}
-    {% include 'partials/page-content/cta.html' %}
-  {% endif %}
 {% endblock %}
