@@ -5,6 +5,29 @@
     @apply text-left max-w-full;
   }
 
+  /* iOS Safari mobile menu fixes */
+  .mobile-menu-container a {
+    @apply cursor-pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+
+  /* Ensure menu items are clickable on mobile */
+  #main-menu-nav li a {
+    @apply cursor-pointer block;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Touch feedback for iOS */
+  #main-menu-nav li a.touch-active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
   .mt-3_4 {
     margin-top: 3.3rem;
   }

@@ -145,8 +145,24 @@
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
 
-    // Click toggler
-    $menu.click(() => toggleMenu($menu, $items));
+    // Click toggler with touch support for iOS
+    $menu.on('click touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu($menu, $items);
+    });
+
+    // Ensure menu item links work on iOS Safari
+    $items.on('touchstart', 'a', function(e) {
+      // Add a temporary class to indicate touch interaction
+      $(e.currentTarget).addClass('touch-active');
+    });
+    
+    $items.on('touchend', 'a', function(e) {
+      // Remove the temporary class
+      $(e.currentTarget).removeClass('touch-active');
+      // Allow normal link behavior
+    });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
