@@ -2,7 +2,7 @@
 {% from "components/terms.html" import tou_heading_list %}
 {% from "components/notice.html" import notice %}
 
-{% macro tou_prompt() %}
+{% macro tou_prompt(next_url) %}
 
   <h1 class="heading-large py-1 mt-0 mb-3" tabindex="0" autofocus>{{ _('Before you continue') }}</h1>
 
@@ -52,7 +52,7 @@
     </div>
     <form action="/agree-terms" method="post" class="mt-10">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-      <input type="hidden" name="next" value="{{ request.path }}" />
+      <input type="hidden" name="next" value="{{ next_url }}" />
 
       <div class="flex">
         <button
