@@ -72,32 +72,15 @@
 
   /**
    * Handles closing any open menus when the user clicks outside of the menu with their mouse.
+   * DISABLED: Menu can only be closed by clicking menu button or visiting new page
    *
    * @param {FocusEvent} event The focus event
    * @param {jQuery} $menu The menu button that controls the disclosure menu items container
    * @param {jQuery} $items The unordered list containing menu items
    */
   function handleMenuBlur(event, $menu, $items) {
-    // iOS fix: Add delay to prevent premature closing on touch devices
-    const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-
-    if (event.relatedTarget === null && isIOS) {
-      // On iOS, delay the close to allow touch events to complete
-      setTimeout(() => {
-        if (
-          $menu.attr("aria-expanded") === "true" &&
-          !$menu.is(":focus") &&
-          !$items.find(":focus").length &&
-          !$menu.touchStarted
-        ) {
-          close($menu, $items);
-        }
-      }, 200);
-    } else if (event.relatedTarget === null) {
-      close($menu, $items);
-    }
+    // DISABLED: No longer close menu on blur - only close via menu button or page navigation
+    return;
   }
 
   /**
@@ -194,49 +177,7 @@
       handleKeyBasedMenuNavigation(event, $menu, $items),
     );
 
-    // Bind blur events to each menu button and it's anchor link items.
-    registerDisclosureMenuBlur(
-      [...$items.children().find("a"), ...$menu, window],
-      (event) => handleMenuBlur(event, $menu, $items),
-    );
-
-    // Add click outside handler for mobile devices - improved for iOS
-    let documentTouchStarted = false;
-
-    $(document).on("touchstart", function (e) {
-      documentTouchStarted = true;
-    });
-
-    $(document).on("touchend", function (e) {
-      if (
-        documentTouchStarted &&
-        $menu.attr("aria-expanded") === "true" &&
-        !$menu.is(e.target) &&
-        !$menu.has(e.target).length &&
-        !$items.is(e.target) &&
-        !$items.has(e.target).length
-      ) {
-        e.preventDefault();
-        close($menu, $items);
-      }
-      documentTouchStarted = false;
-    });
-
-    $(document).on("click", function (e) {
-      // Only handle click if it wasn't preceded by a touch event
-      if (
-        !documentTouchStarted &&
-        $menu.attr("aria-expanded") === "true" &&
-        !$menu.is(e.target) &&
-        !$menu.has(e.target).length &&
-        !$items.is(e.target) &&
-        !$items.has(e.target).length
-      ) {
-        close($menu, $items);
-      }
-    });
-
-    // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu
+    // Keep Escape key functionality for accessibility
     registerKeyDownEscape($(window), () => close($menu, $items));
   }
 
