@@ -160,7 +160,7 @@
     $menu.selectedMenuItem = 0;
     $menu.touchStarted = false;
 
-    // Enhanced touch/click handling for iOS Chrome
+    // Enhanced touch/click handling for iOS
     $menu.on('touchstart', function(e) {
       $menu.touchStarted = true;
     });
