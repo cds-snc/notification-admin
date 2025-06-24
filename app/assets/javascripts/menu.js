@@ -78,23 +78,22 @@
    * @param {jQuery} $items The unordered list containing menu items
    */
   function handleMenuBlur(event, $menu, $items) {
-    // iOS fix: Add delay to prevent premature closing
-    if (event.relatedTarget === null) {
-      // Check if we're on iOS
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-      
-      if (isIOS) {
-        setTimeout(() => {
-          if ($menu.attr("aria-expanded") === "true" && 
-              !$menu.is(':focus') && 
-              !$items.find(':focus').length) {
-            close($menu, $items);
-          }
-        }, 150);
-      } else {
-        close($menu, $items);  
-      }
+    // iOS fix: Add delay to prevent premature closing on touch devices
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+    
+    if (event.relatedTarget === null && isIOS) {
+      // On iOS, delay the close to allow touch events to complete
+      setTimeout(() => {
+        if ($menu.attr("aria-expanded") === "true" && 
+            !$menu.is(':focus') && 
+            !$items.find(':focus').length &&
+            !$menu.touchStarted) {
+          close($menu, $items);
+        }
+      }, 200);
+    } else if (event.relatedTarget === null) {
+      close($menu, $items);  
     }
   }
 
@@ -159,12 +158,32 @@
     const $items = $(itemsId);
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
+    $menu.touchStarted = false;
 
-    // Click toggler - improved for iOS
-    $menu.on('click touchend', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleMenu($menu, $items);
+    // Enhanced touch/click handling for iOS Chrome
+    $menu.on('touchstart', function(e) {
+      $menu.touchStarted = true;
+    });
+
+    $menu.on('touchend', function(e) {
+      if ($menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Small delay to ensure touch event completes properly on iOS
+        setTimeout(() => {
+          toggleMenu($menu, $items);
+        }, 10);
+        $menu.touchStarted = false;
+      }
+    });
+
+    $menu.on('click', function(e) {
+      // Only handle click if it wasn't preceded by a touch event
+      if (!$menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu($menu, $items);
+      }
     });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
@@ -178,9 +197,30 @@
       (event) => handleMenuBlur(event, $menu, $items),
     );
 
-    // Add click outside handler for mobile devices
-    $(document).on('click touchend', function(e) {
-      if ($menu.attr("aria-expanded") === "true" && 
+    // Add click outside handler for mobile devices - improved for iOS
+    let documentTouchStarted = false;
+    
+    $(document).on('touchstart', function(e) {
+      documentTouchStarted = true;
+    });
+
+    $(document).on('touchend', function(e) {
+      if (documentTouchStarted && 
+          $menu.attr("aria-expanded") === "true" && 
+          !$menu.is(e.target) && 
+          !$menu.has(e.target).length &&
+          !$items.is(e.target) && 
+          !$items.has(e.target).length) {
+        e.preventDefault();
+        close($menu, $items);
+      }
+      documentTouchStarted = false;
+    });
+
+    $(document).on('click', function(e) {
+      // Only handle click if it wasn't preceded by a touch event
+      if (!documentTouchStarted &&
+          $menu.attr("aria-expanded") === "true" && 
           !$menu.is(e.target) && 
           !$menu.has(e.target).length &&
           !$items.is(e.target) && 
