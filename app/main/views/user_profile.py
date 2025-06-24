@@ -20,7 +20,6 @@ from app import user_api_client
 from app.main import main
 from app.main.forms import (
     ChangeEmailForm,
-    ChangeMobileNumberForm,
     ChangeMobileNumberFormOptional,
     ChangeNameForm,
     ChangePasswordForm,
@@ -127,13 +126,10 @@ def user_profile_email_confirm(token):
 def user_profile_mobile_number():
     from_send_page = False
 
-    if current_app.config["FF_OPTIONAL_PHONE"]:
-        form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
+    form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
-        # determine if we are coming from the send page
-        from_send_page = session.get("from_send_page", False)
-    else:
-        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+    # determine if we are coming from the send page
+    from_send_page = session.get("from_send_page", False)
 
     if request.method == "POST":
         # get button presses
