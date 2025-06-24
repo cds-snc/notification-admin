@@ -78,8 +78,23 @@
    * @param {jQuery} $items The unordered list containing menu items
    */
   function handleMenuBlur(event, $menu, $items) {
+    // iOS fix: Add delay to prevent premature closing
     if (event.relatedTarget === null) {
-      close($menu, $items);
+      // Check if we're on iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+      
+      if (isIOS) {
+        setTimeout(() => {
+          if ($menu.attr("aria-expanded") === "true" && 
+              !$menu.is(':focus') && 
+              !$items.find(':focus').length) {
+            close($menu, $items);
+          }
+        }, 150);
+      } else {
+        close($menu, $items);  
+      }
     }
   }
 
@@ -145,8 +160,12 @@
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
 
-    // Click toggler
-    $menu.click(() => toggleMenu($menu, $items));
+    // Click toggler - improved for iOS
+    $menu.on('click touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu($menu, $items);
+    });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
@@ -158,6 +177,17 @@
       [...$items.children().find("a"), ...$menu, window],
       (event) => handleMenuBlur(event, $menu, $items),
     );
+
+    // Add click outside handler for mobile devices
+    $(document).on('click touchend', function(e) {
+      if ($menu.attr("aria-expanded") === "true" && 
+          !$menu.is(e.target) && 
+          !$menu.has(e.target).length &&
+          !$items.is(e.target) && 
+          !$items.has(e.target).length) {
+        close($menu, $items);
+      }
+    });
 
     // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu
     registerKeyDownEscape($(window), () => close($menu, $items));
