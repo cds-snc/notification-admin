@@ -737,9 +737,7 @@ def test_invite_user(
     mock_get_organisations,
     app_,
 ):
-    # default auth w/o FF: "email_auth", default with FF on "sms_auth"
-    # TODO when FF_OPTIONAL_PHONE is removed this can be hardcoded as "email_auth"
-    expected_default_auth = "email_auth" if app_.config["FF_OPTIONAL_PHONE"] is True else "sms_auth"
+    expected_default_auth = "email_auth"
 
     sample_invite["email_address"] = "test@tbs-sct.gc.ca"
 
