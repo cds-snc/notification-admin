@@ -3791,17 +3791,16 @@ def test_send_test_redirects_to_user_profile_if_no_mobile_and_ff_on(
     service_id = SERVICE_ONE_ID
     template_id = TEMPLATE_ONE_ID
 
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):
-        client_request.login(active_user_no_mobile)
-        mock_get_service_template.return_value = {"data": {"id": template_id, "template_type": "sms", "name": "Test Template"}}
+    client_request.login(active_user_no_mobile)
+    mock_get_service_template.return_value = {"data": {"id": template_id, "template_type": "sms", "name": "Test Template"}}
 
-        response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
 
-        assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
-        with client_request.session_transaction() as session:
-            assert session["from_send_page"] is True
-            assert session["send_page_service_id"] == service_id
-            assert session["send_page_template_id"] == template_id
+    assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert session["from_send_page"] is True
+        assert session["send_page_service_id"] == service_id
+        assert session["send_page_template_id"] == template_id
 
 
 def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff_on(
@@ -3814,16 +3813,15 @@ def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff
     service_id = SERVICE_ONE_ID
     template_id = TEMPLATE_ONE_ID
 
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):
-        client_request.login(active_user_no_mobile)
-        mock_get_service_email_template_without_placeholders.return_value = {
-            "data": {"id": template_id, "template_type": "email", "name": "Test Template"}
-        }
+    client_request.login(active_user_no_mobile)
+    mock_get_service_email_template_without_placeholders.return_value = {
+        "data": {"id": template_id, "template_type": "email", "name": "Test Template"}
+    }
 
-        response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
 
-        assert url_for("main.user_profile_mobile_number") not in normalize_spaces(response.contents)
-        with client_request.session_transaction() as session:
-            assert "from_send_page" not in session
-            assert "send_page_service_id" not in session
-            assert "send_page_template_id" not in session
+    assert url_for("main.user_profile_mobile_number") not in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert "from_send_page" not in session
+        assert "send_page_service_id" not in session
+        assert "send_page_template_id" not in session
