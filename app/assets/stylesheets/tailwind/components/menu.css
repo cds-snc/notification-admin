@@ -8,20 +8,20 @@
   .mt-3_4 {
     margin-top: 3.3rem;
   }
-  
+
   /* Improve touch targets for mobile devices */
   [data-module="menu"] {
     @apply touch-manipulation;
     min-height: 44px; /* iOS recommended minimum touch target */
     min-width: 44px;
   }
-  
+
   /* Prevent double-tap to zoom on iOS */
-  [data-module="menu"], 
+  [data-module="menu"],
   .menu-overlay a {
     touch-action: manipulation;
   }
-  
+
   :has(+ [data-module="more-menu"]) [data-overflows="true"] {
     @apply hidden;
   }
@@ -46,7 +46,7 @@
   .menu-overlay:not(.hidden) {
     @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4;
   }
-  
+
   /* Improve menu item touch targets */
   .menu-overlay a {
     @apply py-3 px-4;
