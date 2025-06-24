@@ -79,21 +79,24 @@
    */
   function handleMenuBlur(event, $menu, $items) {
     // iOS fix: Add delay to prevent premature closing on touch devices
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                  (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-    
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
     if (event.relatedTarget === null && isIOS) {
       // On iOS, delay the close to allow touch events to complete
       setTimeout(() => {
-        if ($menu.attr("aria-expanded") === "true" && 
-            !$menu.is(':focus') && 
-            !$items.find(':focus').length &&
-            !$menu.touchStarted) {
+        if (
+          $menu.attr("aria-expanded") === "true" &&
+          !$menu.is(":focus") &&
+          !$items.find(":focus").length &&
+          !$menu.touchStarted
+        ) {
           close($menu, $items);
         }
       }, 200);
     } else if (event.relatedTarget === null) {
-      close($menu, $items);  
+      close($menu, $items);
     }
   }
 
@@ -161,11 +164,11 @@
     $menu.touchStarted = false;
 
     // Enhanced touch/click handling for iOS
-    $menu.on('touchstart', function(e) {
+    $menu.on("touchstart", function (e) {
       $menu.touchStarted = true;
     });
 
-    $menu.on('touchend', function(e) {
+    $menu.on("touchend", function (e) {
       if ($menu.touchStarted) {
         e.preventDefault();
         e.stopPropagation();
@@ -177,7 +180,7 @@
       }
     });
 
-    $menu.on('click', function(e) {
+    $menu.on("click", function (e) {
       // Only handle click if it wasn't preceded by a touch event
       if (!$menu.touchStarted) {
         e.preventDefault();
@@ -199,32 +202,36 @@
 
     // Add click outside handler for mobile devices - improved for iOS
     let documentTouchStarted = false;
-    
-    $(document).on('touchstart', function(e) {
+
+    $(document).on("touchstart", function (e) {
       documentTouchStarted = true;
     });
 
-    $(document).on('touchend', function(e) {
-      if (documentTouchStarted && 
-          $menu.attr("aria-expanded") === "true" && 
-          !$menu.is(e.target) && 
-          !$menu.has(e.target).length &&
-          !$items.is(e.target) && 
-          !$items.has(e.target).length) {
+    $(document).on("touchend", function (e) {
+      if (
+        documentTouchStarted &&
+        $menu.attr("aria-expanded") === "true" &&
+        !$menu.is(e.target) &&
+        !$menu.has(e.target).length &&
+        !$items.is(e.target) &&
+        !$items.has(e.target).length
+      ) {
         e.preventDefault();
         close($menu, $items);
       }
       documentTouchStarted = false;
     });
 
-    $(document).on('click', function(e) {
+    $(document).on("click", function (e) {
       // Only handle click if it wasn't preceded by a touch event
-      if (!documentTouchStarted &&
-          $menu.attr("aria-expanded") === "true" && 
-          !$menu.is(e.target) && 
-          !$menu.has(e.target).length &&
-          !$items.is(e.target) && 
-          !$items.has(e.target).length) {
+      if (
+        !documentTouchStarted &&
+        $menu.attr("aria-expanded") === "true" &&
+        !$menu.is(e.target) &&
+        !$menu.has(e.target).length &&
+        !$items.is(e.target) &&
+        !$items.has(e.target).length
+      ) {
         close($menu, $items);
       }
     });
