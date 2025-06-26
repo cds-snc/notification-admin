@@ -14,6 +14,7 @@ from tests.conftest import (
     TEMPLATE_ONE_ID,
     captured_templates,
     create_api_user_active,
+    set_config,
     url_for_endpoint_with_token,
 )
 
@@ -643,3 +644,76 @@ class TestOptionalPhoneNumber:
         )
         with client_request.session_transaction() as session:
             assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+
+
+def test_user_profile_shows_new_layout_when_ff_auth_v2_enabled(
+    client_request,
+    app_,
+    mock_get_security_keys,
+):
+    """Test that the new user profile layout is shown when FF_AUTH_V2 is enabled"""
+    with set_config(app_, "FF_AUTH_V2", True):
+        page = client_request.get("main.user_profile")
+
+        # Check that the page has the new structure with Security section
+        assert page.select_one("h1").text.strip() == "Your profile"
+
+        # Check for the Security heading which is only in the new layout
+        security_heading = page.find("h2", string="Security")
+        assert security_heading is not None
+        assert security_heading.text.strip() == "Security"
+
+        # Check that password field shows the new format with "Last changed" text
+        password_text = page.get_text()
+        assert "Last changed" in password_text
+
+        # Check that two-step verification method is present (new layout)
+        assert "Two-step verification method" in password_text
+
+
+def test_user_profile_shows_old_layout_when_ff_auth_v2_disabled(
+    client_request,
+    app_,
+    mock_get_security_keys,
+):
+    """Test that the old user profile layout is shown when FF_AUTH_V2 is disabled"""
+    with set_config(app_, "FF_AUTH_V2", False):
+        page = client_request.get("main.user_profile")
+
+        # Check that the page has the basic structure
+        assert page.select_one("h1").text.strip() == "Your profile"
+
+        # Check that there is NO Security heading (old layout doesn't have it)
+        security_heading = page.find("h2", string="Security")
+        assert security_heading is None
+
+        # Check that Security keys field is present (old layout)
+        page_text = page.get_text()
+        assert "Security keys" in page_text
+
+        # Check that two-step verification method is NOT present (old layout)
+        assert "Two-step verification method" not in page_text
+
+        # Check that mobile number field uses the old label
+        assert "Mobile number" in page_text
+
+
+def test_user_profile_contact_number_vs_mobile_number_based_on_ff_auth_v2(
+    client_request,
+    app_,
+    mock_get_security_keys,
+):
+    """Test that the mobile number field has different labels based on FF_AUTH_V2"""
+    # Test new layout uses "Contact number"
+    with set_config(app_, "FF_AUTH_V2", True):
+        page = client_request.get("main.user_profile")
+        page_text = page.get_text()
+        assert "Contact number" in page_text
+        assert "Mobile number" not in page_text
+
+    # Test old layout uses "Mobile number"
+    with set_config(app_, "FF_AUTH_V2", False):
+        page = client_request.get("main.user_profile")
+        page_text = page.get_text()
+        assert "Mobile number" in page_text
+        assert "Contact number" not in page_text
