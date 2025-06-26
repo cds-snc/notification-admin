@@ -72,15 +72,15 @@
 
   /**
    * Handles closing any open menus when the user clicks outside of the menu with their mouse.
+   * DISABLED: Menu can only be closed by clicking menu button or visiting new page
    *
    * @param {FocusEvent} event The focus event
    * @param {jQuery} $menu The menu button that controls the disclosure menu items container
    * @param {jQuery} $items The unordered list containing menu items
    */
   function handleMenuBlur(event, $menu, $items) {
-    if (event.relatedTarget === null) {
-      close($menu, $items);
-    }
+    // DISABLED: No longer close menu on blur - only close via menu button or page navigation
+    return;
   }
 
   /**
@@ -144,22 +144,40 @@
     const $items = $(itemsId);
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
+    $menu.touchStarted = false;
 
-    // Click toggler
-    $menu.click(() => toggleMenu($menu, $items));
+    // Enhanced touch/click handling for iOS
+    $menu.on("touchstart", function (e) {
+      $menu.touchStarted = true;
+    });
+
+    $menu.on("touchend", function (e) {
+      if ($menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Small delay to ensure touch event completes properly on iOS
+        setTimeout(() => {
+          toggleMenu($menu, $items);
+        }, 10);
+        $menu.touchStarted = false;
+      }
+    });
+
+    $menu.on("click", function (e) {
+      // Only handle click if it wasn't preceded by a touch event
+      if (!$menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu($menu, $items);
+      }
+    });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
       handleKeyBasedMenuNavigation(event, $menu, $items),
     );
 
-    // Bind blur events to each menu button and it's anchor link items.
-    registerDisclosureMenuBlur(
-      [...$items.children().find("a"), ...$menu, window],
-      (event) => handleMenuBlur(event, $menu, $items),
-    );
-
-    // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu
+    // Keep Escape key functionality for accessibility
     registerKeyDownEscape($(window), () => close($menu, $items));
   }
 
