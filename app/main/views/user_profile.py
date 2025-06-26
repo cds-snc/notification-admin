@@ -376,3 +376,9 @@ def user_profile_disable_platform_admin_view():
         return redirect(url_for(".user_profile"))
 
     return render_template("views/user-profile/disable-platform-admin-view.html", form=form)
+
+
+@main.route("/user-profile/2fa", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_2fa():
+    return render_template("views/user-profile/2fa.html")
