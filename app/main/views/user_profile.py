@@ -29,7 +29,7 @@ from app.main.forms import (
     TwoFactorForm,
 )
 from app.models.user import User
-from app.utils import user_is_gov_user, user_is_logged_in
+from app.utils import user_is_gov_user, user_is_logged_in, user_is_platform_admin
 
 # Session keys
 NEW_EMAIL = "new-email"
@@ -381,4 +381,6 @@ def user_profile_disable_platform_admin_view():
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
-    return render_template("views/user-profile/2fa.html")
+    if current_app.config["FF_AUTH_V2"]:
+        return render_template("views/user-profile/2fa.html")
+    return redirect(url_for(".user_profile"))
