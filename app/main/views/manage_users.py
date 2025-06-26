@@ -61,8 +61,7 @@ def invite_user(service_id):
         form.login_authentication.data = "sms_auth"
 
     # assume sms_auth - this will be updated when the user provides their phone number or not
-    if current_app.config.get("FF_OPTIONAL_PHONE"):
-        form.login_authentication.data = "email_auth"
+    form.login_authentication.data = "email_auth"
 
     current_app.logger.info(
         "User {} attempting to invite user to service {} using 2FA {}".format(

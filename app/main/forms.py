@@ -406,26 +406,6 @@ class RegisterUserFormOptional(StripWhitespaceForm):
             raise ValidationError(_l("Read and agree to continue"))
 
 
-# TODO: remove this class when FF_OPTIONAL_PHONE is removed
-class RegisterUserFromInviteForm(RegisterUserForm):
-    def __init__(self, invited_user):
-        super().__init__(
-            service=invited_user.service,
-            email_address=invited_user.email_address,
-            auth_type=invited_user.auth_type,
-            name=guess_name_from_email_address(invited_user.email_address),
-        )
-
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"), validators=[])
-    service = HiddenField("service")
-    email_address = HiddenField("email_address")
-    auth_type = HiddenField("auth_type", validators=[DataRequired()])
-
-    def validate_mobile_number(self, field):
-        if self.auth_type.data == "sms_auth" and not field.data:
-            raise ValidationError(_l("This cannot be empty"))
-
-
 class RegisterUserFromInviteFormOptional(RegisterUserForm):
     def __init__(self, invited_user):
         super().__init__(

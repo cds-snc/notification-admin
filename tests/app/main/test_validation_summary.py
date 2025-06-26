@@ -2,8 +2,6 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import set_config
-
 register_field_names = ("name", "email_address", "mobile_number", "password")
 
 
@@ -46,20 +44,19 @@ def test_validation_summary(
     expected_errors,
     app_,
 ):
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):  # TODO: REMOVE WHEN FF_OPTIONAL_PHONE IS REMOVED
-        data["tou_agreed"] = "true"
+    data["tou_agreed"] = "true"
 
-        response = client.post(url_for("main.register"), data=data, follow_redirects=True)
-        assert response.status_code == 200
+    response = client.post(url_for("main.register"), data=data, follow_redirects=True)
+    assert response.status_code == 200
 
-        # ensure the validation summary is has as many items as expected
-        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-        assert len(page.select("[data-testid='validation_summary'] li")) == expected_errors
+    # ensure the validation summary is has as many items as expected
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert len(page.select("[data-testid='validation_summary'] li")) == expected_errors
 
-        if expected_errors > 0:
-            # ensure each link in the validation summary point to an element that exists
-            for link in page.select("[data-testid='validation_summary'] li a"):
-                assert len(page.select(f"[id={link['href'][1:]}]")) == 1
-        else:
-            # ensure the validation summary is not present when no errors are expected
-            assert len(page.select("[data-testid='validation_summary']")) == 0
+    if expected_errors > 0:
+        # ensure each link in the validation summary point to an element that exists
+        for link in page.select("[data-testid='validation_summary'] li a"):
+            assert len(page.select(f"[id={link['href'][1:]}]")) == 1
+    else:
+        # ensure the validation summary is not present when no errors are expected
+        assert len(page.select("[data-testid='validation_summary']")) == 0
