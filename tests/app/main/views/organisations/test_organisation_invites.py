@@ -4,7 +4,7 @@ from unittest.mock import ANY
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
-from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces, set_config
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 from app.models.user import InvitedOrgUser
 
@@ -375,10 +375,9 @@ class TestOrgInvite:
         fake_uuid,
         app_,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            page = client_request.get(
-                ".manage_org_users",
-                org_id=ORGANISATION_ID,
-            )
-            link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
-            assert link is None
+        page = client_request.get(
+            ".manage_org_users",
+            org_id=ORGANISATION_ID,
+        )
+        link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
+        assert link is None

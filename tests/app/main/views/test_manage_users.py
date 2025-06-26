@@ -15,7 +15,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     normalize_spaces,
     sample_uuid,
-    set_config,
 )
 
 
@@ -213,34 +212,6 @@ def test_should_show_caseworker_on_overview_page(
     )
 
 
-# TODO: remove this test when FF_OPTIONAL_PHONE is removed
-@pytest.mark.parametrize(
-    "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
-    [
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, False),
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
-        ("main.invite_user", {}, True, False),
-        ("main.invite_user", {}, False, True),
-    ],
-)
-def test_service_with_no_email_auth_hides_auth_type_options_REMOVE_FF(
-    client_request,
-    endpoint,
-    extra_args,
-    service_has_email_auth,
-    auth_options_hidden,
-    service_one,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    app_,
-):
-    with set_config(app_, "FF_OPTIONAL_PHONE", False):
-        if service_has_email_auth:
-            service_one["permissions"].append("email_auth")
-        page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-        assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
-
-
 @pytest.mark.parametrize(
     "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
     [
@@ -261,9 +232,8 @@ def test_service_with_no_email_auth_hides_auth_type_options(
     mock_get_template_folders,
     app_,
 ):
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):
-        page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-        assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
+    page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
+    assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
 
 
 @pytest.mark.parametrize("service_has_caseworking", (True, False))
@@ -369,58 +339,6 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
 
 
 @pytest.mark.parametrize(
-    "sms_option_disabled, mobile_number, expected_label",
-    [
-        (
-            True,
-            None,
-            """
-            Text message code
-            Not available because Test User has not added a
-            phone number to their profile
-        """,
-        ),
-        (
-            False,
-            "9025555555",
-            """
-            Text message code
-        """,
-        ),
-    ],
-)
-def test_user_with_no_mobile_number_cant_be_set_to_sms_auth_REMOVE_FF(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    api_user_active,
-    sms_option_disabled,
-    mobile_number,
-    expected_label,
-    service_one,
-    mocker,
-    fake_uuid,
-    active_user_with_permissions,
-    app_,
-):
-    with set_config(app_, "FF_OPTIONAL_PHONE", False):
-        active_user_with_permissions["mobile_number"] = mobile_number
-
-        service_one["permissions"].append("email_auth")
-        mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
-
-        page = client_request.get(
-            "main.edit_user_permissions",
-            service_id=service_one["id"],
-            user_id=sample_uuid(),
-        )
-
-        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-        assert sms_auth_radio_button.has_attr("disabled") == sms_option_disabled
-        assert normalize_spaces(page.select_one("label[for=login_authentication-0]").text) == normalize_spaces(expected_label)
-
-
-@pytest.mark.parametrize(
     "endpoint, extra_args, expected_checkboxes",
     [
         (
@@ -466,31 +384,14 @@ def test_should_show_page_for_one_user(
         assert checkboxes[index].has_attr("checked") == expected_checked
 
 
-# TODO: remove this test when FF_OPTIONAL_PHONE is removed
 def test_invite_user_not_allowed_to_choose_auth(
     client_request, mock_get_users_by_service, mock_get_template_folders, service_one, app_
 ):
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):
-        service_one["permissions"].append("email_auth")
-        page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
+    service_one["permissions"].append("email_auth")
+    page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
 
-        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-        assert sms_auth_radio_button is None
-
-
-def test_invite_user_allows_to_choose_auth_REMOVE_FF(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    service_one,
-    app_,
-):
-    with set_config(app_, "FF_OPTIONAL_PHONE", False):
-        service_one["permissions"].append("email_auth")
-        page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
-
-        sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-        assert sms_auth_radio_button.has_attr("disabled") is False
+    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
+    assert sms_auth_radio_button is None
 
 
 def test_invite_user_has_correct_email_field(
@@ -836,9 +737,7 @@ def test_invite_user(
     mock_get_organisations,
     app_,
 ):
-    # default auth w/o FF: "email_auth", default with FF on "sms_auth"
-    # TODO when FF_OPTIONAL_PHONE is removed this can be hardcoded as "email_auth"
-    expected_default_auth = "email_auth" if app_.config["FF_OPTIONAL_PHONE"] is True else "sms_auth"
+    expected_default_auth = "email_auth"
 
     sample_invite["email_address"] = "test@tbs-sct.gc.ca"
 
@@ -884,76 +783,6 @@ def test_invite_user(
         app.invite_api_client.create_invite.assert_not_called()
 
 
-# TODO: Remove this test when FF_OPTIONAL_PHONE is removed
-@pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
-@pytest.mark.parametrize(
-    "email_address, gov_user",
-    [("test@tbs-sct.gc.ca", True), ("test@nonsafelist.com", False)],
-)
-def test_invite_user_with_email_auth_service_REMOVE_FF(
-    client_request,
-    service_one,
-    active_user_with_permissions,
-    sample_invite,
-    email_address,
-    gov_user,
-    mocker,
-    auth_type,
-    mock_get_organisations,
-    mock_get_template_folders,
-    mock_get_security_keys,
-    app_,
-):
-    with set_config(app_, "FF_OPTIONAL_PHONE", False):
-        service_one["permissions"].append("email_auth")
-        sample_invite["email_address"] = email_address
-
-        assert is_gov_user(email_address) is gov_user
-        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
-        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
-        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
-
-        page = client_request.post(
-            "main.invite_user",
-            service_id=SERVICE_ONE_ID,
-            _data={
-                "email_address": email_address,
-                "view_activity": "y",
-                "send_messages": "y",
-                "manage_templates": "y",
-                "manage_service": "y",
-                "manage_api_keys": "y",
-                "login_authentication": auth_type,
-            },
-            _follow_redirects=True,
-            _expected_status=200,
-        )
-
-        if gov_user:
-            assert page.h1.string.strip() == "Team members"
-            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
-            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
-            expected_permissions = {
-                "manage_api_keys",
-                "manage_service",
-                "manage_templates",
-                "send_messages",
-                "view_activity",
-            }
-
-            app.invite_api_client.create_invite.assert_called_once_with(
-                sample_invite["from_user"],
-                sample_invite["service"],
-                email_address,
-                expected_permissions,
-                auth_type,
-                [],
-            )
-        else:
-            assert page.h1.string.strip() == "Invite a team member"
-            app.invite_api_client.create_invite.assert_not_called()
-
-
 @pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
 @pytest.mark.parametrize(
     "email_address, gov_user",
@@ -973,54 +802,53 @@ def test_invite_user_with_email_auth_service(
     mock_get_security_keys,
     app_,
 ):
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):
-        service_one["permissions"].append("email_auth")
-        sample_invite["email_address"] = email_address
+    service_one["permissions"].append("email_auth")
+    sample_invite["email_address"] = email_address
 
-        assert is_gov_user(email_address) is gov_user
-        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
-        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
-        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+    assert is_gov_user(email_address) is gov_user
+    mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
+    mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
+    mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
 
-        page = client_request.post(
-            "main.invite_user",
-            service_id=SERVICE_ONE_ID,
-            _data={
-                "email_address": email_address,
-                "view_activity": "y",
-                "send_messages": "y",
-                "manage_templates": "y",
-                "manage_service": "y",
-                "manage_api_keys": "y",
-                "login_authentication": auth_type,
-            },
-            _follow_redirects=True,
-            _expected_status=200,
+    page = client_request.post(
+        "main.invite_user",
+        service_id=SERVICE_ONE_ID,
+        _data={
+            "email_address": email_address,
+            "view_activity": "y",
+            "send_messages": "y",
+            "manage_templates": "y",
+            "manage_service": "y",
+            "manage_api_keys": "y",
+            "login_authentication": auth_type,
+        },
+        _follow_redirects=True,
+        _expected_status=200,
+    )
+
+    if gov_user:
+        assert page.h1.string.strip() == "Team members"
+        flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
+        assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
+        expected_permissions = {
+            "manage_api_keys",
+            "manage_service",
+            "manage_templates",
+            "send_messages",
+            "view_activity",
+        }
+
+        app.invite_api_client.create_invite.assert_called_once_with(
+            sample_invite["from_user"],
+            sample_invite["service"],
+            email_address,
+            expected_permissions,
+            "email_auth",
+            [],
         )
-
-        if gov_user:
-            assert page.h1.string.strip() == "Team members"
-            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
-            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
-            expected_permissions = {
-                "manage_api_keys",
-                "manage_service",
-                "manage_templates",
-                "send_messages",
-                "view_activity",
-            }
-
-            app.invite_api_client.create_invite.assert_called_once_with(
-                sample_invite["from_user"],
-                sample_invite["service"],
-                email_address,
-                expected_permissions,
-                "email_auth",
-                [],
-            )
-        else:
-            assert page.h1.string.strip() == "Invite a team member"
-            app.invite_api_client.create_invite.assert_not_called()
+    else:
+        assert page.h1.string.strip() == "Invite a team member"
+        app.invite_api_client.create_invite.assert_not_called()
 
 
 def test_cancel_invited_user_cancels_user_invitations(

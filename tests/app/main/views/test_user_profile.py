@@ -14,7 +14,6 @@ from tests.conftest import (
     TEMPLATE_ONE_ID,
     captured_templates,
     create_api_user_active,
-    set_config,
     url_for_endpoint_with_token,
 )
 
@@ -458,28 +457,27 @@ class TestOptionalPhoneNumber:
         mock_send_change_email_verification,
         mock_get_security_keys,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"button_pressed": "edit"},
-                _expected_status=200,
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"button_pressed": "edit"},
+            _expected_status=200,
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"mobile_number": ""},
-                _expected_status=302,
-                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"mobile_number": ""},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number_authenticate",
-                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.user_profile",
-                ),
-            )
+        client_request.post(
+            "main.user_profile_mobile_number_authenticate",
+            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.user_profile",
+            ),
+        )
 
     def test_should_verify_when_phone_number_set(
         self,
@@ -491,37 +489,36 @@ class TestOptionalPhoneNumber:
         mock_send_verify_code,
         mock_check_verify_code,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"button_pressed": "edit"},
-                _expected_status=200,
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"button_pressed": "edit"},
+            _expected_status=200,
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"mobile_number": "6135555555"},
-                _expected_status=302,
-                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"mobile_number": "6135555555"},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number_authenticate",
-                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.user_profile_mobile_number_confirm",
-                ),
-            )
-
-            client_request.post(
+        client_request.post(
+            "main.user_profile_mobile_number_authenticate",
+            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+            _expected_status=302,
+            _expected_redirect=url_for(
                 "main.user_profile_mobile_number_confirm",
-                _data={"two_factor_code": "12345"},
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.user_profile",
-                ),
-            )
+            ),
+        )
+
+        client_request.post(
+            "main.user_profile_mobile_number_confirm",
+            _data={"two_factor_code": "12345"},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.user_profile",
+            ),
+        )
 
     def test_should_skip_sms_verify_when_remove_button_pressed(
         self,
@@ -531,39 +528,37 @@ class TestOptionalPhoneNumber:
         mock_verify_password,
         mock_send_change_email_verification,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):  # REMOVE LINE WHEN FF REMOVED
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"button_pressed": "edit"},
-                _expected_status=200,
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"button_pressed": "edit"},
+            _expected_status=200,
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number",
-                _data={"remove": "remove"},
-                _expected_status=302,
-                _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-            )
+        client_request.post(
+            "main.user_profile_mobile_number",
+            _data={"remove": "remove"},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
+        )
 
-            client_request.post(
-                "main.user_profile_mobile_number_authenticate",
-                _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.user_profile",
-                ),
-            )
+        client_request.post(
+            "main.user_profile_mobile_number_authenticate",
+            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.user_profile",
+            ),
+        )
 
     def test_should_jump_to_edit_page_when_phone_already_blank(
         self, client_request, platform_admin_user, app_, mock_verify_password, mock_send_change_email_verification, mocker
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            mocker.patch.object(
-                current_user, "update", side_effect=lambda mobile_number: setattr(current_user, "mobile_number", mobile_number)
-            )
-            current_user.update(mobile_number=None)
-            page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
-            assert page.select_one("h1").text.strip() == "Add or change your mobile number"
+        mocker.patch.object(
+            current_user, "update", side_effect=lambda mobile_number: setattr(current_user, "mobile_number", mobile_number)
+        )
+        current_user.update(mobile_number=None)
+        page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
+        assert page.select_one("h1").text.strip() == "Add or change your mobile number"
 
     def test_get_user_profile_mobile_from_send_page_shows_correct_message(
         self,
@@ -572,20 +567,19 @@ class TestOptionalPhoneNumber:
         mocker,
         active_user_no_mobile,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            client_request.login(active_user_no_mobile)
-            with client_request.session_transaction() as session:
-                session["from_send_page"] = True
-                session["send_page_service_id"] = SERVICE_ONE_ID
-                session["send_page_template_id"] = TEMPLATE_ONE_ID
+        client_request.login(active_user_no_mobile)
+        with client_request.session_transaction() as session:
+            session["from_send_page"] = True
+            session["send_page_service_id"] = SERVICE_ONE_ID
+            session["send_page_template_id"] = TEMPLATE_ONE_ID
 
-            with captured_templates(app_) as templates:
-                page = client_request.get("main.user_profile_mobile_number")
+        with captured_templates(app_) as templates:
+            page = client_request.get("main.user_profile_mobile_number")
 
-                # assert page.status_code == 200
-                assert templates[0][0].name == "views/user-profile/change.html"
-                assert templates[0][1]["from_send_page"] is True
-                assert "If you add a number to your profile, you can text yourself test messages." in page.text
+            # assert page.status_code == 200
+            assert templates[0][0].name == "views/user-profile/change.html"
+            assert templates[0][1]["from_send_page"] is True
+            assert "If you add a number to your profile, you can text yourself test messages." in page.text
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_send_test_when_from_send_page(
         self,
@@ -596,31 +590,30 @@ class TestOptionalPhoneNumber:
         mock_update_user_attribute,
         mock_check_verify_code,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            client_request.login(active_user_no_mobile)
-            mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
+        client_request.login(active_user_no_mobile)
+        mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
 
-            with client_request.session_transaction() as session:
-                session["new-mob-password-confirmed"] = True
-                session["new-mob"] = "+16502532222"
-                session["from_send_page"] = True
-                session["send_page_service_id"] = SERVICE_ONE_ID
-                session["send_page_template_id"] = TEMPLATE_ONE_ID
+        with client_request.session_transaction() as session:
+            session["new-mob-password-confirmed"] = True
+            session["new-mob"] = "+16502532222"
+            session["from_send_page"] = True
+            session["send_page_service_id"] = SERVICE_ONE_ID
+            session["send_page_template_id"] = TEMPLATE_ONE_ID
 
-            client_request.post(
-                "main.user_profile_mobile_number_confirm",
-                _data={"two_factor_code": "12345"},
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.send_test",
-                    service_id=SERVICE_ONE_ID,
-                    template_id=TEMPLATE_ONE_ID,
-                ),
-            )
-            with client_request.session_transaction() as session:
-                assert "from_send_page" not in session
-                assert "send_page_service_id" not in session
-                assert "send_page_template_id" not in session
+        client_request.post(
+            "main.user_profile_mobile_number_confirm",
+            _data={"two_factor_code": "12345"},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.send_test",
+                service_id=SERVICE_ONE_ID,
+                template_id=TEMPLATE_ONE_ID,
+            ),
+        )
+        with client_request.session_transaction() as session:
+            assert "from_send_page" not in session
+            assert "send_page_service_id" not in session
+            assert "send_page_template_id" not in session
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_profile_page_by_default(
         self,
@@ -631,23 +624,22 @@ class TestOptionalPhoneNumber:
         mock_update_user_attribute,
         mock_check_verify_code,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            client_request.login(active_user_no_mobile)
-            mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
+        client_request.login(active_user_no_mobile)
+        mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
 
-            with client_request.session_transaction() as session:
-                session["new-mob-password-confirmed"] = True
-                session["new-mob"] = "+16502532222"
-                # Ensure these are not set for this test case
-                session.pop("from_send_page", None)
-                session.pop("send_page_service_id", None)
-                session.pop("send_page_template_id", None)
+        with client_request.session_transaction() as session:
+            session["new-mob-password-confirmed"] = True
+            session["new-mob"] = "+16502532222"
+            # Ensure these are not set for this test case
+            session.pop("from_send_page", None)
+            session.pop("send_page_service_id", None)
+            session.pop("send_page_template_id", None)
 
-            client_request.post(
-                "main.user_profile_mobile_number_confirm",
-                _data={"two_factor_code": "12345"},
-                _expected_status=302,
-                _expected_redirect=url_for("main.user_profile"),
-            )
-            with client_request.session_transaction() as session:
-                assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+        client_request.post(
+            "main.user_profile_mobile_number_confirm",
+            _data={"two_factor_code": "12345"},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile"),
+        )
+        with client_request.session_transaction() as session:
+            assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
