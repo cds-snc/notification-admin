@@ -11,7 +11,7 @@
           {% endfor %}
         {% else %}
           {{ nav_menu_item_mobile(url='/', localised_txt=_('Home'), id_key='mobile-nav-head-home', is_active=header_navigation.is_selected('home')) }}
-          {{ nav_menu_item_mobile(url=gca_url_for('whynotify'), localised_txt=_('Why GC Notify'),  id_key='mobile-nav-head-why-notify', is_active=header_navigation.is_selected('why-notify')) }}
+          {{ nav_menu_item_mobile(url=gca_url_for('whynotify'), localised_txt=_('By and for the GC'),  id_key='mobile-nav-head-why-notify', is_active=header_navigation.is_selected('why-notify')) }}
           {{ nav_menu_item_mobile(url=gca_url_for('features'), localised_txt=_('Features'), id_key='mobile-nav-head-features', is_active=header_navigation.is_selected('features')) }}
           {{ nav_menu_item_mobile(url=documentation_url(), localised_txt=_('API documentation'), id_key='mobile-nav-head-doc', is_external_link=True) }}
           {{ nav_menu_item_mobile(url=gca_url_for('guidance'), localised_txt=_('Guidance'), id_key='mobile-nav-head-guidance', is_active=header_navigation.is_selected('guidance')) }}

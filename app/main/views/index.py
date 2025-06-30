@@ -367,6 +367,8 @@ def old_page_redirects():
 @main.route("/format", endpoint="formatting_guide")
 @main.route("/messages-status", endpoint="message_delivery_status")
 @main.route("/pourquoi-gc-notification", endpoint="whynotify")
+@main.route("/why-gc-notify", endpoint="whynotify")
+@main.route("/pourquoi-notification-gc", endpoint="whynotify")
 def gca_redirects():
     return redirect(gca_url_for(request.endpoint.replace("main.", "")), code=301)
 

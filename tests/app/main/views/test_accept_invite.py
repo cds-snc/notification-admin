@@ -13,7 +13,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_sample_invite,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -365,70 +364,6 @@ def test_new_user_accept_invite_with_malformed_token(
     )
 
 
-# TODO: REMOVE when FF_OPTIONAL_PHONE removed
-def test_new_user_accept_invite_completes_new_registration_redirects_to_verify_REMOVE_FF(
-    client,
-    service_one,
-    sample_invite,
-    api_user_active,
-    mock_check_invite_token,
-    mock_dont_get_user_by_email,
-    mock_email_is_not_already_in_use,
-    mock_register_user,
-    mock_send_verify_code,
-    mock_accept_invite,
-    mock_get_users_by_service,
-    mock_add_user_to_service,
-    mock_get_service,
-    mocker,
-    app_,
-):
-    with set_config(app_, "FF_OPTIONAL_PHONE", False):  # TODO: REMOVE WHEN FF_OPTIONAL_PHONE IS REMOVED
-        expected_service = service_one["id"]
-        expected_email = sample_invite["email_address"]
-        expected_from_user = service_one["users"][0]
-        expected_redirect_location = "/register-from-invite"
-
-        response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
-        with client.session_transaction() as session:
-            assert response.status_code == 302
-            assert response.location == expected_redirect_location
-            invited_user = session.get("invited_user")
-            assert invited_user
-            assert expected_service == invited_user["service"]
-            assert expected_email == invited_user["email_address"]
-            assert expected_from_user == invited_user["from_user"]
-
-        data = {
-            "service": invited_user["service"],
-            "email_address": invited_user["email_address"],
-            "from_user": invited_user["from_user"],
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-            "mobile_number": "+447890123456",
-            "name": "Invited User",
-            "auth_type": "email_auth",
-        }
-
-        data["tou_agreed"] = "true"
-
-        expected_redirect_location = "/verify"
-        response = client.post(url_for("main.register_from_invite"), data=data)
-        assert response.status_code == 302
-        assert response.location == expected_redirect_location
-
-        mock_send_verify_code.assert_called_once_with(ANY, "sms", data["mobile_number"])
-
-        mock_register_user.assert_called_with(
-            data["name"],
-            data["email_address"],
-            data["mobile_number"],
-            data["password"],
-            data["auth_type"],
-        )
-
-        assert mock_accept_invite.call_count == 1
-
-
 def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
     client,
     service_one,
@@ -446,50 +381,49 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
     mocker,
     app_,
 ):
-    with set_config(app_, "FF_OPTIONAL_PHONE", True):  # TODO: REMOVE WHEN FF_OPTIONAL_PHONE IS REMOVED
-        expected_service = service_one["id"]
-        expected_email = sample_invite["email_address"]
-        expected_from_user = service_one["users"][0]
-        expected_redirect_location = "/register-from-invite"
+    expected_service = service_one["id"]
+    expected_email = sample_invite["email_address"]
+    expected_from_user = service_one["users"][0]
+    expected_redirect_location = "/register-from-invite"
 
-        response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
-        with client.session_transaction() as session:
-            assert response.status_code == 302
-            assert response.location == expected_redirect_location
-            invited_user = session.get("invited_user")
-            assert invited_user
-            assert expected_service == invited_user["service"]
-            assert expected_email == invited_user["email_address"]
-            assert expected_from_user == invited_user["from_user"]
-
-        data = {
-            "service": invited_user["service"],
-            "email_address": invited_user["email_address"],
-            "from_user": invited_user["from_user"],
-            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-            "mobile_number": "+447890123456",
-            "name": "Invited User",
-            "auth_type": "email_auth",
-        }
-
-        data["tou_agreed"] = "true"
-
-        expected_redirect_location = "/verify"
-        response = client.post(url_for("main.register_from_invite"), data=data)
+    response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
+    with client.session_transaction() as session:
         assert response.status_code == 302
         assert response.location == expected_redirect_location
+        invited_user = session.get("invited_user")
+        assert invited_user
+        assert expected_service == invited_user["service"]
+        assert expected_email == invited_user["email_address"]
+        assert expected_from_user == invited_user["from_user"]
 
-        mock_send_verify_code.assert_called_once_with(ANY, "sms", data["mobile_number"])
+    data = {
+        "service": invited_user["service"],
+        "email_address": invited_user["email_address"],
+        "from_user": invited_user["from_user"],
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "mobile_number": "+447890123456",
+        "name": "Invited User",
+        "auth_type": "email_auth",
+    }
 
-        mock_register_user.assert_called_with(
-            data["name"],
-            data["email_address"],
-            data["mobile_number"],
-            data["password"],
-            "sms_auth",
-        )
+    data["tou_agreed"] = "true"
 
-        assert mock_accept_invite.call_count == 1
+    expected_redirect_location = "/verify"
+    response = client.post(url_for("main.register_from_invite"), data=data)
+    assert response.status_code == 302
+    assert response.location == expected_redirect_location
+
+    mock_send_verify_code.assert_called_once_with(ANY, "sms", data["mobile_number"])
+
+    mock_register_user.assert_called_with(
+        data["name"],
+        data["email_address"],
+        data["mobile_number"],
+        data["password"],
+        "sms_auth",
+    )
+
+    assert mock_accept_invite.call_count == 1
 
 
 def test_signed_in_existing_user_cannot_use_anothers_invite(
