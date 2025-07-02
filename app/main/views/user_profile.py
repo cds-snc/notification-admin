@@ -384,13 +384,17 @@ def user_profile_disable_platform_admin_view():
 def user_profile_2fa():
     if current_app.config["FF_AUTH_V2"]:
         data = [
-            ("id1", "yubikey1"),
-            ("id2", "yubikey2"),
             ("email", _("Recieve a code by email")),
             ("sms", _("Recieve a code by text message")),
         ]
         hints = {"email": current_user.email_address, "sms": current_user.mobile_number}
-
-        form = Set2FAForm(all_2fa_options=data, current_2fa=data[0][0])
+        if current_user.auth_type == "email_auth":
+            current_2fa = "email"
+        elif current_user.auth_type == "sms_auth":
+            current_2fa = "sms"
+        else:
+            # todo: add a case for security keys
+            current_2fa = "email"
+        form = Set2FAForm(all_2fa_options=data, current_2fa=current_2fa)
         return render_template("views/user-profile/2fa.html", form=form, hints=hints)
     return redirect(url_for(".user_profile"))
