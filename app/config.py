@@ -186,6 +186,7 @@ class Development(Config):
     DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "notify.tools-mou"
+    REPORTS_BUCKET_NAME = os.getenv("REPORTS_BUCKET_NAME", "notification-canada-ca-staging-reports")
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False

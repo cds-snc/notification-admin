@@ -3716,6 +3716,16 @@ def normalize_spaces(input):
     return normalize_spaces(" ".join(item.text for item in input))
 
 
+@pytest.fixture
+def mock_get_report_metadata(mocker):
+    return mocker.patch("app.main.views.reports.get_report_metadata")
+
+
+@pytest.fixture
+def mock_get_service_retention(mocker):
+    return mocker.patch("app.main.views.reports.get_service_retention", return_value=7)
+
+
 @pytest.fixture(scope="function")
 def mock_get_service_data_retention(mocker):
     data = {

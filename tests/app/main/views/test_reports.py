@@ -5,7 +5,7 @@ import pytest
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
-from app.main.views.reports import get_report_totals, set_report_expired
+from app.main.views.reports import check_report_metadata, get_report_totals, set_report_expired
 
 
 def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):
@@ -21,6 +21,10 @@ def test_reports_page_requires_active_user_with_permissions(client_request, acti
 @freeze_time("2025-01-01 00:01:00.000000")
 def test_get_reports_shows_list_of_reports(client_request, active_user_with_permissions, mock_get_reports, mocker, service_one):
     client_request.login(active_user_with_permissions)
+
+    # Mock S3 metadata retrieval to avoid real S3 calls
+    mocker.patch("app.main.views.reports.get_report_metadata", return_value={})
+    mocker.patch("app.current_service", {"retention_data": []})
 
     response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
 
@@ -52,6 +56,8 @@ def test_download_report_csv_streams_the_report(
 
     # Mock the s3download_report_chunks function to avoid S3 calls
     mock_s3_download = mocker.patch("app.main.views.reports.s3download_report_chunks", return_value=[b"csv,content,here"])
+    mocker.patch("app.main.views.reports.get_report_metadata", return_value={"earliest_created_at": "2025-01-01 00:01:00.000000"})
+    mocker.patch("app.current_service", {"retention_data": []})
 
     client_request.login(active_user_with_permissions)
 
@@ -154,6 +160,7 @@ def test_get_report_totals_counts_correctly():
         {"status": "requested", "expires_at": datetime.now(timezone.utc).isoformat()},
         {"status": "error", "expires_at": datetime.now(timezone.utc).isoformat()},
         {"status": "expired", "expires_at": datetime.now(timezone.utc).isoformat()},
+        {"status": "retention_exceeded", "expires_at": datetime.now(timezone.utc).isoformat()},
     ]
 
     # Get the report totals
@@ -165,6 +172,7 @@ def test_get_report_totals_counts_correctly():
         "generating": 2,  # Combines "generating" and "requested"
         "expired": 1,
         "error": 1,
+        "retention_exceeded": 1,
     }
 
 
@@ -173,7 +181,7 @@ def test_get_report_totals_handles_empty_list():
     totals = get_report_totals([])
 
     # Check the counts are all zero
-    assert totals == {"ready": 0, "generating": 0, "expired": 0, "error": 0}
+    assert totals == {"ready": 0, "generating": 0, "expired": 0, "error": 0, "retention_exceeded": 0}
 
 
 def test_get_report_totals_marks_expired_reports_correctly():
@@ -184,7 +192,7 @@ def test_get_report_totals_marks_expired_reports_correctly():
     totals = get_report_totals(reports)
 
     # Check the report was counted as expired
-    assert totals == {"ready": 0, "generating": 0, "expired": 1, "error": 0}
+    assert totals == {"ready": 0, "generating": 0, "expired": 1, "error": 0, "retention_exceeded": 0}
     # Check that the report's status was actually changed
     assert reports[0]["status"] == "expired"
 
@@ -199,7 +207,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
     client_request.login(active_user_with_permissions)
 
     # Simulate coming from the dashboard page
-    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+    referring_url = f"http://localhost/services/{service_one['id']}/{referrer_page}"
 
     # Make a request to the reports page with the dashboard as referer
     response = client_request.get(
@@ -213,7 +221,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
 
     # Verify that the back_link was set in the session
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+        assert session[f"back_link_{service_one['id']}_reports"] == referring_url
 
     # Verify the back link is present in the page content
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -228,10 +236,10 @@ def test_reports_uses_session_back_link_after_refresh(
     client_request.login(active_user_with_permissions)
 
     with client_request.session_transaction() as session:
-        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+        session[f"back_link_{service_one['id']}_reports"] = expected_back_link
 
     # Make the request with the same URL as referer to simulate a refresh
-    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    current_url = f"http://localhost/services/{service_one['id']}/reports"
     response = client_request.get(
         "main.reports",
         service_id=service_one["id"],
@@ -243,8 +251,57 @@ def test_reports_uses_session_back_link_after_refresh(
 
     # Verify the session still contains the original back link
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+        assert session[f"back_link_{service_one['id']}_reports"] == expected_back_link
 
     # The page should still have access to the back_link
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert expected_back_link in str(page)
+
+
+def test_check_report_metadata_skips_non_downloadable_reports(mock_get_report_metadata, mock_get_service_retention):
+    reports = [
+        {"id": "1", "status": "error"},
+        {"id": "2", "status": "expired"},
+        {"id": "3", "status": "generating"},
+        {"id": "4", "status": "requested"},
+    ]
+    check_report_metadata(reports, "service-id")
+    mock_get_report_metadata.assert_not_called()
+
+
+def test_check_report_metadata_returns_none_if_no_metadata(mock_get_report_metadata, mock_get_service_retention):
+    reports = [{"id": "1", "status": "ready"}]
+    mock_get_report_metadata.return_value = None
+    result = check_report_metadata(reports, "service-id")
+    assert result is None
+
+
+def test_check_report_metadata_sets_retention_exceeded_if_earliest_created_at_too_old(
+    mock_get_report_metadata, mock_get_service_retention, mocker
+):
+    old_date = (datetime.now() - timedelta(days=8)).isoformat()
+    reports = [{"id": "1", "status": "ready", "report_type": "email"}]
+    mock_get_report_metadata.return_value = {"earliest_created_at": old_date}
+    mock_get_service_retention.return_value = 7
+    check_report_metadata(reports, "service-id")
+    assert reports[0]["status"] == "retention_exceeded"
+
+
+def test_check_report_metadata_does_not_set_retention_exceeded_if_within_retention(
+    mock_get_report_metadata, mock_get_service_retention, mocker
+):
+    recent_date = (datetime.now() - timedelta(days=3)).isoformat()
+    reports = [{"id": "1", "status": "ready", "report_type": "email"}]
+    mock_get_report_metadata.return_value = {"earliest_created_at": recent_date}
+    mock_get_service_retention.return_value = 7
+    check_report_metadata(reports, "service-id")
+    assert reports[0]["status"] == "ready"
+
+
+def test_check_report_metadata_uses_report_type_for_retention(mock_get_report_metadata, mock_get_service_retention):
+    reports = [{"id": "1", "status": "ready", "report_type": "sms"}]
+    mock_get_report_metadata.return_value = {"earliest_created_at": (datetime.now() - timedelta(days=10)).isoformat()}
+    mock_get_service_retention.return_value = 14
+    check_report_metadata(reports, "service-id")
+    mock_get_service_retention.assert_called_once_with("sms")
+    assert reports[0]["status"] == "ready"

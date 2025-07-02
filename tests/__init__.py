@@ -197,6 +197,7 @@ def service_json(
     organisation_type="central",
     prefix_sms=True,
     contact_link=None,
+    data_retention=None,
     organisation_id=None,
     sending_domain=None,
     go_live_user=None,
@@ -209,6 +210,8 @@ def service_json(
         permissions = ["email", "sms"]
     if inbound_api is None:
         inbound_api = []
+    if data_retention is None:
+        data_retention = []
     service_dict = {
         "id": id_,
         "name": name,
@@ -246,6 +249,7 @@ def service_json(
         "go_live_user": go_live_user,
         "organisation_notes": organisation_notes,
         "sensitive_service": sensitive_service,
+        "data_retention": data_retention,
     }
     service: Service = dotdict(service_dict)
     return service
@@ -683,5 +687,5 @@ def assert_url_expected(actual: str, expected: str):
             assert parse_qs(expected_parts.query) == parse_qs(actual_parts.query)
         else:
             assert getattr(actual_parts, attribute) == getattr(expected_parts, attribute), (
-                "Expected redirect: {}\n" "Actual redirect: {}"
+                "Expected redirect: {}\nActual redirect: {}"
             ).format(expected, actual)

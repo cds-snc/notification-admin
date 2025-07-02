@@ -81,6 +81,28 @@ def copy_bulk_send_file_to_uploads(service_id, filekey):
     return upload_id
 
 
+def get_report_metadata(service_id, report_id):
+    """
+    Fetch metadata for a report from S3.
+
+    Args:
+        service_id: The ID of the service
+        report_id: The ID of the report
+
+    Returns:
+        Metadata dictionary if available, otherwise an empty dictionary
+    """
+    try:
+        key = get_s3_object(current_app.config["REPORTS_BUCKET_NAME"], get_report_location(service_id, report_id))
+        return key.metadata or {}
+    except botocore.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] == "404":
+            current_app.logger.info(f"Report {report_id} for service {service_id} has no metadata")
+            return None
+        current_app.logger.error(f"Unable to fetch metadata for report {report_id} in service {service_id}")
+        raise e
+
+
 def s3download_report_chunks(service_id, report_id, chunk_size=CHUNK_SIZE):
     """
     Generator function to stream S3 file data in chunks.

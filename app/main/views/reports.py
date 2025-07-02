@@ -1,10 +1,11 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from flask import (
     Response,
     current_app,
     flash,
     jsonify,
+    redirect,
     render_template,
     request,
     session,
@@ -14,10 +15,10 @@ from flask import (
 from flask_login import current_user
 from notifications_utils.timezones import convert_utc_to_local_timezone
 
-from app import reports_api_client
+from app import current_service, reports_api_client
 from app.articles import get_current_locale
 from app.main import main
-from app.s3_client.s3_csv_client import s3download_report_chunks
+from app.s3_client.s3_csv_client import get_report_metadata, s3download_report_chunks
 from app.utils import user_has_permissions
 
 CHUNK_SIZE = 1024 * 1024  # 1 MB
@@ -27,6 +28,7 @@ CHUNK_SIZE = 1024 * 1024  # 1 MB
 @user_has_permissions("view_activity")
 def reports(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
+    check_report_metadata(reports, service_id)
     partials = get_reports_partials(reports)
 
     # Get the referrer URL from the request
@@ -91,7 +93,33 @@ def get_reports_partials(reports):
 @user_has_permissions("view_activity")
 def view_reports_updates(service_id):
     reports = reports_api_client.get_reports_for_service(service_id)
+    check_report_metadata(reports, service_id)
     return jsonify(**get_reports_partials(reports))
+
+
+def check_report_metadata(reports, service_id):
+    """
+    Check if the report metadata is valid and contains necessary fields.
+    """
+    for report in reports:
+        # Don't query S3 for metadata for reports that aren't available for download
+        if report.get("status") in ["error", "expired", "generating", "requested"]:
+            continue
+
+        metadata = get_report_metadata(service_id, report.get("id"))
+        # If the report was generated before we started adding metadata then skip the check
+        if not metadata:
+            return None
+
+        earliest_created_at = metadata.get("earliest_created_at", None)
+
+        # Check if the service has a non-default data retention policy set for the report type: (SMS, Email)
+        retention_days = get_service_retention(report.get("report_type"))
+
+        # Check if the report contains data older than the service's data retention policy and prevent download if so
+        if earliest_created_at:
+            if datetime.fromisoformat(earliest_created_at) < datetime.now() - timedelta(days=retention_days):
+                report["status"] = "retention_exceeded"
 
 
 @main.route("/services/<service_id>/reports/download/<report_id>", methods=["GET"])
@@ -107,6 +135,22 @@ def download_report_csv(service_id, report_id):
 
     if not report:
         return ("Report not found", 404)
+
+    # Get report metadata
+    metadata = get_report_metadata(service_id, report_id)
+    earliest_created_at = datetime.fromisoformat(metadata.get("earliest_created_at"))
+
+    # Check if the service has a non-default data retention policy set for the report type: (SMS, Email)
+    retention_days = get_service_retention(report.get("report_type"))
+
+    # Check if the report contains data older than the service's data retention policy and prevent download if so
+    if earliest_created_at:
+        if earliest_created_at < datetime.now() - timedelta(days=retention_days):
+            flash(
+                f"This report contains data that is older than your service’s data retention policy of {retention_days} days. ",
+                f"Please prepare a new report to view {report.get("report_type")} notification data for the last {retention_days}.",
+            )
+            return redirect(url_for("main.reports", service_id=service_id))
 
     # Stream the remote CSV file
     try:
@@ -173,6 +217,7 @@ def get_report_totals(reports):
         "generating": 0,
         "expired": 0,
         "error": 0,
+        "retention_exceeded": 0,
     }
     for report in reports:
         set_report_expired(report)
@@ -181,3 +226,20 @@ def get_report_totals(reports):
         else:
             report_totals[report["status"]] += 1
     return report_totals
+
+
+def get_service_retention(report_type):
+    # Default retention is 7 days
+    retention_days = 7
+
+    # Check if the service has a non-default data retention policy set for the report type: (SMS, Email)
+    data_retention = getattr(current_service, "data_retention", [])
+    if data_retention:
+        retention = next(
+            (r for r in data_retention if r.get("notification_type") == report_type),
+            None,
+        )
+        if retention and retention.get("days_of_retention"):
+            retention_days = retention["days_of_retention"]
+
+    return retention_days

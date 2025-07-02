@@ -1,6 +1,6 @@
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
 {% from "components/empty-list.html" import empty_list  %}
-  
+
   {% set heading_1 = _('Report') %}
   {% set heading_2 = right_aligned_field_heading(_('Status')) %}
   {% set empty_txt = empty_list(
@@ -11,7 +11,7 @@
       _('Visit dashboard'))
   %}
   <div class='reports-table'>
-  
+
   {% call(item, row_number) list_table(
     reports,
     caption="Recent activity",
@@ -41,7 +41,7 @@
         </div>
       </div>
     {% endcall %}
-    
+
     {% call field(align='right') %}
       <div class="flex flex-col justify-end">
         <div class="mb-4">
@@ -58,11 +58,15 @@
                 {{ _("Download before") }}
                 <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
             </div>
+        {% elif item.status == "retention_exceeded" %}
+            <div class="file-list-hint">
+                {{ _("Unavailable. Report includes expired data.") }}
+            </div>
         {% elif item.status == "error" %}
           <div class="file-list-hint text-red">{{ _("Failed. Try again") }}</div>
         {% elif item.status == "expired" %}
           <div class="file-list-hint text-red">
-            {{ _("Deleted at") }} 
+            {{ _("Deleted at") }}
             <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
           </div>
         {% else %}
