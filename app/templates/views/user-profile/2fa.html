@@ -1,0 +1,18 @@
+{% extends  "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+
+{% block per_page_title %}
+  {{ _('Two-step verification method') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {% set title_txt = _('Two-step verification method') %}
+  {{ page_header(
+    title_txt,
+    back_link=url_for('.user_profile')
+  ) }}
+  
+  <div>Placeholder content</div>
+
+{% endblock %}
