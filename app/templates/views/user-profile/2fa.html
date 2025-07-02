@@ -2,6 +2,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/radios.html" import radios %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
   {{ _('Two-step verification method') }}
@@ -54,7 +55,9 @@
   </button>
   
   <div class="mt-12">
-    {{ radios(form.two_fa, use_aria_labelledby=False, option_hints=hints) }}
+    {% call form_wrapper() %}
+      {{ radios(form.two_fa, use_aria_labelledby=False, option_hints=hints) }}
+      {{ page_footer(_('Complete')) }}
+    {% endcall %}
   </div>
-  {{ page_footer(_('Complete')) }}
 {% endblock %}

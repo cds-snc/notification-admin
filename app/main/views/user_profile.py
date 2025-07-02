@@ -396,5 +396,26 @@ def user_profile_2fa():
             # todo: add a case for security keys
             current_2fa = "email"
         form = Set2FAForm(all_2fa_options=data, current_2fa=current_2fa)
+
+        if request.method == "POST" and form.validate_on_submit():
+            # Update user's auth type based on selected 2FA method
+            new_auth_type = form.two_fa.data
+            if new_auth_type == "email":
+                auth_type = "email_auth"
+            elif new_auth_type == "sms":
+                auth_type = "sms_auth"
+            else:
+                # Default to email auth if something unexpected is selected
+                auth_type = "email_auth"
+
+            # Update the user's authentication type
+            current_user.update(auth_type=auth_type)
+
+            # Flash a success message
+            flash(_("Two-factor authentication method updated"), "default_with_tick")
+
+            # Redirect back to user profile
+            return redirect(url_for(".user_profile"))
+
         return render_template("views/user-profile/2fa.html", form=form, hints=hints)
     return redirect(url_for(".user_profile"))
