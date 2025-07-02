@@ -521,6 +521,22 @@ def test_should_not_show_cancelled_job(
     )
 
 
+def test_should_hide_download_link_and_prepare_report_footer_job_outside_of_retention_period(
+    client_request,
+    active_user_with_permissions,
+    mock_get_job_sent_outside_retention_period,
+    mock_get_service_data_retention,
+    mock_get_service_template,
+    mock_get_reports,
+    mock_get_notifications,
+    fake_uuid,
+):
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid)
+
+    assert page.find("a[download]") is None
+    assert page.find("div[class*='report-footer-container']") is None
+
+
 def test_should_cancel_letter_job(client_request, mocker, active_user_with_permissions):
     job_id = uuid.uuid4()
     job = job_json(
