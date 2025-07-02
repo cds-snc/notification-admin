@@ -2218,7 +2218,7 @@
 "Security Key (best option)","FR Security Key (best option)"
 "Security keys are physical devices, like YubiKey.","FR Security keys are physical devices, like YubiKey."
 "They offer the highest level of security since you need to have the key on you for authentication, making it harder for phishing attacks to succeed.","FR They offer the highest level of security since you need to have the key on you for authentication, making it harder for phishing attacks to succeed."
-"You can use your email for two-step verification, but it's not the quickest or safest option.","FR You can use your email for two-step verification, but it's not the quickest or safest option."
+"You can use your email for two-step verification, but it’s not the quickest or safest option.","FR You can use your email for two-step verification, but it’s not the quickest or safest option."
 "It depends on your access to your email and can be at risk from phishing and other attacks.","FR It depends on your access to your email and can be at risk from phishing and other attacks."
 "SMS Text Message (least secure option)","FR SMS Text Message (least secure option)"
 "This method sends a code to your phone through a text message, making it faster than email.","FR This method sends a code to your phone through a text message, making it faster than email."
