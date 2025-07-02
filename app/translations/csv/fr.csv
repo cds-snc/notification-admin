@@ -2227,3 +2227,6 @@
 "Email Verification","FR Email Verification"
 "Add a key","FR Add a key"
 "Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key.","FR Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key."
+"Recieve a code by email","FR Recieve a code by email"
+"Recieve a code by text message","FR Recieve a code by text message"
+"Two-factor authentication method updated","FR Two-factor authentication method updated"
