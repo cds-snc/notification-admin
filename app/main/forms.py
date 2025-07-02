@@ -2108,3 +2108,20 @@ class TemplateCategoryForm(StripWhitespaceForm):
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
+
+
+class Set2FAForm(StripWhitespaceForm):
+    two_fa = RadioField(
+        _l("Select your preferred way to verify"),
+    )
+
+    def __init__(self, all_2fa_options, current_2fa):
+        super().__init__(two_fa=current_2fa)
+
+        self.two_fa.choices = sorted(
+            all_2fa_options,
+            key=lambda x: (
+                x[0] != current_2fa,
+                x[1].lower(),
+            ),
+        )

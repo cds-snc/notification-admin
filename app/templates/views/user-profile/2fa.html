@@ -1,5 +1,7 @@
 {% extends  "admin_template.html" %}
 {% from "components/page-header.html" import page_header %}
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
 
 {% block per_page_title %}
   {{ _('Two-step verification method') }}
@@ -13,7 +15,6 @@
     back_link=url_for('.user_profile')
   ) }}
   
-  <p>{{_('Select your preferred way to verify.') }}</p>
   <p>{{ _('Every time you sign in you will be asked for a second type of verification.') }}</p>
 
   <details>
@@ -43,12 +44,17 @@
     </div>
   </details>
 
-  <p> {{ _('Security keys') }}</p>
+  <h2 class="heading-medium">{{ _('Security keys') }}</h2>
   <p>{{ _('Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key.') }}</p>
 
   <button>
-    <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button">
+    <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary">
       {{ _('Add a key') }}
     </a>
   </button>
+  
+  <div class="mt-12">
+    {{ radios(form.two_fa, use_aria_labelledby=False) }}
+  </div>
+  {{ page_footer(_('Complete')) }}
 {% endblock %}
