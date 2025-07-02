@@ -54,7 +54,7 @@
   </button>
   
   <div class="mt-12">
-    {{ radios(form.two_fa, use_aria_labelledby=False) }}
+    {{ radios(form.two_fa, use_aria_labelledby=False, option_hints=hints) }}
   </div>
   {{ page_footer(_('Complete')) }}
 {% endblock %}
