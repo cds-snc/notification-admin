@@ -386,8 +386,16 @@ def user_profile_2fa():
         data = [
             ("email", _("Recieve a code by email")),
             ("sms", _("Recieve a code by text message")),
+            ("new_key", _("Add a new security key")),
+            # todo: add options for existing security keys
         ]
-        hints = {"email": current_user.email_address, "sms": current_user.mobile_number}
+        hints = {
+            "email": current_user.email_address,
+            "sms": current_user.mobile_number,
+            "new_key": _(
+                "Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key."
+            ),
+        }
         if current_user.auth_type == "email_auth":
             current_2fa = "email"
         elif current_user.auth_type == "sms_auth":
@@ -404,6 +412,9 @@ def user_profile_2fa():
                 auth_type = "email_auth"
             elif new_auth_type == "sms":
                 auth_type = "sms_auth"
+            elif new_auth_type == "new_key":
+                # Redirect to add a new security key
+                return redirect(url_for(".user_profile_add_security_keys"))
             else:
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"

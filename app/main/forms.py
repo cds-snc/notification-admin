@@ -2112,7 +2112,7 @@ class TemplateCategoryForm(StripWhitespaceForm):
 
 class Set2FAForm(StripWhitespaceForm):
     two_fa = RadioField(
-        _l("Select your preferred way to verify"),
+        _l("Select your two-step verification method"),
     )
 
     def __init__(self, all_2fa_options, current_2fa):

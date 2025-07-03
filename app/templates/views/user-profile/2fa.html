@@ -44,20 +44,11 @@
 
     </div>
   </details>
-
-  <h2 class="heading-medium">{{ _('Security keys') }}</h2>
-  <p>{{ _('Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key.') }}</p>
-
-  <button>
-    <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary">
-      {{ _('Add a key') }}
-    </a>
-  </button>
   
   <div class="mt-12">
     {% call form_wrapper() %}
       {{ radios(form.two_fa, use_aria_labelledby=False, option_hints=hints) }}
-      {{ page_footer(_('Complete')) }}
+      {{ page_footer(_('Continue')) }}
     {% endcall %}
   </div>
 {% endblock %}

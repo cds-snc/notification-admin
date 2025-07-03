@@ -31,6 +31,8 @@
         <!-- This auth_type does not exist yet -->
         {{ profile_item(_('Two-step verification method'), text_field(_("Security key") + " (" + "placeholder" + ")"), '.user_profile_2fa') }}
       {% endif %}
+
+      {{ profile_item(_('Security keys'), text_field(_("{} security key").format(num_keys) if num_keys == 1 else _("{} security keys").format(num_keys)), '.user_profile_security_keys') }}
       {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
         {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }} 
       {% endif %}
