@@ -2210,7 +2210,6 @@
 "Code by text message","FR Code by text message"
 "Security key","FR Security key"
 "Contact number","FR Contact number"
-"Select your preferred way to verify","FR Select your preferred way to verify"
 "Every time you sign in you will be asked for a second type of verification.","FR Every time you sign in you will be asked for a second type of verification."
 "Not sure which method to choose? Learn more about 2FA","FR Not sure which method to choose? Learn more about 2FA"
 "Two-step verification adds an extra layer of security to your account by requiring something in addition to your password when you sign in to Notify.","FR Two-step verification adds an extra layer of security to your account by requiring something in addition to your password when you sign in to Notify."
@@ -2230,3 +2229,4 @@
 "Recieve a code by email","FR Recieve a code by email"
 "Recieve a code by text message","FR Recieve a code by text message"
 "Two-factor authentication method updated","FR Two-factor authentication method updated"
+"Select your two-step verification method","FR Select your two-step verification method"

@@ -415,6 +415,7 @@ def user_profile_2fa():
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 return redirect(url_for(".user_profile_add_security_keys"))
+            # todo: add a case for existing security keys
             else:
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
