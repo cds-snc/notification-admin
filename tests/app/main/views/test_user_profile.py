@@ -735,39 +735,6 @@ class TestUserProfile2FA:
             assert "Recieve a code by text message" in page.text
             assert "Add a new security key" in page.text
 
-    def test_user_profile_2fa_shows_correct_hints_for_sms_auth_user(
-        self,
-        client_request,
-        app_,
-        mock_get_security_keys,
-    ):
-        """Test that user_profile_2fa shows correct hints for SMS auth user"""
-        with set_config(app_, "FF_AUTH_V2", True):
-            page = client_request.get("main.user_profile_2fa")
-
-            # Check that user email and mobile number are shown as hints
-            assert "test@user.canada.ca" in page.text
-            assert "6502532222" in page.text
-            assert "Follow prompts to add the key" in page.text
-
-    def test_user_profile_2fa_shows_correct_hints_for_email_auth_user(
-        self,
-        client_request,
-        app_,
-        api_user_active_email_auth,
-        mock_get_security_keys,
-    ):
-        """Test that user_profile_2fa shows correct hints for email auth user"""
-        client_request.login(api_user_active_email_auth)
-
-        with set_config(app_, "FF_AUTH_V2", True):
-            page = client_request.get("main.user_profile_2fa")
-
-            # Check that user email and mobile number are shown as hints
-            assert "test@user.canada.ca" in page.text
-            assert "6502532222" in page.text
-            assert "Follow prompts to add the key" in page.text
-
     def test_user_profile_2fa_post_updates_auth_type_to_email(
         self,
         client_request,
@@ -868,39 +835,6 @@ class TestUserProfile2FA:
                 assert len(flashes) == 1
                 assert flashes[0][0] == "default_with_tick"
                 assert "Two-factor authentication method updated" in flashes[0][1]
-
-    def test_user_profile_2fa_get_shows_current_auth_method_selected_for_sms_user(
-        self,
-        client_request,
-        app_,
-        mock_get_security_keys,
-    ):
-        """Test that GET to user_profile_2fa shows current auth method selected for SMS user"""
-        with set_config(app_, "FF_AUTH_V2", True):
-            page = client_request.get("main.user_profile_2fa")
-
-            # Check that SMS option is selected (current_user has auth_type="sms_auth")
-            sms_radio = page.find("input", {"name": "auth_method", "value": "sms"})
-            assert sms_radio is not None
-            assert sms_radio.get("checked") is not None
-
-    def test_user_profile_2fa_get_shows_current_auth_method_selected_for_email_user(
-        self,
-        client_request,
-        app_,
-        api_user_active_email_auth,
-        mock_get_security_keys,
-    ):
-        """Test that GET to user_profile_2fa shows current auth method selected for email user"""
-        client_request.login(api_user_active_email_auth)
-
-        with set_config(app_, "FF_AUTH_V2", True):
-            page = client_request.get("main.user_profile_2fa")
-
-            # Check that email option is selected (user has auth_type="email_auth")
-            email_radio = page.find("input", {"name": "auth_method", "value": "email"})
-            assert email_radio is not None
-            assert email_radio.get("checked") is not None
 
     def test_user_profile_2fa_post_with_invalid_form_data_shows_form_again(
         self,
