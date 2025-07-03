@@ -1,5 +1,8 @@
 {% extends  "admin_template.html" %}
 {% from "components/page-header.html" import page_header %}
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
 
 {% block per_page_title %}
   {{ _('Two-step verification method') }}
@@ -13,6 +16,39 @@
     back_link=url_for('.user_profile')
   ) }}
   
-  <div>Placeholder content</div>
+  <p>{{ _('Every time you sign in you will be asked for a second type of verification.') }}</p>
 
+  <details>
+    <summary class="flex gap-10 py-2">{{ _("Not sure which method to choose? Learn more about 2FA") }}</summary>
+    <div class="details-body">
+      <p>{{ _('Two-step verification adds an extra layer of security to your account by requiring something in addition to your password when you sign in to Notify.') }}</p>
+      <p>{{ _('Here’s a simple overview of the two-step verification methods available on Notify:') }}</p>
+      
+      <p>{{ _('Security Key (best option)') }}</p>
+      <ul class="list list-bullet">
+        <li>{{ _('Security keys are physical devices, like YubiKey.') }}</li>
+        <li>{{ _('They offer the highest level of security since you need to have the key on you for authentication, making it harder for phishing attacks to succeed.') }}</li>
+      </ul>
+
+      <p>{{ _('Email Verification') }}</p>
+      <ul class="list list-bullet">
+        <li>{{ _('You can use your email for two-step verification, but it’s not the quickest or safest option.') }}</li>
+        <li>{{ _('It depends on your access to your email and can be at risk from phishing and other attacks.') }}</li>
+      </ul>
+
+      <p>{{ _('SMS Text Message (least secure option)') }}</p>
+      <ul class="list list-bullet">
+        <li>{{ _("This method sends a code to your phone through a text message, making it faster than email.") }}</li>
+        <li>{{ _('However, it’s considered less secure than other methods due to risks like SIM swapping and other types of attacks.') }}</li>
+      </ul>
+
+    </div>
+  </details>
+  
+  <div class="mt-12">
+    {% call form_wrapper() %}
+      {{ radios(form.auth_method, use_aria_labelledby=False, option_hints=hints) }}
+      {{ page_footer(_('Continue')) }}
+    {% endcall %}
+  </div>
 {% endblock %}

@@ -2108,3 +2108,14 @@ class TemplateCategoryForm(StripWhitespaceForm):
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
+
+
+class AuthMethodForm(StripWhitespaceForm):
+    auth_method = RadioField(
+        _l("Select your two-step verification method"),
+    )
+
+    def __init__(self, all_auth_methods, current_auth_method):
+        super().__init__(auth_method=current_auth_method)
+
+        self.auth_method.choices = all_auth_methods
