@@ -47,7 +47,7 @@
   
   <div class="mt-12">
     {% call form_wrapper() %}
-      {{ radios(form.two_fa, use_aria_labelledby=False, option_hints=hints) }}
+      {{ radios(form.auth_method, use_aria_labelledby=False, option_hints=hints) }}
       {{ page_footer(_('Continue')) }}
     {% endcall %}
   </div>

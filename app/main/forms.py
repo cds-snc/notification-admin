@@ -2110,18 +2110,12 @@ class TemplateCategoryForm(StripWhitespaceForm):
     )
 
 
-class Set2FAForm(StripWhitespaceForm):
-    two_fa = RadioField(
+class AuthMethodForm(StripWhitespaceForm):
+    auth_method = RadioField(
         _l("Select your two-step verification method"),
     )
 
-    def __init__(self, all_2fa_options, current_2fa):
-        super().__init__(two_fa=current_2fa)
+    def __init__(self, all_auth_methods, current_auth_method):
+        super().__init__(auth_method=current_auth_method)
 
-        self.two_fa.choices = sorted(
-            all_2fa_options,
-            key=lambda x: (
-                x[0] != current_2fa,
-                x[1].lower(),
-            ),
-        )
+        self.auth_method.choices = all_auth_methods

@@ -19,6 +19,7 @@ from notifications_utils.url_safe_token import check_token
 from app import user_api_client
 from app.main import main
 from app.main.forms import (
+    AuthMethodForm,
     ChangeEmailForm,
     ChangeMobileNumberFormOptional,
     ChangeNameForm,
@@ -26,7 +27,6 @@ from app.main.forms import (
     ConfirmPasswordForm,
     SecurityKeyForm,
     ServiceOnOffSettingForm,
-    Set2FAForm,
     TwoFactorForm,
 )
 from app.models.user import User
@@ -397,17 +397,17 @@ def user_profile_2fa():
             ),
         }
         if current_user.auth_type == "email_auth":
-            current_2fa = "email"
+            current_auth_method = "email"
         elif current_user.auth_type == "sms_auth":
-            current_2fa = "sms"
+            current_auth_method = "sms"
         else:
             # todo: add a case for security keys
-            current_2fa = "email"
-        form = Set2FAForm(all_2fa_options=data, current_2fa=current_2fa)
+            current_auth_method = "email"
+        form = AuthMethodForm(all_auth_methods=data, current_auth_method=current_auth_method)
 
         if request.method == "POST" and form.validate_on_submit():
             # Update user's auth type based on selected 2FA method
-            new_auth_type = form.two_fa.data
+            new_auth_type = form.auth_method.data
             if new_auth_type == "email":
                 auth_type = "email_auth"
             elif new_auth_type == "sms":
