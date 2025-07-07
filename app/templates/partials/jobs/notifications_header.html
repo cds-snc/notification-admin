@@ -2,7 +2,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
-<div class="ajax-block-container" aria-labelledby='pill-selected-item'> 
+<div class="ajax-block-container" aria-labelledby='pill-selected-item'>
   {% if job.job_status == 'scheduled' %}
     {% set btn_txt = _('Cancel scheduled send') %}
     <div class="page-footer">
@@ -17,7 +17,7 @@
     <div class="mb-12 clear-both contain-floats">
       {{ problem_email_checkbox() }}
     </div>
-    {% if notifications %}
+    {% if notifications and not config["FF_ASYNC_REPORTS"] %}
       <div class="dashboard-table mt-12 mb-12 clear-both contain-floats">
         {% if percentage_complete < 100 %}
           {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}

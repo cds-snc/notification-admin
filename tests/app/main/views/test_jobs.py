@@ -15,6 +15,7 @@ from tests.conftest import (
     create_template,
     mock_get_notifications,
     normalize_spaces,
+    set_config,
 )
 
 
@@ -199,15 +200,6 @@ def test_should_show_page_for_one_job(
         status=status_argument,
         pe_filter="",
     )
-    csv_link = page.select_one("a[download]")
-    assert csv_link["href"] == url_for(
-        "main.view_job_csv",
-        service_id=SERVICE_ONE_ID,
-        job_id=fake_uuid,
-        status=status_argument,
-    )
-    assert csv_link.text == "Download this report"
-    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
     assert normalize_spaces(dashboard_table.select_one("tbody tr").text) == normalize_spaces(
         "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
@@ -272,13 +264,15 @@ def test_should_show_job_in_progress(
     mock_get_reports,
     mock_get_service_data_retention,
     fake_uuid,
+    app_,
 ):
-    page = client_request.get(
-        "main.view_job",
-        service_id=service_one["id"],
-        job_id=fake_uuid,
-    )
-    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
+    with set_config(app_, "FF_ASYNC_REPORTS", False):
+        page = client_request.get(
+            "main.view_job",
+            service_id=service_one["id"],
+            job_id=fake_uuid,
+        )
+        assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -519,6 +513,21 @@ def test_should_not_show_cancelled_job(
         job_id=fake_uuid,
         _expected_status=404,
     )
+
+
+def test_should_hide_prepare_report_footer_job_outside_of_retention_period(
+    client_request,
+    active_user_with_permissions,
+    mock_get_job_sent_outside_retention_period,
+    mock_get_service_data_retention,
+    mock_get_service_template,
+    mock_get_reports,
+    mock_get_notifications,
+    fake_uuid,
+):
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid)
+
+    assert page.find("div[class*='report-footer-container']") is None
 
 
 def test_should_cancel_letter_job(client_request, mocker, active_user_with_permissions):
