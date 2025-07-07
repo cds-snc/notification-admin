@@ -456,6 +456,7 @@ def job_json(
     job_status="finished",
     scheduled_for="",
     api_key=None,
+    archived=False,
 ):
     if job_id is None:
         job_id = str(generate_uuid())
@@ -482,6 +483,7 @@ def job_json(
         ),
         "scheduled_for": scheduled_for,
         "api_key": api_key,
+        "archived": archived,
     }
     return data
 
