@@ -11,7 +11,16 @@ from app.models.roles_and_permissions import (
 )
 from app.notify_client import NotifyAdminAPIClient, cache
 
-ALLOWED_ATTRIBUTES = {"name", "email_address", "mobile_number", "auth_type", "updated_by", "blocked", "password_expired"}
+ALLOWED_ATTRIBUTES = {
+    "name",
+    "email_address",
+    "mobile_number",
+    "auth_type",
+    "verified_phonenumber",
+    "updated_by",
+    "blocked",
+    "password_expired",
+}
 
 
 class UserApiClient(NotifyAdminAPIClient):
@@ -160,6 +169,17 @@ class UserApiClient(NotifyAdminAPIClient):
         except HTTPError as e:
             if e.status_code == 400 or e.status_code == 404:
                 return False, e.message
+            raise e
+
+    def validate_2fa_method(self, user_id, code, code_type):
+        data = {"code_type": code_type, "code": code}
+        endpoint = "/user/{}/verify-2fa".format(user_id)
+        try:
+            self.post(endpoint, data=data)
+            return True, ""
+        except HTTPError as e:
+            if e.status_code == 400 or e.status_code == 404:
+                return False
             raise e
 
     def get_users_for_service(self, service_id):

@@ -14,6 +14,7 @@ from flask import (
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
+from notifications_utils.decorators import requires_feature
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
@@ -379,9 +380,44 @@ def user_profile_disable_platform_admin_view():
     return render_template("views/user-profile/disable-platform-admin-view.html", form=form)
 
 
+@main.route("/user-profile/verify-mobile-number", methods=["GET", "POST"])
+@user_is_logged_in
+@requires_feature("FF_AUTH_V2")
+def verify_mobile_number():
+    """
+    This route is used to verify the user's mobile number.
+    It sends a verification code to the user's mobile number and
+    allows them to confirm it.
+
+    """
+    if not current_user.mobile_number:
+        flash(_("You do not have a mobile number set."), "error")
+        return redirect(url_for(".user_profile_2fa"))
+
+    # Validate password for form
+    def _check_code(code):
+        return user_api_client.validate_2fa_method(current_user.id, code, "sms")
+
+    form = TwoFactorForm(_check_code)
+
+    if form.validate_on_submit():
+        current_user.update(verified_phonenumber=True)
+        flash(_("Two-factor authentication method updated"), "default_with_tick")
+        return redirect(url_for(".user_profile_2fa"))
+    else:
+        current_user.send_verify_code(to=current_user.mobile_number)
+
+    return render_template(
+        "views/user-profile/verify-mobile-number.html",
+        form=form,
+        back_link=url_for(".user_profile_2fa"),
+    )
+
+
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
+    # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         data = [
             ("email", _("Recieve a code by email")),
@@ -429,5 +465,9 @@ def user_profile_2fa():
             # Redirect back to user profile
             return redirect(url_for(".user_profile"))
 
-        return render_template("views/user-profile/2fa.html", form=form, hints=hints)
+        return render_template(
+            "views/user-profile/2fa.html",
+            form=form,
+            hints=hints,
+        )
     return redirect(url_for(".user_profile"))
