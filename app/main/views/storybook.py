@@ -11,8 +11,8 @@ class Exampleform1(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_method1.choices = [
-            ("email-1", "Recieve a code by email"),
-            ("sms-1", "Recieve a code by text message"),
+            ("email-1", "Receive a code by email"),
+            ("sms-1", "Receive a code by text message"),
             ("new_key-1", "Add a new security key"),
         ]
 
@@ -23,8 +23,8 @@ class Exampleform2(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_method2.choices = [
-            ("email-2", "Recieve a code by email"),
-            ("sms-2", "Recieve a code by text message"),
+            ("email-2", "Receive a code by email"),
+            ("sms-2", "Receive a code by text message"),
             ("new_key-2", "Add a new security key"),
         ]
 
@@ -35,8 +35,8 @@ class Exampleform3(Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_method3.choices = [
-            ("email-3", "Recieve a code by email"),
-            ("sms-3", "Recieve a code by text message"),
+            ("email-3", "Receive a code by email"),
+            ("sms-3", "Receive a code by text message"),
             ("new_key-3", "Add a new security key"),
         ]
 
