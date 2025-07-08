@@ -5,11 +5,11 @@
     <div class="heading-large">Radios component examples</div>
     <hr />   
     <h2 class="heading-medium">Basic</h2>
-    {{ radios(form1.auth_method) }}
+    {{ radios(form1.auth_method1) }}
 
     <h2 class="heading-medium">With borders</h2>
-    {{ radios(form2.auth_method, bordered=true) }}
+    {{ radios(form2.auth_method2, bordered=true) }}
 
     <h2 class="heading-medium">With badges</h2>
-    {{ radios(form3.auth_method, badge_options={'email-3': ['Verified', 'success'], 'sms-3': ['Unverified', 'default']}, bordered=true) }}
+    {{ radios(form3.auth_method3, badge_options={'email-3': ['Verified', 'success'], 'sms-3': ['Unverified', 'default']}, bordered=true) }}
 {% endblock %}
