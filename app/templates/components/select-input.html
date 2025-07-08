@@ -72,7 +72,7 @@
     <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
     {% else %}
       {% set border_class = ' border-b-1 border-gray-200' if bordered else '' %}
-      <div class="multiple-choice w-3/4 {{ border_class }}{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
+      <div class="multiple-choice{{ ' w-3/4' if bordered else '' }}{{ border_class }}{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
       {% endif %}
       <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if testid %} data-testid="{{ testid }}" {% endif %} {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
         <label class="block-label w-full" for="{{ option.id }}">
