@@ -1,0 +1,26 @@
+{% from "components/badge.html" import badge %}
+
+{% block maincolumn_content %}
+    
+    <div class="heading-large">Badge component examples</div>
+
+    <hr />
+    <p>Variants:</p>
+    <div class="space-x-4">
+        {{ badge('Success', 'success') }}
+        {{ badge('Default', 'default') }}
+        {{ badge('Custom', 'success', bg_class='bg-blue-300') }}
+        {{ badge('Sent', 'default', icon_override='fa-paper-plane') }}
+    </div>
+
+    <h2 class="mt-8">Usage</h2>
+    <pre>
+    <code>
+    {% raw %}{{ badge('Success', 'success') }}
+    {{ badge('Default', 'default') }}
+    {{ badge('Custom', 'success', bg_class='bg-blue-300') }}
+    {{ badge('Sent', 'default', icon_override='fa-paper-plane') }}
+    {% endraw %}
+    </code>
+</pre>
+{% endblock %}
