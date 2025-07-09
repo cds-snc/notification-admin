@@ -384,8 +384,8 @@ def user_profile_disable_platform_admin_view():
 def user_profile_2fa():
     if current_app.config["FF_AUTH_V2"]:
         data = [
-            ("email", _("Recieve a code by email")),
-            ("sms", _("Recieve a code by text message")),
+            ("email", _("Receive a code by email")),
+            ("sms", _("Receive a code by text message")),
             ("new_key", _("Add a new security key")),
             # todo: add options for existing security keys
         ]
