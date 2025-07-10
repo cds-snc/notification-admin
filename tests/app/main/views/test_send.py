@@ -3798,7 +3798,7 @@ def test_send_test_redirects_to_user_profile_if_no_mobile_and_ff_on(
 
     assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
     with client_request.session_transaction() as session:
-        assert session["from_send_page"] is True
+        assert session["from_send_page"] == "send_test"
         assert session["send_page_service_id"] == service_id
         assert session["send_page_template_id"] == template_id
 
