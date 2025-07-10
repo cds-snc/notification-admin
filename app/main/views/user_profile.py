@@ -19,8 +19,8 @@ from notifications_utils.url_safe_token import check_token
 from app import user_api_client
 from app.main import main
 from app.main.forms import (
+    AuthMethodForm,
     ChangeEmailForm,
-    ChangeMobileNumberForm,
     ChangeMobileNumberFormOptional,
     ChangeNameForm,
     ChangePasswordForm,
@@ -127,13 +127,10 @@ def user_profile_email_confirm(token):
 def user_profile_mobile_number():
     from_send_page = False
 
-    if current_app.config["FF_OPTIONAL_PHONE"]:
-        form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
+    form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
-        # determine if we are coming from the send page
-        from_send_page = session.get("from_send_page", False)
-    else:
-        form = ChangeMobileNumberForm(mobile_number=current_user.mobile_number)
+    # determine if we are coming from the send page
+    from_send_page = session.get("from_send_page", False)
 
     if request.method == "POST":
         # get button presses
@@ -380,3 +377,57 @@ def user_profile_disable_platform_admin_view():
         return redirect(url_for(".user_profile"))
 
     return render_template("views/user-profile/disable-platform-admin-view.html", form=form)
+
+
+@main.route("/user-profile/2fa", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_2fa():
+    if current_app.config["FF_AUTH_V2"]:
+        data = [
+            ("email", _("Receive a code by email")),
+            ("sms", _("Receive a code by text message")),
+            ("new_key", _("Add a new security key")),
+            # todo: add options for existing security keys
+        ]
+        hints = {
+            "email": current_user.email_address,
+            "sms": current_user.mobile_number,
+            "new_key": _(
+                "Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key."
+            ),
+        }
+        if current_user.auth_type == "email_auth":
+            current_auth_method = "email"
+        elif current_user.auth_type == "sms_auth":
+            current_auth_method = "sms"
+        else:
+            # todo: add a case for security keys
+            current_auth_method = "email"
+        form = AuthMethodForm(all_auth_methods=data, current_auth_method=current_auth_method)
+
+        if request.method == "POST" and form.validate_on_submit():
+            # Update user's auth type based on selected 2FA method
+            new_auth_type = form.auth_method.data
+            if new_auth_type == "email":
+                auth_type = "email_auth"
+            elif new_auth_type == "sms":
+                auth_type = "sms_auth"
+            elif new_auth_type == "new_key":
+                # Redirect to add a new security key
+                return redirect(url_for(".user_profile_add_security_keys"))
+            # todo: add a case for existing security keys
+            else:
+                # Default to email auth if something unexpected is selected
+                auth_type = "email_auth"
+
+            # Update the user's authentication type
+            current_user.update(auth_type=auth_type)
+
+            # Flash a success message
+            flash(_("Two-factor authentication method updated"), "default_with_tick")
+
+            # Redirect back to user profile
+            return redirect(url_for(".user_profile"))
+
+        return render_template("views/user-profile/2fa.html", form=form, hints=hints)
+    return redirect(url_for(".user_profile"))

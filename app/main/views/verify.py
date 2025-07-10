@@ -3,6 +3,7 @@ import json
 from flask import abort, current_app, flash, redirect, render_template, session, url_for
 from flask_babel import _
 from itsdangerous import SignatureExpired
+from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
@@ -59,8 +60,11 @@ def verify_email(token):
     if not user.mobile_number:
         return activate_user(user.id)
 
-    user.send_verify_code()
-    return redirect(url_for("main.verify"))
+    if current_app.config["FF_AUTH_V2"]:
+        return activate_user(user.id)
+    else:
+        user.send_verify_code()
+        return redirect(url_for("main.verify"))
 
 
 def activate_user(user_id):
@@ -90,5 +94,12 @@ def _add_invited_user_to_service(invited_user):
     invitation = InvitedUser(invited_user)
     user = User.from_id(session["user_id"])
     service_id = invited_user["service"]
-    user_api_client.add_user_to_service(service_id, user.id, invitation.permissions, invitation.folder_permissions)
-    return service_id
+    try:
+        user_api_client.add_user_to_service(service_id, user.id, invitation.permissions, invitation.folder_permissions)
+        return service_id
+    except HTTPError as e:
+        if e.status_code == 409:
+            flash(_("You've already been added to this service."), "default_with_tick")
+            return service_id
+        else:
+            raise e

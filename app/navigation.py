@@ -104,9 +104,9 @@ class Navigation:
         from app.utils import documentation_url
 
         return {
-            "home": {"label": _l("Home"), "url": gca_url_for("home")},
-            "why-notify": {"label": _l("Why GC Notify"), "url": gca_url_for("whynotify")},
-            "features": {"label": _l("Features"), "url": gca_url_for("features")},
+            "home": {"label": _l("Home"), "url": gca_url_for(_l("home"))},
+            "why-notify": {"label": _l("By and for the GC"), "url": gca_url_for(_l("why-gc-notify"))},
+            "features": {"label": _l("Features"), "url": gca_url_for(_l("features"))},
             "documentation": {"label": _l("API documentation"), "url": documentation_url()},
             "guidance": {"label": _l("Guidance"), "url": gca_url_for("guidance")},
             "contact": {"label": _l("Contact us"), "view": "contact"},

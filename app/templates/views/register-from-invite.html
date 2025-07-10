@@ -18,19 +18,10 @@
     </p>
     {% call form_wrapper() %}
       {{ textbox(form.name, width='w-full md:w-3/4') }}
-      {% if config["FF_OPTIONAL_PHONE"] %}
-        {% set txt = _('We’ll send you a security code by text message') %}
-        <div class="extra-tracking">
-          {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt, autocomplete='tel') }}
-        </div>
-      {% else %}
-        {% if invited_user.auth_type == 'sms_auth' %}
-          {% set txt = _('We’ll send you a security code by text message') %}
-          <div class="extra-tracking">
-            {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt, autocomplete='tel') }}
-          </div>
-        {% endif %}
-      {% endif %}
+      {% set txt = _('A work number where we can reach you') %}
+      <div class="extra-tracking">
+        {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt, autocomplete='tel') }}
+      </div>
       {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
       {% set txt = _('Continue') %}

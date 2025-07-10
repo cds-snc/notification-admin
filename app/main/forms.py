@@ -406,26 +406,6 @@ class RegisterUserFormOptional(StripWhitespaceForm):
             raise ValidationError(_l("Read and agree to continue"))
 
 
-# TODO: remove this class when FF_OPTIONAL_PHONE is removed
-class RegisterUserFromInviteForm(RegisterUserForm):
-    def __init__(self, invited_user):
-        super().__init__(
-            service=invited_user.service,
-            email_address=invited_user.email_address,
-            auth_type=invited_user.auth_type,
-            name=guess_name_from_email_address(invited_user.email_address),
-        )
-
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"), validators=[])
-    service = HiddenField("service")
-    email_address = HiddenField("email_address")
-    auth_type = HiddenField("auth_type", validators=[DataRequired()])
-
-    def validate_mobile_number(self, field):
-        if self.auth_type.data == "sms_auth" and not field.data:
-            raise ValidationError(_l("This cannot be empty"))
-
-
 class RegisterUserFromInviteFormOptional(RegisterUserForm):
     def __init__(self, invited_user):
         super().__init__(
@@ -543,7 +523,7 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    two_factor_code = TwoFactorCode(_l("Please enter the security code."))
+    two_factor_code = TwoFactorCode(_l("Enter code"))
 
     def validate(self, extra_validators=None):
         if not self.two_factor_code.validate(self):
@@ -2128,3 +2108,14 @@ class TemplateCategoryForm(StripWhitespaceForm):
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
+
+
+class AuthMethodForm(StripWhitespaceForm):
+    auth_method = RadioField(
+        _l("Select your two-step verification method"),
+    )
+
+    def __init__(self, all_auth_methods, current_auth_method):
+        super().__init__(auth_method=current_auth_method)
+
+        self.auth_method.choices = all_auth_methods

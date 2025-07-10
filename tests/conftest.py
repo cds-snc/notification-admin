@@ -2370,6 +2370,22 @@ def mock_get_job_in_progress(mocker, api_user_active):
 
 
 @pytest.fixture(scope="function")
+def mock_get_job_sent_outside_retention_period(mocker, api_user_active):
+    def _get_job(service_id, job_id):
+        return {
+            "data": job_json(
+                service_id,
+                api_user_active,
+                job_id=job_id,
+                job_status="finished",
+                archived=True,
+            )
+        }
+
+    return mocker.patch("app.job_api_client.get_job", side_effect=_get_job)
+
+
+@pytest.fixture(scope="function")
 def mock_has_jobs(mocker):
     mocker.patch("app.job_api_client.has_jobs", return_value=True)
 
@@ -2413,6 +2429,7 @@ def mock_get_jobs(mocker, api_user_active):
             },
         }
 
+    mocker.patch("app.job_api_client.has_jobs", return_value=True)
     return mocker.patch("app.job_api_client.get_jobs", side_effect=_get_jobs)
 
 

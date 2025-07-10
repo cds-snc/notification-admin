@@ -1,4 +1,6 @@
-from flask import abort, current_app, flash, redirect, render_template, session, url_for
+from urllib.error import HTTPError
+
+from flask import abort, current_app, flash, redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user
 from markupsafe import Markup
@@ -12,10 +14,17 @@ from app.notify_client import InviteTokenError
 
 @main.route("/invitation/<token>")
 def accept_invite(token):
+    # For HEAD requests, just return a 200 OK without processing the invitation
+    if request.method == "HEAD":
+        return "", 200
     try:
         invited_user = InvitedUser.from_token(token)
     except InviteTokenError as exception:
         flash(_(str(exception)))
+        return redirect(url_for("main.sign_in"))
+    except Exception as e:
+        current_app.logger.warning(f"Error accepting invite: {e}")
+        flash(_("There was a problem adding you to this service. Try the link again."), "error")
         return redirect(url_for("main.sign_in"))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
@@ -41,6 +50,7 @@ def accept_invite(token):
 
     if invited_user.status == "accepted":
         session.pop("invited_user", None)
+        flash(_("You've already been added to this service."), "default_with_tick")
         return redirect(url_for("main.service_dashboard", service_id=invited_user.service))
 
     session["invited_user"] = invited_user.serialize()
@@ -62,12 +72,22 @@ def accept_invite(token):
                 # we want them to start sending emails. it's always valid, so lets always update
                 invited_user.auth_type == "email_auth"
             ):
-                existing_user.update(auth_type=invited_user.auth_type)
-            existing_user.add_to_service(
-                service_id=invited_user.service,
-                permissions=invited_user.permissions,
-                folder_permissions=invited_user.folder_permissions,
-            )
+                try:
+                    existing_user.update(auth_type=invited_user.auth_type)
+                except Exception as e:
+                    current_app.logger.info(f"[UPDATE_EXISTING_USER]: Error on `existing_user.update()`: {e}")
+            try:
+                existing_user.add_to_service(
+                    service_id=invited_user.service,
+                    permissions=invited_user.permissions,
+                    folder_permissions=invited_user.folder_permissions,
+                )
+            except HTTPError as e:
+                if e.status_code == 409:
+                    flash(_("You've already been added to this service."), "default_with_tick")
+                else:
+                    flash(_("There was a problem adding you to this service. Try the link again."), "error")
+
             return redirect(url_for("main.service_dashboard", service_id=service.id))
     else:
         return redirect(url_for("main.register_from_invite"))

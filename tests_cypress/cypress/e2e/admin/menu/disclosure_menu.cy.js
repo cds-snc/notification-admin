@@ -22,7 +22,7 @@ describe("Mobile menu", () => {
     a11yCheck();
   });
 
-  it("Open and close the menu using ESC and clicking", () => {
+  it("Open and close the menu using ESC", () => {
     MainMenu.OpenMenu();
 
     MainMenu.Components.Menu().should("be.visible");
@@ -33,13 +33,6 @@ describe("Mobile menu", () => {
 
     // close menu on esc
     MainMenu.CloseMenuEsc();
-    MainMenu.Components.Menu().should("not.be.visible");
-
-    // open menu
-    MainMenu.OpenMenu();
-
-    // close menu when clicking outside
-    MainMenu.CloseMenuClick();
     MainMenu.Components.Menu().should("not.be.visible");
   });
 

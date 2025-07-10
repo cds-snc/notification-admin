@@ -1,11 +1,12 @@
 {% from "components/textbox.html" import textbox %}
+{% from "components/badge.html" import badge %}
 
-{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}, is_page_heading=False, use_aria_labelledby=True, testid=None) %}
+{% macro select(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", option_conditionals={}, is_page_heading=False, use_aria_labelledby=True, testid=None, badge_options=None, bordered=None) %}
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input, is_page_heading, use_aria_labelledby, testid
   ) %}
   {% for option in field %}
-    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data) }}
+    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data, badge_options=badge_options, bordered=bordered) }}
   {% endfor %}
   {% endcall %}
 {% endmacro %}
@@ -65,16 +66,20 @@
     </fieldset>
   </div>
 {% endmacro %}
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None) %}
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None, badge_options=None, bordered=None) %}
   {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
     <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
     {% else %}
-      <div class="multiple-choice{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
+      {% set border_class = ' border-b-1 border-gray-200' if bordered else '' %}
+      <div class="multiple-choice{{ ' w-3/4' if bordered else '' }}{{ border_class }}{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
       {% endif %}
       <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if testid %} data-testid="{{ testid }}" {% endif %} {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
-        <label class="block-label" for="{{ option.id }}">
+        <label class="block-label w-full" for="{{ option.id }}">
           {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
+          {% if badge_options and badge_options[option.data] %}
+            {{ badge(badge_options[option.data][0], badge_options[option.data][1], extra_class="float-right") }}
+          {% endif %}
           {% if '||' in option.label.text %}
             <span id="{{ option.id }}-img">
               <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}">
