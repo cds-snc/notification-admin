@@ -37,6 +37,7 @@ NEW_EMAIL = "new-email"
 NEW_MOBILE = "new-mob"
 NEW_MOBILE_PASSWORD_CONFIRMED = "new-mob-password-confirmed"
 SEND_PAGE_CONTEXT_FLAGS = ["from_send_page", "send_page_service_id", "send_page_template_id"]
+HAS_AUTHENTICATED = "has_authenticated"
 
 
 @main.route("/user-profile")
@@ -45,6 +46,9 @@ def user_profile():
     # Clear any flags that were set for the send page
     for flag in SEND_PAGE_CONTEXT_FLAGS:
         session.pop(flag, None)
+
+    # revoke their additional authentication when they return to this page
+    session.pop(HAS_AUTHENTICATED, None)
 
     num_keys = len(current_user.security_keys)
     return render_template(
@@ -238,9 +242,14 @@ def user_profile_mobile_number_confirm():
         template_id = session.pop("send_page_template_id", None)
 
         # Redirect based on where the user came from
-        if from_send_page and service_id and template_id:
+        if from_send_page:
             # Redirect back to the send test page
-            return redirect(url_for(".send_test", service_id=service_id, template_id=template_id))
+            if from_send_page == "send_test" and service_id and template_id:
+                return redirect(url_for(".send_test", service_id=service_id, template_id=template_id))
+            if from_send_page == "user_profile_2fa":
+                # Redirect back to the 2FA page if they were setting up 2FA
+                return redirect(url_for(".user_profile_2fa"))
+
         else:
             # Default redirect to user profile
             return redirect(url_for(".user_profile"))
@@ -383,6 +392,9 @@ def user_profile_disable_platform_admin_view():
 @user_is_logged_in
 def user_profile_2fa():
     if current_app.config["FF_AUTH_V2"]:
+        # IF they have not authenticated yet, do it now
+        if not session.get(HAS_AUTHENTICATED):
+            return redirect(url_for(".user_profile_2fa_authenticate"))
         data = [
             ("email", _("Receive a code by email")),
             ("sms", _("Receive a code by text message")),
@@ -399,12 +411,12 @@ def user_profile_2fa():
             ),
         }
         badge_options = {
-            "email": ["Verified", "success"],
+            "email": [_("Verified"), "success"],
             "sms": None
             if current_user.mobile_number is None
-            else ["Not verified", "default"]
+            else [_("Not verified"), "default"]
             if not current_user.verified_phonenumber
-            else ["Verified", "success"],
+            else [_("Verified"), "success"],
             "new_key": None,
         }
 
@@ -432,14 +444,42 @@ def user_profile_2fa():
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
 
+            # If the user is switching to SMS, ensure they have a mobile number
+            if auth_type == "sms_auth" and not current_user.mobile_number:
+                flash(_("You must add a mobile number to your profile to use this option."), "error")
+                session["from_send_page"] = "user_profile_2fa"
+                return redirect(url_for(".user_profile_mobile_number"))
+
             # Update the user's authentication type
             current_user.update(auth_type=auth_type)
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
 
-            # Redirect back to user profile
+            # Redirect back to user profile and revoke their additional authentication
+            session.pop(HAS_AUTHENTICATED, None)
             return redirect(url_for(".user_profile"))
 
         return render_template("views/user-profile/2fa.html", form=form, hints=hints, badge_options=badge_options)
     return redirect(url_for(".user_profile"))
+
+
+@main.route("/user-profile/2fa/authenticate", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_2fa_authenticate():
+    # Validate password for form
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+
+    if form.validate_on_submit():
+        session[HAS_AUTHENTICATED] = True
+        return redirect(url_for(".user_profile_2fa"))
+
+    return render_template(
+        "views/user-profile/authenticate.html",
+        thing=_("email address"),
+        form=form,
+        back_link=url_for(".user_profile_email"),
+    )
