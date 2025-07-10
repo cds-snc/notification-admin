@@ -14,6 +14,7 @@ from tests.conftest import (
     TEMPLATE_ONE_ID,
     captured_templates,
     create_api_user_active,
+    set_config,
     url_for_endpoint_with_token,
 )
 
@@ -643,3 +644,218 @@ class TestOptionalPhoneNumber:
         )
         with client_request.session_transaction() as session:
             assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+
+
+def test_user_profile_shows_new_layout_when_ff_auth_v2_enabled(
+    client_request,
+    app_,
+    mock_get_security_keys,
+):
+    """Test that the new user profile layout is shown when FF_AUTH_V2 is enabled"""
+    with set_config(app_, "FF_AUTH_V2", True):
+        page = client_request.get("main.user_profile")
+
+        # Check that the page has the new structure with Security section
+        assert page.select_one("h1").text.strip() == "Your profile"
+
+        # Check for the Security heading which is only in the new layout
+        security_heading = page.find("h2", string="Security")
+        assert security_heading is not None
+        assert security_heading.text.strip() == "Security"
+
+        # Check that password field shows the new format with "Last changed" text
+        password_text = page.get_text()
+        assert "Last changed" in password_text
+
+        # Check that two-step verification method is present (new layout)
+        assert "Two-step verification method" in password_text
+
+
+def test_user_profile_shows_old_layout_when_ff_auth_v2_disabled(
+    client_request,
+    app_,
+    mock_get_security_keys,
+):
+    """Test that the old user profile layout is shown when FF_AUTH_V2 is disabled"""
+    with set_config(app_, "FF_AUTH_V2", False):
+        page = client_request.get("main.user_profile")
+
+        # Check that the page has the basic structure
+        assert page.select_one("h1").text.strip() == "Your profile"
+
+        # Check that there is NO Security heading (old layout doesn't have it)
+        security_heading = page.find("h2", string="Security")
+        assert security_heading is None
+
+        # Check that Security keys field is present (old layout)
+        page_text = page.get_text()
+        assert "Security keys" in page_text
+
+        # Check that two-step verification method is NOT present (old layout)
+        assert "Two-step verification method" not in page_text
+
+        # Check that mobile number field uses the old label
+        assert "Mobile number" in page_text
+
+
+# Tests for user_profile_2fa function
+class TestUserProfile2FA:
+    """Test cases for the user_profile_2fa function"""
+
+    def test_user_profile_2fa_redirects_to_user_profile_when_ff_auth_v2_disabled(
+        self,
+        client_request,
+        app_,
+        mock_get_security_keys,
+    ):
+        """Test that user_profile_2fa redirects to user_profile when FF_AUTH_V2 is disabled"""
+        with set_config(app_, "FF_AUTH_V2", False):
+            client_request.get(
+                "main.user_profile_2fa",
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile"),
+            )
+
+    def test_user_profile_2fa_shows_form_when_ff_auth_v2_enabled(
+        self,
+        client_request,
+        app_,
+        mock_get_security_keys,
+    ):
+        """Test that user_profile_2fa shows the 2FA form when FF_AUTH_V2 is enabled"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            page = client_request.get("main.user_profile_2fa")
+
+            # Check that the page renders the 2FA form
+            assert page.select_one("h1").text.strip() == "Two-step verification method"
+            assert "Select your two-step verification method" in page.text
+
+            # Check that all auth method options are present
+            assert "Receive a code by email" in page.text
+            assert "Receive a code by text message" in page.text
+            assert "Add a new security key" in page.text
+
+    def test_user_profile_2fa_post_updates_auth_type_to_email(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa updates auth_type to email_auth"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            client_request.post(
+                "main.user_profile_2fa",
+                _data={"auth_method": "email"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile"),
+            )
+
+            # Check that update was called with email_auth
+            mock_update_user_attribute.assert_called_once_with(current_user.id, auth_type="email_auth")
+
+    def test_user_profile_2fa_post_updates_auth_type_to_sms(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa updates auth_type to sms_auth"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            client_request.post(
+                "main.user_profile_2fa",
+                _data={"auth_method": "sms"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile"),
+            )
+
+            # Check that update was called with sms_auth
+            mock_update_user_attribute.assert_called_once_with(current_user.id, auth_type="sms_auth")
+
+    def test_user_profile_2fa_post_redirects_to_add_security_key_for_new_key(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa redirects to add security key page when new_key is selected"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            client_request.post(
+                "main.user_profile_2fa",
+                _data={"auth_method": "new_key"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile_add_security_keys"),
+            )
+
+            # Check that update was not called for new_key option
+            mock_update_user_attribute.assert_not_called()
+
+    def test_user_profile_2fa_post_with_missing_data_shows_form_again(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa with missing data uses current default and redirects"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            # Empty data will use the current auth method as default, so it should succeed
+            client_request.post(
+                "main.user_profile_2fa",
+                _data={},  # Empty data will use current user's auth method
+                _expected_status=302,  # Should redirect after successful update
+                _expected_redirect=url_for("main.user_profile"),
+            )
+
+            # Check that update was called with current user's auth type (sms_auth)
+            mock_update_user_attribute.assert_called_once_with(current_user.id, auth_type="sms_auth")
+
+    def test_user_profile_2fa_post_shows_success_message(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa shows success flash message"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            # Make request and follow redirect to see flash message
+            client_request.post(
+                "main.user_profile_2fa",
+                _data={"auth_method": "email"},
+                _expected_status=302,
+                _expected_redirect=url_for("main.user_profile"),
+            )
+
+            # Check that flash message is set
+            with client_request.session_transaction() as session:
+                flashes = session.get("_flashes", [])
+                assert len(flashes) == 1
+                assert flashes[0][0] == "default_with_tick"
+                assert "Two-factor authentication method updated" in flashes[0][1]
+
+    def test_user_profile_2fa_post_with_invalid_form_data_shows_form_again(
+        self,
+        client_request,
+        app_,
+        mock_update_user_attribute,
+        mock_get_security_keys,
+    ):
+        """Test that POST to user_profile_2fa with invalid form data shows form again"""
+        with set_config(app_, "FF_AUTH_V2", True):
+            page = client_request.post(
+                "main.user_profile_2fa",
+                _data={"auth_method": "invalid_choice"},  # Invalid choice should fail validation
+                _expected_status=200,
+            )
+
+            # Check that form is displayed again
+            assert "Select your two-step verification method" in page.text
+            assert "Receive a code by email" in page.text
+            assert "Receive a code by text message" in page.text
+            assert "Add a new security key" in page.text
+
+            # Check that update was not called due to validation failure
+            mock_update_user_attribute.assert_not_called()
