@@ -79,11 +79,11 @@ module.exports = {
       xxl: "3.25rem",
     },
     screens: {
-      xs: "320px",
-      smaller: "375px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
+      xs: "20rem",
+      smaller: "23.5rem",
+      sm: "30rem",
+      md: "48rem",
+      lg: "71.25rem",
     },
     spacing: {
       0: "0rem",
