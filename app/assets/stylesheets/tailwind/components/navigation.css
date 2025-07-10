@@ -136,7 +136,7 @@
   }
   .nav-menu-item[data-module="menu"][aria-expanded="true"],
   .nav-menu-item[data-module="more-menu"][aria-expanded="true"] {
-    @apply border-black/70;
+    @apply border-gray-300;
   }
 
   .menu-divider {
