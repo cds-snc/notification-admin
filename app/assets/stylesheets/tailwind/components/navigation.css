@@ -132,11 +132,11 @@
   }
 
   .nav-menu-item {
-    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-bold no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue focus:border-b-4 focus:bg-yellow focus:border-yellow focus:outline-none hover:border-gray-300;
+    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 px-0 font-bold no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue focus:border-b-4 focus:bg-yellow focus:border-yellow focus:outline-none hover:border-gray-300;
   }
   .nav-menu-item[data-module="menu"][aria-expanded="true"],
   .nav-menu-item[data-module="more-menu"][aria-expanded="true"] {
-    @apply border-gray-700;
+    @apply border-black/70;
   }
 
   .menu-divider {

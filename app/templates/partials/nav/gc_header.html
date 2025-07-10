@@ -2,17 +2,15 @@
 
 <div class="container px-gutterHalf">
   <!-- start sub nav -->
-  <div class="pt-5 lg:justify-between grid md:grid-cols-2">
-    <div>
+  <div class="pt-5 lg:justify-between flex flex-wrap items-center gap-gutterHalf">
       <img
           alt="{{ _('Government of Canada') }}"
           width="250"
-          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2 mr-auto"
           src="{{ asset_s3_url(_('gov-canada-en.svg')) }}"
         />
-    </div>
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
-         class="flex">
+         class="flex self-justify-end w-full sm:w-max max-sm:border-t-1 border-gray-300">
       <ul class="flex gap-gutterHalf w-full justify-end">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu.html' %}
@@ -32,7 +30,7 @@
       </ul>
     </nav>
   </div>
-  <div class="pt-5 pb-6">
+  <div class="py-gutterHalf">
       <a href="/" class="py-1 min-h-target inline-flex items-center no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
