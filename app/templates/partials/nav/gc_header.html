@@ -23,7 +23,7 @@
         {% endif %}
         {% set set_lang_url = lang_url or request.path %}
         <li>
-            <a href="{{ url_for('main.set_lang') ~ '?from=' ~ set_lang_url }}" lang="{{_('fr-CA')}}" class="nav-menu-item">
+            <a id="header-lang" href="{{ url_for('main.set_lang') ~ '?from=' ~ set_lang_url }}" lang="{{_('fr-CA')}}" class="nav-menu-item">
               {{_('Français')}}
             </a>
         </li>
