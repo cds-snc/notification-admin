@@ -85,7 +85,7 @@ class Navigation:
     def get_user_nav(self):
         return {
             "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
-            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
+            "choose_account": {"label": _l("Your services"), "view": "choose_account", "id_key": "choose_account"},
         }
 
     def get_contact_nav(self):

@@ -30,7 +30,7 @@
           {# Controller in navigation.py #}
             {% if item.context or item.context is undefined %}
               <li class="flex-shrink-0">
-                {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
+                {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, id_key=item.id_key, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
               </li>
             {% endif %}
           {% endfor %}
