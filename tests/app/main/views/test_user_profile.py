@@ -731,8 +731,8 @@ class TestUserProfile2FA:
             assert "Select your two-step verification method" in page.text
 
             # Check that all auth method options are present
-            assert "Recieve a code by email" in page.text
-            assert "Recieve a code by text message" in page.text
+            assert "Receive a code by email" in page.text
+            assert "Receive a code by text message" in page.text
             assert "Add a new security key" in page.text
 
     def test_user_profile_2fa_post_updates_auth_type_to_email(
@@ -853,8 +853,8 @@ class TestUserProfile2FA:
 
             # Check that form is displayed again
             assert "Select your two-step verification method" in page.text
-            assert "Recieve a code by email" in page.text
-            assert "Recieve a code by text message" in page.text
+            assert "Receive a code by email" in page.text
+            assert "Receive a code by text message" in page.text
             assert "Add a new security key" in page.text
 
             # Check that update was not called due to validation failure

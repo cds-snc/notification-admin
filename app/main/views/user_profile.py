@@ -420,8 +420,8 @@ def user_profile_2fa():
     # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         data = [
-            ("email", _("Recieve a code by email")),
-            ("sms", _("Recieve a code by text message")),
+            ("email", _("Receive a code by email")),
+            ("sms", _("Receive a code by text message")),
             ("new_key", _("Add a new security key")),
             # todo: add options for existing security keys
         ]

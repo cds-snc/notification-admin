@@ -182,6 +182,7 @@ module.exports = {
         hover: "#00692f",
         border: "#003618",
         green: "#006435",
+        100: "#8CF39C",
         300: "#29A35A",
       },
       black: "#000",
