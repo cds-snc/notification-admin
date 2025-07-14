@@ -906,3 +906,29 @@ class TestUserProfile2FA:
 
             # Check that update was not called due to validation failure
             mock_update_user_attribute.assert_not_called()
+
+
+class TestBackLinks:
+    @pytest.mark.parametrize(
+        "link",
+        [
+            ("main.user_profile_name"),
+            ("main.user_profile_email"),
+            ("main.user_profile_mobile_number"),
+            ("main.user_profile_password"),
+            ("main.user_profile_2fa"),
+            ("main.user_profile_security_keys"),
+            ("main.user_profile_disable_platform_admin_view"),
+        ],
+    )
+    def test_back_links_navigate_to_user_profile(self, client_request, link, mock_get_security_keys, platform_admin_user):
+        """Test that the back link on each page navigates back to /user-profile, following redirects"""
+        expected_redirect = "main.user_profile"
+
+        if link == "main.user_profile_disable_platform_admin_view":
+            client_request.login(platform_admin_user)
+
+        page = client_request.get(link, _follow_redirects=True)
+        back_link = page.select_one("a.back-link")
+        assert back_link is not None, f"Back link not found on page {link}"
+        assert back_link["href"] == url_for(expected_redirect), f"Back link on {link} does not navigate to {expected_redirect}"
