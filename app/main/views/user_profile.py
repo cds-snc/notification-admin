@@ -481,5 +481,5 @@ def user_profile_2fa_authenticate():
         "views/user-profile/authenticate.html",
         thing=_("email address"),
         form=form,
-        back_link=url_for(".user_profile_email"),
+        back_link=url_for(".user_profile"),
     )
