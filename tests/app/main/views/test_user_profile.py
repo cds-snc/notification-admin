@@ -921,14 +921,18 @@ class TestBackLinks:
             ("main.user_profile_disable_platform_admin_view"),
         ],
     )
-    def test_back_links_navigate_to_user_profile(self, client_request, link, mock_get_security_keys, platform_admin_user):
+    def test_back_links_navigate_to_user_profile(self, client_request, link, mock_get_security_keys, platform_admin_user, app_):
         """Test that the back link on each page navigates back to /user-profile, following redirects"""
-        expected_redirect = "main.user_profile"
 
-        if link == "main.user_profile_disable_platform_admin_view":
-            client_request.login(platform_admin_user)
+        with set_config(app_, "FF_AUTH_V2", True):
+            expected_redirect = "main.user_profile"
 
-        page = client_request.get(link, _follow_redirects=True)
-        back_link = page.select_one("a.back-link")
-        assert back_link is not None, f"Back link not found on page {link}"
-        assert back_link["href"] == url_for(expected_redirect), f"Back link on {link} does not navigate to {expected_redirect}"
+            if link == "main.user_profile_disable_platform_admin_view":
+                client_request.login(platform_admin_user)
+
+            page = client_request.get(link, _follow_redirects=True)
+            back_link = page.select_one("a.back-link")
+            assert back_link is not None, f"Back link not found on page {link}"
+            assert back_link["href"] == url_for(
+                expected_redirect
+            ), f"Back link on {link} does not navigate to {expected_redirect}"
