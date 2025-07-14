@@ -5,7 +5,7 @@ from flask import Flask, render_template_string
 @pytest.fixture
 def app():
     """Create a Flask app with proper template configuration"""
-    app = Flask(__name__, template_folder="/workspace/app/templates")
+    app = Flask("app")
     return app
 
 
