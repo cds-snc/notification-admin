@@ -46,6 +46,7 @@ from werkzeug.datastructures import MultiDict
 from werkzeug.routing import RequestRedirect
 
 from app import cache
+from app.extensions import redis_client
 from app.models.enum.template_types import TemplateType
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
@@ -930,3 +931,28 @@ def get_verified_ses_domains():
     ]
 
     return domains
+
+
+def _get_testing_value(user_id, key_prefix):
+    """Get testing value for development environment only"""
+    if current_app.config["NOTIFY_ENVIRONMENT"] != "development":
+        return None
+
+    if "notification.canada.ca" in request.host:
+        return None
+
+    redis_value = redis_client.get(f"{key_prefix}_{user_id}")
+    if not redis_value:
+        return None
+
+    return redis_value.decode("utf-8")
+
+
+def _get_2fa_code_for_testing(user_id):
+    """Get 2FA code for testing in development environment only"""
+    return _get_testing_value(user_id, "verify_code")
+
+
+def _get_verify_url_for_testing(user_id):
+    """Get verify URL for testing in development environment only"""
+    return _get_testing_value(user_id, "verify_url")
