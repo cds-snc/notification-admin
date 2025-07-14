@@ -192,9 +192,10 @@ def user_profile_mobile_number_authenticate():
         return redirect(url_for(".user_profile_mobile_number"))
 
     if form.validate_on_submit():
-        # if they are removing their phone number, skip the verification, set auth type to email
+        # if they are removing their phone number, skip verification, set auth type to email, and remove verified phone number flag
         if not session[NEW_MOBILE]:
             current_user.update(mobile_number=None, auth_type="email_auth")
+            current_user.update(verified_phonenumber=False)
 
             flash(_("Mobile number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
@@ -216,8 +217,8 @@ def user_profile_mobile_number_authenticate():
 @user_is_logged_in
 def user_profile_mobile_number_confirm():
     # Validate verify code for form
-    def _check_code(cde):
-        return user_api_client.check_verify_code(current_user.id, cde, "sms")
+    def _check_code(code):
+        return user_api_client.validate_2fa_method(current_user.id, code, "sms")
 
     if NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         return redirect(url_for(".user_profile_mobile_number"))
@@ -230,6 +231,7 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number)
+        current_user.update(verified_phonenumber=True)
 
         flash(_("Mobile number {} saved to your profile").format(mobile_number), "default_with_tick")
 
@@ -246,11 +248,7 @@ def user_profile_mobile_number_confirm():
             # Default redirect to user profile
             return redirect(url_for(".user_profile"))
 
-    return render_template(
-        "views/user-profile/confirm.html",
-        form_field=form.two_factor_code,
-        thing=_("mobile number"),
-    )
+    return render_template("views/user-profile/confirm.html", form=form, back_link=url_for(".user_profile_mobile_number"))
 
 
 @main.route("/user-profile/mobile-number/resend", methods=["GET", "POST"])
@@ -390,7 +388,7 @@ def verify_mobile_number():
     allows them to confirm it.
 
     """
-    if not current_user.mobile_number:
+    if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         flash(_("You do not have a mobile number set."), "error")
         return redirect(url_for(".user_profile_2fa"))
 
@@ -408,9 +406,11 @@ def verify_mobile_number():
         current_user.send_verify_code(to=current_user.mobile_number)
 
     return render_template(
-        "views/user-profile/verify-mobile-number.html",
+        "views/user-profile/confirm.html",
         form=form,
-        back_link=url_for(".user_profile_2fa"),
+        back_link=url_for(".user_profile_2fa")
+        if NEW_MOBILE_PASSWORD_CONFIRMED not in session
+        else url_for(".user_profile_mobile_number"),
     )
 
 
