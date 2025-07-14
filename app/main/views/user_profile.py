@@ -30,7 +30,7 @@ from app.main.forms import (
     TwoFactorForm,
 )
 from app.models.user import User
-from app.utils import user_is_gov_user, user_is_logged_in
+from app.utils import _get_2fa_code_for_testing, _get_verify_url_for_testing, user_is_gov_user, user_is_logged_in
 
 # Session keys
 NEW_EMAIL = "new-email"
@@ -96,7 +96,8 @@ def user_profile_email_authenticate():
 
     if form.validate_on_submit():
         user_api_client.send_change_email_verification(current_user.id, session[NEW_EMAIL])
-        return render_template("views/change-email-continue.html", new_email=session[NEW_EMAIL])
+        verify_url = _get_verify_url_for_testing(current_user.id)
+        return render_template("views/change-email-continue.html", new_email=session[NEW_EMAIL], verify_url=verify_url)
 
     return render_template(
         "views/user-profile/authenticate.html",
@@ -245,11 +246,9 @@ def user_profile_mobile_number_confirm():
             # Default redirect to user profile
             return redirect(url_for(".user_profile"))
 
-    return render_template(
-        "views/user-profile/confirm.html",
-        form_field=form.two_factor_code,
-        thing=_("mobile number"),
-    )
+    code = _get_2fa_code_for_testing(current_user.id)
+
+    return render_template("views/user-profile/confirm.html", form_field=form.two_factor_code, thing=_("mobile number"), key=code)
 
 
 @main.route("/user-profile/mobile-number/resend", methods=["GET", "POST"])
