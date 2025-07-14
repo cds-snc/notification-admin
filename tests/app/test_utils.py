@@ -852,3 +852,88 @@ class TestGetSESDomains:
 
             # Assert
             assert result == []
+
+
+class Test2FACodesForE2ETests:
+    def test_get_2fa_code_for_testing_returns_none_when_not_development(self, client, mocker):
+        """Test that _get_2fa_code_for_testing returns None when not in development environment"""
+        from app.utils import _get_2fa_code_for_testing
+
+        # Mock the current_app config to not be development
+        mock_config = {"NOTIFY_ENVIRONMENT": "production"}
+        mocker.patch("app.utils.current_app.config", mock_config)
+
+        # Mock redis_client to ensure we don't hit it
+        mock_redis = mocker.patch("app.utils.redis_client")
+
+        result = _get_2fa_code_for_testing("test-user-id")
+
+        assert result is None
+        # Verify redis was never called
+        mock_redis.get.assert_not_called()
+
+    def test_get_2fa_code_for_testing_returns_none_when_notify_domain(self, client, mocker):
+        """Test that _get_2fa_code_for_testing returns None when on notification.canada.ca domain"""
+        from app.utils import _get_2fa_code_for_testing
+
+        # Mock the current_app config to be development
+        mock_config = {"NOTIFY_ENVIRONMENT": "development"}
+        mocker.patch("app.utils.current_app.config", mock_config)
+
+        # Mock request to have notification.canada.ca in host
+        mock_request = mocker.patch("app.utils.request")
+        mock_request.host = "notification.canada.ca"
+
+        # Mock redis_client to ensure we don't hit it
+        mock_redis = mocker.patch("app.utils.redis_client")
+
+        result = _get_2fa_code_for_testing("test-user-id")
+
+        assert result is None
+        # Verify redis was never called
+        mock_redis.get.assert_not_called()
+
+    def test_get_2fa_code_for_testing_returns_none_when_no_redis_value(self, client, mocker):
+        """Test that _get_2fa_code_for_testing returns None when no redis value exists"""
+        from app.utils import _get_2fa_code_for_testing
+
+        # Mock the current_app config to be development
+        mock_config = {"NOTIFY_ENVIRONMENT": "development"}
+        mocker.patch("app.utils.current_app.config", mock_config)
+
+        # Mock request to have a non-notify domain
+        mock_request = mocker.patch("app.utils.request")
+        mock_request.host = "localhost:6012"
+
+        # Mock redis_client to return None
+        mock_redis = mocker.patch("app.utils.redis_client")
+        mock_redis.get.return_value = None
+
+        result = _get_2fa_code_for_testing("test-user-id")
+
+        assert result is None
+        mock_redis.get.assert_called_once_with("verify_code_test-user-id")
+
+    def test_get_2fa_code_for_testing_returns_code_when_valid(self, client, mocker):
+        """Test that _get_2fa_code_for_testing returns the code when all conditions are met"""
+        from app.utils import _get_2fa_code_for_testing
+
+        # Mock the current_app config to be development
+        mock_config = {"NOTIFY_ENVIRONMENT": "development"}
+        mocker.patch("app.utils.current_app.config", mock_config)
+
+        # Mock request to have a non-notify domain
+        mock_request = mocker.patch("app.utils.request")
+        mock_request.host = "localhost:6012"
+
+        # Mock redis_client to return a value
+        mock_redis = mocker.patch("app.utils.redis_client")
+        mock_redis_value = mocker.MagicMock()
+        mock_redis_value.decode.return_value = "123456"
+        mock_redis.get.return_value = mock_redis_value
+
+        result = _get_2fa_code_for_testing("test-user-id")
+
+        assert result == "123456"
+        mock_redis.get.assert_called_once_with("verify_code_test-user-id")
+        mock_redis_value.decode.assert_called_once_with("utf-8")
