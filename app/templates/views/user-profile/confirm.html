@@ -3,6 +3,7 @@
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/render_test_codes_in_dev.html" import render_test_codes_in_dev  %}
 
 {% set title = _("Check your phone messages") %}
 
@@ -38,4 +39,5 @@
     </div>
   </div>
 
+  {{ render_test_codes_in_dev(key) }}
 {% endblock %}
