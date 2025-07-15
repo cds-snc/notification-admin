@@ -83,8 +83,7 @@ def test_should_show_authenticate_after_email_change(
 
     page = client_request.get("main.user_profile_email_authenticate")
 
-    assert "Confirm change" in page.text
-    assert "Confirm" in page.text
+    assert "Enter password to change profile settings" in page.text
 
 
 def test_should_render_change_email_continue_after_authenticate_email(
@@ -158,8 +157,7 @@ def test_should_show_authenticate_after_mobile_number_change(
         "main.user_profile_mobile_number_authenticate",
     )
 
-    assert "Confirm change" in page.text
-    assert "Confirm" in page.text
+    assert "Enter password to change profile settings" in page.text
 
 
 def test_should_redirect_after_mobile_number_authenticate(
@@ -597,7 +595,7 @@ class TestOptionalPhoneNumber:
         with client_request.session_transaction() as session:
             session["new-mob-password-confirmed"] = True
             session["new-mob"] = "+16502532222"
-            session["from_send_page"] = True
+            session["from_send_page"] = "send_test"
             session["send_page_service_id"] = SERVICE_ONE_ID
             session["send_page_template_id"] = TEMPLATE_ONE_ID
 
@@ -724,6 +722,13 @@ class TestUserProfile2FA:
     ):
         """Test that user_profile_2fa shows the 2FA form when FF_AUTH_V2 is enabled"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             page = client_request.get("main.user_profile_2fa")
 
             # Check that the page renders the 2FA form
@@ -744,6 +749,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa updates auth_type to email_auth"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             client_request.post(
                 "main.user_profile_2fa",
                 _data={"auth_method": "email"},
@@ -763,6 +775,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa updates auth_type to sms_auth"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             client_request.post(
                 "main.user_profile_2fa",
                 _data={"auth_method": "sms"},
@@ -782,6 +801,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa redirects to add security key page when new_key is selected"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             client_request.post(
                 "main.user_profile_2fa",
                 _data={"auth_method": "new_key"},
@@ -801,6 +827,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa with missing data uses current default and redirects"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             # Empty data will use the current auth method as default, so it should succeed
             client_request.post(
                 "main.user_profile_2fa",
@@ -821,6 +854,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa shows success flash message"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             # Make request and follow redirect to see flash message
             client_request.post(
                 "main.user_profile_2fa",
@@ -834,7 +874,7 @@ class TestUserProfile2FA:
                 flashes = session.get("_flashes", [])
                 assert len(flashes) == 1
                 assert flashes[0][0] == "default_with_tick"
-                assert "Two-factor authentication method updated" in flashes[0][1]
+                assert "Two-step verification method updated" in flashes[0][1]
 
     def test_user_profile_2fa_post_with_invalid_form_data_shows_form_again(
         self,
@@ -845,6 +885,13 @@ class TestUserProfile2FA:
     ):
         """Test that POST to user_profile_2fa with invalid form data shows form again"""
         with set_config(app_, "FF_AUTH_V2", True):
+            # mock .verified_phone_number on the current_user object
+            current_user.verified_phonenumber = True
+
+            # set session to simulate user logged in
+            with client_request.session_transaction() as session:
+                session["has_authenticated"] = True
+
             page = client_request.post(
                 "main.user_profile_2fa",
                 _data={"auth_method": "invalid_choice"},  # Invalid choice should fail validation
@@ -859,3 +906,33 @@ class TestUserProfile2FA:
 
             # Check that update was not called due to validation failure
             mock_update_user_attribute.assert_not_called()
+
+
+class TestBackLinks:
+    @pytest.mark.parametrize(
+        "link",
+        [
+            ("main.user_profile_name"),
+            ("main.user_profile_email"),
+            ("main.user_profile_mobile_number"),
+            ("main.user_profile_password"),
+            ("main.user_profile_2fa"),
+            ("main.user_profile_security_keys"),
+            ("main.user_profile_disable_platform_admin_view"),
+        ],
+    )
+    def test_back_links_navigate_to_user_profile(self, client_request, link, mock_get_security_keys, platform_admin_user, app_):
+        """Test that the back link on each page navigates back to /user-profile, following redirects"""
+
+        with set_config(app_, "FF_AUTH_V2", True):
+            expected_redirect = "main.user_profile"
+
+            if link == "main.user_profile_disable_platform_admin_view":
+                client_request.login(platform_admin_user)
+
+            page = client_request.get(link, _follow_redirects=True)
+            back_link = page.select_one("a.back-link")
+            assert back_link is not None, f"Back link not found on page {link}"
+            assert back_link["href"] == url_for(
+                expected_redirect
+            ), f"Back link on {link} does not navigate to {expected_redirect}"
