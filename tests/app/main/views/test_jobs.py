@@ -15,7 +15,6 @@ from tests.conftest import (
     create_template,
     mock_get_notifications,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -266,13 +265,12 @@ def test_should_show_job_in_progress(
     fake_uuid,
     app_,
 ):
-    with set_config(app_, "FF_ASYNC_REPORTS", False):
-        page = client_request.get(
-            "main.view_job",
-            service_id=service_one["id"],
-            job_id=fake_uuid,
-        )
-        assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
+    page = client_request.get(
+        "main.view_job",
+        service_id=service_one["id"],
+        job_id=fake_uuid,
+    )
+    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
