@@ -409,7 +409,6 @@ def verify_mobile_number():
 
     """
     if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
-        flash(_("You do not have a mobile number set."), "error")
         return redirect(url_for(".user_profile_2fa"))
 
     # Validate password for form
@@ -421,7 +420,7 @@ def verify_mobile_number():
     if form.validate_on_submit():
         current_user.update(verified_phonenumber=True)
         current_user.update(auth_type="sms_auth")
-        flash(_("Two-factor authentication method updated"), "default_with_tick")
+        flash(_("Two-step verification method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
     else:
         current_user.send_verify_code(to=current_user.mobile_number)
