@@ -17,17 +17,5 @@
     <div class="mb-12 clear-both contain-floats">
       {{ problem_email_checkbox() }}
     </div>
-    {% if notifications %}
-      <div class="dashboard-table mt-12 mb-12 clear-both contain-floats">
-        {% if percentage_complete < 100 %}
-          {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
-        {% else %}
-          <a href="{{ download_link }}" download class="text-smaller leading-tight font-bold">{{ _('Download this report') }}</a>
-          <div class="mt-2 text-small leading-tight font-normal">
-            {{ _("Available until") }} <time id="time-left" class="local-datetime-short-year">{{ available_until_date }}</time>
-          </div>
-        {% endif %}
-      </div>
-    {% endif %}
   {% endif %}
 </div>

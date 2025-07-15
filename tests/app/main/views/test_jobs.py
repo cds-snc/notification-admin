@@ -5,7 +5,6 @@ import pytest
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_available_until_date
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     JOB_API_KEY_NAME,
@@ -250,27 +249,6 @@ def test_get_jobs_should_tell_user_if_more_than_one_page(
         status="",
     )
     assert page.find("p", {"class": "table-show-more-link"}).text.strip() == "Only showing the first 50 rows"
-
-
-def test_should_show_job_in_progress(
-    client_request,
-    service_one,
-    active_user_with_permissions,
-    mock_get_service_template,
-    mock_get_job_in_progress,
-    mocker,
-    mock_get_notifications,
-    mock_get_reports,
-    mock_get_service_data_retention,
-    fake_uuid,
-    app_,
-):
-    page = client_request.get(
-        "main.view_job",
-        service_id=service_one["id"],
-        job_id=fake_uuid,
-    )
-    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -708,26 +686,6 @@ def test_should_show_updates_for_one_job_as_json(
     assert "Delivered" in content["notifications"]
     assert "00:01:00.000001" in content["notifications"]
     assert "2016-01-01T00:00:00.000001+0000" in content["status"]
-
-
-@pytest.mark.parametrize(
-    "job_created_at, expected_date",
-    [
-        ("2016-01-10 11:09:00.000000+00:00", "2016-01-18"),
-        ("2016-01-04 11:09:00.000000+00:00", "2016-01-12"),
-        ("2016-01-03 11:09:00.000000+00:00", "2016-01-11"),
-        ("2016-01-02 23:59:59.000000+00:00", "2016-01-10"),
-    ],
-)
-@freeze_time("2016-01-10 12:00:00.000000")
-def test_available_until_datetime(job_created_at, expected_date):
-    """We are putting a raw datetime string in the span, which later gets
-    formatted by js on the client. That formatting doesn't exist in the
-    python tests so this test checks the date part of the datetime string
-    and checking is correct."""
-    available_until_datetime = get_available_until_date(job_created_at)
-    available_until_date = str(available_until_datetime).split(" ")[0]
-    assert available_until_date == expected_date
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
