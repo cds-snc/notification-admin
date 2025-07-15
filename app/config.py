@@ -81,7 +81,6 @@ class Config(object):
     FF_RTL = env.bool("FF_RTL", True)
     FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
-    FF_ASYNC_REPORTS = env.bool("FF_ASYNC_REPORTS", False)
     FF_AUTH_V2 = env.bool("FF_AUTH_V2", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)

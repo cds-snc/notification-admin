@@ -17,7 +17,7 @@
     <div class="mb-12 clear-both contain-floats">
       {{ problem_email_checkbox() }}
     </div>
-    {% if notifications and not config["FF_ASYNC_REPORTS"] %}
+    {% if notifications %}
       <div class="dashboard-table mt-12 mb-12 clear-both contain-floats">
         {% if percentage_complete < 100 %}
           {{ _('Report is') }} {{ "{:.0f}%".format(percentage_complete * 0.99) }} {{ _('complete…') }}
