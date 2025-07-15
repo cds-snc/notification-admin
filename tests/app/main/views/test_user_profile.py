@@ -178,15 +178,14 @@ def test_should_redirect_after_mobile_number_authenticate(
     )
 
 
-def test_should_show_confirm_after_mobile_number_change(
-    client_request,
-):
+def test_should_show_confirm_after_mobile_number_change(client_request, mock_validate_2fa_method, mocker):
     with client_request.session_transaction() as session:
         session["new-mob-password-confirmed"] = True
+
     page = client_request.get("main.user_profile_mobile_number_confirm")
 
     assert "Check your phone messages" in page.text
-    assert "Confirm" in page.text
+    assert "Verify" in page.text
 
 
 @pytest.mark.parametrize(
@@ -203,31 +202,34 @@ def test_should_redirect_after_mobile_number_confirm(
     mock_check_verify_code,
     fake_uuid,
     phone_number_to_register_with,
+    mock_validate_2fa_method,
+    app_,
 ):
     user_before = create_api_user_active(with_unique_id=True)
     user_after = create_api_user_active(with_unique_id=True)
     user_before["current_session_id"] = str(uuid.UUID(int=1))
     user_after["current_session_id"] = str(uuid.UUID(int=2))
 
-    # first time (login decorator) return normally, second time (after 2FA return with new session id)
-    client_request.login(user_before)
-    mocker.patch("app.user_api_client.get_user", return_value=user_after)
+    with set_config(app_, "FF_AUTH_V2", True):
+        # first time (login decorator) return normally, second time (after 2FA return with new session id)
+        client_request.login(user_before)
+        mocker.patch("app.user_api_client.get_user", return_value=user_after)
 
-    with client_request.session_transaction() as session:
-        session["new-mob-password-confirmed"] = True
-        session["new-mob"] = phone_number_to_register_with
-        session["current_session_id"] = user_before["current_session_id"]
+        with client_request.session_transaction() as session:
+            session["new-mob-password-confirmed"] = True
+            session["new-mob"] = phone_number_to_register_with
+            session["current_session_id"] = user_before["current_session_id"]
 
-    client_request.post(
-        "main.user_profile_mobile_number_confirm",
-        _data={"two_factor_code": "12345"},
-        _expected_status=302,
-        _expected_redirect=url_for("main.user_profile"),
-    )
+        client_request.post(
+            "main.user_profile_mobile_number_confirm",
+            _data={"two_factor_code": "12345"},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile"),
+        )
 
-    # make sure the current_session_id has changed to what the API returned
-    with client_request.session_transaction() as session:
-        assert session["current_session_id"] == user_after["current_session_id"]
+        # make sure the current_session_id has changed to what the API returned
+        with client_request.session_transaction() as session:
+            assert session["current_session_id"] == user_after["current_session_id"]
 
 
 def test_should_show_password_page(
@@ -487,6 +489,7 @@ class TestOptionalPhoneNumber:
         mock_send_change_email_verification,
         mock_send_verify_code,
         mock_check_verify_code,
+        mock_validate_2fa_method,
     ):
         client_request.post(
             "main.user_profile_mobile_number",
@@ -588,6 +591,7 @@ class TestOptionalPhoneNumber:
         active_user_no_mobile,
         mock_update_user_attribute,
         mock_check_verify_code,
+        mock_validate_2fa_method,
     ):
         client_request.login(active_user_no_mobile)
         mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
@@ -622,6 +626,7 @@ class TestOptionalPhoneNumber:
         active_user_no_mobile,
         mock_update_user_attribute,
         mock_check_verify_code,
+        mock_validate_2fa_method,
     ):
         client_request.login(active_user_no_mobile)
         mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)

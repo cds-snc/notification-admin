@@ -2253,6 +2253,14 @@ def mock_check_verify_code(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_validate_2fa_method(mocker):
+    def _verify(user_id, code, code_type):
+        return True, ""
+
+    return mocker.patch("app.user_api_client.validate_2fa_method", side_effect=_verify)
+
+
+@pytest.fixture(scope="function")
 def mock_check_verify_code_code_not_found(mocker):
     def _verify(user_id, code, code_type):
         return False, "Code not found"
