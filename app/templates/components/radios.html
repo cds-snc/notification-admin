@@ -1,7 +1,7 @@
 {% from "components/select-input.html" import select, select_list, select_nested, select_input %}
 
-{% macro radios(field, hint=None, disable=[], option_hints={}, hide_legend=False, is_page_heading=False, use_aria_labelledby=True, testid=None) %}
-  {{ select(field, hint, disable, option_hints, hide_legend, input="radio", is_page_heading=is_page_heading, use_aria_labelledby=use_aria_labelledby, testid=testid) }}
+{% macro radios(field, hint=None, disable=[], option_hints={}, hide_legend=False, is_page_heading=False, use_aria_labelledby=True, testid=None, badge_options=None, bordered=None) %}
+  {{ select(field, hint, disable, option_hints, hide_legend=hide_legend, input="radio", is_page_heading=is_page_heading, use_aria_labelledby=use_aria_labelledby, testid=testid, badge_options=badge_options, bordered=bordered ) }}
 {% endmacro %}
 
 
@@ -15,6 +15,6 @@
 {% endmacro %}
 
 
-{% macro radio(option, disable=[], option_hints={}, data_target=None, as_list_item=False) %}
-  {{ select_input(option, disable, option_hints, data_target, as_list_item, input="radio") }}
+{% macro radio(option, disable=[], option_hints={}, data_target=None, as_list_item=False, badge_options=None) %}
+  {{ select_input(option, disable, option_hints, data_target, as_list_item, input="radio", badge_options=badge_options) }}
 {% endmacro %}

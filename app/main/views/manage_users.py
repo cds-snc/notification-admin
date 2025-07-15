@@ -55,9 +55,14 @@ def invite_user(service_id):
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
 
-    form.login_authentication.data = "sms_auth"
+    # assume sms_auth - this will be updated when the user provides their phone number or not
+    form.login_authentication.data = "email_auth"
 
-    current_app.logger.info("User {} attempting to invite user to service {}".format(current_user.id, service_id))
+    current_app.logger.info(
+        "User {} attempting to invite user to service {} using 2FA {}".format(
+            current_user.id, service_id, form.login_authentication.data
+        )
+    )
     if form.validate_on_submit():
         email_address = form.email_address.data
         invited_user = InvitedUser.create(

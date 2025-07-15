@@ -18,17 +18,11 @@
     $menu.attr("aria-expanded", true);
     $menu.isExpanded = true;
     $items.children()[0].querySelector("a").focus();
-
-    window.setTimeout(function () {
-      $items.removeClass("opacity-0");
-      $items.addClass("opacity-100");
-    }, 1);
   }
 
   function close($menu, $items) {
     $items.toggleClass("hidden", true);
-    $items.removeClass("opacity-100");
-    $items.addClass("opacity-0");
+
     const $arrow = $menu.find(".arrow");
     if ($arrow.length > 0) {
       $arrow.toggleClass("flip", false);
@@ -78,15 +72,15 @@
 
   /**
    * Handles closing any open menus when the user clicks outside of the menu with their mouse.
+   * DISABLED: Menu can only be closed by clicking menu button or visiting new page
    *
    * @param {FocusEvent} event The focus event
    * @param {jQuery} $menu The menu button that controls the disclosure menu items container
    * @param {jQuery} $items The unordered list containing menu items
    */
   function handleMenuBlur(event, $menu, $items) {
-    if (event.relatedTarget === null) {
-      close($menu, $items);
-    }
+    // DISABLED: No longer close menu on blur - only close via menu button or page navigation
+    return;
   }
 
   /**
@@ -140,10 +134,9 @@
         close($menu, $items);
         $menu.focus();
       }
+      // Once we've determined the new selected menu item, we need to focus on it
+      $($items.children()[$menu.selectedMenuItem]).find("a").focus();
     }
-
-    // Once we've determined the new selected menu item, we need to focus on it
-    $($items.children()[$menu.selectedMenuItem]).find("a").focus();
   }
 
   function init($menu) {
@@ -151,22 +144,40 @@
     const $items = $(itemsId);
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
+    $menu.touchStarted = false;
 
-    // Click toggler
-    $menu.click(() => toggleMenu($menu, $items));
+    // Enhanced touch/click handling for iOS
+    $menu.on("touchstart", function (e) {
+      $menu.touchStarted = true;
+    });
+
+    $menu.on("touchend", function (e) {
+      if ($menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Small delay to ensure touch event completes properly on iOS
+        setTimeout(() => {
+          toggleMenu($menu, $items);
+        }, 10);
+        $menu.touchStarted = false;
+      }
+    });
+
+    $menu.on("click", function (e) {
+      // Only handle click if it wasn't preceded by a touch event
+      if (!$menu.touchStarted) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu($menu, $items);
+      }
+    });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
     registerKeyBasedMenuNavigation($(window), (event) =>
       handleKeyBasedMenuNavigation(event, $menu, $items),
     );
 
-    // Bind blur events to each menu button and it's anchor link items.
-    registerDisclosureMenuBlur(
-      [...$items.children().find("a"), ...$menu, window],
-      (event) => handleMenuBlur(event, $menu, $items),
-    );
-
-    // Bind a Keydown event to the window so the user can use the Escape key from anywhere in the window to close the menu
+    // Keep Escape key functionality for accessibility
     registerKeyDownEscape($(window), () => close($menu, $items));
   }
 

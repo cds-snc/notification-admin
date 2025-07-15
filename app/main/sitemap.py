@@ -18,7 +18,7 @@ def get_sitemap():
                     {"href": gca_url_for("features"), "link_text": _("Features")},
                     {"href": gca_url_for("new_features"), "link_text": _("New features")},
                     {"href": gca_url_for("register_for_demo"), "link_text": _("Register for a demo")},
-                    {"href": gca_url_for("whynotify"), "link_text": _("Why GC Notify")},
+                    {"href": gca_url_for("whynotify"), "link_text": _("By and for the Government of Canada")},
                 ],
             },
             {

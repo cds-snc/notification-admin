@@ -1,8 +1,15 @@
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading %}
+{% from "components/empty-list.html" import empty_list  %}
   
   {% set heading_1 = _('Report') %}
   {% set heading_2 = right_aligned_field_heading(_('Status')) %}
-
+  {% set empty_txt = empty_list(
+      _('You have not requested any delivery reports in the last week'),
+      _('For a downloadable report, visit the dashboard. Then review sent messages or failures. At the end of those pages, use the button to ask GC Notify to prepare a report. We’ll email you when the report is ready. We delete reports 72 hours after they’re ready.'),
+      'emptyFlower',
+      url_for('main.service_dashboard', service_id=current_service.id),
+      _('Visit dashboard'))
+  %}
   <div class='reports-table'>
   
   {% call(item, row_number) list_table(
@@ -15,42 +22,49 @@
   ) %}
     {% call row_heading() %}
       <div class="flex flex-col">
-        <div class="mb-4">
-          {% if item.status == "ready" %}
-          <a class="file-list-filename" href="{{ item.url }}">
-            <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
-            - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</a>
-          {% else %}
-          <div class="file-list-filename text-gray-grey1" tabindex="0">
-            <span><time class="local-datetime-full">{{item.requested_at}}</time></span>
-            - {{ item.report_type}} - {{ current_service.name }} {{ _("report") }}</div>
-          {% endif %}
+        {% if item.status == "ready" %}
+        <a class="file-list-filename" href="{{ url_for('main.download_report_csv', service_id=current_service.id, report_id=item.id) }}">
+          {{ item.filename_display}}
+        </a>
+        {% else %}
+        <div class="file-list-filename text-gray-grey1" tabindex="0">
+          {{ item.filename_display}}
         </div>
-      <div class="file-list-hint">
-        <p>
-          <span>{{ _("Requested by") }} {{ item.requesting_user.name }}</span>
-          {% if item.requesting_user_id == current_user.id %}
-            <span>({{ _("You") }})</span>
-          {% endif %}
-        </p>
+        {% endif %}
+        <div class="file-list-hint">
+          <p>
+            <span>{{ _("Requested by") }} {{ item.requesting_user.name }}</span>
+            {% if item.requesting_user_id == current_user.id %}
+              <span>({{ _("You") }})</span>
+            {% endif %}
+          </p>
+        </div>
       </div>
     {% endcall %}
     
     {% call field(align='right') %}
       <div class="flex flex-col justify-end">
-        {% if item.status == "requested" %}
-            <div class="mb-4">
-              <div class="loading-spinner"></div>
-            </div>
+        <div class="mb-4">
+          {% if item.status == "requested" or item.status == "generating" %}
+            <div class="loading-spinner"></div>
+          {% else %}
+            <div class="size-12"></div>
+          {% endif %}
+        </div>
+        {% if item.status == "requested" or item.status == "generating" %}
             <div class="file-list-hint">{{ _("Preparing report") }}</div>
         {% elif item.status == "ready" %}
-            <div class="mb-4">
-              <div class="size-20"></div>
-            </div>
             <div class="file-list-hint">
                 {{ _("Download before") }}
                 <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
             </div>
+        {% elif item.status == "error" %}
+          <div class="file-list-hint text-red">{{ _("Failed. Try again") }}</div>
+        {% elif item.status == "expired" %}
+          <div class="file-list-hint text-red">
+            {{ _("Deleted at") }} 
+            <span><time class="local-datetime-short">{{item.expires_at}}</time></span>
+          </div>
         {% else %}
           {{ _(item.status) }}
         {% endif %}

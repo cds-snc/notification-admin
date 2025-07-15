@@ -1607,7 +1607,7 @@ def test_incorrect_reply_to_domain_not_in_team_member_list(
         _expected_status=200,
     )
 
-    valid_domains = ["canada.ca", "gc.ca"]
+    valid_domains = ["canada.ca", "*.gc.ca"]
     valid_domains.extend([member.email_domain for member in mock_team_members])
 
     errorMsg = normalize_spaces(page.select_one(".error-message").text)

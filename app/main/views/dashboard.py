@@ -1,4 +1,5 @@
 import calendar
+import time
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -30,6 +31,7 @@ from app.models.enum.bounce_rate_status import BounceRateStatus
 from app.models.enum.notification_statuses import NotificationStatuses
 from app.models.enum.template_types import TemplateType
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
+from app.types import AnnualData, DashboardTotals
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
@@ -358,53 +360,70 @@ def aggregate_notifications_stats(template_statistics):
 
 
 def get_dashboard_partials(service_id):
-    def aggregate_by_type(data, daily_data):
-        counts = {"sms": 0, "email": 0, "letter": 0}
-        # flatten out this structure to match the above
-        for month_data in data["data"].values():
-            for message_type, message_counts in month_data.items():
-                if isinstance(message_counts, dict):
-                    counts[message_type] += sum(message_counts.values())
+    timings = {}
 
-        # add todays data to the annual data
-        counts = {
-            "sms": counts["sms"] + daily_data["sms"]["requested"],
-            "email": counts["email"] + daily_data["email"]["requested"],
-        }
-        return counts
+    # Time each backend API call
+    start_total = time.time()
 
+    start = time.time()
     all_statistics_weekly = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=7)
+    timings["template_statistics_weekly"] = (time.time() - start) * 1000
+
+    start = time.time()
     template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
+    timings["aggregate_template_usage"] = (time.time() - start) * 1000
 
     scheduled_jobs, immediate_jobs = [], []
     if job_api_client.has_jobs(service_id):
+        start = time.time()
         scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
-        immediate_jobs = [add_rate_to_job(job) for job in job_api_client.get_immediate_jobs(service_id)]
+        timings["get_scheduled_jobs"] = (time.time() - start) * 1000
+
+        start = time.time()
+        immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id)
+        timings["get_immediate_jobs"] = (time.time() - start) * 1000
+
+        start = time.time()
+        immediate_jobs = [add_rate_to_job(job) for job in immediate_jobs_raw]
+        timings["add_rate_to_job"] = (time.time() - start) * 1000
 
     # get the daily stats
+    start = time.time()
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
+    timings["_get_daily_stats"] = (time.time() - start) * 1000
 
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
+
+    start = time.time()
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
-    bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
+    timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
-    # get annual data from fact table (all data this year except today)
-    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
-    annual_data = aggregate_by_type(annual_data, dashboard_totals_daily[0])
+    start = time.time()
+    bounce_rate_data = get_bounce_rate_data_from_redis(service_id)
+    timings["get_bounce_rate_data"] = (time.time() - start) * 1000
+
+    start = time.time()
+    annual_data = get_annual_data(service_id, dashboard_totals_daily)
+    timings["get_annual_data"] = (time.time() - start) * 1000
+
+    # Calculate total time
+    total_time = (time.time() - start_total) * 1000
+    current_app.logger.info(f"TIMING: Total get_dashboard_partials execution took {total_time:.2f}ms")
+    current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
         "daily_totals": render_template(
             "views/dashboard/_totals_daily.html",
             service_id=service_id,
-            statistics=dashboard_totals_daily[0],
+            statistics=dashboard_totals_daily,
             column_width=column_width,
         ),
         "annual_totals": render_template(
             "views/dashboard/_totals_annual.html",
             service_id=service_id,
-            statistics=dashboard_totals_daily[0],
+            statistics=dashboard_totals_daily,
             statistics_annual=annual_data,
             column_width=column_width,
         ),
@@ -425,6 +444,22 @@ def get_dashboard_partials(service_id):
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_jobs": bool(scheduled_jobs),
+        "debug_timings": timings,  # Include timings in the response for debugging
+    }
+
+
+def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> AnnualData:
+    counts = {"sms": 0, "email": 0, "letter": 0}
+    # flatten out this structure to match the above
+    for month_data in data["data"].values():
+        for message_type, message_counts in month_data.items():
+            if isinstance(message_counts, dict):
+                counts[message_type] += sum(message_counts.values())
+
+    # add todays data to the annual data
+    return {
+        "sms": counts["sms"] + daily_data["sms"]["requested"],
+        "email": counts["email"] + daily_data["email"]["requested"],
     }
 
 
@@ -432,10 +467,10 @@ def _get_daily_stats(service_id):
     # TODO: get from redis, else fallback to template_statistics_client.get_template_statistics_for_service
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     stats_daily = aggregate_notifications_stats(all_statistics_daily)
-    dashboard_totals_daily = (get_dashboard_totals(stats_daily),)
+    dashboard_totals_daily = get_dashboard_totals(stats_daily)
 
     highest_notification_count_daily = max(
-        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily[0].items()
+        sum(value[key] for key in {"requested", "failed", "delivered"}) for key, value in dashboard_totals_daily.items()
     )
 
     return dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily
@@ -476,7 +511,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     bounce_rate = BounceRate()
 
     # get total sent
-    total_sent = dashboard_totals_daily[0]["email"]["requested"]
+    total_sent = dashboard_totals_daily["email"]["requested"]
 
     # get total hard bounces
     for stat in all_statistics_daily:
@@ -500,7 +535,7 @@ def calculate_bounce_rate(all_statistics_daily, dashboard_totals_daily):
     return bounce_rate
 
 
-def get_dashboard_totals(statistics):
+def get_dashboard_totals(statistics) -> DashboardTotals:
     for msg_type in statistics.values():
         msg_type["failed_percentage"] = get_formatted_percentage(msg_type["failed"], msg_type["requested"])
         msg_type["show_warning"] = float(msg_type["failed_percentage"]) > 3
@@ -648,3 +683,47 @@ def get_column_properties(number_of_columns):
         2: ("w-1/2 float-left py-0 px-0 px-gutterHalf box-border", 999999999),
         3: ("md:w-1/3 float-left py-0 px-0 px-gutterHalf box-border", 99999),
     }.get(number_of_columns)
+
+
+def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
+    """Retrieves and combines annual notification statistics for a service.
+
+    This function attempts to fetch annual data from Redis cache. If Redis is not enabled or
+    the cache hasn't been seeded today, it falls back to an API call to fetch the data from the database.
+
+    The function then aggregates annual notification counts (from Redis or API) and combines them with
+    the daily dashboard totals to get complete annual statistics.
+
+    Args:
+        service_id: The ID of the service to get annual data for
+        dashboard_totals_daily: The daily dashboard totals containing requested counts for SMS and email
+
+    Returns:
+        AnnualData: Dictionary containing combined annual notification counts for SMS and email
+    """
+
+    if not current_app.config["REDIS_ENABLED"] or not annual_limit_client.was_seeded_today(service_id):
+        return get_annual_data_api(service_id, dashboard_totals_daily)
+
+    # get annual_data from redis
+    annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
+
+    if (
+        annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0
+        and annual_data_redis["total_sms_fiscal_year_to_yesterday"] == 0
+    ):
+        # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
+        return get_annual_data_api(service_id, dashboard_totals_daily)
+
+    # use the daily requested totals from the api, so that this number is calculated the same
+    # way regardless of whether we use api data or redis data
+    return {
+        "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
+        "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
+    }
+
+
+def get_annual_data_api(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
+    annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
+    aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
+    return aggregated_annual_data

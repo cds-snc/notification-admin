@@ -1,0 +1,228 @@
+name: Cypress E2E Tests
+
+on:
+  push:
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.17-bullseye
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: chummy
+          POSTGRES_DB: notification_api
+        ports:
+        - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:6.2@sha256:9e75c88539241ad7f61bc9c39ea4913b354064b8a75ca5fc40e1cef41b645bc0
+        ports:
+        - 6379:6379
+
+    steps:
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install libssl-dev libcurl4-openssl-dev
+
+    # First checkout the admin repo and install deps
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - uses: actions/setup-python@b64ffcaf5b410884ad320a9cfac8866006a109aa # v4.8.0
+      with:
+        python-version: '3.12'
+
+    - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      with:
+        node-version: '16.x'
+        cache: 'npm'
+
+    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install poetry
+      env:
+        POETRY_VERSION: "1.7.1"
+      run: pip install poetry==${POETRY_VERSION} poetry-plugin-sort && poetry --version
+
+    - name: Install requirements
+      run: poetry install --with test
+
+    # Now checkout the API repo
+    - name: Checkout API repository
+      uses: actions/checkout@v3
+      with:
+        repository: cds-snc/notification-api
+        path: api
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@b64ffcaf5b410884ad320a9cfac8866006a109aa # v4.8.0
+      with:
+        python-version: '3.12'
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('api/**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install Poetry
+      env:
+        POETRY_VERSION: 1.3.2
+      run: pip install poetry==${POETRY_VERSION} && poetry --version
+
+    - name: Check API poetry.lock aligns with pyproject.toml
+      working-directory: api
+      run: poetry lock --check
+
+    - name: Install API requirements
+      working-directory: api
+      run: poetry install --with test
+
+    - name: Make API version file
+      working-directory: api
+      run: |
+        printf '__commit_sha__ = "09cfe03100443fb9071bba88d5c8775ff54a9ebc"\n__time__ = "2022-07-25:15:11:05"\n' > version.py
+        cp version.py "${{ github.workspace }}/api/app/"
+
+    - name: Setup API .env
+      working-directory: api
+      run: |
+        echo 'NOTIFICATION_QUEUE_PREFIX=api-pr-notification-canada-ca' > .env
+        echo 'AWS_ACCESS_KEY_ID=${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}' >> .env
+        echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}' >> .env
+        echo ''
+        echo 'AWS_REGION=ca-central-1' >> .env
+        echo 'ASSET_DOMAIN=example.com' >> .env
+        echo 'ASSET_UPLOAD_BUCKET_NAME=not-a-real-secret' >> .env
+        echo 'CSV_UPLOAD_BUCKET_NAME=notification-canada-ca-staging-csv-upload' >> .env
+        echo 'GC_ORGANISATIONS_BUCKET_NAME=notification-canada-ca-staging-gc-organisations' >> .env
+        echo 'DOCUMENTS_BUCKET=not-a-real-secret' >> .env
+        echo 'NOTIFY_EMAIL_DOMAIN=staging.notification.cdssandbox.xyz' >> .env
+        echo 'ADMIN_CLIENT_SECRET=local_app' >> .env
+        echo 'REDIS_URL=redis://localhost:6379' >> .env
+        echo 'REDIS_PUBLISH_URL=redis://localhost:6379' >> .env
+        echo 'SQLALCHEMY_DATABASE_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
+        echo 'SQLALCHEMY_DATABASE_READER_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
+        echo 'DOCUMENT_DOWNLOAD_API_HOST=http://host.docker.internal:7000' >> .env
+        echo 'FF_REDIS_BATCH_SAVING=true' >> .env
+        echo 'FF_BATCH_INSERTION=true' >> .env
+        echo 'REDIS_ENABLED=true' >> .env
+        echo 'FF_CLOUDWATCH_METRICS_ENABLED=false' >> .env
+        echo 'FF_SPIKE_SMS_DAILY_LIMIT=true' >> .env
+        echo 'FRESH_DESK_ENABLED=false' >> .env
+        echo 'SECRET_KEY=cds-not-a-real-secret' >> .env
+        echo 'DANGEROUS_SALT=cds-not-a-real-secret' >> .env
+        echo 'NOTIFY_ENVIRONMENT=development' >> .env
+        echo 'FLASK_APP=application.py' >> .env
+        echo 'FLASK_DEBUG=true' >> .env
+        echo 'WERKZEUG_DEBUG_PIN=off' >> .env
+        echo 'CYPRESS_AUTH_USER_NAME=CYPRESS_AUTH_USER' >> .env
+        echo 'CYPRESS_AUTH_CLIENT_SECRET=cds-not-a-real-secret' >> .env
+        echo 'CYPRESS_USER_PW_SECRET=cds-not-a-real-secret' >> .env
+        echo 'CACHE_CLEAR_CLIENT_SECRET=cds-not-a-real-secret' >> .env
+
+    - name: Prep DB and run API
+      working-directory: api
+      run: |
+        poetry run flask db upgrade
+        poetry run make run > api.log 2>&1 &
+        poetry run make run-celery-local-filtered > celery.log 2>&1 &
+        # Give the processes a moment to start up and log initial output
+        sleep 5
+
+    - name: Setup frontend environment
+      run: |
+        cp api/.env .env
+        echo 'API_HOST=http://localhost:6011' >> .env
+        echo 'PORT=6012' >> .env
+    
+    - name: Make frontend version file
+      run: make generate-version-file
+
+    - name: Build frontend
+      run: |
+        make babel
+        npm ci
+        npm run build
+      
+    - name: Start frontend
+      run: |
+        python -m poetry install
+        make run-dev > frontend.log 2>&1 &
+        # Wait for the app to start
+        sleep 10
+
+    - name: Check if services are running
+      run: |
+        echo "Checking API status..."
+        curl http://localhost:6011/_status || echo "API service is not running properly"
+        
+        echo ""
+        echo "Checking frontend status..."
+        curl http://localhost:6012/_status || echo "Frontend service is not running properly"
+
+        echo ""
+        echo "Frontend logs:"
+        cat frontend.log || echo "No frontend logs available"
+
+    - name: Write and modify the cypress.env.json file
+      run: |
+        # Write the original file from secrets
+        echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json
+        
+        # Install jq if not already available
+        sudo apt-get update && sudo apt-get install -y jq
+        
+        # Update the ENV field to LOCAL to match ENV vars above
+        jq '.ENV = "LOCAL"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_USER_PASSWORD = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .LOCAL.ADMIN_SECRET = "local_app"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_AUTH_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+        jq '.ENV = "LOCAL" | .CACHE_CLEAR_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
+
+    - name: Run the cypress tests
+      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+      with:
+        record: false
+        config: "video=true,screenshotOnRunFailure=true"
+        build: npx cypress info
+        working-directory: tests_cypress
+        spec: |
+          cypress/e2e/admin/ci.cy.js
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: cypress-artifacts
+        path: |
+          tests_cypress/cypress/videos
+          tests_cypress/cypress/screenshots
+        retention-days: 30
+
+    - name: Output API logs on failure
+      if: failure()
+      run: |
+        echo "==== API LOGS ===="
+        cat api/api.log || echo "No API logs available"
+
+    - name: Output Celery logs on failure
+      if: failure()
+      run: |
+        echo "==== CELERY LOGS ===="
+        cat api/celery.log || echo "No Celery logs available"
+
+    - name: Output Frontend logs on failure
+      if: failure()
+      run: |
+        echo "==== FRONTEND LOGS ===="
+        cat frontend.log || echo "No frontend logs available"

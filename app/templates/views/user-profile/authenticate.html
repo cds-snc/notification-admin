@@ -4,14 +4,16 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
+{% set title = _("Enter password to change profile settings") %}
+
 {% block per_page_title %}
-  {{ _('Change your ') + thing }}
+  {{ title }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Change your ') + thing,
+    title,
     back_link=back_link
   ) }}
 
@@ -20,7 +22,7 @@
 
     {% call form_wrapper(autocomplete=True) %}
       {{ textbox(form.password, autocomplete='current-password') }}
-      {{ page_footer(_('Confirm')) }}
+      {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }}
     {% endcall %}
     </div>
   </div>

@@ -379,6 +379,7 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
     mock_add_user_to_service,
     mock_get_service,
     mocker,
+    app_,
 ):
     expected_service = service_one["id"]
     expected_email = sample_invite["email_address"]
@@ -419,7 +420,7 @@ def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
         data["email_address"],
         data["mobile_number"],
         data["password"],
-        data["auth_type"],
+        "sms_auth",
     )
 
     assert mock_accept_invite.call_count == 1
@@ -667,3 +668,4 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
 
     mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
     mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="sms_auth")
+    mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)

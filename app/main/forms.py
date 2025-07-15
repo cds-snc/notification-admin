@@ -377,6 +377,7 @@ class LoginForm(StripWhitespaceForm):
     password = PasswordField(_l("Password"), validators=[DataRequired(message=_l("Enter your password"))])
 
 
+# TODO: remove this class when FF_OPTIONAL_PHONE is removed
 class RegisterUserForm(StripWhitespaceForm):
     name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
@@ -391,7 +392,21 @@ class RegisterUserForm(StripWhitespaceForm):
             raise ValidationError(_l("Read and agree to continue"))
 
 
-class RegisterUserFromInviteForm(RegisterUserForm):
+class RegisterUserFormOptional(StripWhitespaceForm):
+    name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
+    email_address = email_address()
+    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+    password = password()
+    # always register as email type
+    auth_type = HiddenField("auth_type", default="email_auth")
+    tou_agreed = HiddenField("tou_agreed", validators=[])
+
+    def validate_tou_agreed(self, field):
+        if field.data is not None and field.data.strip() == "":
+            raise ValidationError(_l("Read and agree to continue"))
+
+
+class RegisterUserFromInviteFormOptional(RegisterUserForm):
     def __init__(self, invited_user):
         super().__init__(
             service=invited_user.service,
@@ -400,14 +415,10 @@ class RegisterUserFromInviteForm(RegisterUserForm):
             name=guess_name_from_email_address(invited_user.email_address),
         )
 
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"), validators=[])
+    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
     service = HiddenField("service")
     email_address = HiddenField("email_address")
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
-
-    def validate_mobile_number(self, field):
-        if self.auth_type.data == "sms_auth" and not field.data:
-            raise ValidationError(_l("This cannot be empty"))
 
 
 class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
@@ -512,7 +523,7 @@ class TwoFactorForm(StripWhitespaceForm):
         self.validate_code_func = validate_code_func
         super(TwoFactorForm, self).__init__(*args, **kwargs)
 
-    two_factor_code = TwoFactorCode(_l("Please enter the security code."))
+    two_factor_code = TwoFactorCode(_l("Enter code"))
 
     def validate(self, extra_validators=None):
         if not self.two_factor_code.validate(self):
@@ -957,6 +968,10 @@ class ChangeNonGovEmailForm(ChangeEmailForm):
 
 class ChangeMobileNumberForm(StripWhitespaceForm):
     mobile_number = international_phone_number()
+
+
+class ChangeMobileNumberFormOptional(StripWhitespaceForm):
+    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
 
 
 class ChooseTimeForm(StripWhitespaceForm):
@@ -2093,3 +2108,14 @@ class TemplateCategoryForm(StripWhitespaceForm):
         ],
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
+
+
+class AuthMethodForm(StripWhitespaceForm):
+    auth_method = RadioField(
+        _l("Select your two-step verification method"),
+    )
+
+    def __init__(self, all_auth_methods, current_auth_method):
+        super().__init__(auth_method=current_auth_method)
+
+        self.auth_method.choices = all_auth_methods

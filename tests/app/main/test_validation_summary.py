@@ -8,15 +8,23 @@ register_field_names = ("name", "email_address", "mobile_number", "password")
 @pytest.mark.parametrize(
     "data, expected_errors",
     [
-        ({}, 4),
-        ({"name": "abcdefg"}, 3),
-        ({"name": "abcdefg", "email_address": "abcdefg@cds-snc.ca"}, 2),
+        ({}, 3),
+        ({"name": "abcdefg"}, 2),
+        ({"name": "abcdefg", "email_address": "abcdefg@cds-snc.ca"}, 1),
         ({"name": "abcdefg", "email_address": "abcdefg@cds-snc.ca", "mobile_number": "9025555555"}, 1),
         (
             {
                 "name": "abcdefg",
                 "email_address": "sdfdsfdsfdsf@cds-snc.ca",
                 "mobile_number": "9025555555",
+                "password": "very_SECURE_p4ssw0rd!",
+            },
+            0,
+        ),
+        (
+            {
+                "name": "abcdefg",
+                "email_address": "sdfdsfdsfdsf@cds-snc.ca",
                 "password": "very_SECURE_p4ssw0rd!",
             },
             0,
@@ -34,6 +42,7 @@ def test_validation_summary(
     mock_login,
     data,
     expected_errors,
+    app_,
 ):
     data["tou_agreed"] = "true"
 

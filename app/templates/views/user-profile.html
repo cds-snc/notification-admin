@@ -13,84 +13,39 @@
 
   <h1 class="heading-large">{{ _('Your profile') }}</h1>
 
-  
-  {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}  
-  {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
-  {{ profile_item(_('Mobile number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number') }}
-  {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
-  {{ profile_item(_('Security keys'), text_field(num_keys), '.user_profile_security_keys') }}
+  {% if config["FF_AUTH_V2"] %}
+    <div class="pb-8">
+      {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}  
+      {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
+      {{ profile_item(_('Contact number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number', None  if current_user.mobile_number else _('Add number')) }}
+    </div>
 
-  {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
-    {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }} 
-  {% endif %}
-
-  <!--
-  <div class="body-copy-table">
-    {% set caption = _('Your profile') %}
-    {% set heading_1 = _('Label') %}
-    {% set heading_2 = _('Value') %}
-    {% set heading_3 = _('Action') %}
-
-    {% call mapping_table(
-      caption='Your profile',
-      field_headings=[heading_1, heading_2, heading_3],
-      field_headings_visible=False,
-      caption_visible=False
-    ) %}
-      {% call row() %}
-        {% set txt = _('Name') %}
-        {{ text_field(txt) }}
-        {{ text_field(current_user.name) }}
-        {{ edit_field(change, url_for('.user_profile_name')) }}
-      {% endcall %}
-
-      {% call row() %}
-        {% set txt = _('Email address') %}
-        {{ text_field(txt) }}
-        {{ text_field(current_user.email_address) }}
-        {% if can_see_edit %}
-          {{ edit_field(change, url_for('.user_profile_email')) }}
-        {% else %}
-          {{ text_field('') }}
-        {% endif %}
-      {% endcall %}
-
-      {% call row() %}
-        {% set txt = _('Mobile number') %}
-        {{ text_field(txt) }}
-        {{ optional_text_field(current_user.mobile_number) }}
-        {{ edit_field(change, url_for('.user_profile_mobile_number')) }}
-      {% endcall %}
-
-      {% call row() %}
-        {% set txt = _('Password') %}
-        {% set last_change_txt = _('Last changed ') %}
-        {{ text_field(txt) }}
-        {{ text_field(last_change_txt + " " + current_user.password_changed_at|format_delta ) }}
-        {{ edit_field(change, url_for('.user_profile_password')) }}
-      {% endcall %}
-
-      {% call row() %}
-        {% set txt = _('Security keys') %}
-        {{ text_field(txt) }}
-        {{ text_field(num_keys) }}
-        {{ edit_field(change, url_for('.user_profile_security_keys')) }}
-      {% endcall %}
-
-      {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
-        {% call row() %}
-          {% set txt = _('Use platform admin view') %}
-          {% set yes_txt = _('Yes') %}
-          {% set no_txt = _('No') %}
-          {{ text_field(txt) }}
-          {{ text_field(yes_txt if not session.get('disable_platform_admin_view') else no_txt) }}
-          {{ edit_field(change, url_for('.user_profile_disable_platform_admin_view')) }}
-        {% endcall %}
+    <h2 class="heading-large">{{ _("Security") }}</h2>
+    <div>
+      {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
+      {% if current_user.auth_type == 'email_auth' %}
+        {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa') }}
+      {% elif current_user.auth_type == 'sms_auth' %}
+        {{ profile_item(_('Two-step verification method'), text_field(_("Code by text message") + " (" + current_user.mobile_number + ")"), '.user_profile_2fa') }}
+      {% elif current_user.auth_type == 'fido2_auth' %}
+        <!-- This auth_type does not exist yet -->
+        {{ profile_item(_('Two-step verification method'), text_field(_("Security key") + " (" + "placeholder" + ")"), '.user_profile_2fa') }}
       {% endif %}
 
-    {% endcall %}
+      {{ profile_item(_('Security keys'), text_field(_("{} security key").format(num_keys) if num_keys == 1 else _("{} security keys").format(num_keys)), '.user_profile_security_keys') }}
+      {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
+        {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }} 
+      {% endif %}
+    </div>
+  {% else %}
+    {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}  
+    {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
+    {{ profile_item(_('Mobile number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number', None  if current_user.mobile_number else _('Add number')) }}
+    {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
+    {{ profile_item(_('Security keys'), text_field(num_keys), '.user_profile_security_keys') }}
 
-
-    
-  </div> -->
+    {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
+      {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }} 
+    {% endif %}
+  {% endif %}
 {% endblock %}

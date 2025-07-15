@@ -23,10 +23,11 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_email_count, daily_sms_fragment_count
+from app.main.views.send import daily_email_count, daily_sms_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    TEMPLATE_ONE_ID,
     create_active_caseworking_user,
     create_active_user_with_permissions,
     create_email_template,
@@ -55,11 +56,11 @@ test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
-def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
+def test_daily_sms_count(mocker, redis_value, expected_result):
     mocker.patch(
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
-    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
+    assert daily_sms_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
@@ -301,7 +302,7 @@ def test_upload_files_in_different_formats(
     else:
         assert not mock_s3_upload.called
         assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-            "Could not read {}. Try using a different file format.".format(filename)
+            "Could not read {}. Try using a different file format. Ensure your file is encoded as UTF-8.".format(filename)
         )
 
 
@@ -310,15 +311,15 @@ def test_upload_files_in_different_formats(
     [
         (
             partial(UnicodeDecodeError, "codec", b"", 1, 2, "reason"),
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             BadZipFile,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLRDError,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLDateError,
@@ -2195,6 +2196,7 @@ def test_create_job_should_call_api(
     mock_create_job,
     mock_get_job,
     mock_get_notifications,
+    mock_get_reports,
     mock_get_service_template,
     mock_get_service_data_retention,
     mocker,
@@ -2594,8 +2596,8 @@ def mock_notification_counts_client():
 
 
 @pytest.fixture
-def mock_daily_sms_fragment_count():
-    with patch("app.main.views.send.daily_sms_fragment_count") as mock:
+def mock_daily_sms_count():
+    with patch("app.main.views.send.daily_sms_count") as mock:
         yield mock
 
 
@@ -3425,7 +3427,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3462,7 +3464,7 @@ class TestAnnualLimitsSend:
 
             # mock that we've already sent `emails_sent_today` emails today
             mock_daily_email_count.return_value = num_sent_today
-            mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
+            mock_daily_sms_count.return_value = 900  # not used in test but needs a value
 
             with client_request.session_transaction() as session:
                 session["file_uploads"] = {
@@ -3528,7 +3530,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3563,7 +3565,7 @@ class TestAnnualLimitsSend:
             }
             # mock that we've already sent `num_sent_today` emails today
             mock_daily_email_count.return_value = 900  # not used in test but needs a value
-            mock_daily_sms_fragment_count.return_value = num_sent_today
+            mock_daily_sms_count.return_value = num_sent_today
 
             with client_request.session_transaction() as session:
                 session["file_uploads"] = {
@@ -3777,3 +3779,49 @@ class TestAnnualLimitsSend:
         )
 
         assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
+
+
+def test_send_test_redirects_to_user_profile_if_no_mobile_and_ff_on(
+    client_request,
+    app_,
+    active_user_no_mobile,
+    mocker,
+    mock_get_service_template,
+):
+    service_id = SERVICE_ONE_ID
+    template_id = TEMPLATE_ONE_ID
+
+    client_request.login(active_user_no_mobile)
+    mock_get_service_template.return_value = {"data": {"id": template_id, "template_type": "sms", "name": "Test Template"}}
+
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+
+    assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert session["from_send_page"] == "send_test"
+        assert session["send_page_service_id"] == service_id
+        assert session["send_page_template_id"] == template_id
+
+
+def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff_on(
+    client_request,
+    app_,
+    active_user_no_mobile,
+    mocker,
+    mock_get_service_email_template_without_placeholders,
+):
+    service_id = SERVICE_ONE_ID
+    template_id = TEMPLATE_ONE_ID
+
+    client_request.login(active_user_no_mobile)
+    mock_get_service_email_template_without_placeholders.return_value = {
+        "data": {"id": template_id, "template_type": "email", "name": "Test Template"}
+    }
+
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+
+    assert url_for("main.user_profile_mobile_number") not in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert "from_send_page" not in session
+        assert "send_page_service_id" not in session
+        assert "send_page_template_id" not in session

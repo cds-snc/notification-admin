@@ -65,6 +65,7 @@ const javascripts = () => {
     paths.src + "javascripts/main.js",
     paths.src + "javascripts/templateCategories.js",
     paths.src + "javascripts/templateContent.js",
+    paths.src + "javascripts/reportFooter.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(
@@ -152,7 +153,8 @@ const watchFiles = {
 
 // Default: compile everything
 const defaultTask = parallel(
-  series(minifyIndividualJs, javascripts),
+  series(minifyIndividualJs),
+  series(javascripts),
   series(images),
   series(static_css),
 );

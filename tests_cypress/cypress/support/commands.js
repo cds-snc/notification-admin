@@ -11,7 +11,7 @@ let links_checked = [];
 let svgs_checked = [];
 
 // if the tests failed, reset the arrays so the links are re-checked and a link failure is treated as a real failure
-afterEach(function() {
+afterEach(function () {
     if (this.currentTest.state === 'failed') {
         links_checked = [];
         svgs_checked = [];
@@ -20,7 +20,8 @@ afterEach(function() {
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
     const current_hostname = getHostname('Admin');
-    
+    const ignoreLinks = ['documentation.staging.notification.cdssandbox.xyz', 'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/']
+
     if (url) {
         cy.visit(url);
     }
@@ -45,7 +46,10 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
             let checked = 0;
 
             cy.get('a').each((link) => {
-                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url) || link.prop('href').includes('documentation.staging.notification.cdssandbox.xyz')) return;
+                // if the link is in the ignore list, skip it
+                if (ignoreLinks.some(ignore => link.prop('href').includes(ignore))) return;
+
+                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url)) return;
 
                 const check_url = link.prop('href');
 
@@ -106,10 +110,10 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
-    cy.task('createAccount', { 
-        baseUrl: CONFIG.Hostnames.API, 
-        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
-        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+    cy.task('createAccount', {
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
     }).then((acct) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
@@ -122,9 +126,9 @@ Cypress.Commands.add('login', (agreeToTerms = true) => {
 
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
     cy.task('createAccount', {
-        baseUrl: CONFIG.Hostnames.API, 
-        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
-        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
     }).then((acct) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
@@ -136,7 +140,7 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
 
 // this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
-     // Get full URL by combining baseUrl with path
+    // Get full URL by combining baseUrl with path
     const fullUrl = url.startsWith('http')
         ? url
         : `${Cypress.config('baseUrl')}${url}`;

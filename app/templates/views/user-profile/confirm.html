@@ -4,21 +4,23 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
+{% set title = _("Check your phone messages") %}
+
 {% block per_page_title %}
-  {{ _('Change your ') + thing }}
+  {{ title }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {{ page_header(
-    _('Change your ') + thing,
+    title,
     back_link=url_for('.user_profile')
   ) }}
 
   <div class="grid-row contain-floats">
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
       <p>
-        {{ _('We’ve sent a security code to your ') + thing }}.
+        {{ _('We’ve sent you a security code by {}').format(thing) }}
       </p>
       {% call form_wrapper() %}
         {{ textbox(
@@ -26,7 +28,12 @@
           width='form-control-5em',
           autofocus=True
         ) }}
-        {{ page_footer(_('Confirm')) }}
+        {{ page_footer(_('Confirm'), cancel_button_link=url_for('.user_profile')) }} 
+        <p class="mt-16">
+          {{ _("Didn’t get a text message?") }}
+          <br />
+          <a href="{{ url_for('main.sms_not_received') }}">{{ _('Re-send security code') }}</a>
+        </p>
       {% endcall %}
     </div>
   </div>

@@ -25,17 +25,8 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
   }
 
-  a:visited,
-  a:link {
-    @apply text-blue;
-  }
-
-  a:focus {
-    @apply bg-yellow border-b-2 border-blue outline-none no-underline outline-offset-0 shadow-outline;
-  }
-
-  a:link:focus {
-    @apply text-blue;
+  a:focus-visible {
+    @apply bg-yellow text-black border-b-2 border-blue no-underline outline outline-offset-0 outline-2 outline-yellow;
   }
 
   a[target="_blank"]::after {

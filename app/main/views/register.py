@@ -5,8 +5,8 @@ from flask_login import current_user
 
 from app.main import main
 from app.main.forms import (
-    RegisterUserForm,
-    RegisterUserFromInviteForm,
+    RegisterUserFormOptional,
+    RegisterUserFromInviteFormOptional,
     RegisterUserFromOrgInviteForm,
 )
 from app.main.views.verify import activate_user
@@ -18,7 +18,8 @@ def register():
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.show_accounts_or_dashboard"))
 
-    form = RegisterUserForm()
+    form = RegisterUserFormOptional()
+
     if form.validate_on_submit():
         _do_registration(form, send_sms=False)
         return redirect(url_for("main.registration_continue"))
@@ -32,14 +33,23 @@ def register_from_invite():
     if not invited_user:
         abort(404)
 
-    form = RegisterUserFromInviteForm(invited_user)
+    form = RegisterUserFromInviteFormOptional(invited_user)
 
     if form.validate_on_submit():
+        # if no number provided, set auth_type to email
+        if not form.mobile_number.data:
+            form.auth_type.data = "email_auth"
+        else:
+            form.auth_type.data = "sms_auth"
+
         if form.service.data != invited_user.service or form.email_address.data != invited_user.email_address:
             abort(400)
-        _do_registration(form, send_email=False, send_sms=invited_user.sms_auth)
+
+        _do_registration(form, send_email=False, send_sms=True if form.mobile_number.data else False)
+
         invited_user.accept_invite()
-        if invited_user.sms_auth:
+
+        if form.mobile_number.data:
             return redirect(url_for("main.verify"))
         else:
             # we've already proven this user has email because they clicked the invite link,

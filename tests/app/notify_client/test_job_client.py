@@ -316,14 +316,14 @@ def test_cancel_job(mocker):
 
 
 @pytest.mark.parametrize(
-    "job_data, expected_cache_value",
+    "has_jobs, expected_cache_value",
     [
         (
-            [{"data": [1, 2, 3], "statistics": []}],
+            True,
             "true",
         ),
         (
-            [],
+            False,
             "false",
         ),
     ],
@@ -331,18 +331,18 @@ def test_cancel_job(mocker):
 def test_has_jobs_sets_cache(
     mocker,
     fake_uuid,
-    job_data,
+    has_jobs,
     expected_cache_value,
 ):
     mock_get = mocker.patch(
         "app.notify_client.job_api_client.JobApiClient.get",
-        return_value={"data": job_data},
+        return_value={"data": {"has_jobs": has_jobs}},
     )
     mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
 
     JobApiClient().has_jobs(fake_uuid)
 
-    mock_get.assert_called_once_with(url="/service/{}/job".format(fake_uuid), params={"page": 1})
+    mock_get.assert_called_once_with(url="/service/{}/job/has_jobs".format(fake_uuid))
     mock_redis_set.assert_called_once_with(
         "has_jobs-{}".format(fake_uuid),
         expected_cache_value,

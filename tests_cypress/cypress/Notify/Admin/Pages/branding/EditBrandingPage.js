@@ -16,6 +16,7 @@ let Actions = {
     },
     ClickBrandPool: () => {
         Components.BrandPoolLink().click();
+        cy.contains('h1', 'Select another logo').should('be.visible');
     },
     ClickBackLink: () => {
         Components.BackLink().click();

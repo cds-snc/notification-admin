@@ -362,3 +362,22 @@ def test_verified_org_user_redirects_to_dashboard(
         "main.organisation_dashboard",
         org_id=invited_org_user["organisation"],
     )
+
+
+class TestOrgInvite:
+    def test_org_invite_removed(
+        self,
+        client_request,
+        mocker,
+        mock_get_organisation,
+        mock_get_users_for_organisation,
+        mock_get_invited_users_for_organisation,
+        fake_uuid,
+        app_,
+    ):
+        page = client_request.get(
+            ".manage_org_users",
+            org_id=ORGANISATION_ID,
+        )
+        link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
+        assert link is None

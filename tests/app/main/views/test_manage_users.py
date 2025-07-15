@@ -700,7 +700,10 @@ def test_invite_user(
     gov_user,
     mock_get_template_folders,
     mock_get_organisations,
+    app_,
 ):
+    expected_default_auth = "email_auth"
+
     sample_invite["email_address"] = "test@tbs-sct.gc.ca"
 
     assert is_gov_user(email_address) == gov_user
@@ -737,7 +740,7 @@ def test_invite_user(
             sample_invite["service"],
             email_address,
             expected_permissions,
-            "sms_auth",
+            expected_default_auth,
             [],
         )
     else:
@@ -762,6 +765,7 @@ def test_invite_user_with_email_auth_service(
     mock_get_organisations,
     mock_get_template_folders,
     mock_get_security_keys,
+    app_,
 ):
     service_one["permissions"].append("email_auth")
     sample_invite["email_address"] = email_address

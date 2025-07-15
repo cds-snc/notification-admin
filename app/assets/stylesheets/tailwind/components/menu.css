@@ -8,4 +8,50 @@
   .mt-3_4 {
     margin-top: 3.3rem;
   }
+
+  /* Improve touch targets for mobile devices */
+  [data-module="menu"] {
+    @apply touch-manipulation;
+    min-height: 44px; /* iOS recommended minimum touch target */
+    min-width: 44px;
+  }
+
+  /* Prevent double-tap to zoom on iOS */
+  [data-module="menu"],
+  .menu-overlay a {
+    touch-action: manipulation;
+  }
+
+  :has(+ [data-module="more-menu"]) [data-overflows="true"] {
+    @apply hidden;
+  }
+  [data-module="more-menu"][data-has-items="true"] {
+    @apply flex w-auto ml-auto;
+  }
+  [data-module="more-menu"][data-has-items="false"] {
+    @apply hidden;
+  }
+  [data-module="menu"][aria-expanded="true"] svg,
+  [data-module="more-menu"][aria-expanded="true"] svg {
+    @apply transform rotate-180;
+  }
+
+  :has > [data-module="menu"] {
+    @apply relative;
+  }
+
+  [data-module="menu"] + .menu-overlay:not(.hidden) {
+    @apply absolute top-full w-max bg-white border-1 border-gray-300 px-4 z-50;
+  }
+  .menu-overlay:not(.hidden) {
+    @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4;
+  }
+
+  /* Improve menu item touch targets */
+  .menu-overlay a {
+    @apply py-3 px-4;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
 }
