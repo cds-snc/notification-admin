@@ -136,6 +136,7 @@ def user_profile_mobile_number():
 
     # determine if we are coming from the send page
     from_send_page = session.get("from_send_page", False)
+    from_2fa_page = session.get("from_2fa_page", False)
 
     if request.method == "POST":
         # get button presses
@@ -159,7 +160,15 @@ def user_profile_mobile_number():
 
         elif form.validate_on_submit():
             session[NEW_MOBILE] = form.mobile_number.data
-            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+            if not session.get(HAS_AUTHENTICATED) and not from_2fa_page == "user_profile_2fa":
+                return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
+            current_user.refresh_session_id()
+            mobile_number = session[NEW_MOBILE]
+            del session[NEW_MOBILE]
+            current_user.update(mobile_number=mobile_number)
+            current_user.update(verified_phonenumber=True)
+
         else:
             return render_template(
                 "views/user-profile/change.html",
@@ -176,6 +185,9 @@ def user_profile_mobile_number():
                 from_send_page=from_send_page,
             )
 
+    if from_send_page == "user_profile_2fa":
+        return redirect(url_for(".verify_mobile_number"))
+
     return render_template(
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
@@ -191,7 +203,6 @@ def user_profile_mobile_number_authenticate():
         return user_api_client.verify_password(current_user.id, pwd)
 
     form = ConfirmPasswordForm(_check_password)
-
     if NEW_MOBILE not in session:
         return redirect(url_for(".user_profile_mobile_number"))
 
@@ -265,7 +276,7 @@ def user_profile_mobile_number_confirm():
 def sms_not_received():
     current_user.send_verify_code(to=session[NEW_MOBILE])
     flash(_("Verification code re-sent"), "default_with_tick")
-    return redirect(url_for(".user_profile_mobile_number_confirm"))
+    return redirect(url_for(".verify_mobile_number"))
 
 
 @main.route("/user-profile/password", methods=["GET", "POST"])
@@ -409,6 +420,7 @@ def verify_mobile_number():
 
     if form.validate_on_submit():
         current_user.update(verified_phonenumber=True)
+        current_user.update(auth_type="sms_auth")
         flash(_("Two-factor authentication method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
     else:
