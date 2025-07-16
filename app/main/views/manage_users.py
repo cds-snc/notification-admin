@@ -121,6 +121,7 @@ def invite_user(service_id):
 @main.route("/services/<service_id>/users/<user_id>", methods=["GET", "POST"])
 @user_has_permissions("manage_service")
 def edit_user_permissions(service_id, user_id):
+    service_has_email_auth = current_service.has_permission("email_auth")
     user = current_service.get_team_member(user_id)
 
     mobile_number = None
@@ -153,6 +154,7 @@ def edit_user_permissions(service_id, user_id):
         "views/edit-user-permissions.html",
         user=user,
         form=form,
+        service_has_email_auth=service_has_email_auth,
         mobile_number=mobile_number,
         delete=request.args.get("delete"),
     )

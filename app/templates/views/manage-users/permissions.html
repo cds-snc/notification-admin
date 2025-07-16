@@ -21,3 +21,17 @@
   </p>
 {% endif %}
 
+{% if not config["FF_AUTH_V2"] %}
+  {% if service_has_email_auth %}
+  {% set hint_txt = _('Not available because {} has not added a phone&nbsp;number to their profile').format(user and user.name or _('this team member')) %}
+    {% if not mobile_number %}
+      {{ radios(
+        form.login_authentication,
+        disable=['sms_auth'],
+        option_hints={'sms_auth': hint_txt|safe}
+      ) }}
+    {% else %}
+      {{ radios(form.login_authentication) }}
+    {% endif %}
+  {% endif %}
+{% endif %}
