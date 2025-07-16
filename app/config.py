@@ -217,6 +217,7 @@ class Test(Development):
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_RTL = True
     FF_ANNUAL_LIMIT = True
+    FF_AUTH_V2 = True
 
 
 class ProductionFF(Config):
@@ -242,6 +243,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
+    FF_AUTH_V2 = False
 
 
 class Production(Config):
@@ -258,6 +260,7 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_AUTH_V2 = True
 
 
 class Scratch(Production):
