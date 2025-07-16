@@ -86,8 +86,12 @@ def invite_user(service_id):
             mobile_number=True,
         )
     else:
+        service_has_email_auth = current_service.has_permission("email_auth")
+        if not service_has_email_auth:
+            form.login_authentication.data = "sms_auth"
+
         # assume sms_auth - this will be updated when the user provides their phone number or not
-        form.login_authentication.data = "sms_auth"
+        form.login_authentication.data = "email_auth"
 
         current_app.logger.info(
             "User {} attempting to invite user to service {} using 2FA {}".format(
@@ -114,6 +118,7 @@ def invite_user(service_id):
         return render_template(
             "views/invite-user.html",
             form=form,
+            service_has_email_auth=service_has_email_auth,  # TODO: remove this when FF_OPTIONAL_PHONE is removed
             mobile_number=True,
         )
 
