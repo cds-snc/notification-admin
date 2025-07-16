@@ -1,0 +1,5 @@
+{% macro render_test_codes_in_dev(key) %}
+  {% if key and config["NOTIFY_ENVIRONMENT"] == "development" and "notification.canada.ca" not in request.host %}
+    <input type="hidden" data-testid="auth_key" value="{{ key }}">
+  {% endif %}
+{% endmacro %}
