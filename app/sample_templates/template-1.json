@@ -1,0 +1,16 @@
+{
+    "id": "aee077c5-6f3d-4cb7-8d85-7b4dd0a6ee86",
+    "template_name": {
+        "en": "EN/FR Appointment reminder",
+        "fr": "EN/FR Rappel de rendez-vous"
+    },
+    "notification_type": "email",
+    "template_category": "reminder",
+    "personalisation": {
+        "date_en": "May 26, 2025", 
+        "date_fr": "26 mai 2025",
+        "name": "Jane Smith"
+    },
+    "subject": "Appointment: ((date))",
+    "content": "Hello ((name)),\nSample template content"
+}
