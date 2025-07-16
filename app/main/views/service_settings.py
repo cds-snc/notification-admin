@@ -909,7 +909,7 @@ def service_set_channel(service_id, channel):
     )
 
 
-# TODO: Remove this route when we remove FF_AUTH_V2
+# TODO: Remove this route AND TEMPLATE when we remove FF_AUTH_V2
 @main.route("/services/<service_id>/service-settings/set-auth-type", methods=["GET"])
 @user_has_permissions("manage_service")
 def service_set_auth_type(service_id):
