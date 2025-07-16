@@ -136,7 +136,6 @@ def user_profile_mobile_number():
 
     # determine if we are coming from the send page
     from_send_page = session.get("from_send_page", False)
-    from_2fa_page = session.get("from_2fa_page", False)
 
     if request.method == "POST":
         # get button presses
@@ -159,15 +158,9 @@ def user_profile_mobile_number():
             return redirect(url_for(".user_profile"))
 
         elif form.validate_on_submit():
-            session[NEW_MOBILE] = form.mobile_number.data
-            if not session.get(HAS_AUTHENTICATED) and not from_2fa_page == "user_profile_2fa":
-                return redirect(url_for(".user_profile_mobile_number_authenticate"))
-
-            current_user.refresh_session_id()
-            mobile_number = session[NEW_MOBILE]
-            del session[NEW_MOBILE]
-            current_user.update(mobile_number=mobile_number)
-            current_user.update(verified_phonenumber=True)
+            current_user.update(mobile_number=form.mobile_number.data)
+            flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+            return redirect(url_for(".user_profile"))
 
         else:
             return render_template(
@@ -184,9 +177,6 @@ def user_profile_mobile_number():
                 form_field=form.mobile_number,
                 from_send_page=from_send_page,
             )
-
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".verify_mobile_number"))
 
     return render_template(
         "views/user-profile/manage-phones.html",
@@ -483,6 +473,12 @@ def user_profile_2fa():
                 auth_type = "email_auth"
             elif new_auth_type == "sms":
                 auth_type = "sms_auth"
+
+                if not current_user.mobile_number:
+                    session["from_send_page"] = "user_profile_2fa"
+                    return redirect(url_for(".user_profile_mobile_number"))
+                elif not current_user.verified_phonenumber:
+                    return redirect(url_for(".verify_mobile_number"))
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 return redirect(url_for(".user_profile_add_security_keys"))
@@ -491,17 +487,10 @@ def user_profile_2fa():
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
 
-            # If the user is switching to SMS, ensure they have a mobile number
-            if auth_type == "sms_auth" and not current_user.mobile_number:
-                flash(_("You must add a mobile number to your profile to use this option."), "error")
-                session["from_send_page"] = "user_profile_2fa"
-                return redirect(url_for(".user_profile_mobile_number"))
-
-            # Update the user's authentication type
-            current_user.update(auth_type=auth_type)
-
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
+            # Update the user's auth type
+            current_user.update(auth_type=auth_type)
 
             # Redirect back to user profile and revoke their additional authentication
             session.pop(HAS_AUTHENTICATED, None)

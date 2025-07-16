@@ -140,11 +140,9 @@ def test_should_redirect_after_mobile_number_change(
         _data={"mobile_number": phone_number_to_register_with},
         _expected_status=302,
         _expected_redirect=url_for(
-            "main.user_profile_mobile_number_authenticate",
+            "main.user_profile",
         ),
     )
-    with client_request.session_transaction() as session:
-        assert session["new-mob"] == phone_number_to_register_with
 
 
 def test_should_show_authenticate_after_mobile_number_change(
@@ -468,58 +466,7 @@ class TestOptionalPhoneNumber:
             "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
-            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_authenticate",
-            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile",
-            ),
-        )
-
-    def test_should_verify_when_phone_number_set(
-        self,
-        client_request,
-        platform_admin_user,
-        app_,
-        mock_verify_password,
-        mock_send_change_email_verification,
-        mock_send_verify_code,
-        mock_check_verify_code,
-        mock_validate_2fa_method,
-    ):
-        client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"mobile_number": "6135555555"},
-            _expected_status=302,
-            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_authenticate",
-            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile_mobile_number_confirm",
-            ),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_confirm",
-            _data={"two_factor_code": "12345"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile",
-            ),
+            _expected_redirect=url_for("main.user_profile"),
         )
 
     def test_should_skip_sms_verify_when_remove_button_pressed(

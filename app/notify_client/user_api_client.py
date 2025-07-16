@@ -181,7 +181,7 @@ class UserApiClient(NotifyAdminAPIClient):
             return True, ""
         except HTTPError as e:
             if e.status_code == 400 or e.status_code == 404:
-                return False
+                return False, e.message
             raise e
 
     def get_users_for_service(self, service_id):
