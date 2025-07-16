@@ -23,6 +23,7 @@ def two_factor_email_sent():
     # Check if a FIDO2 key exists, if yes, return template
     user = User.from_id(user_id)
 
+    # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
     if len(user.security_keys):
         return render_template("views/two-factor-fido.html")
 
@@ -54,6 +55,7 @@ def two_factor_sms_sent():
     # Check if a FIDO2 key exists, if yes, return template
     user = User.from_id(user_id)
 
+    # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
     if len(user.security_keys):
         return render_template("views/two-factor-fido.html")
 
