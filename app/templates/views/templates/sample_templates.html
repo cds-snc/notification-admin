@@ -1,0 +1,30 @@
+{% from "components/pill.html" import pill %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% extends "admin_template.html" %}
+
+{% set page_title = _('GC Notify sample library') %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-medium">
+    {{ page_title }}
+  </h1>
+
+  <p class="mb-12 clear-both mt-12 block clear-both contain-floats">
+    Hi hi
+  </p>
+ 
+<!-- 
+  {{ pill(
+    items=[("email", "abc", "asdf", 0), ("sms", "qwer", "asdf", 0)],
+    current_value="email",
+    show_count=False,
+  ) }} -->
+
+<div class="panel panel-border-narrow pt-0 pb-0">
+ <h2 class="heading-medium mt-0 mb-10">More samples coming!</h2>
+    <p>We're just starting our library.</p>
+    <p class="mt-4 mb-0"><a href="https://google.com">Suggest a sample template</a>. Recommend a template topic or share your own templates. We'll consider adding your suggestions to our library.</p>
+  </div>
+{% endblock %}

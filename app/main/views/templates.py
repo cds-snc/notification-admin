@@ -1465,3 +1465,15 @@ def template_category(template_category_id):
     return render_template(
         "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )
+
+
+@main.route("/services/<service_id>/templates/sample-templates", methods=["GET"])
+@user_has_permissions()
+def view_sample_templates(service_id):
+    # xxx
+    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
+        return redirect(url_for(".choose_template", service_id=service_id))
+
+    return render_template(
+        "views/templates/sample_templates.html",
+    )
