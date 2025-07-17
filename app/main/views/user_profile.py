@@ -14,6 +14,7 @@ from flask import (
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
+from notifications_utils.decorators import requires_feature
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
@@ -157,8 +158,10 @@ def user_profile_mobile_number():
             return redirect(url_for(".user_profile"))
 
         elif form.validate_on_submit():
-            session[NEW_MOBILE] = form.mobile_number.data
-            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+            current_user.update(mobile_number=form.mobile_number.data)
+            flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+            return redirect(url_for(".user_profile"))
+
         else:
             return render_template(
                 "views/user-profile/change.html",
@@ -190,14 +193,14 @@ def user_profile_mobile_number_authenticate():
         return user_api_client.verify_password(current_user.id, pwd)
 
     form = ConfirmPasswordForm(_check_password)
-
     if NEW_MOBILE not in session:
         return redirect(url_for(".user_profile_mobile_number"))
 
     if form.validate_on_submit():
-        # if they are removing their phone number, skip the verification, set auth type to email
+        # if they are removing their phone number, skip verification, set auth type to email, and remove verified phone number flag
         if not session[NEW_MOBILE]:
             current_user.update(mobile_number=None, auth_type="email_auth")
+            current_user.update(verified_phonenumber=False)
 
             flash(_("Mobile number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
@@ -219,8 +222,8 @@ def user_profile_mobile_number_authenticate():
 @user_is_logged_in
 def user_profile_mobile_number_confirm():
     # Validate verify code for form
-    def _check_code(cde):
-        return user_api_client.check_verify_code(current_user.id, cde, "sms")
+    def _check_code(code):
+        return user_api_client.validate_2fa_method(current_user.id, code, "sms")
 
     if NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         return redirect(url_for(".user_profile_mobile_number"))
@@ -233,6 +236,7 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number)
+        current_user.update(verified_phonenumber=True)
 
         flash(_("Mobile number {} saved to your profile").format(mobile_number), "default_with_tick")
 
@@ -254,11 +258,7 @@ def user_profile_mobile_number_confirm():
             # Default redirect to user profile
             return redirect(url_for(".user_profile"))
 
-    return render_template(
-        "views/user-profile/confirm.html",
-        form_field=form.two_factor_code,
-        thing=_("mobile number"),
-    )
+    return render_template("views/user-profile/confirm.html", form=form, back_link=url_for(".user_profile_mobile_number"))
 
 
 @main.route("/user-profile/mobile-number/resend", methods=["GET", "POST"])
@@ -266,7 +266,7 @@ def user_profile_mobile_number_confirm():
 def sms_not_received():
     current_user.send_verify_code(to=session[NEW_MOBILE])
     flash(_("Verification code re-sent"), "default_with_tick")
-    return redirect(url_for(".user_profile_mobile_number_confirm"))
+    return redirect(url_for(".verify_mobile_number"))
 
 
 @main.route("/user-profile/password", methods=["GET", "POST"])
@@ -388,9 +388,46 @@ def user_profile_disable_platform_admin_view():
     return render_template("views/user-profile/disable-platform-admin-view.html", form=form)
 
 
+@main.route("/user-profile/verify-mobile-number", methods=["GET", "POST"])
+@user_is_logged_in
+@requires_feature("FF_AUTH_V2")
+def verify_mobile_number():
+    """
+    This route is used to verify the user's mobile number.
+    It sends a verification code to the user's mobile number and
+    allows them to confirm it.
+
+    """
+    if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
+        return redirect(url_for(".user_profile_2fa"))
+
+    # Validate password for form
+    def _check_code(code):
+        return user_api_client.validate_2fa_method(current_user.id, code, "sms")
+
+    form = TwoFactorForm(_check_code)
+
+    if form.validate_on_submit():
+        current_user.update(verified_phonenumber=True)
+        current_user.update(auth_type="sms_auth")
+        flash(_("Two-step verification method updated"), "default_with_tick")
+        return redirect(url_for(".user_profile_2fa"))
+    else:
+        current_user.send_verify_code(to=current_user.mobile_number)
+
+    return render_template(
+        "views/user-profile/confirm.html",
+        form=form,
+        back_link=url_for(".user_profile_2fa")
+        if NEW_MOBILE_PASSWORD_CONFIRMED not in session
+        else url_for(".user_profile_mobile_number"),
+    )
+
+
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
+    # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
@@ -436,6 +473,12 @@ def user_profile_2fa():
                 auth_type = "email_auth"
             elif new_auth_type == "sms":
                 auth_type = "sms_auth"
+
+                if not current_user.mobile_number:
+                    session["from_send_page"] = "user_profile_2fa"
+                    return redirect(url_for(".user_profile_mobile_number"))
+                elif not current_user.verified_phonenumber:
+                    return redirect(url_for(".verify_mobile_number"))
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 return redirect(url_for(".user_profile_add_security_keys"))
@@ -444,17 +487,10 @@ def user_profile_2fa():
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
 
-            # If the user is switching to SMS, ensure they have a mobile number
-            if auth_type == "sms_auth" and not current_user.mobile_number:
-                flash(_("You must add a mobile number to your profile to use this option."), "error")
-                session["from_send_page"] = "user_profile_2fa"
-                return redirect(url_for(".user_profile_mobile_number"))
-
-            # Update the user's authentication type
-            current_user.update(auth_type=auth_type)
-
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
+            # Update the user's auth type
+            current_user.update(auth_type=auth_type)
 
             # Redirect back to user profile and revoke their additional authentication
             session.pop(HAS_AUTHENTICATED, None)
