@@ -162,7 +162,7 @@ def test_verify_email_redirects_to_verify_if_token_valid(
                 "email": api_user_pending["email_address"],
                 "id": api_user_pending["id"],
             }
-        # Ensure activate_user was not called (since user has a mobile number)
+        # Ensure activate_user was called
         mock_activate_user.assert_called()
 
 
