@@ -27,7 +27,14 @@
         </a>
       {% endcall %}
       {% call field() %}
-        {{ item.notification_type | capitalize }}
+        <div class="flex items-center">
+          {% if item.notification_type == 'email' %}
+            paper_plane_icon
+          {% elif item.notification_type == 'sms' %}
+            speech_bubble_icon
+          {% endif %}
+          {{ item.notification_type | format_email_sms }}
+        </div>
       {% endcall %}
     {% endcall %}
   {% else %}
