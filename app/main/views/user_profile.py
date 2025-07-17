@@ -420,10 +420,9 @@ def verify_mobile_number():
     form = TwoFactorForm(_check_code)
 
     if form.validate_on_submit():
+        current_user.update(verified_phonenumber=True)
         if from_send_page == "send_test":
             return redirect(url_for(".send_test", service_id=send_page_service_id, template_id=send_page_template_id))
-
-        current_user.update(verified_phonenumber=True)
         current_user.update(auth_type="sms_auth")
         flash(_("Two-step verification method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
