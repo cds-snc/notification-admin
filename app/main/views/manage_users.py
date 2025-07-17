@@ -54,43 +54,73 @@ def invite_user(service_id):
         all_template_folders=current_service.all_template_folders,
         folder_permissions=[f["id"] for f in current_service.all_template_folders],
     )
+    if current_app.config["FF_AUTH_V2"]:
+        # assume email_auth - this will be updated when the user provides their phone number or not
+        form.login_authentication.data = "email_auth"
 
-    # TODO: remove this when FF_OPTIONAL_PHONE is removed
-    service_has_email_auth = current_service.has_permission("email_auth")
-    if not service_has_email_auth:
-        form.login_authentication.data = "sms_auth"
-
-    # assume sms_auth - this will be updated when the user provides their phone number or not
-    form.login_authentication.data = "email_auth"
-
-    current_app.logger.info(
-        "User {} attempting to invite user to service {} using 2FA {}".format(
-            current_user.id, service_id, form.login_authentication.data
+        current_app.logger.info(
+            "User {} attempting to invite user to service {} using 2FA {}".format(
+                current_user.id, service_id, form.login_authentication.data
+            )
         )
-    )
-    if form.validate_on_submit():
-        email_address = form.email_address.data
-        invited_user = InvitedUser.create(
-            current_user.id,
-            service_id,
-            email_address,
-            form.permissions,
-            form.login_authentication.data,
-            form.folder_permissions.data,
-        )
+        if form.validate_on_submit():
+            email_address = form.email_address.data
+            invited_user = InvitedUser.create(
+                current_user.id,
+                service_id,
+                email_address,
+                form.permissions,
+                form.login_authentication.data,
+                form.folder_permissions.data,
+            )
 
-        flash(
-            "{} {}".format(_l("Invite sent to"), invited_user.email_address),
-            "default_with_tick",
-        )
-        return redirect(url_for(".manage_users", service_id=service_id))
+            flash(
+                "{} {}".format(_l("Invite sent to"), invited_user.email_address),
+                "default_with_tick",
+            )
+            return redirect(url_for(".manage_users", service_id=service_id))
 
-    return render_template(
-        "views/invite-user.html",
-        form=form,
-        service_has_email_auth=service_has_email_auth,  # TODO: remove this when FF_OPTIONAL_PHONE is removed
-        mobile_number=True,
-    )
+        return render_template(
+            "views/invite-user.html",
+            form=form,
+            mobile_number=True,
+        )
+    else:
+        service_has_email_auth = current_service.has_permission("email_auth")
+        if not service_has_email_auth:
+            form.login_authentication.data = "sms_auth"
+
+        # assume sms_auth - this will be updated when the user provides their phone number or not
+        form.login_authentication.data = "email_auth"
+
+        current_app.logger.info(
+            "User {} attempting to invite user to service {} using 2FA {}".format(
+                current_user.id, service_id, form.login_authentication.data
+            )
+        )
+        if form.validate_on_submit():
+            email_address = form.email_address.data
+            invited_user = InvitedUser.create(
+                current_user.id,
+                service_id,
+                email_address,
+                form.permissions,
+                form.login_authentication.data,
+                form.folder_permissions.data,
+            )
+
+            flash(
+                "{} {}".format(_l("Invite sent to"), invited_user.email_address),
+                "default_with_tick",
+            )
+            return redirect(url_for(".manage_users", service_id=service_id))
+
+        return render_template(
+            "views/invite-user.html",
+            form=form,
+            service_has_email_auth=service_has_email_auth,  # TODO: remove this when FF_OPTIONAL_PHONE is removed
+            mobile_number=True,
+        )
 
 
 @main.route("/services/<service_id>/users/<user_id>", methods=["GET", "POST"])
@@ -123,8 +153,6 @@ def edit_user_permissions(service_id, user_id):
             permissions=form.permissions,
             folder_permissions=form.folder_permissions.data,
         )
-        if service_has_email_auth:
-            user.update(auth_type=form.login_authentication.data)
         return redirect(url_for(".manage_users", service_id=service_id))
 
     return render_template(
