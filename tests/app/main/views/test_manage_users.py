@@ -888,7 +888,7 @@ def test_invite_user_with_email_auth_service_REMOVE_FF(
                 sample_invite["service"],
                 email_address,
                 expected_permissions,
-                "sms_auth",
+                "email_auth",
                 [],
             )
         else:
