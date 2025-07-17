@@ -425,7 +425,7 @@ def verify_mobile_number():
             return redirect(url_for(".send_test", service_id=send_page_service_id, template_id=send_page_template_id))
         current_user.update(auth_type="sms_auth")
         flash(_("Two-step verification method updated"), "default_with_tick")
-        return redirect(url_for(".user_profile_2fa"))
+        return redirect(url_for(".user_profile"))
     else:
         current_user.send_verify_code(to=current_user.mobile_number)
 
