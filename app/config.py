@@ -217,6 +217,7 @@ class Test(Development):
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_RTL = True
     FF_ANNUAL_LIMIT = True
+    FF_SAMPLE_TEMPLATES = True
 
 
 class ProductionFF(Config):
@@ -242,6 +243,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_RTL = False
     FF_ANNUAL_LIMIT = False
+    FF_SAMPLE_TEMPLATES = False
 
 
 class Production(Config):
