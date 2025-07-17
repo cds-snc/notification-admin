@@ -1,5 +1,6 @@
 {% from "components/pill.html" import pill %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/table.html" import list_table, field %}
 
 {% extends "admin_template.html" %}
 
@@ -11,18 +12,29 @@
     {{ page_title }}
   </h1>
 
-  <p class="mb-12 clear-both mt-12 block clear-both contain-floats">
-    Hi hi
-  </p>
- 
-<!-- 
-  {{ pill(
-    items=[("email", "abc", "asdf", 0), ("sms", "qwer", "asdf", 0)],
-    current_value="email",
-    show_count=False,
-  ) }} -->
+  {% if sample_templates %}
+    {% call(item, row_number) list_table(
+      sample_templates,
+      caption=_('Sample templates'),
+      field_headings=[_('Template name'), _('Notification type')],
+      field_headings_visible=True,
+      caption_visible=False,
+      testid="sample-templates-table"
+    ) %}
+      {% call field() %}
+        <a href="{{ url_for('main.view_sample_template', service_id=current_service.id, template_id=item.id) }}">
+          {{ item.template_name.get(session.get('userlang', 'en'), item.template_name.get('en', 'Unknown')) }}
+        </a>
+      {% endcall %}
+      {% call field() %}
+        {{ item.notification_type | capitalize }}
+      {% endcall %}
+    {% endcall %}
+  {% else %}
+    <p class="mt-4">{{ _('No sample templates available.') }}</p>
+  {% endif %}
 
-<div class="panel panel-border-narrow pt-0 pb-0">
+<div class="panel panel-border-narrow mt-8 pt-0 pb-0">
  <h2 class="heading-medium mt-0 mb-10">More samples coming!</h2>
     <p>We're just starting our library.</p>
     <p class="mt-4 mb-0"><a href="https://google.com">Suggest a sample template</a>. Recommend a template topic or share your own templates. We'll consider adding your suggestions to our library.</p>
