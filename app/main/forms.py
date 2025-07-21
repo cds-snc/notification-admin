@@ -1030,7 +1030,7 @@ class ContactNotify(StripWhitespaceForm):
 
 
 class ContactMessageStep(ContactNotify):
-    def no_api_keys(self, field):
+    def validate_no_api_keys(self, field):
         # Match the pattern for API keys, up to 5 characters can be missing from the end to catch any attempts to submit an incomplete API key
         pattern = r"(?P<prefix>gcntfy-)(?P<keyname>.*)(?P<service_id>[-A-Za-z0-9]{36})-(?P<key_id>[-A-Za-z0-9]{31,36})"
         # Search for the pattern in the field data. Strip whitespace to catch any attempts to submit an API with spaces
@@ -1045,7 +1045,7 @@ class ContactMessageStep(ContactNotify):
         validators=[
             DataRequired(message=_l("You need to enter something if you want to contact us")),
             Length(max=2000),
-            no_api_keys,
+            validate_no_api_keys,
         ],
     )
 

@@ -116,15 +116,31 @@ def test_message_step_validates(client_request, support_type, mocker):
 
 
 @pytest.mark.parametrize(
-    "support_type, api_key",
+    "support_type, api_key, expected_api_key",
     [
-        ("ask_question", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0"),
-        ("technical_support", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122"),
-        ("give_feedback", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0"),
-        ("other", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407 - a37497a57506 - 3d844edf-8d35-48ac-975b-e847b4f122b0"),
+        (
+            "ask_question",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0",
+        ),
+        (
+            "technical_support",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122",
+        ),
+        (
+            "give_feedback",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0",
+        ),
+        (
+            "other",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407 - a37497a57506 - 3d844edf-8d35-48ac-975b-e847b4f122b0",
+            "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0",
+        ),
     ],
 )
-def test_message_steps_allows_no_api_keys(client_request, support_type, api_key, mocker):
+def test_message_step_rejects_api_keys(client_request, support_type, api_key, expected_api_key, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
     page = client_request.post(
@@ -135,16 +151,15 @@ def test_message_steps_allows_no_api_keys(client_request, support_type, api_key,
             "name": "John",
             "email_address": "john@example.com",
             "support_type": support_type,
-            "message": api_key,
         },
     )
 
-    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data={"message": ""})
+    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data={"message": api_key})
 
     assert_has_back_link(page)
 
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
-        ("message", "You need to enter something if you want to contact us")
+        ("message", f"You entered ‘{expected_api_key}’. If this is an API key, remove before sending.")
     ]
 
     mock_send_contact_request.assert_not_called()
