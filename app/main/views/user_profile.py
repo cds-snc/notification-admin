@@ -143,7 +143,7 @@ def user_profile_mobile_number():
 
     # determine if we are coming from the send page
     from_send_page = session.get("from_send_page", False)
-    session["from_send_page"] = request.args.get("from_send_page")
+    session["from_send_page"] = request.args.get("from_send_page") if not from_send_page == "user_profile_2fa" else from_send_page
     session["send_page_service_id"] = request.args.get("service_id")
     session["send_page_template_id"] = request.args.get("template_id")
 
@@ -170,7 +170,10 @@ def user_profile_mobile_number():
         elif form.validate_on_submit():
             current_user.update(mobile_number=form.mobile_number.data)
             flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+
             if from_send_page == "send_test":
+                return redirect(url_for(".verify_mobile_number"))
+            elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
                 return redirect(url_for(".verify_mobile_number"))
             return redirect(url_for(".user_profile"))
 
@@ -189,6 +192,9 @@ def user_profile_mobile_number():
                 form_field=form.mobile_number,
                 from_send_page=from_send_page,
             )
+
+    if from_send_page == "user_profile_2fa":
+        return redirect(url_for(".verify_mobile_number"))
 
     return render_template(
         "views/user-profile/manage-phones.html",
