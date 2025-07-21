@@ -58,6 +58,7 @@ from app.models.template_list import (
     TemplateLists,
 )
 from app.notify_client.notification_counts_client import notification_counts_client
+from app.sample_template_utils import get_sample_templates
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -1465,3 +1466,26 @@ def template_category(template_category_id):
     return render_template(
         "views/templates/template_category.html", search_form=SearchByNameForm(), template_category=template_category, form=form
     )
+
+
+@main.route("/services/<service_id>/templates/sample-library", methods=["GET"])
+@user_has_permissions()
+def view_sample_library(service_id):
+    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
+        return redirect(url_for(".choose_template", service_id=service_id))
+
+    sample_templates = get_sample_templates()
+
+    return render_template(
+        "views/templates/sample_library.html",
+        sample_templates=sample_templates,
+    )
+
+
+@main.route("/services/<service_id>/templates/sample-templates/<template_id>", methods=["GET"])
+@user_has_permissions()
+def view_sample_template(service_id, template_id):
+    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
+        return redirect(url_for(".choose_template", service_id=service_id))
+    # TODO: implement this page
+    return redirect(url_for(".view_sample_library", service_id=service_id))
