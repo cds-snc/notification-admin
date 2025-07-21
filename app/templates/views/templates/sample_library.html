@@ -4,13 +4,24 @@
 
 {% extends "admin_template.html" %}
 
-{% set page_title = _('GC Notify sample library') %}
-
 {% block maincolumn_content %}
 
   <h1 class="heading-medium">
-    {{ page_title }}
+    {{ _('GC Notify sample library') }}
   </h1>
+
+  {% if total_count > 0 %}
+    {{ pill(
+      items=[
+        [_('Email'), 'email', url_for('main.view_sample_library', service_id=current_service.id, type='email'), email_count, 'fa-solid fa-paper-plane'],
+        [_('Text message'), 'sms', url_for('main.view_sample_library', service_id=current_service.id, type='sms'), sms_count, 'fa-solid fa-message']
+      ],
+      current_value=notification_type_filter,
+      show_count=False,
+      label=_('Filter templates by type')
+    ) }}
+  {% endif %}
+
   {% set lang = session.get('userlang', 'en') %}
   {% if sample_templates %}
     {% call(item, row_number) list_table(
