@@ -2815,17 +2815,16 @@ class TestViewSampleLibrary:
             table = page.select_one('[data-testid="sample-templates-table"]')
             assert table is not None
 
-            # Should show both templates
+            # Should show only email templates by default (filtered)
             template_links = table.select("a")
-            assert len(template_links) == 2
+            assert len(template_links) == 1
 
-            # Check template names are displayed
+            # Check template names are displayed - only email template shown
             assert "Welcome Email" in template_links[0].text
-            assert "SMS Reminder" in template_links[1].text
 
-            # Check notification type icons/text are displayed
+            # Check notification type icons/text are displayed for the email template
             notification_types = table.select(".text-gray-700")
-            assert len(notification_types) == 2
+            assert len(notification_types) == 1
 
     def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
         """Should show empty state when no sample templates exist"""
@@ -2862,12 +2861,11 @@ class TestViewSampleLibrary:
                 _test_page_title=False,
             )
 
-            # Should show French template names
+            # Should show French template names - only email template by default
             table = page.select_one('[data-testid="sample-templates-table"]')
             template_links = table.select("a")
 
             assert "Courriel de bienvenue" in template_links[0].text
-            assert "Rappel SMS" in template_links[1].text
 
     def test_template_links_have_correct_urls(self, client_request, mock_sample_templates, mocker, app_):
         """Should have correct URLs for template links"""
@@ -2882,17 +2880,11 @@ class TestViewSampleLibrary:
 
             template_links = page.select('[data-testid="sample-templates-table"] a')
 
-            # Check first template link
+            # Check first template link - only email template shown by default
             expected_url_1 = url_for(
                 "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="11111111-1111-1111-1111-111111111111"
             )
             assert template_links[0]["href"] == expected_url_1
-
-            # Check second template link
-            expected_url_2 = url_for(
-                "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="22222222-2222-2222-2222-222222222222"
-            )
-            assert template_links[1]["href"] == expected_url_2
 
     @pytest.mark.parametrize(
         "notification_type,expected_icon",
@@ -2901,18 +2893,29 @@ class TestViewSampleLibrary:
             ("sms", "fa-message"),
         ],
     )
-    def test_shows_correct_notification_type_icons(self, client_request, mocker, notification_type, expected_icon, app_):
+    def test_shows_correct_notification_type_icons(
+        self, client_request, mock_sample_templates, mocker, notification_type, expected_icon, app_
+    ):
         """Should show correct icons for different notification types"""
-        mock_templates = [
-            {
-                "id": "test-template-id",
-                "notification_type": notification_type,
-                "template_name": {"en": "Test Template", "fr": "Gabarit de test"},
-                "content": "Test content",
-            }
-        ]
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
 
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_templates)
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            # Set appropriate filter to show the notification type we want to test
+            type_param = "sms" if notification_type == "sms" else None
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type=type_param,
+                _test_page_title=False,
+            )
+
+            # Check for the correct icon class
+            icon = page.select_one(f".{expected_icon}")
+            assert icon is not None
+
+    def test_pill_menu_filters_email_templates_by_default(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only email templates by default"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -2921,6 +2924,58 @@ class TestViewSampleLibrary:
                 _test_page_title=False,
             )
 
-            # Check for the correct icon class
-            icon = page.select_one(f".{expected_icon}")
-            assert icon is not None
+            # Should show only email templates by default
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "Welcome Email" in template_links[0].text
+            assert "SMS Reminder" not in page.text
+
+            # Check pill menu is present and has correct number of options
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+            pill_links = pill_nav.select("a")
+            assert len(pill_links) == 2
+
+            # Email pill should be selected (has pill-selected-item class)
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-selected-item" in email_pill.get("class", [])
+
+            # SMS pill should be unselected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-unselected-item" in sms_pill.get("class", [])
+
+    def test_pill_menu_filters_sms_templates_when_type_param_is_sms(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only SMS templates when ?type=sms query param is provided"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type="sms",
+                _test_page_title=False,
+            )
+
+            # Should show only SMS templates
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "SMS Reminder" in template_links[0].text
+            assert "Welcome Email" not in page.text
+
+            # Check pill menu state - SMS should be selected
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+
+            # SMS pill should be selected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-selected-item" in sms_pill.get("class", [])
+
+            # Email pill should be unselected
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-unselected-item" in email_pill.get("class", [])
