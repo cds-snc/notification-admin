@@ -1477,7 +1477,7 @@ def view_sample_library(service_id):
     sample_templates = get_sample_templates()
 
     # Get the current filter from query params
-    notification_type_filter = request.args.get("type", "all")
+    notification_type_filter = request.args.get("type", "email")
 
     # Filter templates based on notification type
     if notification_type_filter == "email":
@@ -1485,7 +1485,7 @@ def view_sample_library(service_id):
     elif notification_type_filter == "sms":
         filtered_templates = [t for t in sample_templates if t.get("notification_type") == "sms"]
     else:
-        filtered_templates = sample_templates
+        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
 
     email_count = len([t for t in sample_templates if t.get("notification_type") == "email"])
     sms_count = len([t for t in sample_templates if t.get("notification_type") == "sms"])
