@@ -25,11 +25,17 @@
   ) }}
 
   <p>
-    {{ user.email_address }}&emsp;<a href="{{ url_for('.edit_user_email', service_id=current_service.id, user_id=user.id)}}">{{ _('Change') }}</a>
+    {{ user.email_address }} 
+    {% if not config["FF_AUTH_V2"] %}
+      &emsp;<a href="{{ url_for('.edit_user_email', service_id=current_service.id, user_id=user.id)}}">{{ _('Change') }}</a>
+    {% endif %}
   </p>
   {% if mobile_number %}
     <p id="user_mobile_number">
-      {{ mobile_number }}&emsp;<a href="{{ url_for('.edit_user_mobile_number', service_id=current_service.id, user_id=user.id)}}">{{ _('Change') }}</a>
+      {{ mobile_number }}&emsp;
+      {% if not config["FF_AUTH_V2"] %}
+        <a href="{{ url_for('.edit_user_mobile_number', service_id=current_service.id, user_id=user.id)}}">{{ _('Change') }}</a>
+      {% endif %}
     </p>
   {% endif %}
   <div class="grid-row contain-floats">
