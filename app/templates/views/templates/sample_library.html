@@ -1,0 +1,60 @@
+{% from "components/pill.html" import pill %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/table.html" import list_table, field %}
+
+{% extends "admin_template.html" %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-medium">
+    {{ _('GC Notify sample library') }}
+  </h1>
+
+  {% if total_count > 0 %}
+    {{ pill(
+      items=[
+        [_('Email'), 'email', url_for('main.view_sample_library', service_id=current_service.id, type='email'), email_count, 'fa-solid fa-paper-plane'],
+        [_('Text message'), 'sms', url_for('main.view_sample_library', service_id=current_service.id, type='sms'), sms_count, 'fa-solid fa-message']
+      ],
+      current_value=notification_type_filter,
+      show_count=False,
+      label=_('Filter templates by type')
+    ) }}
+  {% endif %}
+
+  {% set lang = session.get('userlang', 'en') %}
+  {% if sample_templates %}
+    {% call(item, row_number) list_table(
+      sample_templates,
+      caption=_('Sample templates'),
+      field_headings=[_('Template name'), _('Notification type')],
+      field_headings_visible=False,
+      caption_visible=False,
+      testid="sample-templates-table"
+    ) %}
+      {% call field() %}
+        <a href="{{ url_for('main.view_sample_template', service_id=current_service.id, template_id=item.id) }}">
+          {{ item.template_name.get(lang) }}
+        </a>
+      {% endcall %}
+      {% call field() %}
+        <div class="flex items-center text-gray-700">
+          {% if item.notification_type == 'email' %}
+            <i class="fa-solid fa-paper-plane mr-4"></i>
+          {% elif item.notification_type == 'sms' %}
+            <i class="fa-solid fa-message mr-4"></i>
+          {% endif %}
+          {{ item.notification_type | format_email_sms }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+  {% else %}
+    <p class="mt-4">{{ _('No sample templates available.') }}</p>
+  {% endif %}
+
+<div class="panel panel-border-narrow mt-16 pt-0 pb-0">
+ <h2 class="heading-medium mt-0 mb-10">{{ _("More samples coming!") }}</h2>
+    <p>{{ _("We're just starting our library.") }}</p>
+    <p class="mt-4 mb-0"><a href="{{ url_for('main.contact') }}">{{ _("Suggest a sample template") }}</a>. {{ _("Recommend a template topic or share your own templates. We'll consider adding your suggestions to our library.") }}</p>
+  </div>
+{% endblock %}
