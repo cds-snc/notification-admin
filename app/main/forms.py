@@ -1,3 +1,4 @@
+import re
 import weakref
 from datetime import datetime, timedelta
 from itertools import chain
@@ -31,16 +32,7 @@ from wtforms import (
 )
 from wtforms import RadioField as WTFormsRadioField
 from wtforms.fields import EmailField, SearchField, TelField
-from wtforms.validators import (
-    URL,
-    AnyOf,
-    DataRequired,
-    InputRequired,
-    Length,
-    Optional,
-    Regexp,
-    StopValidation,
-)
+from wtforms.validators import URL, AnyOf, DataRequired, InputRequired, Length, Optional, Regexp, StopValidation
 from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import current_service, format_thousands, format_thousands_localized
@@ -1038,9 +1030,23 @@ class ContactNotify(StripWhitespaceForm):
 
 
 class ContactMessageStep(ContactNotify):
+    def no_api_keys(form, field):
+        # Match the pattern for API keys, up to 5 characters can be missing from the end to catch any attempts to submit an incomplete API key
+        pattern = r"(?P<prefix>gcntfy-)(?P<keyname>.*)(?P<service_id>[-A-Za-z0-9]{36})-(?P<key_id>[-A-Za-z0-9]{31,36})"
+        # Search for the pattern in the field data. Strip whitespace to catch any attempts to submit an API with spaces
+        field_data_without_spaces = "".join(field.data.split())
+        match = re.search(pattern, field_data_without_spaces)
+        if match:
+            found = match.group(0)
+            raise ValidationError(_l(f"You entered ‘{found}’. If this is an API key, remove before sending."))
+
     message = TextAreaField(
         _l("Message"),
-        validators=[DataRequired(message=_l("You need to enter something if you want to contact us")), Length(max=2000)],
+        validators=[
+            DataRequired(message=_l("You need to enter something if you want to contact us")),
+            Length(max=2000),
+            no_api_keys,
+        ],
     )
 
 

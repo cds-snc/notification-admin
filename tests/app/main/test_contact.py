@@ -115,6 +115,41 @@ def test_message_step_validates(client_request, support_type, mocker):
     mock_send_contact_request.assert_not_called()
 
 
+@pytest.mark.parametrize(
+    "support_type, api_key",
+    [
+        ("ask_question", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-000012345678"),
+        ("technical_support", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-00001234567"),
+        ("give_feedback", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111"),
+        ("other", "gcntfy-test-11111111-1111-1111-1111 - 111111111111 - 11111111-1111-1111-1111-111111111111"),
+    ],
+)
+def test_message_steps_allows_no_api_keys(client_request, support_type, api_key, mocker):
+    mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
+
+    page = client_request.post(
+        ".contact",
+        _expected_status=200,
+        _follow_redirects=True,
+        _data={
+            "name": "John",
+            "email_address": "john@example.com",
+            "support_type": support_type,
+            "message": api_key,
+        },
+    )
+
+    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data={"message": ""})
+
+    assert_has_back_link(page)
+
+    assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
+        ("message", "You need to enter something if you want to contact us")
+    ]
+
+    mock_send_contact_request.assert_not_called()
+
+
 def test_saves_form_to_session(client_request, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
