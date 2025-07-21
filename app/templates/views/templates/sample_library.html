@@ -15,8 +15,8 @@
   {% if total_count > 0 %}
     {{ pill(
       items=[
-        [_('Email'), 'email', url_for('main.view_sample_library', service_id=current_service.id, type='email'), email_count],
-        [_('Text message'), 'sms', url_for('main.view_sample_library', service_id=current_service.id, type='sms'), sms_count]
+        [_('Email'), 'email', url_for('main.view_sample_library', service_id=current_service.id, type='email'), email_count, 'fa-solid fa-paper-plane'],
+        [_('Text message'), 'sms', url_for('main.view_sample_library', service_id=current_service.id, type='sms'), sms_count, 'fa-solid fa-message']
       ],
       current_value=notification_type_filter,
       show_count=False,
