@@ -118,10 +118,10 @@ def test_message_step_validates(client_request, support_type, mocker):
 @pytest.mark.parametrize(
     "support_type, api_key",
     [
-        ("ask_question", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-000012345678"),
-        ("technical_support", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-00001234567"),
-        ("give_feedback", "gcntfy-test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-000012345678"),
-        ("other", "gcntfy-test-11111111-1111-1111-1111 - 111111111111 - 11111111-1111-1111-1111-111111111111"),
+        ("ask_question", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0"),
+        ("technical_support", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122"),
+        ("give_feedback", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407-a37497a57506-3d844edf-8d35-48ac-975b-e847b4f122b0"),
+        ("other", "gcntfy-my_test_key-26785a09-ab16-4eb0-8407 - a37497a57506 - 3d844edf-8d35-48ac-975b-e847b4f122b0"),
     ],
 )
 def test_message_steps_allows_no_api_keys(client_request, support_type, api_key, mocker):
