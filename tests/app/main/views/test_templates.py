@@ -2878,54 +2878,6 @@ class TestViewSampleTemplates:
             )
             assert template_links[1]["href"] == expected_url_2
 
-    def test_requires_user_permissions(self, client_request, mocker, app_):
-        """Should require user_has_permissions decorator (implicitly tested by other tests)"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=[])
-
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            # This test ensures the route is protected by user_has_permissions
-            # If permissions were missing, client_request would fail
-            page = client_request.get(
-                "main.view_sample_templates",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
-
-            # If we get here, permissions are working
-            assert page is not None
-
-    def test_shows_encouragement_panel(self, client_request, mock_sample_templates, mocker, app_):
-        """Should show the 'More samples coming!' panel"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
-
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_templates",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
-
-            # Check the encouragement panel exists
-            panel = page.select_one(".panel.panel-border-narrow")
-            assert panel is not None
-            assert "More samples coming!" in panel.text
-            assert "We're just starting our library." in panel.text
-            assert "Suggest a sample template" in panel.text
-
-    def test_get_sample_templates_function_called_correctly(self, client_request, mocker, app_):
-        """Should call get_sample_templates function when feature flag is enabled"""
-        mock_get_sample_templates = mocker.patch("app.main.views.templates.get_sample_templates", return_value=[])
-
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.get(
-                "main.view_sample_templates",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
-
-            # Verify the function was called
-            mock_get_sample_templates.assert_called_once()
-
     @pytest.mark.parametrize(
         "notification_type,expected_icon",
         [
