@@ -4,6 +4,7 @@ from unittest.mock import ANY, MagicMock, Mock, patch
 
 import pytest
 from flask import url_for
+from flask_login import current_user
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
@@ -160,6 +161,7 @@ class TestSendOtherCategoryInfo:
         fake_uuid,
         app_,
     ):
+        current_user.verified_phonenumber = True
         mock_get_service_template_with_process_type(mocker, "bulk", None)
         name = "new name"
         content = "template <em>content</em> with & entity"
@@ -599,6 +601,7 @@ def test_view_non_letter_template_does_not_display_postage(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -697,6 +700,7 @@ def test_should_be_able_to_view_a_template_with_links(
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions + ["view_activity"]
     client_request.login(active_user_with_permissions)
+    current_user.verified_phonenumber = True
 
     page = client_request.get(
         ".view_template",
@@ -727,6 +731,7 @@ def test_should_show_template_id_on_template_page(
     fake_uuid,
     mock_get_limit_stats,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -792,6 +797,7 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     msg = "here:\tare some “fancy quotes” and zero\u200bwidth\u200bspaces"
     rendered_msg = 'here: are some "fancy quotes" and zerowidthspaces'
 
@@ -1292,6 +1298,7 @@ def test_should_redirect_when_saving_a_template(
     app_,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     name = "new name"
     content = "template <em>content</em> with & entity"
@@ -1989,6 +1996,7 @@ def test_should_show_delete_template_page_with_time_block(
     mocker,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-01 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         notification = single_notification_json("1234", template=template)
@@ -2016,6 +2024,7 @@ def test_should_show_delete_template_page_with_time_block(
 def test_should_show_delete_template_page_with_time_block_for_empty_notification(
     client_request, mock_get_service_template, mock_get_template_folders, mocker, fake_uuid, mock_get_limit_stats
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-08 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         single_notification_json("1234", template=template)
@@ -2049,6 +2058,7 @@ def test_should_show_delete_template_page_with_never_used_block(
     fake_uuid,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mocker.patch(
         "app.template_statistics_client.get_template_statistics_for_template",
         side_effect=HTTPError(response=Mock(status_code=404), message="Default message"),
@@ -2437,6 +2447,7 @@ def test_should_show_message_before_redacting_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2462,6 +2473,7 @@ def test_should_show_redact_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.post(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2484,6 +2496,7 @@ def test_should_show_hint_once_template_redacted(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     template = create_template(redact_personalisation=True)
     mocker.patch("app.service_api_client.get_service_template", return_value=template)
 
@@ -2646,6 +2659,7 @@ def test_template_should_show_phone_number_in_correct_language(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     # check english
     page = client_request.get(
         ".view_template",
@@ -2673,6 +2687,7 @@ def test_should_hide_category_name_from_template_list_if_marked_hidden(
     mock_get_template_folders,
     mock_get_more_service_templates_than_can_fit_onscreen,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.choose_template",
         service_id=SERVICE_ONE_ID,
@@ -2706,6 +2721,7 @@ class TestAnnualLimits:
         buttons_shown,
         app_,
     ):
+        current_user.verified_phonenumber = True
         with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             mock_notification_counts_client.get_limit_stats.return_value = {
                 "email": {
