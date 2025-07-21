@@ -8,13 +8,19 @@
   label=""
 ) %}
   {% set ns = namespace(current_value_not_in_items=True) %}
-  {% for label, option, link, count in items %}
+  {% for item in items %}
+    {% set option = item[1] %}
     {% if current_value == option %}
       {% set ns.current_value_not_in_items = False %}
     {% endif %}
   {% endfor %}
   <nav class='pill flex' aria-label="{{ label }}">
-    {% for label, option, link, count in items %}
+    {% for item in items %}
+      {% set label_text = item[0] %}
+      {% set option = item[1] %}
+      {% set link = item[2] %}
+      {% set count = item[3] %}
+      {% set icon = item[4] if item|length > 4 else None %}
       {% if current_value == option or (loop.index == 1 and ns.current_value_not_in_items) %}
         <a href="{{ link }}" class='pill-selected-item' aria-current='true'>
       {% else %}
@@ -24,9 +30,11 @@
           <div class="pill-content{% if show_count %} pill-count-item{% else %} pill-centered-item{% endif %}">
           {% if show_count %}
             <div>{{ big_number(count, **big_number_args) }}</div>
-            <span class="pill-label">{{ _(label) }}</span>
+            <span class="pill-label">
+              {% if icon %}<i class="{{ icon }} mr-4"></i>{% endif %}{{ _(label_text) }}
+            </span>
           {% else %}
-            {{ _(label) }}
+            {% if icon %}<i class="{{ icon }} mr-4"></i>{% endif %}{{ _(label_text) }}
           {% endif %}
           </div>
 
