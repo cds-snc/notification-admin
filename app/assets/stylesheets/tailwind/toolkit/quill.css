@@ -1,0 +1,7 @@
+.ql-toolbar .ql-text-direction {
+    @apply inline-block w-auto min-w-20;
+}
+.ql-picker .ql-picker-label[data-label]:not([data-label='']),
+.ql-picker .ql-picker-item[data-label]:not([data-label='']) {
+  content: attr(data-label);
+}
