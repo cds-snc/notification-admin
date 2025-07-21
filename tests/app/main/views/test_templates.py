@@ -2762,7 +2762,7 @@ class TestAnnualLimits:
                 assert page.find(attrs={"data-testid": "send-buttons"}) is None
 
 
-class TestViewSampleTemplates:
+class TestViewSampleLibrary:
     @pytest.fixture
     def mock_sample_templates(self):
         """Mock sample templates data"""
@@ -2788,7 +2788,7 @@ class TestViewSampleTemplates:
         """Should redirect to choose_template when FF_SAMPLE_TEMPLATES is disabled"""
         with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
             client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _expected_status=302,
                 _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
@@ -2801,7 +2801,7 @@ class TestViewSampleTemplates:
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _test_page_title=False,
             )
@@ -2833,7 +2833,7 @@ class TestViewSampleTemplates:
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _test_page_title=False,
             )
@@ -2857,7 +2857,7 @@ class TestViewSampleTemplates:
                 session["userlang"] = "fr"
 
             page = client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _test_page_title=False,
             )
@@ -2875,7 +2875,7 @@ class TestViewSampleTemplates:
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _test_page_title=False,
             )
@@ -2916,7 +2916,7 @@ class TestViewSampleTemplates:
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
-                "main.view_sample_templates",
+                "main.view_sample_library",
                 service_id=SERVICE_ONE_ID,
                 _test_page_title=False,
             )

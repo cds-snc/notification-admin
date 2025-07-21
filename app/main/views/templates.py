@@ -1468,16 +1468,16 @@ def template_category(template_category_id):
     )
 
 
-@main.route("/services/<service_id>/templates/sample-templates", methods=["GET"])
+@main.route("/services/<service_id>/templates/sample-library", methods=["GET"])
 @user_has_permissions()
-def view_sample_templates(service_id):
+def view_sample_library(service_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
 
     sample_templates = get_sample_templates()
 
     return render_template(
-        "views/templates/sample_templates.html",
+        "views/templates/sample_library.html",
         sample_templates=sample_templates,
     )
 
@@ -1488,4 +1488,4 @@ def view_sample_template(service_id, template_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
     # TODO: implement this page
-    return redirect(url_for(".view_sample_templates", service_id=service_id))
+    return redirect(url_for(".view_sample_library", service_id=service_id))
