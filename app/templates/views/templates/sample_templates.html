@@ -27,11 +27,11 @@
         </a>
       {% endcall %}
       {% call field() %}
-        <div class="flex items-center">
+        <div class="flex items-center text-gray-700">
           {% if item.notification_type == 'email' %}
-            paper_plane_icon
+            <i class="fa-solid fa-paper-plane mr-4"></i>
           {% elif item.notification_type == 'sms' %}
-            speech_bubble_icon
+            <i class="fa-solid fa-message mr-4"></i>
           {% endif %}
           {{ item.notification_type | format_email_sms }}
         </div>
@@ -41,7 +41,7 @@
     <p class="mt-4">{{ _('No sample templates available.') }}</p>
   {% endif %}
 
-<div class="panel panel-border-narrow mt-8 pt-0 pb-0">
+<div class="panel panel-border-narrow mt-16 pt-0 pb-0">
  <h2 class="heading-medium mt-0 mb-10">{{ _("More samples coming!") }}</h2>
     <p>{{ _("We're just starting our library.") }}</p>
     <p class="mt-4 mb-0"><a href="{{ url_for('main.contact') }}">{{ _("Suggest a sample template") }}</a>. {{ _("Recommend a template topic or share your own templates. We'll consider adding your suggestions to our library.") }}</p>
