@@ -47,6 +47,7 @@ class User(JSONModel, UserMixin):
         "blocked",
         "password_expired",
         "verified_phonenumber",
+        "fido2_key_id",
     }
 
     def __init__(self, _dict):

@@ -18,6 +18,7 @@ ALLOWED_ATTRIBUTES = {
     "mobile_number",
     "auth_type",
     "verified_phonenumber",
+    "fido2_key_id",
     "updated_by",
     "blocked",
     "password_expired",

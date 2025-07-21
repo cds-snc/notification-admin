@@ -52,10 +52,17 @@ def user_profile():
     session.pop(HAS_AUTHENTICATED, None)
 
     num_keys = len(current_user.security_keys)
+
+    current_security_key_name = None
+    if current_user.fido2_key_id:
+        current_security_key_name = next(
+            key["name"] for key in current_user.security_keys if key["id"] == current_user.fido2_key_id
+        )
     return render_template(
         "views/user-profile.html",
         num_keys=num_keys,
         can_see_edit=current_user.is_gov_user,
+        current_security_key_name=current_security_key_name if current_security_key_name else "",
     )
 
 
@@ -304,6 +311,8 @@ def user_profile_security_keys_confirm_delete(keyid):
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
             msg = _("Key removed")
             flash(msg, "default_with_tick")
+            if len(current_user.security_keys) <= 0:
+                current_user.update(auth_type="email_auth", fido2_key_id=None)
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -475,6 +484,8 @@ def user_profile_2fa():
             current_auth_method = "email"
         elif current_user.auth_type == "sms_auth":
             current_auth_method = "sms"
+        elif current_user.auth_type == "security_key_auth":
+            current_auth_method = "security_key"
         else:
             # todo: add a case for security keys
             current_auth_method = "email"
@@ -483,10 +494,16 @@ def user_profile_2fa():
         if request.method == "POST" and form.validate_on_submit():
             # Update user's auth type based on selected 2FA method
             new_auth_type = form.auth_method.data
+            kwargs = {}
             if new_auth_type == "email":
-                auth_type = "email_auth"
+                kwargs["auth_type"] = "email_auth"
+                kwargs["fido2_key_id"] = None
             elif new_auth_type == "sms":
-                auth_type = "sms_auth"
+                kwargs["auth_type"] = "sms_auth"
+                kwargs["fido2_key_id"] = None
+            elif new_auth_type.startswith("key_"):
+                kwargs["auth_type"] = "security_key_auth"
+                kwargs["fido2_key_id"] = new_auth_type.split("_")[1]
 
                 if not current_user.mobile_number:
                     session["from_send_page"] = "user_profile_2fa"
@@ -499,12 +516,12 @@ def user_profile_2fa():
             # todo: add a case for existing security keys
             else:
                 # Default to email auth if something unexpected is selected
-                auth_type = "email_auth"
+                kwargs["auth_type"] = "email_auth"
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
             # Update the user's auth type
-            current_user.update(auth_type=auth_type)
+            current_user.update(**kwargs)
 
             # Redirect back to user profile and revoke their additional authentication
             session.pop(HAS_AUTHENTICATED, None)
