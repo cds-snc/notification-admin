@@ -455,7 +455,6 @@ class TestOptionalPhoneNumber:
         app_,
         mock_verify_password,
         mock_send_change_email_verification,
-        mock_get_security_keys,
     ):
         client_request.post(
             "main.user_profile_mobile_number",
@@ -467,7 +466,7 @@ class TestOptionalPhoneNumber:
             "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
-            _expected_redirect=url_for("main.user_profile"),
+            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
         )
 
     def test_should_skip_sms_verify_when_remove_button_pressed(

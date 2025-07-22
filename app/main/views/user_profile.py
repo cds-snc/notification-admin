@@ -165,6 +165,11 @@ def user_profile_mobile_number():
             return redirect(url_for(".user_profile"))
 
         elif form.validate_on_submit():
+            # If the mobile number is empty or None, treat it as a removal request
+            if not form.mobile_number.data or form.mobile_number.data.strip() == "":
+                session[NEW_MOBILE] = ""
+                return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
             current_user.update(mobile_number=form.mobile_number.data)
             flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
             if from_send_page == "send_test":
@@ -465,12 +470,13 @@ def user_profile_2fa():
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
             return redirect(url_for(".user_profile_2fa_authenticate"))
-        data = [
-            ("email", _("Receive a code by email")),
-            ("sms", _("Receive a code by text message")),
-            *[(f"key_{key['id']}", _("Use '{}' key").format(key["name"])) for key in getattr(current_user, "security_keys", [])],
-            ("new_key", _("Add a new security key")),
-        ]
+        data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
+        if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
+            if len(current_user.security_keys) > 1:
+                data.extend([("security_key", _("Use existing security keys"))])
+            else:
+                data.extend([("security_key", _("Use existing security key"))])
+        data.append(("new_key", _("Add a new security key")))
         hints = {
             "email": current_user.email_address,
             "sms": current_user.mobile_number
