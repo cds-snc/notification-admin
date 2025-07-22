@@ -464,7 +464,10 @@ def user_profile_2fa():
             return redirect(url_for(".user_profile_2fa_authenticate"))
         data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
         if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
-            data.extend([("security_key", _("Use existing security keys"))])
+            if len(current_user.security_keys) > 1:
+                data.extend([("security_key", _("Use existing security keys"))])
+            else:
+                data.extend([("security_key", _("Use existing security key"))])
         data.append(("new_key", _("Add a new security key")))
         hints = {
             "email": current_user.email_address,
