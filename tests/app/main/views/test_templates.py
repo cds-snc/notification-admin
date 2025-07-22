@@ -4,6 +4,7 @@ from unittest.mock import ANY, MagicMock, Mock, patch
 
 import pytest
 from flask import url_for
+from flask_login import current_user
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
@@ -160,6 +161,7 @@ class TestSendOtherCategoryInfo:
         fake_uuid,
         app_,
     ):
+        current_user.verified_phonenumber = True
         mock_get_service_template_with_process_type(mocker, "bulk", None)
         name = "new name"
         content = "template <em>content</em> with & entity"
@@ -599,6 +601,7 @@ def test_view_non_letter_template_does_not_display_postage(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -697,6 +700,7 @@ def test_should_be_able_to_view_a_template_with_links(
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions + ["view_activity"]
     client_request.login(active_user_with_permissions)
+    current_user.verified_phonenumber = True
 
     page = client_request.get(
         ".view_template",
@@ -727,6 +731,7 @@ def test_should_show_template_id_on_template_page(
     fake_uuid,
     mock_get_limit_stats,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -792,6 +797,7 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     msg = "here:\tare some “fancy quotes” and zero\u200bwidth\u200bspaces"
     rendered_msg = 'here: are some "fancy quotes" and zerowidthspaces'
 
@@ -1292,6 +1298,7 @@ def test_should_redirect_when_saving_a_template(
     app_,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     name = "new name"
     content = "template <em>content</em> with & entity"
@@ -1989,6 +1996,7 @@ def test_should_show_delete_template_page_with_time_block(
     mocker,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-01 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         notification = single_notification_json("1234", template=template)
@@ -2016,6 +2024,7 @@ def test_should_show_delete_template_page_with_time_block(
 def test_should_show_delete_template_page_with_time_block_for_empty_notification(
     client_request, mock_get_service_template, mock_get_template_folders, mocker, fake_uuid, mock_get_limit_stats
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-08 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         single_notification_json("1234", template=template)
@@ -2049,6 +2058,7 @@ def test_should_show_delete_template_page_with_never_used_block(
     fake_uuid,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mocker.patch(
         "app.template_statistics_client.get_template_statistics_for_template",
         side_effect=HTTPError(response=Mock(status_code=404), message="Default message"),
@@ -2437,6 +2447,7 @@ def test_should_show_message_before_redacting_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2462,6 +2473,7 @@ def test_should_show_redact_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.post(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2484,6 +2496,7 @@ def test_should_show_hint_once_template_redacted(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     template = create_template(redact_personalisation=True)
     mocker.patch("app.service_api_client.get_service_template", return_value=template)
 
@@ -2646,6 +2659,7 @@ def test_template_should_show_phone_number_in_correct_language(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     # check english
     page = client_request.get(
         ".view_template",
@@ -2673,6 +2687,7 @@ def test_should_hide_category_name_from_template_list_if_marked_hidden(
     mock_get_template_folders,
     mock_get_more_service_templates_than_can_fit_onscreen,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.choose_template",
         service_id=SERVICE_ONE_ID,
@@ -2706,6 +2721,7 @@ class TestAnnualLimits:
         buttons_shown,
         app_,
     ):
+        current_user.verified_phonenumber = True
         with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             mock_notification_counts_client.get_limit_stats.return_value = {
                 "email": {
@@ -2744,3 +2760,222 @@ class TestAnnualLimits:
                 assert page.find(attrs={"data-testid": "send-buttons"}) is not None
             else:
                 assert page.find(attrs={"data-testid": "send-buttons"}) is None
+
+
+class TestViewSampleLibrary:
+    @pytest.fixture
+    def mock_sample_templates(self):
+        """Mock sample templates data"""
+        return [
+            {
+                "id": "11111111-1111-1111-1111-111111111111",
+                "notification_type": "email",
+                "template_name": {"en": "Welcome Email", "fr": "Courriel de bienvenue"},
+                "template_category": {"en": "Authentication", "fr": "Authentification"},
+                "content": "Welcome to our service!",
+                "subject": "Welcome",
+            },
+            {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "notification_type": "sms",
+                "template_name": {"en": "SMS Reminder", "fr": "Rappel SMS"},
+                "template_category": {"en": "Reminder", "fr": "Rappel"},
+                "content": "Your appointment is tomorrow",
+            },
+        ]
+
+    def test_redirects_when_feature_flag_disabled(self, client_request, mock_sample_templates, app_):
+        """Should redirect to choose_template when FF_SAMPLE_TEMPLATES is disabled"""
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+            client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _expected_status=302,
+                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
+                _test_page_title=False,
+            )
+
+    def test_shows_sample_templates_when_feature_flag_enabled(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display sample templates when feature flag is enabled"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+            # Check the actual title is being set correctly - may be different due to translation context
+            title_text = normalize_spaces(page.select_one("title").text)
+            assert "GC Notify sample library" in title_text or title_text.endswith("– Notify")
+
+            # Check that sample templates are displayed
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            assert table is not None
+
+            # Should show only email templates by default (filtered)
+            template_links = table.select("a")
+            assert len(template_links) == 1
+
+            # Check template names are displayed - only email template shown
+            assert "Welcome Email" in template_links[0].text
+
+            # Check notification type icons/text are displayed for the email template
+            notification_types = table.select(".text-gray-700")
+            assert len(notification_types) == 1
+
+    def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
+        """Should show empty state when no sample templates exist"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=[])
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+
+            # Should show empty state message
+            assert "No sample templates available." in page.text
+
+            # Should not show the table
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            assert table is None
+
+    def test_shows_french_template_names_when_french_locale(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display French template names when user language is French"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            # Mock French session
+            with client_request.session_transaction() as session:
+                session["userlang"] = "fr"
+
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Should show French template names - only email template by default
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+
+            assert "Courriel de bienvenue" in template_links[0].text
+
+    def test_template_links_have_correct_urls(self, client_request, mock_sample_templates, mocker, app_):
+        """Should have correct URLs for template links"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            template_links = page.select('[data-testid="sample-templates-table"] a')
+
+            # Check first template link - only email template shown by default
+            expected_url_1 = url_for(
+                "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="11111111-1111-1111-1111-111111111111"
+            )
+            assert template_links[0]["href"] == expected_url_1
+
+    @pytest.mark.parametrize(
+        "notification_type,expected_icon",
+        [
+            ("email", "fa-paper-plane"),
+            ("sms", "fa-message"),
+        ],
+    )
+    def test_shows_correct_notification_type_icons(
+        self, client_request, mock_sample_templates, mocker, notification_type, expected_icon, app_
+    ):
+        """Should show correct icons for different notification types"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            # Set appropriate filter to show the notification type we want to test
+            type_param = "sms" if notification_type == "sms" else None
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type=type_param,
+                _test_page_title=False,
+            )
+
+            # Check for the correct icon class
+            icon = page.select_one(f".{expected_icon}")
+            assert icon is not None
+
+    def test_pill_menu_filters_email_templates_by_default(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only email templates by default"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Should show only email templates by default
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "Welcome Email" in template_links[0].text
+            assert "SMS Reminder" not in page.text
+
+            # Check pill menu is present and has correct number of options
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+            pill_links = pill_nav.select("a")
+            assert len(pill_links) == 2
+
+            # Email pill should be selected (has pill-selected-item class)
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-selected-item" in email_pill.get("class", [])
+
+            # SMS pill should be unselected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-unselected-item" in sms_pill.get("class", [])
+
+    def test_pill_menu_filters_sms_templates_when_type_param_is_sms(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only SMS templates when ?type=sms query param is provided"""
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type="sms",
+                _test_page_title=False,
+            )
+
+            # Should show only SMS templates
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "SMS Reminder" in template_links[0].text
+            assert "Welcome Email" not in page.text
+
+            # Check pill menu state - SMS should be selected
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+
+            # SMS pill should be selected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-selected-item" in sms_pill.get("class", [])
+
+            # Email pill should be unselected
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-unselected-item" in email_pill.get("class", [])

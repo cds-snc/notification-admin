@@ -464,7 +464,7 @@ def send_test(service_id, template_id):
 
     # if the user has no phone number, redirect them to the user profile page to update their phone number
     if db_template["template_type"] == "sms" and not current_user.mobile_number:
-        session["from_send_page"] = True
+        session["from_send_page"] = "send_test"
         session["send_page_service_id"] = service_id
         session["send_page_template_id"] = template_id
         return redirect(url_for(".user_profile_mobile_number"))

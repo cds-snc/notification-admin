@@ -44,8 +44,6 @@ def test_service_set_permission_requires_platform_admin(
     [
         ("inbound_sms", "True", True),
         ("inbound_sms", "False", False),
-        ("email_auth", "True", True),
-        ("email_auth", "False", False),
     ],
 )
 def test_service_set_permission(

@@ -1,0 +1,28 @@
+id: "31062d26-5369-4743-9a49-3002fc896bfd"
+template_name:
+  en: "FR/EN Two-Factor Security Code"
+  fr: "FR/EN FR Two-Factor Security Code"
+notification_type: "email"
+template_category: "authentication"
+personalisation:
+  name: "Jane Smith"
+  verify_code: "12345"
+subject: "Connectez-vous | Sign in"
+content: |
+  [[fr]]
+  Bonjour ((name)),
+
+  Voici votre code de sécurité pour vous connecter à -FR application name-:
+
+  ^ ((verify_code))
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi ((name)),
+
+  Here is your security code to log in to -application name-:
+
+  ^ ((verify_code))
+  [[/en]]
