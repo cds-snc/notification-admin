@@ -181,7 +181,7 @@ def password(label=_l("Password")):
             Length(8, 255, message=_l("Must be at least 8 characters")),
             Blocklist(
                 message=_l(
-                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
+                    "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space."
                 )
             ),
         ],
@@ -192,8 +192,8 @@ class TwoFactorCode(StringField):
     validators = [
         DataRequired(message=_l("This cannot be empty")),
         Regexp(regex=r"^\d+$", message=_l("Numbers only")),
-        Length(min=5, message=_l("Not enough numbers")),
-        Length(max=5, message=_l("Too many numbers")),
+        Length(min=5, message=_l("Code must have 5 numbers")),
+        Length(max=5, message=_l("Code must have 5 numbers")),
     ]
 
     def __call__(self, **kwargs):
@@ -733,7 +733,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
 class SecurityKeyForm(StripWhitespaceForm):
     keyname = StringField(
         _l("What’s your key called?"),
-        validators=[DataRequired(message=_l("This cannot be empty"))],
+        validators=[DataRequired(message=_l("Enter name to continue"))],
     )
 
 
@@ -811,7 +811,7 @@ class ConfirmPasswordForm(StripWhitespaceForm):
 
     def validate_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError(_l("Invalid password"))
+            raise ValidationError(_l("Try again. Something’s wrong with this password"))
 
 
 TC_PRIORITY_VALUE = "__use_tc"
@@ -935,7 +935,7 @@ class ChangePasswordForm(StripWhitespaceForm):
 
     def validate_old_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError(_l("Invalid password"))
+            raise ValidationError(_l("Try again. Something’s wrong with this password"))
 
 
 class CsvUploadForm(StripWhitespaceForm):
@@ -959,7 +959,7 @@ class ChangeEmailForm(StripWhitespaceForm):
     def validate_email_address(self, field):
         is_valid = self.validate_email_func(field.data)
         if is_valid:
-            raise ValidationError(_l("The email address is already in use"))
+            raise ValidationError(_l("This email address already has a GC Notify account"))
 
 
 class ChangeNonGovEmailForm(ChangeEmailForm):
