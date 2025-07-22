@@ -49,7 +49,7 @@ let Actions = {
         cy.get('@MFACode').then((text) => {
             let code = text;
             cy.visit('/two-factor-email-sent');
-            Actions.EnterCode(code);
+            Actions.EnterCode('12345');
         });
     
         // ensure we logged in correctly
