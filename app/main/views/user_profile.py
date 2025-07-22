@@ -154,6 +154,9 @@ def user_profile_mobile_number():
 
         # if they are posting the button "edit"
         if edit_or_cancel_pressed == "edit":
+            current_user.update(verified_phonenumber=False)
+            if current_user.auth_type == "sms_auth":
+                current_user.update(auth_type="email_auth")
             return render_template(
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
@@ -186,6 +189,9 @@ def user_profile_mobile_number():
     else:
         # if they dont have a number set, just go right to the edit page
         if current_user.mobile_number is None:
+            current_user.update(mobile_number=None, verified_phonenumber=False)
+            if current_user.auth_type == "sms_auth":
+                current_user.update(auth_type="email_auth")
             return render_template(
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
@@ -306,6 +312,10 @@ def user_profile_password():
 @main.route("/user-profile/security_keys", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_security_keys():
+    from_send_page = session.get("from_send_page", False)
+    if from_send_page == "user_profile_2fa":
+        return redirect(url_for(".user_profile_2fa"))
+        # If we are coming from the send page, we need to clear the session flags
     return render_template("views/user-profile/security-keys.html")
 
 
@@ -518,6 +528,7 @@ def user_profile_2fa():
                     return redirect(url_for(".verify_mobile_number"))
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
+                session["from_send_page"] = "user_profile_2fa"
                 return redirect(url_for(".user_profile_add_security_keys"))
             # todo: add a case for existing security keys
             else:
