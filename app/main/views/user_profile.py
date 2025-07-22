@@ -52,6 +52,7 @@ def user_profile():
     session.pop(HAS_AUTHENTICATED, None)
 
     num_keys = len(current_user.security_keys)
+
     return render_template(
         "views/user-profile.html",
         num_keys=num_keys,
@@ -170,8 +171,8 @@ def user_profile_mobile_number():
             current_user.update(mobile_number=form.mobile_number.data, verified_phonenumber=False)
 
             flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
-
             if from_send_page == "send_test":
+                session["from_send_page"] = None
                 return redirect(url_for(".verify_mobile_number"))
             elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
                 return redirect(url_for(".verify_mobile_number"))
@@ -338,6 +339,8 @@ def user_profile_security_keys_confirm_delete(keyid):
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
             msg = _("Key removed")
             flash(msg, "default_with_tick")
+            if len(current_user.security_keys) <= 0:
+                current_user.update(auth_type="email_auth")
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -359,6 +362,7 @@ def user_profile_add_security_keys():
     if form.keyname.data == "":
         form.validate_on_submit()
     elif request.method == "POST":
+        flash(_("Added a security key"), "default_with_tick")
         result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
 
@@ -510,6 +514,8 @@ def user_profile_2fa():
             current_auth_method = "email"
         elif current_user.auth_type == "sms_auth":
             current_auth_method = "sms"
+        elif current_user.auth_type == "security_key_auth":
+            current_auth_method = "security_key"
         else:
             # todo: add a case for security keys
             current_auth_method = "email"
@@ -526,8 +532,8 @@ def user_profile_2fa():
                 if not current_user.mobile_number:
                     session["from_send_page"] = "user_profile_2fa"
                     return redirect(url_for(".user_profile_mobile_number"))
-                elif not current_user.verified_phonenumber:
-                    return redirect(url_for(".verify_mobile_number"))
+            elif new_auth_type == "security_key":
+                auth_type = "security_key_auth"
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 session["from_send_page"] = "user_profile_2fa"
@@ -536,6 +542,9 @@ def user_profile_2fa():
             else:
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
+
+            if not current_user.verified_phonenumber and new_auth_type == "sms":
+                return redirect(url_for(".verify_mobile_number"))
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
