@@ -45,7 +45,6 @@ from wtforms.widgets import CheckboxInput, ListWidget
 
 from app import current_service, format_thousands, format_thousands_localized
 from app.main.validators import (
-    Blocklist,
     CsvFileValidator,
     DoesNotStartWithDoubleZero,
     LettersNumbersAndFullStopsOnly,
@@ -177,13 +176,7 @@ def password(label=_l("Password")):
     return PasswordField(
         label,
         validators=[
-            DataRequired(message=_l("This cannot be empty")),
-            Length(8, 255, message=_l("Must be at least 8 characters")),
-            Blocklist(
-                message=_l(
-                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
-                )
-            ),
+            DataRequired(),
         ],
     )
 
@@ -972,6 +965,22 @@ class ChangeMobileNumberForm(StripWhitespaceForm):
 
 class ChangeMobileNumberFormOptional(StripWhitespaceForm):
     mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+
+    def validate(self, extra_validators=None):
+        def valid_phone_number(self, num):
+            try:
+                validate_phone_number(num.data)
+                return True
+            except InvalidPhoneError:
+                raise ValidationError(_l("Must be a valid phone number"))
+
+        self.mobile_number.validators = [
+            DataRequired(),
+            Length(min=5, max=20),
+            valid_phone_number,
+        ]
+
+        return super().validate(extra_validators)
 
 
 class ChooseTimeForm(StripWhitespaceForm):
