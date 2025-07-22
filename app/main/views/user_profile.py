@@ -523,7 +523,7 @@ def user_profile_2fa():
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
 
-            if not current_user.verified_phonenumber and new_auth_type == "sms_auth":
+            if not current_user.verified_phonenumber and new_auth_type == "sms":
                 return redirect(url_for(".verify_mobile_number"))
 
             # Flash a success message
