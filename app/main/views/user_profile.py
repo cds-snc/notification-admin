@@ -462,12 +462,10 @@ def user_profile_2fa():
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
             return redirect(url_for(".user_profile_2fa_authenticate"))
-        data = [
-            ("email", _("Receive a code by email")),
-            ("sms", _("Receive a code by text message")),
-            *[(f"key_{key['id']}", _("Use '{}' key").format(key["name"])) for key in getattr(current_user, "security_keys", [])],
-            ("new_key", _("Add a new security key")),
-        ]
+        data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
+        if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
+            data.extend([("security_key", _("Use existing security keys"))])
+        data.append(("new_key", _("Add a new security key")))
         hints = {
             "email": current_user.email_address,
             "sms": current_user.mobile_number
