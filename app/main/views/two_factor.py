@@ -7,9 +7,14 @@ from app import user_api_client
 from app.main import main
 from app.main.forms import TwoFactorForm
 from app.main.views.authenticator import Authenticator
-from app.models.user import User
 from app.tou import EVENTS_KEY
 from app.utils import is_safe_redirect_url, redirect_to_sign_in
+
+
+@main.route("/two-factor-fido", methods=["GET", "POST"])
+@redirect_to_sign_in
+def two_factor_security_key_prompted():
+    return render_template("views/two-factor-fido.html")
 
 
 @main.route("/two-factor-email-sent", methods=["GET", "POST"])
@@ -19,12 +24,6 @@ def two_factor_email_sent():
         return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     user_id = session["user_details"]["id"]
-
-    # Check if a FIDO2 key exists, if yes, return template
-    user = User.from_id(user_id)
-
-    if user.auth_type == "security_key_auth":
-        return render_template("views/two-factor-fido.html")
 
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "email")
@@ -50,13 +49,6 @@ def two_factor_sms_sent():
         return redirect_when_logged_in(user=current_user, platform_admin=current_user.platform_admin)
 
     user_id = session["user_details"]["id"]
-
-    # Check if a FIDO2 key exists, if yes, return template
-    user = User.from_id(user_id)
-
-    # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
-    if user.auth_type == "security_key_auth":
-        return render_template("views/two-factor-fido.html")
 
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "sms")

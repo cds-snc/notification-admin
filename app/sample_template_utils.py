@@ -1,7 +1,7 @@
 import os
 from typing import Any, Dict, List
 
-import yaml
+import yaml  # type: ignore
 from flask import current_app
 
 
