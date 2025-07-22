@@ -1038,7 +1038,7 @@ class ContactMessageStep(ContactNotify):
         match = re.search(pattern, field_data_without_spaces)
         if match:
             found = match.group(0)
-            raise ValidationError(_l(f"You entered ‘{found}’. If this is an API key, remove before sending."))
+            raise ValidationError(_l("You entered ‘{found}’. If this is an API key, remove before sending.").format(found=found))
 
     message = TextAreaField(
         _l("Message"),
