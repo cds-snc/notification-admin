@@ -13,11 +13,11 @@ let Actions = {
     },
     CloseMenuEsc: () => {
         cy.get("body").type('{esc}');
-        cy.get('#proposition-links').should('not.be.visible');
+        Components.Menu().should('not.be.visible');
     },
     CloseMenuClick: () => {
         cy.get("body").click({force: true});
-        cy.get('#proposition-links').should('not.be.visible');
+        Components.Menu().should('not.be.visible');
     },
     ArrowLeft: () => {
         cy.get("body").type('{leftarrow}');
