@@ -1,8 +1,8 @@
 // Parts of the page a user can interact with
 let Components = {
-    MenuButton: () => cy.get('#menu'),
-    Menu: () => cy.get('#proposition-links'),
-    MenuItems: () => cy.get('#proposition-links a'),
+    MenuButton: () => cy.get('[data-testid="main-menu-button"]'),
+    Menu: () => cy.get('[data-testid="main-menu-links"]'),
+    MenuItems: () => cy.get('[data-testid="main-menu-links"] a'),
 };
 
 // Actions users can take on the page

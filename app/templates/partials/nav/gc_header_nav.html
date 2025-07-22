@@ -6,6 +6,7 @@
     <div class="container md:px-gutterHalf relative flex flex-nowrap">
       <button
         id="menu"
+        data-testid="main-menu-button"
         type="button"
         aria-expanded="false"
         aria-haspopup="true"
@@ -15,7 +16,7 @@
         {{ _("Menu") }}
         <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
       </button>
-      <ul id="proposition-links" class="hidden menu-overlay md:flex flex-nowrap flex-grow items-baseline gap-gutterHalf">
+      <ul id="proposition-links" data-testid="main-menu-links" class="hidden menu-overlay md:flex flex-nowrap flex-grow items-baseline gap-gutterHalf">
         {% if nav_items %}
             {% for i in nav_items %}
             {# Menu configured in GC Articles #}
