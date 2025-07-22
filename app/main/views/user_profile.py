@@ -53,16 +53,10 @@ def user_profile():
 
     num_keys = len(current_user.security_keys)
 
-    current_security_key_name = None
-    if current_user.fido2_key_id:
-        current_security_key_name = next(
-            key["name"] for key in current_user.security_keys if key["id"] == current_user.fido2_key_id
-        )
     return render_template(
         "views/user-profile.html",
         num_keys=num_keys,
         can_see_edit=current_user.is_gov_user,
-        current_security_key_name=current_security_key_name if current_security_key_name else "",
     )
 
 
@@ -173,8 +167,8 @@ def user_profile_mobile_number():
         elif form.validate_on_submit():
             current_user.update(mobile_number=form.mobile_number.data)
             flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
-
             if from_send_page == "send_test":
+                session["from_send_page"] = None
                 return redirect(url_for(".verify_mobile_number"))
             elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
                 return redirect(url_for(".verify_mobile_number"))
@@ -328,7 +322,7 @@ def user_profile_security_keys_confirm_delete(keyid):
             msg = _("Key removed")
             flash(msg, "default_with_tick")
             if len(current_user.security_keys) <= 0:
-                current_user.update(auth_type="email_auth", fido2_key_id=None)
+                current_user.update(auth_type="email_auth")
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -474,7 +468,7 @@ def user_profile_2fa():
         data = [
             ("email", _("Receive a code by email")),
             ("sms", _("Receive a code by text message")),
-            *[(f"key_{key['id']}", _("Use '{}' key").format(key["name"])) for key in getattr(current_user, "security_keys", [])],
+            ("security_key", _("Use security key")),
             ("new_key", _("Add a new security key")),
         ]
         hints = {
@@ -510,22 +504,16 @@ def user_profile_2fa():
         if request.method == "POST" and form.validate_on_submit():
             # Update user's auth type based on selected 2FA method
             new_auth_type = form.auth_method.data
-            kwargs = {}
             if new_auth_type == "email":
-                kwargs["auth_type"] = "email_auth"
-                kwargs["fido2_key_id"] = None
+                auth_type = "email_auth"
             elif new_auth_type == "sms":
-                kwargs["auth_type"] = "sms_auth"
-                kwargs["fido2_key_id"] = None
-            elif new_auth_type.startswith("key_"):
-                kwargs["auth_type"] = "security_key_auth"
-                kwargs["fido2_key_id"] = new_auth_type.split("_")[1]
+                auth_type = "sms_auth"
 
                 if not current_user.mobile_number:
                     session["from_send_page"] = "user_profile_2fa"
                     return redirect(url_for(".user_profile_mobile_number"))
-                elif not current_user.verified_phonenumber:
-                    return redirect(url_for(".verify_mobile_number"))
+            elif new_auth_type == "security_key":
+                auth_type = "security_key_auth"
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 session["from_send_page"] = "user_profile_2fa"
@@ -533,12 +521,15 @@ def user_profile_2fa():
             # todo: add a case for existing security keys
             else:
                 # Default to email auth if something unexpected is selected
-                kwargs["auth_type"] = "email_auth"
+                auth_type = "email_auth"
+
+            if not current_user.verified_phonenumber and new_auth_type == "sms_auth":
+                return redirect(url_for(".verify_mobile_number"))
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
             # Update the user's auth type
-            current_user.update(**kwargs)
+            current_user.update(auth_type=auth_type)
 
             # Redirect back to user profile and revoke their additional authentication
             session.pop(HAS_AUTHENTICATED, None)
