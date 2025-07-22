@@ -455,3 +455,25 @@ def test_sign_in_geolookup_disabled_in_dev(
     assert response.status_code == 302
 
     assert not geolookup_mock.called
+
+
+def test_sign_in_renders_two_factor_fido_for_security_key_auth(
+    client,
+    mocker,
+    api_user_active_security_key_auth,
+    mock_get_user_security_key_auth,
+    mock_verify_password,
+    mock_get_security_keys,
+):
+    # Patch to return the real user dict and User object
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_security_key_auth)
+    mocker.patch(
+        "app.models.user.User.from_email_address_and_password_or_none", return_value=User(api_user_active_security_key_auth)
+    )
+
+    response = client.post(
+        url_for("main.sign_in"),
+        data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+    )
+    assert response.status_code == 200
+    assert b"two-factor-fido" in response.data

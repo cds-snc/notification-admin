@@ -27,7 +27,7 @@
         {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa') }}
       {% elif current_user.auth_type == 'sms_auth' %}
         {{ profile_item(_('Two-step verification method'), text_field(_("Code by text message") + " (" + current_user.mobile_number + ")"), '.user_profile_2fa') }}
-      {% elif current_user.auth_type == 'fido2_auth' %}
+      {% elif current_user.auth_type == 'security_key_auth' %}
         <!-- This auth_type does not exist yet -->
         {{ profile_item(_('Two-step verification method'), text_field(_("Security key")), '.user_profile_2fa') }}
       {% endif %}
