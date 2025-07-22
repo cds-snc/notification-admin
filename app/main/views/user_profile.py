@@ -164,6 +164,11 @@ def user_profile_mobile_number():
             return redirect(url_for(".user_profile"))
 
         elif form.validate_on_submit():
+            # If the mobile number is empty or None, treat it as a removal request
+            if not form.mobile_number.data or form.mobile_number.data.strip() == "":
+                session[NEW_MOBILE] = ""
+                return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
             current_user.update(mobile_number=form.mobile_number.data)
             flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
 
