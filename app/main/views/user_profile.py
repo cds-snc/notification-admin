@@ -341,6 +341,7 @@ def user_profile_add_security_keys():
     if form.keyname.data == "":
         form.validate_on_submit()
     elif request.method == "POST":
+        flash(_("Added a security key"), "default_with_tick")
         result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
 
