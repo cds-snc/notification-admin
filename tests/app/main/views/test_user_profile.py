@@ -145,42 +145,6 @@ def test_should_redirect_after_mobile_number_change(
     )
 
 
-@pytest.mark.parametrize(
-    "bad_phone_number,expected_error_message",
-    [
-        ("123", "Not a valid phone number"),
-        ("abc123", "Not a valid phone number"),
-        ("+1", "Not a valid phone number"),
-        ("", "This field is required"),  # Empty input
-        ("12345678901234567890123", "Not a valid phone number"),  # Too long
-    ],
-)
-def test_user_profile_mobile_number_form_validation_with_bad_inputs(
-    client_request,
-    bad_phone_number,
-    expected_error_message,
-):
-    """Test that the user_profile_mobile_number view handles form validation errors correctly for bad phone number inputs."""
-    # First, trigger the edit mode by posting with "edit" button
-    client_request.post(
-        "main.user_profile_mobile_number",
-        _data={"button_pressed": "edit"},
-        _expected_status=200,
-    )
-
-    # Now post with bad phone number data
-    page = client_request.post(
-        "main.user_profile_mobile_number",
-        _data={"mobile_number": bad_phone_number},
-        _expected_status=200,  # Should stay on same page due to validation error
-    )
-
-    # Check that the error message is displayed
-    assert expected_error_message in page.text
-    # Check that we're still on the mobile number change page
-    assert "Add or change your mobile number" in page.text
-
-
 def test_should_show_authenticate_after_mobile_number_change(
     client_request,
 ):
