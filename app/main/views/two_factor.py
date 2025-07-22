@@ -11,12 +11,6 @@ from app.tou import EVENTS_KEY
 from app.utils import is_safe_redirect_url, redirect_to_sign_in
 
 
-@main.route("/two-factor-fido", methods=["GET", "POST"])
-@redirect_to_sign_in
-def two_factor_security_key_prompted():
-    return render_template("views/two-factor-fido.html")
-
-
 @main.route("/two-factor-email-sent", methods=["GET", "POST"])
 @redirect_to_sign_in
 def two_factor_email_sent():
