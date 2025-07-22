@@ -1692,6 +1692,40 @@ def active_caseworking_user(fake_uuid):
 
 
 @pytest.fixture(scope="function")
+def active_user_with_unverified_mobile(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": 6502532222,
+        "verified_phonenumber": False,
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "email_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
 def active_user_no_mobile(fake_uuid):
     user_data = {
         "id": fake_uuid,

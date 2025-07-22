@@ -468,7 +468,7 @@ def user_profile_2fa():
         data = [
             ("email", _("Receive a code by email")),
             ("sms", _("Receive a code by text message")),
-            ("security_key", _("Use security key")),
+            *[(f"key_{key['id']}", _("Use '{}' key").format(key["name"])) for key in getattr(current_user, "security_keys", [])],
             ("new_key", _("Add a new security key")),
         ]
         hints = {
