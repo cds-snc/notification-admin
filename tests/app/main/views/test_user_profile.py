@@ -454,7 +454,6 @@ class TestOptionalPhoneNumber:
         app_,
         mock_verify_password,
         mock_send_change_email_verification,
-        mock_get_security_keys,
     ):
         client_request.post(
             "main.user_profile_mobile_number",
@@ -466,7 +465,7 @@ class TestOptionalPhoneNumber:
             "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
-            _expected_redirect=url_for("main.user_profile"),
+            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
         )
 
     def test_should_skip_sms_verify_when_remove_button_pressed(
@@ -502,10 +501,9 @@ class TestOptionalPhoneNumber:
     def test_should_jump_to_edit_page_when_phone_already_blank(
         self, client_request, platform_admin_user, app_, mock_verify_password, mock_send_change_email_verification, mocker
     ):
-        mocker.patch.object(
-            current_user, "update", side_effect=lambda mobile_number: setattr(current_user, "mobile_number", mobile_number)
-        )
-        current_user.update(mobile_number=None)
+        mocker.patch("app.user_api_client.update_user_attribute")
+        current_user.mobile_number = None
+        current_user.verified_phonenumber = False
         page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
         assert page.select_one("h1").text.strip() == "Add or change your mobile number"
 
