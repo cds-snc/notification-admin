@@ -7,6 +7,7 @@ let Components = {
     ChangePhoneNumberSection: () => cy.getByTestId('user_profile_mobile_number'),
     ChangePhoneNumberLink: () => cy.get('[data-testid="user_profile_mobile_number"] a'),
     ChangePasswordLink: () => cy.get('[data-testid="user_profile_password"] a'),
+    Change2FASection: () => cy.getByTestId('user_profile_2fa'),
     Change2FALink: () => cy.get('[data-testid="user_profile_2fa"] a'),
     ChangeSecurityKeysLink: () => cy.get('[data-testid="user_profile_security_keys"] a'),
     ChangePlatformAdminViewLink: () => cy.get('[data-testid="user_profile_disable_platform_admin_view"] a'),
@@ -42,13 +43,7 @@ let Actions = {
     Change2FAOptions: () => {
         Components.Change2FALink().click();
     },
-    RemovePhoneNumber: () => {
-        Components.RemovePhoneNumber().click();
-    },
     // password confirmation
-    EnterPassword: (password) => {
-        Components.PasswordField().type(password);
-    },
     ConfirmPasswordChallenge: () => {
         Components.PasswordChallengeConfirm().click();
     },
@@ -70,7 +65,7 @@ let Actions = {
     Goto2FASettings: (password) => {
         Components.Change2FALink().click();
         Components.PasswordChallenge().should('exist');
-        Actions.EnterPassword(password);
+        Components.PasswordField().type(password);
         Actions.ConfirmPasswordChallenge();
     },
     SelectSMSFor2FA: () => {
@@ -84,14 +79,37 @@ let Actions = {
         Components.VerifyCode().type('12345');
         Components.VerifyButton().click();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
-        Page.Components.TFASMSLabel().should('contain', 'Verified');
+        Components.TFASMSLabel().should('contain', 'Verified');
+        Actions.Continue();
+        cy.get('h1').should('contain', 'Your profile');
+    },
+    // Composite actions
+    AddAndVerifyPhoneNumber: (phoneNumber, password) => {
+        Actions.ChangePhoneNumberOptions();
+        Actions.EnterPhoneNumber(phoneNumber);
+        Actions.SavePhoneNumber();
+
+        // Verify phone number
+        Actions.Goto2FASettings(password);
+        Actions.SelectSMSFor2FA();
+        Actions.Continue();
+        Actions.Verify();
+    },
+    RemovePhoneNumber: (password) => {
+        Actions.ChangePhoneNumberOptions();
+        Components.RemovePhoneNumber().click();
+        Components.PasswordChallenge().should('exist');
+        Components.PasswordField().type(password);
+        Actions.ConfirmPasswordChallenge();
+        cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Mobile number removed from your profile');
     },
 };
 
 let YourProfilePage = {
     URL: '/user-profile', // URL for the page, relative to the base URL
+    TelNo: '16132532222', // Default test phone number
     Components,
-    ...Actions
+    ...Actions,
 };
 
 export default YourProfilePage;

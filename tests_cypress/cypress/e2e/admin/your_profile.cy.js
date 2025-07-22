@@ -3,6 +3,19 @@ import { getConfig } from "../../support/utils";
 
 const CONFIG = getConfig();
 
+// Reusable function to ensure phone number is set up and verified
+const ensureVerifiedPhoneNumber = () => {
+  Page.Components.ChangePhoneNumberSection().then($element => {
+    if ($element.text().includes('Not set')) {
+      Page.AddAndVerifyPhoneNumber(Page.TelNo, CONFIG.CYPRESS_USER_PASSWORD);
+      cy.visit(Page.URL); // Reload to see changes
+    } else {
+      Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.AddAndVerifyPhoneNumber(Page.TelNo, CONFIG.CYPRESS_USER_PASSWORD);
+    }
+  });
+};
+
 describe("Your profile", () => {
   beforeEach(() => {
     cy.login();
@@ -29,37 +42,11 @@ describe("Your profile", () => {
   describe("Verification", () => {
     beforeEach(() => {
       // Make the test resilient: if the phone number is not set when the test starts, add one first
-      Page.Components.ChangePhoneNumberSection().then($element => {
-        if ($element.text().includes('Not set')) {
-          cy.log('Setting up phone number for verification badge tests');
-          Page.ChangePhoneNumberOptions();
-          Page.EnterPhoneNumber();
-          Page.SavePhoneNumber();
-          
-          //verify phone number
-          Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
-          Page.SelectSMSFor2FA();
-          Page.Continue();
-          Page.Verify();
-
-          cy.visit(Page.URL); // Reload to see changes
-        }
-      });
+      ensureVerifiedPhoneNumber();
     });
 
     it("Allows adding a phone number without verifying it", () => {
-      Page.ChangePhoneNumberOptions();
-      Page.RemovePhoneNumber();
-      
-      // expect password challenge 
-      Page.Components.PasswordChallenge().should('exist');
-      
-      Page.EnterPassword(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.ConfirmPasswordChallenge();
-
-      // expect success message
-      // TODO: figure out why this is so slow
-      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Mobile number removed from your profile');
+      Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
 
       // put phone number back
       Page.ChangePhoneNumberOptions();
@@ -68,30 +55,15 @@ describe("Your profile", () => {
     });
 
     it("Removes verification badge when phone number is removed", () => {
-      // verify phone number
-      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);    
-      Page.SelectSMSFor2FA();
-      Page.Continue();
-      Page.Verify();
-      // expect success message and verified badge
-      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
-      Page.Components.TFASMSLabel().should('contain', 'Verified');
-
-      Page.GoBack();
-
       // remove phone number
-      Page.ChangePhoneNumberOptions();
-      Page.RemovePhoneNumber();
-      Page.Components.PasswordChallenge().should('exist');
-      Page.EnterPassword(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.ConfirmPasswordChallenge();
+      Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
 
       // expect verified badge to be removed
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);    
       Page.Components.TFASMSLabel().should('not.contain', 'Verified');
     });
 
-    it.only("Removes verification badge when phone number is changed", () => {
+    it("Removes verification badge when phone number is changed", () => {
       // change phone number
       Page.ChangePhoneNumberOptions();
       Page.ChangePhoneNumber();
@@ -103,6 +75,50 @@ describe("Your profile", () => {
       Page.Components.TFASMSLabel().should('not.contain', 'Verified');
     });
   });
+
+  describe("2FA defaults", () => {
+    beforeEach(() => {
+      // Make the test resilient: if the phone number is not set when the test starts, add one first
+      ensureVerifiedPhoneNumber();
+    });
+    
+    it("Defaults to email when set to sms and phone number is removed ", () => {
+      // set 2fa to SMS
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+      Page.Components.TFASMSLabel().should('contain', 'Verified');
+      Page.Continue();
+      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
+
+      Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
+
+      Page.Components.Change2FASection().should('contain', 'Code by email');
+      // expect verified badge to be removed
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+    });
+
+    it ("Defaults to email when set to sms and phone number is changed", () => {
+      // set 2fa to SMS
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+      Page.Components.TFASMSLabel().should('contain', 'Verified');
+
+      Page.Continue();
+      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
+
+      Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
+      Page.EnterPhoneNumber('16132532223'); // test number
+      Page.SavePhoneNumber();
+
+      Page.Components.Change2FASection().should('contain', 'Code by email');
+      // expect verified badge to be removed
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+    });
+  });
+
   // Maybe we should only do this once our tests are run against a db that gets reset
   // if we do this now other parts of the app might not work (like test sends that rely on having a phone number)
   // it("Allows me to enter a blank phone number", () => {
