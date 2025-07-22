@@ -32,12 +32,12 @@ def test_form_is_valid_returns_no_errors(
         (
             "verify_code",
             {"two_factor_code": "1234"},
-            "Not enough numbers",
+            "Code must have 5 numbers",
         ),
         (
             "verify_code",
             {"two_factor_code": "123456"},
-            "Too many numbers",
+            "Code must have 5 numbers",
         ),
         (
             "verify_code",
