@@ -19,6 +19,7 @@ extra_keys_in_app = set(
         "Code has expired",  # api
         "Code already sent",  # api
         "Code has already been used",  # api
+        "Code not found",  # api - 2FA validation error message
         "as an email reply-to address.",  # api
         "You cannot remove the only user for a service",  # api
         "Cannot send to international mobile numbers",  # api
