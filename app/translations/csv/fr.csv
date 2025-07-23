@@ -2238,7 +2238,7 @@
 "You must add a mobile number to your profile to use this option.","Vous devez ajouter un numéro de téléphone portable à votre profil pour utiliser cette option."
 "Add a mobile number to your profile to use this option.","Ajoutez un numéro de téléphone portable à votre profil pour utiliser cette option."
 "Use '{}' key","Utiliser la clé '{}'"
-"Use existing security keys","Utiliser des clés de sécurité existantes"
+"Use existing security keys","Utiliser les clés de sécurité existantes"
 "Use existing security key","Utiliser la clé de sécurité existante"
 "Verified","Vérifié"
 "Not verified","Non vérifié"
@@ -2257,3 +2257,4 @@
 "Notification type","FR Notification type"
 "No sample templates available.","FR No sample templates available."
 "Filter templates by type","FR Filter templates by type"
+"Code not found","Code non trouvé"
