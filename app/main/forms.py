@@ -140,7 +140,7 @@ def email_address(label=_l("Email address"), gov_user=True, only_team_member_dom
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("Enter your email address to continue")))
+        validators.append(DataRequired(message=_l("Enter an email address")))
 
     if only_team_member_domains:
         validators.append(ValidTeamMemberDomain())
