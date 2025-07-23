@@ -1,4 +1,5 @@
 import csv
+import ipaddress
 import json
 import os
 import re
@@ -839,7 +840,13 @@ def is_safe_redirect_url(target):
 
 
 def _geolocate_lookup(ip):
-    request = urllib.request.Request(url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip}")
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+    except ValueError:
+        current_app.logger.warning("Invalid IP address: {}".format(ip))
+        raise ValueError(f"Invalid IP address: {ip}")
+
+    request = urllib.request.Request(url=f"{current_app.config['IP_GEOLOCATE_SERVICE']}/{ip_obj}")
 
     try:
         with urllib.request.urlopen(request) as f:
@@ -854,7 +861,11 @@ def _geolocate_lookup(ip):
 def _geolocate_ip(ip):
     if not current_app.config["IP_GEOLOCATE_SERVICE"].startswith("http"):
         return
-    resp = _geolocate_lookup(ip)
+    try:
+        resp = _geolocate_lookup(ip)
+    except ValueError as e:
+        current_app.logger.warning(f"_geolocate_ip: {e}")
+        return ip
 
     if isinstance(resp, str):
         return ip
