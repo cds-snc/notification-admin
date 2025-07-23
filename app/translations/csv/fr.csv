@@ -1362,6 +1362,7 @@
 "hidden","masqué"
 "Key removed","Clé de sécurité retirée"
 "Add a security key","Ajouter une clé de sécurité"
+"Added a security key","Clé de sécurité ajoutée"
 "You can change the email branding later in Settings.","Vous pourrez changer l’image de marque des courriels plus tard dans la section Paramètres."
 "This determines the Government of Canada signature that will be used by default in the email messages you send.","La langue détermine la signature du gouvernement du Canada qui sera utilisée par défaut dans les messages courriels que vous envoyez."
 "Default language <span class='sr-only'>&nbsp;used in the Government of Canada signature</span>","Langue par défaut <span class='sr-only'>&nbsp;dans la signature du gouvernement du Canada</span>"
