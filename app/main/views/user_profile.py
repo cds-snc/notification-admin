@@ -171,6 +171,9 @@ def user_profile_mobile_number():
                 "mobile_number": form.mobile_number.data,
                 "verified_phonenumber": False,
             }
+
+            # If the user is currently using SMS authentication, we need to change their auth type
+            # because their new number is not verified yet.
             if current_user.auth_type == "sms_auth":
                 data_to_update["auth_type"] = "email_auth"
 
