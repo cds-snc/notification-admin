@@ -57,7 +57,7 @@ def test_form_is_valid_returns_no_errors(
         (
             "code_not_found",
             {"two_factor_code": "99999"},
-            "Code not found",
+            "Try again. Something’s wrong with this code",
         ),
     ),
 )
@@ -73,7 +73,7 @@ def test_returns_errors_when_code_is_too_short(
     if type == "code_expired":
         _verify = False, "That security code has expired"
     if type == "code_not_found":
-        _verify = False, "Code not found"
+        _verify = False, "Try again. Something’s wrong with this code"
 
     mocker.patch("app.user_api_client.check_verify_code", return_value=_verify)
 

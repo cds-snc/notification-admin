@@ -13,7 +13,7 @@ extra_keys_in_app = set(
         "invitation expired",  # api
         "password",  # api
         "Your service already uses ",  # api
-        "Code not found",  # api
+        "Try again. Something’s wrong with this code",  # api
         "Code already sent, wait 10 seconds",  # api
         "You cannot delete a default email reply to address if other reply to addresses exist",  # api
         "Code has expired",  # api
