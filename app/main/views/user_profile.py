@@ -167,8 +167,18 @@ def user_profile_mobile_number():
                 session[NEW_MOBILE] = ""
                 return redirect(url_for(".user_profile_mobile_number_authenticate"))
 
+            data_to_update = {
+                "mobile_number": form.mobile_number.data,
+                "verified_phonenumber": False,
+            }
+
+            # If the user is currently using SMS authentication, we need to change their auth type
+            # because their new number is not verified yet.
+            if current_user.auth_type == "sms_auth":
+                data_to_update["auth_type"] = "email_auth"
+
             # update once to avoid multiple emails to the user
-            current_user.update(mobile_number=form.mobile_number.data, verified_phonenumber=False)
+            current_user.update(**data_to_update)
 
             flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
             if from_send_page == "send_test":
