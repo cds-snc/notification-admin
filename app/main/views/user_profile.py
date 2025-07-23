@@ -180,7 +180,7 @@ def user_profile_mobile_number():
             # update once to avoid multiple emails to the user
             current_user.update(**data_to_update)
 
-            flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+            flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
             if from_send_page == "send_test":
                 session["from_send_page"] = None
                 return redirect(url_for(".verify_mobile_number"))
@@ -249,7 +249,7 @@ def user_profile_mobile_number_authenticate():
             # Only call .update() once to avoid multiple emails to the user
             current_user.update(**data_to_update)
 
-            flash(_("Mobile number removed from your profile"), "default_with_tick")
+            flash(_("Phone number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
 
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
@@ -284,7 +284,7 @@ def user_profile_mobile_number_confirm():
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
         current_user.update(mobile_number=mobile_number, verified_phonenumber=True)
 
-        flash(_("Mobile number {} saved to your profile").format(mobile_number), "default_with_tick")
+        flash(_("Phone number {} saved to your profile").format(mobile_number), "default_with_tick")
 
         # Check if we are coming from the send page, do cleanup
         from_send_page = session.pop("from_send_page", False)

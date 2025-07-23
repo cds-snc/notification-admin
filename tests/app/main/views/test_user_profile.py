@@ -592,7 +592,7 @@ class TestOptionalPhoneNumber:
             _expected_redirect=url_for("main.user_profile"),
         )
         with client_request.session_transaction() as session:
-            assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+            assert session["_flashes"][0][1] == "Phone number +16502532222 saved to your profile"
 
 
 def test_user_profile_shows_new_layout_when_ff_auth_v2_enabled(

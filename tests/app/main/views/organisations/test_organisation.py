@@ -530,7 +530,7 @@ def test_confirm_update_organisation_with_incorrect_password(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one(".error-message").text) == "Invalid password"
+    assert normalize_spaces(page.select_one(".error-message").text) == "Try again. Something’s wrong with this password"
 
 
 def test_confirm_update_organisation_with_name_already_in_use(
