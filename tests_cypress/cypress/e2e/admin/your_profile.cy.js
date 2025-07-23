@@ -5,8 +5,8 @@ const CONFIG = getConfig();
 
 // Reusable function to ensure phone number is set up and verified
 const ensureVerifiedPhoneNumber = () => {
-  Page.Components.ChangePhoneNumberSection().then($element => {
-    if ($element.text().includes('Not set')) {
+  Page.Components.ChangePhoneNumberSection().then(($element) => {
+    if ($element.text().includes("Not set")) {
       Page.AddAndVerifyPhoneNumber(Page.TelNo, CONFIG.CYPRESS_USER_PASSWORD);
       cy.visit(Page.URL); // Reload to see changes
     } else {
@@ -35,10 +35,10 @@ describe("Your profile", () => {
 
     it("Challenges for password when entering the 2fa settings", () => {
       Page.Change2FAOptions();
-      Page.Components.PasswordChallenge().should('exist');
+      Page.Components.PasswordChallenge().should("exist");
     });
   });
-  
+
   describe("Verification", () => {
     beforeEach(() => {
       // Make the test resilient: if the phone number is not set when the test starts, add one first
@@ -59,20 +59,20 @@ describe("Your profile", () => {
       Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
 
       // expect verified badge to be removed
-      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);    
-      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
 
     it("Removes verification badge when phone number is changed", () => {
       // change phone number
       Page.ChangePhoneNumberOptions();
       Page.ChangePhoneNumber();
-      Page.EnterPhoneNumber('16132532223'); // test number
+      Page.EnterPhoneNumber("16132532223"); // test number
       Page.SavePhoneNumber();
 
       // expect verified badge to be removed
-      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);    
-      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
   });
 
@@ -81,41 +81,47 @@ describe("Your profile", () => {
       // Make the test resilient: if the phone number is not set when the test starts, add one first
       ensureVerifiedPhoneNumber();
     });
-    
+
     it("Defaults to email when set to sms and phone number is removed ", () => {
       // set 2fa to SMS
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
       Page.SelectSMSFor2FA();
-      Page.Components.TFASMSLabel().should('contain', 'Verified');
+      Page.Components.TFASMSLabel().should("contain", "Verified");
       Page.Continue();
-      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
+      cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
+        "contain",
+        "Two-step verification method updated",
+      );
 
       Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
 
-      Page.Components.Change2FASection().should('contain', 'Code by email');
+      Page.Components.Change2FASection().should("contain", "Code by email");
       // expect verified badge to be removed
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+      Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
 
-    it ("Defaults to email when set to sms and phone number is changed", () => {
+    it("Defaults to email when set to sms and phone number is changed", () => {
       // set 2fa to SMS
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
       Page.SelectSMSFor2FA();
-      Page.Components.TFASMSLabel().should('contain', 'Verified');
+      Page.Components.TFASMSLabel().should("contain", "Verified");
 
       Page.Continue();
-      cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Two-step verification method updated');
+      cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
+        "contain",
+        "Two-step verification method updated",
+      );
 
       Page.ChangePhoneNumberOptions();
       Page.ChangePhoneNumber();
-      Page.EnterPhoneNumber('16132532223'); // test number
+      Page.EnterPhoneNumber("16132532223"); // test number
       Page.SavePhoneNumber();
 
-      Page.Components.Change2FASection().should('contain', 'Code by email');
+      Page.Components.Change2FASection().should("contain", "Code by email");
       // expect verified badge to be removed
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.Components.TFASMSLabel().should('not.contain', 'Verified');
+      Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
   });
 
