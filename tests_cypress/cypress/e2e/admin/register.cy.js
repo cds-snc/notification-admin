@@ -20,9 +20,7 @@ describe("Create Account Page", () => {
   it("Display error  when submitting an empty form", () => {
     CreateAccountPage.EmptySubmit();
     cy.contains("span", "This cannot be empty").should("be.visible");
-    cy.contains("span", "Enter an email address").should(
-      "be.visible",
-    );
+    cy.contains("span", "Enter an email address").should("be.visible");
   });
 
   it("Display an error when submitting and invalid phone number and non-government email", () => {
