@@ -479,3 +479,30 @@ def test_sign_in_renders_two_factor_fido_for_security_key_auth(
         )
     assert response.status_code == 200
     assert b"two-factor-fido" in response.data
+
+
+def test_geolocate_ip_invalid_ip_logs_and_returns_ip(
+    client,
+    api_user_active_email_auth,
+    mock_send_verify_code,
+    mock_verify_password,
+    mock_get_security_keys,
+    mocker,
+    monkeypatch,
+    app_,
+):
+    # Patch _geolocate_lookup to raise ValueError
+
+    monkeypatch.setitem(current_app.config, "IP_GEOLOCATE_SERVICE", "https://example.com/")
+
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
+    mocker.patch("app.utils.get_remote_addr", return_value="not_an_ip")
+    mock_logger = mocker.patch.object(app_.logger, "warning")
+
+    response = client.post(
+        url_for("main.sign_in"),
+        data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+    )
+    assert response.status_code == 302
+    mock_logger.assert_called_with("_geolocate_ip: Invalid IP address: not_an_ip")
