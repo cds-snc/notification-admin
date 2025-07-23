@@ -144,8 +144,6 @@ jobs:
         cp api/.env .env
         echo 'API_HOST=http://localhost:6011' >> .env
         echo 'PORT=6012' >> .env
-        sed -i 's/^NOTIFY_ENVIRONMENT=.*/NOTIFY_ENVIRONMENT=test/' .env
-        
     
     - name: Make frontend version file
       run: make generate-version-file
