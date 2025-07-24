@@ -410,7 +410,7 @@ describe("Your profile", () => {
         });
     });
 
-    it.only("Works when set a new security key", () => {
+    it("Works when set a new security key", () => {
       ensureNoSecurityKeys();
       let authenticatorId;
 
