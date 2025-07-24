@@ -12,7 +12,7 @@
 
   {{ page_header(
     _('Add or change your ') + thing,
-    back_link=url_for('.user_profile')
+    back_link=url_for('main.send_test', service_id=current_service.id, template_id=template_id) if from_send_page and template_id else url_for('.user_profile')
   ) }}
 
   <div class="grid-row contain-floats">

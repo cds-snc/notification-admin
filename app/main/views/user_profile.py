@@ -193,6 +193,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
     else:
         # if they dont have a number set, just go right to the edit page
@@ -212,6 +214,7 @@ def user_profile_mobile_number():
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
                 from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
 
     if from_send_page == "user_profile_2fa":
