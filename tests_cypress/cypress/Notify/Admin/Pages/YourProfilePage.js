@@ -34,11 +34,14 @@ let Components = {
     TFASMSLabel: () => Components.TFASMS().next('label'),
     TFAKey: () => cy.getByTestId('security_key'),
     TFAKeyLabel: () => Components.TFAKey().next('label'),
+    AddKey: () => cy.getByTestId('new_key'),
     ContinueButton: () => cy.get('button[type="submit"]'),
     // sms verify components
     VerifyCode: () => cy.get('input[name="two_factor_code"]'),
     VerifyButton: () => cy.get('button[type="submit"]'),
-    
+    // menu
+    AccountMenuLink: () => cy.get('button[id="account-menu"]').first(),
+    SignOutLink: () => cy.get('a[href="/sign-out"]').first(),
 };
 
 // Actions users can take on the page
@@ -78,6 +81,10 @@ let Actions = {
         Components.PasswordField().type(password);
         Actions.ConfirmPasswordChallenge();
     },
+    SelectEmailFor2FA: () => {
+        Components.TFAEMAIL().click();
+        Components.ContinueButton().click();
+    },
     SelectSMSFor2FA: () => {
         Components.TFASMS().click();
         Components.ContinueButton().click();
@@ -89,6 +96,7 @@ let Actions = {
     Continue: () => {
         Components.ContinueButton().click();
     },
+    // sms
     Verify: () => {
         Components.VerifyCode().type('12345');
         Components.VerifyButton().click();
@@ -97,6 +105,7 @@ let Actions = {
         Actions.Continue();
         cy.get('h1').should('contain', 'Your profile');
     },
+    // security key
     MockWebAuthn: () => {
         cy.window().then((win) => {
             // Mock WebAuthn API for security key testing
@@ -185,6 +194,35 @@ let Actions = {
         Actions.ConfirmPasswordChallenge();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Mobile number removed from your profile');
     },
+    Set2FAToEmail: (password) => {
+        Actions.Goto2FASettings(password);
+        Actions.SelectEmailFor2FA();
+        Components.Change2FASection().should('contain', 'Code by email');
+    },
+    Set2FAToSMS: (password) => {
+        Actions.Goto2FASettings(password);
+        Actions.SelectSMSFor2FA();
+        Components.Change2FASection().should('contain', 'Code by text message');
+    },
+    AddNewKeyFrom2FASettings: () => {
+        Components.AddKey().click();
+        Components.ContinueButton().click();
+        Components.SecurityKeyName().type('2FA Test Key1');
+        Components.SaveButton().click();
+        // cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Added a security key');
+    },
+    UpdatePhoneNumber: (phoneNumber) => {
+      Actions.ChangePhoneNumberOptions();
+      Actions.ChangePhoneNumber();
+      Actions.EnterPhoneNumber(phoneNumber);
+      Actions.SavePhoneNumber();
+    },
+    // misc
+    SignOut: () => {
+        Components.AccountMenuLink().click();
+        Components.SignOutLink().click();
+        cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'You have been signed out.');
+    }
 };
 
 let YourProfilePage = {
