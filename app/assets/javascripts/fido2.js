@@ -91,7 +91,7 @@
   $("body").on("click", "#test-fido2-keys", function (e) {
     e.preventDefault();
 
-    fetch("/user-profile/security_keys/authenticate", {
+    fetch("/user-profile/security_keys/authenticate-fido2", {
       method: "POST",
       headers: {
         "X-CSRFToken": csrf_token,
