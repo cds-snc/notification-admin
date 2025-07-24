@@ -946,7 +946,10 @@ class CsvUploadForm(StripWhitespaceForm):
 
 
 class ChangeNameForm(StripWhitespaceForm):
-    new_name = StringField(_l("Your name"))
+    new_name = StringField(
+        _l("Your name"),
+        validators=[DataRequired(message=_l("Enter your name"))],
+    )
 
 
 class ChangeEmailForm(StripWhitespaceForm):
