@@ -65,7 +65,6 @@
       })
       .then(CBOR.decode)
       .then(function (options) {
-        console.log("FIDO2 options", options);
         return navigator.credentials.create(options);
       })
       .catch(function (error) {
@@ -73,7 +72,6 @@
         return Promise.reject(error);
       })
       .then(function (attestation) {
-        console.log("attestation", attestation);
         return fetch("/user-profile/security_keys/complete", {
           method: "POST",
           headers: {
@@ -90,7 +88,6 @@
         });
       })
       .then(function (response) {
-        console.log("finsihed response", response);
         window.location = "/user-profile/security_keys";
       });
   });
