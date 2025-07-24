@@ -250,7 +250,7 @@ def test_should_return_200_with_sms_two_factor_code_error_when_two_factor_code_i
         }
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "23456"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_should_return_200_with_email_two_factor_code_error_when_two_factor_code_is_wrong(
@@ -268,7 +268,7 @@ def test_should_return_200_with_email_two_factor_code_error_when_two_factor_code
         }
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "23456"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_should_login_user_when_multiple_valid_sms_codes_exist(
@@ -378,12 +378,12 @@ def test_two_factor_returns_error_when_user_is_locked(
     # sms
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
     # email
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_sms_two_factor_should_redirect_to_sign_in_if_user_not_in_session(
