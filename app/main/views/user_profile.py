@@ -52,6 +52,7 @@ def user_profile():
     session.pop(HAS_AUTHENTICATED, None)
 
     num_keys = len(current_user.security_keys)
+
     return render_template(
         "views/user-profile.html",
         num_keys=num_keys,
@@ -147,9 +148,6 @@ def user_profile_mobile_number():
 
         # if they are posting the button "edit"
         if edit_or_cancel_pressed == "edit":
-            current_user.update(verified_phonenumber=False)
-            if current_user.auth_type == "sms_auth":
-                current_user.update(auth_type="email_auth")
             return render_template(
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
@@ -169,10 +167,22 @@ def user_profile_mobile_number():
                 session[NEW_MOBILE] = ""
                 return redirect(url_for(".user_profile_mobile_number_authenticate"))
 
-            current_user.update(mobile_number=form.mobile_number.data)
-            flash(_("Mobile number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+            data_to_update = {
+                "mobile_number": form.mobile_number.data,
+                "verified_phonenumber": False,
+            }
 
+            # If the user is currently using SMS authentication, we need to change their auth type
+            # because their new number is not verified yet.
+            if current_user.auth_type == "sms_auth":
+                data_to_update["auth_type"] = "email_auth"
+
+            # update once to avoid multiple emails to the user
+            current_user.update(**data_to_update)
+
+            flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
             if from_send_page == "send_test":
+                session["from_send_page"] = None
                 return redirect(url_for(".verify_mobile_number"))
             elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
                 return redirect(url_for(".verify_mobile_number"))
@@ -187,9 +197,16 @@ def user_profile_mobile_number():
     else:
         # if they dont have a number set, just go right to the edit page
         if current_user.mobile_number is None:
-            current_user.update(mobile_number=None, verified_phonenumber=False)
+            data_to_update = {
+                "verified_phonenumber": False,
+                "mobile_number": None,
+            }
             if current_user.auth_type == "sms_auth":
-                current_user.update(auth_type="email_auth")
+                data_to_update["auth_type"] = "email_auth"
+
+            # update once to avoid multiple emails to the user
+            current_user.update(**data_to_update)
+
             return render_template(
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
@@ -221,10 +238,18 @@ def user_profile_mobile_number_authenticate():
     if form.validate_on_submit():
         # if they are removing their phone number, skip verification, set auth type to email, and remove verified phone number flag
         if not session[NEW_MOBILE]:
-            current_user.update(mobile_number=None, auth_type="email_auth")
-            current_user.update(verified_phonenumber=False)
+            data_to_update = {
+                "mobile_number": None,
+                "verified_phonenumber": False,
+            }
+            if current_user.auth_type == "sms_auth":
+                data_to_update["auth_type"] = "email_auth"
 
-            flash(_("Mobile number removed from your profile"), "default_with_tick")
+            # Update the user with the new data
+            # Only call .update() once to avoid multiple emails to the user
+            current_user.update(**data_to_update)
+
+            flash(_("Phone number removed from your profile"), "default_with_tick")
             return redirect(url_for(".user_profile"))
 
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
@@ -257,10 +282,9 @@ def user_profile_mobile_number_confirm():
         mobile_number = session[NEW_MOBILE]
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
-        current_user.update(mobile_number=mobile_number)
-        current_user.update(verified_phonenumber=True)
+        current_user.update(mobile_number=mobile_number, verified_phonenumber=True)
 
-        flash(_("Mobile number {} saved to your profile").format(mobile_number), "default_with_tick")
+        flash(_("Phone number {} saved to your profile").format(mobile_number), "default_with_tick")
 
         # Check if we are coming from the send page, do cleanup
         from_send_page = session.pop("from_send_page", False)
@@ -325,6 +349,8 @@ def user_profile_security_keys_confirm_delete(keyid):
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
             msg = _("Key removed")
             flash(msg, "default_with_tick")
+            if len(current_user.security_keys) <= 0:
+                current_user.update(auth_type="email_auth")
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -334,7 +360,9 @@ def user_profile_security_keys_confirm_delete(keyid):
             else:
                 abort(500, e)
 
-    flash(_("Are you sure you want to remove security key {}?").format(keyid), "remove")
+    keys = dict([(key["id"], key["name"]) for key in current_user.security_keys])
+    key_name = keys.get(keyid, str(keyid))
+    flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
     return render_template("views/user-profile/security-keys.html")
 
 
@@ -346,6 +374,7 @@ def user_profile_add_security_keys():
     if form.keyname.data == "":
         form.validate_on_submit()
     elif request.method == "POST":
+        flash(_("Added a security key"), "default_with_tick")
         result = user_api_client.register_security_key(current_user.id)
         return base64.b64decode(result["data"])
 
@@ -441,10 +470,10 @@ def verify_mobile_number():
     form = TwoFactorForm(_check_code)
 
     if form.validate_on_submit():
-        current_user.update(verified_phonenumber=True)
         if from_send_page == "send_test":
+            current_user.update(verified_phonenumber=True)
             return redirect(url_for(".send_test", service_id=send_page_service_id, template_id=send_page_template_id))
-        current_user.update(auth_type="sms_auth")
+        current_user.update(verified_phonenumber=True, auth_type="sms_auth")
         flash(_("Two-step verification method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
     else:
@@ -467,12 +496,13 @@ def user_profile_2fa():
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
             return redirect(url_for(".user_profile_2fa_authenticate"))
-        data = [
-            ("email", _("Receive a code by email")),
-            ("sms", _("Receive a code by text message")),
-            *[(f"key_{key['id']}", _("Use '{}' key").format(key["name"])) for key in getattr(current_user, "security_keys", [])],
-            ("new_key", _("Add a new security key")),
-        ]
+        data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
+        if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
+            if len(current_user.security_keys) > 1:
+                data.extend([("security_key", _("Use existing security keys"))])
+            else:
+                data.extend([("security_key", _("Use existing security key"))])
+        data.append(("new_key", _("Add a new security key")))
         hints = {
             "email": current_user.email_address,
             "sms": current_user.mobile_number
@@ -496,6 +526,8 @@ def user_profile_2fa():
             current_auth_method = "email"
         elif current_user.auth_type == "sms_auth":
             current_auth_method = "sms"
+        elif current_user.auth_type == "security_key_auth":
+            current_auth_method = "security_key"
         else:
             # todo: add a case for security keys
             current_auth_method = "email"
@@ -512,8 +544,8 @@ def user_profile_2fa():
                 if not current_user.mobile_number:
                     session["from_send_page"] = "user_profile_2fa"
                     return redirect(url_for(".user_profile_mobile_number"))
-                elif not current_user.verified_phonenumber:
-                    return redirect(url_for(".verify_mobile_number"))
+            elif new_auth_type == "security_key":
+                auth_type = "security_key_auth"
             elif new_auth_type == "new_key":
                 # Redirect to add a new security key
                 session["from_send_page"] = "user_profile_2fa"
@@ -522,6 +554,9 @@ def user_profile_2fa():
             else:
                 # Default to email auth if something unexpected is selected
                 auth_type = "email_auth"
+
+            if not current_user.verified_phonenumber and new_auth_type == "sms":
+                return redirect(url_for(".verify_mobile_number"))
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")

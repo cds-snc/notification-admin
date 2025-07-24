@@ -2,7 +2,7 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from tests.conftest import SERVICE_ONE_ID, captured_templates
+from tests.conftest import SERVICE_ONE_ID
 
 
 def test_should_render_sms_two_factor_page(
@@ -28,24 +28,6 @@ def test_should_render_sms_two_factor_page(
     assert page.select_one("input")["autocomplete"] == "one-time-code"
     assert page.select_one("input")["inputmode"] == "numeric"
     assert page.select_one("input")["pattern"] == "[0-9]*"
-
-
-def test_should_render_security_key_on_sms_two_factor_page(
-    app_, client, api_user_active, mock_get_security_keys_with_key, mock_get_user
-):
-    with client.session_transaction() as session:
-        session["user_details"] = {
-            "id": api_user_active["id"],
-            "email": api_user_active["email_address"],
-        }
-
-    with captured_templates(app_) as templates:
-        response = client.get(url_for("main.two_factor_sms_sent"))
-        assert response.status_code == 200
-        assert "<div id='two-factor-fido'" in response.data.decode("utf-8")  # JS relies on this
-
-        template, context = templates[0]
-        assert template.name == "views/two-factor-fido.html"
 
 
 def test_should_render_email_two_factor_page(
@@ -94,24 +76,6 @@ def test_should_render_email_two_factor_page_for_sms_user_forced_to_login_with_e
         "For added security, GC Notify has sent you an email message "
         "with a security code to confirm you still control a valid Government email address."
     )
-
-
-def test_should_render_security_key_on_email_two_factor_page(
-    app_, client, api_user_active, mock_get_security_keys_with_key, mock_get_user
-):
-    with client.session_transaction() as session:
-        session["user_details"] = {
-            "id": api_user_active["id"],
-            "email": api_user_active["email_address"],
-        }
-
-    with captured_templates(app_) as templates:
-        response = client.get(url_for("main.two_factor_email_sent"))
-        assert response.status_code == 200
-        assert "<div id='two-factor-fido'" in response.data.decode("utf-8")  # JS relies on this
-
-        template, context = templates[0]
-        assert template.name == "views/two-factor-fido.html"
 
 
 def test_sms_should_login_user_and_should_redirect_to_next_url(
@@ -286,7 +250,7 @@ def test_should_return_200_with_sms_two_factor_code_error_when_two_factor_code_i
         }
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "23456"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_should_return_200_with_email_two_factor_code_error_when_two_factor_code_is_wrong(
@@ -304,7 +268,7 @@ def test_should_return_200_with_email_two_factor_code_error_when_two_factor_code
         }
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "23456"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_should_login_user_when_multiple_valid_sms_codes_exist(
@@ -414,12 +378,12 @@ def test_two_factor_returns_error_when_user_is_locked(
     # sms
     response = client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
     # email
     response = client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
     assert response.status_code == 200
-    assert "Code not found" in response.get_data(as_text=True)
+    assert "Try again. Something’s wrong with this code" in response.get_data(as_text=True)
 
 
 def test_sms_two_factor_should_redirect_to_sign_in_if_user_not_in_session(

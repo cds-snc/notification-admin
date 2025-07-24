@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, session, url_for
+from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user
 from user_agents import parse
@@ -20,12 +20,13 @@ def two_factor_email_sent():
 
     user_id = session["user_details"]["id"]
 
-    # Check if a FIDO2 key exists, if yes, return template
-    user = User.from_id(user_id)
+    if not current_app.config["FF_AUTH_V2"]:
+        # Check if a FIDO2 key exists, if yes, return template
+        user = User.from_id(user_id)
 
-    # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
-    if len(user.security_keys):
-        return render_template("views/two-factor-fido.html")
+        # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
+        if len(user.security_keys):
+            return render_template("views/two-factor-fido.html")
 
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "email")
@@ -52,12 +53,13 @@ def two_factor_sms_sent():
 
     user_id = session["user_details"]["id"]
 
-    # Check if a FIDO2 key exists, if yes, return template
-    user = User.from_id(user_id)
+    if not current_app.config["FF_AUTH_V2"]:
+        # Check if a FIDO2 key exists, if yes, return template
+        user = User.from_id(user_id)
 
-    # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
-    if len(user.security_keys):
-        return render_template("views/two-factor-fido.html")
+        # AUTHV2_Note: security_key - Tagging this for future authv2 dev reference
+        if len(user.security_keys):
+            return render_template("views/two-factor-fido.html")
 
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "sms")

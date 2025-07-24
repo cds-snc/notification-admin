@@ -9,6 +9,7 @@ from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
+from app import User
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
@@ -591,7 +592,7 @@ class TestOptionalPhoneNumber:
             _expected_redirect=url_for("main.user_profile"),
         )
         with client_request.session_transaction() as session:
-            assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+            assert session["_flashes"][0][1] == "Phone number +16502532222 saved to your profile"
 
 
 def test_user_profile_shows_new_layout_when_ff_auth_v2_enabled(
@@ -886,3 +887,31 @@ class TestBackLinks:
             assert back_link["href"] == url_for(
                 expected_redirect
             ), f"Back link on {link} does not navigate to {expected_redirect}"
+
+
+def test_user_without_phone_can_add_security_key(
+    client_request,
+    mocker,
+    active_user_no_mobile,
+):
+    mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
+    mocker.patch("app.models.user.User.from_id", return_value=User(active_user_no_mobile))
+
+    client_request.login(active_user_no_mobile)
+
+    page = client_request.get("main.user_profile_add_security_keys")
+    assert "security key" in page.text.lower()
+
+
+def test_user_with_phone_but_unverified_can_add_security_key(
+    client_request,
+    mocker,
+    active_user_with_unverified_mobile,
+):
+    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_unverified_mobile)
+    mocker.patch("app.models.user.User.from_id", return_value=User(active_user_with_unverified_mobile))
+
+    client_request.login(active_user_with_unverified_mobile)
+
+    page = client_request.get("main.user_profile_add_security_keys")
+    assert "security key" in page.text.lower()

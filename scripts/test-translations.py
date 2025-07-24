@@ -13,12 +13,13 @@ extra_keys_in_app = set(
         "invitation expired",  # api
         "password",  # api
         "Your service already uses ",  # api
-        "Code not found",  # api
+        "Try again. Something’s wrong with this code",  # api
         "Code already sent, wait 10 seconds",  # api
         "You cannot delete a default email reply to address if other reply to addresses exist",  # api
         "Code has expired",  # api
         "Code already sent",  # api
         "Code has already been used",  # api
+        "Code not found",  # api - 2FA validation error message
         "as an email reply-to address.",  # api
         "You cannot remove the only user for a service",  # api
         "Cannot send to international mobile numbers",  # api

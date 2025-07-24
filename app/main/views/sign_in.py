@@ -1,4 +1,4 @@
-from flask import abort, flash, redirect, render_template, request, session, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, session, url_for
 from flask_babel import _
 from flask_login import current_user, logout_user
 
@@ -56,6 +56,9 @@ def sign_in():
             if user.email_auth or requires_email_login:
                 args = {"requires_email_login": True} if requires_email_login else {}
                 return redirect(url_for(".two_factor_email_sent", **args))
+            if current_app.config["FF_AUTH_V2"]:
+                if user.security_key_auth:
+                    return render_template("views/two-factor-fido.html")
 
         # Vague error message for login in case of user not known, inactive or password not verified
         flash(_("The email address or password you entered is incorrect."))

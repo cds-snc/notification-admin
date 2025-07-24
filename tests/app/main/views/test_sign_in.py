@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
-from tests.conftest import normalize_spaces
+from tests.conftest import normalize_spaces, set_config
 
 
 def test_render_sign_in_template_for_new_user(client_request):
@@ -455,3 +455,54 @@ def test_sign_in_geolookup_disabled_in_dev(
     assert response.status_code == 302
 
     assert not geolookup_mock.called
+
+
+def test_sign_in_renders_two_factor_fido_for_security_key_auth(
+    client,
+    mocker,
+    api_user_active_security_key_auth,
+    mock_get_user_security_key_auth,
+    mock_verify_password,
+    mock_get_security_keys,
+    app_,
+):
+    # Patch to return the real user dict and User object
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_security_key_auth)
+    mocker.patch(
+        "app.models.user.User.from_email_address_and_password_or_none", return_value=User(api_user_active_security_key_auth)
+    )
+
+    with set_config(app_, "FF_AUTH_V2", True):
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+        )
+    assert response.status_code == 200
+    assert b"two-factor-fido" in response.data
+
+
+def test_geolocate_ip_invalid_ip_logs_and_returns_ip(
+    client,
+    api_user_active_email_auth,
+    mock_send_verify_code,
+    mock_verify_password,
+    mock_get_security_keys,
+    mocker,
+    monkeypatch,
+    app_,
+):
+    # Patch _geolocate_lookup to raise ValueError
+
+    monkeypatch.setitem(current_app.config, "IP_GEOLOCATE_SERVICE", "https://example.com/")
+
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
+    mocker.patch("app.utils.get_remote_addr", return_value="not_an_ip")
+    mock_logger = mocker.patch.object(app_.logger, "warning")
+
+    response = client.post(
+        url_for("main.sign_in"),
+        data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+    )
+    assert response.status_code == 302
+    mock_logger.assert_called_with("_geolocate_ip: Invalid IP address: not_an_ip")
