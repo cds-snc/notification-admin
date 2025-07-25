@@ -1,4 +1,4 @@
-{% macro task_shortcut(description, link_url, link_text, title=false, icon=false) %}
+{% macro task_shortcut(description, link_url, link_text, title=false, icon=false, badge=false) %}
 
   {% set external = icon == "arrow-up-right-from-square" %}{# Defensive way of ensuring this icon is used appropriately #}
 
@@ -8,7 +8,12 @@
           {{ title }}
       </h2>
     {% endif %}
-    <p>{{ description }}</p>
+      <div class="flex justify-between items-start">
+        <p>{{ description }}</p>
+        {% if badge %}
+          {{ badge }}
+        {% endif %}
+      </div>
       <div class="mt-auto flex-none">
         <a class="flex mr-auto justify-between items-end" href="{{ link_url }}" {% if external %}target="_blank"{% endif %}>
           {{ link_text }}

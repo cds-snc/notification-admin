@@ -2823,7 +2823,7 @@ class TestViewSampleLibrary:
             assert "Welcome Email" in template_links[0].text
 
             # Check notification type icons/text are displayed for the email template
-            notification_types = table.select(".text-gray-700")
+            notification_types = page.select("[data-testid='sample_library_icon']")
             assert len(notification_types) == 1
 
     def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
