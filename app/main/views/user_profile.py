@@ -135,11 +135,27 @@ def user_profile_mobile_number():
 
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
-    # determine if we are coming from the send page
     from_send_page = session.get("from_send_page", False)
-    session["from_send_page"] = request.args.get("from_send_page") if not from_send_page == "user_profile_2fa" else from_send_page
-    session["send_page_service_id"] = request.args.get("service_id")
-    session["send_page_template_id"] = request.args.get("template_id")
+    service_id = session.get("send_page_service_id")
+    template_id = session.get("send_page_template_id")
+
+    # Only update session values from URL if they exist
+    if request.args.get("from_send_page"):
+        from_send_page = request.args.get("from_send_page")
+        session["from_send_page"] = from_send_page
+
+    if request.args.get("service_id"):
+        service_id = request.args.get("service_id")
+        session["send_page_service_id"] = service_id
+
+    if request.args.get("template_id"):
+        template_id = request.args.get("template_id")
+        session["send_page_template_id"] = template_id
+
+    # Store these values in session
+    session["from_send_page"] = from_send_page
+    session["send_page_service_id"] = service_id
+    session["send_page_template_id"] = template_id
 
     if request.method == "POST":
         # get button presses
@@ -152,6 +168,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
 
         elif remove_pressed == "remove":
@@ -193,6 +211,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
     else:
         # if they dont have a number set, just go right to the edit page
@@ -211,7 +231,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
-                from_send_page=from_send_page,
+                from_send_page=session.get("from_send_page"),
+                template_id=session.get("send_page_template_id"),
             )
 
     if from_send_page == "user_profile_2fa":
@@ -221,6 +242,8 @@ def user_profile_mobile_number():
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
+        from_send_page=session.get("from_send_page"),
+        template_id=session.get("send_page_template_id"),
     )
 
 
