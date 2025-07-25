@@ -43,7 +43,7 @@
           <div class="details-body">
             <p>{{ _("To receive text messages you need a North American mobile phone number.") }}</p>
             <p>{{ _("MS Teams, landlines, and some international numbers cannot receive texts.") }}</p>
-            <a href={{url_for('.verify_mobile_number')}} class="button button-secondary text-base outline-none focus:shadow-outline">{{ _('Resend verification code') }}</a>
+            <a href={{resend_url if resend_url else url_for('.verify_mobile_number')}} class="button button-secondary text-base outline-none focus:shadow-outline">{{ _('Resend verification code') }}</a>
           </div>
         </details>
       {% endcall %}
