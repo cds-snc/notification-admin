@@ -1796,7 +1796,8 @@ def test_new_badge_on_dashboard_when_some_templates(
     mock_get_template_statistics,
     mock_get_service_statistics,
     mock_get_jobs,
+    app_,
 ):
-    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
-
-    assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
+    with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+        page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+        assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
