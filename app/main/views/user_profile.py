@@ -360,7 +360,9 @@ def user_profile_security_keys_confirm_delete(keyid):
             else:
                 abort(500, e)
 
-    flash(_("Are you sure you want to remove security key {}?").format(keyid), "remove")
+    keys = dict([(key["id"], key["name"]) for key in current_user.security_keys])
+    key_name = keys.get(keyid, str(keyid))
+    flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
     return render_template("views/user-profile/security-keys.html")
 
 
