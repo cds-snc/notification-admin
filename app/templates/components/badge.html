@@ -1,5 +1,5 @@
-{% macro badge(text, variant='success', extra_class=None, bg_class=None, style=None, icon_override=None) %}
-
+{% macro badge(text, variant='success', extra_class=None, bg_class=None, style=None, icon_override=None, hide_icon=false) %}
+    {# Debug: print macro parameters #}
     {% set icon = icon_override if icon_override is not none else (
         'fa-circle-question' if variant == 'default' else 'fa-check'
     ) %}
@@ -7,6 +7,9 @@
     {% set final_bg_class = bg_class if bg_class is not none else default_bg_class %}
 
     <span class="inline-flex gap-2 items-center px-4 py-2 rounded-full text-xs font-medium {{ final_bg_class }}{% if extra_class %} {{ extra_class }}{% endif %}"{% if style %} style="{{ style }}"{% endif %}>
-        <i aria-hidden="true" class="fa-solid fa-lg {{ icon }}"></i> {{ text }}
-    </span>
+        {% if not hide_icon %}
+            <i aria-hidden="true" class="fa-solid fa-lg {{ icon }}"></i>
+        {% endif %}
+        {{ text }}
+    </span>    
 {% endmacro %}
