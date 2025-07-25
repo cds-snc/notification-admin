@@ -51,6 +51,9 @@ def user_profile():
     # revoke their additional authentication when they return to this page
     session.pop(HAS_AUTHENTICATED, None)
 
+    # Clear any verification code sent flags when returning to profile
+    session.pop("verify_mobile_code_sent", None)
+
     num_keys = len(current_user.security_keys)
 
     return render_template(
@@ -315,6 +318,19 @@ def sms_not_received():
     return redirect(url_for(".verify_mobile_number"))
 
 
+@main.route("/user-profile/verify-mobile-number/resend", methods=["GET", "POST"])
+@user_is_logged_in
+@requires_feature("FF_AUTH_V2")
+def resend_mobile_verification_code():
+    """Resend verification code for mobile number verification."""
+    if not current_user.mobile_number:
+        return redirect(url_for(".user_profile_2fa"))
+
+    current_user.send_verify_code(to=current_user.mobile_number)
+    flash(_("Verification code re-sent"), "default_with_tick")
+    return redirect(url_for(".verify_mobile_number"))
+
+
 @main.route("/user-profile/password", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_password():
@@ -470,6 +486,9 @@ def verify_mobile_number():
     form = TwoFactorForm(_check_code)
 
     if form.validate_on_submit():
+        # Clear the verification code sent flag since verification was successful
+        session.pop("verify_mobile_code_sent", None)
+
         if from_send_page == "send_test":
             current_user.update(verified_phonenumber=True)
             return redirect(url_for(".send_test", service_id=send_page_service_id, template_id=send_page_template_id))
@@ -477,7 +496,10 @@ def verify_mobile_number():
         flash(_("Two-step verification method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
     else:
-        current_user.send_verify_code(to=current_user.mobile_number)
+        # Only send verification code on initial visit, not on refreshes
+        if "verify_mobile_code_sent" not in session:
+            current_user.send_verify_code(to=current_user.mobile_number)
+            session["verify_mobile_code_sent"] = True
 
     return render_template(
         "views/user-profile/confirm.html",
@@ -485,12 +507,16 @@ def verify_mobile_number():
         back_link=url_for(".user_profile_2fa")
         if NEW_MOBILE_PASSWORD_CONFIRMED not in session
         else url_for(".user_profile_mobile_number"),
+        resend_url=url_for(".resend_mobile_verification_code"),
     )
 
 
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
+    # Clear any verification code sent flags when accessing 2FA settings
+    session.pop("verify_mobile_code_sent", None)
+
     # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         # IF they have not authenticated yet, do it now
