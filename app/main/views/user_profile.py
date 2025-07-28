@@ -377,7 +377,10 @@ def user_profile_security_keys_confirm_delete(keyid):
         session["security_key_name"] = key_name
         return redirect(url_for(".user_profile_security_keys_authenticate"))
 
-    flash(_("Are you sure you want to remove security key {}?").format(key_name), "remove")
+    keys = dict([(key["id"], key["name"]) for key in current_user.security_keys])
+    key_name = keys.get(keyid, str(keyid))
+    flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
+    
     return render_template("views/user-profile/security-keys.html")
 
 

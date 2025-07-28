@@ -1,0 +1,108 @@
+{% from "components/pill.html" import pill %}
+
+<div class="heading-large">Pill Component Examples</div>
+
+<hr />
+
+<h2 class="heading-medium">Pill with Counts</h2>
+<p class="mt-4">A pill navigation component with count numbers displayed:</p>
+<div class="mt-4">
+    {{ pill(
+        items=[
+            ['Email notifications', 'email-1', '#', 12],
+            ['Text message notifications', 'sms-1', '#', 8],
+        ],
+        current_value='email',
+        show_count=True,
+        label='Filter templates by type'
+    ) }}
+</div>
+
+<h2 class="heading-medium">Pill without Counts</h2>
+<p class="mt-4">A pill navigation component without count numbers:</p>
+<div class="mt-4">
+    {{ pill(
+        items=[
+            ['All notifications', 'all-2', '#', 0],
+            ['Emails', 'email-2', '#', 0],
+            ['Text messages', 'sms-2', '#', 0]
+        ],
+        current_value='all',
+        show_count=False,
+        label='Filter notifications by type'
+    ) }}
+</div>
+
+<h2 class="heading-medium">Pill with Icons (No Counts)</h2>
+<p class="mt-4">A pill navigation component with icons but without counts:</p>
+<div class="mt-4">
+    {{ pill(
+        items=[
+            ['Email', 'dashboard-3', '#', 0, 'fa-solid fa-paper-plane'],
+            ['Text messge', 'templates-3', '#', 0, 'fa-solid fa-message'],
+        ],
+        current_value='dashboard',
+        show_count=False,
+        label='Navigation menu'
+    ) }}
+</div>
+
+<h2 class="heading-medium">Simple Pill</h2>
+<p class="mt-4">A minimal pill navigation without icons or counts:</p>
+<div class="mt-4">
+    {{ pill(
+        items=[
+            ['Active', 'active-4', '#', 0],
+            ['Pending', 'pending-4', '#', 0],
+            ['Completed', 'completed-4', '#', 0]
+        ],
+        current_value='pending',
+        show_count=False,
+        label='Status filter'
+    ) }}
+</div>
+
+<h2 class="heading-medium">Different Selection States</h2>
+<p class="mt-4">Shows how the pill looks when different items are selected:</p>
+
+<div class="mt-4 mb-4">
+    <p class="text-sm font-bold">First item selected:</p>
+    {{ pill(
+        items=[
+            ['Inbox', 'inbox-5', '#', 24],
+            ['Sent', 'sent-5', '#', 156],
+            ['Drafts', 'drafts-5', '#', 3]
+        ],
+        current_value='inbox-5',
+        show_count=True,
+        label='Email folders'
+    ) }}
+</div>
+
+<div class="mt-4 mb-4">
+    <p class="text-sm font-bold">Middle item selected:</p>
+    {{ pill(
+        items=[
+            ['Inbox', 'inbox-6', '#', 24],
+            ['Sent', 'sent-6', '#', 156],
+            ['Drafts', 'drafts-6', '#', 3]
+        ],
+        current_value='sent-6',
+        show_count=True,
+        label='Email folders 2'
+    ) }}
+</div>
+
+<div class="mt-4 mb-6">
+    <p class="text-sm font-bold">Last item selected:</p>
+    {{ pill(
+        items=[
+            ['Inbox', 'inbox-7', '#', 24],
+            ['Sent', 'sent-7', '#', 156],
+            ['Drafts', 'drafts-7', '#', 3]
+        ],
+        current_value='drafts-7',
+        show_count=True,
+        label='Email folders 3'
+    ) }}
+</div>
