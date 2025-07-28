@@ -454,8 +454,14 @@ def verify_mobile_number_send():
     if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         return redirect(url_for(".user_profile_2fa"))
 
+    # Check if this is a resend request
+    resend = request.args.get("resend") == "true"
+
     # Send verification code
     current_user.send_verify_code(to=current_user.mobile_number)
+
+    if resend:
+        flash(_("Verification code re-sent"), "default_with_tick")
 
     # Redirect to the verification form (POST-Redirect-GET pattern)
     return redirect(url_for(".verify_mobile_number"))
@@ -466,18 +472,10 @@ def verify_mobile_number_send():
 @requires_feature("FF_AUTH_V2")
 def verify_mobile_number():
     """
-    Display the verification form. Does not send a code unless explicitly requested via resend.
+    Display the verification form. Does not send a code.
     """
     if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         return redirect(url_for(".user_profile_2fa"))
-
-    # Check if this is a resend request
-    resend = request.args.get("resend") == "true"
-
-    if resend:
-        # Send verification code only for resend requests
-        current_user.send_verify_code(to=current_user.mobile_number)
-        flash(_("Verification code re-sent"), "default_with_tick")
 
     # Validate code for form
     def _check_code(code):
@@ -491,7 +489,7 @@ def verify_mobile_number():
         back_link=url_for(".user_profile_2fa")
         if NEW_MOBILE_PASSWORD_CONFIRMED not in session
         else url_for(".user_profile_mobile_number"),
-        resend_url=url_for(".verify_mobile_number", resend="true"),
+        resend_url=url_for(".verify_mobile_number_send"),
     )
 
 
@@ -532,7 +530,7 @@ def verify_mobile_number_post():
             back_link=url_for(".user_profile_2fa")
             if NEW_MOBILE_PASSWORD_CONFIRMED not in session
             else url_for(".user_profile_mobile_number"),
-            resend_url=url_for(".verify_mobile_number", resend="true"),
+            resend_url=url_for(".verify_mobile_number_send", resend=True),
         )
 
 
