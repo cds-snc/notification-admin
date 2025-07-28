@@ -1,9 +1,12 @@
 {% from "components/badge.html" import badge %}
 {% from "components/task-shortcut.html" import task_shortcut %}
+{% from "components/links.html" import content_link with context %}
 
 <h2 class="heading-medium">{{ _("Start sending messages")}}</h2>
-<p>{{_("If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a&nbsp;spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already&nbsp;created.").format(gca_url_for('spreadsheets')) }}</p>
-
+<p>
+  {{ _("New to GC Notify? ") }}
+  {{ content_link(id_key='nav-footer-secondary-privacy', class="whitespace-nowrap",label=_('Visit Guidance on Getting started'), href=gca_url_for('getting_started'), is_external_link=true) }}
+</p>
 {% if config["FF_SAMPLE_TEMPLATES"] %}
   <div class="flex space-x-gutter mb-16 mt-12">
     {% if current_service.has_templates %}
