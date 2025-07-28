@@ -371,12 +371,14 @@ def user_profile_security_keys_confirm_delete(keyid):
 def user_profile_add_security_keys():
     form = SecurityKeyForm()
 
-    if form.keyname.data == "":
-        form.validate_on_submit()
-    elif request.method == "POST":
-        flash(_("Added a security key"), "default_with_tick")
-        result = user_api_client.register_security_key(current_user.id)
-        return base64.b64decode(result["data"])
+    if request.args.get("duplicate") is not None:
+        flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
+    else:
+        if form.keyname.data == "":
+            form.validate_on_submit()
+        elif request.method == "POST":
+            result = user_api_client.register_security_key(current_user.id)
+            return base64.b64decode(result["data"])
 
     return render_template("views/user-profile/add-security-keys.html", form=form)
 
@@ -384,6 +386,7 @@ def user_profile_add_security_keys():
 @main.route("/user-profile/security_keys/complete", methods=["POST"])
 @user_is_logged_in
 def user_profile_complete_security_keys():
+    flash(_("Added a security key"), "default_with_tick")
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
