@@ -2217,6 +2217,7 @@
 "Code by email","Code par courriel"
 "Code by text message","Code par message texte"
 "Security key","Clé de sécurité"
+"security key", "clé de sécurité"
 "Contact number","Numéro de contact"
 "Every time you sign in you will be asked for a second type of verification.","Chaque fois que vous vous connectez, vous devrez répondre à un second type de vérification."
 "Not sure which method to choose? Learn more about 2FA","Besoin d’aide pour choisir? En savoir plus sur la vérification à deux étapes."
@@ -2262,5 +2263,4 @@
 "No sample templates available.","FR No sample templates available."
 "Filter templates by type","FR Filter templates by type"
 "Code not found","Code non trouvé"
-"security key", "clé de sécurité"
-"Security key", "Clé de sécurité"
+
