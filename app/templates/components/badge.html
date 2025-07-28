@@ -1,5 +1,4 @@
 {% macro badge(text, variant='success', extra_class=None, bg_class=None, style=None, icon_override=None, hide_icon=false, testid=None, id=None) %}
-    {# Debug: print macro parameters #}
     {% set icon = icon_override if icon_override is not none else (
         'fa-circle-question' if variant == 'default' else 'fa-check'
     ) %}
