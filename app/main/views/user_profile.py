@@ -393,15 +393,18 @@ def user_profile_add_security_keys():
     if not session.get(HAS_AUTHENTICATED):
         return redirect(url_for(".user_profile_security_keys_authenticate"))
 
-    if form.keyname.data == "":
-        form.validate_on_submit()
-    elif request.method == "POST":
-        flash(_("Added a security key"), "default_with_tick")
-        result = user_api_client.register_security_key(current_user.id)
-        # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
-        if not from_send_page == "user_profile_2fa":
-            session.pop(HAS_AUTHENTICATED, None)
-        return base64.b64decode(result["data"])
+    if request.args.get("duplicate") is not None:
+        flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
+    else:
+      if form.keyname.data == "":
+          form.validate_on_submit()
+      elif request.method == "POST":
+          flash(_("Added a security key"), "default_with_tick")
+          result = user_api_client.register_security_key(current_user.id)
+          # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
+          if not from_send_page == "user_profile_2fa":
+              session.pop(HAS_AUTHENTICATED, None)
+          return base64.b64decode(result["data"])
 
     if from_send_page == "user_profile_2fa":
         # If we are coming from the 2FA page, we need to redirect back there after adding the key
@@ -447,6 +450,7 @@ def user_profile_security_keys_authenticate():
 @main.route("/user-profile/security_keys/complete", methods=["POST"])
 @user_is_logged_in
 def user_profile_complete_security_keys():
+    flash(_("Added a security key"), "default_with_tick")
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
