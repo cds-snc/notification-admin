@@ -3,7 +3,9 @@
  */
 (function () {
   const contactForm = document.querySelector("form[action='/contact/message']");
-  const contactMessage = contactForm ? contactForm.querySelector("textarea[name='message']") : null;
+  const contactMessage = contactForm
+    ? contactForm.querySelector("textarea[name='message']")
+    : null;
 
   if (contactForm && contactMessage) {
     contactForm.addEventListener("submit", function () {
