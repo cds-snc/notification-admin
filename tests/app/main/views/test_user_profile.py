@@ -275,6 +275,9 @@ def test_deleting_security_key(
     delete_mock = mocker.patch("app.user_api_client.delete_security_key_user")
     key_id = "security_key_id"
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     # Listing keys
     with captured_templates(app_) as templates:
         client_request.get(("main.user_profile_security_keys_confirm_delete"), keyid=key_id)
@@ -296,6 +299,9 @@ def test_deleting_security_key(
 
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
     register_mock = mocker.patch("app.user_api_client.register_security_key", return_value={"data": "blob"})
+
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
 
     # Listing keys
     with captured_templates(app_) as templates:
@@ -897,6 +903,9 @@ def test_user_without_phone_can_add_security_key(
     mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
     mocker.patch("app.models.user.User.from_id", return_value=User(active_user_no_mobile))
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     client_request.login(active_user_no_mobile)
 
     page = client_request.get("main.user_profile_add_security_keys")
@@ -910,6 +919,9 @@ def test_user_with_phone_but_unverified_can_add_security_key(
 ):
     mocker.patch("app.user_api_client.get_user", return_value=active_user_with_unverified_mobile)
     mocker.patch("app.models.user.User.from_id", return_value=User(active_user_with_unverified_mobile))
+
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
 
     client_request.login(active_user_with_unverified_mobile)
 
