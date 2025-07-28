@@ -124,7 +124,7 @@ def test_process_sms_auth_sign_in_return_2fa_template_REMOVE_FF(
     last_email_login,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+    with set_config(app_, "FF_AUTH_V2", False):
         mocker.patch(
             "app.user_api_client.get_last_email_login_datetime",
             return_value=last_email_login,
@@ -173,7 +173,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     last_email_login,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+    with set_config(app_, "FF_AUTH_V2", True):
         mocker.patch(
             "app.user_api_client.get_last_email_login_datetime",
             return_value=last_email_login,
@@ -302,7 +302,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login_R
     last_email_login,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+    with set_config(app_, "FF_AUTH_V2", False):
         mock_last_email_login = mocker.patch(
             "app.user_api_client.get_last_email_login_datetime",
             side_effect=[
@@ -355,7 +355,7 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     last_email_login,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+    with set_config(app_, "FF_AUTH_V2", True):
         mock_last_email_login = mocker.patch(
             "app.user_api_client.get_last_email_login_datetime",
             side_effect=[

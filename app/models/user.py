@@ -146,7 +146,7 @@ class User(JSONModel, UserMixin):
         if not self.is_active:
             return False
 
-        if current_app.config["FF_SAMPLE_TEMPLATES"]:
+        if current_app.config["FF_AUTH_V2"]:
             if self.email_auth:
                 user_api_client.send_verify_code(self.id, "email", None, request.args.get("next"))
                 user_api_client.register_last_email_login_datetime(self.id)
