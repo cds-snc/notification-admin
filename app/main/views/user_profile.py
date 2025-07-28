@@ -410,7 +410,9 @@ def user_profile_add_security_keys():
         # If we are coming from the 2FA page, we need to redirect back there after adding the key
         return render_template("views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_2fa"))
 
-    return render_template("views/user-profile/add-security-keys.html", form=form)
+    return render_template(
+        "views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_security_keys")
+    )
 
 
 @main.route("/user-profile/security_keys/authenticate", methods=["GET", "POST"])

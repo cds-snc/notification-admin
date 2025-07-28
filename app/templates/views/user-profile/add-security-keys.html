@@ -28,7 +28,7 @@
       {{ textbox(form.keyname, hint=hint_txt) }}
 
       {% if config["FF_AUTH_V2"] %}
-        {{ page_footer(button_text= _('Continue'), button_id="register-key", cancel_button_link=url_for(".user_profile_2fa")) }}
+        {{ page_footer(button_text= _('Continue'), button_id="register-key", cancel_button_link=back_link) }}
       {% else %}
         {{ page_footer(button_text=_('Add key'), button_id="register-key") }}
       {% endif %}
