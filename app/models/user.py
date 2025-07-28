@@ -153,6 +153,7 @@ class User(JSONModel, UserMixin):
                 return True
             if self.sms_auth:
                 user_api_client.send_verify_code(self.id, "sms", self.mobile_number)
+                return True
         else:
             if self.email_auth and len(self.security_keys) == 0:
                 user_api_client.send_verify_code(self.id, "email", None, request.args.get("next"))
@@ -160,6 +161,7 @@ class User(JSONModel, UserMixin):
                 return True
             if self.sms_auth and len(self.security_keys) == 0:
                 user_api_client.send_verify_code(self.id, "sms", self.mobile_number)
+                return True
 
         return True
 
