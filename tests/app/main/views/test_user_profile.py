@@ -583,7 +583,7 @@ class TestOptionalPhoneNumber:
             _data={"two_factor_code": "12345"},
             _expected_status=302,
             _expected_redirect=url_for(
-                "main.verify_mobile_number",
+                "main.verify_mobile_number_send",
                 service_id=SERVICE_ONE_ID,
                 template_id=TEMPLATE_ONE_ID,
             ),
