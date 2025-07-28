@@ -2261,4 +2261,9 @@
 "Notification type","FR Notification type"
 "No sample templates available.","FR No sample templates available."
 "Filter templates by type","FR Filter templates by type"
+<<<<<<< Updated upstream
 "Code not found","Code non trouvé"
+=======
+"security key", "clé de sécurité"
+"Security key", "Clé de sécurité"
+>>>>>>> Stashed changes
