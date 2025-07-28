@@ -307,7 +307,7 @@ def test_adding_security_key(app_, client_request, api_nongov_user_active, mocke
     with captured_templates(app_) as templates:
         page = client_request.get(("main.user_profile_add_security_keys"))
         assert 'data-button-id="register-key"' in str(page)  # Used by JS
-        template, context = templates[0]
+        template, _ = templates[0]
         assert template.name == "views/user-profile/add-security-keys.html"
 
     # Register key

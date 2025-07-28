@@ -45,7 +45,9 @@
       {% endfor %}
     {% endcall %}
   </div>
-  {{ sticky_page_footer_one_submit_button_and_link_button(_('New security key'), "add", link="#", link_text=_("Test keys"), link_attributes="id=test-fido2-keys") }}
+  {% if not is_confirm_delete %}
+    {{ sticky_page_footer_one_submit_button_and_link_button(_('New security key'), "add", link="#", link_text=_("Test keys"), link_attributes="id=test-fido2-keys") }}
+  {% endif %}
   <script nonce="{{ request_nonce }}">
     var csrf_token = "{{ csrf_token() }}";
   </script>

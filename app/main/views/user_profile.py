@@ -381,7 +381,7 @@ def user_profile_security_keys_confirm_delete(keyid):
     key_name = keys.get(keyid, str(keyid))
     flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
 
-    return render_template("views/user-profile/security-keys.html")
+    return render_template("views/user-profile/security-keys.html", is_confirm_delete=True)
 
 
 @main.route("/user-profile/security_keys/add", methods=["GET", "POST"])
@@ -396,15 +396,15 @@ def user_profile_add_security_keys():
     if request.args.get("duplicate") is not None:
         flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
     else:
-      if form.keyname.data == "":
-          form.validate_on_submit()
-      elif request.method == "POST":
-          flash(_("Added a security key"), "default_with_tick")
-          result = user_api_client.register_security_key(current_user.id)
-          # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
-          if not from_send_page == "user_profile_2fa":
-              session.pop(HAS_AUTHENTICATED, None)
-          return base64.b64decode(result["data"])
+        if form.keyname.data == "":
+            form.validate_on_submit()
+        elif request.method == "POST":
+            flash(_("Added a security key"), "default_with_tick")
+            result = user_api_client.register_security_key(current_user.id)
+            # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
+            if not from_send_page == "user_profile_2fa":
+                session.pop(HAS_AUTHENTICATED, None)
+            return base64.b64decode(result["data"])
 
     if from_send_page == "user_profile_2fa":
         # If we are coming from the 2FA page, we need to redirect back there after adding the key
