@@ -7,14 +7,14 @@
 {% from "components/page-footer.html" import sticky_page_footer_one_submit_button_and_link_button %}
 
 {% block per_page_title %}
-  {{ _('Security keys') }}
+  {{ _('Manage keys') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <div class="test-key-message"></div>
 
-  {% set title_txt = _('Security keys') %}
+  {% set title_txt = _('Manage keys') %}
   {{ page_header(
     title_txt,
     back_link=url_for('.user_profile')
