@@ -72,11 +72,12 @@
   </div>
 {% endmacro %}
 
-{% macro sticky_page_footer_one_submit_button_and_link_button(button1_text="b1", button1_value="b1", link=None, link_text=None, link_attributes="") %}
+{% macro sticky_page_footer_one_submit_button_and_link_button(button1_text="b1", button1_value="b1", button1_data_testid="", link=None, link_text=None, link_attributes="") %}
   <div class="js-stick-at-bottom-when-scrolling">
     <div class="page-footer">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <button
+        data-testid="{{ button1_data_testid }}"
         data-button-id="btn1"
         type="submit"
         class="button text-base outline-none focus:shadow-outline"
