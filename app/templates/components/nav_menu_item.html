@@ -7,6 +7,7 @@
   is_active=False
 ) %}
   {% if url and localised_txt %}
+  <li class="flex-shrink-0">
     <a
       {% if id_key %}id="{{ id_key }}"{% endif %}
       href="{{ url }}"
@@ -16,5 +17,6 @@
     >{{ localised_txt }}
       {% if is_external_link %}<i aria-hidden="true" class="fa-solid fa-arrow-up-right-from-square"></i>{% endif %}
     </a>
+  </li>
   {% endif %}
 {% endmacro %}
