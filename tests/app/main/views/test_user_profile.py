@@ -546,7 +546,7 @@ class TestOptionalPhoneNumber:
     ):
         client_request.login(active_user_no_mobile)
         with client_request.session_transaction() as session:
-            session["from_send_page"] = True
+            session["from_send_page"] = "send_test"
             session["send_page_service_id"] = SERVICE_ONE_ID
             session["send_page_template_id"] = TEMPLATE_ONE_ID
 
@@ -555,7 +555,7 @@ class TestOptionalPhoneNumber:
 
             # assert page.status_code == 200
             assert templates[0][0].name == "views/user-profile/change.html"
-            assert templates[0][1]["from_send_page"] is True
+            assert templates[0][1]["from_send_page"] == "send_test"
             assert "If you add a number to your profile, you can text yourself test messages." in page.text
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_send_test_when_from_send_page(
@@ -589,9 +589,9 @@ class TestOptionalPhoneNumber:
             ),
         )
         with client_request.session_transaction() as session:
-            assert "from_send_page" not in session
-            assert "send_page_service_id" not in session
-            assert "send_page_template_id" not in session
+            assert "from_send_page" in session
+            assert "send_page_service_id" in session
+            assert "send_page_template_id" in session
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_profile_page_by_default(
         self,
