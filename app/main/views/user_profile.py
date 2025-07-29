@@ -540,7 +540,6 @@ def verify_mobile_number_post():
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
-    # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
