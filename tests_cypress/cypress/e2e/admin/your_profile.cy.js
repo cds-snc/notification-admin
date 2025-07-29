@@ -15,6 +15,25 @@ const ensureVerifiedPhoneNumber = () => {
       Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
       Page.AddAndVerifyPhoneNumber(Page.TelNo, CONFIG.CYPRESS_USER_PASSWORD);
     }
+
+    cy.log("----------------------------------");
+    cy.log("Phone number is set and verified. " + Page.TelNo);
+    cy.log("----------------------------------");
+  });
+};
+// ensure no phone number is set
+const ensureNoPhoneNumber = () => {
+  Page.Components.ChangePhoneNumberSection().then(($element) => {
+    if ($element.text().includes("Not set")) {
+      cy.visit(Page.URL); // Reload to see changes
+    } else {
+      Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
+      cy.visit(Page.URL); // Reload to see changes
+    }
+
+    cy.log("----------------------------------");
+    cy.log("Phone number removed. " + Page.TelNo);
+    cy.log("----------------------------------");
   });
 };
 
@@ -61,6 +80,10 @@ const ensureNoSecurityKeys = () => {
 
       removeNextKey();
     }
+
+    cy.log("----------------------------------");
+    cy.log("Security keys removed. " + Page.TelNo);
+    cy.log("----------------------------------");
   });
 };
 
@@ -125,15 +148,10 @@ describe("Your profile", () => {
     it("Defaults to email when set to sms and phone number is removed ", () => {
       ensureVerifiedPhoneNumber();
 
-      // set 2fa to SMS
+      // verify 2fa is set to SMS
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.SelectSMSFor2FA();
       Page.Components.TFASMSLabel().should("contain", "Verified");
-      Page.Continue();
-      cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
-        "contain",
-        "Two-step verification method updated",
-      );
+      Page.GoBack();
 
       Page.RemovePhoneNumber(CONFIG.CYPRESS_USER_PASSWORD);
 
@@ -147,15 +165,10 @@ describe("Your profile", () => {
     it("Defaults to email when set to sms and phone number is changed", () => {
       ensureVerifiedPhoneNumber();
 
-      // set 2fa to SMS
+      // verify 2fa is set to SMS
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
-      Page.SelectSMSFor2FA();
       Page.Components.TFASMSLabel().should("contain", "Verified");
-      Page.Continue();
-      cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
-        "contain",
-        "Two-step verification method updated",
-      );
+      Page.GoBack();
 
       Page.UpdatePhoneNumber("16132532223");
 
@@ -393,7 +406,7 @@ describe("Your profile", () => {
             // Wait for the WebAuthn prompt
             cy.get("body").should(
               "contain",
-              "We have found a Fido2 key associated with your account.",
+              "We have found a security key associated with your account.",
             );
             // since we can't (yet) login with security keys through cypress, clear the account after this test so a new one is automatically created
             cy.task("clearAccount");
@@ -463,7 +476,7 @@ describe("Your profile", () => {
             // Wait for the WebAuthn prompt
             cy.get("body").should(
               "contain",
-              "We have found a Fido2 key associated with your account.",
+              "We have found a security key associated",
             );
             // since we can't (yet) login with security keys through cypress, clear the account after this test so a new one is automatically created
             cy.task("clearAccount");
@@ -478,6 +491,116 @@ describe("Your profile", () => {
             });
           }
         });
+    });
+  });
+
+  describe("Navigation", () => {
+    it("Password challenge back to user profile when pressing back", () => {
+      Page.Change2FAOptions();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Your profile");
+    });
+   
+    it("Password challenge back to user profile when pressing cancel", () => {
+      Page.Change2FAOptions();
+      Page.PasswordChallengeCancel();
+      cy.get("h1").should("contain", "Your profile");
+    });
+
+    it("2FA settings back to user profile when pressing back", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.GoBack();
+      cy.get("h1").should("contain", "Your profile");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing back", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.AddNewKeyFrom2FASettings();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.AddNewKeyFrom2FASettings();
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("2FA -> verify phone back to 2FA settings when pressing back", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+     it("2FA -> verify phone back to 2FA settings when pressing back", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.CancelVerification();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("Send SMS w/ unverified number back to ready to send when pressing back", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      Page.Components.SendTestMessageButton().click();
+      Page.GoBack();
+      cy.get("h2").should("contain", "Ready to send");
+    });
+
+    it("Send SMS w/ unverified number back to ready to send when pressing cancel", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      Page.Components.SendTestMessageButton().click();
+      Page.CancelVerification();
+      cy.get("h2").should("contain", "Ready to send");
+    });
+
+    it("Send SMS w/ no number back to ready to send when pressing back", () => {
+      ensureNoPhoneNumber();
+
+      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      Page.Components.SendTestMessageButton().click();
+      Page.GoBack();
+      cy.get("h2").should("contain", "Ready to send");
+    });
+
+     it("Send SMS w/ no number back to ready to send when pressing cancel", () => {
+      ensureNoPhoneNumber();
+
+      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      Page.Components.SendTestMessageButton().click();
+      Page.CancelAddingPhoneNumber();
+      cy.get("h2").should("contain", "Ready to send");
     });
   });
 });

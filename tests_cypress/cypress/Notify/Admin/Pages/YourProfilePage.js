@@ -17,16 +17,19 @@ let Components = {
     PasswordField: () => cy.get('input[name="password"]'),
     PasswordChallenge: () => cy.getByTestId('2fa_password_challenge'),
     PasswordChallengeConfirm: () => cy.get('button[type="submit"]'),
+    PasswordChallengeCancelButton: () => cy.get('a').contains('Cancel'),
     // phone number change components
     PhoneField: () => cy.get('input[name="mobile_number"]'),
     RemovePhoneNumber: () => cy.getByTestId('remove_mobile_number'),
     ChangePhoneNumberButton: () => cy.get('button[value=edit]'),
+    CancelAddPhoneNumberButton: () => cy.get('a').contains('Cancel'),
     // security key components
     AddSecurityKeyButton: () => cy.getByTestId('2fa_add_security_key'),
     TestKeysButton: () => cy.get('button').contains('Test keys'),
     SecurityKeyName: () => cy.get('input[name="keyname"]'),
     KeyRemoveButton: () => cy.get('a[href^="/user-profile/security_keys/"]').contains('Remove'),
     KeyConfirmRemoveButton: () => cy.get('button[name="delete"]'),
+    KeyCancelButton: () => cy.get('a').contains('Cancel'),
     // 2fa screen components
     TFAEMAIL: () => cy.getByTestId('email'),
     TFAEmailLabel: () => Components.TFAEMAIL().next('label'),
@@ -39,9 +42,12 @@ let Components = {
     // sms verify components
     VerifyCode: () => cy.get('input[name="two_factor_code"]'),
     VerifyButton: () => cy.get('button[type="submit"]'),
+    VerifyCancelButton: () => cy.get('a').contains('Cancel'),
     // menu
     AccountMenuLink: () => cy.get('button[id="account-menu"]').first(),
     SignOutLink: () => cy.get('a[href="/sign-out"]').first(),
+    // Send page (this shouldnt really be here)
+    SendTestMessageButton: () => cy.getByTestId('send-test'),
 };
 
 // Actions users can take on the page
@@ -60,6 +66,9 @@ let Actions = {
     ConfirmPasswordChallenge: () => {
         Components.PasswordChallengeConfirm().click();
     },
+    PasswordChallengeCancel: () => {
+        Components.PasswordChallengeCancelButton().click();
+    },
     // phone number update
     EnterPhoneNumber: (phoneNumber) => {
         if (!phoneNumber) {
@@ -73,6 +82,9 @@ let Actions = {
     },
     ChangePhoneNumber: () => {
         Components.ChangePhoneNumberButton().click();
+    },
+    CancelAddingPhoneNumber: () => {
+        Components.CancelAddPhoneNumberButton().click();
     },
     // 2fa actions
     Goto2FASettings: (password) => {
@@ -104,6 +116,9 @@ let Actions = {
         Components.TFASMSLabel().should('contain', 'Verified');
         Actions.Continue();
         cy.get('h1').should('contain', 'Your profile');
+    },
+    CancelVerification: () => {
+        Components.VerifyCancelButton().click();
     },
     // security key
     MockWebAuthn: () => {
@@ -174,6 +189,9 @@ let Actions = {
         Components.KeyConfirmRemoveButton().click();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Key removed');
     },
+    CancelAddingSecurityKey: () => {
+        Components.KeyCancelButton().click();
+    },
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {
         Actions.ChangePhoneNumberOptions();
@@ -183,7 +201,6 @@ let Actions = {
         // Verify phone number
         Actions.Goto2FASettings(password);
         Actions.SelectSMSFor2FA();
-        Actions.Continue();
         Actions.Verify();
     },
     RemovePhoneNumber: (password) => {
@@ -192,7 +209,7 @@ let Actions = {
         Components.PasswordChallenge().should('exist');
         Components.PasswordField().type(password);
         Actions.ConfirmPasswordChallenge();
-        cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Mobile number removed from your profile');
+        cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Phone number removed from your profile');
     },
     Set2FAToEmail: (password) => {
         Actions.Goto2FASettings(password);
