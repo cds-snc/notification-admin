@@ -6,5 +6,6 @@ notification_type: "sms"
 template_category: "authentication"
 personalisation:
   verify_code: "12345"
+pinned: true
 content: |
   ((verify_code)) is your -application name- authentication code | ((verify_code)) est votre code d'authentification de -FR application name-
