@@ -6,6 +6,7 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% set title = _("Check your phone messages") %}
+{% set backlink_navigation_url = url_for('.view_template', service_id=service_id or current_service.id, template_id=template_id) if from_send_page == 'send_test' and template_id else back_link %}
 
 {% block per_page_title %}
   {{ title }}
@@ -15,7 +16,7 @@
 
   {{ page_header(
     title,
-    back_link=back_link
+    back_link=backlink_navigation_url
   ) }}
 
   <div class="grid-row contain-floats">
@@ -33,7 +34,7 @@
         ) }}
         {{ page_footer(
           button_text=verify,
-          cancel_button_link=back_link,
+          cancel_button_link=backlink_navigation_url,
         ) }}
 
         <details>
