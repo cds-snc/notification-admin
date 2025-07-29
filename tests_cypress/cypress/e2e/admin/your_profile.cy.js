@@ -500,7 +500,7 @@ describe("Your profile", () => {
       Page.GoBack();
       cy.get("h1").should("contain", "Your profile");
     });
-   
+
     it("Password challenge back to user profile when pressing cancel", () => {
       Page.Change2FAOptions();
       Page.PasswordChallengeCancel();
@@ -542,7 +542,7 @@ describe("Your profile", () => {
       cy.get("h1").should("contain", "Two-step verification method");
     });
 
-     it("2FA -> verify phone back to 2FA settings when pressing back", () => {
+    it("2FA -> verify phone back to 2FA settings when pressing back", () => {
       ensureNoPhoneNumber();
 
       // add unverified phone number
@@ -565,7 +565,9 @@ describe("Your profile", () => {
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
-      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      cy.visit(
+        `/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`,
+      );
       Page.Components.SendTestMessageButton().click();
       Page.GoBack();
       cy.get("h2").should("contain", "Ready to send");
@@ -579,7 +581,9 @@ describe("Your profile", () => {
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
-      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      cy.visit(
+        `/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`,
+      );
       Page.Components.SendTestMessageButton().click();
       Page.CancelVerification();
       cy.get("h2").should("contain", "Ready to send");
@@ -588,16 +592,20 @@ describe("Your profile", () => {
     it("Send SMS w/ no number back to ready to send when pressing back", () => {
       ensureNoPhoneNumber();
 
-      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      cy.visit(
+        `/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`,
+      );
       Page.Components.SendTestMessageButton().click();
       Page.GoBack();
       cy.get("h2").should("contain", "Ready to send");
     });
 
-     it("Send SMS w/ no number back to ready to send when pressing cancel", () => {
+    it("Send SMS w/ no number back to ready to send when pressing cancel", () => {
       ensureNoPhoneNumber();
 
-      cy.visit(`/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`);
+      cy.visit(
+        `/services/${CONFIG.Services.CYPRESS}/templates/${CONFIG.Templates.SMOKE_TEST_SMS}`,
+      );
       Page.Components.SendTestMessageButton().click();
       Page.CancelAddingPhoneNumber();
       cy.get("h2").should("contain", "Ready to send");
