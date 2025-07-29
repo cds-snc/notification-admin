@@ -399,11 +399,9 @@ def user_profile_add_security_keys():
         if form.keyname.data == "":
             form.validate_on_submit()
         elif request.method == "POST":
-            flash(_("Added a security key"), "default_with_tick")
             result = user_api_client.register_security_key(current_user.id)
-            # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
-            if not from_send_page == "user_profile_2fa":
-                session.pop(HAS_AUTHENTICATED, None)
+            # flash(_("Added a security key"), "default_with_tick")
+
             return base64.b64decode(result["data"])
 
     if from_send_page == "user_profile_2fa":
@@ -453,6 +451,10 @@ def user_profile_security_keys_authenticate():
 @user_is_logged_in
 def user_profile_complete_security_keys():
     flash(_("Added a security key"), "default_with_tick")
+    from_send_page = session.get("from_send_page", None)
+    # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
+    if not from_send_page == "user_profile_2fa":
+        session.pop(HAS_AUTHENTICATED, None)
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)

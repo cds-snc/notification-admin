@@ -344,6 +344,8 @@ def test_user_profile_add_security_keys_shows_duplicate_message(
     mock_update_user_attribute,
     mock_get_security_keys,
 ):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
     page = client_request.get("main.user_profile_add_security_keys", **{"duplicate": "1"})
     # Check that the flash message is displayed
     flash_messages = page.select(".banner-dangerous")
@@ -359,6 +361,8 @@ def test_user_profile_add_security_keys_no_duplicate_message_without_param(
     mock_update_user_attribute,
     mock_get_security_keys,
 ):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
     page = client_request.get("main.user_profile_add_security_keys")
 
     # Check that no error flash message is displayed
