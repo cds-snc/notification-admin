@@ -51,7 +51,7 @@
   <div class="js-stick-at-bottom-when-scrolling">
     <div class="grid-row contain-floats">
       <div class="md:w-3/4 flex flex-wrap gap-gutter py-0 px-gutterHalf box-border">
-        <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary">{{ _('New security key') }}</a>
+        <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary" data-testid="2fa_add_security_key">{{ _('New security key') }}</a>
         <a id="test-fido2-keys" href="#" class="button button-secondary">{{ _('Test keys') }}</a>
       </div>
     </div>
