@@ -85,7 +85,7 @@ class Navigation:
     def get_user_nav(self):
         return {
             "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
-            "choose_account": {"label": _l("Your services"), "view": "choose_account", "id_key": "choose_account"},
+            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
         }
 
     def get_contact_nav(self):
@@ -104,11 +104,11 @@ class Navigation:
         from app.utils import documentation_url
 
         return {
-            "home": {"label": _l("Home"), "url": gca_url_for("home")},
-            "why-notify": {"label": _l("By and for the GC"), "url": gca_url_for("whynotify")},
-            "features": {"label": _l("Features"), "url": gca_url_for("features")},
+            "home": {"label": _l("Home"), "url": gca_url_for(_l("home"))},
+            "why-notify": {"label": _l("By and for the GC"), "url": gca_url_for(_l("why-gc-notify"))},
+            "features": {"label": _l("Features"), "url": gca_url_for(_l("features"))},
             "documentation": {"label": _l("API documentation"), "url": documentation_url()},
-            "guidance": {"label": _l("Guidance"), "url": gca_url_for("guidance")},
+            "guidance": {"label": _l("Guidance"), "url": gca_url_for(_l("guidance"))},
             "contact": {"label": _l("Contact us"), "view": "contact"},
         }
 
