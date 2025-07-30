@@ -28,6 +28,7 @@ from app.main.forms import (
 )
 from app.models.roles_and_permissions import permissions
 from app.models.user import InvitedUser, User
+from app.notify_client import user_api_client
 from app.utils import is_gov_user, redact_mobile_number, user_has_permissions
 
 
@@ -65,12 +66,13 @@ def invite_user(service_id):
         )
         if form.validate_on_submit():
             email_address = form.email_address.data
+            existing_user = user_api_client.get_user_by_email(email_address)
             invited_user = InvitedUser.create(
                 current_user.id,
                 service_id,
                 email_address,
                 form.permissions,
-                form.login_authentication.data,
+                existing_user.auth_type if existing_user else form.login_authentication.data,
                 form.folder_permissions.data,
             )
 
