@@ -131,18 +131,45 @@ def user_profile_email_confirm(token):
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-    from_send_page = False
-
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
     from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
     service_id = session.get("send_page_service_id") or request.args.get("service_id")
     template_id = session.get("send_page_template_id") or request.args.get("template_id")
 
+    # Determine the back URL based on the context
+    if from_send_page == "send_test" and template_id:
+        back_url = url_for(".view_template", service_id=service_id, template_id=template_id)
+    elif from_send_page == "user_profile_2fa":
+        back_url = url_for(".user_profile_2fa")
+    else:
+        back_url = url_for(".user_profile")
+
     # Store these values in session
     session["from_send_page"] = from_send_page
     session["send_page_service_id"] = service_id
     session["send_page_template_id"] = template_id
+
+    rendered_change_mobile_number_page = render_template(
+        "views/user-profile/change-mobile-number.html",
+        form_field=form.mobile_number,
+        from_send_page=from_send_page,
+        template_id=session.get("send_page_template_id"),
+        back_url=back_url,
+    )
+
+    if request.method == "GET":
+        # if they dont have a number set, just go right to the edit page
+        if current_user.mobile_number is None:
+            return rendered_change_mobile_number_page
+        else:
+            return render_template(
+                "views/user-profile/manage-phones.html",
+                thing=_("mobile number"),
+                form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
+            )
 
     if request.method == "POST":
         # get button presses
@@ -151,13 +178,7 @@ def user_profile_mobile_number():
 
         # if they are posting the button "edit"
         if edit_or_cancel_pressed == "edit":
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
+            return rendered_change_mobile_number_page
 
         elif remove_pressed == "remove":
             session[NEW_MOBILE] = ""
@@ -201,44 +222,23 @@ def user_profile_mobile_number():
             return redirect(url_for(".user_profile"))
 
         else:
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
-    else:
-        # if they dont have a number set, just go right to the edit page
-        if current_user.mobile_number is None:
-            data_to_update = {
-                "verified_phonenumber": False,
-                "mobile_number": None,
-            }
-            if current_user.auth_type == "sms_auth":
-                data_to_update["auth_type"] = "email_auth"
+            return rendered_change_mobile_number_page
 
-            # update once to avoid multiple emails to the user
-            current_user.update(**data_to_update)
 
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=session.get("from_send_page"),
-                template_id=session.get("send_page_template_id"),
-            )
-
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".verify_mobile_number_send"))
-
-    return render_template(
-        "views/user-profile/manage-phones.html",
-        thing=_("mobile number"),
-        form_field=form.mobile_number,
-        from_send_page=session.get("from_send_page"),
-        template_id=session.get("send_page_template_id"),
-    )
+@main.route("/user-profile/manage-mobile-number", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_manage_mobile_number():
+    form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
+    from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
+    session["from_send_page"] = from_send_page
+    if request.method == "GET":
+        return render_template(
+            "views/user-profile/manage-phones.html",
+            thing=_("mobile number"),
+            form_field=form.mobile_number,
+            from_send_page=from_send_page,
+            template_id=session.get("send_page_template_id"),
+        )
 
 
 @main.route("/user-profile/mobile-number/authenticate", methods=["GET", "POST"])
