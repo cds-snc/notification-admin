@@ -17,7 +17,7 @@ let Actions = {
         Components.TwoFactorCode().type(code);
         Components.SubmitButton().click();
     },
-    Login: (email, password, agreeToTerms=true) => {
+    Login: (email, password, agreeToTerms = true) => {
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
         // cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
@@ -26,35 +26,52 @@ let Actions = {
         Components.EmailAddress().type(email);
         Components.Password().type(password);
         Components.SubmitButton().click();
-        // h1 should say "Check your email"
-        cy.get('h1').should('contain', 'Check your email');
+
         // get email 2fa code
-        // recurse(
-        //     () => cy.task('getLastEmail', email), // Cypress commands to retry
-        //     Cypress._.isObject, // keep retrying until the task returns an object
-        //     {
-        //         log: true,
-        //         limit: 250, // max number of iterations
-        //         timeout: 120000, // time limit in ms
-        //         delay: 500, // delay before next iteration, ms
-        //     },
-        // )
-        //     .its('html')
-        //     .then((html) => {
-        //         cy.document({ log: false }).invoke({ log: false }, 'write', html)
-        //     });
+        recurse(
+            () => cy.task('getLastEmail', email), // Cypress commands to retry
+            Cypress._.isObject, // keep retrying until the task returns an object
+            {
+                log: true,
+                limit: 250, // max number of iterations
+                timeout: 120000, // time limit in ms
+                delay: 500, // delay before next iteration, ms
+            },
+        )
+            .its('html')
+            .then((html) => {
+                cy.document({ log: false }).invoke({ log: false }, 'write', html)
+            });
 
         // ensure code is received and enter it
-        // cy.get('blockquote').should('be.visible');
-        // cy.get('blockquote p').invoke('text').as('MFACode');
-        // cy.get('@MFACode').then((text) => {
-        //     let code = text;
-        //     cy.visit('/two-factor-email-sent');
-        //     Actions.EnterCode(code);
-        // });
-    
-          cy.visit('/two-factor-email-sent');
-            Actions.EnterCode('12345');
+        cy.get('blockquote').should('be.visible');
+        cy.get('blockquote p').invoke('text').as('MFACode');
+        cy.get('@MFACode').then((text) => {
+            let code = text;
+            cy.visit('/two-factor-email-sent');
+            Actions.EnterCode(code);
+        });
+
+        // ensure we logged in correctly
+        TouPrompt.Components.Heading().should('be.visible');
+        if (agreeToTerms) {
+            TouPrompt.AgreeToTerms();
+        }
+    },
+    LoginLocal: (email, password, agreeToTerms = true) => {
+        cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
+
+        // login with username and password
+        cy.visit(LoginPage.URL);
+        Components.EmailAddress().type(email);
+        Components.Password().type(password);
+        Components.SubmitButton().click();
+        // h1 should say "Check your email"
+        cy.get('h1').should('contain', 'Check your email');
+
+        cy.visit('/two-factor-email-sent');
+        Actions.EnterCode('12345');
+
         // ensure we logged in correctly
         TouPrompt.Components.Heading().should('be.visible');
         if (agreeToTerms) {
