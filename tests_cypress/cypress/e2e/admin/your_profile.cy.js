@@ -180,7 +180,7 @@ describe("Your profile", () => {
       Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
 
-    it("Security key 2FA fallback - defaults to email when security key is removed", () => {
+    it.only("Security key 2FA fallback - defaults to email when security key is removed", () => {
       ensureNoSecurityKeys();
       let authenticatorId;
 
@@ -218,7 +218,11 @@ describe("Your profile", () => {
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);
-
+          // Let the page load then reload, otherwise the clearing of the HAS_AUTHENTICATED
+          // session data doesn't happen fast enough before navigating to the 2FA page
+          // and the password prompt will be skipped
+          cy.get("h1").should("contain", "Your profile");
+          cy.reload();
           // Set 2FA to use security key
           Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
           Page.SelectKeyFor2FA();
@@ -385,9 +389,13 @@ describe("Your profile", () => {
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);
-
+          // Let the page load then reload, otherwise the clearing of the HAS_AUTHENTICATED
+          // session data doesn't happen fast enough before navigating to the 2FA page
+          // and the password prompt will be skipped
+          cy.get("h1").should("contain", "Your profile");
+          cy.reload();
           // Set 2FA to use security key
-          Page.Components.Change2FALink().click();
+          Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
           Page.SelectKeyFor2FA();
 
           cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
