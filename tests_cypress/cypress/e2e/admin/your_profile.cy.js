@@ -209,6 +209,7 @@ describe("Your profile", () => {
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
           Page.Components.AddSecurityKeyButton().click();
+          Page.CompletePasswordChallenge();
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
 
@@ -374,6 +375,7 @@ describe("Your profile", () => {
           authenticatorId = result.authenticatorId;
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
+          Page.CompletePasswordChallenge();
           Page.Components.AddSecurityKeyButton().click();
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
@@ -454,6 +456,7 @@ describe("Your profile", () => {
           Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
 
           Page.AddNewKeyFrom2FASettings();
+          page.CompletePasswordChallenge();
           cy.get("h1").should("contain", "Two-step verification method");
 
           Page.SelectKeyFor2FA();
