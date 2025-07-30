@@ -331,6 +331,35 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 
+def test_user_profile_add_security_keys_shows_duplicate_message(
+    client_request,
+    mock_get_user,
+    mock_get_service,
+    mock_update_user_attribute,
+    mock_get_security_keys,
+):
+    page = client_request.get("main.user_profile_add_security_keys", **{"duplicate": "1"})
+    # Check that the flash message is displayed
+    flash_messages = page.select(".banner-dangerous")
+    assert len(flash_messages) == 1
+    assert "This security key is already registered" in flash_messages[0].get_text()
+    assert "Please use a different key or remove the existing one first" in flash_messages[0].get_text()
+
+
+def test_user_profile_add_security_keys_no_duplicate_message_without_param(
+    client_request,
+    mock_get_user,
+    mock_get_service,
+    mock_update_user_attribute,
+    mock_get_security_keys,
+):
+    page = client_request.get("main.user_profile_add_security_keys")
+
+    # Check that no error flash message is displayed
+    flash_messages = page.select(".banner-dangerous")
+    assert len(flash_messages) == 0
+
+
 def test_validate_security_key_api_error(client_request, api_nongov_user_active, mocker):
     mock_login = mocker.patch("app.models.user.User.login")
     mock_validate = mocker.patch(
@@ -517,7 +546,7 @@ class TestOptionalPhoneNumber:
     ):
         client_request.login(active_user_no_mobile)
         with client_request.session_transaction() as session:
-            session["from_send_page"] = True
+            session["from_send_page"] = "send_test"
             session["send_page_service_id"] = SERVICE_ONE_ID
             session["send_page_template_id"] = TEMPLATE_ONE_ID
 
@@ -526,7 +555,7 @@ class TestOptionalPhoneNumber:
 
             # assert page.status_code == 200
             assert templates[0][0].name == "views/user-profile/change.html"
-            assert templates[0][1]["from_send_page"] is True
+            assert templates[0][1]["from_send_page"] == "send_test"
             assert "If you add a number to your profile, you can text yourself test messages." in page.text
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_send_test_when_from_send_page(
@@ -554,15 +583,15 @@ class TestOptionalPhoneNumber:
             _data={"two_factor_code": "12345"},
             _expected_status=302,
             _expected_redirect=url_for(
-                "main.verify_mobile_number",
+                "main.verify_mobile_number_send",
                 service_id=SERVICE_ONE_ID,
                 template_id=TEMPLATE_ONE_ID,
             ),
         )
         with client_request.session_transaction() as session:
-            assert "from_send_page" not in session
-            assert "send_page_service_id" not in session
-            assert "send_page_template_id" not in session
+            assert "from_send_page" in session
+            assert "send_page_service_id" in session
+            assert "send_page_template_id" in session
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_profile_page_by_default(
         self,

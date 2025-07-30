@@ -135,11 +135,14 @@ def user_profile_mobile_number():
 
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
-    # determine if we are coming from the send page
-    from_send_page = session.get("from_send_page", False)
-    session["from_send_page"] = request.args.get("from_send_page") if not from_send_page == "user_profile_2fa" else from_send_page
-    session["send_page_service_id"] = request.args.get("service_id")
-    session["send_page_template_id"] = request.args.get("template_id")
+    from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
+    service_id = session.get("send_page_service_id") or request.args.get("service_id")
+    template_id = session.get("send_page_template_id") or request.args.get("template_id")
+
+    # Store these values in session
+    session["from_send_page"] = from_send_page
+    session["send_page_service_id"] = service_id
+    session["send_page_template_id"] = template_id
 
     if request.method == "POST":
         # get button presses
@@ -152,6 +155,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
 
         elif remove_pressed == "remove":
@@ -183,9 +188,16 @@ def user_profile_mobile_number():
             flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
             if from_send_page == "send_test":
                 session["from_send_page"] = None
-                return redirect(url_for(".verify_mobile_number"))
+                return redirect(
+                    url_for(
+                        ".verify_mobile_number_send",
+                        from_send_page=from_send_page,
+                        service_id=service_id,
+                        template_id=template_id,
+                    )
+                )
             elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
-                return redirect(url_for(".verify_mobile_number"))
+                return redirect(url_for(".verify_mobile_number_send"))
             return redirect(url_for(".user_profile"))
 
         else:
@@ -193,6 +205,8 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
+                from_send_page=from_send_page,
+                template_id=session.get("send_page_template_id"),
             )
     else:
         # if they dont have a number set, just go right to the edit page
@@ -211,16 +225,19 @@ def user_profile_mobile_number():
                 "views/user-profile/change.html",
                 thing=_("mobile number"),
                 form_field=form.mobile_number,
-                from_send_page=from_send_page,
+                from_send_page=session.get("from_send_page"),
+                template_id=session.get("send_page_template_id"),
             )
 
     if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".verify_mobile_number"))
+        return redirect(url_for(".verify_mobile_number_send"))
 
     return render_template(
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
+        from_send_page=session.get("from_send_page"),
+        template_id=session.get("send_page_template_id"),
     )
 
 
@@ -286,16 +303,16 @@ def user_profile_mobile_number_confirm():
 
         flash(_("Phone number {} saved to your profile").format(mobile_number), "default_with_tick")
 
-        # Check if we are coming from the send page, do cleanup
-        from_send_page = session.pop("from_send_page", False)
-        service_id = session.pop("send_page_service_id", None)
-        template_id = session.pop("send_page_template_id", None)
+        # Check if we are coming from the send page, don't clear session data
+        from_send_page = session.get("from_send_page", False)
+        service_id = session.get("send_page_service_id", None)
+        template_id = session.get("send_page_template_id", None)
 
         # Redirect based on where the user came from
         if from_send_page:
             # Redirect back to the send test page we need to verify the phone number first
             if from_send_page == "send_test" and service_id and template_id:
-                return redirect(url_for(".verify_mobile_number", service_id=service_id, template_id=template_id))
+                return redirect(url_for(".verify_mobile_number_send", service_id=service_id, template_id=template_id))
             if from_send_page == "user_profile_2fa":
                 # Redirect back to the 2FA page if they were setting up 2FA
                 return redirect(url_for(".user_profile_2fa"))
@@ -304,7 +321,13 @@ def user_profile_mobile_number_confirm():
             # Default redirect to user profile
             return redirect(url_for(".user_profile"))
 
-    return render_template("views/user-profile/confirm.html", form=form, back_link=url_for(".user_profile_mobile_number"))
+    return render_template(
+        "views/user-profile/confirm.html",
+        form=form,
+        back_link=url_for(".user_profile_mobile_number"),
+        from_send_page=session.get("from_send_page", False),
+        template_id=session.get("send_page_template_id"),
+    )
 
 
 @main.route("/user-profile/mobile-number/resend", methods=["GET", "POST"])
@@ -371,12 +394,14 @@ def user_profile_security_keys_confirm_delete(keyid):
 def user_profile_add_security_keys():
     form = SecurityKeyForm()
 
-    if form.keyname.data == "":
-        form.validate_on_submit()
-    elif request.method == "POST":
-        flash(_("Added a security key"), "default_with_tick")
-        result = user_api_client.register_security_key(current_user.id)
-        return base64.b64decode(result["data"])
+    if request.args.get("duplicate") is not None:
+        flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
+    else:
+        if form.keyname.data == "":
+            form.validate_on_submit()
+        elif request.method == "POST":
+            result = user_api_client.register_security_key(current_user.id)
+            return base64.b64decode(result["data"])
 
     return render_template("views/user-profile/add-security-keys.html", form=form)
 
@@ -384,6 +409,7 @@ def user_profile_add_security_keys():
 @main.route("/user-profile/security_keys/complete", methods=["POST"])
 @user_is_logged_in
 def user_profile_complete_security_keys():
+    flash(_("Added a security key"), "default_with_tick")
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
@@ -443,19 +469,94 @@ def user_profile_disable_platform_admin_view():
     return render_template("views/user-profile/disable-platform-admin-view.html", form=form)
 
 
-@main.route("/user-profile/verify-mobile-number", methods=["GET", "POST"])
+@main.route("/user-profile/verify-mobile-number/send", methods=["GET"])
+@user_is_logged_in
+@requires_feature("FF_AUTH_V2")
+def verify_mobile_number_send():
+    """
+    Send the verification code and redirect to the verification form.
+    This is the entry point that sends the code automatically.
+    """
+    # Get context data for redirects
+    from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
+    send_page_service_id = session.get("send_page_service_id") or request.args.get("service_id")
+    send_page_template_id = session.get("send_page_template_id") or request.args.get("template_id")
+
+    # Store these values in session
+    session["from_send_page"] = from_send_page
+    session["send_page_service_id"] = send_page_service_id
+    session["send_page_template_id"] = send_page_template_id
+
+    if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
+        return redirect(url_for(".user_profile_2fa"))
+
+    # Check if this is a resend request
+    resend = request.args.get("resend") == "true"
+
+    # Send verification code
+    current_user.send_verify_code(to=current_user.mobile_number)
+
+    if resend:
+        flash(_("Verification code re-sent"), "default_with_tick")
+
+    # Redirect to the verification form (POST-Redirect-GET pattern)
+    return redirect(
+        url_for(
+            ".verify_mobile_number",
+            from_send_page=session.get("from_send_page", False),
+            service_id=session.get("send_page_service_id"),
+            template_id=session.get("send_page_template_id"),
+        )
+    )
+
+
+@main.route("/user-profile/verify-mobile-number", methods=["GET"])
 @user_is_logged_in
 @requires_feature("FF_AUTH_V2")
 def verify_mobile_number():
     """
-    This route is used to verify the user's mobile number.
-    It sends a verification code to the user's mobile number and
-    allows them to confirm it.
-
+    Display the verification form. Does not send a code.
     """
-    # Depending on the workflow, if we are coming from the "send_test" page there are two options:
-    # 1. We might come to this func from adding a phone number, and the below data will be stored in session
-    # 2. If we come to this func because the phone number is not validated, the data will be stored in request
+    # Get context data for redirects
+    from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
+    send_page_service_id = session.get("send_page_service_id") or request.args.get("service_id")
+    send_page_template_id = session.get("send_page_template_id") or request.args.get("template_id")
+
+    # Store these values in session
+    session["from_send_page"] = from_send_page
+    session["send_page_service_id"] = send_page_service_id
+    session["send_page_template_id"] = send_page_template_id
+
+    if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
+        return redirect(url_for(".user_profile_2fa"))
+
+    # Validate code for form
+    def _check_code(code):
+        return user_api_client.validate_2fa_method(current_user.id, code, "sms")
+
+    form = TwoFactorForm(_check_code)
+
+    return render_template(
+        "views/user-profile/confirm.html",
+        form=form,
+        back_link=url_for(".user_profile_2fa")
+        if NEW_MOBILE_PASSWORD_CONFIRMED not in session
+        else url_for(".user_profile_mobile_number"),
+        resend_url=url_for(".verify_mobile_number_send"),
+        from_send_page=from_send_page,
+        service_id=send_page_service_id,
+        template_id=send_page_template_id,
+    )
+
+
+@main.route("/user-profile/verify-mobile-number", methods=["POST"])
+@user_is_logged_in
+@requires_feature("FF_AUTH_V2")
+def verify_mobile_number_post():
+    """
+    Handle the verification code submission.
+    """
+    # Get context data for redirects
     from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
     send_page_service_id = session.get("send_page_service_id") or request.args.get("service_id")
     send_page_template_id = session.get("send_page_template_id") or request.args.get("template_id")
@@ -463,7 +564,7 @@ def verify_mobile_number():
     if not current_user.mobile_number and NEW_MOBILE_PASSWORD_CONFIRMED not in session:
         return redirect(url_for(".user_profile_2fa"))
 
-    # Validate password for form
+    # Validate code for form
     def _check_code(code):
         return user_api_client.validate_2fa_method(current_user.id, code, "sms")
 
@@ -477,21 +578,24 @@ def verify_mobile_number():
         flash(_("Two-step verification method updated"), "default_with_tick")
         return redirect(url_for(".user_profile_2fa"))
     else:
-        current_user.send_verify_code(to=current_user.mobile_number)
-
-    return render_template(
-        "views/user-profile/confirm.html",
-        form=form,
-        back_link=url_for(".user_profile_2fa")
-        if NEW_MOBILE_PASSWORD_CONFIRMED not in session
-        else url_for(".user_profile_mobile_number"),
-    )
+        # If validation fails, render the form again with errors
+        # Don't send another verification code in this case
+        return render_template(
+            "views/user-profile/confirm.html",
+            form=form,
+            back_link=url_for(".user_profile_2fa")
+            if NEW_MOBILE_PASSWORD_CONFIRMED not in session
+            else url_for(".user_profile_mobile_number"),
+            resend_url=url_for(".verify_mobile_number_send", resend=True),
+            from_send_page=from_send_page,
+            service_id=send_page_service_id,
+            template_id=send_page_template_id,
+        )
 
 
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
-    # TODO: This should be gated behind a new route that confirms the users password before allowing them to make changes
     if current_app.config["FF_AUTH_V2"]:
         # IF they have not authenticated yet, do it now
         if not session.get(HAS_AUTHENTICATED):
@@ -556,7 +660,7 @@ def user_profile_2fa():
                 auth_type = "email_auth"
 
             if not current_user.verified_phonenumber and new_auth_type == "sms":
-                return redirect(url_for(".verify_mobile_number"))
+                return redirect(url_for(".verify_mobile_number_send"))
 
             # Flash a success message
             flash(_("Two-step verification method updated"), "default_with_tick")
