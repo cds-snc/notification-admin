@@ -69,7 +69,7 @@ let Actions = {
     PasswordChallengeCancel: () => {
         Components.PasswordChallengeCancelButton().click();
     },
-    CompletePasswordChallenge: () => {
+    CompletePasswordChallenge: (password) => {
         Components.PasswordChallenge().should('exist');
         Components.PasswordField().type(password);
         Actions.ConfirmPasswordChallenge();
