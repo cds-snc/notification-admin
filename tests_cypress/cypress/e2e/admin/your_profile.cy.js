@@ -655,7 +655,7 @@ describe("Your profile", () => {
     });
 
     // Change 2FA setting to SMS when no phone number, press cancel
-    it("Set 2FA to SMS back to 2FA settings when pressing cancel (unverified number)", () => {
+    it("Set 2FA to SMS back to 2FA settings when pressing cancel (no number)", () => {
       ensureNoPhoneNumber();
 
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
