@@ -770,6 +770,7 @@ def test_invite_user(
     sample_invite,
     email_address,
     gov_user,
+    api_user_active,
     mock_get_template_folders,
     mock_get_organisations,
     app_,
@@ -782,6 +783,7 @@ def test_invite_user(
     mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
     mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
     mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=None)
     page = client_request.post(
         "main.invite_user",
         service_id=SERVICE_ONE_ID,
@@ -833,6 +835,7 @@ def test_invite_user_with_email_auth_service_REMOVE_FF(
     sample_invite,
     email_address,
     gov_user,
+    api_user_active,
     mocker,
     auth_type,
     mock_get_organisations,
@@ -849,11 +852,13 @@ def test_invite_user_with_email_auth_service_REMOVE_FF(
         sample_invite["status"] = "pending"
         service_one["permissions"].append("email_auth")
         sample_invite["email_address"] = email_address
+        api_user_active["auth_type"] = auth_type
 
         assert is_gov_user(email_address) is gov_user
         mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
         mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
         mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+        mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=api_user_active)
 
         page = client_request.post(
             "main.invite_user",
@@ -888,7 +893,7 @@ def test_invite_user_with_email_auth_service_REMOVE_FF(
                 sample_invite["service"],
                 email_address,
                 expected_permissions,
-                "email_auth",
+                auth_type,
                 [],
             )
         else:
@@ -908,6 +913,7 @@ def test_invite_user_with_email_auth_service(
     sample_invite,
     email_address,
     gov_user,
+    api_user_active,
     mocker,
     auth_type,
     mock_get_organisations,
@@ -929,6 +935,7 @@ def test_invite_user_with_email_auth_service(
         mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
         mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
         mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+        mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=api_user_active)
 
         page = client_request.post(
             "main.invite_user",
