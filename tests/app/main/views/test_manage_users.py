@@ -965,7 +965,7 @@ def test_invite_user_with_email_auth_service(
                 sample_invite["service"],
                 email_address,
                 expected_permissions,
-                "email_auth",
+                api_user_active["auth_type"],
                 [],
             )
         else:
