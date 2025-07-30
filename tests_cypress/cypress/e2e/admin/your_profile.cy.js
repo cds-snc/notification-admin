@@ -494,7 +494,7 @@ describe("Your profile", () => {
     });
   });
 
-  describe.only("Navigation", () => {
+  describe("Navigation", () => {
     it("Password challenge back to user profile when pressing back", () => {
       Page.Change2FAOptions();
       Page.GoBack();
