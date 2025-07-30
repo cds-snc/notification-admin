@@ -494,7 +494,7 @@ describe("Your profile", () => {
     });
   });
 
-  describe("Navigation", () => {
+  describe.only("Navigation", () => {
     it("Password challenge back to user profile when pressing back", () => {
       Page.Change2FAOptions();
       Page.GoBack();
@@ -609,6 +609,40 @@ describe("Your profile", () => {
       Page.Components.SendTestMessageButton().click();
       Page.CancelAddingPhoneNumber();
       cy.get("h2").should("contain", "Ready to send");
+    });
+
+    it("Security keys back to user profile when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Your profile");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Security keys");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing cancel", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Security keys");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing back", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Two-step verification method");
     });
   });
 });

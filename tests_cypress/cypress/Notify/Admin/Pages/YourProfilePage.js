@@ -105,6 +105,10 @@ let Actions = {
         Components.TFAKey().click();
         Components.ContinueButton().click();
     },
+    SelectNewKeyFor2FA: () => {
+        Components.AddKey().click();
+        Components.ContinueButton().click();
+    },
     Continue: () => {
         Components.ContinueButton().click();
     },
@@ -191,6 +195,14 @@ let Actions = {
     },
     CancelAddingSecurityKey: () => {
         Components.KeyCancelButton().click();
+    },
+    ChangeSecurityKeys: () => {
+        Components.ChangeSecurityKeysLink().click();
+        cy.get('h1').should('contain', 'Security keys');
+    },
+    AddNewSecurityKey: () => {
+        Components.AddSecurityKeyButton().click();
+        cy.get('h1').should('contain', 'Add a security key');
     },
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {
