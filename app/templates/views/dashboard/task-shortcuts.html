@@ -10,12 +10,14 @@
 {% if config["FF_SAMPLE_TEMPLATES"] %}
   <div class="flex space-x-gutter mb-16 mt-12">
     {% if current_service.has_templates %}
-      {{ task_shortcut(
-          description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
-          link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
-          link_text=_("Choose template"),
-          icon="arrow-right"
-      )}}
+      {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
+        {{ task_shortcut(
+            description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
+            link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
+            link_text=_("Choose template"),
+            icon="arrow-right"
+        )}}
+      {% endif %}
     {% else %}
       {% if current_user.has_permissions('manage_templates') %}
         {{ task_shortcut(
@@ -26,7 +28,7 @@
         )}}
       {% endif %}
     {% endif %}
-    {% if current_user.has_permissions('send_messages') %}
+    {% if current_user.has_permissions('manage_templates') %}
       {{ task_shortcut(
         description=_("Edit and customize sample messages to meet your needs."),
         link_url=url_for('.view_sample_library', service_id=current_service.id),
