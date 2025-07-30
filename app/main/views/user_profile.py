@@ -5,6 +5,7 @@ from flask import (
     abort,
     current_app,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -481,7 +482,12 @@ def user_profile_complete_security_keys():
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
-    return resp["id"]
+    return jsonify(
+        {
+            "id": resp["id"],
+            "from_send_page": from_send_page,
+        }
+    )
 
 
 @main.route("/user-profile/security_keys/authenticate-fido2", methods=["POST"])

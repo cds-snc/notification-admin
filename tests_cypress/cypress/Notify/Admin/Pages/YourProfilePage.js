@@ -191,6 +191,7 @@ let Actions = {
     RemoveSecurityKey: () => {
         Components.ChangeSecurityKeysLink().click();
         Components.KeyRemoveButton().click();
+        Actions.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
         Components.KeyConfirmRemoveButton().click();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Key removed');
     },

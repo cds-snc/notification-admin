@@ -210,10 +210,11 @@ describe("Your profile", () => {
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
           Page.Components.AddSecurityKeyButton().click();
+          Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
 
-          cy.get("h1").should("contain", "Security keys");
+          cy.get("h1").should("contain", "Manage keys");
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);
@@ -376,10 +377,11 @@ describe("Your profile", () => {
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
           Page.Components.AddSecurityKeyButton().click();
+          Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
 
-          cy.get("h1").should("contain", "Security keys");
+          cy.get("h1").should("contain", "Manage keys");
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);

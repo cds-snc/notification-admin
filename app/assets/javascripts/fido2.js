@@ -88,7 +88,13 @@
         });
       })
       .then(function (response) {
-        window.location = "/user-profile/security_keys";
+        return response.json();
+      })
+      .then(function (body) {
+        console.log(body);
+        window.location = body.from_send_page === "user_profile_2fa" ?
+          "/user-profile/2fa" :
+          "/user-profile/security_keys";
       });
   });
 
