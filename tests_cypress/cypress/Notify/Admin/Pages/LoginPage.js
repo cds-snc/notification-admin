@@ -18,6 +18,7 @@ let Actions = {
         Components.SubmitButton().click();
     },
     Login: (email, password, agreeToTerms = true) => {
+        cy.log("---- Logging in via email code ----");
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
         // cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
@@ -59,6 +60,7 @@ let Actions = {
         }
     },
     LoginLocal: (email, password, agreeToTerms = true) => {
+        cy.log("---- Logging in locally ----");
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
 
         // login with username and password
