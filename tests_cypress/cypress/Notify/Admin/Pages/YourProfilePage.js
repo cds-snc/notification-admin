@@ -188,10 +188,10 @@ let Actions = {
         // The WebAuthn ceremony should happen automatically here
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Security key added');
     },
-    RemoveSecurityKey: () => {
+    RemoveSecurityKey: (password) => {
         Components.ChangeSecurityKeysLink().click();
         Components.KeyRemoveButton().click();
-        Actions.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
+        Actions.CompletePasswordChallenge(password);
         Components.KeyConfirmRemoveButton().click();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Key removed');
     },

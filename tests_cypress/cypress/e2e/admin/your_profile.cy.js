@@ -231,7 +231,7 @@ describe("Your profile", () => {
           Page.Components.Change2FASection().should("contain", "Security key");
 
           // Now remove the security key and go back
-          Page.RemoveSecurityKey();
+          Page.RemoveSecurityKey(CONFIG.CYPRESS_USER_PASSWORD);
           Page.GoBack();
 
           // Check that 2FA has fallen back to email
@@ -387,7 +387,7 @@ describe("Your profile", () => {
           cy.visit(Page.URL);
 
           // Set 2FA to use security key
-          Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+          Page.Components.Change2FALink().click();
           Page.SelectKeyFor2FA();
 
           cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(

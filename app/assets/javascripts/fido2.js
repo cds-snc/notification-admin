@@ -92,9 +92,10 @@
       })
       .then(function (body) {
         console.log(body);
-        window.location = body.from_send_page === "user_profile_2fa" ?
-          "/user-profile/2fa" :
-          "/user-profile/security_keys";
+        window.location =
+          body.from_send_page === "user_profile_2fa"
+            ? "/user-profile/2fa"
+            : "/user-profile/security_keys";
       });
   });
 
