@@ -70,6 +70,9 @@ let Actions = {
         Components.PasswordChallengeCancelButton().click();
     },
     // phone number update
+    ChangePhoneNumber: () => {
+        Components.ChangePhoneNumberButton().click();
+    },
     EnterPhoneNumber: (phoneNumber) => {
         if (!phoneNumber) {
             phoneNumber = '16132532222'; // test number
@@ -79,9 +82,6 @@ let Actions = {
     SavePhoneNumber: () => {
         Components.SaveButton().click();
         cy.get('div.banner-default-with-tick').should('contain', 'saved to your profile');
-    },
-    ChangePhoneNumber: () => {
-        Components.ChangePhoneNumberButton().click();
     },
     CancelAddingPhoneNumber: () => {
         Components.CancelAddPhoneNumberButton().click();
@@ -195,6 +195,7 @@ let Actions = {
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {
         Actions.ChangePhoneNumberOptions();
+        Actions.ChangePhoneNumber();
         Actions.EnterPhoneNumber(phoneNumber);
         Actions.SavePhoneNumber();
 

@@ -121,6 +121,7 @@ describe("Your profile", () => {
 
       // put phone number back
       Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
     });
@@ -532,6 +533,7 @@ describe("Your profile", () => {
 
       // add unverified phone number
       Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
@@ -547,6 +549,7 @@ describe("Your profile", () => {
 
       // add unverified phone number
       Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
@@ -562,6 +565,7 @@ describe("Your profile", () => {
 
       // add unverified phone number
       Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
@@ -578,6 +582,7 @@ describe("Your profile", () => {
 
       // add unverified phone number
       Page.ChangePhoneNumberOptions();
+      Page.ChangePhoneNumber();
       Page.EnterPhoneNumber();
       Page.SavePhoneNumber();
 
