@@ -5,6 +5,7 @@ from flask import (
     abort,
     current_app,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -345,16 +346,25 @@ def user_profile_password():
 @main.route("/user-profile/security_keys", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_security_keys():
-    from_send_page = session.get("from_send_page", False)
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".user_profile_2fa"))
-        # If we are coming from the send page, we need to clear the session flags
+    if request.method == "POST":
+        action = request.form.get("button_pressed")
+
+        if action == "add":
+            if not session.get(HAS_AUTHENTICATED):
+                session["from_send_page"] = "user_profile_security_keys"
+                return redirect(
+                    url_for(".user_profile_security_keys_authenticate", back_link=url_for(".user_profile_security_keys"))
+                )
+        elif action == "test":
+            render_template("views/user-profile/security-keys.html")
+
     return render_template("views/user-profile/security-keys.html")
 
 
 @main.route("/user-profile/security_keys/<keyid>", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_security_keys_confirm_delete(keyid):
+    key_name = request.args.get("keyname", None)
     if request.method == "POST":
         try:
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
@@ -362,6 +372,10 @@ def user_profile_security_keys_confirm_delete(keyid):
             flash(msg, "default_with_tick")
             if len(current_user.security_keys) <= 0:
                 current_user.update(auth_type="email_auth")
+
+            session.pop(HAS_AUTHENTICATED, None)
+            session.pop("security_key_id", None)
+            session.pop("security_key_name", None)
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -370,17 +384,26 @@ def user_profile_security_keys_confirm_delete(keyid):
                 return redirect(url_for(".user_profile_security_keys"))
             else:
                 abort(500, e)
+    if not session.get(HAS_AUTHENTICATED):
+        session["security_key_id"] = keyid
+        session["security_key_name"] = key_name
+        return redirect(url_for(".user_profile_security_keys_authenticate"))
 
     keys = dict([(key["id"], key["name"]) for key in current_user.security_keys])
     key_name = keys.get(keyid, str(keyid))
     flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
-    return render_template("views/user-profile/security-keys.html")
+
+    return render_template("views/user-profile/security-keys.html", is_confirm_delete=True)
 
 
 @main.route("/user-profile/security_keys/add", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_add_security_keys():
     form = SecurityKeyForm()
+    from_send_page = session.get("from_send_page", None)
+
+    if not session.get(HAS_AUTHENTICATED):
+        return redirect(url_for(".user_profile_security_keys_authenticate"))
 
     if request.args.get("duplicate") is not None:
         flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
@@ -389,22 +412,73 @@ def user_profile_add_security_keys():
             form.validate_on_submit()
         elif request.method == "POST":
             result = user_api_client.register_security_key(current_user.id)
+            # flash(_("Added a security key"), "default_with_tick")
+
             return base64.b64decode(result["data"])
 
-    return render_template("views/user-profile/add-security-keys.html", form=form)
+    if from_send_page == "user_profile_2fa":
+        # If we are coming from the 2FA page, we need to redirect back there after adding the key
+        return render_template("views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_2fa"))
+
+    return render_template(
+        "views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_security_keys")
+    )
+
+
+@main.route("/user-profile/security_keys/authenticate", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_security_keys_authenticate():
+    # Validate password for form
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+    from_page = session.get("from_send_page", "")
+    # If removing a key, we need to get the key id from the args, else it's store in session
+    key_id = session.get("security_key_id", request.args.get("keyid", None))
+    key_name = session.get("security_key_name", request.args.get("keyname", None))
+
+    if form.validate_on_submit():
+        session[HAS_AUTHENTICATED] = True
+
+        # Adding a security key from the 2FA flow
+        if from_page == "user_profile_2fa":
+            return redirect(url_for(".user_profile_2fa"))
+        # Deleting a security key from the Manage Security Keys page
+        elif key_name and key_id:
+            return redirect(url_for(".user_profile_security_keys_confirm_delete", keyid=key_id, keyname=key_name))
+        # Adding a new security key from the Manage Security Keys page
+        else:
+            return redirect(url_for(".user_profile_add_security_keys"))
+
+    return render_template(
+        "views/user-profile/authenticate.html",
+        thing=_("security key"),
+        form=form,
+        back_link=url_for(".user_profile_security_keys"),
+    )
 
 
 @main.route("/user-profile/security_keys/complete", methods=["POST"])
 @user_is_logged_in
 def user_profile_complete_security_keys():
     flash(_("Added a security key"), "default_with_tick")
+    from_send_page = session.get("from_send_page", None)
+    # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
+    if not from_send_page == "user_profile_2fa":
+        session.pop(HAS_AUTHENTICATED, None)
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
-    return resp["id"]
+    return jsonify(
+        {
+            "id": resp["id"],
+            "from_send_page": from_send_page,
+        }
+    )
 
 
-@main.route("/user-profile/security_keys/authenticate", methods=["POST"])
+@main.route("/user-profile/security_keys/authenticate-fido2", methods=["POST"])
 def user_profile_authenticate_security_keys():
     if session.get("user_details"):
         user_id = session["user_details"]["id"]

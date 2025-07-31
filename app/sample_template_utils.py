@@ -35,7 +35,7 @@ def get_sample_templates() -> List[Dict[str, Any]]:
         current_app.logger.error(f"Error accessing sample_templates folder: {e}")
         sample_templates = []
 
-    # Sort templates by name for consistent ordering
-    sample_templates.sort(key=lambda x: x.get("template_name", {}).get("en", ""))
+    # Sort templates by pinned status first (pinned templates at top), then by name for consistent ordering
+    sample_templates.sort(key=lambda x: (not x.get("pinned", False), x.get("template_name", {}).get("en", "")))
 
     return sample_templates

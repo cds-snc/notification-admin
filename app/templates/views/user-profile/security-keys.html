@@ -4,23 +4,23 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/table.html" import mapping_table, row, text_field, optional_text_field, edit_field, delete_field, field, boolean_field with context %}
+{% from "components/page-footer.html" import sticky_page_footer_one_submit_button_and_link_button %}
 
 {% block per_page_title %}
-  {{ _('Security keys') }}
+  {{ _('Manage keys') }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <div class="test-key-message"></div>
 
-  {% set title_txt = _('Security keys') %}
+  {% set title_txt = _('Manage keys') %}
   {{ page_header(
     title_txt,
     back_link=url_for('.user_profile')
   ) }}
 
-
-
+  {% call form_wrapper() %}
   <div class="body-copy-table">
     {% set caption = _('Your security keys') %}
     {% set heading_1 = _('Label') %}
@@ -40,21 +40,16 @@
           {% set delete_txt = _('Remove') %}
           {{ text_field(txt) }}
           {{ text_field(key.name) }}
-          {{ edit_field(delete_txt, url_for('.user_profile_security_keys_confirm_delete', keyid=key.id)) }}
+          {{ edit_field(delete_txt, url_for('.user_profile_security_keys_authenticate', keyid=key.id, keyname=key.name))}}
         {% endcall %}
       {% endfor %}
     {% endcall %}
   </div>
+  {% if not is_confirm_delete %}
+    {{ sticky_page_footer_one_submit_button_and_link_button(_('New security key'), "add", button1_data_testid="2fa_add_security_key", link="#", link_text=_("Test keys"), link_attributes="id=test-fido2-keys") }}
+  {% endif %}
   <script nonce="{{ request_nonce }}">
     var csrf_token = "{{ csrf_token() }}";
-   </script>
-  <div class="js-stick-at-bottom-when-scrolling">
-    <div class="grid-row contain-floats">
-      <div class="md:w-3/4 flex flex-wrap gap-gutter py-0 px-gutterHalf box-border">
-        <a href="{{ url_for('main.user_profile_add_security_keys') }}" class="button button-secondary" data-testid="2fa_add_security_key">{{ _('New security key') }}</a>
-        <a id="test-fido2-keys" href="#" class="button button-secondary">{{ _('Test keys') }}</a>
-      </div>
-    </div>
-  </div>
-
+  </script>
+  {% endcall %}
 {% endblock %}
