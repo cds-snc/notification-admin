@@ -203,14 +203,11 @@ def user_profile_mobile_number():
 @user_is_logged_in
 def user_profile_manage_mobile_number():
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
-    from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
-    session["from_send_page"] = from_send_page
     if request.method == "GET":
         return render_template(
             "views/user-profile/manage-phones.html",
             thing=_("mobile number"),
             form_field=form.mobile_number,
-            from_send_page=from_send_page,
             template_id=session.get("send_page_template_id"),
         )
     if request.method == "POST":
@@ -229,8 +226,9 @@ def user_profile_manage_mobile_number():
         elif edit_or_cancel_pressed == "cancel":
             return redirect(url_for(".user_profile"))
 
-        # this should never happen, but just in case
-        return redirect(url_for(".user_profile_manage_mobile_number"))
+        else:
+            # this should never happen, but just in case
+            return redirect(url_for(".user_profile_manage_mobile_number"))
 
 
 @main.route("/user-profile/mobile-number/authenticate", methods=["GET", "POST"])
