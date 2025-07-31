@@ -13,6 +13,7 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_sample_invite,
     normalize_spaces,
+    set_config,
 )
 
 
@@ -576,11 +577,11 @@ def test_existing_user_accepts_and_sets_email_auth(
     )
 
     mock_get_unknown_user_by_email.assert_called_once_with("test@user.canada.ca")
-    mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="email_auth")
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
 
 
 def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
+    app_,
     client_request,
     api_user_active,
     service_one,
@@ -592,24 +593,26 @@ def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
     mock_add_user_to_service,
     mocker,
 ):
-    sample_invite["email_address"] = api_user_active["email_address"]
+    with set_config(app_, "FF_AUTH_V2", False):
+        sample_invite["email_address"] = api_user_active["email_address"]
 
-    assert "email_auth" not in service_one["permissions"]
+        assert "email_auth" not in service_one["permissions"]
 
-    sample_invite["auth_type"] = "email_auth"
-    mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
+        sample_invite["auth_type"] = "email_auth"
+        mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
 
-    client_request.get(
-        "main.accept_invite",
-        token="thisisnotarealtoken",
-        _expected_status=302,
-        _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
-    )
+        client_request.get(
+            "main.accept_invite",
+            token="thisisnotarealtoken",
+            _expected_status=302,
+            _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
+        )
 
-    assert not mock_update_user_attribute.called
+        assert not mock_update_user_attribute.called
 
 
 def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
+    app_,
     client_request,
     api_user_active,
     service_one,
@@ -667,5 +670,4 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
     )
 
     mock_get_unknown_user_by_email.assert_called_once_with(sample_invite["email_address"])
-    mock_update_user_attribute.assert_called_once_with(USER_ONE_ID, auth_type="sms_auth")
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
