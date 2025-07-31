@@ -4,10 +4,6 @@ template_name:
   fr: "EN/FR FR Appointment reminder"
 notification_type: "email"
 template_category: "reminder"
-personalisation:
-  date_en: "May 26, 2025"
-  date_fr: "26 mai 2025"
-  name: "Jane Smith"
 pinned: false
 subject: "Appointment: ((date_en)) | FR Appointment: ((date_fr))"
 content: |
@@ -20,6 +16,19 @@ content: |
 
   [[fr]]
   Bonjour ((name)),
+
+  FR Sample template content
+  [[/fr]]
+example_content: |
+  [[en]]
+  Hello Jane Smith,
+  Sample template content
+  [[/en]]
+  
+  ---
+
+  [[fr]]
+  Bonjour Jane Smith,
 
   FR Sample template content
   [[/fr]]
