@@ -222,6 +222,9 @@ def user_profile_manage_mobile_number():
             # this should never happen, but just in case
             return redirect(url_for(".user_profile_manage_mobile_number"))
     # GET
+    if not current_user.mobile_number:
+        return redirect(url_for(".user_profile_mobile_number"))
+
     return render_template(
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
