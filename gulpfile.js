@@ -46,6 +46,7 @@ const javascripts = () => {
     paths.src + "javascripts/fido2.js",
     paths.src + "javascripts/autocomplete.js",
     paths.src + "javascripts/autofocus.js",
+    paths.src + "javascripts/contactSanitizePii.js",
     paths.src + "javascripts/highlightTags.js",
     paths.src + "javascripts/fileUpload.js",
     paths.src + "javascripts/updateContent.js",
@@ -84,6 +85,8 @@ const javascripts = () => {
         paths.npm + "textarea-caret/index.js",
         paths.npm +
           "accessible-autocomplete/dist/accessible-autocomplete.min.js",
+        paths.npm +
+          "@cdssnc/sanitize-pii/dist/umd/sanitize-pii.min.js",
       ])
     )
     .pipe(plugins.uglify())

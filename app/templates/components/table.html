@@ -149,6 +149,14 @@
   {% endcall %}
 {%- endmacro %}
 
+{% macro edit_field_input(text, link, permissions=[], attributes="", for=false) -%}
+  {% call field(align='right') %}
+    {% if not permissions or current_user.has_permissions(*permissions) %}
+      <input {{attributes}} href="{{ link }}">{{ text }}{% if for %}<span class="sr-only"> {{ for }}</span>{% endif %}</input>
+    {% endif %}
+  {% endcall %}
+{%- endmacro %}
+
 {% macro boolean_field(value, suffix='') -%}
 
   {% set on_txt = _('On') %}
