@@ -65,11 +65,6 @@ def accept_invite(token):
             service = Service.from_id(invited_user.service)
             if current_app.config["FF_AUTH_V2"]:
                 try:
-                    existing_user.update(auth_type=invited_user.auth_type)
-                except Exception as e:
-                    current_app.logger.info(f"[UPDATE_EXISTING_USER]: Error on `existing_user.update()`: {e}")
-
-                try:
                     existing_user.add_to_service(
                         service_id=invited_user.service,
                         permissions=invited_user.permissions,
