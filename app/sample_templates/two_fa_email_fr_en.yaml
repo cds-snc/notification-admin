@@ -7,6 +7,7 @@ template_category: "authentication"
 personalisation:
   name: "Jane Smith"
   verify_code: "12345"
+pinned: false
 subject: "Connectez-vous | Sign in"
 content: |
   [[fr]]
