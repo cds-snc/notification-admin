@@ -75,9 +75,6 @@ let Actions = {
         Actions.ConfirmPasswordChallenge();
     },
     // phone number update
-    ChangePhoneNumber: () => {
-        Components.ChangePhoneNumberButton().click();
-    },
     EnterPhoneNumber: (phoneNumber) => {
         if (!phoneNumber) {
             phoneNumber = '16132532222'; // test number
@@ -87,6 +84,9 @@ let Actions = {
     SavePhoneNumber: () => {
         Components.SaveButton().click();
         cy.get('div.banner-default-with-tick').should('contain', 'saved to your profile');
+    },
+    ChangePhoneNumber: () => {
+        Components.ChangePhoneNumberButton().click();
     },
     CancelAddingPhoneNumber: () => {
         Components.CancelAddPhoneNumberButton().click();
@@ -108,10 +108,6 @@ let Actions = {
     },
     SelectKeyFor2FA: () => {
         Components.TFAKey().click();
-        Components.ContinueButton().click();
-    },
-    SelectNewKeyFor2FA: () => {
-        Components.AddKey().click();
         Components.ContinueButton().click();
     },
     Continue: () => {
@@ -202,18 +198,9 @@ let Actions = {
     CancelAddingSecurityKey: () => {
         Components.KeyCancelButton().click();
     },
-    ChangeSecurityKeys: () => {
-        Components.ChangeSecurityKeysLink().click();
-        cy.get('h1').should('contain', 'Manage keys');
-    },
-    AddNewSecurityKey: () => {
-        Components.AddSecurityKeyButton().click();
-        cy.get('h1').should('contain', 'Enter password');
-    },
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {
         Actions.ChangePhoneNumberOptions();
-        Actions.ChangePhoneNumber();
         Actions.EnterPhoneNumber(phoneNumber);
         Actions.SavePhoneNumber();
 
