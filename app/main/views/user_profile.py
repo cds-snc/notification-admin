@@ -128,7 +128,7 @@ def user_profile_email_confirm(token):
     return redirect(url_for(".user_profile"))
 
 
-@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
+@main.route("/user-profile/mobile-number/change", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
@@ -199,7 +199,7 @@ def user_profile_mobile_number():
         return redirect(url_for(".user_profile"))
 
 
-@main.route("/user-profile/manage-mobile-number", methods=["GET", "POST"])
+@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_manage_mobile_number():
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
