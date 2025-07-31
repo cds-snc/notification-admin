@@ -180,7 +180,7 @@ describe("Your profile", () => {
       Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
 
-    it.only("Security key 2FA fallback - defaults to email when security key is removed", () => {
+    it("Security key 2FA fallback - defaults to email when security key is removed", () => {
       ensureNoSecurityKeys();
       let authenticatorId;
 
@@ -532,6 +532,7 @@ describe("Your profile", () => {
     });
 
     it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      ensureNoSecurityKeys();
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
       Page.AddNewKeyFrom2FASettings();
       Page.CancelAddingSecurityKey();
@@ -620,6 +621,96 @@ describe("Your profile", () => {
       Page.Components.SendTestMessageButton().click();
       Page.CancelAddingPhoneNumber();
       cy.get("h2").should("contain", "Ready to send");
+    });
+
+    // Change 2FA setting to SMS when number is unverified, press back
+    it("Set 2FA to SMS back to 2FA settings when pressing back (unverified number)", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when number is unverified, press cancel
+    it("Set 2FA to SMS back to 2FA settings when pressing cancel (unverified number)", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.CancelVerification();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when no phone number, press back
+    it("Set 2FA to SMS back to 2FA settings when pressing back (no number)", () => {
+      ensureNoPhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when no phone number, press cancel
+    it("Set 2FA to SMS back to 2FA settings when pressing cancel (no number)", () => {
+      ensureNoPhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.CancelAddingPhoneNumber();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("Security keys back to user profile when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Your profile");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.GoBack();
+      cy.get("h1").should("contain", "Manage keys");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing cancel", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Manage keys");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing back", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Two-step verification method");
     });
   });
 });
