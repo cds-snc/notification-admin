@@ -29,7 +29,7 @@ let Components = {
     SecurityKeyName: () => cy.get('input[name="keyname"]'),
     KeyRemoveButton: () => cy.get('a[href^="/user-profile/security_keys/"]').contains('Remove'),
     KeyConfirmRemoveButton: () => cy.get('button[name="delete"]'),
-    KeyCancelButton: () => cy.get('a').contains('Cancel'),
+    KeyCancelButton: () => cy.get('a[href*="/user-profile"]').contains('Cancel'),
     // 2fa screen components
     TFAEMAIL: () => cy.getByTestId('email'),
     TFAEmailLabel: () => Components.TFAEMAIL().next('label'),
@@ -54,10 +54,23 @@ let Components = {
 let Actions = {
     GoBack: () => {
         Components.BackLink().click();
+        // Wait for navigation to complete
+        cy.url().should('not.include', '/add');
     },
     // user profile actions
     ChangePhoneNumberOptions: () => {
         Components.ChangePhoneNumberLink().click();
+        
+        // Wait for page to load and check if we need to click "Change number" button
+        cy.get('body').then($body => {
+            if ($body.find('button[value="edit"]').length > 0) {
+                // We're on the manage page, need to click "Change number"
+                Components.ChangePhoneNumberButton().click();
+                // Wait for the change page to load
+                cy.url().should('include', '/change');
+            }
+            // If no edit button, we're already on the change page
+        });
     },
     Change2FAOptions: () => {
         Components.Change2FALink().click();
@@ -82,6 +95,8 @@ let Actions = {
         if (!phoneNumber) {
             phoneNumber = '16132532222'; // test number
         }
+        // Wait for the input field to be available
+        Components.PhoneField().should('be.visible');
         Components.PhoneField().clear().type(phoneNumber);
     },
     SavePhoneNumber: () => {
@@ -105,6 +120,10 @@ let Actions = {
     SelectSMSFor2FA: () => {
         Components.TFASMS().click();
         Components.ContinueButton().click();
+        // Wait for navigation to verification page or phone number page
+        cy.url().should('satisfy', (url) => {
+            return url.includes('/verify-mobile-number') || url.includes('/mobile-number');
+        });
     },
     SelectKeyFor2FA: () => {
         Components.TFAKey().click();
@@ -113,6 +132,8 @@ let Actions = {
     SelectNewKeyFor2FA: () => {
         Components.AddKey().click();
         Components.ContinueButton().click();
+        // Wait for navigation to complete
+        cy.url().should('include', '/security_keys/add');
     },
     Continue: () => {
         Components.ContinueButton().click();
