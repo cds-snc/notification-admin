@@ -497,12 +497,6 @@ class TestOptionalPhoneNumber:
     ):
         client_request.post(
             "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
@@ -517,13 +511,7 @@ class TestOptionalPhoneNumber:
         mock_send_change_email_verification,
     ):
         client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
+            "main.user_profile_manage_mobile_number",
             _data={"remove": "remove"},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
@@ -564,7 +552,7 @@ class TestOptionalPhoneNumber:
             page = client_request.get("main.user_profile_mobile_number")
 
             # assert page.status_code == 200
-            assert templates[0][0].name == "views/user-profile/change.html"
+            assert templates[0][0].name == "views/user-profile/change-mobile-number.html"
             assert templates[0][1]["from_send_page"] == "send_test"
             assert "If you add a number to your profile, you can text yourself test messages." in page.text
 

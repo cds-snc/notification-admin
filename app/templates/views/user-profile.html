@@ -17,7 +17,7 @@
     <div class="pb-8">
       {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name', testid="user_profile_name") }}
       {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None, testid="user_profile_email") }}
-      {{ profile_item(_('Contact number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number', None  if current_user.mobile_number else _('Add number'), testid="user_profile_mobile_number") }}
+      {{ profile_item(_('Contact number'), optional_text_field(current_user.mobile_number), '.user_profile_manage_mobile_number', None  if current_user.mobile_number else _('Add number'), testid="user_profile_mobile_number") }}
     </div>
 
     <h2 class="heading-large">{{ _("Security") }}</h2>

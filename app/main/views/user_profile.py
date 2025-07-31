@@ -129,22 +129,79 @@ def user_profile_email_confirm(token):
     return redirect(url_for(".user_profile"))
 
 
-@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
+@main.route("/user-profile/mobile-number/change", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-    from_send_page = False
-
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
     from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
     service_id = session.get("send_page_service_id") or request.args.get("service_id")
     template_id = session.get("send_page_template_id") or request.args.get("template_id")
 
+    # Get the back URL from the referer header, with fallback logic
+    back_url = request.referrer or url_for(".user_profile")
+
+    # If no referer or referer is the current page, use context-based fallback
+    if not request.referrer or request.referrer == request.url:
+        if from_send_page == "send_test" and template_id:
+            back_url = url_for(".view_template", service_id=service_id, template_id=template_id)
+        elif from_send_page == "user_profile_2fa":
+            back_url = url_for(".user_profile_2fa")
+        else:
+            back_url = url_for(".user_profile")
+
     # Store these values in session
     session["from_send_page"] = from_send_page
     session["send_page_service_id"] = service_id
     session["send_page_template_id"] = template_id
 
+    if request.method == "POST" and form.validate_on_submit():
+        # If the mobile number is empty or None, treat it as a removal request
+        if not form.mobile_number.data or form.mobile_number.data.strip() == "":
+            session[NEW_MOBILE] = ""
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
+        data_to_update = {
+            "mobile_number": form.mobile_number.data,
+            "verified_phonenumber": False,
+        }
+
+        # If the user is currently using SMS authentication, we need to change their auth type
+        # because their new number is not verified yet.
+        if current_user.auth_type == "sms_auth":
+            data_to_update["auth_type"] = "email_auth"
+
+        # update once to avoid multiple emails to the user
+        current_user.update(**data_to_update)
+
+        flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+        if from_send_page == "send_test":
+            session["from_send_page"] = None
+            return redirect(
+                url_for(
+                    ".verify_mobile_number_send",
+                    from_send_page=from_send_page,
+                    service_id=service_id,
+                    template_id=template_id,
+                )
+            )
+        elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
+            return redirect(url_for(".verify_mobile_number_send"))
+        return redirect(url_for(".user_profile"))
+
+    return render_template(
+        "views/user-profile/change-mobile-number.html",
+        form_field=form.mobile_number,
+        from_send_page=from_send_page,
+        template_id=session.get("send_page_template_id"),
+        back_url=back_url,
+    )
+
+
+@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_manage_mobile_number():
+    form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
     if request.method == "POST":
         # get button presses
         edit_or_cancel_pressed = request.form.get("button_pressed")
@@ -152,13 +209,7 @@ def user_profile_mobile_number():
 
         # if they are posting the button "edit"
         if edit_or_cancel_pressed == "edit":
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
+            return redirect(url_for(".user_profile_mobile_number"))
 
         elif remove_pressed == "remove":
             session[NEW_MOBILE] = ""
@@ -167,77 +218,17 @@ def user_profile_mobile_number():
         elif edit_or_cancel_pressed == "cancel":
             return redirect(url_for(".user_profile"))
 
-        elif form.validate_on_submit():
-            # If the mobile number is empty or None, treat it as a removal request
-            if not form.mobile_number.data or form.mobile_number.data.strip() == "":
-                session[NEW_MOBILE] = ""
-                return redirect(url_for(".user_profile_mobile_number_authenticate"))
-
-            data_to_update = {
-                "mobile_number": form.mobile_number.data,
-                "verified_phonenumber": False,
-            }
-
-            # If the user is currently using SMS authentication, we need to change their auth type
-            # because their new number is not verified yet.
-            if current_user.auth_type == "sms_auth":
-                data_to_update["auth_type"] = "email_auth"
-
-            # update once to avoid multiple emails to the user
-            current_user.update(**data_to_update)
-
-            flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
-            if from_send_page == "send_test":
-                session["from_send_page"] = None
-                return redirect(
-                    url_for(
-                        ".verify_mobile_number_send",
-                        from_send_page=from_send_page,
-                        service_id=service_id,
-                        template_id=template_id,
-                    )
-                )
-            elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
-                return redirect(url_for(".verify_mobile_number_send"))
-            return redirect(url_for(".user_profile"))
-
         else:
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
-    else:
-        # if they dont have a number set, just go right to the edit page
-        if current_user.mobile_number is None:
-            data_to_update = {
-                "verified_phonenumber": False,
-                "mobile_number": None,
-            }
-            if current_user.auth_type == "sms_auth":
-                data_to_update["auth_type"] = "email_auth"
-
-            # update once to avoid multiple emails to the user
-            current_user.update(**data_to_update)
-
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=session.get("from_send_page"),
-                template_id=session.get("send_page_template_id"),
-            )
-
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".verify_mobile_number_send"))
+            # this should never happen, but just in case
+            return redirect(url_for(".user_profile_manage_mobile_number"))
+    # GET
+    if not current_user.mobile_number:
+        return redirect(url_for(".user_profile_mobile_number"))
 
     return render_template(
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
-        from_send_page=session.get("from_send_page"),
         template_id=session.get("send_page_template_id"),
     )
 
