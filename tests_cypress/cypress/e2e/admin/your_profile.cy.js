@@ -180,7 +180,7 @@ describe("Your profile", () => {
       Page.Components.TFASMSLabel().should("not.contain", "Verified");
     });
 
-    it.only("Security key 2FA fallback - defaults to email when security key is removed", () => {
+    it("Security key 2FA fallback - defaults to email when security key is removed", () => {
       ensureNoSecurityKeys();
       let authenticatorId;
 
