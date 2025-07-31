@@ -154,16 +154,6 @@ def user_profile_mobile_number():
     session["send_page_service_id"] = service_id
     session["send_page_template_id"] = template_id
 
-    if request.method == "GET":
-        # They dont have a number set, show the edit page
-        return render_template(
-            "views/user-profile/change-mobile-number.html",
-            form_field=form.mobile_number,
-            from_send_page=from_send_page,
-            template_id=session.get("send_page_template_id"),
-            back_url=back_url,
-        )
-
     if request.method == "POST" and form.validate_on_submit():
         # If the mobile number is empty or None, treat it as a removal request
         if not form.mobile_number.data or form.mobile_number.data.strip() == "":
@@ -198,18 +188,19 @@ def user_profile_mobile_number():
             return redirect(url_for(".verify_mobile_number_send"))
         return redirect(url_for(".user_profile"))
 
+    return render_template(
+        "views/user-profile/change-mobile-number.html",
+        form_field=form.mobile_number,
+        from_send_page=from_send_page,
+        template_id=session.get("send_page_template_id"),
+        back_url=back_url,
+    )
+
 
 @main.route("/user-profile/mobile-number", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_manage_mobile_number():
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
-    if request.method == "GET":
-        return render_template(
-            "views/user-profile/manage-phones.html",
-            thing=_("mobile number"),
-            form_field=form.mobile_number,
-            template_id=session.get("send_page_template_id"),
-        )
     if request.method == "POST":
         # get button presses
         edit_or_cancel_pressed = request.form.get("button_pressed")
@@ -229,6 +220,13 @@ def user_profile_manage_mobile_number():
         else:
             # this should never happen, but just in case
             return redirect(url_for(".user_profile_manage_mobile_number"))
+    # GET
+    return render_template(
+        "views/user-profile/manage-phones.html",
+        thing=_("mobile number"),
+        form_field=form.mobile_number,
+        template_id=session.get("send_page_template_id"),
+    )
 
 
 @main.route("/user-profile/mobile-number/authenticate", methods=["GET", "POST"])
