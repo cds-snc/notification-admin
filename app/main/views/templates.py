@@ -1487,6 +1487,9 @@ def view_sample_library(service_id):
     else:
         filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
 
+    # Sort filtered templates by pinned status first (pinned templates at top), then by name
+    filtered_templates.sort(key=lambda x: (not x.get("pinned", False), x.get("template_name", {}).get("en", "")))
+
     email_count = len([t for t in sample_templates if t.get("notification_type") == "email"])
     sms_count = len([t for t in sample_templates if t.get("notification_type") == "sms"])
     total_count = len(sample_templates)
