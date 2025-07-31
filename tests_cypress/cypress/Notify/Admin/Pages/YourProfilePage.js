@@ -198,11 +198,11 @@ let Actions = {
     },
     ChangeSecurityKeys: () => {
         Components.ChangeSecurityKeysLink().click();
-        cy.get('h1').should('contain', 'Security keys');
+        cy.get('h1').should('contain', 'Manage keys');
     },
     AddNewSecurityKey: () => {
         Components.AddSecurityKeyButton().click();
-        cy.get('h1').should('contain', 'Add a security key');
+        cy.get('h1').should('contain', 'Enter password');
     },
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {

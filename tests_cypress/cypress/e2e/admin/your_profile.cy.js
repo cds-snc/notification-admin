@@ -521,6 +521,7 @@ describe("Your profile", () => {
     });
 
     it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      ensureNoSecurityKeys();
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
       Page.AddNewKeyFrom2FASettings();
       Page.CancelAddingSecurityKey();
@@ -674,15 +675,17 @@ describe("Your profile", () => {
     it("Security keys -> add a security key back to Security keys when pressing back", () => {
       Page.ChangeSecurityKeys();
       Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
       Page.GoBack();
-      cy.get("h1").should("contain", "Security keys");
+      cy.get("h1").should("contain", "Manage keys");
     });
 
     it("Security keys -> add a security key back to Security keys when pressing cancel", () => {
       Page.ChangeSecurityKeys();
       Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
       Page.CancelAddingSecurityKey();
-      cy.get("h1").should("contain", "Security keys");
+      cy.get("h1").should("contain", "Manage keys");
     });
 
     it("2FA -> add a security key back to 2FA settings when pressing back", () => {
