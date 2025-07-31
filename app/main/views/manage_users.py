@@ -12,7 +12,7 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
-from app import current_service, service_api_client
+from app import current_service, service_api_client, user_api_client
 from app.event_handlers import (
     create_email_change_event,
     create_mobile_number_change_event,
@@ -65,12 +65,13 @@ def invite_user(service_id):
         )
         if form.validate_on_submit():
             email_address = form.email_address.data
+            existing_user = user_api_client.get_user_by_email_or_none(email_address)
             invited_user = InvitedUser.create(
                 current_user.id,
                 service_id,
                 email_address,
                 form.permissions,
-                form.login_authentication.data,
+                existing_user["auth_type"] if existing_user else form.login_authentication.data,
                 form.folder_permissions.data,
             )
 
