@@ -1,12 +1,9 @@
 id: "31062d26-5369-4743-9a49-3002fc896bfd"
 template_name:
-  en: "FR/EN Two-Factor Security Code"
-  fr: "FR/EN FR Two-Factor Security Code"
+  en: "FR | en Two-Factor Security Code"
+  fr: "FR | en FR Two-Factor Security Code"
 notification_type: "email"
 template_category: "authentication"
-personalisation:
-  name: "Jane Smith"
-  verify_code: "12345"
 pinned: false
 subject: "Connectez-vous | Sign in"
 content: |
@@ -26,4 +23,22 @@ content: |
   Here is your security code to log in to -application name-:
 
   ^ ((verify_code))
+  [[/en]]
+example_content: |
+  [[fr]]
+  Bonjour Jane Smith,
+
+  Voici votre code de sécurité pour vous connecter à Notification GC:
+
+  ^ 12345
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi Jane Smith,
+
+  Here is your security code to log in to GC Notify:
+
+  ^ 12345
   [[/en]]
