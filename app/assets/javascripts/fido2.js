@@ -3,7 +3,7 @@
 
   $(document).on("ready", function () {
     if ($("#two-factor-fido").length) {
-      fetch("/user-profile/security_keys/authenticate", {
+      fetch("/user-profile/security_keys/authenticate-fido2", {
         method: "POST",
         headers: {
           "X-CSRFToken": csrf_token,
