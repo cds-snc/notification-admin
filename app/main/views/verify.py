@@ -78,6 +78,7 @@ def activate_user(user_id):
     invited_user = session.get("invited_user")
     if invited_user:
         service_id = _add_invited_user_to_service(invited_user)
+        session["service_id"] = service_id
         return redirect(url_for("main.service_dashboard", service_id=service_id))
 
     invited_org_user = session.get("invited_org_user")

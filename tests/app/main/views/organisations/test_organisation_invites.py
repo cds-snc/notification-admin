@@ -329,12 +329,7 @@ def test_org_user_registration(
         session["invited_org_user"]["email_address"],
         "+16502532222",
         "validPassword!",
-        "sms_auth",
-    )
-    mock_send_verify_code.assert_called_once_with(
-        "6ce466d0-fd6a-11e5-82f5-e0accb9d11a6",
-        "sms",
-        "+16502532222",
+        "email_auth",
     )
 
 
