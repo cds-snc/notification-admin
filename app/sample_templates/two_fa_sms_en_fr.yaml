@@ -1,10 +1,11 @@
-id: "2c42e715-22b0-4d55-9263-7316f3093411"
+id: "7e877f34-65d4-42d7-a33e-51789cb3bf55"
 template_name:
-  en: "EN/FR Two-Factor Security Code"
-  fr: "EN/FR FR Two-Factor Security Code"
+  en: "EN | fr Two-Factor Security Code"
+  fr: "EN | fr FR Two-Factor Security Code"
 notification_type: "sms"
 template_category: "authentication"
-personalisation:
-  verify_code: "12345"
+pinned: true
 content: |
   ((verify_code)) is your -application name- authentication code | ((verify_code)) est votre code d'authentification de -FR application name-
+example_content: |
+  12345 is your GC Notify authentication code | 12345 est votre code d'authentification de Notification GC

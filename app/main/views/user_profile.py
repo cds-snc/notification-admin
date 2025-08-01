@@ -5,6 +5,7 @@ from flask import (
     abort,
     current_app,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -128,22 +129,79 @@ def user_profile_email_confirm(token):
     return redirect(url_for(".user_profile"))
 
 
-@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
+@main.route("/user-profile/mobile-number/change", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_mobile_number():
-    from_send_page = False
-
     form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
 
     from_send_page = session.get("from_send_page", False) or request.args.get("from_send_page")
     service_id = session.get("send_page_service_id") or request.args.get("service_id")
     template_id = session.get("send_page_template_id") or request.args.get("template_id")
 
+    # Get the back URL from the referer header, with fallback logic
+    back_url = request.referrer or url_for(".user_profile")
+
+    # If no referer or referer is the current page, use context-based fallback
+    if not request.referrer or request.referrer == request.url:
+        if from_send_page == "send_test" and template_id:
+            back_url = url_for(".view_template", service_id=service_id, template_id=template_id)
+        elif from_send_page == "user_profile_2fa":
+            back_url = url_for(".user_profile_2fa")
+        else:
+            back_url = url_for(".user_profile")
+
     # Store these values in session
     session["from_send_page"] = from_send_page
     session["send_page_service_id"] = service_id
     session["send_page_template_id"] = template_id
 
+    if request.method == "POST" and form.validate_on_submit():
+        # If the mobile number is empty or None, treat it as a removal request
+        if not form.mobile_number.data or form.mobile_number.data.strip() == "":
+            session[NEW_MOBILE] = ""
+            return redirect(url_for(".user_profile_mobile_number_authenticate"))
+
+        data_to_update = {
+            "mobile_number": form.mobile_number.data,
+            "verified_phonenumber": False,
+        }
+
+        # If the user is currently using SMS authentication, we need to change their auth type
+        # because their new number is not verified yet.
+        if current_user.auth_type == "sms_auth":
+            data_to_update["auth_type"] = "email_auth"
+
+        # update once to avoid multiple emails to the user
+        current_user.update(**data_to_update)
+
+        flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
+        if from_send_page == "send_test":
+            session["from_send_page"] = None
+            return redirect(
+                url_for(
+                    ".verify_mobile_number_send",
+                    from_send_page=from_send_page,
+                    service_id=service_id,
+                    template_id=template_id,
+                )
+            )
+        elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
+            return redirect(url_for(".verify_mobile_number_send"))
+        return redirect(url_for(".user_profile"))
+
+    return render_template(
+        "views/user-profile/change-mobile-number.html",
+        form_field=form.mobile_number,
+        from_send_page=from_send_page,
+        template_id=session.get("send_page_template_id"),
+        back_url=back_url,
+    )
+
+
+@main.route("/user-profile/mobile-number", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_manage_mobile_number():
+    form = ChangeMobileNumberFormOptional(mobile_number=current_user.mobile_number)
     if request.method == "POST":
         # get button presses
         edit_or_cancel_pressed = request.form.get("button_pressed")
@@ -151,13 +209,7 @@ def user_profile_mobile_number():
 
         # if they are posting the button "edit"
         if edit_or_cancel_pressed == "edit":
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
+            return redirect(url_for(".user_profile_mobile_number"))
 
         elif remove_pressed == "remove":
             session[NEW_MOBILE] = ""
@@ -166,77 +218,17 @@ def user_profile_mobile_number():
         elif edit_or_cancel_pressed == "cancel":
             return redirect(url_for(".user_profile"))
 
-        elif form.validate_on_submit():
-            # If the mobile number is empty or None, treat it as a removal request
-            if not form.mobile_number.data or form.mobile_number.data.strip() == "":
-                session[NEW_MOBILE] = ""
-                return redirect(url_for(".user_profile_mobile_number_authenticate"))
-
-            data_to_update = {
-                "mobile_number": form.mobile_number.data,
-                "verified_phonenumber": False,
-            }
-
-            # If the user is currently using SMS authentication, we need to change their auth type
-            # because their new number is not verified yet.
-            if current_user.auth_type == "sms_auth":
-                data_to_update["auth_type"] = "email_auth"
-
-            # update once to avoid multiple emails to the user
-            current_user.update(**data_to_update)
-
-            flash(_("Phone number {} saved to your profile").format(form.mobile_number.data), "default_with_tick")
-            if from_send_page == "send_test":
-                session["from_send_page"] = None
-                return redirect(
-                    url_for(
-                        ".verify_mobile_number_send",
-                        from_send_page=from_send_page,
-                        service_id=service_id,
-                        template_id=template_id,
-                    )
-                )
-            elif session.get(HAS_AUTHENTICATED) and from_send_page == "user_profile_2fa":
-                return redirect(url_for(".verify_mobile_number_send"))
-            return redirect(url_for(".user_profile"))
-
         else:
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=from_send_page,
-                template_id=session.get("send_page_template_id"),
-            )
-    else:
-        # if they dont have a number set, just go right to the edit page
-        if current_user.mobile_number is None:
-            data_to_update = {
-                "verified_phonenumber": False,
-                "mobile_number": None,
-            }
-            if current_user.auth_type == "sms_auth":
-                data_to_update["auth_type"] = "email_auth"
-
-            # update once to avoid multiple emails to the user
-            current_user.update(**data_to_update)
-
-            return render_template(
-                "views/user-profile/change.html",
-                thing=_("mobile number"),
-                form_field=form.mobile_number,
-                from_send_page=session.get("from_send_page"),
-                template_id=session.get("send_page_template_id"),
-            )
-
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".verify_mobile_number_send"))
+            # this should never happen, but just in case
+            return redirect(url_for(".user_profile_manage_mobile_number"))
+    # GET
+    if not current_user.mobile_number:
+        return redirect(url_for(".user_profile_mobile_number"))
 
     return render_template(
         "views/user-profile/manage-phones.html",
         thing=_("mobile number"),
         form_field=form.mobile_number,
-        from_send_page=session.get("from_send_page"),
         template_id=session.get("send_page_template_id"),
     )
 
@@ -357,16 +349,25 @@ def user_profile_password():
 @main.route("/user-profile/security_keys", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_security_keys():
-    from_send_page = session.get("from_send_page", False)
-    if from_send_page == "user_profile_2fa":
-        return redirect(url_for(".user_profile_2fa"))
-        # If we are coming from the send page, we need to clear the session flags
+    if request.method == "POST":
+        action = request.form.get("button_pressed")
+
+        if action == "add":
+            if not session.get(HAS_AUTHENTICATED):
+                session["from_send_page"] = "user_profile_security_keys"
+                return redirect(
+                    url_for(".user_profile_security_keys_authenticate", back_link=url_for(".user_profile_security_keys"))
+                )
+        elif action == "test":
+            render_template("views/user-profile/security-keys.html")
+
     return render_template("views/user-profile/security-keys.html")
 
 
 @main.route("/user-profile/security_keys/<keyid>", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_security_keys_confirm_delete(keyid):
+    key_name = request.args.get("keyname", None)
     if request.method == "POST":
         try:
             user_api_client.delete_security_key_user(current_user.id, key=keyid)
@@ -374,6 +375,10 @@ def user_profile_security_keys_confirm_delete(keyid):
             flash(msg, "default_with_tick")
             if len(current_user.security_keys) <= 0:
                 current_user.update(auth_type="email_auth")
+
+            session.pop(HAS_AUTHENTICATED, None)
+            session.pop("security_key_id", None)
+            session.pop("security_key_name", None)
             return redirect(url_for(".user_profile_security_keys"))
         except HTTPError as e:
             msg = "Something didn't work properly"
@@ -382,17 +387,26 @@ def user_profile_security_keys_confirm_delete(keyid):
                 return redirect(url_for(".user_profile_security_keys"))
             else:
                 abort(500, e)
+    if not session.get(HAS_AUTHENTICATED):
+        session["security_key_id"] = keyid
+        session["security_key_name"] = key_name
+        return redirect(url_for(".user_profile_security_keys_authenticate"))
 
     keys = dict([(key["id"], key["name"]) for key in current_user.security_keys])
     key_name = keys.get(keyid, str(keyid))
     flash(_("Are you sure you want to remove security key ‘{}’?").format(key_name), "remove")
-    return render_template("views/user-profile/security-keys.html")
+
+    return render_template("views/user-profile/security-keys.html", is_confirm_delete=True)
 
 
 @main.route("/user-profile/security_keys/add", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_add_security_keys():
     form = SecurityKeyForm()
+    from_send_page = session.get("from_send_page", None)
+
+    if not session.get(HAS_AUTHENTICATED):
+        return redirect(url_for(".user_profile_security_keys_authenticate"))
 
     if request.args.get("duplicate") is not None:
         flash(_("This security key is already registered. Please use a different key or remove the existing one first."), "error")
@@ -401,22 +415,73 @@ def user_profile_add_security_keys():
             form.validate_on_submit()
         elif request.method == "POST":
             result = user_api_client.register_security_key(current_user.id)
+            # flash(_("Added a security key"), "default_with_tick")
+
             return base64.b64decode(result["data"])
 
-    return render_template("views/user-profile/add-security-keys.html", form=form)
+    if from_send_page == "user_profile_2fa":
+        # If we are coming from the 2FA page, we need to redirect back there after adding the key
+        return render_template("views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_2fa"))
+
+    return render_template(
+        "views/user-profile/add-security-keys.html", form=form, back_link=url_for(".user_profile_security_keys")
+    )
+
+
+@main.route("/user-profile/security_keys/authenticate", methods=["GET", "POST"])
+@user_is_logged_in
+def user_profile_security_keys_authenticate():
+    # Validate password for form
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+    from_page = session.get("from_send_page", "")
+    # If removing a key, we need to get the key id from the args, else it's store in session
+    key_id = session.get("security_key_id", request.args.get("keyid", None))
+    key_name = session.get("security_key_name", request.args.get("keyname", None))
+
+    if form.validate_on_submit():
+        session[HAS_AUTHENTICATED] = True
+
+        # Adding a security key from the 2FA flow
+        if from_page == "user_profile_2fa":
+            return redirect(url_for(".user_profile_2fa"))
+        # Deleting a security key from the Manage Security Keys page
+        elif key_name and key_id:
+            return redirect(url_for(".user_profile_security_keys_confirm_delete", keyid=key_id, keyname=key_name))
+        # Adding a new security key from the Manage Security Keys page
+        else:
+            return redirect(url_for(".user_profile_add_security_keys"))
+
+    return render_template(
+        "views/user-profile/authenticate.html",
+        thing=_("security key"),
+        form=form,
+        back_link=url_for(".user_profile_security_keys"),
+    )
 
 
 @main.route("/user-profile/security_keys/complete", methods=["POST"])
 @user_is_logged_in
 def user_profile_complete_security_keys():
     flash(_("Added a security key"), "default_with_tick")
+    from_send_page = session.get("from_send_page", None)
+    # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
+    if not from_send_page == "user_profile_2fa":
+        session.pop(HAS_AUTHENTICATED, None)
     data = request.get_data()
     payload = base64.b64encode(data).decode("utf-8")
     resp = user_api_client.add_security_key_user(current_user.id, payload)
-    return resp["id"]
+    return jsonify(
+        {
+            "id": resp["id"],
+            "from_send_page": from_send_page,
+        }
+    )
 
 
-@main.route("/user-profile/security_keys/authenticate", methods=["POST"])
+@main.route("/user-profile/security_keys/authenticate-fido2", methods=["POST"])
 def user_profile_authenticate_security_keys():
     if session.get("user_details"):
         user_id = session["user_details"]["id"]

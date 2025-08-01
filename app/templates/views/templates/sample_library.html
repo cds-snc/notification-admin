@@ -33,9 +33,14 @@
       testid="sample-templates-table"
     ) %}
       {% call field() %}
-        <a href="{{ url_for('main.view_sample_template', service_id=current_service.id, template_id=item.id) }}">
-          {{ item.template_name.get(lang) }}
-        </a>
+        <div class="flex items-center">
+          {% if item.pinned %}
+            <i class="fa-solid fa-thumbtack mr-4 text-yellow-300"></i>
+          {% endif %}
+          <a href="{{ url_for('main.view_sample_template', service_id=current_service.id, template_id=item.id) }}">
+            {{ item.template_name.get(lang) }}
+          </a>
+        </div>
       {% endcall %}
       {% call field() %}
         <div class="flex items-center text-gray-600" data-testid="sample_library_icon">

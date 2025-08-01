@@ -275,6 +275,9 @@ def test_deleting_security_key(
     delete_mock = mocker.patch("app.user_api_client.delete_security_key_user")
     key_id = "security_key_id"
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     # Listing keys
     with captured_templates(app_) as templates:
         client_request.get(("main.user_profile_security_keys_confirm_delete"), keyid=key_id)
@@ -297,11 +300,14 @@ def test_deleting_security_key(
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
     register_mock = mocker.patch("app.user_api_client.register_security_key", return_value={"data": "blob"})
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     # Listing keys
     with captured_templates(app_) as templates:
         page = client_request.get(("main.user_profile_add_security_keys"))
         assert 'data-button-id="register-key"' in str(page)  # Used by JS
-        template, context = templates[0]
+        template, _ = templates[0]
         assert template.name == "views/user-profile/add-security-keys.html"
 
     # Register key
@@ -338,6 +344,8 @@ def test_user_profile_add_security_keys_shows_duplicate_message(
     mock_update_user_attribute,
     mock_get_security_keys,
 ):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
     page = client_request.get("main.user_profile_add_security_keys", **{"duplicate": "1"})
     # Check that the flash message is displayed
     flash_messages = page.select(".banner-dangerous")
@@ -353,6 +361,8 @@ def test_user_profile_add_security_keys_no_duplicate_message_without_param(
     mock_update_user_attribute,
     mock_get_security_keys,
 ):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
     page = client_request.get("main.user_profile_add_security_keys")
 
     # Check that no error flash message is displayed
@@ -487,12 +497,6 @@ class TestOptionalPhoneNumber:
     ):
         client_request.post(
             "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
@@ -507,13 +511,7 @@ class TestOptionalPhoneNumber:
         mock_send_change_email_verification,
     ):
         client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
+            "main.user_profile_manage_mobile_number",
             _data={"remove": "remove"},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
@@ -554,7 +552,7 @@ class TestOptionalPhoneNumber:
             page = client_request.get("main.user_profile_mobile_number")
 
             # assert page.status_code == 200
-            assert templates[0][0].name == "views/user-profile/change.html"
+            assert templates[0][0].name == "views/user-profile/change-mobile-number.html"
             assert templates[0][1]["from_send_page"] == "send_test"
             assert "If you add a number to your profile, you can text yourself test messages." in page.text
 
@@ -926,6 +924,9 @@ def test_user_without_phone_can_add_security_key(
     mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
     mocker.patch("app.models.user.User.from_id", return_value=User(active_user_no_mobile))
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     client_request.login(active_user_no_mobile)
 
     page = client_request.get("main.user_profile_add_security_keys")
@@ -939,6 +940,9 @@ def test_user_with_phone_but_unverified_can_add_security_key(
 ):
     mocker.patch("app.user_api_client.get_user", return_value=active_user_with_unverified_mobile)
     mocker.patch("app.models.user.User.from_id", return_value=User(active_user_with_unverified_mobile))
+
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
 
     client_request.login(active_user_with_unverified_mobile)
 

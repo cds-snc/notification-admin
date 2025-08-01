@@ -3,7 +3,7 @@
 
   $(document).on("ready", function () {
     if ($("#two-factor-fido").length) {
-      fetch("/user-profile/security_keys/authenticate", {
+      fetch("/user-profile/security_keys/authenticate-fido2", {
         method: "POST",
         headers: {
           "X-CSRFToken": csrf_token,
@@ -88,14 +88,21 @@
         });
       })
       .then(function (response) {
-        window.location = "/user-profile/security_keys";
+        return response.json();
+      })
+      .then(function (body) {
+        console.log(body);
+        window.location =
+          body.from_send_page === "user_profile_2fa"
+            ? "/user-profile/2fa"
+            : "/user-profile/security_keys";
       });
   });
 
   $("body").on("click", "#test-fido2-keys", function (e) {
     e.preventDefault();
 
-    fetch("/user-profile/security_keys/authenticate", {
+    fetch("/user-profile/security_keys/authenticate-fido2", {
       method: "POST",
       headers: {
         "X-CSRFToken": csrf_token,

@@ -18,7 +18,7 @@
   <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
     {% set page_title = _('Add a security key')%}
     {% if config["FF_AUTH_V2"] %}
-      {{ page_header(page_title, back_link=url_for(".user_profile_2fa")) }}
+      {{ page_header(page_title, back_link=back_link) }}
     {% else %}
       {{ page_header(page_title) }}
     {% endif %}
@@ -28,7 +28,7 @@
       {{ textbox(form.keyname, hint=hint_txt) }}
 
       {% if config["FF_AUTH_V2"] %}
-        {{ page_footer(button_text= _('Continue'), button_id="register-key", cancel_button_link=url_for(".user_profile_2fa")) }}
+        {{ page_footer(button_text= _('Continue'), button_id="register-key", cancel_button_link=back_link) }}
       {% else %}
         {{ page_footer(button_text=_('Add key'), button_id="register-key") }}
       {% endif %}

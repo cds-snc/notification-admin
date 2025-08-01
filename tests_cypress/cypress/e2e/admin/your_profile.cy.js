@@ -62,6 +62,7 @@ const ensureNoSecurityKeys = () => {
           if (securityKeyLinks.length > 0) {
             // There's at least one security key link, use the page object method
             Page.Components.KeyRemoveButton().click();
+            Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
             Page.Components.KeyConfirmRemoveButton().click();
             cy.get("div.banner-default-with-tick", { timeout: 15000 }).should(
               "contain",
@@ -209,14 +210,19 @@ describe("Your profile", () => {
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
           Page.Components.AddSecurityKeyButton().click();
+          Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
 
-          cy.get("h1").should("contain", "Security keys");
+          cy.get("h1").should("contain", "Manage keys");
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);
-
+          // Let the page load then reload, otherwise the clearing of the HAS_AUTHENTICATED
+          // session data doesn't happen fast enough before navigating to the 2FA page
+          // and the password prompt will be skipped
+          cy.get("h1").should("contain", "Your profile");
+          cy.reload();
           // Set 2FA to use security key
           Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
           Page.SelectKeyFor2FA();
@@ -229,7 +235,7 @@ describe("Your profile", () => {
           Page.Components.Change2FASection().should("contain", "Security key");
 
           // Now remove the security key and go back
-          Page.RemoveSecurityKey();
+          Page.RemoveSecurityKey(CONFIG.CYPRESS_USER_PASSWORD);
           Page.GoBack();
 
           // Check that 2FA has fallen back to email
@@ -375,14 +381,19 @@ describe("Your profile", () => {
           // main test starts here
           Page.Components.ChangeSecurityKeysLink().click();
           Page.Components.AddSecurityKeyButton().click();
+          Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
           Page.Components.SecurityKeyName().type("2FA Test Key1");
           Page.Components.SaveButton().click();
 
-          cy.get("h1").should("contain", "Security keys");
+          cy.get("h1").should("contain", "Manage keys");
 
           // Go back to profile to set 2FA to security key
           cy.visit(Page.URL);
-
+          // Let the page load then reload, otherwise the clearing of the HAS_AUTHENTICATED
+          // session data doesn't happen fast enough before navigating to the 2FA page
+          // and the password prompt will be skipped
+          cy.get("h1").should("contain", "Your profile");
+          cy.reload();
           // Set 2FA to use security key
           Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
           Page.SelectKeyFor2FA();
@@ -521,6 +532,7 @@ describe("Your profile", () => {
     });
 
     it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      ensureNoSecurityKeys();
       Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
       Page.AddNewKeyFrom2FASettings();
       Page.CancelAddingSecurityKey();
@@ -609,6 +621,96 @@ describe("Your profile", () => {
       Page.Components.SendTestMessageButton().click();
       Page.CancelAddingPhoneNumber();
       cy.get("h2").should("contain", "Ready to send");
+    });
+
+    // Change 2FA setting to SMS when number is unverified, press back
+    it("Set 2FA to SMS back to 2FA settings when pressing back (unverified number)", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when number is unverified, press cancel
+    it("Set 2FA to SMS back to 2FA settings when pressing cancel (unverified number)", () => {
+      ensureNoPhoneNumber();
+
+      // add unverified phone number
+      Page.ChangePhoneNumberOptions();
+      Page.EnterPhoneNumber();
+      Page.SavePhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.CancelVerification();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when no phone number, press back
+    it("Set 2FA to SMS back to 2FA settings when pressing back (no number)", () => {
+      ensureNoPhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    // Change 2FA setting to SMS when no phone number, press cancel
+    it("Set 2FA to SMS back to 2FA settings when pressing cancel (no number)", () => {
+      ensureNoPhoneNumber();
+
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectSMSFor2FA();
+
+      Page.CancelAddingPhoneNumber();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("Security keys back to user profile when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Your profile");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing back", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.GoBack();
+      cy.get("h1").should("contain", "Manage keys");
+    });
+
+    it("Security keys -> add a security key back to Security keys when pressing cancel", () => {
+      Page.ChangeSecurityKeys();
+      Page.AddNewSecurityKey();
+      Page.CompletePasswordChallenge(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Manage keys");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing back", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.GoBack();
+      cy.get("h1").should("contain", "Two-step verification method");
+    });
+
+    it("2FA -> add a security key back to 2FA settings when pressing cancel", () => {
+      Page.Goto2FASettings(CONFIG.CYPRESS_USER_PASSWORD);
+      Page.SelectNewKeyFor2FA();
+      Page.CancelAddingSecurityKey();
+      cy.get("h1").should("contain", "Two-step verification method");
     });
   });
 });

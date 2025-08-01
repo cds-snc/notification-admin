@@ -1,6 +1,6 @@
 // Parts of the page a user can interact with
 let Components = {
-    BackLink: () => cy.getByTestId('go-back'),  
+    BackLink: () => cy.getByTestId('go-back'),
     // user profile components
     ChangeNameLink: () => cy.get('[data-testid="user_profile_name"] a'),
     ChangeEmailLink: () => cy.get('[data-testid="user_profile_email"] a'),
@@ -69,6 +69,11 @@ let Actions = {
     PasswordChallengeCancel: () => {
         Components.PasswordChallengeCancelButton().click();
     },
+    CompletePasswordChallenge: (password) => {
+        Components.PasswordChallenge().should('exist');
+        Components.PasswordField().type(password);
+        Actions.ConfirmPasswordChallenge();
+    },
     // phone number update
     EnterPhoneNumber: (phoneNumber) => {
         if (!phoneNumber) {
@@ -103,6 +108,10 @@ let Actions = {
     },
     SelectKeyFor2FA: () => {
         Components.TFAKey().click();
+        Components.ContinueButton().click();
+    },
+    SelectNewKeyFor2FA: () => {
+        Components.AddKey().click();
         Components.ContinueButton().click();
     },
     Continue: () => {
@@ -145,7 +154,7 @@ let Actions = {
                     type: 'public-key'
                 })
             };
-            
+
             // Override the credentials property
             Object.defineProperty(win.navigator, 'credentials', {
                 value: mockCredentials,
@@ -165,32 +174,41 @@ let Actions = {
         Components.ChangeSecurityKeysLink().click();
         Components.AddSecurityKeyButton().click();
         Components.SecurityKeyName().type(keyName);
-        
+
         // Log before clicking continue to see what happens
         cy.log('About to click Continue/Save - WebAuthn ceremony should start');
-        
+
         Components.SaveButton().click();
-        
+
         // Wait for either success or any indication the WebAuthn is working
         cy.log('Clicked Continue - waiting for WebAuthn ceremony to complete');
-        
+
         // You might need to wait for a loading indicator or check what the page shows
         // Try checking what's actually on the page when it times out
         cy.get('body').then($body => {
           cy.log('Page content after clicking Continue:', $body.text());
         });
-        
+
         // The WebAuthn ceremony should happen automatically here
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Security key added');
     },
-    RemoveSecurityKey: () => {
+    RemoveSecurityKey: (password) => {
         Components.ChangeSecurityKeysLink().click();
         Components.KeyRemoveButton().click();
+        Actions.CompletePasswordChallenge(password);
         Components.KeyConfirmRemoveButton().click();
         cy.get('div.banner-default-with-tick', { timeout: 15000 }).should('contain', 'Key removed');
     },
     CancelAddingSecurityKey: () => {
         Components.KeyCancelButton().click();
+    },
+    ChangeSecurityKeys: () => {
+        Components.ChangeSecurityKeysLink().click();
+        cy.get('h1').should('contain', 'Manage keys');
+    },
+    AddNewSecurityKey: () => {
+        Components.AddSecurityKeyButton().click();
+        cy.get('h1').should('contain', 'Enter password');
     },
     // Composite actions
     AddAndVerifyPhoneNumber: (phoneNumber, password) => {
