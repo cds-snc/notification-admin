@@ -1,7 +1,20 @@
-.ql-toolbar .ql-text-direction {
-    @apply inline-block w-auto min-w-20;
-}
+
 .ql-picker .ql-picker-label[data-label]:not([data-label='']),
 .ql-picker .ql-picker-item[data-label]:not([data-label='']) {
   content: attr(data-label);
 }
+
+.ql-toolbar.ql-snow {
+  @apply p-0 flex flex-wrap gap-0;
+}
+
+.ql-toolbar.ql-snow button {
+  @apply min-w-target min-h-target p-0 flex items-center justify-center;
+}
+.ql-toolbar.ql-snow button svg {
+  @apply w-8 h-8;
+}
+.ql-toolbar.ql-snow .ql-picker-label {
+  @apply min-h-target p-0 flex items-center justify-between;
+}
+
