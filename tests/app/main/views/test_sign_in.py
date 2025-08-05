@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
 from app.models.user import User
-from tests.conftest import normalize_spaces
+from tests.conftest import normalize_spaces, set_config
 
 
 def test_render_sign_in_template_for_new_user(client_request):
@@ -94,6 +94,56 @@ def test_logged_in_user_redirects_to_account(client_request):
     )
 
 
+# TODO: Remove this test when FF_SAMPLE_TEMPLATES is removed
+@pytest.mark.parametrize(
+    "email_address, password",
+    [
+        ("valid@example.canada.ca", "val1dPassw0rd!"),
+        (" valid@example.canada.ca  ", "  val1dPassw0rd!  "),
+    ],
+)
+@pytest.mark.parametrize(
+    "last_email_login",
+    [
+        datetime.utcnow() - timedelta(days=5),
+        datetime.utcnow() - timedelta(days=29),
+        datetime.utcnow() - timedelta(minutes=5),
+    ],
+)
+def test_process_sms_auth_sign_in_return_2fa_template_REMOVE_FF(
+    client,
+    mocker,
+    api_user_active,
+    mock_send_verify_code,
+    mock_get_user,
+    mock_get_user_by_email,
+    mock_verify_password,
+    mock_get_security_keys,
+    email_address,
+    password,
+    last_email_login,
+    app_,
+):
+    with set_config(app_, "FF_AUTH_V2", False):
+        mocker.patch(
+            "app.user_api_client.get_last_email_login_datetime",
+            return_value=last_email_login,
+        )
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": email_address, "password": password},
+        )
+        assert response.status_code == 302
+        assert response.location == url_for(".two_factor_sms_sent")
+        mock_get_security_keys.assert_called_with(api_user_active["id"])
+        mock_verify_password.assert_called_with(
+            api_user_active["id"],
+            password,
+            {"location": None, "user-agent": mock.ANY},
+        )
+        mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+
+
 @pytest.mark.parametrize(
     "email_address, password",
     [
@@ -121,24 +171,26 @@ def test_process_sms_auth_sign_in_return_2fa_template(
     email_address,
     password,
     last_email_login,
+    app_,
 ):
-    mocker.patch(
-        "app.user_api_client.get_last_email_login_datetime",
-        return_value=last_email_login,
-    )
-    response = client.post(
-        url_for("main.sign_in"),
-        data={"email_address": email_address, "password": password},
-    )
-    assert response.status_code == 302
-    assert response.location == url_for(".two_factor_sms_sent")
-    mock_get_security_keys.assert_called_with(api_user_active["id"])
-    mock_verify_password.assert_called_with(
-        api_user_active["id"],
-        password,
-        {"location": None, "user-agent": mock.ANY},
-    )
-    mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+    with set_config(app_, "FF_AUTH_V2", True):
+        mocker.patch(
+            "app.user_api_client.get_last_email_login_datetime",
+            return_value=last_email_login,
+        )
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": email_address, "password": password},
+        )
+        assert response.status_code == 302
+        assert response.location == url_for(".two_factor_sms_sent")
+        mock_get_security_keys.assert_not_called()
+        mock_verify_password.assert_called_with(
+            api_user_active["id"],
+            password,
+            {"location": None, "user-agent": mock.ANY},
+        )
+        mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
 
 
 def test_sign_in_redirects_to_forced_password_reset(client, mocker, fake_uuid, api_user_active):
@@ -228,6 +280,60 @@ def test_forced_password_reset_password_not_expired(client, mocker, fake_uuid, a
     assert not mocked_send_email.called
 
 
+# TODO: Remove this test when FF_SAMPLE_TEMPLATES is removed
+@pytest.mark.parametrize(
+    "last_email_login",
+    [
+        None,
+        datetime.utcnow() - timedelta(days=35),
+        datetime.utcnow() - timedelta(days=31),
+    ],
+)
+def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login_REMOVE_FF(
+    client,
+    mocker,
+    api_user_active,
+    mock_send_verify_code,
+    mock_get_user,
+    mock_get_user_by_email,
+    mock_verify_password,
+    mock_get_security_keys,
+    mock_register_email_login,
+    last_email_login,
+    app_,
+):
+    with set_config(app_, "FF_AUTH_V2", False):
+        mock_last_email_login = mocker.patch(
+            "app.user_api_client.get_last_email_login_datetime",
+            side_effect=[
+                last_email_login,
+                last_email_login,
+                datetime.utcnow() - timedelta(seconds=10),
+                datetime.utcnow() - timedelta(seconds=10),
+            ],
+        )
+
+        assert api_user_active["auth_type"] == "sms_auth"
+
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+        )
+        assert response.status_code == 302
+        assert response.location == url_for(".two_factor_email_sent", requires_email_login=True)
+
+        mock_get_security_keys.assert_called_with(api_user_active["id"])
+        mock_send_verify_code.assert_called_once_with(api_user_active["id"], "email", None, None)
+        mock_verify_password.assert_called_with(
+            api_user_active["id"],
+            "val1dPassw0rd!",
+            {"location": None, "user-agent": mock.ANY},
+        )
+        mock_register_email_login.assert_called_with(api_user_active["id"])
+        mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+        assert mock_last_email_login.call_count == 4
+
+
 @pytest.mark.parametrize(
     "last_email_login",
     [
@@ -247,36 +353,38 @@ def test_process_sms_auth_sign_in_return_email_2fa_template_if_no_recent_login(
     mock_get_security_keys,
     mock_register_email_login,
     last_email_login,
+    app_,
 ):
-    mock_last_email_login = mocker.patch(
-        "app.user_api_client.get_last_email_login_datetime",
-        side_effect=[
-            last_email_login,
-            last_email_login,
-            datetime.utcnow() - timedelta(seconds=10),
-            datetime.utcnow() - timedelta(seconds=10),
-        ],
-    )
+    with set_config(app_, "FF_AUTH_V2", True):
+        mock_last_email_login = mocker.patch(
+            "app.user_api_client.get_last_email_login_datetime",
+            side_effect=[
+                last_email_login,
+                last_email_login,
+                datetime.utcnow() - timedelta(seconds=10),
+                datetime.utcnow() - timedelta(seconds=10),
+            ],
+        )
 
-    assert api_user_active["auth_type"] == "sms_auth"
+        assert api_user_active["auth_type"] == "sms_auth"
 
-    response = client.post(
-        url_for("main.sign_in"),
-        data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
-    )
-    assert response.status_code == 302
-    assert response.location == url_for(".two_factor_email_sent", requires_email_login=True)
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+        )
+        assert response.status_code == 302
+        assert response.location == url_for(".two_factor_email_sent", requires_email_login=True)
 
-    mock_get_security_keys.assert_called_with(api_user_active["id"])
-    mock_send_verify_code.assert_called_once_with(api_user_active["id"], "email", None, None)
-    mock_verify_password.assert_called_with(
-        api_user_active["id"],
-        "val1dPassw0rd!",
-        {"location": None, "user-agent": mock.ANY},
-    )
-    mock_register_email_login.assert_called_with(api_user_active["id"])
-    mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
-    assert mock_last_email_login.call_count == 4
+        mock_get_security_keys.assert_not_called()
+        mock_send_verify_code.assert_called_once_with(api_user_active["id"], "email", None, None)
+        mock_verify_password.assert_called_with(
+            api_user_active["id"],
+            "val1dPassw0rd!",
+            {"location": None, "user-agent": mock.ANY},
+        )
+        mock_register_email_login.assert_called_with(api_user_active["id"])
+        mock_get_user_by_email.assert_called_with("valid@example.canada.ca")
+        assert mock_last_email_login.call_count == 4
 
 
 def test_process_email_auth_sign_in_return_2fa_template(
@@ -455,3 +563,54 @@ def test_sign_in_geolookup_disabled_in_dev(
     assert response.status_code == 302
 
     assert not geolookup_mock.called
+
+
+def test_sign_in_renders_two_factor_fido_for_security_key_auth(
+    client,
+    mocker,
+    api_user_active_security_key_auth,
+    mock_get_user_security_key_auth,
+    mock_verify_password,
+    mock_get_security_keys,
+    app_,
+):
+    # Patch to return the real user dict and User object
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_security_key_auth)
+    mocker.patch(
+        "app.models.user.User.from_email_address_and_password_or_none", return_value=User(api_user_active_security_key_auth)
+    )
+
+    with set_config(app_, "FF_AUTH_V2", True):
+        response = client.post(
+            url_for("main.sign_in"),
+            data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+        )
+    assert response.status_code == 200
+    assert b"two-factor-fido" in response.data
+
+
+def test_geolocate_ip_invalid_ip_logs_and_returns_ip(
+    client,
+    api_user_active_email_auth,
+    mock_send_verify_code,
+    mock_verify_password,
+    mock_get_security_keys,
+    mocker,
+    monkeypatch,
+    app_,
+):
+    # Patch _geolocate_lookup to raise ValueError
+
+    monkeypatch.setitem(current_app.config, "IP_GEOLOCATE_SERVICE", "https://example.com/")
+
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_active_email_auth)
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_active_email_auth)
+    mocker.patch("app.utils.get_remote_addr", return_value="not_an_ip")
+    mock_logger = mocker.patch.object(app_.logger, "warning")
+
+    response = client.post(
+        url_for("main.sign_in"),
+        data={"email_address": "valid@example.canada.ca", "password": "val1dPassw0rd!"},
+    )
+    assert response.status_code == 302
+    mock_logger.assert_called_with("_geolocate_ip: Invalid IP address: not_an_ip")

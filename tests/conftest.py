@@ -1494,6 +1494,42 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
 
 
 @pytest.fixture(scope="function")
+def api_user_active_security_key_auth(fake_uuid):
+    return {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "6502532222",
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {},
+        "platform_admin": False,
+        "auth_type": "security_key_auth",
+        "security_key_auth": True,
+        "email_auth": False,
+        "sms_auth": False,
+        "password_changed_at": str(datetime.utcnow()),
+        "services": [],
+        "organisations": [],
+        "current_session_id": None,
+        "logged_in_at": None,
+        "security_keys": [
+            {
+                "id": fake_uuid,
+                "user_id": fake_uuid,
+                "name": "Test Key",
+                "created_at": str(datetime.utcnow()),
+                "updated_at": str(datetime.utcnow()),
+            }
+        ],
+        "fido2_key_id": None,
+        "password_expired": False,
+    }
+
+
+@pytest.fixture(scope="function")
 def api_nongov_user_active(fake_uuid):
     user_data = {
         "id": fake_uuid,
@@ -1648,6 +1684,40 @@ def active_caseworking_user(fake_uuid):
         },
         "platform_admin": False,
         "auth_type": "sms_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
+def active_user_with_unverified_mobile(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": 6502532222,
+        "verified_phonenumber": False,
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "email_auth",
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
@@ -1923,6 +1993,18 @@ def mock_get_user(mocker, api_user_active):
 def mock_get_user_email_auth(mocker, api_user_active_email_auth, user=None):
     if user is None:
         user = api_user_active_email_auth
+
+    def _get_user(id_):
+        user["id"] = id_
+        return user
+
+    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
+
+
+@pytest.fixture(scope="function")
+def mock_get_user_security_key_auth(mocker, api_user_active_security_key_auth, user=None):
+    if user is None:
+        user = api_user_active_security_key_auth
 
     def _get_user(id_):
         user["id"] = id_
@@ -2263,7 +2345,7 @@ def mock_validate_2fa_method(mocker):
 @pytest.fixture(scope="function")
 def mock_check_verify_code_code_not_found(mocker):
     def _verify(user_id, code, code_type):
-        return False, "Code not found"
+        return False, "Try again. Something’s wrong with this code"
 
     return mocker.patch("app.user_api_client.check_verify_code", side_effect=_verify)
 

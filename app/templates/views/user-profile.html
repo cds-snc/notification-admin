@@ -15,26 +15,26 @@
 
   {% if config["FF_AUTH_V2"] %}
     <div class="pb-8">
-      {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name') }}
-      {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None) }}
-      {{ profile_item(_('Contact number'), optional_text_field(current_user.mobile_number), '.user_profile_mobile_number', None  if current_user.mobile_number else _('Add number')) }}
+      {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name', testid="user_profile_name") }}
+      {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None, testid="user_profile_email") }}
+      {{ profile_item(_('Contact number'), optional_text_field(current_user.mobile_number), '.user_profile_manage_mobile_number', None  if current_user.mobile_number else _('Add number'), testid="user_profile_mobile_number") }}
     </div>
 
     <h2 class="heading-large">{{ _("Security") }}</h2>
     <div>
-      {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password') }}
+      {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password', testid="user_profile_password") }}
       {% if current_user.auth_type == 'email_auth' %}
-        {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa') }}
+        {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa', testid="user_profile_2fa") }}
       {% elif current_user.auth_type == 'sms_auth' %}
-        {{ profile_item(_('Two-step verification method'), text_field(_("Code by text message") + " (" + current_user.mobile_number + ")"), '.user_profile_2fa') }}
-      {% elif current_user.auth_type == 'fido2_auth' %}
+        {{ profile_item(_('Two-step verification method'), text_field(_("Code by text message") + " (" + current_user.mobile_number + ")"), '.user_profile_2fa', testid="user_profile_2fa") }}
+      {% elif current_user.auth_type == 'security_key_auth' %}
         <!-- This auth_type does not exist yet -->
-        {{ profile_item(_('Two-step verification method'), text_field(_("Security key") + " (" + "placeholder" + ")"), '.user_profile_2fa') }}
+        {{ profile_item(_('Two-step verification method'), text_field(_("Security key")), '.user_profile_2fa', testid="user_profile_2fa") }}
       {% endif %}
 
-      {{ profile_item(_('Security keys'), text_field(_("{} security key").format(num_keys) if num_keys == 1 else _("{} security keys").format(num_keys)), '.user_profile_security_keys') }}
+      {{ profile_item(_('Security keys'), text_field(_("{} security key").format(num_keys) if num_keys == 1 else _("{} security keys").format(num_keys)), '.user_profile_security_keys', testid="user_profile_security_keys") }}
       {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
-        {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view') }}
+        {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view', testid="user_profile_disable_platform_admin_view") }}
       {% endif %}
     </div>
   {% else %}

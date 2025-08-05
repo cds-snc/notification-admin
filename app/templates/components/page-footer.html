@@ -72,6 +72,28 @@
   </div>
 {% endmacro %}
 
+{% macro sticky_page_footer_one_submit_button_and_link_button(button1_text="b1", button1_value="b1", button1_data_testid="", link=None, link_text=None, link_attributes="") %}
+  <div class="js-stick-at-bottom-when-scrolling">
+    <div class="page-footer">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button
+        data-testid="{{ button1_data_testid }}"
+        data-button-id="btn1"
+        type="submit"
+        class="button text-base outline-none focus:shadow-outline"
+        name="button_pressed"
+        value="{{ button1_value }}"
+      >
+        {{- button1_text -}}
+      </button>
+
+      {% if link %}
+          <a {{link_attributes}} href="{{ link }}" class="button button-secondary text-base outline-none focus:shadow-outline">{{ link_text }}</a>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
 {% macro sticky_page_footer_two_submit_buttons_and_delete_link(
   button1_text="b1",
   button1_value="b1",

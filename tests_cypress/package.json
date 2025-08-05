@@ -5,8 +5,6 @@
     "ci": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci.cy.js'"
   },
   "dependencies": {
-    "cypress-axe": "^1.4.0",
-    "cypress-html-validate": "^6.1.0",
     "cypress-recurse": "^1.23.0",
     "html-validate": "^8.7.1",
     "imap-simple": "^5.1.0",
@@ -18,7 +16,9 @@
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
-    "cypress": "^13.17.0",
-    "cypress-real-events": "^1.13.0"
+    "cypress": "^14.5.3",
+    "cypress-axe": "^1.6.0",
+    "cypress-html-validate": "^7.1.0",
+    "cypress-real-events": "^1.14.0"
   }
 }

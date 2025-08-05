@@ -96,7 +96,7 @@ def test_should_return_200_when_two_factor_code_is_wrong(
     )
 
     assert len(page.select(".error-message")) == 1
-    assert normalize_spaces(page.select_one(".error-message").text) == ("Code not found")
+    assert normalize_spaces(page.select_one(".error-message").text) == ("Try again. Something’s wrong with this code")
 
 
 # TODO: REMOVE TEST WHEN FF_AUTH_V2 IS REMOVED

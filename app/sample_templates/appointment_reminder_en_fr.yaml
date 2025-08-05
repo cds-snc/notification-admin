@@ -1,13 +1,10 @@
 id: "aee077c5-6f3d-4cb7-8d85-7b4dd0a6ee86"
 template_name:
-  en: "EN/FR Appointment reminder"
-  fr: "EN/FR FR Appointment reminder"
+  en: "EN | fr Appointment reminder"
+  fr: "EN | fr FR Appointment reminder"
 notification_type: "email"
 template_category: "reminder"
-personalisation:
-  date_en: "May 26, 2025"
-  date_fr: "26 mai 2025"
-  name: "Jane Smith"
+pinned: false
 subject: "Appointment: ((date_en)) | FR Appointment: ((date_fr))"
 content: |
   [[en]]
@@ -19,6 +16,19 @@ content: |
 
   [[fr]]
   Bonjour ((name)),
+
+  FR Sample template content
+  [[/fr]]
+example_content: |
+  [[en]]
+  Hello Jane Smith,
+  Sample template content
+  [[/en]]
+  
+  ---
+
+  [[fr]]
+  Bonjour Jane Smith,
 
   FR Sample template content
   [[/fr]]

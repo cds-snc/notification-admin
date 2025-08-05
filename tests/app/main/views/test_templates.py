@@ -2774,6 +2774,7 @@ class TestViewSampleLibrary:
                 "template_category": {"en": "Authentication", "fr": "Authentification"},
                 "content": "Welcome to our service!",
                 "subject": "Welcome",
+                "pinned": False,
             },
             {
                 "id": "22222222-2222-2222-2222-222222222222",
@@ -2781,6 +2782,7 @@ class TestViewSampleLibrary:
                 "template_name": {"en": "SMS Reminder", "fr": "Rappel SMS"},
                 "template_category": {"en": "Reminder", "fr": "Rappel"},
                 "content": "Your appointment is tomorrow",
+                "pinned": False,
             },
         ]
 
@@ -2823,7 +2825,7 @@ class TestViewSampleLibrary:
             assert "Welcome Email" in template_links[0].text
 
             # Check notification type icons/text are displayed for the email template
-            notification_types = table.select(".text-gray-700")
+            notification_types = page.select("[data-testid='sample_library_icon']")
             assert len(notification_types) == 1
 
     def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
@@ -2979,3 +2981,60 @@ class TestViewSampleLibrary:
             email_pill = pill_nav.select_one('a[href*="type=email"]')
             assert email_pill is not None
             assert "pill-unselected-item" in email_pill.get("class", [])
+
+    def test_pinned_templates_appear_first_in_list(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display pinned templates first in the list, followed by unpinned templates sorted by name"""
+        # Modify the fixture data to test pinning functionality
+        mock_templates = mock_sample_templates.copy()
+        mock_templates.extend(
+            [
+                {
+                    "id": "33333333-3333-3333-3333-333333333333",
+                    "notification_type": "email",
+                    "template_name": {"en": "A First Template", "fr": "A Premier modèle"},
+                    "template_category": {"en": "Other", "fr": "Autre"},
+                    "content": "This should be second",
+                    "subject": "First",
+                    "pinned": False,
+                },
+                {
+                    "id": "44444444-4444-4444-4444-444444444444",
+                    "notification_type": "email",
+                    "template_name": {"en": "Z Last Pinned Template", "fr": "Z Dernier modèle épinglé"},
+                    "template_category": {"en": "Important", "fr": "Important"},
+                    "content": "This should be first because it's pinned",
+                    "subject": "Pinned",
+                    "pinned": True,
+                },
+            ]
+        )
+
+        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Get all template links in order (only email templates shown by default)
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 3  # 3 email templates total
+
+            # Check order: pinned first, then alphabetical by name
+            template_names = [link.text.strip() for link in template_links]
+            expected_order = ["Z Last Pinned Template", "A First Template", "Welcome Email"]
+            assert template_names == expected_order
+
+            # Check that the pinned template has the pin icon
+            first_row = table.select("tbody tr")[0]
+            pin_icon = first_row.select_one(".fa-thumbtack")
+            assert pin_icon is not None, "Pinned template should have a pin icon"
+
+            # Check that unpinned templates don't have pin icons
+            for i in range(1, 3):
+                row = table.select("tbody tr")[i]
+                pin_icon = row.select_one(".fa-thumbtack")
+                assert pin_icon is None, f"Unpinned template at position {i} should not have a pin icon"
