@@ -10,6 +10,7 @@
         {{ linkText }}
       </a>
     {% endif %}
+    {{ caller() if caller }}
     </div>
   </div>
 {% endmacro %}
