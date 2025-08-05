@@ -69,6 +69,18 @@ class Navigation:
                 "context": current_user.has_permissions("manage_api_keys"),
                 "url": url_for("main.api_integration", service_id=current_service.id),
             },
+            "sent-messages": {
+                "label": _l("Sent messages"),
+                "view": "view_notifications",
+                "context": not current_user.has_permissions("view_activity"),
+                "url": url_for("main.view_notifications", service_id=current_service.id),
+            },
+            "bulk-sends": {
+                "label": _l("Bulk sends"),
+                "view": "view_jobs",
+                "context": not current_user.has_permissions("view_activity") and current_service.has_jobs,
+                "url": url_for("main.view_jobs", service_id=current_service.id),
+            },
             "team-members": {
                 "label": _l("Team members"),
                 "view": "manage_users",
