@@ -119,7 +119,7 @@ class Navigation:
             "home": {"label": _l("Home"), "url": gca_url_for("home")},
             "why-notify": {"label": _l("By and for the GC"), "url": gca_url_for("whynotify")},
             "features": {"label": _l("Features"), "url": gca_url_for("features")},
-            "documentation": {"label": _l("API documentation"), "url": documentation_url()},
+            "documentation": {"label": _l("API documentation"), "url": documentation_url(), "external": True},
             "guidance": {"label": _l("Guidance"), "url": gca_url_for("guidance")},
             "contact": {"label": _l("Contact us"), "view": "contact"},
         }
