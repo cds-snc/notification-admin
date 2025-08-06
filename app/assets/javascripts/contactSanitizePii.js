@@ -8,9 +8,11 @@
     : null;
 
   if (contactForm && contactMessage) {
-    // Listen for input changes and display a warning listing PII items found. 
+    // Listen for input changes and display a warning listing PII items found.
     contactMessage.addEventListener("input", function () {
-      const sanitizedMessage = sanitizePii(contactMessage.value,{ detectOnly: true });
+      const sanitizedMessage = sanitizePii(contactMessage.value, {
+        detectOnly: true,
+      });
       const piiItems = JSON.parse(sanitizedMessage);
       if (piiItems.length) {
         // Add a list item for each PII item detected in #sanitize-pii empty UL
