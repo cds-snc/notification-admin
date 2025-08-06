@@ -365,68 +365,6 @@ def test_new_user_accept_invite_with_malformed_token(
     )
 
 
-def test_new_user_accept_invite_completes_new_registration_redirects_to_verify(
-    client,
-    service_one,
-    sample_invite,
-    api_user_active,
-    mock_check_invite_token,
-    mock_dont_get_user_by_email,
-    mock_email_is_not_already_in_use,
-    mock_register_user,
-    mock_send_verify_code,
-    mock_accept_invite,
-    mock_get_users_by_service,
-    mock_add_user_to_service,
-    mock_get_service,
-    mocker,
-    app_,
-):
-    expected_service = service_one["id"]
-    expected_email = sample_invite["email_address"]
-    expected_from_user = service_one["users"][0]
-    expected_redirect_location = "/register-from-invite"
-
-    response = client.get(url_for("main.accept_invite", token="thisisnotarealtoken"))
-    with client.session_transaction() as session:
-        assert response.status_code == 302
-        assert response.location == expected_redirect_location
-        invited_user = session.get("invited_user")
-        assert invited_user
-        assert expected_service == invited_user["service"]
-        assert expected_email == invited_user["email_address"]
-        assert expected_from_user == invited_user["from_user"]
-
-    data = {
-        "service": invited_user["service"],
-        "email_address": invited_user["email_address"],
-        "from_user": invited_user["from_user"],
-        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "mobile_number": "+447890123456",
-        "name": "Invited User",
-        "auth_type": "email_auth",
-    }
-
-    data["tou_agreed"] = "true"
-
-    expected_redirect_location = "/verify"
-    response = client.post(url_for("main.register_from_invite"), data=data)
-    assert response.status_code == 302
-    assert response.location == expected_redirect_location
-
-    mock_send_verify_code.assert_called_once_with(ANY, "sms", data["mobile_number"])
-
-    mock_register_user.assert_called_with(
-        data["name"],
-        data["email_address"],
-        data["mobile_number"],
-        data["password"],
-        "sms_auth",
-    )
-
-    assert mock_accept_invite.call_count == 1
-
-
 def test_signed_in_existing_user_cannot_use_anothers_invite(
     client_request,
     mocker,
@@ -488,8 +426,6 @@ def test_new_invited_user_verifies_and_added_to_service(
     mock_dont_get_user_by_email,
     mock_email_is_not_already_in_use,
     mock_register_user,
-    mock_send_verify_code,
-    mock_check_verify_code,
     mock_get_user,
     mock_update_user_attribute,
     mock_add_user_to_service,
@@ -518,18 +454,12 @@ def test_new_invited_user_verifies_and_added_to_service(
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
         "mobile_number": "+447890123456",
         "name": "Invited User",
-        "auth_type": "sms_auth",
+        "auth_type": "email_auth",
     }
     data["tou_agreed"] = "true"
 
-    response = client.post(url_for("main.register_from_invite"), data=data)
-    assert response.status_code == 302
-    assert response.location == url_for("main.verify")
-
-    # that sends user on to verify
-    response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"}, follow_redirects=True)
+    response = client.post(url_for("main.register_from_invite"), follow_redirects=True, data=data)
     assert response.status_code == 200
-
     # when they post codes back to admin user should be added to
     # service and sent on to dash board
     expected_permissions = {
@@ -543,7 +473,7 @@ def test_new_invited_user_verifies_and_added_to_service(
         new_user_id = session["user_id"]
         mock_add_user_to_service.assert_called_with(data["service"], new_user_id, expected_permissions, [])
         mock_accept_invite.assert_called_with(data["service"], sample_invite["id"])
-        mock_check_verify_code.assert_called_once_with(new_user_id, "12345", "sms")
+
         assert service_one["id"] == session["service_id"]
 
     raw_html = response.data.decode("utf-8")

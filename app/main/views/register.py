@@ -21,7 +21,7 @@ def register():
     form = RegisterUserFormOptional()
 
     if form.validate_on_submit():
-        _do_registration(form, send_sms=False)
+        _do_registration(form)
         return redirect(url_for("main.registration_continue"))
 
     return render_template("views/register.html", form=form)
@@ -36,25 +36,16 @@ def register_from_invite():
     form = RegisterUserFromInviteFormOptional(invited_user)
 
     if form.validate_on_submit():
-        # if no number provided, set auth_type to email
-        if not form.mobile_number.data:
-            form.auth_type.data = "email_auth"
-        else:
-            form.auth_type.data = "sms_auth"
+        form.auth_type.data = "email_auth"
 
         if form.service.data != invited_user.service or form.email_address.data != invited_user.email_address:
             abort(400)
 
-        _do_registration(form, send_email=False, send_sms=True if form.mobile_number.data else False)
+        _do_registration(form, send_email=False)
 
         invited_user.accept_invite()
 
-        if form.mobile_number.data:
-            return redirect(url_for("main.verify"))
-        else:
-            # we've already proven this user has email because they clicked the invite link,
-            # so just activate them straight away
-            return activate_user(session["user_details"]["id"])
+        return activate_user(session["user_details"]["id"])
 
     return render_template("views/register-from-invite.html", invited_user=invited_user, form=form)
 
@@ -68,7 +59,7 @@ def register_from_org_invite():
     form = RegisterUserFromOrgInviteForm(
         invited_org_user,
     )
-    form.auth_type.data = "sms_auth"
+    form.auth_type.data = "email_auth"
 
     if form.validate_on_submit():
         if form.organisation.data != invited_org_user.organisation or form.email_address.data != invited_org_user.email_address:
@@ -76,7 +67,6 @@ def register_from_org_invite():
         _do_registration(
             form,
             send_email=False,
-            send_sms=True,
             organisation_id=invited_org_user.organisation,
         )
         invited_org_user.accept_invite()
@@ -89,7 +79,7 @@ def register_from_org_invite():
     )
 
 
-def _do_registration(form, send_sms=True, send_email=True, organisation_id=None):
+def _do_registration(form, send_email=True, organisation_id=None):
     user = User.from_email_address_or_none(form.email_address.data)
     if user:
         if send_email:
@@ -108,8 +98,6 @@ def _do_registration(form, send_sms=True, send_email=True, organisation_id=None)
         if send_email:
             user.send_verify_email()
 
-        if send_sms:
-            user.send_verify_code()
         session["expiry_date"] = str(datetime.utcnow() + timedelta(hours=1))
         session["user_details"] = {"email": user.email_address, "id": user.id}
     if organisation_id:
