@@ -61,6 +61,7 @@ from app.notify_client.notification_counts_client import notification_counts_cli
 from app.sample_template_utils import get_sample_templates
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
+    create_temporary_sample_template,
     email_or_sms_not_enabled,
     get_template,
     should_skip_template_page,
@@ -1504,10 +1505,35 @@ def view_sample_library(service_id):
     )
 
 
-@main.route("/services/<service_id>/templates/sample-templates/<template_id>", methods=["GET"])
+@main.route("/services/<service_id>/templates/sample-library/<template_id>", methods=["GET"])
 @user_has_permissions()
 def view_sample_template(service_id, template_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
     # TODO: implement this page
-    return redirect(url_for(".view_sample_library", service_id=service_id))
+    # Create a template obj
+    template = create_temporary_sample_template(template_id)
+
+    page_title = (
+        "Sample {}".format(template["name"])
+        if get_current_locale(current_app) == "en"
+        else "Modèle {}".format(template["name_fr"])
+    )
+
+    return render_template(
+        "views/templates/view_sample_template.html",
+        page_title=page_title,
+        template=get_email_preview_template(template, template_id, service_id),
+        template_postage=template["postage"],
+        back_link=url_for(".view_sample_library", service_id=service_id),
+    )
+
+
+@main.route("/services/<service_id>/templates/add-<template_type>", methods=["GET", "POST"])
+@main.route(
+    "/services/<service_id>/templates/folders/<template_folder_id>/add-<template_type>",
+    methods=["GET", "POST"],
+)
+@user_has_permissions("manage_templates")
+def add_edit_sample_template(service_id, template_type, template_data):  # noqa: C901
+    pass
