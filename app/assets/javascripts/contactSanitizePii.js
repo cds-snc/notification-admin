@@ -16,18 +16,19 @@
       const piiItems = JSON.parse(sanitizedMessage);
       if (piiItems.length) {
         // Add a list item for each PII item detected in #sanitize-pii empty UL
-        const piiList = document.querySelector("#sanitize-pii ul");
-        piiList.innerHTML = ""; // Clear previous items
+        const piiList = $("#sanitize-pii ul");
+        piiList.empty(); // Clear previous items
         piiItems.forEach(function (item) {
-          const listItem = document.createElement("li");
-          listItem.textContent = `${window.polyglot.t(item.pattern)}: ${item.match}`;
-          piiList.appendChild(listItem);
+          const listItem = $("<li></li>").text(
+            `${window.polyglot.t(item.pattern)}: ${item.match}`,
+          );
+          piiList.append(listItem);
         });
         // Show the PII warning div
-        document.querySelector("#sanitize-pii").style.display = "block";
+        $("#sanitize-pii").show();
       } else {
         // Hide the PII warning div if no PII items are detected
-        document.querySelector("#sanitize-pii").style.display = "none";
+        $("#sanitize-pii").hide();
       }
     });
     // Listen for form submission
