@@ -27,10 +27,6 @@
         // Hide the PII warning div if no PII items are detected
         document.querySelector("#sanitize-pii").style.display = "none";
       }
-      // Log the PII items to the console for debugging
-      if (piiItems.length) {
-        console.warn("PII items detected in the message:", piiItems);
-      }
     });
     // Listen for form submission
     contactForm.addEventListener("submit", function () {
