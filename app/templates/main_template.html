@@ -45,9 +45,25 @@
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
       done: "{{ _('Done') }}",
-      new_template_button: "{{ _('Create template') }}",
+      new_template_button: "{{ _('Create new') }}",
+      new_template_options: {
+        email: {
+          txt: "{{ _('Email template') }}",
+          url: "{{ url_for('.add_service_template', service_id=current_service.id, template_type='email') }}",
+        },
+        sms: {
+          txt: "{{ _('Text message template') }}",
+          url: "{{ url_for('.add_service_template', service_id=current_service.id, template_type='sms') }}",
+        },
+        folder: {
+          txt:"{{ _('Folder') }}",
+          url: "{{ url_for('.choose_template', service_id=current_service.id) }}",
+        },
+      },
+      explore_sample_library_button: "{{ _('Explore our sample library')  }}",
+      sample_library_url: "{{ url_for('.view_sample_library', service_id=current_service.id) }}",
+      sample_library_button: "{{ _('Sample library')  }}",
       copy_template_button: "{{ _('Copy template') }}",
-      new_folder_button: "{{ _('New folder') }}",
       nothing_selected: "{{ _('Nothing selected') }}",
       create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
       selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
