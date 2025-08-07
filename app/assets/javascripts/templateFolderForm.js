@@ -13,6 +13,13 @@
       this.$legend = this.$form.find("#aria-live-legend");
       this.$buttonContainer = this.$form.find(".aria-live-region");
       this.$buttonContainer.before(this.nothingSelectedButtons);
+      // Since we're inserting a disclosure menu dynamically after the DOM is ready
+      // Then we need to call the Menu module to register the menu manually
+      var $menuButton = $(this.nothingSelectedButtons).find('button[data-module="menu"]');
+      if ($menuButton.length) {
+        var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
+        addNewTemplateMenuModule.start($menuButton[0]);
+      }
       this.$buttonContainer.before(this.itemsSelectedButtons);
 
       // all the diff states that we want to show or hide
@@ -324,23 +331,42 @@
     this.nothingSelectedButtons = $(`
       <div id="nothing_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
-            "new_template_button",
-          )}</button>
-          <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
-            "copy_template_button",
-          )}</button>
-          <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
-            "new_folder_button",
-          )}</button>
+          <div class="flex items-center gap-6">
+            <nav class="relative" aria-label="Disclosure Menu Story 1">
+              <button aria-expanded="false" aria-haspopup="true"
+                      id="menu-overlay" data-module="menu"
+                      data-menu-items="disclosure-menu-story"
+                      class="button gap-2 px-4"
+                      type="button">`
+                      .concat(window.polyglot.t("new_template_button"),
+                      `<i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
+              </button>
+              <ul id="disclosure-menu-story" class="hidden menu-overlay">
+                <li>
+                    <a href="`).concat(window.APP_PHRASES.new_template_options.email.url, `" class="nav-menu-item">`)
+                    .concat(window.APP_PHRASES.new_template_options.email.txt,`</a>
+                </li>
+                <li>
+                    <a href="`).concat(window.APP_PHRASES.new_template_options.sms.url, `" class="nav-menu-item">`)
+                    .concat(window.APP_PHRASES.new_template_options.sms.txt,`</a>
+                </li>
+                <li>
+                    <a href="`).concat(window.APP_PHRASES.new_template_options.folder.url, `" class="nav-menu-item">`)
+                    .concat(window.APP_PHRASES.new_template_options.folder.txt,`</a>
+                </li>
+              </ul>
+            </nav>
+            <button class="button button-secondary" type="submit">`).concat(window.polyglot.t("explore_sample_library_button"), `</button>
+            <button class="button hidden js-button-action button-secondary copy-template" type="button" value="copy-template">`).concat(window.polyglot.t("copy_template_button"),`</button>
+          </div>
           <div class="template-list-selected-counter">
-            <span class="template-list-selected-counter__count" aria-hidden="true">
-              ${this.selectionStatus.default}
+            <span class="template-list-selected-counter__count" aria-hidden="true">`)
+          .concat(this.selectionStatus["default"], `
             </span>
           </div>
         </div>
       </div>
-    `).get(0);
+    `)).get();
 
     this.itemsSelectedButtons = $(`
       <div id="items_selected">

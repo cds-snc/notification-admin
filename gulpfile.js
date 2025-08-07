@@ -58,6 +58,7 @@ const javascripts = () => {
     paths.src + "javascripts/colourPreview.js",
     paths.src + "javascripts/templateFolderForm.js",
     paths.src + "javascripts/collapsibleCheckboxes.js",
+    paths.src + "javascripts/templateContent.js",
     paths.src + "javascripts/moreMenu.js",
     paths.src + "javascripts/menu.js",
     paths.src + "javascripts/scopeTabNavigation.js",
@@ -65,7 +66,6 @@ const javascripts = () => {
     paths.src + "javascripts/notificationsReports.js",
     paths.src + "javascripts/main.js",
     paths.src + "javascripts/templateCategories.js",
-    paths.src + "javascripts/templateContent.js",
     paths.src + "javascripts/reportFooter.js",
   ])
     .pipe(plugins.prettyerror())
@@ -89,7 +89,7 @@ const javascripts = () => {
           "@cdssnc/sanitize-pii/dist/umd/sanitize-pii.min.js",
       ])
     )
-    .pipe(plugins.uglify())
+    // .pipe(plugins.uglify())
     .pipe(plugins.concat("all.min.js"))
     .pipe(
       plugins.addSrc.prepend([
@@ -106,13 +106,13 @@ const minifyIndividualJs = () => {
     paths.src + "javascripts/formValidateRequired.js",
     paths.src + "javascripts/sessionRedirect.js",
     paths.src + "javascripts/touDialog.js",
-    paths.src + "javascripts/templateFilters.js"
+    paths.src + "javascripts/templateFilters.js",
   ])
     .pipe(plugins.prettyerror())
     .pipe(plugins.babel({
       presets: ["@babel/preset-env"]
     }))
-    .pipe(plugins.uglify())
+    // .pipe(plugins.uglify())
     .pipe(plugins.rename({ suffix: '.min' }))
     .pipe(dest(paths.dist + "javascripts/"));
 };
@@ -121,7 +121,7 @@ const minifyIndividualJs = () => {
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css")
     .pipe(plugins.concat("index.css"))
-    .pipe(plugins.cleanCSS({ 
+    .pipe(plugins.cleanCSS({
       level: 2,
     }, (details) => {
       console.log(`${details.name}: Original size:${details.stats.originalSize} - Minified size: ${details.stats.minifiedSize}`)

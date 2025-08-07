@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   target: "web",
   // mode: "development", //development
-  mode: "production",
+  mode: "development",
   entry: {
     index: ["./app/assets/javascripts/index.js"],
     scheduler: {
