@@ -1,0 +1,96 @@
+{% extends "admin_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
+{% from "components/folder-path.html" import folder_path, page_title_folder_path %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/api-key.html" import api_key %}
+{% from "components/page-header.html" import page_header %}
+
+{% block service_page_title %}
+  {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {% if show_redaction_message %}
+    <div class="mb-12">
+      {% set question_txt = _('Are you sure you want to redact personalised variable content?') %}
+      {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
+        <ul class="list list-bullet banner-list-bullet">
+          <li>
+            {{ _("This protects recipients' information by hiding it in the dashboard and message log.") }}
+          </li>
+          <li>
+            {{ _('You cannot undo this action.') }}
+          </li>
+        </ul>
+        <form method='post'>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button type="submit" class="button button-red" name="delete">{{ _('Confirm') }}</button>
+        </form>
+      {% endcall %}
+    </div>
+  {% endif %}
+
+  <div>
+    {{ folder_path(
+      folders=current_service.get_template_path(template._template),
+      service_id=current_service.id,
+      template_type='all',
+      current_user=current_user,
+      root_element='h2',
+    ) }}
+    {{ page_header(template._template.name) }}
+  </div>
+
+  {% include 'views/templates/_template.html' %}
+
+  <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
+      <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
+        {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
+          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
+            {{ _('Edit this template') }}
+          </a>
+        {% endif %}
+      </div>
+    {% if template._template.updated_at %}
+    <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %}">
+      <span>
+        {% set last_edited = _('Last edited') %}
+        {{ last_edited }}
+        {{ template._template.updated_at|format_delta }}
+      </span>
+
+      &emsp;
+      {% set version_txt = _('See previous versions') %}
+      <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="mb-16">
+    {{ api_key(template.id, name="Template ID", thing='template ID') }}
+  </div>
+
+  {% if current_user.has_permissions('manage_templates') and user_has_template_permission %}
+    {% if template.template_type != 'letter' %}
+      {% if not template._template.redact_personalisation %}
+        <div class="page-footer-delete-link block page-footer-delete-link-without-button mb-6">
+          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ _('Redact personalised variable content after sending') }}</a>
+        </div>
+      {% else %}
+        <p class="hint">
+          {{ _("Recipients' information will be redacted from system") }}
+        </p>
+      {% endif %}
+    {% endif %}
+    {% if not template._template.archived %}
+      {% set delete_txt = _('Delete this template') %}
+      <div class="page-footer-delete-link block page-footer-delete-link-without-button">
+        <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
+      </div>
+      &emsp;
+    {% endif %}
+  {% endif %}
+
+{% endblock %}
