@@ -1514,8 +1514,15 @@ def view_sample_template(service_id, template_id):
     # Create a template obj
     template = create_temporary_sample_template(template_id)
 
+    page_title = (
+        "Sample template: {}".format(template["template_name"]["en"])
+        if get_current_locale(current_app) == "en"
+        else "Modèle d’exemple: {}".format(template["template_name"]["fr"])
+    )
+
     return render_template(
         "views/templates/view_sample_template.html",
+        pae_title=page_title,
         template=get_email_preview_template(template, template_id, service_id),
         template_postage=template["postage"],
         **get_limit_stats(template["template_type"]),

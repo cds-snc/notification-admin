@@ -7,11 +7,25 @@
 {% from "components/page-header.html" import page_header %}
 
 {% block service_page_title %}
-  {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
+  {{ page_title }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
+    {{ page_header(
+        page_title,
+        back_link=back_link,
+        sub_text=_("Step 1 of 2")
+    ) }}
+        <!-- Instructions -->
+    <div class="mb-8">
+        <p class="mb-4">
+        {{ _('The From line shows your service as the sender. To change your service name, visit Settings.') }}
+        </p>
+        <p>
+        {{ _("We've filled the subject line and message body with sample content. You can change this content to meet your needs. Continue to the next screen to learn how to edit this sample template.") }}
+        </p>
+    </div>
   {% if show_redaction_message %}
     <div class="mb-12">
       {% set question_txt = _('Are you sure you want to redact personalised variable content?') %}

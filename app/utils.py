@@ -1002,6 +1002,7 @@ def create_temporary_sample_template(template_id: str):
     new_template_data["id"] = template_data.get("id", None)
     # TODO: how are we displaying this?
     new_template_data["name"] = template_data.get("name", {}).get("en", "")
+    new_template_data["name_fr"] = template_data.get("name", {}).get("fr", "")
     new_template_data["content"] = template_data.get("example_content", "")
     new_template_data["subject"] = template_data.get("subject", "")
     new_template_data["template_type"] = template_data.get("notification_type", None)
