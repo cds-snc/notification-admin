@@ -1,21 +1,36 @@
 
 
-<div class="grid grid-rows-[44px_1fr] h-full">
+<div class="grid grid-rows-[47px_56px_1fr] h-full">
 <div id="toolbar">
   <!-- Add font size dropdown -->
-  <select class="ql-size">
-    <option value="small">Heading 3</option>
-    <option value="large">Heading 2</option>
+  <select class="ql-header">
+    <option value="3">Heading 3</option>
+    <option value="2">Heading 2</option>
     <!-- Note a missing, thus falsy value, is used to reset to default -->
-    <option selected value="">Normal</option>
+    <option selected value="false">Normal</option>
   </select>
-  <button class="ql-direction" value="rtl"></button>
-  <!-- Add a bold button -->
-  <button class="ql-bold"><i class="fa fa-bold"></i></button>
-  <button class="ql-link"><i class="fa fa-link"></i></button>
-  <!-- Add subscript and superscript buttons -->
-  <button id="divider-button" value="divider">–</button>
-  <button id="var-button" value="var">((var))</button>
+  <button id="var-button" value="var" aria-label="Insert variable">((var))</button>
+  <button class="ql-bold" aria-label="Bold"><i class="fa fa-bold"></i></button>
+  <button class="ql-italic" aria-label="Italic"><i class="fa fa-italic"></i></button>
+  <button class="ql-list" value="ordered" aria-label="Insert ordered list"><i class="fa fa-list-ol"></i></button>
+  <button class="ql-list" value="bullet" aria-label="Insert bullet list"><i class="fa fa-list-ul"></i></button>
+  <button class="ql-indent" value="increase" aria-label="Increase indent"><i class="fa fa-indent"></i></button>
+  <button class="ql-indent" value="decrease" aria-label="Decrease indent"><i class="fa fa-outdent"></i></button>
+  <button id="divider-button" value="divider" aria-label="Insert divider">Divider</button>
+  <button class="ql-link" aria-label="Insert link"><i class="fa fa-link"></i></button>
+  <button class="ql-blockquote" aria-label="Insert blockquote"><i class="fa fa-quote-left"></i></button>
+  <button id="en-lang-button" value="en-CA" aria-label="Insert English block">EN</button>
+  <button id="fr-lang-button" value="fr-CA" aria-label="Insert French block">FR</button>
+  <button class="ql-direction" value="rtl" aria-label="Change text direction to right-to-left"></button>
+</div>
+<div id="branding">
+    <img
+          alt="{{ _('Government of Canada') }}"
+          height="32px"
+          class="h-full w-auto"
+          src="{{ asset_s3_url('gov-canada-en.svg') }}"
+          contenteditable="false"
+        />
 </div>
 <div id="editor">
   <p>Hello World!</p>
@@ -27,7 +42,10 @@
 
   const Inline = Quill.import('blots/inline');
   const BlockEmbed = Quill.import('blots/block/embed');
-const icons = Quill.import('ui/icons');
+  const Block = Quill.import('blots/block');
+  const Container = Quill.import('blots/container');
+  const Delta = Quill.import('delta');
+  const icons = Quill.import('ui/icons');
 
 icons['bold'] = '<i class="fa-solid fa-bold"></i>';
 icons['link'] = '<i class="fa-solid fa-link"></i>';
@@ -35,6 +53,14 @@ icons['direction'] = {
   '': '<i class="fa-solid fa-arrow-right-arrow-left"></i>',      // LTR
   'rtl': '<i class="fa-solid fa-arrow-right-arrow-left"></i>'   // RTL
 };
+
+const onClick = (selector, callback) => {
+  document.querySelectorAll(selector).forEach(element => {
+    element.addEventListener('click', callback);
+  });
+};
+
+
 class DividerBlot extends BlockEmbed {
   static blotName = 'divider';
   static tagName = 'hr';
@@ -49,9 +75,45 @@ class VarBlot extends Inline {
 }
 
 Quill.register(VarBlot);
-const onClick = (selector, callback) => {
-  document.querySelector(selector).addEventListener('click', callback);
-};
+
+class LanguageWrapperBlot extends Container {
+  static blotName = 'lang';
+  static tagName = 'div';
+  static className = 'language-block';
+  static allowedChildren = [Block];
+
+  static create(value) {
+    const node = super.create();
+    node.setAttribute('lang', value);
+    node.setAttribute('data-language', value);    
+    return node;
+  }
+
+  static formats(node) {
+    return node.getAttribute('lang');
+  }
+}
+
+Quill.register(LanguageWrapperBlot, true);
+
+onClick('#en-lang-button, #fr-lang-button', (event) => {
+  const lang = event.currentTarget.value;
+  const range = quill.getSelection(true);
+  const [line, offset] = quill.getLine(range.index);
+
+  console.log(lang, line, offset);
+  console.log('Button clicked:', event.currentTarget.id, 'with value:', lang);
+  // Creating an empty language block
+    quill.insertText(range.index, '\n');
+    quill.formatLine(range.index, 1, 'lang', lang);
+    
+    // Insert empty paragraph in the language block
+    quill.insertText(range.index, ' ');
+    quill.deleteText(range.index, 1); // Remove the space
+    
+    // Position cursor in the block
+    quill.setSelection(range.index, 0);
+});
 
 onClick('#var-button', () => {
   // Add (( before the selection range

@@ -261,9 +261,6 @@ module.exports = {
         "2/3": "66.666667%",
         email: "600px",
       },
-      minWidth: {
-        target: "45px",
-      },
       minHeight: {
         12: "1.875rem",
         target: "45px",

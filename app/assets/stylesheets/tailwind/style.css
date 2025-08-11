@@ -56,6 +56,7 @@
 @import "./views/notification.css";
 
 @import "./toolkit/wp.css";
+@import "./toolkit/quill-snow.css";
 @import "./toolkit/quill.css";
 
 @import "../fa-svg-with-js.css";
