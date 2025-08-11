@@ -16,7 +16,7 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
-import { faArrowRightArrowLeft, faQuoteLeft, faLink, faLinkSlash, faBold, faInfoCircle, faItalic, faListOl, faListUl, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightArrowLeft, faQuoteLeft, faLink, faLinkSlash, faBold, faInfoCircle, faItalic, faListOl, faListUl, faMinus, faIndent, faOutdent } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
 import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
@@ -45,6 +45,8 @@ let FontAwesomeIconLoader = () => {
     faMinus,
     faListUl,
     faListOl,
+    faIndent,
+    faOutdent,
     faQuoteLeft,
     faArrowRightArrowLeft
   ]);

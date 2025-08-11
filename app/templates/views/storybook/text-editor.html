@@ -1,6 +1,6 @@
 
 
-<div class="grid grid-rows-[47px_56px_1fr] h-full">
+<div class="grid grid-rows-[auto_56px_1fr] h-full">
 <div id="toolbar">
   <!-- Add font size dropdown -->
   <select class="ql-header">
@@ -12,7 +12,7 @@
   <button id="var-button" value="var" aria-label="Insert variable">((var))</button>
   <button class="ql-bold" aria-label="Bold"><i class="fa fa-bold"></i></button>
   <button class="ql-italic" aria-label="Italic"><i class="fa fa-italic"></i></button>
-  <button class="ql-list" value="ordered" aria-label="Insert ordered list"><i class="fa fa-list-ol"></i></button>
+  <button class="ql-list" value="ordered" aria-label="Insert ordered list"><i class="fa-solid fa-list-ol"></i></button>
   <button class="ql-list" value="bullet" aria-label="Insert bullet list"><i class="fa fa-list-ul"></i></button>
   <button class="ql-indent" value="increase" aria-label="Increase indent"><i class="fa fa-indent"></i></button>
   <button class="ql-indent" value="decrease" aria-label="Decrease indent"><i class="fa fa-outdent"></i></button>
@@ -48,7 +48,15 @@
   const icons = Quill.import('ui/icons');
 
 icons['bold'] = '<i class="fa-solid fa-bold"></i>';
+icons['italic'] = '<i class="fa-solid fa-italic"></i>';
+icons['list'] = {
+  'ordered': '<i class="fa-solid fa-list-ol"></i>',
+  'bullet': '<i class="fa-solid fa-list-ul"></i>'
+};
+icons['outdent'] = '<i class="fa-solid fa-outdent"></i>';
+icons['indent'] = '<i class="fa-solid fa-indent"></i>';
 icons['link'] = '<i class="fa-solid fa-link"></i>';
+icons['blockquote'] = '<i class="fa-solid fa-quote-left"></i>';
 icons['direction'] = {
   '': '<i class="fa-solid fa-arrow-right-arrow-left"></i>',      // LTR
   'rtl': '<i class="fa-solid fa-arrow-right-arrow-left"></i>'   // RTL
