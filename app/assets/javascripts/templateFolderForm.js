@@ -12,21 +12,14 @@
       this.$liveRegionCounter = this.$form.find(".selection-counter");
       this.$legend = this.$form.find("#aria-live-legend");
       this.$buttonContainer = this.$form.find(".aria-live-region");
-      this.$buttonContainer.before(this.nothingSelectedButtons);
-      // Since we're inserting a disclosure menu dynamically after the DOM is ready
-      // Then we need to call the Menu module to register the menu manually
-      var $menuButton = $(this.nothingSelectedButtons).find('button[data-module="menu"]');
-      if ($menuButton.length) {
-        var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
-        addNewTemplateMenuModule.start($menuButton[0]);
-      }
+      this.$nothingSelectedButtons = this.buildEmptyStateButtons();
       this.$buttonContainer.before(this.itemsSelectedButtons);
 
       // all the diff states that we want to show or hide
       this.states = [
         {
           key: "nothing-selected-buttons",
-          $el: this.$form.find("#nothing_selected"),
+          $el: this.$nothingSelectedButtons,
           cancellable: false,
         },
         {
@@ -293,6 +286,10 @@
       return !!this.$form.find("input:checkbox").length;
     };
 
+    this.hasTemplates = function () {
+      return !!this.$form.find(".template-list-item").length;
+    }
+
     this.countSelectedCheckboxes = function () {
       return this.$form.find("input:checkbox:checked").length;
     };
@@ -315,6 +312,31 @@
         window.location.href = `${window.location.href}/create`;
       }
 
+      if (this.currentState == "nothing-selected-buttons") {
+        // Since we're inserting a disclosure menu dynamically after the DOM is ready
+        // Then we need to call the Menu module to register the menu manually
+        var $menuButton = $(this.$nothingSelectedButtons).find('button[data-module="menu"]');
+        if ($menuButton.length) {
+          var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
+          addNewTemplateMenuModule.start($menuButton[0]);
+        }
+      }
+
+      if (!this.hasTemplates()) {
+        this.$form.find("#nothing_selected").remove();
+        this.$nothingSelectedButtons = this.buildEmptyStateButtons();
+        // Also update the state object:
+        this.states.find(s => s.key === "nothing-selected-buttons").$el = this.$nothingSelectedButtons;
+        this.$buttonContainer.before(this.$nothingSelectedButtons);
+        // Since we're inserting a disclosure menu dynamically after the DOM is ready
+        // Then we need to call the Menu module to register the menu manually
+        var $menuButton = $(this.$nothingSelectedButtons).find('button[data-module="menu"]');
+        if ($menuButton.length) {
+          var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
+          addNewTemplateMenuModule.start($menuButton[0]);
+        }
+      }
+
       // use dialog mode for states which contain more than one form control
       if (this.currentState === "move-to-existing-folder") {
         mode = "dialog";
@@ -328,45 +350,56 @@
       }
     };
 
-    this.nothingSelectedButtons = $(`
-      <div id="nothing_selected">
-        <div class="js-stick-at-bottom-when-scrolling">
-          <div class="flex items-center gap-6">
-            <nav class="relative" aria-label="Disclosure Menu Story 1">
-              <button aria-expanded="false" aria-haspopup="true"
-                      id="menu-overlay" data-module="menu"
-                      data-menu-items="disclosure-menu-story"
-                      class="button gap-2 px-4"
-                      type="button">`
-                      .concat(window.polyglot.t("new_template_button"),
-                      `<i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
-              </button>
-              <ul id="disclosure-menu-story" class="hidden menu-overlay">
-                <li>
-                    <a href="`).concat(window.APP_PHRASES.new_template_options.email.url, `" class="nav-menu-item">`)
-                    .concat(window.APP_PHRASES.new_template_options.email.txt,`</a>
-                </li>
-                <li>
-                    <a href="`).concat(window.APP_PHRASES.new_template_options.sms.url, `" class="nav-menu-item">`)
-                    .concat(window.APP_PHRASES.new_template_options.sms.txt,`</a>
-                </li>
-                <li>
-                    <a href="`).concat(window.APP_PHRASES.new_template_options.folder.url, `" class="nav-menu-item">`)
-                    .concat(window.APP_PHRASES.new_template_options.folder.txt,`</a>
-                </li>
-              </ul>
-            </nav>
-            <button class="button button-secondary" type="submit">`).concat(window.polyglot.t("explore_sample_library_button"), `</button>
-            <button class="button hidden js-button-action button-secondary copy-template" type="button" value="copy-template">`).concat(window.polyglot.t("copy_template_button"),`</button>
-          </div>
-          <div class="template-list-selected-counter">
-            <span class="template-list-selected-counter__count" aria-hidden="true">`)
-          .concat(this.selectionStatus["default"], `
-            </span>
-          </div>
+    this.getSampleLibraryButtonText = function () {
+      if (this.currentState === "nothing-selected-buttons" && !this.hasTemplates()) {
+        return window.polyglot.t("explore_sample_library_button");
+      } else {
+        return window.polyglot.t("sample_library_button");
+      }
+    };
+
+    this.buildEmptyStateButtons = function() {
+      let copyButton = '';
+      if (this.hasTemplates()) {
+        copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
+      }
+      return $(`
+        <div id="nothing_selected">
+            <div class="flex items-center gap-6">
+              <nav class="relative" aria-label="Disclosure Menu Story 1">
+                <button aria-expanded="false" aria-haspopup="true"
+                        id="menu-overlay" data-module="menu"
+                        data-menu-items="disclosure-menu-story"
+                        class="button gap-2 px-4"ah
+                        type="button">${window.polyglot.t("new_template_button")}
+                  <i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
+                </button>
+                <ul id="disclosure-menu-story" class="hidden menu-overlay">
+                  <li>
+                      <a href="${window.APP_PHRASES.new_template_options.email.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.email.txt}</a>
+                  </li>
+                  <li>
+                      <a href="${window.APP_PHRASES.new_template_options.sms.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.sms.txt}</a>
+                  </li>
+                  <li>
+                      <a href="${window.APP_PHRASES.new_template_options.folder.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.folder.txt}</a>
+                  </li>
+                </ul>
+              </nav>
+              ${copyButton}
+              <div class="flex relative items-center">
+                <a aria-describedby="sample-lib-new-badge" class="button button-secondary" id="sample-library-btn" href="">${this.getSampleLibraryButtonText()}</a>
+                <span id="sample-lib-new-badge" class="button-badge">${window.APP_PHRASES.new}</span>
+              </div>
+            </div>
+            <div class="template-list-selected-counter">
+              <span class="template-list-selected-counter__count" aria-hidden="true">
+                ${this.selectionStatus["default"]}
+              </span>
+            </div>
         </div>
-      </div>
-    `)).get();
+      `)
+    }
 
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
