@@ -46,6 +46,16 @@
   const Container = Quill.import('blots/container');
   const Delta = Quill.import('delta');
   const icons = Quill.import('ui/icons');
+  const Parchment = Quill.import('parchment');
+console.log('Available Parchment objects:', Object.keys(Parchment.Attributor));
+// Create custom block attributors
+class LanguageAttributor extends Parchment.Attributor {
+  add(node, value) {
+    node.setAttribute('lang', value);
+    return true;
+  }
+}
+
 
 icons['bold'] = '<i class="fa-solid fa-bold"></i>';
 icons['italic'] = '<i class="fa-solid fa-italic"></i>';
@@ -68,7 +78,29 @@ const onClick = (selector, callback) => {
   });
 };
 
+// Create instances of our custom attributors
+const Lang = new LanguageAttributor('lang', 'lang', {
+  scope: Parchment.Scope.BLOCK
+});
 
+// Register with Quill
+Quill.register({
+  'formats/lang': Lang,
+}, true);
+
+// Then update your click handler
+onClick('#en-lang-button, #fr-lang-button', (event) => {
+  const lang = event.currentTarget.value;
+  const range = quill.getSelection(true);
+  
+  if (!range) return;
+  
+  console.log(`Applying language ${lang} to selection`, range);
+  
+  // Format all blocks in the selection with both attributes
+  quill.formatLine(range.index, range.length || 1, 'lang', lang);
+  quill.formatLine(range.index, range.length || 1, 'lang-block', lang);
+});
 class DividerBlot extends BlockEmbed {
   static blotName = 'divider';
   static tagName = 'hr';
@@ -84,44 +116,7 @@ class VarBlot extends Inline {
 
 Quill.register(VarBlot);
 
-class LanguageWrapperBlot extends Container {
-  static blotName = 'lang';
-  static tagName = 'div';
-  static className = 'language-block';
-  static allowedChildren = [Block];
 
-  static create(value) {
-    const node = super.create();
-    node.setAttribute('lang', value);
-    node.setAttribute('data-language', value);    
-    return node;
-  }
-
-  static formats(node) {
-    return node.getAttribute('lang');
-  }
-}
-
-Quill.register(LanguageWrapperBlot, true);
-
-onClick('#en-lang-button, #fr-lang-button', (event) => {
-  const lang = event.currentTarget.value;
-  const range = quill.getSelection(true);
-  const [line, offset] = quill.getLine(range.index);
-
-  console.log(lang, line, offset);
-  console.log('Button clicked:', event.currentTarget.id, 'with value:', lang);
-  // Creating an empty language block
-    quill.insertText(range.index, '\n');
-    quill.formatLine(range.index, 1, 'lang', lang);
-    
-    // Insert empty paragraph in the language block
-    quill.insertText(range.index, ' ');
-    quill.deleteText(range.index, 1); // Remove the space
-    
-    // Position cursor in the block
-    quill.setSelection(range.index, 0);
-});
 
 onClick('#var-button', () => {
   // Add (( before the selection range

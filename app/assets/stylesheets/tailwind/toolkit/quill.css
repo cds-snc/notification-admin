@@ -162,3 +162,18 @@
 .ql-snow .ql-picker.ql-header {
     width: 12ch;
 }
+
+.ql-editor :is([lang="en-CA"], [lang="fr-CA"]) {
+  @apply relative;
+}
+.ql-editor :is([lang="en-CA"], [lang="fr-CA"]):before {
+  @apply whitespace-nowrap text-right text-small  w-[2ch] h-full absolute -left-[2ch];
+}
+.ql-editor [lang="fr-CA"]:before {
+  content: "FR";
+  @apply bg-blue-300;
+}
+.ql-editor [lang="en-CA"]:before {
+  content: "EN";
+  @apply bg-red-300;
+}
