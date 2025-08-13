@@ -13,7 +13,6 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import boto3
@@ -956,12 +955,17 @@ def load_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
     Returns:
         Dictionary containing template data or None if not found
     """
-    templates_dir = Path("/workspace/app/sample_templates")
+    templates_dir = os.path.join(current_app.root_path, "sample_templates")
 
     # Search through all YAML files in the templates directory
-    for yaml_file in templates_dir.glob("*.yaml"):
+    for yaml_file in os.listdir(templates_dir):
+        # Only process YAML files
+        if not yaml_file.lower().endswith((".yaml", ".yml")):
+            continue
+
+        yaml_file_path = os.path.join(templates_dir, yaml_file)
         try:
-            with open(yaml_file, "r", encoding="utf-8") as file:
+            with open(yaml_file_path, "r", encoding="utf-8") as file:
                 template_data = yaml.safe_load(file)
 
                 # Check if this template has the matching ID
@@ -969,7 +973,7 @@ def load_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
                     return template_data
 
         except (yaml.YAMLError, IOError) as e:
-            print(f"Error reading {yaml_file}: {e}")
+            current_app.logger.warning(f"Error reading {yaml_file}: {e}")
             continue
 
     return None
