@@ -126,7 +126,13 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-def email_address(label=_l("Email address"), gov_user=True, only_team_member_domains=False, required=True):
+def email_address(
+    label=_l("Email address"),
+    blank_validation=_l("Enter an email address"),
+    gov_user=True,
+    only_team_member_domains=False,
+    required=True,
+):
     if label == "email address":
         label = _l("email address")
     elif label == "phone number":
@@ -140,7 +146,7 @@ def email_address(label=_l("Email address"), gov_user=True, only_team_member_dom
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("Enter an email address")))
+        validators.append(DataRequired(message=blank_validation))
 
     if only_team_member_domains:
         validators.append(ValidTeamMemberDomain())
@@ -957,7 +963,7 @@ class CsvUploadForm(StripWhitespaceForm):
 class ChangeNameForm(StripWhitespaceForm):
     new_name = StringField(
         _l("Your name"),
-        validators=[DataRequired(message=_l("Enter your name"))],
+        validators=[DataRequired(message=_l("Enter name to continue"))],
     )
 
 
@@ -966,7 +972,7 @@ class ChangeEmailForm(StripWhitespaceForm):
         self.validate_email_func = validate_email_func
         super(ChangeEmailForm, self).__init__(*args, **kwargs)
 
-    email_address = email_address()
+    email_address = email_address(blank_validation=_l("Enter your email address to continue"))
 
     def validate_email_address(self, field):
         is_valid = self.validate_email_func(field.data)
