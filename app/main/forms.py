@@ -194,6 +194,15 @@ def password(label=_l("Password")):
     )
 
 
+def current_password(label=_l("Current password")):
+    return PasswordField(
+        label,
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+        ],
+    )
+
+
 class TwoFactorCode(StringField):
     validators = [
         DataRequired(message=_l("This cannot be empty")),
@@ -936,7 +945,7 @@ class ChangePasswordForm(StripWhitespaceForm):
         self.validate_password_func = validate_password_func
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
-    old_password = password(_l("Current password"))
+    old_password = current_password()
     new_password = password(_l("New password"))
 
     def validate_old_password(self, field):
