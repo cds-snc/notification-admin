@@ -38,30 +38,9 @@ def get_sample_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
 
 
 @cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
-def get_sample_templates_by_category(category: str) -> List[Dict[str, Any]]:
-    """
-    Get sample templates filtered by category from cache.
-
-    Args:
-        category: The template category to filter by
-
-    Returns:
-        List[Dict[str, Any]]: List of template data dictionaries for the category
-    """
+def get_sample_templates_by_type(notification_type: str) -> List[Dict[str, Any]]:
     templates = get_sample_templates()
-    return [template for template in templates if template.get("template_category") == category]
-
-
-@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
-def get_pinned_sample_templates() -> List[Dict[str, Any]]:
-    """
-    Get all pinned sample templates from cache.
-
-    Returns:
-        List[Dict[str, Any]]: List of pinned template data dictionaries
-    """
-    templates = get_sample_templates()
-    return [template for template in templates if template.get("pinned", False)]
+    return [template for template in templates if template.get("notification_type") == notification_type]
 
 
 def _load_sample_templates_from_files() -> List[Dict[str, Any]]:
@@ -108,5 +87,4 @@ def clear_sample_template_cache():
     """
     cache.delete_memoized(get_sample_templates)
     cache.delete_memoized(get_sample_template_by_id)
-    cache.delete_memoized(get_sample_templates_by_category)
-    cache.delete_memoized(get_pinned_sample_templates)
+    cache.delete_memoized(get_sample_templates_by_type)
