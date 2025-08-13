@@ -1,13 +1,73 @@
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import yaml  # type: ignore
 from flask import current_app
 
+from app.extensions import cache
 
+
+@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
 def get_sample_templates() -> List[Dict[str, Any]]:
     """
+    Get all sample templates from cache or load from YAML files.
+
+    Returns:
+        List[Dict[str, Any]]: List of all sample template data dictionaries,
+        sorted by template name in English.
+    """
+    return _load_sample_templates_from_files()
+
+
+@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+def get_sample_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Get a specific sample template by ID from cache.
+
+    Args:
+        template_id: The ID of the template to retrieve
+
+    Returns:
+        Optional[Dict[str, Any]]: Template data dictionary if found, None otherwise
+    """
+    templates = get_sample_templates()
+    for template in templates:
+        if template.get("id") == template_id:
+            return template
+    return None
+
+
+@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+def get_sample_templates_by_category(category: str) -> List[Dict[str, Any]]:
+    """
+    Get sample templates filtered by category from cache.
+
+    Args:
+        category: The template category to filter by
+
+    Returns:
+        List[Dict[str, Any]]: List of template data dictionaries for the category
+    """
+    templates = get_sample_templates()
+    return [template for template in templates if template.get("template_category") == category]
+
+
+@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+def get_pinned_sample_templates() -> List[Dict[str, Any]]:
+    """
+    Get all pinned sample templates from cache.
+
+    Returns:
+        List[Dict[str, Any]]: List of pinned template data dictionaries
+    """
+    templates = get_sample_templates()
+    return [template for template in templates if template.get("pinned", False)]
+
+
+def _load_sample_templates_from_files() -> List[Dict[str, Any]]:
+    """
     Read and parse all YAML files from the sample_templates folder.
+    This is the internal function that does the actual file loading.
 
     Returns:
         List[Dict[str, Any]]: List of sample template data dictionaries,
@@ -39,3 +99,14 @@ def get_sample_templates() -> List[Dict[str, Any]]:
     sample_templates.sort(key=lambda x: (not x.get("pinned", False), x.get("template_name", {}).get("en", "")))
 
     return sample_templates
+
+
+def clear_sample_template_cache():
+    """
+    Clear all cached sample template data.
+    Useful for testing or when template files are updated.
+    """
+    cache.delete_memoized(get_sample_templates)
+    cache.delete_memoized(get_sample_template_by_id)
+    cache.delete_memoized(get_sample_templates_by_category)
+    cache.delete_memoized(get_pinned_sample_templates)
