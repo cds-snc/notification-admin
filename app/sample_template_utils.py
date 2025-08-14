@@ -7,7 +7,7 @@ from flask import current_app
 from app.extensions import cache
 
 
-@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+@cache.memoize(timeout=0)  # Cache indefinitely - until the app restarts
 def get_sample_templates() -> List[Dict[str, Any]]:
     """
     Get all sample templates from cache or load from YAML files.
@@ -19,7 +19,7 @@ def get_sample_templates() -> List[Dict[str, Any]]:
     return _load_sample_templates_from_files()
 
 
-@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+@cache.memoize(timeout=0)  # Cache indefinitely - until the app restarts
 def get_sample_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
     """
     Get a specific sample template by ID from cache.
@@ -37,7 +37,7 @@ def get_sample_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-@cache.memoize(timeout=24 * 60 * 60)  # Cache for 24 hours
+@cache.memoize(timeout=0)  # Cache indefinitely - until the app restarts
 def get_sample_templates_by_type(notification_type: str) -> List[Dict[str, Any]]:
     templates = get_sample_templates()
     return [template for template in templates if template.get("notification_type") == notification_type]
