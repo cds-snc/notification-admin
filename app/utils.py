@@ -13,13 +13,14 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any, List
+from typing import Any, Dict, List, Optional
 
 import boto3
 import dateutil
 import pyexcel
 import pyexcel_xlsx
 import pytz
+import yaml
 from dateutil import parser
 from flask import abort, current_app, redirect, request, session, url_for
 from flask_babel import _
@@ -50,6 +51,7 @@ from app import cache
 from app.models.enum.template_types import TemplateType
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.service_api_client import service_api_client
+from app.notify_client.template_category_api_client import template_category_api_client
 from app.types import EmailReplyTo
 
 SENDING_STATUSES = ["created", "pending", "sending", "pending-virus-check"]
@@ -941,3 +943,83 @@ def get_verified_ses_domains():
     ]
 
     return domains
+
+
+def load_template_by_id(template_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Load a template by ID from the sample_templates folder.
+
+    Args:
+        template_id: The UUID of the template to find
+
+    Returns:
+        Dictionary containing template data or None if not found
+    """
+    templates_dir = os.path.join(current_app.root_path, "sample_templates")
+
+    # Search through all YAML files in the templates directory
+    for yaml_file in os.listdir(templates_dir):
+        # Only process YAML files
+        if not yaml_file.lower().endswith((".yaml", ".yml")):
+            continue
+
+        yaml_file_path = os.path.join(templates_dir, yaml_file)
+        try:
+            with open(yaml_file_path, "r", encoding="utf-8") as file:
+                template_data = yaml.safe_load(file)
+
+                # Check if this template has the matching ID
+                if template_data and template_data.get("id") == template_id:
+                    return template_data
+
+        except (yaml.YAMLError, IOError) as e:
+            current_app.logger.warning(f"Error reading {yaml_file}: {e}")
+            continue
+
+    return None
+
+
+def create_temporary_sample_template(template_id: str):
+    """
+    Create a temporary Template object from sample template data.
+
+    Args:
+        template_id: The UUID of the template to load
+
+    Returns:
+        Template object or None if template not found
+    """
+    template_data = load_template_by_id(template_id)
+    if not template_data:
+        raise ValueError(f"Template with ID {template_id} not found")
+    template_categories = template_category_api_client.get_all_template_categories()
+    new_template_data = {}
+    for category in template_categories:
+        if category["name_en"].lower() == template_data.get("template_category", "").lower():
+            new_template_data["template_category_id"] = category["id"]
+            new_template_data["template_category"] = category
+            break
+        if category["name_fr"].lower() == template_data.get("template_category", "").lower():
+            new_template_data["template_category_id"] = category["id"]
+            new_template_data["template_category"] = category
+            break
+    new_template_data["id"] = template_data.get("id", None)
+    # TODO: how are we displaying this?
+    new_template_data["name"] = template_data.get("template_name", {}).get("en", "")
+    new_template_data["name_fr"] = template_data.get("template_name", {}).get("fr", "")
+    new_template_data["content"] = template_data.get("example_content", "")
+    new_template_data["subject"] = template_data.get("subject", "")
+    new_template_data["template_type"] = template_data.get("notification_type", None)
+
+    new_template_data["created_at"] = datetime.utcnow().isoformat()
+    new_template_data["updated_at"] = datetime.utcnow().isoformat()
+    new_template_data["archived"] = False
+    new_template_data["version"] = 1
+    new_template_data["created_by"] = current_user.id
+    new_template_data["postage"] = None
+    new_template_data["folder"] = None
+    new_template_data["reply_to_text"] = None
+    new_template_data["reply_to_email_address"] = None
+    new_template_data["example_content"] = template_data.get("example_content", "")
+
+    return new_template_data
