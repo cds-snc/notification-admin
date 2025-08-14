@@ -16,7 +16,7 @@
     {% call form_wrapper() %}
       {{ textbox(form.name, width='w-full md:w-3/4', autocomplete='name') }}
       <div class="extra-tracking">
-        {% set txt = _('A work number where we can reach you') %}
+        {% set txt = _('Use a work number where we can reach you') %}
         {{ textbox(form.mobile_number, width='w-full md:w-3/4', hint=txt, autocomplete='tel') }}
       </div>
       {% set txt = _('Must be at least 8 characters and hard to guess') %}
