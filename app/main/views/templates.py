@@ -58,10 +58,9 @@ from app.models.template_list import (
     TemplateLists,
 )
 from app.notify_client.notification_counts_client import notification_counts_client
-from app.sample_template_utils import get_sample_templates
+from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
-    create_temporary_sample_template,
     email_or_sms_not_enabled,
     get_template,
     should_skip_template_page,
@@ -1475,33 +1474,23 @@ def view_sample_library(service_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
 
-    sample_templates = get_sample_templates()
+    all_templates = get_sample_templates()
+    email_templates = get_sample_templates_by_type("email")
+    sms_templates = get_sample_templates_by_type("sms")
 
     # Get the current filter from query params
     notification_type_filter = request.args.get("type", "email")
-
-    # Filter templates based on notification type
-    if notification_type_filter == "email":
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
-    elif notification_type_filter == "sms":
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "sms"]
-    else:
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
-
+    filtered_templates = sms_templates if notification_type_filter == "sms" else email_templates
     # Sort filtered templates by pinned status first (pinned templates at top), then by name
     filtered_templates.sort(key=lambda x: (not x.get("pinned", False), x.get("template_name", {}).get("en", "")))
-
-    email_count = len([t for t in sample_templates if t.get("notification_type") == "email"])
-    sms_count = len([t for t in sample_templates if t.get("notification_type") == "sms"])
-    total_count = len(sample_templates)
 
     return render_template(
         "views/templates/sample_library.html",
         sample_templates=filtered_templates,
         notification_type_filter=notification_type_filter,
-        email_count=email_count,
-        sms_count=sms_count,
-        total_count=total_count,
+        email_count=len(email_templates),
+        sms_count=len(sms_templates),
+        total_count=len(all_templates),
     )
 
 
@@ -1510,9 +1499,8 @@ def view_sample_library(service_id):
 def view_sample_template(service_id, template_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
-    # TODO: implement this page
     # Create a template obj
-    template = create_temporary_sample_template(template_id)
+    template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
 
     page_title = (
         "Sample {}".format(template["name"])
