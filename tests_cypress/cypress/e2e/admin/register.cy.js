@@ -54,9 +54,10 @@ describe("Create Account Page", () => {
       "1234567890",
       "123456789",
     );
-    cy.contains("span", "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space.").should(
-      "be.visible",
-    );
+    cy.contains(
+      "span",
+      "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space.",
+    ).should("be.visible");
   });
 
   it("Succeeds with a valid form", () => {
