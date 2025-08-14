@@ -7,7 +7,7 @@
 {% block maincolumn_content %}
 
   <h1 class="heading-large">{{ _('Check your email​') }}</h1>
-  <p>{{ _('An email has been sent to')}} {{ session['user_details']['email'] }}.</p>
-  <p>{{ _('Click the link in the email to continue creating an account.') }}</p>
+  <p>{{ _('We’ve sent a link to {}.').format(session['user_details']['email']) }}</p>
+  <p>{{ _('Use the link to continue creating an account.') }}</p>
 
 {% endblock %}

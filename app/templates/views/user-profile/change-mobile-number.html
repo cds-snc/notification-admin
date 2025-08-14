@@ -23,6 +23,11 @@
           <p>{{ _("If you add a number to your profile, you can text yourself test messages. We’ll text you a code to verify this number.") }} </p>
         {% endif %}
 
+        <p>
+          {{ _("To receive text messages you need a North American mobile phone number.") }}
+          {{ _("MS Teams, landlines, and some international numbers cannot receive texts.") }}
+        </p>
+
         {{ textbox(form_field, safe_error_message=True, autocomplete='change-value') }}
         {{ page_footer(_('Save'), cancel_button_link=back_url) }}
 
