@@ -402,6 +402,7 @@ describe("Your profile", () => {
             "contain",
             "Two-step verification method updated",
           );
+          cy.reload();
 
           Page.SignOut();
           cy.then(Cypress.session.clearCurrentSessionData);
