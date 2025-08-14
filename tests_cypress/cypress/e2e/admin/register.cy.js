@@ -34,7 +34,7 @@ describe("Create Account Page", () => {
       "span",
       "not-a-gov-email.ca is not on our list of government domains",
     ).should("be.visible");
-    cy.contains("span", "Not a valid phone number").should("be.visible");
+    cy.contains("span", "Number must have 10 digits").should("be.visible");
   });
 
   it("Display an error if password is shorter than 8 characters", () => {
@@ -54,12 +54,9 @@ describe("Create Account Page", () => {
       "1234567890",
       "123456789",
     );
-    cy.contains("span", "A password that is hard to guess contains:").should(
+    cy.contains("span", "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space.").should(
       "be.visible",
     );
-    cy.contains("li", "Uppercase and lowercase letters.").should("be.visible");
-    cy.contains("li", "Numbers and special characters.").should("be.visible");
-    cy.contains("li", "Words separated by a space.").should("be.visible");
   });
 
   it("Succeeds with a valid form", () => {
