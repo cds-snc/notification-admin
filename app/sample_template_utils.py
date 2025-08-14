@@ -1,12 +1,12 @@
-import datetime
 import os
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import yaml  # type: ignore
 from flask import current_app
 
 from app.extensions import cache
-from app.notify_client import template_category_api_client
+from app.notify_client.template_category_api_client import template_category_api_client
 
 
 @cache.memoize(timeout=0)  # Cache indefinitely - until the app restarts
