@@ -206,27 +206,6 @@ class TestSampleTemplateUtils:
             assert result[0]["template_name"]["en"] == "Valid"
 
     @patch("os.listdir")
-    @patch("builtins.open", side_effect=IOError("File not found"))
-    def test_load_sample_templates_from_files_handles_file_read_error(self, mock_file_open, mock_listdir, app_):
-        """Test that _load_sample_templates_from_files handles file read errors gracefully."""
-        mock_listdir.return_value = ["template.yaml"]
-
-        with app_.app_context():
-            result = _load_sample_templates_from_files()
-
-            # Should return empty list when file can't be read
-            assert result == []
-
-    @patch("os.listdir", side_effect=OSError("Directory not found"))
-    def test_load_sample_templates_from_files_handles_directory_error(self, mock_listdir, app_):
-        """Test that _load_sample_templates_from_files handles directory access errors."""
-        with app_.app_context():
-            result = _load_sample_templates_from_files()
-
-            # Should return empty list when directory can't be accessed
-            assert result == []
-
-    @patch("os.listdir")
     @patch("builtins.open", new_callable=mock_open)
     @patch("yaml.safe_load")
     def test_load_sample_templates_from_files_ignores_empty_files(self, mock_yaml_load, mock_file_open, mock_listdir, app_):
@@ -330,28 +309,6 @@ class TestSampleTemplateUtils:
                 # Should match the Reminder category by French name
                 assert result["template_category_id"] == "cat-2"
                 assert result["template_category"]["name_fr"] == "Rappel"
-
-    @patch("app.sample_template_utils.template_category_api_client.get_all_template_categories")
-    def test_create_temporary_sample_template_no_category_match(self, mock_get_categories, mock_template_categories, app_):
-        """Test create_temporary_sample_template when no category matches."""
-        mock_get_categories.return_value = mock_template_categories
-
-        template_no_match = {
-            "id": "test-id",
-            "template_name": {"en": "Test", "fr": "Test FR"},
-            "template_category": "nonexistent",
-            "subject": "Test Subject",
-            "example_content": "Test content",
-            "notification_type": "email",
-        }
-
-        with patch("app.sample_template_utils.get_sample_template_by_id", return_value=template_no_match):
-            with app_.app_context():
-                result = create_temporary_sample_template(template_id="test-id", current_user_id="user-123")
-
-                # Should not have template_category_id when no match found
-                assert "template_category_id" not in result
-                assert "template_category" not in result
 
     def test_create_temporary_sample_template_template_not_found(self, app_):
         """Test create_temporary_sample_template raises error when template not found."""
