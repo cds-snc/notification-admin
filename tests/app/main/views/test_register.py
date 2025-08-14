@@ -157,7 +157,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
     )
 
     assert response.status_code == 200
-    assert "Not a valid phone number" in response.get_data(as_text=True)
+    assert "Number must have 10 digits" in response.get_data(as_text=True)
 
 
 def test_should_return_200_when_email_is_not_gov_uk(

@@ -213,7 +213,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "not good",
                 "password": "validPassword!",
             },
-            "Not a valid phone number",
+            "Number must have 10 digits",
         ],
         [
             {
