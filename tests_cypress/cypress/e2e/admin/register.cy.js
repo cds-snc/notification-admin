@@ -34,7 +34,7 @@ describe("Create Account Page", () => {
       "span",
       "not-a-gov-email.ca is not on our list of government domains",
     ).should("be.visible");
-    cy.contains("span", "Number must have 10 digits").should("be.visible");
+    cy.contains("span", "Not a valid phone number").should("be.visible");
   });
 
   it("Display an error if password is shorter than 8 characters", () => {
