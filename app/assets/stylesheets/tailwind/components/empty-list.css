@@ -12,6 +12,10 @@
       background-size: contain;
     }
   }
-
   /*! purgecss end ignore */
 }
+
+  span.button-badge {
+    @apply gap-2 items-center px-4 py-2 right-0 rounded-full text-xs font-medium bg-blue-100;
+    margin-left: -13px;
+  }
