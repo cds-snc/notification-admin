@@ -58,10 +58,9 @@ from app.models.template_list import (
     TemplateLists,
 )
 from app.notify_client.notification_counts_client import notification_counts_client
-from app.sample_template_utils import get_sample_templates, get_sample_templates_by_type
+from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
-    create_temporary_sample_template,
     email_or_sms_not_enabled,
     get_template,
     should_skip_template_page,
@@ -1500,9 +1499,8 @@ def view_sample_library(service_id):
 def view_sample_template(service_id, template_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
-    # TODO: implement this page
     # Create a template obj
-    template = create_temporary_sample_template(template_id)
+    template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
 
     page_title = (
         "Sample {}".format(template["name"])
