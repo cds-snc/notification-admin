@@ -34,7 +34,7 @@
 
 
     <div role='group' id="add_new_template_form" class="mt-8 mb-16">
-        <a class="button" href="{{ url_for('.add_edit_sample_template', service_id=current_service.id, template_type=template.id, templdate_data=template) }}">
+        <a class="button" href="{{ url_for('.create_from_sample_template', service_id=current_service.id, template_id=template.id, template_type=template.template_type, template_folder_id=None) }}">
             {{ _('Edit this template') }}
         </a>
     </div>

@@ -14,15 +14,59 @@
 {% endblock %}
 
 {% block maincolumn_content %}
+  {% set back_link = back_link if back_link is defined and back_link else (url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)) %}
+  
+  {% if form.errors %}
+    <div class="error-message">
+      {{ _('There was a problem with your submission. Please check the errors below.') }}
+    </div>
+  {% endif %}
   {{
     page_header(
       heading,
-      back_link=url_for('main.view_template', service_id=current_service.id,
-      template_id=template.id) if template else url_for('main.create_template',
-      service_id=current_service.id, template_folder_id=template_folder_id),
-      back_link_aria_label=_('Back to template {}').format(template.name) if template else _('Back')
+      back_link=back_link,
+      back_link_aria_label=_('Back to template {}').format(template.name) if template else _('Back'),
+      sub_text=_("Step 2 of 2") if from_page is defined and from_page == 'view_sample_template' else None,
     )
   }}
+
+  {% if from_page is defined and from_page == 'view_sample_template' %}
+    <details>
+      <summary>{{ _('How to use sample template') }}</summary>
+      <div class="details-body">
+        <li>{{ _("Replace sample content with your own content. For example, replace -Add description of appointment- with your content.") }}</li>
+        <li>{{ _("Give full name and acronym at first mention of your agency or department.") }}</li>
+        <li>{{ _("Delete any sample content that you do not need. <b>We recommend keeping messages short and to the point.</b>") }}</li>
+        <li>{{ _("If adding more content, use simple words, inclusive language and short sentences. For more on plain language, visit canada.ca's <a href='https://design.canada.ca/style-guide/'>content style guide</a>") }}</li>
+      </div>
+    </details>
+    <details>
+      <summary>{{ _("Quick tips for English messages") }}</summary>
+      <div class="details-body">
+        <li>{{ _("Avoid words like 'please' and 'sorry'.") }}</li>
+        <li>{{ _("Use active voice. For example 'We may dismiss your application' instead of 'Your application will be dismissed'.") }}</li>
+        <li>{{ _("Use commands to give instructions, for example 'Reschedule' instead of 'You should reschedule'.") }}</li>
+        <li>{{ _("Use positive contractions like 'We're meeting'.") }}</li>
+        <li>{{ _("Spell out negative contractions like 'We cannot meet'.") }}</li>
+      </div>
+    </details>
+    <details>
+      <summary>{{ _("Quick tips for French messages") }}</summary>
+      <div class="details-body">
+        <li>{{ _("Write short and clear texts by starting with the most important information and avoiding unnecessary content that could distract the reader. Instead of 'Lors de votre arrivée sur les lieux, merci de bien vouloir fournir une preuve d'identité, qu'il s'agisse d'un passeport ou d'un autre document délivré par le gouvernement fédéral', use 'À votre arrivée, présentez un document d'identité fédéral.'") }}</li>
+        <li>{{ _("Use simple words and avoid jargon. For example, instead of 'Le dossier sera traité conformément au principe de caducité' use 'Le dossier sera fermé, car il n'est plus valide'.") }}</li>
+        <li>{{ _("Use gender neutral wording as much as possible. You can use words that have one form to indicate either sex, like individu ('individual') or personne ('person') to replace femme ('woman') or homme ('man'). For groups of people, use neutral collective terms to avoid specifying the gender (for instance, use the term personnel ['the staff'] rather than the gendered plural les employés or employées ['the employees'].)") }}</li>
+        <li>{{ _("Use the active or passive voice based on the context. Active or passive voice may be options to avoid gendered sentences. Use the voice that reads most naturally in French.") }}</li>
+        <li>{{ _("Use the positive form as much as possible and reserve the negative for when consequences could be grave or fatal. Avoid double negations and exceptions to exceptions, which could confuse readers.") }}</li>
+      </div>
+    </details>
+  {% endif %}
+
+  {% if template %}
+    <div class="w-full template-container mt-10">
+      {{ template|string|translate_preview_template }}
+    </div>
+  {% endif %}
 
   {% call form_wrapper(
     show_validation_summary=True,
