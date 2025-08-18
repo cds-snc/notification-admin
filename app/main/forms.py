@@ -396,7 +396,7 @@ class LoginForm(StripWhitespaceForm):
 class RegisterUserForm(StripWhitespaceForm):
     name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
-    mobile_number = international_phone_number()
+    mobile_number = international_phone_number(_l("Contact number"))
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
@@ -410,7 +410,7 @@ class RegisterUserForm(StripWhitespaceForm):
 class RegisterUserFormOptional(StripWhitespaceForm):
     name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+    mobile_number = InternationalPhoneNumber(_l("Contact number"))
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
@@ -430,7 +430,7 @@ class RegisterUserFromInviteFormOptional(RegisterUserForm):
             name=guess_name_from_email_address(invited_user.email_address),
         )
 
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+    mobile_number = InternationalPhoneNumber(_l("Contact number"))
     service = HiddenField("service")
     email_address = HiddenField("email_address")
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
@@ -446,7 +446,7 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
     name = StringField("Full name", validators=[DataRequired(message=_l("This cannot be empty"))])
 
     mobile_number = InternationalPhoneNumber(
-        _l("Mobile number"),
+        _l("Contact number"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
     password = password()
