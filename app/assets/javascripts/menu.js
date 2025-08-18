@@ -54,7 +54,7 @@
   function closeAndDetach($menu, $items) {
     close($menu, $items);
     // Detach global keydown handlers
-    $(window).off('keydown');
+    $(window).off("keydown");
   }
 
   /**

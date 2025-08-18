@@ -48,7 +48,8 @@
   }
 
   /* Improve menu item touch targets */
-  .menu-overlay a, button {
+  .menu-overlay a,
+  button {
     @apply py-3 px-4;
     min-height: 44px;
     display: flex;

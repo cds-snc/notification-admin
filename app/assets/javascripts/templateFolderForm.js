@@ -211,7 +211,8 @@
 
     this.actionButtonClicked = function (event) {
       event.preventDefault();
-      this.currentState = $(event.currentTarget).val() || $(event.currentTarget).attr("value");
+      this.currentState =
+        $(event.currentTarget).val() || $(event.currentTarget).attr("value");
 
       if (this.stateChanged()) {
         this.render();
@@ -288,7 +289,7 @@
 
     this.hasTemplates = function () {
       return !!this.$form.find(".template-list-item").length;
-    }
+    };
 
     this.countSelectedCheckboxes = function () {
       return this.$form.find("input:checkbox:checked").length;
@@ -315,22 +316,27 @@
       if (this.currentState == "nothing-selected-buttons") {
         // Since we're inserting a disclosure menu dynamically after the DOM is ready
         // Then we need to call the Menu module to register the menu manually
-        var $menuButton = $(this.$nothingSelectedButtons).find('button[data-module="menu"]');
+        var $menuButton = $(this.$nothingSelectedButtons).find(
+          'button[data-module="menu"]',
+        );
         if ($menuButton.length) {
           var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
           addNewTemplateMenuModule.start($menuButton[0]);
         }
       }
 
-      if (!this.hasTemplates() && this.currentState !== "add-new-folder") {
+      if (this.currentState !== "add-new-folder") {
         this.$form.find("#nothing_selected").remove();
         this.$nothingSelectedButtons = this.buildEmptyStateButtons();
         // Also update the state object:
-        this.states.find(s => s.key === "nothing-selected-buttons").$el = this.$nothingSelectedButtons;
+        this.states.find((s) => s.key === "nothing-selected-buttons").$el =
+          this.$nothingSelectedButtons;
         this.$buttonContainer.before(this.$nothingSelectedButtons);
         // Since we're inserting a disclosure menu dynamically after the DOM is ready
         // Then we need to call the Menu module to register the menu manually
-        var $menuButton = $(this.$nothingSelectedButtons).find('button[data-module="menu"]');
+        var $menuButton = $(this.$nothingSelectedButtons).find(
+          'button[data-module="menu"]',
+        );
         if ($menuButton.length) {
           var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
           addNewTemplateMenuModule.start($menuButton[0]);
@@ -351,7 +357,10 @@
     };
 
     this.getSampleLibraryButtonText = function () {
-      if (this.currentState === "nothing-selected-buttons" && !this.hasTemplates()) {
+      if (
+        this.currentState === "nothing-selected-buttons" &&
+        !this.hasTemplates()
+      ) {
         return window.polyglot.t("explore_sample_library_button");
       } else {
         return window.polyglot.t("sample_library_button");
@@ -359,7 +368,7 @@
     };
 
     this.buildEmptyStateButtons = function () {
-      let copyButton = '';
+      let copyButton = "";
       if (this.hasTemplates()) {
         copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
       }
@@ -399,12 +408,14 @@
               </span>
             </div>
           </div>
-      `)
-      emptyStateBtns.find('#disclosure-create-new-template a[value=add-new-folder]').on('click keydown', (event) => {
-        this.actionButtonClicked(event);
-      });
-      return emptyStateBtns
-    }
+      `);
+      emptyStateBtns
+        .find("#disclosure-create-new-template a[value=add-new-folder]")
+        .on("click keydown", (event) => {
+          this.actionButtonClicked(event);
+        });
+      return emptyStateBtns;
+    };
 
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
