@@ -11,12 +11,12 @@
 
     <h2 class="heading-medium mt-8">Button with "New" Badge</h2>
     <div class="bg-gray-100 px-8 py-16 rounded-md">
-        {{ indicator('<button class="button">Inbox</button>', badge('New', bg_class='bg-blue-100', hide_icon=true)) }}
+        {{ indicator('<button type="button" class="button">Inbox</button>', badge('New', bg_class='bg-blue-100', hide_icon=true)) }}
         <h3 class="heading-small mb-2">Code</h3>
         <div class="bg-gray-200 px-8 pb-8 rounded-md border-1 border-gray-300">
             <pre><code>{% raw %}
 {{ indicator(
-    '&lt;button class="button"&gt;Inbox&lt;/button&gt;',
+    '&lt;button type="button" class="button"&gt;Inbox&lt;/button&gt;',
     badge('New', bg_class='bg-blue-100', hide_icon=true)
 ) }}
 {% endraw %}</code></pre>
