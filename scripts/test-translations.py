@@ -8,7 +8,7 @@ extra_keys_in_app = set(
         "French Government of Canada signature",  # constant
         "Empty",  # template_list.py
         "1 template",  # template_list.py
-        "Not a valid phone number",  # a validation liberary
+        "Number must have 10 digits",  # a validation liberary
         "bad invitation link",  # api
         "invitation expired",  # api
         "password",  # api
@@ -26,7 +26,7 @@ extra_keys_in_app = set(
     ]
 )
 
-keys_wrongly_detected = set(["header", "Send {}", "Not a valid phone number", "template_type", "status"])
+keys_wrongly_detected = set(["header", "Send {}", "Number must have 10 digits", "template_type", "status"])
 
 
 def csv_to_dict(filename):
