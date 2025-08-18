@@ -68,7 +68,7 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
+    assert page.select("main p")[0].text == "We’ve sent a link to notfound@example.canada.ca."
 
     mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
     mock_register_user.assert_called_with(
@@ -119,7 +119,7 @@ def test_register_works_without_phone_number(
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
+    assert page.select("main p")[0].text == "We’ve sent a link to notfound@example.canada.ca."
 
     mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
     mock_register_user.assert_called_with(
@@ -157,7 +157,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
     )
 
     assert response.status_code == 200
-    assert "Not a valid phone number" in response.get_data(as_text=True)
+    assert "Number must have 10 digits" in response.get_data(as_text=True)
 
 
 def test_should_return_200_when_email_is_not_gov_uk(
