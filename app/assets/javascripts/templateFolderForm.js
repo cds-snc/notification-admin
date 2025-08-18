@@ -104,10 +104,7 @@
           $el.on("blur", removeTabindex);
         }
 
-        setTimeout(() => {
-          $el.trigger("focus");
-        }, 0);
-
+        $el.trigger("focus");
       };
     };
 
