@@ -17,6 +17,7 @@ from app.main.views.templates import (
 )
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
+from app.sample_template_utils import clear_sample_template_cache
 from tests import (
     TESTING_TEMPLATE_CATEGORY,
     MockRedis,
@@ -2799,7 +2800,8 @@ class TestViewSampleLibrary:
 
     def test_shows_sample_templates_when_feature_flag_enabled(self, client_request, mock_sample_templates, mocker, app_):
         """Should display sample templates when feature flag is enabled"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -2830,7 +2832,8 @@ class TestViewSampleLibrary:
 
     def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
         """Should show empty state when no sample templates exist"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=[])
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=[])
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -2850,7 +2853,8 @@ class TestViewSampleLibrary:
 
     def test_shows_french_template_names_when_french_locale(self, client_request, mock_sample_templates, mocker, app_):
         """Should display French template names when user language is French"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             # Mock French session
@@ -2871,7 +2875,8 @@ class TestViewSampleLibrary:
 
     def test_template_links_have_correct_urls(self, client_request, mock_sample_templates, mocker, app_):
         """Should have correct URLs for template links"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -2899,7 +2904,8 @@ class TestViewSampleLibrary:
         self, client_request, mock_sample_templates, mocker, notification_type, expected_icon, app_
     ):
         """Should show correct icons for different notification types"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             # Set appropriate filter to show the notification type we want to test
@@ -2917,7 +2923,8 @@ class TestViewSampleLibrary:
 
     def test_pill_menu_filters_email_templates_by_default(self, client_request, mock_sample_templates, mocker, app_):
         """Should filter and show only email templates by default"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -2951,7 +2958,8 @@ class TestViewSampleLibrary:
 
     def test_pill_menu_filters_sms_templates_when_type_param_is_sms(self, client_request, mock_sample_templates, mocker, app_):
         """Should filter and show only SMS templates when ?type=sms query param is provided"""
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_sample_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
@@ -3009,7 +3017,8 @@ class TestViewSampleLibrary:
             ]
         )
 
-        mocker.patch("app.main.views.templates.get_sample_templates", return_value=mock_templates)
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_templates)
 
         with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
             page = client_request.get(
