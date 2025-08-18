@@ -15,7 +15,7 @@ def assert_has_back_link(page):
 
 def test_contact_page_does_not_require_login(client_request):
     client_request.logout()
-    client_request.get(".contact")
+    client_request.get(".contact", _expected_status=302)
 
 
 def test_identity_step_logged_in(client_request, mocker):
@@ -23,14 +23,17 @@ def test_identity_step_logged_in(client_request, mocker):
 
     # No name or email address fields are present
     page = client_request.get(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
     )
 
     assert set(input["name"] for input in page.select("input")) == set(["support_type", "csrf_token"])
 
     # Select a contact reason and submit the form
-    page = client_request.post(".contact", _expected_status=200, _follow_redirects=True, _data={"support_type": "other"})
+    page = client_request.post(
+        ".contact_lang", lang_code="en", _expected_status=200, _follow_redirects=True, _data={"support_type": "other"}
+    )
 
     # On step 2, to type a message
     assert_has_back_link(page)
@@ -38,7 +41,7 @@ def test_identity_step_logged_in(client_request, mocker):
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Message step
-    page = client_request.post("main.message", _expected_status=200, _data={"message": "My message"})
+    page = client_request.post("main.message_lang", lang_code="en", _expected_status=200, _data={"message": "My message"})
 
     # Contact email has been sent
     assert_no_back_link(page)
@@ -50,7 +53,8 @@ def test_identity_step_validates(client_request):
     client_request.logout()
 
     page = client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _data={"name": "", "email_address": "foo", "support_type": ""},
     )
@@ -67,7 +71,8 @@ def test_back_link_goes_to_previous_step(client_request):
     client_request.logout()
 
     page = client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _follow_redirects=True,
         _data={
@@ -79,7 +84,7 @@ def test_back_link_goes_to_previous_step(client_request):
 
     assert page.select_one(".back-link")["href"] == url_for(".contact")
 
-    page = client_request.get_url(page.select_one(".back-link")["href"], _test_page_title=False)
+    page = client_request.get_url(page.select_one(".back-link")["href"], _test_page_title=False, _follow_redirects=True)
 
     # Fields have been saved and are filled
     assert page.select_one("input[checked]")["value"] == "other"
@@ -94,7 +99,8 @@ def test_message_step_validates(client_request, support_type, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
     page = client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _follow_redirects=True,
         _data={
@@ -104,7 +110,9 @@ def test_message_step_validates(client_request, support_type, mocker):
         },
     )
 
-    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data={"message": ""})
+    page = client_request.post(
+        ".message_lang", lang_code="en", _expected_status=200, _follow_redirects=True, _data={"message": ""}
+    )
 
     assert_has_back_link(page)
 
@@ -130,7 +138,8 @@ def test_saves_form_to_session(client_request, mocker):
         session["contact_form"] = data
 
     client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _follow_redirects=True,
         _data=data,
@@ -140,7 +149,7 @@ def test_saves_form_to_session(client_request, mocker):
     client_request.get(".sign_in")
 
     # Going back
-    page = client_request.get(".contact", _test_page_title=False)
+    page = client_request.get(".contact_lang", lang_code="en", _test_page_title=False)
 
     # Fields have been saved and are filled
     assert page.select_one("input[checked]")["value"] == "other"
@@ -151,7 +160,8 @@ def test_saves_form_to_session(client_request, mocker):
 
     # Validating first step
     client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _follow_redirects=True,
         _data={
@@ -165,12 +175,12 @@ def test_saves_form_to_session(client_request, mocker):
     client_request.get(".sign_in")
 
     # Going back
-    page = client_request.get(".message", _test_page_title=False)
+    page = client_request.get(".message_lang", lang_code="en", _test_page_title=False)
     assert normalize_spaces(page.find("h1").text) == "Tell us more"
 
     # Filling a message
     data.update({"message": "My message"})
-    page = client_request.post(".message", _expected_status=200, _follow_redirects=True, _data=data)
+    page = client_request.post(".message_lang", lang_code="en", _expected_status=200, _follow_redirects=True, _data=data)
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
@@ -178,7 +188,7 @@ def test_saves_form_to_session(client_request, mocker):
     mock_send_contact_request.assert_called_once()
 
     # Going back
-    page = client_request.get(".contact", _test_page_title=False)
+    page = client_request.get(".contact_lang", lang_code="en", _test_page_title=False)
 
     # Fields are blank
     assert page.select_one("input[checked]") is None
@@ -207,7 +217,8 @@ def test_all_reasons_message_step_success(
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
     page = client_request.post(
-        ".contact",
+        ".contact_lang",
+        lang_code="en",
         _expected_status=200,
         _follow_redirects=True,
         _data={
@@ -221,7 +232,7 @@ def test_all_reasons_message_step_success(
     assert normalize_spaces(page.find("h1").text) == expected_heading
 
     message = "This is my message"
-    page = client_request.post(".message", _expected_status=200, _data={"message": message})
+    page = client_request.post(".message_lang", lang_code="en", _expected_status=200, _data={"message": message})
 
     assert_no_back_link(page)
     assert normalize_spaces(page.find("h1").text) == "Thank you for contacting us"
@@ -238,3 +249,30 @@ def test_all_reasons_message_step_success(
             "friendly_support_type": friendly_support_type,
         }
     )
+
+
+def test_contact_lang_url_switches_session_language(client_request):
+    # Set session language to 'fr', visit /en/contact, should update session to 'en' and reload
+    with client_request.session_transaction() as session:
+        session["userlang"] = "fr"
+    client_request.get(
+        ".contact_lang",
+        lang_code="en",
+        _expected_status=200,
+        _follow_redirects=True,
+    )
+    # After redirect, session should be 'en'
+    with client_request.session_transaction() as session:
+        assert session["userlang"] == "en"
+
+    # Now set session language to 'en', visit /fr/contact, should update session to 'fr' and reload
+    with client_request.session_transaction() as session:
+        session["userlang"] = "en"
+    client_request.get(
+        ".contact_lang",
+        lang_code="fr",
+        _expected_status=200,
+        _follow_redirects=True,
+    )
+    with client_request.session_transaction() as session:
+        assert session["userlang"] == "fr"
