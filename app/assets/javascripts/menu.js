@@ -39,6 +39,25 @@
   }
 
   /**
+   * Closes the menu and detaches any global event handlers that were attached when the menu
+   * was opened.
+   * This is called when menu items with the `data-menu-close-on-click` attribute are clicked,
+   * as it signifies that the item will not navigate to a new page and may instead modify the
+   * DOM in some way, requiring us to clean up our event handlers after closing the menu to
+   * ensure they do not interfere with any other components on the page.
+   * e.g. Preserving tab navigation, a modal dialog was opened, new form elements were added
+   * to the page, etc.
+   *
+   * @param {jQuery} $menu The menu button that controls the disclosure menu items container
+   * @param {jQuery} $items The unordered list containing menu items
+   */
+  function closeAndDetach($menu, $items) {
+    close($menu, $items);
+    // Detach global keydown handlers
+    $(window).off('keydown');
+  }
+
+  /**
    * Toggles the aria-expanded state of the menu to show/hide the disclosure menu's items.
    * Before opening a menu, it checks for any other menus that may be open and closes them
    *
@@ -170,6 +189,14 @@
         e.stopPropagation();
         toggleMenu($menu, $items);
       }
+    });
+
+    // Some items in the menu may not link to a new page, they may perform
+    // an action that modifies the DOM. In this case the menu's event handlers
+    // interfere with tab based navigation, so we need to close the menu and
+    // detach the event handlers when the user clicks on these menu items.
+    $items.on("click", "[data-menu-close-on-click='true']", function (e) {
+      closeAndDetach($menu, $items);
     });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu

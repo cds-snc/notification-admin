@@ -73,7 +73,7 @@
         this.render();
       }
 
-      this.$form.on("click", "button.js-button-action", (event) =>
+      this.$form.on("click", "js-button-action", (event) =>
         this.actionButtonClicked(event),
       );
       this.$form.on("click", "button[value=add-new-template]", (event) => {
@@ -104,7 +104,10 @@
           $el.on("blur", removeTabindex);
         }
 
-        $el.focus();
+        setTimeout(() => {
+          $el.trigger("focus");
+        }, 0);
+
       };
     };
 
@@ -211,7 +214,7 @@
 
     this.actionButtonClicked = function (event) {
       event.preventDefault();
-      this.currentState = $(event.currentTarget).val();
+      this.currentState = $(event.currentTarget).val() || $(event.currentTarget).attr("value");
 
       if (this.stateChanged()) {
         this.render();
@@ -322,7 +325,7 @@
         }
       }
 
-      if (!this.hasTemplates()) {
+      if (!this.hasTemplates() && this.currentState !== "add-new-folder") {
         this.$form.find("#nothing_selected").remove();
         this.$nothingSelectedButtons = this.buildEmptyStateButtons();
         // Also update the state object:
@@ -358,58 +361,63 @@
       }
     };
 
-    this.buildEmptyStateButtons = function() {
+    this.buildEmptyStateButtons = function () {
       let copyButton = '';
       if (this.hasTemplates()) {
         copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
       }
-      return $(`
-        <div id="nothing_selected">
+      emptyStateBtns = $(`
+          <div id="nothing_selected">
             <div class="flex items-center gap-6">
-              <nav class="relative" aria-label="Disclosure Menu Story 1">
-                <button aria-expanded="false" aria-haspopup="true"
-                        id="menu-overlay" data-module="menu"
-                        data-menu-items="disclosure-menu-story"
-                        class="button gap-2 px-4"ah
-                        type="button">${window.polyglot.t("new_template_button")}
-                  <i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
-                </button>
-                <ul id="disclosure-menu-story" class="hidden menu-overlay">
-                  <li>
-                      <a href="${window.APP_PHRASES.new_template_options.email.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.email.txt}</a>
-                  </li>
-                  <li>
-                      <a href="${window.APP_PHRASES.new_template_options.sms.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.sms.txt}</a>
-                  </li>
-                  <li>
-                      <a href="${window.APP_PHRASES.new_template_options.folder.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.folder.txt}</a>
-                  </li>
-                </ul>
+              <nav class="relative" aria-label="">
+                  <button aria-expanded="false"
+                          aria-haspopup="true"
+                          data-module="menu"
+                          data-menu-items="disclosure-create-new-template"
+                          class="button gap-2 px-4"
+                          type="button">${window.polyglot.t("new_template_button")}
+                    <i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
+                  </button>
+                  <ul id="disclosure-create-new-template" class="hidden menu-overlay">
+                    <li>
+                        <a href="${window.APP_PHRASES.new_template_options.email.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.email.txt}</a>
+                    </li>
+                    <li>
+                        <a href="${window.APP_PHRASES.new_template_options.sms.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.sms.txt}</a>
+                    </li>
+                    <li>
+                        <a href="" value="add-new-folder" data-menu-close-on-click="true" class="js-button-action nav-menu-item">${window.APP_PHRASES.new_template_options.folder.txt}</a>
+                    </li>
+                  </ul>
               </nav>
               ${copyButton}
               <div class="flex relative items-center">
-                <a aria-describedby="sample-lib-new-badge" class="button button-secondary" id="sample-library-btn" href="">${this.getSampleLibraryButtonText()}</a>
-                <span id="sample-lib-new-badge" class="button-badge">${window.APP_PHRASES.new}</span>
+                  <a aria-describedby="sample-lib-new-badge" class="button button-secondary" id="sample-library-btn" href="${window.APP_PHRASES.sample_library_url}">${this.getSampleLibraryButtonText()}</a>
+                  <span id="sample-lib-new-badge" class="button-badge">${window.APP_PHRASES.new}</span>
               </div>
             </div>
             <div class="template-list-selected-counter">
               <span class="template-list-selected-counter__count" aria-hidden="true">
-                ${this.selectionStatus["default"]}
+                  ${this.selectionStatus["default"]}
               </span>
             </div>
-        </div>
+          </div>
       `)
+      emptyStateBtns.find('#disclosure-create-new-template a[value=add-new-folder]').on('click keydown', (event) => {
+        this.actionButtonClicked(event);
+      });
+      return emptyStateBtns
     }
 
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
           <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t(
-            "move",
-          )}</button>
+      "move",
+    )}</button>
           <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t(
-            "add_to_new_folder",
-          )}</button>
+      "add_to_new_folder",
+    )}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">
               ${this.selectionStatus.selected(1)}
