@@ -11,14 +11,10 @@
 
 {% extends "admin_template.html" %}
 
-{% set page_title = _('Your templates') %}
+{% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-  {% if (not current_service.all_templates) and (not current_service.all_template_folders) %}
-    {{ page_title_folder_path(template_folder_path) }}
-  {% else %}
-    {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
-  {% endif %}
+    {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -68,7 +64,7 @@
     {% endif %}
 
   {% else %}
-    
+
     <div class="grid-row contain-floats">
       <div class="{% if current_user.has_permissions('manage_templates') %} md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border {% else %} w-full float-left py-0 px-0 px-gutterHalf box-border {% endif %}">
         {{ folder_path(
@@ -88,7 +84,7 @@
     <h1 class="heading-medium">
       {% if config["FF_SAMPLE_TEMPLATES"] %}
         {% if current_template_folder_id is none %}
-          {{ _('Your templates') }}
+          {{ _('Your Templates') }}
         {% else %}
           {{ _('Browse {}').format(current_template_folder.name) }}
         {% endif %}

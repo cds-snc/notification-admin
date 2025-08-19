@@ -314,8 +314,6 @@
       }
 
       if (this.currentState == "nothing-selected-buttons") {
-        // Since we're inserting a disclosure menu dynamically after the DOM is ready
-        // Then we need to call the Menu module to register the menu manually
         var $menuButton = $(this.$nothingSelectedButtons).find(
           'button[data-module="menu"]',
         );
@@ -372,7 +370,7 @@
       if (this.hasTemplates()) {
         copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
       }
-      emptyStateBtns = $(`
+      let emptyStateBtns = $(`
           <div id="nothing_selected">
             <div class="flex items-center gap-6">
               <nav class="relative" aria-label="">
@@ -420,12 +418,8 @@
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t(
-      "move",
-    )}</button>
-          <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t(
-      "add_to_new_folder",
-    )}</button>
+          <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t("move")}</button>
+          <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t("add_to_new_folder")}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">
               ${this.selectionStatus.selected(1)}

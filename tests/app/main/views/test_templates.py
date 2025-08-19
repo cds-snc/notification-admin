@@ -205,9 +205,9 @@ def test_should_show_empty_page_when_no_templates(
         service_id=service_one["id"],
     )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+    assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
     assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
     )
     assert page.select_one("#add_new_folder_form")
     assert page.select_one("#add_new_template_form")
@@ -224,9 +224,9 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         service_id=service_one.id,
     )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+    assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
     assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
     )
     assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
@@ -236,7 +236,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     [
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -249,25 +249,25 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "sms"},
             ["sms_template_one", "sms_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "letter"},
             ["letter_template_one", "letter_template_two"],
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -280,7 +280,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
