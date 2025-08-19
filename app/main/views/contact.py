@@ -21,7 +21,7 @@ def contact():
 @main.route("/<lang_code>/contact", methods=["GET", "POST"])
 def contact_lang(lang_code):
     # Sync session language with lang_code in URL
-    if session.get("userlang") != lang_code:
+    if session.get("userlang") and session["userlang"] != lang_code:
         session["userlang"] = lang_code
         # Reload page to ensure translations update
         return redirect(url_for("main.contact_lang", lang_code=lang_code))
@@ -50,12 +50,6 @@ def contact_lang(lang_code):
 # /<lang_code>/contact/message route: real message page
 @main.route("/<lang_code>/contact/message", methods=["GET", "POST"])
 def message_lang(lang_code):
-    # Sync session language with lang_code in URL
-    if session.get("userlang") != lang_code:
-        session["userlang"] = lang_code
-        # Reload page to ensure translations update
-        return redirect(url_for("main.message_lang", lang_code=lang_code))
-
     data = _form_data()
     form = ContactMessageStep(data=data)
     previous_step = "identity"

@@ -255,6 +255,7 @@ def test_contact_lang_url_switches_session_language(client_request):
     # Set session language to 'fr', visit /en/contact, should update session to 'en' and reload
     with client_request.session_transaction() as session:
         session["userlang"] = "fr"
+
     client_request.get(
         ".contact_lang",
         lang_code="en",
