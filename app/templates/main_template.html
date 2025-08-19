@@ -12,6 +12,8 @@
   {% include 'partials/newrelic-head.html' %}
   {% include 'partials/google-tag-manager-head.html' %}
   {% include 'partials/qualtrics-head.html' %}
+  {% from "components/indicator.html" import indicator %}
+  {% from "components/badge.html" import badge %}
 
   <link
     rel="stylesheet"
@@ -42,24 +44,18 @@
   />
   <script nonce="{{ request_nonce }}">
     window.APP_LANG = "{{ current_lang }}"
+    window.APP_COMPONENTS = {
+      sample_template_button: `{{ indicator(
+        '<button type="button" class="button button-secondary">_("Sample Library")</button>',
+        badge('New', bg_class='bg-blue-100', hide_icon=true)
+      )}}`,
+    }
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
       new: "{{ _('New') }}",
       done: "{{ _('Done') }}",
-      new_template_button: "{{ _('Create new') }}",
-      new_template_options: {
-        email: {
-          txt: "{{ _('Email template') }}",
-          url: "{{ url_for('.add_service_template', service_id=current_service.id, template_type='email') }}",
-        },
-        sms: {
-          txt: "{{ _('Text message template') }}",
-          url: "{{ url_for('.add_service_template', service_id=current_service.id, template_type='sms') }}",
-        },
-        folder: {
-          txt:"{{ _('Folder') }}",
-        },
-      },
+      new_template_button: "{{ _('Create template') }}",
+      new_folder_button: "{{ _('New folder') }}",
       explore_sample_library_button: "{{ _('Explore our sample library')  }}",
       sample_library_url: "{{ url_for('.view_sample_library', service_id=current_service.id) }}",
       sample_library_button: "{{ _('Sample library')  }}",

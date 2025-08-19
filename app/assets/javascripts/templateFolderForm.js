@@ -308,38 +308,49 @@
           : state.$el.detach(),
       );
 
+      // ???
       if (this.currentState === "add-new-template") {
         // nav to create page.
         window.location.href = `${window.location.href}/create`;
       }
 
+      // Generic most common case: Empty state + non-empty but no items selected
       if (this.currentState == "nothing-selected-buttons") {
         var $menuButton = $(this.$nothingSelectedButtons).find(
           'button[data-module="menu"]',
         );
+        var stickyContainer = $menuButton.parents().find("div[class*=js-stick-at-bottom-when-scrolling]");
         if ($menuButton.length) {
           var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
+          this.states.find((s) => s.key === "nothing-selected-buttons").$el =
+            this.$nothingSelectedButtons;
           addNewTemplateMenuModule.start($menuButton[0]);
         }
       }
 
-      if (this.currentState !== "add-new-folder") {
-        this.$form.find("#nothing_selected").remove();
-        this.$nothingSelectedButtons = this.buildEmptyStateButtons();
-        // Also update the state object:
-        this.states.find((s) => s.key === "nothing-selected-buttons").$el =
-          this.$nothingSelectedButtons;
-        this.$buttonContainer.before(this.$nothingSelectedButtons);
-        // Since we're inserting a disclosure menu dynamically after the DOM is ready
-        // Then we need to call the Menu module to register the menu manually
-        var $menuButton = $(this.$nothingSelectedButtons).find(
-          'button[data-module="menu"]',
-        );
-        if ($menuButton.length) {
-          var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
-          addNewTemplateMenuModule.start($menuButton[0]);
-        }
+      if (this.currentState === "items-selected-buttons") {
+        this.$buttonContainer.before(this.itemsSelectedButtons);
+        this.$form.find("#items_selected").show();
+        this.$form.find("#nothing_selected").hide();
       }
+
+      // if (this.currentState !== "add-new-folder") {
+      //   this.$form.find("#nothing_selected").remove();
+      //   this.$nothingSelectedButtons = this.buildEmptyStateButtons();
+      //   // Also update the state object:
+      //   this.states.find((s) => s.key === "nothing-selected-buttons").$el =
+      //     this.$nothingSelectedButtons;
+      //   this.$buttonContainer.before(this.$nothingSelectedButtons);
+      //   // Since we're inserting a disclosure menu dynamically after the DOM is ready
+      //   // Then we need to call the Menu module to register the menu manually
+      //   var $menuButton = $(this.$nothingSelectedButtons).find(
+      //     'button[data-module="menu"]',
+      //   );
+      //   if ($menuButton.length) {
+      //     var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
+      //     addNewTemplateMenuModule.start($menuButton[0]);
+      //   }
+      // }
 
       // use dialog mode for states which contain more than one form control
       if (this.currentState === "move-to-existing-folder") {
@@ -371,47 +382,27 @@
         copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
       }
       let emptyStateBtns = $(`
-          <div id="nothing_selected">
-            <div class="flex items-center gap-6">
-              <nav class="relative" aria-label="">
-                  <button aria-expanded="false"
-                          aria-haspopup="true"
-                          data-module="menu"
-                          data-menu-items="disclosure-create-new-template"
-                          class="button gap-2 px-4"
-                          type="button">${window.polyglot.t("new_template_button")}
-                    <i aria-hidden="true" class="fa-solid px-2 fa-angle-down"></i>
-                  </button>
-                  <ul id="disclosure-create-new-template" class="hidden menu-overlay">
-                    <li>
-                        <a href="${window.APP_PHRASES.new_template_options.email.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.email.txt}</a>
-                    </li>
-                    <li>
-                        <a href="${window.APP_PHRASES.new_template_options.sms.url}" class="nav-menu-item">${window.APP_PHRASES.new_template_options.sms.txt}</a>
-                    </li>
-                    <li>
-                        <a href="" value="add-new-folder" data-menu-close-on-click="true" class="js-button-action nav-menu-item">${window.APP_PHRASES.new_template_options.folder.txt}</a>
-                    </li>
-                  </ul>
-              </nav>
-              ${copyButton}
-              <div class="flex relative items-center">
-                  <a aria-describedby="sample-lib-new-badge" class="button button-secondary" id="sample-library-btn" href="${window.APP_PHRASES.sample_library_url}">${this.getSampleLibraryButtonText()}</a>
-                  <span id="sample-lib-new-badge" class="button-badge">${window.APP_PHRASES.new}</span>
-              </div>
-            </div>
+        <div id="nothing_selected">
+          <div class="js-stick-at-bottom-when-scrolling">
+            <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
+        "new_template_button",
+      )}</button>
+            <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
+        "copy_template_button",
+      )}</button>
+            <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
+        "new_folder_button",
+      )}</button>
+            ${window.APP_COMPONENTS.sample_template_button}
             <div class="template-list-selected-counter">
               <span class="template-list-selected-counter__count" aria-hidden="true">
-                  ${this.selectionStatus["default"]}
+                ${this.selectionStatus.default}
               </span>
             </div>
           </div>
+        </div>
       `);
-      emptyStateBtns
-        .find("#disclosure-create-new-template a[value=add-new-folder]")
-        .on("click keydown", (event) => {
-          this.actionButtonClicked(event);
-        });
+      emptyStateBtns.find("div.indicator-relative > button:first-child").text(`${window.APP_PHRASES.sample_library_button}`)
       return emptyStateBtns;
     };
 
