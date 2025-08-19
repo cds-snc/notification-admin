@@ -99,6 +99,10 @@
       // Save shortcuts to the inner summary and content elements
       details.__summary = details.getElementsByTagName("summary").item(0);
       details.__content = details.getElementsByTagName("div").item(0);
+      if (!details.__content) {
+        // Skip this details element if no content div is found
+        return;
+      }
       details.__interactive =
         details.__content.querySelectorAll("a, input, button");
 
