@@ -12,10 +12,26 @@
       background-size: contain;
     }
   }
-  /*! purgecss end ignore */
-}
 
-span.button-badge {
-  @apply gap-2 items-center px-4 py-2 right-0 rounded-full text-xs font-medium bg-blue-100;
-  margin-left: -13px;
+  /* Layout for empty state controls container */
+  #nothing_selected .js-stick-at-bottom-when-scrolling {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* When controls are sticky, switch to horizontal layout and remove top margin
+     as there is now enough space for the sample library button to fit in a single line
+  */
+  .js-stick-at-bottom-when-scrolling.content-fixed .indicator-relative,
+  .js-stick-at-bottom-when-scrolling.content-fixed__bottom .indicator-relative {
+    margin-top: 0;
+  }
+  .js-stick-at-bottom-when-scrolling.content-fixed,
+  .js-stick-at-bottom-when-scrolling.content-fixed__bottom {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  /*! purgecss end ignore */
 }

@@ -73,7 +73,7 @@
         this.render();
       }
 
-      this.$form.on("click", "js-button-action", (event) =>
+      this.$form.on("click", "button.js-button-action", (event) =>
         this.actionButtonClicked(event),
       );
       this.$form.on("click", "button[value=add-new-template]", (event) => {
@@ -319,12 +319,20 @@
         var $menuButton = $(this.$nothingSelectedButtons).find(
           'button[data-module="menu"]',
         );
-        var stickyContainer = $menuButton.parents().find("div[class*=js-stick-at-bottom-when-scrolling]");
+
         if ($menuButton.length) {
           var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
           this.states.find((s) => s.key === "nothing-selected-buttons").$el =
             this.$nothingSelectedButtons;
           addNewTemplateMenuModule.start($menuButton[0]);
+        }
+
+        // If it's the empty state, space the Sample library button slightly to as it
+        // wraps to the next line and is slightly higher due to the indicator badge.
+        if (!this.hasTemplates()) {
+          this.$nothingSelectedButtons.find(".indicator-relative").addClass("mt-5");
+        } else {
+          this.$nothingSelectedButtons.find(".indicator-relative").removeClass("mt-5");
         }
       }
 
@@ -333,24 +341,6 @@
         this.$form.find("#items_selected").show();
         this.$form.find("#nothing_selected").hide();
       }
-
-      // if (this.currentState !== "add-new-folder") {
-      //   this.$form.find("#nothing_selected").remove();
-      //   this.$nothingSelectedButtons = this.buildEmptyStateButtons();
-      //   // Also update the state object:
-      //   this.states.find((s) => s.key === "nothing-selected-buttons").$el =
-      //     this.$nothingSelectedButtons;
-      //   this.$buttonContainer.before(this.$nothingSelectedButtons);
-      //   // Since we're inserting a disclosure menu dynamically after the DOM is ready
-      //   // Then we need to call the Menu module to register the menu manually
-      //   var $menuButton = $(this.$nothingSelectedButtons).find(
-      //     'button[data-module="menu"]',
-      //   );
-      //   if ($menuButton.length) {
-      //     var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
-      //     addNewTemplateMenuModule.start($menuButton[0]);
-      //   }
-      // }
 
       // use dialog mode for states which contain more than one form control
       if (this.currentState === "move-to-existing-folder") {
@@ -365,22 +355,7 @@
       }
     };
 
-    this.getSampleLibraryButtonText = function () {
-      if (
-        this.currentState === "nothing-selected-buttons" &&
-        !this.hasTemplates()
-      ) {
-        return window.polyglot.t("explore_sample_library_button");
-      } else {
-        return window.polyglot.t("sample_library_button");
-      }
-    };
-
     this.buildEmptyStateButtons = function () {
-      let copyButton = "";
-      if (this.hasTemplates()) {
-        copyButton = `<button class="button js-button-action button-secondary copy-template" type="button" id="copy-template" value="copy-template">${window.polyglot.t("copy_template_button")}</button>`;
-      }
       let emptyStateBtns = $(`
         <div id="nothing_selected">
           <div class="js-stick-at-bottom-when-scrolling">
