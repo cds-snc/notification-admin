@@ -14,6 +14,7 @@ from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
+from werkzeug.exceptions import NotFound
 
 from app import create_app
 from app.tou import TERMS_KEY
@@ -3083,7 +3084,7 @@ def mock_remove_user_from_service(mocker):
     return mocker.patch("app.service_api_client.remove_user_from_service", return_value=None)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def mock_get_template_categories(mocker):
     def _get():
         return [
@@ -3660,6 +3661,70 @@ def mock_send_notification(mocker, fake_uuid):
         return {"id": fake_uuid}
 
     return mocker.patch("app.notification_api_client.send_notification", side_effect=_send_notification)
+
+
+@pytest.fixture
+def sample_email_id():
+    return "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+
+@pytest.fixture
+def sample_sms_id():
+    return "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+
+
+@pytest.fixture
+def sample_template(sample_email_id):
+    # Minimal structure expected by get_email_preview_template + create_from_sample_template
+    return {
+        "id": sample_email_id,
+        "name": "Account Verification",
+        "name_fr": "Vérification de compte",
+        "instruction_content": "Click the link to verify your account: ((link))",
+        "content": "Click the link to verify your account: ((link))",
+        "subject": "Verify your account",
+        "template_type": "email",
+        "template_category_id": "cat-auth",
+        "text_direction_rtl": False,
+    }
+
+
+@pytest.fixture
+def sample_sms_template(sample_sms_id):
+    return {
+        "id": sample_sms_id,
+        "name": "Two-Factor Code",
+        "name_fr": "Code à deux facteurs",
+        "instruction_content": "Your code is ((code))",
+        "content": "Your code is ((code))",
+        "subject": None,
+        "template_type": "sms",
+        "template_category_id": "cat-auth",
+        "text_direction_rtl": False,
+    }
+
+
+@pytest.fixture
+def mock_create_temporary_sample_template(mocker, sample_template, sample_sms_template):
+    """
+    Patch create_temporary_sample_template so tests are deterministic:
+    - Return email or sms sample
+    - Raise NotFound for unknown IDs (lets view translate to 404)
+    """
+    mapping = {
+        sample_template["id"]: sample_template,
+        sample_sms_template["id"]: sample_sms_template,
+    }
+
+    def _side_effect(template_id, current_user_id):
+        if template_id not in mapping:
+            raise NotFound("sample not found")
+        return mapping[template_id]
+
+    return mocker.patch(
+        "app.main.views.templates.create_temporary_sample_template",
+        side_effect=_side_effect,
+    )
 
 
 @pytest.fixture(scope="function")
