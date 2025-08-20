@@ -47,6 +47,7 @@
 @import "./components/autocomplete.css";
 @import "./components/menu.css";
 @import "./components/tou-dialog.css";
+@import "./components/indicator.css";
 
 /* views */
 @import "./views/dashboard.css";
