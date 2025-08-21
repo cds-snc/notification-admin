@@ -14,8 +14,11 @@
 {% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-    {% set prefix = _('Your') if not template_list.template_folder_id else _('Browse') %}
-    {{ _('{} {}').format(prefix, page_title_folder_path(template_folder_path)) }}
+    {% if not template_list.template_folder_id %}
+      {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
+    {% else %}
+      {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+    {% endif %}
 {% endblock %}
 
 {% block maincolumn_content %}
