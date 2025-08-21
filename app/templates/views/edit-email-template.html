@@ -62,12 +62,6 @@
     </details>
   {% endif %}
 
-  {% if template %}
-    <div class="w-full template-container mt-10">
-      {{ template|string|translate_preview_template }}
-    </div>
-  {% endif %}
-
   {% call form_wrapper(
     show_validation_summary=True,
     form=form,

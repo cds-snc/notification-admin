@@ -3084,7 +3084,7 @@ def mock_remove_user_from_service(mocker):
     return mocker.patch("app.service_api_client.remove_user_from_service", return_value=None)
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 def mock_get_template_categories(mocker):
     def _get():
         return [
