@@ -60,11 +60,7 @@
       sample_library_button: "{{ _('Sample library')  }}",
       copy_template_button: "{{ _('Copy template') }}",
       nothing_selected: "{{ _('Nothing selected') }}",
-      {% if current_service and current_service.id %}
-        sample_library_url: "{{ url_for('.view_sample_library', service_id=current_service.id) }}",
-      {% else %}
-        sample_library_url: "/sample-library",
-      {% endif %}
+      sample_library_url: "{% if current_service and current_service.id %}{{ url_for('.view_sample_library', service_id=current_service.id) }}{% else %}/sample-library{% endif %}",
       create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
       selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
       move_template_legend: "{{ _('Move templates to a new or existing folder') }}",
