@@ -308,32 +308,9 @@
           : state.$el.detach(),
       );
 
-      // ???
       if (this.currentState === "add-new-template") {
         // nav to create page.
         window.location.href = `${window.location.href}/create`;
-      }
-
-      // Generic most common case: Empty state + non-empty but no items selected
-      if (this.currentState == "nothing-selected-buttons") {
-        var $menuButton = $(this.$nothingSelectedButtons).find(
-          'button[data-module="menu"]',
-        );
-
-        if ($menuButton.length) {
-          var addNewTemplateMenuModule = new window.GOVUK.Modules.Menu();
-          this.states.find((s) => s.key === "nothing-selected-buttons").$el =
-            this.$nothingSelectedButtons;
-          addNewTemplateMenuModule.start($menuButton[0]);
-        }
-
-        // If it's the empty state, space the Sample library button slightly to as it
-        // wraps to the next line and is slightly higher due to the indicator badge.
-        if (!this.hasTemplates()) {
-          this.$nothingSelectedButtons.find(".indicator-relative").addClass("mt-5");
-        } else {
-          this.$nothingSelectedButtons.find(".indicator-relative").removeClass("mt-5");
-        }
       }
 
       if (this.currentState === "items-selected-buttons") {
@@ -360,14 +337,14 @@
         <div id="nothing_selected">
           <div class="js-stick-at-bottom-when-scrolling">
             <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
-        "new_template_button",
-      )}</button>
+              "new_template_button",
+            )}</button>
             <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
-        "copy_template_button",
-      )}</button>
+              "copy_template_button",
+            )}</button>
             <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
-        "new_folder_button",
-      )}</button>
+              "new_folder_button",
+            )}</button>
             ${window.APP_COMPONENTS.sample_template_button}
             <div class="template-list-selected-counter">
               <span class="template-list-selected-counter__count" aria-hidden="true">
@@ -377,7 +354,12 @@
           </div>
         </div>
       `);
-      emptyStateBtns.find("div.indicator-relative > button:first-child").text(`${window.APP_PHRASES.sample_library_button}`)
+      emptyStateBtns
+        .find("a#sample-library-link")
+        .attr("href", window.APP_PHRASES.sample_library_url);
+      emptyStateBtns
+        .find("a#sample-library-link")
+        .text(window.polyglot.t("sample_library_button"));
       return emptyStateBtns;
     };
 

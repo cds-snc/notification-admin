@@ -14,7 +14,8 @@
 {% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-    {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
+    {% set prefix = _('Your') if not template_list.template_folder_id else _('Browse') %}
+    {{ _('{} {}').format(prefix, page_title_folder_path(template_folder_path)) }}
 {% endblock %}
 
 {% block maincolumn_content %}
@@ -112,7 +113,7 @@
 
   {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
     {% if config["FF_SAMPLE_TEMPLATES"] %}
-      {% if template_list|length > 0 %}
+      {% if template_list|length > 0 or current_template_folder_id %}
         {% call form_wrapper(
             class='sticky-scroll-area',
             module='template-folder-form',

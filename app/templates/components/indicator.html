@@ -1,7 +1,7 @@
-{% macro indicator(content, corner) %}
+{% macro indicator(content, corner, position="indicator-corner") %}
   <div class="indicator-relative">
     {{ content | safe }}
-    <span class="indicator-corner">
+    <span class="{{ position }}">
       {{ corner | safe }}
     </span>
   </div>

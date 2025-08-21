@@ -17,6 +17,7 @@ from tests.conftest import (
     create_active_user_view_permissions,
     create_active_user_with_permissions,
     normalize_spaces,
+    set_config,
 )
 
 ROOT_FOLDER_ID = "__NONE__"
@@ -50,8 +51,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
     ),
     [
         (
-            "Browse Templates - service one – Notify",
-            "Browse Templates",
+            "Your Templates - service one – Notify",
+            "Your Templates",
             [],
             {},
             [
@@ -97,8 +98,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "Browse Templates - service one – Notify",
-            "Browse Templates",
+            "Your Templates - service one – Notify",
+            "Your Templates",
             [],
             {"template_type": "sms"},
             [
@@ -303,12 +304,13 @@ def test_should_show_templates_folder_page(
 
     service_one["permissions"] += ["letter"]
 
-    page = client_request.get(
-        "main.choose_template",
-        service_id=SERVICE_ONE_ID,
-        _test_page_title=False,
-        **extra_args,
-    )
+    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+        page = client_request.get(
+            "main.choose_template",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+            **extra_args,
+        )
 
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
@@ -839,7 +841,7 @@ def test_delete_template_folder_should_request_confirmation(
         _test_page_title=False,
     )
     assert normalize_spaces(page.select(".banner-dangerous")[0].text) == (
-        "Are you sure you want to delete the ‘sacrifice’ folder? " "Yes, delete"
+        "Are you sure you want to delete the ‘sacrifice’ folder? Yes, delete"
     )
 
     assert page.select_one("input[name=name]")["value"] == "sacrifice"
@@ -1469,7 +1471,7 @@ def test_show_custom_error_message(
 
 
 @pytest.mark.parametrize(
-    ("extra_args," "expected_displayed_items, " "expected_items, " "expected_empty_message "),
+    ("extra_args,expected_displayed_items, expected_items, expected_empty_message "),
     [
         (
             {},

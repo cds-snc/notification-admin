@@ -1,5 +1,4 @@
 /* indicator.css - styles for the indicator component */
-
 .indicator-relative {
   position: relative;
   display: inline-block;
@@ -10,4 +9,10 @@
   position: absolute;
   top: -10px;
   right: -30px;
+}
+
+.indicator-middle-right {
+  position: absolute;
+  right: -35px;
+  top: 7px;
 }
