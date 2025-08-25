@@ -14,10 +14,18 @@
 {% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-    {% if not current_template_folder_id %}
-      {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
+    {% if config["FF_SAMPLE_TEMPLATES"] %}
+      {% if not current_template_folder_id %}
+        {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
+      {% else %}
+        {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+      {% endif %}
     {% else %}
-      {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+      {% if (not current_service.all_templates) and (not current_service.all_template_folders) %}
+        {{ page_title_folder_path(template_folder_path) }}
+      {% else %}
+        {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+      {% endif %}
     {% endif %}
 {% endblock %}
 

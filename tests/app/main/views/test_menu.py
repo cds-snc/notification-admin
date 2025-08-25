@@ -3,7 +3,7 @@ import uuid
 
 import pytest
 
-from tests.conftest import SERVICE_ONE_ID, ClientRequest, create_notifications, set_config
+from tests.conftest import SERVICE_ONE_ID, ClientRequest, create_notifications
 
 
 @pytest.mark.parametrize(
@@ -60,11 +60,10 @@ def test_selected_menus(
     notifications = create_notifications(template_type="EMAIL")
     mocker.patch("app.notification_api_client.get_api_notifications_for_service", return_value=notifications)
 
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get(
-            page_name,
-            service_id=SERVICE_ONE_ID,
-        )
+    page = client_request.get(
+        page_name,
+        service_id=SERVICE_ONE_ID,
+    )
 
     menus = ["Dashboard", "Templates", "API integration", "Team members", "Settings"]
 
