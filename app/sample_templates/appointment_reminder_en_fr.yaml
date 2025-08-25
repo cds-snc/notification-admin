@@ -1,7 +1,7 @@
 id: "aee077c5-6f3d-4cb7-8d85-7b4dd0a6ee86"
 template_name:
   en: "EN | fr Appointment reminder"
-  fr: "EN | fr FR Appointment reminder"
+  fr: "EN | fr Rappel de rendez-vous"
 notification_type: "email"
 template_category: "reminder"
 pinned: false
