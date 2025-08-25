@@ -12,14 +12,14 @@
       this.$liveRegionCounter = this.$form.find(".selection-counter");
       this.$legend = this.$form.find("#aria-live-legend");
       this.$buttonContainer = this.$form.find(".aria-live-region");
-      this.$buttonContainer.before(this.nothingSelectedButtons);
+      this.$nothingSelectedButtons = this.buildEmptyStateButtons();
       this.$buttonContainer.before(this.itemsSelectedButtons);
 
       // all the diff states that we want to show or hide
       this.states = [
         {
           key: "nothing-selected-buttons",
-          $el: this.$form.find("#nothing_selected"),
+          $el: this.$nothingSelectedButtons,
           cancellable: false,
         },
         {
@@ -104,7 +104,7 @@
           $el.on("blur", removeTabindex);
         }
 
-        $el.focus();
+        $el.trigger("focus");
       };
     };
 
@@ -211,7 +211,8 @@
 
     this.actionButtonClicked = function (event) {
       event.preventDefault();
-      this.currentState = $(event.currentTarget).val();
+      this.currentState =
+        $(event.currentTarget).val() || $(event.currentTarget).attr("value");
 
       if (this.stateChanged()) {
         this.render();
@@ -286,6 +287,10 @@
       return !!this.$form.find("input:checkbox").length;
     };
 
+    this.hasTemplates = function () {
+      return !!this.$form.find(".template-list-item").length;
+    };
+
     this.countSelectedCheckboxes = function () {
       return this.$form.find("input:checkbox:checked").length;
     };
@@ -308,6 +313,12 @@
         window.location.href = `${window.location.href}/create`;
       }
 
+      if (this.currentState === "items-selected-buttons") {
+        this.$buttonContainer.before(this.itemsSelectedButtons);
+        this.$form.find("#items_selected").show();
+        this.$form.find("#nothing_selected").hide();
+      }
+
       // use dialog mode for states which contain more than one form control
       if (this.currentState === "move-to-existing-folder") {
         mode = "dialog";
@@ -321,36 +332,42 @@
       }
     };
 
-    this.nothingSelectedButtons = $(`
-      <div id="nothing_selected">
-        <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
-            "new_template_button",
-          )}</button>
-          <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
-            "copy_template_button",
-          )}</button>
-          <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
-            "new_folder_button",
-          )}</button>
-          <div class="template-list-selected-counter">
-            <span class="template-list-selected-counter__count" aria-hidden="true">
-              ${this.selectionStatus.default}
-            </span>
+    this.buildEmptyStateButtons = function () {
+      let emptyStateBtns = $(`
+        <div id="nothing_selected">
+          <div class="js-stick-at-bottom-when-scrolling">
+            <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
+              "new_template_button",
+            )}</button>
+            <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
+              "copy_template_button",
+            )}</button>
+            <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
+              "new_folder_button",
+            )}</button>
+            ${window.APP_COMPONENTS.sample_template_button}
+            <div class="template-list-selected-counter">
+              <span class="template-list-selected-counter__count" aria-hidden="true">
+                ${this.selectionStatus.default}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    `).get(0);
+      `);
+      emptyStateBtns
+        .find("a#sample-library-link")
+        .attr("href", window.APP_PHRASES.sample_library_url);
+      emptyStateBtns
+        .find("a#sample-library-link")
+        .text(window.polyglot.t("sample_library_button"));
+      return emptyStateBtns;
+    };
 
     this.itemsSelectedButtons = $(`
       <div id="items_selected">
         <div class="js-stick-at-bottom-when-scrolling">
-          <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t(
-            "move",
-          )}</button>
-          <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t(
-            "add_to_new_folder",
-          )}</button>
+          <button class="button js-button-action button-secondary" value="move-to-existing-folder">${window.polyglot.t("move")}</button>
+          <button class="button js-button-action button-secondary" value="move-to-new-folder">${window.polyglot.t("add_to_new_folder")}</button>
           <div class="template-list-selected-counter" aria-hidden="true">
             <span class="template-list-selected-counter__count" aria-hidden="true">
               ${this.selectionStatus.selected(1)}
