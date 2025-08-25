@@ -14,7 +14,7 @@
 {% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-    {% if not template_list.template_folder_id %}
+    {% if not current_template_folder_id %}
       {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
     {% else %}
       {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
