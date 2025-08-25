@@ -11,7 +11,7 @@
 
 {% extends "admin_template.html" %}
 
-{% set page_title = _('Your Templates') %}
+{% set page_title = _('Your Templates') if config["FF_SAMPLE_TEMPLATES"] else _('Templates') %}
 
 {% block service_page_title %}
     {% if config["FF_SAMPLE_TEMPLATES"] %}
@@ -134,6 +134,15 @@
           {% include 'views/templates/_move_to.html' %}
         {% endcall %}
       {% endif %}
+    {% else %}
+      {% call form_wrapper(
+            class='sticky-scroll-area',
+            module='template-folder-form',
+            data_kwargs={'prev-state': templates_and_folders_form.op or None}
+        ) %}
+        {% include 'views/templates/_template_list.html' %}
+        {% include 'views/templates/_move_to.html' %}
+      {% endcall %}
     {% endif %}
 
   {% else %}
