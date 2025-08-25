@@ -133,6 +133,7 @@ def create_temporary_sample_template(template_id: str, current_user_id) -> Dict[
     new_template_data["folder"] = None
     new_template_data["reply_to_text"] = None
     new_template_data["reply_to_email_address"] = None
-    new_template_data["example_content"] = template_data.get("example_content", "")
+    new_template_data["instruction_content"] = template_data.get("content", "")
+    new_template_data["text_direction_rtl"] = template_data.get("text_direction_rtl", False)
 
     return new_template_data
