@@ -23,4 +23,10 @@ def set_lang():
     # remove non-printable characters from url
     url = "".join(ch for ch in url if ch.isprintable())
 
+    # Swap /en/ and /fr/ in the path if present
+    if url.startswith("/en/"):
+        url = "/fr/" + url[4:]
+    elif url.startswith("/fr/"):
+        url = "/en/" + url[4:]
+
     return redirect(url)
