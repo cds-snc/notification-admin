@@ -186,6 +186,16 @@ def preview_template(service_id, template_id=None):
         if request.form["button_pressed"] == "edit":
             if template["id"]:
                 return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
+            if template.get("from_page") == "view_sample_template":
+                return redirect(
+                    url_for(
+                        ".create_from_sample_template",
+                        service_id=current_service.id,
+                        template_type=template["template_type"],
+                        template_id=template["sample_template_id"],
+                        template_folder_id=None,
+                    )
+                )
             else:
                 return redirect(
                     url_for(
@@ -252,12 +262,21 @@ def preview_template(service_id, template_id=None):
     if template["id"]:
         back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template["id"])
     else:
-        back_link = url_for(
-            ".add_service_template",
-            service_id=current_service.id,
-            template_type=template["template_type"],
-            template_folder_id=template["folder"],
-        )
+        if template.get("from_page") == "view_sample_template":
+            back_link = url_for(
+                ".create_from_sample_template",
+                service_id=current_service.id,
+                template_type=template["template_type"],
+                template_id=template["sample_template_id"],
+                template_folder_id=None,
+            )
+        else:
+            back_link = url_for(
+                ".add_service_template",
+                service_id=current_service.id,
+                template_type=template["template_type"],
+                template_folder_id=template["folder"],
+            )
     return render_template(
         "views/templates/preview_template.html",
         template=get_email_preview_template(template, template["id"], service_id),
@@ -797,6 +816,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 "folder": template_folder_id,
                 "template_category_id": form.template_category_id.data,
                 "text_direction_rtl": form.text_direction_rtl.data,
+                "from_page": request.form.get("from_page"),
             }
             set_preview_data(preview_template_data, service_id)
             return redirect(
@@ -1512,16 +1532,141 @@ def view_sample_template(service_id, template_id):
         "views/templates/view_sample_template.html",
         page_title=page_title,
         template=get_email_preview_template(template, template_id, service_id),
-        template_postage=template["postage"],
         back_link=url_for(".view_sample_library", service_id=service_id),
     )
 
 
-@main.route("/services/<service_id>/templates/add-<template_type>", methods=["GET", "POST"])
-@main.route(
-    "/services/<service_id>/templates/folders/<template_folder_id>/add-<template_type>",
-    methods=["GET", "POST"],
-)
+@main.route("/services/<service_id>/templates/add-from-sample-<template_type>/<template_id>", methods=["GET", "POST"])
 @user_has_permissions("manage_templates")
-def add_edit_sample_template(service_id, template_type, template_data):  # noqa: C901
-    pass
+def create_from_sample_template(service_id, template_type, template_id, template_folder_id=None):  # noqa: C901
+    new_template_data = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
+
+    if template_type not in ["sms", "email"]:
+        abort(404)
+
+    template = get_preview_data(service_id)
+
+    lang = get_current_locale(current_app)
+    new_template_name = ""
+    if lang == "en":
+        new_template_name = new_template_data["name"]
+    else:
+        new_template_name = new_template_data["name_fr"]
+
+    # If the template data above is empty, we will switch the fields with data from the sample_template
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
+    form.name.data = form.name.data if form.name.data else new_template_name
+    form.template_content.data = (
+        form.template_content.data if form.template_content.data else new_template_data["instruction_content"]
+    )
+    form.template_category_id.data = (
+        form.template_category_id.data if form.template_category_id.data else new_template_data["template_category_id"]
+    )
+    if template_type == "email":
+        form.subject.data = form.subject.data if form.subject.data else new_template_data["subject"]
+    form.text_direction_rtl.data = (
+        form.text_direction_rtl.data if form.text_direction_rtl.data else new_template_data.get("text_direction_rtl", False)
+    )
+
+    if form.validate_on_submit():
+        if form.process_type.data != TC_PRIORITY_VALUE:
+            abort_403_if_not_admin_user()
+        if request.form.get("button_pressed") == "preview":
+            preview_template_data = {
+                "name": form.name.data,
+                "content": form.template_content.data,
+                "template_content": form.template_content.data,
+                "subject": form.subject.data if hasattr(form, "subject") else None,
+                "template_type": template_type,
+                "id": None,
+                "process_type": form.process_type.data,
+                "folder": template_folder_id,
+                "template_category_id": form.template_category_id.data,
+                "text_direction_rtl": form.text_direction_rtl.data,
+                "from_page": "view_sample_template",
+                "sample_template_id": template_id,
+            }
+            set_preview_data(preview_template_data, service_id)
+            return redirect(url_for(".preview_template", service_id=service_id))
+        try:
+            new_template = service_api_client.create_service_template(
+                form.name.data,
+                template_type,
+                form.template_content.data,
+                service_id,
+                form.subject.data if hasattr(form, "subject") else None,
+                None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
+                template_folder_id,
+                form.template_category_id.data,
+            )
+            # Send the information in form's template_category_other field to Freshdesk
+            if form.template_category_other.data:
+                is_english = get_current_locale(current_app) == "en"
+                try:
+                    current_user.send_new_template_category_request(
+                        current_user.id,
+                        current_service.id,
+                        form.template_category_other.data if is_english else None,
+                        form.template_category_other.data if not is_english else None,
+                        new_template["data"]["id"],
+                    )
+                except HTTPError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
+                except AttributeError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
+        except HTTPError as e:
+            if (
+                e.status_code == 400
+                and "content" in e.message
+                and any(["character count greater than" in x for x in e.message["content"]])
+            ):
+                error_message = get_char_limit_error_msg()
+                form.template_content.errors.extend([error_message])
+            elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
+                error_message = (_("Template name must be less than {char_limit} characters")).format(
+                    char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
+                )
+                form.name.errors.extend([error_message])
+            else:
+                raise e
+        else:
+            flash(_("‘{}’ template saved").format(form.name.data), "default_with_tick")
+
+            return redirect(
+                url_for(
+                    ".view_template",
+                    service_id=service_id,
+                    template_id=new_template["data"]["id"],
+                )
+            )
+
+    if email_or_sms_not_enabled(template_type, current_service.permissions):
+        return redirect(
+            url_for(
+                ".action_blocked",
+                service_id=service_id,
+                notification_type=template_type,
+                template_folder_id=template_folder_id,
+                return_to="templates",
+                template_id="0",
+            )
+        )
+    else:
+        heading = _l("Edit {} template").format(new_template_name) if new_template_name else _l("Create reusable template")
+        return render_template(
+            f"views/edit-{template_type}-template.html",
+            form=form,
+            template_type=template_type,
+            template_folder_id=template_folder_id,
+            service_id=service_id,
+            heading=heading,
+            template_category_hints=template_category_hints,
+            other_category=other_category,
+            template_category_mode="expand",
+            from_page="view_sample_template",
+            back_link=url_for(".view_sample_template", service_id=service_id, template_id=template_id),
+        )
