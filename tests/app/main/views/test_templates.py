@@ -3047,3 +3047,170 @@ class TestViewSampleLibrary:
                 row = table.select("tbody tr")[i]
                 pin_icon = row.select_one(".fa-thumbtack")
                 assert pin_icon is None, f"Unpinned template at position {i} should not have a pin icon"
+
+
+class TestViewSampleTemplate:
+    def test_redirects_when_feature_flag_disabled(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+            client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=sample_email_id,
+                _expected_status=302,
+                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
+                _test_page_title=False,
+            )
+
+    def test_404_for_unknown_sample_template(
+        self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        unknown_id = "ffffffff-ffff-ffff-ffff-ffffffffffff"
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=unknown_id,
+                _expected_status=404,
+                _test_page_title=False,
+            )
+
+    def test_displays_sample_email_template(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=sample_email_id,
+                _test_page_title=False,
+            )
+        assert page.select_one("h1").text.strip() == "Sample Account Verification"
+        assert "Click the link to verify your account" in page.text
+        assert "Verify your account" in page.text
+        assert "Edit" in page.text or "Create" in page.text
+
+
+class TestCreateFromSampleTemplate:
+    def test_get_prefills_email_sample(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _test_page_title=False,
+            )
+        assert "Edit Account Verification template" in page.text
+
+    def test_get_prefills_sms_sample(
+        self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="sms",
+                template_id=sample_sms_id,
+                _test_page_title=False,
+            )
+        assert "Edit Two-Factor Code template" in page.text
+
+    def test_preview_email_flow_sets_preview_and_redirects(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _data={
+                    "name": "Account Verification",
+                    "subject": "Verify your account",
+                    "template_content": "Click the link to verify your account: ((link))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "preview",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for("main.preview_template", service_id=SERVICE_ONE_ID),
+            )
+        assert mocked_set_preview.call_count == 1
+        payload = mocked_set_preview.call_args[0][0]
+        assert payload["name"] == "Account Verification"
+        assert payload["template_type"] == "email"
+        assert payload["from_page"] == "view_sample_template"
+
+    def test_save_email_flow_creates_and_redirects(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_create = mocker.patch(
+            "app.main.views.templates.service_api_client.create_service_template",
+            return_value={"data": {"id": "new-template-id"}},
+        )
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _data={
+                    "name": "Account Verification",
+                    "subject": "Verify your account",
+                    "template_content": "Click the link to verify your account: ((link))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "save",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.view_template",
+                    service_id=SERVICE_ONE_ID,
+                    template_id="new-template-id",
+                ),
+            )
+        mocked_create.assert_called_once()
+
+    def test_preview_sms_flow_sets_preview_and_redirects(
+        self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="sms",
+                template_id=sample_sms_id,
+                _data={
+                    "name": "Two-Factor Code",
+                    "template_content": "Your code is ((code))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "preview",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for("main.preview_template", service_id=SERVICE_ONE_ID),
+            )
+        payload = mocked_set_preview.call_args[0][0]
+        assert payload["template_type"] == "sms"
+        assert payload["subject"] is None
+
+    def test_404_for_unknown_sample_id(
+        self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
+                _expected_status=404,
+            )
