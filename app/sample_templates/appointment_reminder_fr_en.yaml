@@ -6,6 +6,7 @@ notification_type: "email"
 template_category: "reminder"
 pinned: false
 subject: "Rendez-vous du ((date_fr)) / Appointment: ((date_en))"
+example_subject: "Rendez-vous du 26 mai 2025 / Appointment: May 26, 2025"
 content: |
   [[en]]
   _The English version follows_

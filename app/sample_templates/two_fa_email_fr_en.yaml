@@ -6,6 +6,7 @@ notification_type: "email"
 template_category: "authentication"
 pinned: false
 subject: "Connectez-vous | Sign in"
+example_subject: "Connectez-vous | Sign in"
 content: |
   [[fr]]
   Bonjour ((name)),

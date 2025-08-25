@@ -121,7 +121,7 @@ def create_temporary_sample_template(template_id: str, current_user_id) -> Dict[
     new_template_data["name"] = template_data.get("template_name", {}).get("en", "")
     new_template_data["name_fr"] = template_data.get("template_name", {}).get("fr", "")
     new_template_data["content"] = template_data.get("example_content", "")
-    new_template_data["subject"] = template_data.get("subject", "")
+    new_template_data["subject"] = template_data.get("example_subject", "")
     new_template_data["template_type"] = template_data.get("notification_type", None)
 
     new_template_data["created_at"] = datetime.utcnow().isoformat()
