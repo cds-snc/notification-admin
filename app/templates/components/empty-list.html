@@ -1,5 +1,5 @@
 {% macro empty_list(heading, message=None, img="emptyFlower", link=None, linkText="", attributes="") %}
-  <div class="flex items-center border-dashed border-1 border-gray-400 p-8 sm:bg-{{img}} sm:bg-right bg-empty-state min-h-emptyState" data-testid='empty-list'>
+  <div class="flex-col items-center border-dashed border-1 border-gray-400 p-8 sm:bg-{{img}} sm:bg-right bg-empty-state min-h-emptyState" data-testid='empty-list'>
     <div class="w-full sm:w-2/3 space-y-gutterHalf" tabindex="0">
       <div class="text-title text-gray-700">{{ heading }}</div>
       {% if message %}
@@ -10,7 +10,9 @@
           {{ linkText }}
         </a>
       {% endif %}
-      {{ caller() if caller }}
       </div>
+  </div>
+  <div class="pt-4">
+    {{ caller() if caller }}
   </div>
 {% endmacro %}
