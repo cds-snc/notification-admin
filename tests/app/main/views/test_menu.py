@@ -40,6 +40,7 @@ def test_selected_menus(
     active_caseworking_user,
     page_name,
     page_menu,
+    app_,
 ):
     # mocks for manage_users
     current_user = active_user_view_permissions
