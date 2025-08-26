@@ -1,3 +1,4 @@
+{% import "components/checkbox.html" as checkbox_macros %}
 {% macro textbox(
   field,
   label=None,
@@ -14,7 +15,9 @@
   required=true,
   is_page_heading=false,
   testid=None,
-  label_class=None
+  label_class=None,
+  show_RTL_checkbox=False,
+  checkbox_field=None
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -39,18 +42,27 @@
       {% endif %}
     </label>
     {% if is_page_heading %}</h1>{% endif %}
-    
+
     {% if hint %}
     {% set describedby = describedby + field.name + '-hint ' %}
       <span id="{{ field.name }}-hint" class="form-hint">
         {{ hint }}
       </span>
     {% endif %}
+
     {% if field.errors %}
     {% set describedby = describedby + field.name + '-error-message ' %}
       <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
         {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
       </span>
+    {% endif %}
+    {% if config["FF_RTL"] %}
+      {% if show_RTL_checkbox %}
+        <div class="p-2 bg-gray-300 mt-4 flex items-center">
+            {{ checkbox_macros.checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2", testid="template-rtl") }}
+            <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }}<span class="sr-only"> {{ _('email content') }} </span> {{ _('right to left') }}</label>
+        </div>
+      {% endif %}
     {% endif %}
     {%
       if highlight_tags

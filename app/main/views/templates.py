@@ -1522,11 +1522,7 @@ def view_sample_template(service_id, template_id):
     # Create a template obj
     template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
 
-    page_title = (
-        "Sample {}".format(template["name"])
-        if get_current_locale(current_app) == "en"
-        else "Modèle {}".format(template["name_fr"])
-    )
+    page_title = [_l("Sample template"), template["name"]]
 
     return render_template(
         "views/templates/view_sample_template.html",
@@ -1654,7 +1650,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
             )
         )
     else:
-        heading = _l("Edit {} template").format(new_template_name) if new_template_name else _l("Create reusable template")
+        heading = _l("Edit {}").format(new_template_name) if new_template_name else _l("Create reusable template")
         return render_template(
             f"views/edit-{template_type}-template.html",
             form=form,
