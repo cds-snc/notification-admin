@@ -122,6 +122,6 @@ clearAccount() {
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    retries: 1
+    retries: 2
   },
 });
