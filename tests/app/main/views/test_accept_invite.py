@@ -135,7 +135,7 @@ def test_invite_goes_in_session(
     "user, landing_page_title",
     [
         (create_active_user_with_permissions(), "Dashboard"),
-        (create_active_caseworking_user(), "Browse Templates"),
+        (create_active_caseworking_user(), "Your Templates"),
     ],
 )
 def test_accepting_invite_removes_invite_from_session(
@@ -159,6 +159,7 @@ def test_accepting_invite_removes_invite_from_session(
     fake_uuid,
     user,
     landing_page_title,
+    app_,
 ):
     sample_invite["email_address"] = user["email_address"]
 
@@ -167,11 +168,12 @@ def test_accepting_invite_removes_invite_from_session(
 
     client_request.login(user)
 
-    page = client_request.get(
-        "main.accept_invite",
-        token="thisisnotarealtoken",
-        _follow_redirects=True,
-    )
+    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+        page = client_request.get(
+            "main.accept_invite",
+            token="thisisnotarealtoken",
+            _follow_redirects=True,
+        )
     assert normalize_spaces(page.select_one("h1").text) == landing_page_title
 
     with client_request.session_transaction() as session:

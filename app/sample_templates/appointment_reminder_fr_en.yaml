@@ -1,66 +1,17 @@
-id: "aee077c5-6f3d-4cb7-8d85-7b4dd0a6ee86"
+id: "38cbc1c5-8fd7-477f-befe-8478ebd4ee7b"
 template_name:
-  en: "EN | fr Appointment reminder"
-  fr: "EN | fr Rappel de rendez-vous"
+  en: "FR | en Appointment reminder"
+  fr: "FR | en Rappel de rendez-vous"
 notification_type: "email"
 template_category: "reminder"
 pinned: false
-subject: "Appointment: ((date_en)) / Rendez-vous du ((date_fr))"
+subject: "Rendez-vous du ((date_fr)) / Appointment: ((date_en))"
 content: |
-  [[fr]]
-  _La version française suit_
-  [[/fr]]
-
   [[en]]
-  Hello ((name)),
-
-  **Your -reference, file, other type of number: ((number))**
-
-  # Remember your appointment on ((date_en))
-  * **About:**  -Add description of appointment-
-  * **When:**((date_en))
-  * **What time:**((time_en)) -time zone in full, not acronym-
-  * **Where:**  ((address_en)) or -Add a link for a virtual appointment-
-
-  # Prepare for the appointment
-
-  Bring with you:
-  * **Identification:**  -Add types of ID required or delete this bullet-
-  * **Documents:**  -List all documents needed and link to them if possible-
-    * [-document 1-](https://link1.ca)
-    * [-document 2-](https://link2.ca)
-  * **Other:** Add more bullets with other items or delete this bullet-
-
-  # If you cannot come to the appointment
-
-  Ask to reschedule:
-  * At least -add notice time- in advance.
-  * Use the information below to contact us directly or [reschedule with this link](https://digital.canada.ca/reschedule/)
-  * If you miss your appointment,-add the consequences.-
-
-  # To contact us directly or through canada.ca
-
-  Directly by:
-  * **Phone:** -phone number-
-  * **Email:** -email-address@canada.gc.ca-
-  * **Other:** -Add other contact here or delete this line-
-
-  By visiting canada.ca
-
-  1. **Search:** In the search bar at the top of the page, enter -use a search term that appears on first page of search results-
-  2. **Select:** From the search results, select -should match search term above-
-  3. **Contact:** Use information on that page to contact our office
-
-  To learn how we protect your privacy, read [-agency or department’s privacy management practices, privacy policy, or privacy notice-](https://link1.ca).
-
-  -sender name-
-  -department-
+  _The English version follows_
   [[/en]]
 
   [[fr]]
-  _Fin de la version anglaise_
-  __________________________
-
   Bonjour ((name)),
 
   **Votre numéro référence, de dossier ou tout autre type de numéro: ((number))**
@@ -108,63 +59,64 @@ content: |
 
   -nom de l’expéditeur-
   -ministère-
-
-  _Fin de la version française_
-  [[/fr]]
-example_content: |
-  [[fr]]
-  _La version française suit_
   [[/fr]]
 
   [[en]]
-  Hello Ali Wang,
+  _End of the French version_
+  __________________________
 
-  **Your file number: 0254**
+  Hello ((name)),
 
-  # Remember your appointment on May 26
-  - **About**: Your application for a position with the Canadian Digital Service (CDS)
-  - **When**: May 26, 2025
-  - **What time**: 3 pm Eastern Daylight Time
-  - **Where**:  219 Laurier Ave West, Ottawa, ON K1A 0R3 
+  **Your -reference, file, other type of number: ((number))**
+
+  # Remember your appointment on ((date_en))
+  * **About:**  -Add description of appointment-
+  * **When:**((date_en))
+  * **What time:**((time_en)) -time zone in full, not acronym-
+  * **Where:**  ((address_en)) or -Add a link for a virtual appointment-
 
   # Prepare for the appointment
 
   Bring with you:
-  - **Identification**: A valid photo ID, or passport
-  - **Forms**: Filled [Gf64 application form](https://digital.canada.ca/jobs/)
-  - **Other**: Add other requirements here
+  * **Identification:**  -Add types of ID required or delete this bullet-
+  * **Documents:**  -List all documents needed and link to them if possible-
+    * [-document 1-](https://link1.ca)
+    * [-document 2-](https://link2.ca)
+  * **Other:** Add more bullets with other items or delete this bullet-
 
   # If you cannot come to the appointment
 
-  Reschedule your appointment:
-  - At least 2 days in advance.
-  - Use the information below to contact us directly or [reschedule your appointment with this link](https://digital.canada.ca/reschedule/)
-
-  _If you miss your appointment, we may dismiss your application._
+  Ask to reschedule:
+  * At least -add notice time- in advance.
+  * Use the information below to contact us directly or [reschedule with this link](https://digital.canada.ca/reschedule/)
+  * If you miss your appointment,-add the consequences.-
 
   # To contact us directly or through canada.ca
 
   Directly by:
-  - **Phone**: 123-456-7890
-  - **Email**: cds-snc@servicecanada.gc.ca
-  - **Other**: Add other contact here here
+  * **Phone:** -phone number-
+  * **Email:** -email-address@canada.gc.ca-
+  * **Other:** -Add other contact here or delete this line-
 
   By visiting canada.ca
 
-  1. **Search**: In the search bar at the top of the page, enter About-Canadian Digital Service 
-  2. **Select**: In the search results, select About-Canadian Digital Service 
-  3. **Contact**: Use information on that page to contact our office
+  1. **Search:** In the search bar at the top of the page, enter -use a search term that appears on first page of search results-
+  2. **Select:** From the search results, select -should match search term above-
+  3. **Contact:** Use information on that page to contact our office
 
-  To learn how we protect your privacy, read [our privacy statement](https://digital.canada.ca/privacy/).
+  To learn how we protect your privacy, read [-agency or department’s privacy management practices, privacy policy, or privacy notice-](https://link1.ca).
 
-  P. Trudelle
-  Canadian Digital Service
+  -sender name-
+  -department-
+
+  _End of the English version_
+  [[/en]]
+example_content: |
+  [[en]]
+  _La version anglaise suit_
   [[/en]]
 
   [[fr]]
-  _Fin de la version anglaise_
-  __________________________
-
   Bonjour Ali Wang,
 
   **Votre numéro de dossier : 0254**
@@ -212,5 +164,53 @@ example_content: |
   P. Trudelle
   Service numérique canadien
 
-  _Fin de la version française_
   [[/fr]]
+
+  [[en]]
+  _Fin de la version française_
+  __________________________
+
+  Hello Ali Wang,
+
+  **Your file number: 0254**
+
+  # Remember your appointment on May 26
+  - **About**: Your application for a position with the Canadian Digital Service (CDS)
+  - **When**: May 26, 2025
+  - **What time**: 3 pm Eastern Daylight Time
+  - **Where**:  219 Laurier Ave West, Ottawa, ON K1A 0R3 
+
+  # Prepare for the appointment
+
+  Bring with you:
+  - **Identification**: A valid photo ID, or passport
+  - **Forms**: Filled [Gf64 application form](https://digital.canada.ca/jobs/)
+  - **Other**: Add other requirements here
+
+  # If you cannot come to the appointment
+
+  Reschedule your appointment:
+  - At least 2 days in advance.
+  - Use the information below to contact us directly or [reschedule your appointment with this link](https://digital.canada.ca/reschedule/)
+  - If you miss your appointment, we may dismiss your application.
+
+  # To contact us directly or through canada.ca
+
+  Directly by:
+  - **Phone**: 123-456-7890
+  - **Email**: cds-snc@servicecanada.gc.ca
+  - **Other**: Add other contact here here
+
+  By visiting canada.ca
+
+  1. **Search**: In the search bar at the top of the page, enter About-Canadian Digital Service 
+  2. **Select**: In the search results, select About-Canadian Digital Service 
+  3. **Contact**: Use information on that page to contact our office
+
+  To learn how we protect your privacy, read [our privacy statement](https://digital.canada.ca/privacy/).
+
+  P. Trudelle
+  Canadian Digital Service
+
+  _End of English version_
+  [[/en]]

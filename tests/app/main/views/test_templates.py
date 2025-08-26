@@ -199,16 +199,23 @@ def test_should_show_empty_page_when_no_templates(
     service_one,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
+    app_,
 ):
     page = client_request.get(
         "main.choose_template",
         service_id=service_one["id"],
     )
+    if app_.config["FF_SAMPLE_TEMPLATES"]:
+        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+        )
+    else:
+        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-    assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-    )
     assert page.select_one("#add_new_folder_form")
     assert page.select_one("#add_new_template_form")
 
@@ -218,16 +225,23 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     service_one: Service,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
+    app_,
 ):
     page = client_request.get(
         "main.choose_template",
         service_id=service_one.id,
     )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-    assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-    )
+    if app_.config["FF_SAMPLE_TEMPLATES"]:
+        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+        )
+    else:
+        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        )
     assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
 
@@ -236,7 +250,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     [
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -249,25 +263,25 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "sms"},
             ["sms_template_one", "sms_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "letter"},
             ["letter_template_one", "letter_template_two"],
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -280,7 +294,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
@@ -300,6 +314,8 @@ def test_should_show_page_for_choosing_a_template(
     expected_page_title,
     app_,
 ):
+    if not app_.config["FF_SAMPLE_TEMPLATES"]:
+        expected_page_title = "Browse Templates"
     service_one["permissions"].append("letter")
     client_request.login(user)
 
