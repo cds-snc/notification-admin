@@ -1,10 +1,10 @@
 id: "2c42e715-22b0-4d55-9263-7316f3093411"
 template_name:
-  en: "EN | fr Two-Factor Security Code"
-  fr: "EN | fr FR Two-Factor Security Code"
+  en: "EN | fr Two-step verification code"
+  fr: "EN | fr FR Two-step verification code"
 notification_type: "email"
 template_category: "authentication"
-pinned: true
+pinned: false
 subject: "Sign in | Connectez-vous"
 content: |
   [[en]]
