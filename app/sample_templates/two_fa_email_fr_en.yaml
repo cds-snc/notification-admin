@@ -1,7 +1,7 @@
 id: "31062d26-5369-4743-9a49-3002fc896bfd"
 template_name:
-  en: "FR | en Two-Factor Security Code"
-  fr: "FR | en FR Two-Factor Security Code"
+  en: "FR | en Two-step verification code"
+  fr: "FR | en Code de vérification à deux étapes"
 notification_type: "email"
 template_category: "authentication"
 pinned: false
