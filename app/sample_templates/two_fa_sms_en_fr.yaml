@@ -1,6 +1,6 @@
 id: "7e877f34-65d4-42d7-a33e-51789cb3bf55"
 template_name:
-  en: "EN | fr Two-Factor Security Code"
+  en: "EN | fr Two-step verification code"
   fr: "EN | fr FR Two-Factor Security Code"
 notification_type: "sms"
 template_category: "authentication"
