@@ -1,7 +1,7 @@
 id: "7ff33d76-dd30-4507-9879-6f8151208292"
 template_name:
   en: "FR | en Blank bilingual template"
-  fr: "FR | en FR Blank bilingual template"
+  fr: "FR | en Gabarit bilingue vierge"
 notification_type: "email"
 template_category: "information blast"
 pinned: false
