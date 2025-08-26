@@ -1,0 +1,48 @@
+id: "7ff33d76-dd30-4507-9879-6f8151208292"
+template_name:
+  en: "FR | en Blank bilingual template"
+  fr: "FR | en FR Blank bilingual template"
+notification_type: "email"
+template_category: "information blast"
+pinned: false
+subject: "Communication générale | General communication"
+content: |
+  [[en]]
+  *English version follows.*
+  [[/en]]
+  [[fr]]
+  Bonjour ((name)),
+
+  Cette portion du message est balisé pour être en français. Les lecteurs d'écran lirons cette portion avec une voix française. 
+  [[/fr]]
+  [[en]]
+  *End of the French version*
+  [[/en]]
+  ---
+  [[en]]
+  Hi ((name)),
+
+  This section of the message is marked as English content. Screen readers will read this section with an English voice. 
+
+  *End of the English version*
+  [[/en]]
+example_content: |
+  [[en]]
+  *English version follows.*
+  [[/en]]
+  [[fr]]
+  Bonjour Jane Smith,
+
+  Cette portion du message est balisé pour être en français. Les lecteurs d'écran lirons cette portion avec une voix française. 
+  [[/fr]]
+  [[en]]
+  *End of the French version*
+  [[/en]]
+  ---
+  [[en]]
+  Hi Jane Smith,
+
+  This section of the message is marked as English content. Screen readers will read this section with an English voice. 
+
+  *End of the English version*
+  [[/en]]
