@@ -3,7 +3,7 @@ template_name:
   en: "FR | en Blank bilingual template"
   fr: "FR | en Gabarit vide bilingue"
 notification_type: "email"
-template_category: "information blast"
+template_category: "general communication"
 pinned: false
 subject: "Communication générale | General communication"
 content: |
