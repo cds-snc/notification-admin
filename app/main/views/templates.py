@@ -1544,8 +1544,6 @@ def create_from_sample_template(service_id, template_type, template_id, template
     if template_type not in ["sms", "email"]:
         abort(404)
 
-    template = get_preview_data(service_id)
-
     lang = get_current_locale(current_app)
     new_template_name = ""
     if lang == "en":
@@ -1554,7 +1552,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
         new_template_name = new_template_data["name_fr"]
 
     # If the template data above is empty, we will switch the fields with data from the sample_template
-    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(new_template_data, template_type)
     form.name.data = form.name.data if form.name.data else new_template_name
     form.template_content.data = (
         form.template_content.data if form.template_content.data else new_template_data["instruction_content"]

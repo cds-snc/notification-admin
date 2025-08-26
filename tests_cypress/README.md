@@ -32,22 +32,30 @@ npx cypress install
 
 #### Top-level values, same between environments
 
-| key                           | description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| ENV                           | The environment to run the tests against        |
-| NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests          |
-| NOTIFY_PASSWORD               | Password of NOTIFY_USER (gmail)                 |
-| IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER  |
+| key                           | description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| ENV                           | The environment to run the tests against               |
+| NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests to check email  |
+| IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER         |
 
 ### Environment-specific values
 
-| key                           | description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| ADMIN_SECRET                  | Secret admin uses to authenticate against API   |
-| CYPRESS_AUTH_CLIENT_SECRET    | Secret for the Cypress auth client              |
-| CYPRESS_USER_PASSWORD         | Password for the cypress notify user            |
-| CACHE_CLEAR_CLIENT_SECRET     | Secret for the cache clearing auth client       |
-| WAF_SECRET                    | Secret to bypass WAF rate limits                |
+| key                           | description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| ADMIN_SECRET                  | Secret admin uses to authenticate against API          |
+| CYPRESS_AUTH_CLIENT_SECRET    | Secret for the Cypress auth client                     |
+| CYPRESS_USER_PASSWORD         | Password for the cypress notify users                  |
+| CACHE_CLEAR_CLIENT_SECRET     | Secret for the cache clearing auth client              |
+| WAF_SECRET                    | Secret to bypass WAF rate limits                       |
+
+### Test user creation
+- When cypress starts, it makes a call to API to create new test users (one regular, and one platform admin).  
+- It does this via the `/cypress` route on API, and uses the `CYPRESS_AUTH_CLIENT_SECRET` to create a JWT.  
+- When it creates the user, it uses the password stored in `CYPRESS_USER_PASSWORD`.
+  
+**IMPORTANT:**
+- **Your API `.env` must have the same value for `CYPRESS_AUTH_CLIENT_SECRET` as `cypress.env.json` in order for cypress to be able to authenticate with API.**
+- **Your API `.env` must have the same value for `CYPRESS_USER_PASSWORD` as `cypress.env.json` in order for API to use the correct password when creating the user accounts.**
 
 ### Setting target environment 🎯
 
