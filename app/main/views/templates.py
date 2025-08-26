@@ -176,8 +176,11 @@ def view_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
 @main.route("/services/<service_id>/templates/preview", methods=["GET", "POST"])
 @user_has_permissions()
-def preview_template(service_id, template_id=None):
-    template = get_preview_data(service_id, template_id)
+def preview_template(service_id, template_id=None, sample_template_id=None):
+    sample_template_id = request.args.get("sample_template_id") or sample_template_id
+    template = (
+        get_preview_data(service_id, sample_template_id) if sample_template_id else get_preview_data(service_id, template_id)
+    )
     if not template:
         # template == {} if the user has not yet clicked the preview link
         template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
@@ -1517,6 +1520,7 @@ def view_sample_library(service_id):
 @main.route("/services/<service_id>/templates/sample-library/<template_id>", methods=["GET"])
 @user_has_permissions()
 def view_sample_template(service_id, template_id):
+    delete_preview_data(service_id, template_id)
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
     # Create a template obj
@@ -1544,6 +1548,8 @@ def create_from_sample_template(service_id, template_type, template_id, template
     if template_type not in ["sms", "email"]:
         abort(404)
 
+    template = get_preview_data(service_id, template_id)
+
     lang = get_current_locale(current_app)
     new_template_name = ""
     if lang == "en":
@@ -1552,7 +1558,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
         new_template_name = new_template_data["name_fr"]
 
     # If the template data above is empty, we will switch the fields with data from the sample_template
-    form, other_category, template_category_hints = _get_categories_and_prepare_form(new_template_data, template_type)
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
     form.name.data = form.name.data if form.name.data else new_template_name
     form.template_content.data = (
         form.template_content.data if form.template_content.data else new_template_data["instruction_content"]
@@ -1584,8 +1590,8 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 "from_page": "view_sample_template",
                 "sample_template_id": template_id,
             }
-            set_preview_data(preview_template_data, service_id)
-            return redirect(url_for(".preview_template", service_id=service_id))
+            set_preview_data(preview_template_data, service_id, template_id)
+            return redirect(url_for(".preview_template", service_id=service_id, sample_template_id=template_id))
         try:
             new_template = service_api_client.create_service_template(
                 form.name.data,
@@ -1633,7 +1639,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 raise e
         else:
             flash(_("‘{}’ template saved").format(form.name.data), "default_with_tick")
-
+            delete_preview_data(service_id, template_id)
             return redirect(
                 url_for(
                     ".view_template",
