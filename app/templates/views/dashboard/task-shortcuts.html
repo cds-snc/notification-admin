@@ -36,7 +36,7 @@
         link_url=url_for('.view_sample_library', service_id=current_service.id),
         link_text=_("Explore our sample library"),
         icon="arrow-right",
-        badge=badge(text="New", hide_icon=true, bg_class='bg-blue-100', testid="dashboard-sample-library-badge", id="dashboard-new-badge"),
+        badge=badge(text=_("New"), hide_icon=true, bg_class='bg-blue-100', testid="dashboard-sample-library-badge", id="dashboard-new-badge"),
         ad="dashboard-new-badge"
       )}}
     {% endif %}
