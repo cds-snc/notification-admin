@@ -106,7 +106,9 @@ def create_temporary_sample_template(template_id: str, current_user_id) -> Dict[
     if not template_data:
         raise ValueError(f"Template with ID {template_id} not found")
     template_categories = template_category_api_client.get_all_template_categories()
-    new_template_data = {}
+    new_template_data: dict[str, Any] = {}
+    new_template_data["template_category_id"] = None
+    new_template_data["template_category"] = None
     for category in template_categories:
         if category["name_en"].lower() == template_data.get("template_category", "").lower():
             new_template_data["template_category_id"] = category["id"]

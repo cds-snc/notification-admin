@@ -19,7 +19,7 @@ content: |
 
   # Rappel de votre rendez-vous du ((date_fr))
 
-  * **Sujet :** -Ajoutez une description du rendez-vous-
+  * **Sujet :** -Ajoutez une description-
   * **Date :** ((date_fr))
   * **Heure :** ((time_fr)) (fuseau horaire en toutes lettres, sans acronyme)
   * **Adresse :** ((address_fr)) ou -Ajoutez un lien dans le cas d’un rendez-vous virtuel-
@@ -71,7 +71,7 @@ content: |
   **Your -reference, file, other type of number: ((number))**
 
   # Remember your appointment on ((date_en))
-  * **About:**  -Add description of appointment-
+  * **About:**  -Add description-
   * **When:**((date_en))
   * **What time:**((time_en)) -time zone in full, not acronym-
   * **Where:**  ((address_en)) or -Add a link for a virtual appointment-
