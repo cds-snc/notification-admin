@@ -1,7 +1,7 @@
 id: "1126e773-abd1-4930-a4e1-1ee20cf579d3"
 template_name:
-  en: "EN | fr Blank bilingual template"
-  fr: "EN | fr Gabarit vide bilingue"
+  en: "EN|fr Blank bilingual template"
+  fr: "EN|fr Gabarit vide bilingue"
 notification_type: "email"
 template_category: "general communication"
 pinned: false
