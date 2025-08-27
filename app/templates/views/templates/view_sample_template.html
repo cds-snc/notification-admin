@@ -5,7 +5,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/api-key.html" import api_key %}
-{% from "components/page-header.html" import page_header %}
+{% from "components/page-header.html" import multi_line_page_header %}
 
 {% block service_page_title %}
   {{ page_title }}
@@ -13,7 +13,7 @@
 
 {% block maincolumn_content %}
 
-    {{ page_header(
+    {{ multi_line_page_header(
         page_title,
         back_link=back_link,
         sub_text=_("Step 1 of 2")

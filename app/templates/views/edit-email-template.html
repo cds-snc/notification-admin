@@ -7,7 +7,8 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/template-category.html" import template_category %}
-{% from "components/template-content.html" import template_content with context%}
+{% from "components/template-content.html" import template_content with context %}
+{% from "components/links.html" import content_link with context %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -15,7 +16,7 @@
 
 {% block maincolumn_content %}
   {% set back_link = back_link if back_link is defined and back_link else (url_for('main.view_template', service_id=current_service.id, template_id=template.id) if template else url_for('main.create_template', service_id=current_service.id, template_folder_id=template_folder_id)) %}
-  
+
   {% if form.errors %}
     <div class="error-message">
       {{ _('There was a problem with your submission. Please check the errors below.') }}
@@ -67,45 +68,29 @@
     form=form,
     field_order=['name', 'subject', 'template_content', 'template_category_id']
   ) %}
-  <div class="grid-row contain-floats md:flex my-gutterAndAHalf">
-    <div class="md:max-w-2/3 flex-1 px-gutterHalf mb-gutterHalf">
-      {{ task_shortcut(
-        description=_("You can put double brackets around a variable to insert custom&nbsp;content."),
-        link_url=gca_url_for('personalisation_guide'),
-        link_text=_("Guide: Send messages with custom content"),
-        icon="arrow-up-right-from-square"
-      )}}
-    </div>
-    <div class="md:max-w-2/3 flex-1 px-gutterHalf mb-gutterHalf">
-      {{ task_shortcut(
-      description=_("You can insert formatting such as bolds&nbsp;and&nbsp;bullets."),
-      link_url=gca_url_for('formatting_guide'),
-      link_text=_("Guide: Insert email formatting"),
-      icon="arrow-up-right-from-square"
-      )
-      }}
-    </div>
-  </div>
 
   <div class="grid-row contain-floats">
     <div class="md:w-2/3 px-gutterHalf">
       {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
 
       {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
+      {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('getting_started'), is_sentence_end=True) %}
+      {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
+      {{ template_content(form.template_content, form.text_direction_rtl, hint=hint, ) }}
 
-      {{ template_content(form.template_content, form.text_direction_rtl) }}
-  
-      <h2 class="heading-medium">{{ _('Template category') }}</h2>
-      {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
-      {{ select(
-        form.template_category_id,
-        hint=_('Template categories help improve delivery of your messages'),
-        option_hints=template_category_hints, option_conditionals=other_category,
-        testid="template-categories",
-        use_aria_labelledby=false
-      ) }}
-      {% endcall %}
-  
+      {% if not is_sample_template %}
+        <h2 class="heading-medium">{{ _('Template category') }}</h2>
+        {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
+        {{ select(
+          form.template_category_id,
+          hint=_('Template categories help improve delivery of your messages'),
+          option_hints=template_category_hints, option_conditionals=other_category,
+          testid="template-categories",
+          use_aria_labelledby=false
+        ) }}
+        {% endcall %}
+      {% endif %}
+
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
       {% endif %}
