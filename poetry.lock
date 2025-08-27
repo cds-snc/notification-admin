@@ -1565,7 +1565,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.2.3"
+version = "53.2.5"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1601,8 +1601,8 @@ werkzeug = "3.0.4"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.3"
-resolved_reference = "8305c53edd3ae1e526513cd39c03b45ea98421c7"
+reference = "fix/bullet-padding"
+resolved_reference = "d5a2fea0e87c2f1d52edd55a9d3878bceda6a7c9"
 
 [[package]]
 name = "openpyxl"
@@ -2782,4 +2782,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "2f2d64240227d4056367fc0c313dce55f6f592e829a6bd23c5d71b6c149de76b"
+content-hash = "b7aaad4dbbf09d74a0283f1420074abdb47ec8ed5c0b8307e9fa5bb30273ace4"
