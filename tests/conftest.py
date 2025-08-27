@@ -3716,7 +3716,7 @@ def mock_create_temporary_sample_template(mocker, sample_template, sample_sms_te
         sample_sms_template["id"]: sample_sms_template,
     }
 
-    def _side_effect(template_id, current_user_id):
+    def _side_effect(template_id, current_user_id, preview=False):
         if template_id not in mapping:
             raise NotFound("sample not found")
         return mapping[template_id]

@@ -6,6 +6,7 @@ notification_type: "email"
 template_category: "general communication"
 pinned: false
 subject: "General communication | Communication générale"
+example_subject: "General communication | Communication générale"
 content: |
   [[fr]]
   *La version française suit*
