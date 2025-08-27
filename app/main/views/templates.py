@@ -1524,7 +1524,7 @@ def view_sample_template(service_id, template_id):
     if not current_app.config["FF_SAMPLE_TEMPLATES"]:
         return redirect(url_for(".choose_template", service_id=service_id))
     # Create a template obj
-    template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
+    template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id, preview=True)
 
     page_title = (
         "Sample {}".format(template["name"])
