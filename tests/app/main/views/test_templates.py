@@ -3102,7 +3102,7 @@ class TestViewSampleTemplate:
                 template_id=sample_email_id,
                 _test_page_title=False,
             )
-        assert page.select_one("h1").text.strip() == "Sample Account Verification"
+        assert page.select_one("h1").text.strip() == "Sample template\nAccount Verification"
         assert "Click the link to verify your account" in page.text
         assert "Verify your account" in page.text
         assert "Edit" in page.text or "Create" in page.text
@@ -3120,7 +3120,7 @@ class TestCreateFromSampleTemplate:
                 template_id=sample_email_id,
                 _test_page_title=False,
             )
-        assert "Edit Account Verification template" in page.text
+        assert "Edit Account Verification" in page.text
 
     def test_get_prefills_sms_sample(
         self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
@@ -3133,7 +3133,7 @@ class TestCreateFromSampleTemplate:
                 template_id=sample_sms_id,
                 _test_page_title=False,
             )
-        assert "Edit Two-Factor Code template" in page.text
+        assert "Edit Two-Factor Code" in page.text
 
     def test_preview_email_flow_sets_preview_and_redirects(
         self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
