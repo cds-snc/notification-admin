@@ -8,7 +8,7 @@
 {% from "components/page-header.html" import multi_line_page_header %}
 
 {% block service_page_title %}
-  {{ page_title }}
+    {{ (page_title | join(' ')) | e }}
 {% endblock %}
 
 {% block maincolumn_content %}
