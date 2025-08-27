@@ -174,10 +174,14 @@ def view_template(service_id, template_id):
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
+@main.route(
+    "/services/<service_id>/templates/sample/<uuid:sample_template_id>/preview",
+    methods=["GET", "POST"],
+    endpoint="preview_template_sample",
+)
 @main.route("/services/<service_id>/templates/preview", methods=["GET", "POST"])
 @user_has_permissions()
 def preview_template(service_id, template_id=None, sample_template_id=None):
-    sample_template_id = request.args.get("sample_template_id") or sample_template_id
     template = (
         get_preview_data(service_id, sample_template_id) if sample_template_id else get_preview_data(service_id, template_id)
     )
@@ -1590,7 +1594,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 "sample_template_id": template_id,
             }
             set_preview_data(preview_template_data, service_id, template_id)
-            return redirect(url_for(".preview_template", service_id=service_id, sample_template_id=template_id))
+            return redirect(url_for(".preview_template_sample", service_id=service_id, sample_template_id=template_id))
         try:
             new_template = service_api_client.create_service_template(
                 form.name.data,
