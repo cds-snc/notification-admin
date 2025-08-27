@@ -1526,7 +1526,10 @@ def view_sample_template(service_id, template_id):
     # Create a template obj
     template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
 
-    page_title = [_l("Sample template"), template["name"]]
+    page_title = [
+        _l("Sample template"),
+        template["name"] if get_current_locale(current_app) == "en" else template["name_fr"],
+    ]
 
     return render_template(
         "views/templates/view_sample_template.html",
