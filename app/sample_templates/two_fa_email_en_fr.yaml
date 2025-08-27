@@ -4,7 +4,7 @@ template_name:
   fr: "EN | fr Code de vérification à deux étapes"
 notification_type: "email"
 template_category: "authentication"
-pinned: true
+pinned: false
 subject: "Sign in | Connectez-vous"
 content: |
   [[en]]
