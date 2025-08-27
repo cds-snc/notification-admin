@@ -1,7 +1,7 @@
 id: "7e877f34-65d4-42d7-a33e-51789cb3bf55"
 template_name:
-  en: "EN | fr Two-step verification code"
-  fr: "EN | fr FR Two-step verification code"
+  en: "EN|fr Two-step verification code"
+  fr: "EN|fr Code de vérification à deux étapes"
 notification_type: "sms"
 template_category: "authentication"
 pinned: true
