@@ -1672,5 +1672,4 @@ def create_from_sample_template(service_id, template_type, template_id, template
             template_category_mode="expand",
             from_page="view_sample_template",
             back_link=url_for(".view_sample_template", service_id=service_id, template_id=template_id),
-            is_sample_template=True,
         )
