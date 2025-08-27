@@ -342,3 +342,44 @@ class TestSampleTemplateUtils:
                     expected_timestamp = "2023-01-01T12:00:00"
                     assert result["created_at"] == expected_timestamp
                     assert result["updated_at"] == expected_timestamp
+
+    @pytest.mark.parametrize(
+        "preview, expected_subject",
+        [
+            (True, "Example Subject with Personalization"),
+            (False, "Regular Subject"),
+        ],
+    )
+    @patch("app.sample_template_utils.template_category_api_client.get_all_template_categories")
+    def test_create_temporary_sample_template_preview_parameter(
+        self, mock_get_categories, preview, expected_subject, mock_template_categories, app_
+    ):
+        """Test create_temporary_sample_template uses correct subject based on preview parameter."""
+        mock_get_categories.return_value = mock_template_categories
+        current_user_id = "user-123"
+
+        template_data = {
+            "id": "test-id",
+            "template_name": {"en": "Test Template", "fr": "Gabarit de test"},
+            "template_category": "authentication",
+            "subject": "Regular Subject",
+            "example_subject": "Example Subject with Personalization",
+            "content": "Regular content",
+            "example_content": "Example content with personalization",
+            "notification_type": "email",
+        }
+
+        with patch("app.sample_template_utils.get_sample_template_by_id", return_value=template_data):
+            with app_.app_context():
+                result = create_temporary_sample_template(template_id="test-id", current_user_id=current_user_id, preview=preview)
+
+                # Subject should match expectation based on preview parameter
+                assert result["subject"] == expected_subject
+                assert result["content"] == "Example content with personalization"
+
+                # Other fields should remain the same
+                assert result["id"] == "test-id"
+                assert result["name"] == "Test Template"
+                assert result["name_fr"] == "Gabarit de test"
+                assert result["template_type"] == "email"
+                assert result["created_by"] == current_user_id
