@@ -48,8 +48,8 @@
       sample_template_button: `
       {% if config["FF_SAMPLE_TEMPLATES"] %}
         {{ indicator(
-          '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
-          badge('New', bg_class='bg-blue-100', hide_icon=true)
+          '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button mt-4 button-secondary border-y-0 cursor-pointer"></a>',
+          badge(_('New'), bg_class='bg-blue-100', hide_icon=true)
         )}}
       {% endif %}`,
     }
