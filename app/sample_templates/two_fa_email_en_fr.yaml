@@ -1,7 +1,7 @@
 id: "2c42e715-22b0-4d55-9263-7316f3093411"
 template_name:
-  en: "EN | fr Two-step verification code"
-  fr: "EN | fr Code de vérification à deux étapes"
+  en: "EN|fr Two-step verification code"
+  fr: "EN|fr Code de vérification à deux étapes"
 notification_type: "email"
 template_category: "authentication"
 pinned: false
