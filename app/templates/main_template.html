@@ -166,14 +166,12 @@
 
 {% block body_start %}{% endblock %}
 
-<div id="skiplink-container">
-  <div>
+<nav id="skiplink-container" aria-label="{{ _('Skip') }}">
     <a
       href="#main_content"
       class="skiplink"
     >{{ _('Skip to main content') }}</a>
-  </div>
-</div>
+</nav>
 {% block gc_header %}
 
 {% if g.preview_url %}
