@@ -2,12 +2,11 @@
 
 .indicator-relative {
   position: relative;
-  display: inline-block;
+  display: flex;
   overflow: visible;
 }
 
 .indicator-corner {
-  position: absolute;
-  top: -16px;
-  right: -30px;
+  margin-left: -30px;
+  margin-top: -15px;
 }
