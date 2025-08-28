@@ -335,14 +335,17 @@
     this.buildEmptyStateButtons = function () {
       let emptyStateBtns = $(`
         <div id="nothing_selected">
-          <div class="js-stick-at-bottom-when-scrolling">
-            <button class="button mt-4" type="submit" value="add-new-template">${window.polyglot.t(
+          <div class="js-stick-at-bottom-when-scrolling" style="display: flex;
+gap: 1.5rem 1rem;
+align-items: flex-start;
+flex-wrap: wrap;">
+            <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
               "new_template_button",
             )}</button>
-            <button class="button mt-4 js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
+            <button class="button js-button-action button-secondary copy-template" type="button" value="copy-template">${window.polyglot.t(
               "copy_template_button",
             )}</button>
-            <button class="button mt-4 js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
+            <button class="button js-button-action button-secondary" type="button" value="add-new-folder">${window.polyglot.t(
               "new_folder_button",
             )}</button>
             ${window.APP_COMPONENTS.sample_template_button}
