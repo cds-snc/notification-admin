@@ -1,6 +1,7 @@
 {% from "components/pill.html" import pill %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/table.html" import list_table, field %}
+{% from "components/template_name.html" import sample_template_name %}
 
 {% extends "admin_template.html" %}
 
@@ -33,12 +34,12 @@
       testid="sample-templates-table"
     ) %}
       {% call field() %}
-        <div class="flex items-center">
+        <div class="flex items-center ml-3">
           {% if item.pinned %}
             <i class="fa-solid fa-thumbtack mr-4 text-yellow-300"></i>
           {% endif %}
           <a href="{{ url_for('main.view_sample_template', service_id=current_service.id, template_id=item.id) }}">
-            {{ item.template_name.get(lang) }}
+            {{ sample_template_name(item.template_name.get(lang)) }}
           </a>
         </div>
       {% endcall %}
