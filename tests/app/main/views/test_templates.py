@@ -3189,7 +3189,7 @@ class TestCreateFromSampleTemplate:
                 },
                 _expected_status=302,
                 _expected_redirect=url_for(
-                    "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="sample-template"
+                    "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="ga_sample_template"
                 ),
             )
         mocked_create.assert_called_once()
