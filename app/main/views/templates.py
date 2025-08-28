@@ -246,6 +246,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         ".view_template",
                         service_id=service_id,
                         template_id=template_id,
+                        source="ga_sample_template" if sample_template_id else None,
                     )
                 )
             except HTTPError as e:
@@ -1652,6 +1653,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
                     ".view_template",
                     service_id=service_id,
                     template_id=new_template["data"]["id"],
+                    source="ga_sample_template",
                 )
             )
 
