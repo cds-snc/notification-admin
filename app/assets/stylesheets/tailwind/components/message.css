@@ -78,7 +78,7 @@
     @apply px-0 pt-gutterHalf pb-4 text-gray-grey1;
   }
   .template-list-selected-counter {
-    @apply text-gray-grey1 mx-0 my-gutterHalf;
+    @apply text-gray-grey1 mx-0 my-gutterHalf basis-full;
   }
   @screen lg {
     .template-list-selected-counter {

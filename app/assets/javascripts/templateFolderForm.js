@@ -335,10 +335,7 @@
     this.buildEmptyStateButtons = function () {
       let emptyStateBtns = $(`
         <div id="nothing_selected">
-          <div class="js-stick-at-bottom-when-scrolling" style="display: flex;
-gap: 1.5rem 1rem;
-align-items: flex-start;
-flex-wrap: wrap;">
+          <div class="js-stick-at-bottom-when-scrolling">
             <button class="button" type="submit" value="add-new-template">${window.polyglot.t(
               "new_template_button",
             )}</button>

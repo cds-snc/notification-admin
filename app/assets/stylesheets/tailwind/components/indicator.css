@@ -7,6 +7,5 @@
 }
 
 .indicator-corner {
-  margin-left: -30px;
-  margin-top: -15px;
+  @apply -ml-gutterHalf -mt-4
 }

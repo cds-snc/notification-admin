@@ -6,7 +6,7 @@
   .js-stick-at-top-when-scrolling,
   .js-stick-at-bottom-when-scrolling {
     margin-left: -15px;
-    @apply overflow-hidden p-0 pt-4 pl-gutterHalf relative;
+    @apply overflow-hidden p-0 pt-4 pl-gutterHalf relative flex gap-gutterHalf flex-wrap items-center;
   }
   .js-stick-at-top-when-scrolling .form-group,
   .js-stick-at-bottom-when-scrolling .form-group {
