@@ -1536,11 +1536,15 @@ def view_sample_template(service_id, template_id):
         template["name"] if get_current_locale(current_app) == "en" else template["name_fr"],
     ]
 
+    back_link = url_for(".view_sample_library", service_id=service_id, type="email")
+    if template["template_type"] == "sms":
+        back_link = url_for(".view_sample_library", service_id=service_id, type="sms")
+
     return render_template(
         "views/templates/view_sample_template.html",
         page_title=page_title,
         template=get_email_preview_template(template, template_id, service_id),
-        back_link=url_for(".view_sample_library", service_id=service_id),
+        back_link=back_link,
     )
 
 
