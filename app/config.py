@@ -80,7 +80,6 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
-    FF_AUTH_V2 = env.bool("FF_AUTH_V2", False)
     FF_SAMPLE_TEMPLATES = env.bool("FF_SAMPLE_TEMPLATES", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
@@ -192,7 +191,6 @@ class Development(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     FF_SAMPLE_TEMPLATES = True
-    FF_AUTH_V2 = True
 
 
 class Test(Development):
@@ -217,7 +215,6 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_ANNUAL_LIMIT = True
-    FF_AUTH_V2 = True
     FF_SAMPLE_TEMPLATES = True
 
 
@@ -243,7 +240,6 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_ANNUAL_LIMIT = False
-    FF_AUTH_V2 = False
     FF_SAMPLE_TEMPLATES = False
 
 

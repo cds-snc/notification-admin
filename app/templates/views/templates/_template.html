@@ -24,7 +24,7 @@
           <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
             {{ _('Yes, add recipients') }}
           </a>
-          {% if config["FF_AUTH_V2"] and template.template_type == 'sms' %}
+          {% if template.template_type == 'sms' %}
             {% if not current_user.mobile_number %}
               <a href="{{ url_for('.user_profile_mobile_number', from_send_page='send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary" data-testid="send-test">{{ _('No, send yourself this message') }}</a>
             {% elif not current_user.verified_phonenumber %}

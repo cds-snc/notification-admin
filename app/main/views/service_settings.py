@@ -89,7 +89,6 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict(
                 "endpoint": ".service_set_inbound_number",
             },
         ),
-        ("email_auth", {"title": _l("Email authentication")}),  # TODO: remove this when FF_AUTH_V2 is removed
         ("upload_letters", {"title": _l("Uploading letters"), "requires": "letter"}),
     ]
 )
@@ -98,12 +97,9 @@ PLATFORM_ADMIN_SERVICE_PERMISSIONS = OrderedDict(
 @main.route("/services/<service_id>/service-settings")
 @user_has_permissions("manage_service", "manage_api_keys")
 def service_settings(service_id: str):
-    if current_app.config["FF_AUTH_V2"]:
-        # remove the "email_auth" permission from the list of service permissions
-        service_permissions = PLATFORM_ADMIN_SERVICE_PERMISSIONS.copy()
-        service_permissions.pop("email_auth", None)
-    else:
-        service_permissions = PLATFORM_ADMIN_SERVICE_PERMISSIONS
+    # remove the "email_auth" permission from the list of service permissions
+    service_permissions = PLATFORM_ADMIN_SERVICE_PERMISSIONS.copy()
+    service_permissions.pop("email_auth", None)
 
     limits = {
         "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
@@ -906,15 +902,6 @@ def service_set_channel(service_id, channel):
             "free_yearly_email": current_app.config["FREE_YEARLY_EMAIL_LIMIT"],
             "free_yearly_sms": current_app.config["FREE_YEARLY_SMS_LIMIT"],
         },
-    )
-
-
-# TODO: Remove this route AND TEMPLATE when we remove FF_AUTH_V2
-@main.route("/services/<service_id>/service-settings/set-auth-type", methods=["GET"])
-@user_has_permissions("manage_service")
-def service_set_auth_type(service_id):
-    return render_template(
-        "views/service-settings/set-auth-type.html",
     )
 
 

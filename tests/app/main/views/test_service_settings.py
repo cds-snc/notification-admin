@@ -53,121 +53,6 @@ def mock_get_service_settings_page_common(
     return
 
 
-# TODO: REMOVE THIS TEST WHEN FF_AUTH_V2 IS REMOVED
-@pytest.mark.parametrize(
-    "user, sending_domain, expected_rows",
-    [
-        (
-            create_active_user_with_permissions(),
-            None,
-            [
-                "Label Value Action",
-                "Service name Test Service Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses Not set Manage",
-                "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
-            ],
-        ),
-        (
-            create_platform_admin_user(),
-            "test.example.com",
-            [
-                "Label Value Action",
-                "Service name Test Service Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses Not set Manage",
-                "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
-                "Label Value Action",
-                "Live On Change",
-                "Count in list of live services Yes Change",
-                "Organisation Test Organisation Government of Canada Change",
-                "Daily email limit 1,000 Change",
-                "Daily text message limit 1,000 Change",
-                "Annual email limit 20,000,000 Change",
-                "Annual text message limit 100,000 Change",
-                "API rate limit per minute 100",
-                "Text message senders GOVUK Manage",
-                "Receive text messages Off Change",
-                "Free text messages per fiscal year 250,000 Change",
-                "Email branding English Government of Canada signature Change",
-                "Data retention email Change",
-                "Receive inbound SMS Off Change",
-                "Email authentication Off Change",
-            ],
-        ),
-    ],
-)
-def test_should_show_overview_inc_sms_daily_limit_REMOVE_FF(
-    client,
-    mocker,
-    api_user_active,
-    fake_uuid,
-    no_reply_to_email_addresses,
-    no_letter_contact_blocks,
-    mock_get_service_organisation,
-    single_sms_sender,
-    user,
-    sending_domain,
-    expected_rows,
-    mock_get_service_settings_page_common,
-    app_,
-):
-    with set_config(app_, "FF_AUTH_V2", False):
-        # TODO FF_ANNUAL_LIMIT removal
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):
-            service_one = service_json(
-                SERVICE_ONE_ID,
-                users=[api_user_active["id"]],
-                permissions=["sms", "email"],
-                organisation_id=ORGANISATION_ID,
-                restricted=False,
-                sending_domain=sending_domain,
-            )
-            mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
-
-            client.login(user, mocker, service_one)
-            response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-            assert response.status_code == 200
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-            assert page.find("h1").text == "Settings"
-            rows = page.select("tr")
-            for index, row in enumerate(expected_rows):
-                formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-                visible = rows[index]
-                sr_only = visible.find("span", "sr-only")
-                if sr_only:
-                    sr_only.extract()
-                    assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-                assert formatted_row == " ".join(rows[index].text.split())
-            app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
-
-
 @pytest.mark.parametrize(
     "user, sending_domain, expected_rows",
     [
@@ -249,34 +134,33 @@ def test_should_show_overview_inc_sms_daily_limit(
     mock_get_service_settings_page_common,
     app_,
 ):
-    with set_config(app_, "FF_AUTH_V2", True):
-        # TODO FF_ANNUAL_LIMIT removal
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):
-            service_one = service_json(
-                SERVICE_ONE_ID,
-                users=[api_user_active["id"]],
-                permissions=["sms", "email"],
-                organisation_id=ORGANISATION_ID,
-                restricted=False,
-                sending_domain=sending_domain,
-            )
-            mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        service_one = service_json(
+            SERVICE_ONE_ID,
+            users=[api_user_active["id"]],
+            permissions=["sms", "email"],
+            organisation_id=ORGANISATION_ID,
+            restricted=False,
+            sending_domain=sending_domain,
+        )
+        mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
-            client.login(user, mocker, service_one)
-            response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
-            assert response.status_code == 200
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-            assert page.find("h1").text == "Settings"
-            rows = page.select("tr")
-            for index, row in enumerate(expected_rows):
-                formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
-                visible = rows[index]
-                sr_only = visible.find("span", "sr-only")
-                if sr_only:
-                    sr_only.extract()
-                    assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-                assert formatted_row == " ".join(rows[index].text.split())
-            app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
+        client.login(user, mocker, service_one)
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+        assert response.status_code == 200
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        assert page.find("h1").text == "Settings"
+        rows = page.select("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
+            visible = rows[index]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(rows[index].text.split())
+        app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
 
 
 def test_no_go_live_link_for_service_without_organisation(
@@ -328,90 +212,6 @@ def test_organisation_name_links_to_org_dashboard(
 
     assert org_row.find("a")["href"] == url_for("main.organisation_dashboard", org_id=ORGANISATION_ID)
     assert normalize_spaces(org_row.find("a").text) == "Test Organisation"
-
-
-# TODO: REMOVE THIS TEST WHEN FF_AUTH_V2 IS REMOVED
-@pytest.mark.parametrize(
-    "permissions, expected_rows",
-    [
-        (
-            ["email", "sms", "inbound_sms", "international_sms"],
-            [
-                "Service name service one Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Text message code Change",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses test@example.com Manage",
-                "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages On Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
-            ],
-        ),
-        (
-            ["email", "sms", "email_auth"],
-            [
-                "Service name service one Change",
-                "Sending email address name test.service@{sending_domain} Change",
-                "Sign-in method Email code or text message code Change",
-                "API rate limit per minute 100 calls",
-                "Label Value Action",
-                "Send emails On Change",
-                "Reply-to addresses test@example.com Manage",
-                "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
-                "Label Value Action",
-                "Send text messages On Change",
-                "Start text messages with service name On Change",
-                "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
-            ],
-        ),
-    ],
-)
-def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_limit_REMOVE_FF(
-    client,
-    active_user_with_permissions,
-    mocker,
-    service_one,
-    single_reply_to_email_address,
-    single_letter_contact_block,
-    single_sms_sender,
-    mock_get_service_organisation,
-    mock_get_email_branding,
-    mock_get_service_settings_page_common,
-    permissions,
-    expected_rows,
-    app_,
-):
-    with set_config(app_, "FF_AUTH_V2", False):
-        # TODO FF_ANNUAL_LIMIT removal
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):
-            client.login(active_user_with_permissions, mocker, service_one)
-            service_one["permissions"] = permissions
-            service_one["email_branding"] = uuid4()
-            response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-            rows = page.find_all("tr")
-            for index, row in enumerate(expected_rows):
-                formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-                visible = rows[index + 1]
-                sr_only = visible.find("span", "sr-only")
-                if sr_only:
-                    sr_only.extract()
-                    assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-                assert formatted_row == " ".join(visible.text.split())
 
 
 @pytest.mark.parametrize(
@@ -476,23 +276,22 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     expected_rows,
     app_,
 ):
-    with set_config(app_, "FF_AUTH_V2", True):
-        # TODO FF_ANNUAL_LIMIT removal
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):
-            client.login(active_user_with_permissions, mocker, service_one)
-            service_one["permissions"] = permissions
-            service_one["email_branding"] = uuid4()
-            response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-            rows = page.find_all("tr")
-            for index, row in enumerate(expected_rows):
-                formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
-                visible = rows[index + 1]
-                sr_only = visible.find("span", "sr-only")
-                if sr_only:
-                    sr_only.extract()
-                    assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
-                assert formatted_row == " ".join(visible.text.split())
+    # TODO FF_ANNUAL_LIMIT removal
+    with set_config(app_, "FF_ANNUAL_LIMIT", True):
+        client.login(active_user_with_permissions, mocker, service_one)
+        service_one["permissions"] = permissions
+        service_one["email_branding"] = uuid4()
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        rows = page.find_all("tr")
+        for index, row in enumerate(expected_rows):
+            formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
+            visible = rows[index + 1]
+            sr_only = visible.find("span", "sr-only")
+            if sr_only:
+                sr_only.extract()
+                assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
+            assert formatted_row == " ".join(visible.text.split())
 
 
 def test_if_cant_send_letters_then_cant_see_letter_contact_block(
@@ -1606,28 +1405,6 @@ def test_route_for_platform_admin(
     )
 
 
-# TODO: REMOVE THIS TEST WHEN FF_AUTH_V2 IS REMOVED
-def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender_REMOVE_FF(
-    client_request,
-    service_one,
-    multiple_reply_to_email_addresses,
-    multiple_letter_contact_blocks,
-    mock_get_service_organisation,
-    multiple_sms_senders,
-    mock_get_service_settings_page_common,
-    app_,
-):
-    with set_config(app_, "FF_AUTH_V2", False):
-        service_one["permissions"] = ["email", "sms"]
-
-        page = client_request.get("main.service_settings", service_id=service_one["id"])
-
-        def get_row(page, index):
-            return normalize_spaces(page.select("tbody tr")[index].text)
-
-        assert get_row(page, 5) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
-
-
 def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     client_request,
     service_one,
@@ -1638,15 +1415,14 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     mock_get_service_settings_page_common,
     app_,
 ):
-    with set_config(app_, "FF_AUTH_V2", True):
-        service_one["permissions"] = ["email", "sms"]
+    service_one["permissions"] = ["email", "sms"]
 
-        page = client_request.get("main.service_settings", service_id=service_one["id"])
+    page = client_request.get("main.service_settings", service_id=service_one["id"])
 
-        def get_row(page, index):
-            return normalize_spaces(page.select("tbody tr")[index].text)
+    def get_row(page, index):
+        return normalize_spaces(page.select("tbody tr")[index].text)
 
-        assert get_row(page, 4) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    assert get_row(page, 4) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(

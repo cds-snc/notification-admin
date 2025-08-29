@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from typing import Dict
 
 from notifications_python_client.errors import HTTPError
-from notifications_utils.decorators import requires_feature
 
 from app.extensions import redis_client
 from app.models.roles_and_permissions import (
@@ -172,7 +171,6 @@ class UserApiClient(NotifyAdminAPIClient):
                 return False, e.message
             raise e
 
-    @requires_feature("FF_AUTH_V2")
     def validate_2fa_method(self, user_id, code, code_type):
         data = {"code_type": code_type, "code": code}
         endpoint = "/user/{}/verify-2fa".format(user_id)
