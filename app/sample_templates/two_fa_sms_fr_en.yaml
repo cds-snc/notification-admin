@@ -1,0 +1,11 @@
+id: "0ce60dab-b77d-4289-ab01-954261467c20"
+template_name:
+  en: "FR|en Two-step verification code"
+  fr: "FR|en Code de vérification à deux étapes"
+notification_type: "sms"
+template_category: "authentication"
+pinned: false
+content: |
+  ((verify_code)) est votre code de vérification de -nom de l'application- | ((verify_code)) is your -application name- verification code
+example_content: |
+  12345 est votre code de vérification de Notification GC | 12345 is your GC Notify verification code

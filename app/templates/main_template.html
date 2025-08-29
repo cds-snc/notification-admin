@@ -13,6 +13,9 @@
   {% include 'partials/google-tag-manager-head.html' %}
   {% include 'partials/qualtrics-head.html' %}
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  {% from "components/indicator.html" import indicator %}
+  {% from "components/badge.html" import badge %}
+
   <link
     rel="stylesheet"
     media="screen"
@@ -42,13 +45,26 @@
   />
   <script nonce="{{ request_nonce }}">
     window.APP_LANG = "{{ current_lang }}"
+    window.APP_COMPONENTS = {
+      sample_template_button: `
+      {% set badge_text = _('New') %}
+      {% if config["FF_SAMPLE_TEMPLATES"] %}
+        {{ indicator(
+          '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
+          badge(badge_text, bg_class='bg-blue-100', hide_icon=true)
+        )}}
+      {% endif %}`,
+    }
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
+      new: "{{ _('New') }}",
       done: "{{ _('Done') }}",
       new_template_button: "{{ _('Create template') }}",
-      copy_template_button: "{{ _('Copy template') }}",
       new_folder_button: "{{ _('New folder') }}",
+      sample_library_button: "{{ _('Sample library')  }}",
+      copy_template_button: "{{ _('Copy template') }}",
       nothing_selected: "{{ _('Nothing selected') }}",
+      sample_library_url: "{% if current_service and current_service.id %}{{ url_for('.view_sample_library', service_id=current_service.id) }}{% else %}/sample-library{% endif %}",
       create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
       selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
       move_template_legend: "{{ _('Move templates to a new or existing folder') }}",
@@ -102,6 +118,31 @@
       branding_request_display_size: "{{ _('display size:') }}",
       branding_request_brand_error:  "{{ _('Enter the name of the logo') }}",
       branding_request_logo_error:  "{{ _('You must select a file to continue') }}",
+      address_en: "{{ _('Address') }}",
+      address_fr: "{{ _('Address') }}",
+      api_key_gc_notify: "{{ _('API key (GC Notify)') }}",
+      bank_account_canada: "{{ _('Canadian bank account') }}",
+      credit_card: "{{ _('Credit card') }}",
+      drivers_license_alberta: "{{ _('Driver’s license (Alberta)') }}",
+      drivers_license_manitoba: "{{ _('Driver’s license (Manitoba)') }}",
+      drivers_license_newfoundland: "{{ _('Driver’s license (Newfoundland)') }}",
+      drivers_license_nova_scotia: "{{ _('Driver’s license (Nova Scotia)') }}",
+      drivers_license_ontario: "{{ _('Driver’s license (Ontario)') }}",
+      drivers_license_quebec: "{{ _('Driver’s license (Quebec)') }}",
+      health_card_alberta: "{{ _('Health card (Alberta)') }}",
+      health_card_newfoundland: "{{ _('Health card (Newfoundland)') }}",
+      health_card_nova_scotia: "{{ _('Health card (Nova Scotia)') }}",
+      health_card_nwt: "{{ _('Health card (NWT)') }}",
+      health_card_ontario: "{{ _('Health card (Ontario)') }}",
+      health_card_quebec: "{{ _('Health card (Quebec)') }}",
+      ip_address: "{{ _('IP address') }}",
+      passport_canada: "{{ _('Canadian passport') }}",
+      phone_number: "{{ _('Phone number') }}",
+      po_box: "{{ _('P.O. Box') }}",
+      postal_code: "{{ _('Postal code') }}",
+      sin: "{{ _('Social insurance number') }}",
+      pri: "{{ _('Personal record identifier') }}",
+      "7+_digit_number": "{{ _('Possible identifier') }}"
     }
 
   </script>

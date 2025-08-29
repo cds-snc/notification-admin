@@ -452,6 +452,10 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
+def format_email_sms(notification_type):
+    return {"email": _("Email"), "sms": _("Text message")}[notification_type]
+
+
 def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None, feedback_reason=None):
     if template_type == "sms" and provider_response:
         return _(provider_response)
@@ -864,6 +868,7 @@ def add_template_filters(application):
         translate_preview_template,
         format_notification_status,
         format_notification_type,
+        format_email_sms,
         format_notification_status_as_time,
         format_notification_status_as_field_status,
         format_notification_status_as_url,

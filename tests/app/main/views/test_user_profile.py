@@ -9,6 +9,7 @@ from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 
+from app import User
 from tests.conftest import (
     SERVICE_ONE_ID,
     TEMPLATE_ONE_ID,
@@ -140,11 +141,9 @@ def test_should_redirect_after_mobile_number_change(
         _data={"mobile_number": phone_number_to_register_with},
         _expected_status=302,
         _expected_redirect=url_for(
-            "main.user_profile_mobile_number_authenticate",
+            "main.user_profile",
         ),
     )
-    with client_request.session_transaction() as session:
-        assert session["new-mob"] == phone_number_to_register_with
 
 
 def test_should_show_authenticate_after_mobile_number_change(
@@ -178,15 +177,14 @@ def test_should_redirect_after_mobile_number_authenticate(
     )
 
 
-def test_should_show_confirm_after_mobile_number_change(
-    client_request,
-):
+def test_should_show_confirm_after_mobile_number_change(client_request, mock_validate_2fa_method, mocker):
     with client_request.session_transaction() as session:
         session["new-mob-password-confirmed"] = True
+
     page = client_request.get("main.user_profile_mobile_number_confirm")
 
     assert "Check your phone messages" in page.text
-    assert "Confirm" in page.text
+    assert "Verify" in page.text
 
 
 @pytest.mark.parametrize(
@@ -203,31 +201,34 @@ def test_should_redirect_after_mobile_number_confirm(
     mock_check_verify_code,
     fake_uuid,
     phone_number_to_register_with,
+    mock_validate_2fa_method,
+    app_,
 ):
     user_before = create_api_user_active(with_unique_id=True)
     user_after = create_api_user_active(with_unique_id=True)
     user_before["current_session_id"] = str(uuid.UUID(int=1))
     user_after["current_session_id"] = str(uuid.UUID(int=2))
 
-    # first time (login decorator) return normally, second time (after 2FA return with new session id)
-    client_request.login(user_before)
-    mocker.patch("app.user_api_client.get_user", return_value=user_after)
+    with set_config(app_, "FF_AUTH_V2", True):
+        # first time (login decorator) return normally, second time (after 2FA return with new session id)
+        client_request.login(user_before)
+        mocker.patch("app.user_api_client.get_user", return_value=user_after)
 
-    with client_request.session_transaction() as session:
-        session["new-mob-password-confirmed"] = True
-        session["new-mob"] = phone_number_to_register_with
-        session["current_session_id"] = user_before["current_session_id"]
+        with client_request.session_transaction() as session:
+            session["new-mob-password-confirmed"] = True
+            session["new-mob"] = phone_number_to_register_with
+            session["current_session_id"] = user_before["current_session_id"]
 
-    client_request.post(
-        "main.user_profile_mobile_number_confirm",
-        _data={"two_factor_code": "12345"},
-        _expected_status=302,
-        _expected_redirect=url_for("main.user_profile"),
-    )
+        client_request.post(
+            "main.user_profile_mobile_number_confirm",
+            _data={"two_factor_code": "12345"},
+            _expected_status=302,
+            _expected_redirect=url_for("main.user_profile"),
+        )
 
-    # make sure the current_session_id has changed to what the API returned
-    with client_request.session_transaction() as session:
-        assert session["current_session_id"] == user_after["current_session_id"]
+        # make sure the current_session_id has changed to what the API returned
+        with client_request.session_transaction() as session:
+            assert session["current_session_id"] == user_after["current_session_id"]
 
 
 def test_should_show_password_page(
@@ -274,6 +275,9 @@ def test_deleting_security_key(
     delete_mock = mocker.patch("app.user_api_client.delete_security_key_user")
     key_id = "security_key_id"
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     # Listing keys
     with captured_templates(app_) as templates:
         client_request.get(("main.user_profile_security_keys_confirm_delete"), keyid=key_id)
@@ -296,11 +300,14 @@ def test_deleting_security_key(
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
     register_mock = mocker.patch("app.user_api_client.register_security_key", return_value={"data": "blob"})
 
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
     # Listing keys
     with captured_templates(app_) as templates:
         page = client_request.get(("main.user_profile_add_security_keys"))
         assert 'data-button-id="register-key"' in str(page)  # Used by JS
-        template, context = templates[0]
+        template, _ = templates[0]
         assert template.name == "views/user-profile/add-security-keys.html"
 
     # Register key
@@ -328,6 +335,39 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
     response = client_request.post(("main.user_profile_authenticate_security_keys"), _expected_status=200)
     assert response.text == "fake"
     mock.assert_called_once_with(api_nongov_user_active["id"])
+
+
+def test_user_profile_add_security_keys_shows_duplicate_message(
+    client_request,
+    mock_get_user,
+    mock_get_service,
+    mock_update_user_attribute,
+    mock_get_security_keys,
+):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+    page = client_request.get("main.user_profile_add_security_keys", **{"duplicate": "1"})
+    # Check that the flash message is displayed
+    flash_messages = page.select(".banner-dangerous")
+    assert len(flash_messages) == 1
+    assert "This security key is already registered" in flash_messages[0].get_text()
+    assert "Please use a different key or remove the existing one first" in flash_messages[0].get_text()
+
+
+def test_user_profile_add_security_keys_no_duplicate_message_without_param(
+    client_request,
+    mock_get_user,
+    mock_get_service,
+    mock_update_user_attribute,
+    mock_get_security_keys,
+):
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+    page = client_request.get("main.user_profile_add_security_keys")
+
+    # Check that no error flash message is displayed
+    flash_messages = page.select(".banner-dangerous")
+    assert len(flash_messages) == 0
 
 
 def test_validate_security_key_api_error(client_request, api_nongov_user_active, mocker):
@@ -454,69 +494,12 @@ class TestOptionalPhoneNumber:
         app_,
         mock_verify_password,
         mock_send_change_email_verification,
-        mock_get_security_keys,
     ):
-        client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
         client_request.post(
             "main.user_profile_mobile_number",
             _data={"mobile_number": ""},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_authenticate",
-            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile",
-            ),
-        )
-
-    def test_should_verify_when_phone_number_set(
-        self,
-        client_request,
-        platform_admin_user,
-        app_,
-        mock_verify_password,
-        mock_send_change_email_verification,
-        mock_send_verify_code,
-        mock_check_verify_code,
-    ):
-        client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"mobile_number": "6135555555"},
-            _expected_status=302,
-            _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_authenticate",
-            _data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile_mobile_number_confirm",
-            ),
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number_confirm",
-            _data={"two_factor_code": "12345"},
-            _expected_status=302,
-            _expected_redirect=url_for(
-                "main.user_profile",
-            ),
         )
 
     def test_should_skip_sms_verify_when_remove_button_pressed(
@@ -528,13 +511,7 @@ class TestOptionalPhoneNumber:
         mock_send_change_email_verification,
     ):
         client_request.post(
-            "main.user_profile_mobile_number",
-            _data={"button_pressed": "edit"},
-            _expected_status=200,
-        )
-
-        client_request.post(
-            "main.user_profile_mobile_number",
+            "main.user_profile_manage_mobile_number",
             _data={"remove": "remove"},
             _expected_status=302,
             _expected_redirect=url_for("main.user_profile_mobile_number_authenticate"),
@@ -552,10 +529,9 @@ class TestOptionalPhoneNumber:
     def test_should_jump_to_edit_page_when_phone_already_blank(
         self, client_request, platform_admin_user, app_, mock_verify_password, mock_send_change_email_verification, mocker
     ):
-        mocker.patch.object(
-            current_user, "update", side_effect=lambda mobile_number: setattr(current_user, "mobile_number", mobile_number)
-        )
-        current_user.update(mobile_number=None)
+        mocker.patch("app.user_api_client.update_user_attribute")
+        current_user.mobile_number = None
+        current_user.verified_phonenumber = False
         page = client_request.get("main.user_profile_mobile_number", _expected_status=200)
         assert page.select_one("h1").text.strip() == "Add or change your mobile number"
 
@@ -568,7 +544,7 @@ class TestOptionalPhoneNumber:
     ):
         client_request.login(active_user_no_mobile)
         with client_request.session_transaction() as session:
-            session["from_send_page"] = True
+            session["from_send_page"] = "send_test"
             session["send_page_service_id"] = SERVICE_ONE_ID
             session["send_page_template_id"] = TEMPLATE_ONE_ID
 
@@ -576,8 +552,8 @@ class TestOptionalPhoneNumber:
             page = client_request.get("main.user_profile_mobile_number")
 
             # assert page.status_code == 200
-            assert templates[0][0].name == "views/user-profile/change.html"
-            assert templates[0][1]["from_send_page"] is True
+            assert templates[0][0].name == "views/user-profile/change-mobile-number.html"
+            assert templates[0][1]["from_send_page"] == "send_test"
             assert "If you add a number to your profile, you can text yourself test messages." in page.text
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_send_test_when_from_send_page(
@@ -588,6 +564,7 @@ class TestOptionalPhoneNumber:
         active_user_no_mobile,
         mock_update_user_attribute,
         mock_check_verify_code,
+        mock_validate_2fa_method,
     ):
         client_request.login(active_user_no_mobile)
         mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
@@ -604,15 +581,15 @@ class TestOptionalPhoneNumber:
             _data={"two_factor_code": "12345"},
             _expected_status=302,
             _expected_redirect=url_for(
-                "main.send_test",
+                "main.verify_mobile_number_send",
                 service_id=SERVICE_ONE_ID,
                 template_id=TEMPLATE_ONE_ID,
             ),
         )
         with client_request.session_transaction() as session:
-            assert "from_send_page" not in session
-            assert "send_page_service_id" not in session
-            assert "send_page_template_id" not in session
+            assert "from_send_page" in session
+            assert "send_page_service_id" in session
+            assert "send_page_template_id" in session
 
     def test_post_user_profile_mobile_number_confirm_redirects_to_profile_page_by_default(
         self,
@@ -622,6 +599,7 @@ class TestOptionalPhoneNumber:
         active_user_no_mobile,
         mock_update_user_attribute,
         mock_check_verify_code,
+        mock_validate_2fa_method,
     ):
         client_request.login(active_user_no_mobile)
         mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
@@ -641,7 +619,7 @@ class TestOptionalPhoneNumber:
             _expected_redirect=url_for("main.user_profile"),
         )
         with client_request.session_transaction() as session:
-            assert session["_flashes"][0][1] == "Mobile number +16502532222 saved to your profile"
+            assert session["_flashes"][0][1] == "Phone number +16502532222 saved to your profile"
 
 
 def test_user_profile_shows_new_layout_when_ff_auth_v2_enabled(
@@ -936,3 +914,37 @@ class TestBackLinks:
             assert back_link["href"] == url_for(
                 expected_redirect
             ), f"Back link on {link} does not navigate to {expected_redirect}"
+
+
+def test_user_without_phone_can_add_security_key(
+    client_request,
+    mocker,
+    active_user_no_mobile,
+):
+    mocker.patch("app.user_api_client.get_user", return_value=active_user_no_mobile)
+    mocker.patch("app.models.user.User.from_id", return_value=User(active_user_no_mobile))
+
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
+    client_request.login(active_user_no_mobile)
+
+    page = client_request.get("main.user_profile_add_security_keys")
+    assert "security key" in page.text.lower()
+
+
+def test_user_with_phone_but_unverified_can_add_security_key(
+    client_request,
+    mocker,
+    active_user_with_unverified_mobile,
+):
+    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_unverified_mobile)
+    mocker.patch("app.models.user.User.from_id", return_value=User(active_user_with_unverified_mobile))
+
+    with client_request.session_transaction() as session:
+        session["has_authenticated"] = True
+
+    client_request.login(active_user_with_unverified_mobile)
+
+    page = client_request.get("main.user_profile_add_security_keys")
+    assert "security key" in page.text.lower()

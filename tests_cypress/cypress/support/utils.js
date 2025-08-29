@@ -58,7 +58,9 @@ export const getConfig = () => {
             .reduce((acc, [key, value]) => {
                 acc[key] = value;
                 return acc;
-            }, {})
+            }, {}),
+        // 4. Always include ENV property for downstream code
+        ENV: envName
     };
 
     return config;

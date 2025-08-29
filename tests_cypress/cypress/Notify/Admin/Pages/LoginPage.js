@@ -17,7 +17,8 @@ let Actions = {
         Components.TwoFactorCode().type(code);
         Components.SubmitButton().click();
     },
-    Login: (email, password, agreeToTerms=true) => {
+    Login: (email, password, agreeToTerms = true) => {
+        cy.log("---- Logging in via email code ----");
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
         // cy.task('deleteAllEmails'); // purge email inbox to make getting the 2fa code easier
 
@@ -51,7 +52,28 @@ let Actions = {
             cy.visit('/two-factor-email-sent');
             Actions.EnterCode(code);
         });
-    
+
+        // ensure we logged in correctly
+        TouPrompt.Components.Heading().should('be.visible');
+        if (agreeToTerms) {
+            TouPrompt.AgreeToTerms();
+        }
+    },
+    LoginLocal: (email, password, agreeToTerms = true) => {
+        cy.log("---- Logging in locally ----");
+        cy.clearCookie(ADMIN_COOKIE); // clear auth cookie
+
+        // login with username and password
+        cy.visit(LoginPage.URL);
+        Components.EmailAddress().type(email);
+        Components.Password().type(password);
+        Components.SubmitButton().click();
+        // h1 should say "Check your email"
+        cy.get('h1').should('contain', 'Check your email');
+
+        cy.visit('/two-factor-email-sent');
+        Actions.EnterCode('12345');
+
         // ensure we logged in correctly
         TouPrompt.Components.Heading().should('be.visible');
         if (agreeToTerms) {

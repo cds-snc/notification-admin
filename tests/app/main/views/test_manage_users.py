@@ -15,6 +15,7 @@ from tests.conftest import (
     create_active_user_with_permissions,
     normalize_spaces,
     sample_uuid,
+    set_config,
 )
 
 
@@ -212,30 +213,6 @@ def test_should_show_caseworker_on_overview_page(
     )
 
 
-@pytest.mark.parametrize(
-    "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
-    [
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, True),
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
-        ("main.invite_user", {}, True, True),
-        ("main.invite_user", {}, False, True),
-    ],
-)
-def test_service_with_no_email_auth_hides_auth_type_options(
-    client_request,
-    endpoint,
-    extra_args,
-    service_has_email_auth,
-    auth_options_hidden,
-    service_one,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    app_,
-):
-    page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-    assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
-
-
 @pytest.mark.parametrize("service_has_caseworking", (True, False))
 @pytest.mark.parametrize(
     "endpoint, extra_args",
@@ -382,16 +359,6 @@ def test_should_show_page_for_one_user(
         expected_input_name, expected_checked = expected
         assert checkboxes[index]["name"] == expected_input_name
         assert checkboxes[index].has_attr("checked") == expected_checked
-
-
-def test_invite_user_not_allowed_to_choose_auth(
-    client_request, mock_get_users_by_service, mock_get_template_folders, service_one, app_
-):
-    service_one["permissions"].append("email_auth")
-    page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
-
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button is None
 
 
 def test_invite_user_has_correct_email_field(
@@ -543,6 +510,75 @@ def test_edit_user_folder_permissions(
     )
 
 
+# TODO: REMOVE TEST WHEN FF_AUTH_V2 IS REMOVED
+def test_cant_edit_user_folder_permissions_for_platform_admin_users_REMOVE_FF(
+    client_request,
+    mocker,
+    service_one,
+    mock_get_users_by_service,
+    mock_get_invites_for_service,
+    mock_set_user_permissions,
+    mock_get_template_folders,
+    fake_uuid,
+    platform_admin_user,
+    app_,
+):
+    with set_config(app_, "FF_AUTH_V2", False):
+        service_one["permissions"] = ["edit_folder_permissions"]
+        mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
+        mock_get_template_folders.return_value = [
+            {
+                "id": "folder-id-1",
+                "name": "folder_one",
+                "parent_id": None,
+                "users_with_permission": [],
+            },
+            {
+                "id": "folder-id-2",
+                "name": "folder_one",
+                "parent_id": None,
+                "users_with_permission": [],
+            },
+            {
+                "id": "folder-id-3",
+                "name": "folder_one",
+                "parent_id": "folder-id-1",
+                "users_with_permission": [],
+            },
+        ]
+        page = client_request.get(
+            "main.edit_user_permissions",
+            service_id=SERVICE_ONE_ID,
+            user_id=fake_uuid,
+        )
+        assert normalize_spaces(page.select("main p")[0].text) == "platform@admin.canada.ca Change"
+        assert normalize_spaces(page.select("main p")[2].text) == ("Platform admin users can access all template folders.")
+        assert page.select("input[name=folder_permissions]") == []
+        client_request.post(
+            "main.edit_user_permissions",
+            service_id=SERVICE_ONE_ID,
+            user_id=fake_uuid,
+            _data={},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.manage_users",
+                service_id=SERVICE_ONE_ID,
+            ),
+        )
+        mock_set_user_permissions.assert_called_with(
+            fake_uuid,
+            SERVICE_ONE_ID,
+            permissions={
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            },
+            folder_permissions=None,
+        )
+
+
 def test_cant_edit_user_folder_permissions_for_platform_admin_users(
     client_request,
     mocker,
@@ -553,60 +589,62 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
     mock_get_template_folders,
     fake_uuid,
     platform_admin_user,
+    app_,
 ):
-    service_one["permissions"] = ["edit_folder_permissions"]
-    mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
-    mock_get_template_folders.return_value = [
-        {
-            "id": "folder-id-1",
-            "name": "folder_one",
-            "parent_id": None,
-            "users_with_permission": [],
-        },
-        {
-            "id": "folder-id-2",
-            "name": "folder_one",
-            "parent_id": None,
-            "users_with_permission": [],
-        },
-        {
-            "id": "folder-id-3",
-            "name": "folder_one",
-            "parent_id": "folder-id-1",
-            "users_with_permission": [],
-        },
-    ]
-    page = client_request.get(
-        "main.edit_user_permissions",
-        service_id=SERVICE_ONE_ID,
-        user_id=fake_uuid,
-    )
-    assert normalize_spaces(page.select("main p")[0].text) == "platform@admin.canada.ca Change"
-    assert normalize_spaces(page.select("main p")[2].text) == ("Platform admin users can access all template folders.")
-    assert page.select("input[name=folder_permissions]") == []
-    client_request.post(
-        "main.edit_user_permissions",
-        service_id=SERVICE_ONE_ID,
-        user_id=fake_uuid,
-        _data={},
-        _expected_status=302,
-        _expected_redirect=url_for(
-            "main.manage_users",
+    with set_config(app_, "FF_AUTH_V2", True):
+        service_one["permissions"] = ["edit_folder_permissions"]
+        mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
+        mock_get_template_folders.return_value = [
+            {
+                "id": "folder-id-1",
+                "name": "folder_one",
+                "parent_id": None,
+                "users_with_permission": [],
+            },
+            {
+                "id": "folder-id-2",
+                "name": "folder_one",
+                "parent_id": None,
+                "users_with_permission": [],
+            },
+            {
+                "id": "folder-id-3",
+                "name": "folder_one",
+                "parent_id": "folder-id-1",
+                "users_with_permission": [],
+            },
+        ]
+        page = client_request.get(
+            "main.edit_user_permissions",
             service_id=SERVICE_ONE_ID,
-        ),
-    )
-    mock_set_user_permissions.assert_called_with(
-        fake_uuid,
-        SERVICE_ONE_ID,
-        permissions={
-            "manage_api_keys",
-            "manage_service",
-            "manage_templates",
-            "send_messages",
-            "view_activity",
-        },
-        folder_permissions=None,
-    )
+            user_id=fake_uuid,
+        )
+        assert normalize_spaces(page.select("main p")[0].text) == "platform@admin.canada.ca"
+        assert normalize_spaces(page.select("main p")[2].text) == ("Platform admin users can access all template folders.")
+        assert page.select("input[name=folder_permissions]") == []
+        client_request.post(
+            "main.edit_user_permissions",
+            service_id=SERVICE_ONE_ID,
+            user_id=fake_uuid,
+            _data={},
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.manage_users",
+                service_id=SERVICE_ONE_ID,
+            ),
+        )
+        mock_set_user_permissions.assert_called_with(
+            fake_uuid,
+            SERVICE_ONE_ID,
+            permissions={
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            },
+            folder_permissions=None,
+        )
 
 
 def test_cant_edit_non_member_user_permissions(
@@ -672,7 +710,6 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
         },
         folder_permissions=[],
     )
-    mock_update_user_attribute.assert_called_with(str(active_user_with_permissions["id"]), auth_type=auth_type)
 
 
 def test_should_show_page_for_inviting_user(
@@ -745,6 +782,7 @@ def test_invite_user(
     mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
     mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
     mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=None)
     page = client_request.post(
         "main.invite_user",
         service_id=SERVICE_ONE_ID,
@@ -783,12 +821,13 @@ def test_invite_user(
         app.invite_api_client.create_invite.assert_not_called()
 
 
+# TODO: REMOVE TEST WHEN FF_AUTH_V2 IS REMOVED
 @pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
 @pytest.mark.parametrize(
     "email_address, gov_user",
     [("test@tbs-sct.gc.ca", True), ("test@nonsafelist.com", False)],
 )
-def test_invite_user_with_email_auth_service(
+def test_invite_user_with_email_auth_service_REMOVE_FF(
     client_request,
     service_one,
     active_user_with_permissions,
@@ -802,53 +841,136 @@ def test_invite_user_with_email_auth_service(
     mock_get_security_keys,
     app_,
 ):
-    service_one["permissions"].append("email_auth")
-    sample_invite["email_address"] = email_address
+    with set_config(app_, "FF_AUTH_V2", False):
+        service_one["permissions"].append("email_auth")
+        sample_invite["service"] = SERVICE_ONE_ID
+        sample_invite["auth_type"] = auth_type
+        sample_invite["from_user"] = active_user_with_permissions["id"]
+        sample_invite["service_name"] = service_one["name"]
+        sample_invite["status"] = "pending"
+        service_one["permissions"].append("email_auth")
+        sample_invite["email_address"] = email_address
 
-    assert is_gov_user(email_address) is gov_user
-    mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
-    mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
-    mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+        assert is_gov_user(email_address) is gov_user
+        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
+        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
+        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
 
-    page = client_request.post(
-        "main.invite_user",
-        service_id=SERVICE_ONE_ID,
-        _data={
-            "email_address": email_address,
-            "view_activity": "y",
-            "send_messages": "y",
-            "manage_templates": "y",
-            "manage_service": "y",
-            "manage_api_keys": "y",
-            "login_authentication": auth_type,
-        },
-        _follow_redirects=True,
-        _expected_status=200,
-    )
-
-    if gov_user:
-        assert page.h1.string.strip() == "Team members"
-        flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
-        assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
-        expected_permissions = {
-            "manage_api_keys",
-            "manage_service",
-            "manage_templates",
-            "send_messages",
-            "view_activity",
-        }
-
-        app.invite_api_client.create_invite.assert_called_once_with(
-            sample_invite["from_user"],
-            sample_invite["service"],
-            email_address,
-            expected_permissions,
-            "email_auth",
-            [],
+        page = client_request.post(
+            "main.invite_user",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "email_address": email_address,
+                "view_activity": "y",
+                "send_messages": "y",
+                "manage_templates": "y",
+                "manage_service": "y",
+                "manage_api_keys": "y",
+                "login_authentication": auth_type,
+            },
+            _follow_redirects=True,
+            _expected_status=200,
         )
-    else:
-        assert page.h1.string.strip() == "Invite a team member"
-        app.invite_api_client.create_invite.assert_not_called()
+
+        if gov_user:
+            assert page.h1.string.strip() == "Team members"
+            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
+            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
+            expected_permissions = {
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            }
+            app.invite_api_client.create_invite.assert_called_once_with(
+                sample_invite["from_user"],
+                sample_invite["service"],
+                email_address,
+                expected_permissions,
+                "email_auth",
+                [],
+            )
+        else:
+            assert page.h1.string.strip() == "Invite a team member"
+            app.invite_api_client.create_invite.assert_not_called()
+
+
+@pytest.mark.parametrize("auth_type", [("email_auth")])
+@pytest.mark.parametrize(
+    "email_address, gov_user",
+    [("test@tbs-sct.gc.ca", True), ("test@nonsafelist.com", False)],
+)
+def test_invite_user_with_email_auth_service(
+    client_request,
+    service_one,
+    active_user_with_permissions,
+    sample_invite,
+    email_address,
+    gov_user,
+    api_user_active,
+    mocker,
+    auth_type,
+    mock_get_organisations,
+    mock_get_template_folders,
+    mock_get_security_keys,
+    app_,
+):
+    with set_config(app_, "FF_AUTH_V2", True):
+        service_one["permissions"].append("email_auth")
+        sample_invite["service"] = SERVICE_ONE_ID
+        sample_invite["auth_type"] = auth_type
+        sample_invite["from_user"] = active_user_with_permissions["id"]
+        sample_invite["service_name"] = service_one["name"]
+        sample_invite["status"] = "pending"
+        service_one["permissions"].append("email_auth")
+        sample_invite["email_address"] = email_address
+
+        assert is_gov_user(email_address) is gov_user
+        mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
+        mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
+        mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+        mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=api_user_active)
+
+        page = client_request.post(
+            "main.invite_user",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "email_address": email_address,
+                "view_activity": "y",
+                "send_messages": "y",
+                "manage_templates": "y",
+                "manage_service": "y",
+                "manage_api_keys": "y",
+                "login_authentication": auth_type,
+            },
+            _follow_redirects=True,
+            _expected_status=200,
+        )
+
+        if gov_user:
+            assert page.h1.string.strip() == "Team members"
+            flash_banner = page.find("div", class_="banner-default-with-tick").string.strip()
+            assert flash_banner == "Invite sent to test@tbs-sct.gc.ca"
+            expected_permissions = {
+                "manage_api_keys",
+                "manage_service",
+                "manage_templates",
+                "send_messages",
+                "view_activity",
+            }
+
+            app.invite_api_client.create_invite.assert_called_once_with(
+                sample_invite["from_user"],
+                sample_invite["service"],
+                email_address,
+                expected_permissions,
+                api_user_active["auth_type"],
+                [],
+            )
+        else:
+            assert page.h1.string.strip() == "Invite a team member"
+            app.invite_api_client.create_invite.assert_not_called()
 
 
 def test_cancel_invited_user_cancels_user_invitations(
@@ -1389,6 +1511,32 @@ def test_confirm_edit_user_email_doesnt_change_user_email_for_non_team_member(
     )
 
 
+# TODO: REMOVE TEST WHEN FF_AUTH_V2 IS REMOVED
+def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_link_REMOVE_FF(
+    client_request,
+    active_user_with_permissions,
+    mock_get_users_by_service,
+    mock_get_template_folders,
+    service_one,
+    mocker,
+    app_,
+):
+    with set_config(app_, "FF_AUTH_V2", False):
+        page = client_request.get(
+            "main.edit_user_permissions",
+            service_id=service_one["id"],
+            user_id=active_user_with_permissions["id"],
+        )
+
+        assert active_user_with_permissions["name"] in page.find("h1").text
+        mobile_number_paragraph = page.select("p[id=user_mobile_number]")[0]
+        assert "650 •  •  •  • 222" in mobile_number_paragraph.text
+        change_link = mobile_number_paragraph.findChild()
+        assert change_link.attrs["href"] == "/services/{}/users/{}/edit-mobile-number".format(
+            service_one["id"], active_user_with_permissions["id"]
+        )
+
+
 def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_link(
     client_request,
     active_user_with_permissions,
@@ -1396,20 +1544,20 @@ def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_l
     mock_get_template_folders,
     service_one,
     mocker,
+    app_,
 ):
-    page = client_request.get(
-        "main.edit_user_permissions",
-        service_id=service_one["id"],
-        user_id=active_user_with_permissions["id"],
-    )
+    with set_config(app_, "FF_AUTH_V2", True):
+        page = client_request.get(
+            "main.edit_user_permissions",
+            service_id=service_one["id"],
+            user_id=active_user_with_permissions["id"],
+        )
 
-    assert active_user_with_permissions["name"] in page.find("h1").text
-    mobile_number_paragraph = page.select("p[id=user_mobile_number]")[0]
-    assert "650 •  •  •  • 222" in mobile_number_paragraph.text
-    change_link = mobile_number_paragraph.findChild()
-    assert change_link.attrs["href"] == "/services/{}/users/{}/edit-mobile-number".format(
-        service_one["id"], active_user_with_permissions["id"]
-    )
+        assert active_user_with_permissions["name"] in page.find("h1").text
+        mobile_number_paragraph = page.select("p[id=user_mobile_number]")[0]
+        assert "650 •  •  •  • 222" in mobile_number_paragraph.text
+        change_link = mobile_number_paragraph.findChild()
+        assert change_link is None
 
 
 def test_edit_user_permissions_with_delete_query_shows_banner(

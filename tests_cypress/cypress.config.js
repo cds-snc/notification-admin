@@ -81,6 +81,10 @@ module.exports = defineConfig({
         fetchEmail(acct) {
           return emailAccount.fetchEmail(acct)
         },
+clearAccount() {
+          global.acct = null;
+          return null;
+        },
         createAccount({ baseUrl, username, secret }) {
           if (global.acct) {
             return global.acct;
@@ -98,6 +102,14 @@ module.exports = defineConfig({
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'chromium' && browser.name !== 'electron') {
           launchOptions.extensions = [];
+
+          // Disable WebAuthn/FIDO2 features to prevent real hardware access
+          launchOptions.args.push('--disable-features=WebAuthentication');
+          launchOptions.args.push('--disable-features=WebAuthenticationBluetooth');
+          launchOptions.args.push('--disable-features=WebAuthenticationCable');
+          launchOptions.args.push('--disable-backgrounding-occluded-windows');
+          launchOptions.args.push('--disable-background-timer-throttling');
+          launchOptions.args.push('--disable-renderer-backgrounding');
         }
         return launchOptions;
       });
@@ -110,6 +122,6 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
-    retries: 3
+    retries: 2
   },
 });

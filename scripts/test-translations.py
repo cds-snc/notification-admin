@@ -8,24 +8,25 @@ extra_keys_in_app = set(
         "French Government of Canada signature",  # constant
         "Empty",  # template_list.py
         "1 template",  # template_list.py
-        "Not a valid phone number",  # a validation liberary
+        "Number must have 10 digits",  # a validation liberary
         "bad invitation link",  # api
         "invitation expired",  # api
         "password",  # api
         "Your service already uses ",  # api
-        "Code not found",  # api
+        "Try again. Something’s wrong with this code",  # api
         "Code already sent, wait 10 seconds",  # api
         "You cannot delete a default email reply to address if other reply to addresses exist",  # api
         "Code has expired",  # api
         "Code already sent",  # api
         "Code has already been used",  # api
+        "Code not found",  # api - 2FA validation error message
         "as an email reply-to address.",  # api
         "You cannot remove the only user for a service",  # api
         "Cannot send to international mobile numbers",  # api
     ]
 )
 
-keys_wrongly_detected = set(["header", "Send {}", "Not a valid phone number", "template_type", "status"])
+keys_wrongly_detected = set(["header", "Send {}", "Number must have 10 digits", "template_type", "status"])
 
 
 def csv_to_dict(filename):

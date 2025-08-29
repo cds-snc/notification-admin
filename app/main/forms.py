@@ -126,7 +126,13 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-def email_address(label=_l("Email address"), gov_user=True, only_team_member_domains=False, required=True):
+def email_address(
+    label=_l("Email address"),
+    blank_validation=_l("Enter an email address"),
+    gov_user=True,
+    only_team_member_domains=False,
+    required=True,
+):
     if label == "email address":
         label = _l("email address")
     elif label == "phone number":
@@ -140,7 +146,7 @@ def email_address(label=_l("Email address"), gov_user=True, only_team_member_dom
         validators.append(ValidGovEmail())
 
     if required:
-        validators.append(DataRequired(message=_l("Enter an email address")))
+        validators.append(DataRequired(message=blank_validation))
 
     if only_team_member_domains:
         validators.append(ValidTeamMemberDomain())
@@ -181,9 +187,18 @@ def password(label=_l("Password")):
             Length(8, 255, message=_l("Must be at least 8 characters")),
             Blocklist(
                 message=_l(
-                    "A password that is hard to guess contains: uppercase and lowercase letters, numbers and special characters, and words separated by a space."
+                    "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space."
                 )
             ),
+        ],
+    )
+
+
+def current_password(label=_l("Current password")):
+    return PasswordField(
+        label,
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
         ],
     )
 
@@ -192,8 +207,8 @@ class TwoFactorCode(StringField):
     validators = [
         DataRequired(message=_l("This cannot be empty")),
         Regexp(regex=r"^\d+$", message=_l("Numbers only")),
-        Length(min=5, message=_l("Not enough numbers")),
-        Length(max=5, message=_l("Too many numbers")),
+        Length(min=5, message=_l("Code must have 5 numbers")),
+        Length(max=5, message=_l("Code must have 5 numbers")),
     ]
 
     def __call__(self, **kwargs):
@@ -381,7 +396,7 @@ class LoginForm(StripWhitespaceForm):
 class RegisterUserForm(StripWhitespaceForm):
     name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
-    mobile_number = international_phone_number()
+    mobile_number = international_phone_number(_l("Contact number"))
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
@@ -395,7 +410,7 @@ class RegisterUserForm(StripWhitespaceForm):
 class RegisterUserFormOptional(StripWhitespaceForm):
     name = StringField(_l("Full name"), validators=[DataRequired(message=_l("This cannot be empty"))])
     email_address = email_address()
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+    mobile_number = InternationalPhoneNumber(_l("Contact number"))
     password = password()
     # always register as email type
     auth_type = HiddenField("auth_type", default="email_auth")
@@ -415,7 +430,7 @@ class RegisterUserFromInviteFormOptional(RegisterUserForm):
             name=guess_name_from_email_address(invited_user.email_address),
         )
 
-    mobile_number = InternationalPhoneNumber(_l("Mobile number"))
+    mobile_number = InternationalPhoneNumber(_l("Contact number"))
     service = HiddenField("service")
     email_address = HiddenField("email_address")
     auth_type = HiddenField("auth_type", validators=[DataRequired()])
@@ -431,7 +446,7 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
     name = StringField("Full name", validators=[DataRequired(message=_l("This cannot be empty"))])
 
     mobile_number = InternationalPhoneNumber(
-        _l("Mobile number"),
+        _l("Contact number"),
         validators=[DataRequired(message=_l("This cannot be empty"))],
     )
     password = password()
@@ -733,7 +748,7 @@ class CreateServiceStepLogoForm(StripWhitespaceForm):
 class SecurityKeyForm(StripWhitespaceForm):
     keyname = StringField(
         _l("What’s your key called?"),
-        validators=[DataRequired(message=_l("This cannot be empty"))],
+        validators=[DataRequired(message=_l("Enter name to continue"))],
     )
 
 
@@ -811,7 +826,7 @@ class ConfirmPasswordForm(StripWhitespaceForm):
 
     def validate_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError(_l("Invalid password"))
+            raise ValidationError(_l("Try again. Something’s wrong with this password"))
 
 
 TC_PRIORITY_VALUE = "__use_tc"
@@ -930,12 +945,12 @@ class ChangePasswordForm(StripWhitespaceForm):
         self.validate_password_func = validate_password_func
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
-    old_password = password(_l("Current password"))
+    old_password = current_password()
     new_password = password(_l("New password"))
 
     def validate_old_password(self, field):
         if not self.validate_password_func(field.data):
-            raise ValidationError(_l("Invalid password"))
+            raise ValidationError(_l("Try again. Something’s wrong with this password"))
 
 
 class CsvUploadForm(StripWhitespaceForm):
@@ -946,7 +961,10 @@ class CsvUploadForm(StripWhitespaceForm):
 
 
 class ChangeNameForm(StripWhitespaceForm):
-    new_name = StringField(_l("Your name"))
+    new_name = StringField(
+        _l("Your name"),
+        validators=[DataRequired(message=_l("Enter name to continue"))],
+    )
 
 
 class ChangeEmailForm(StripWhitespaceForm):
@@ -954,12 +972,12 @@ class ChangeEmailForm(StripWhitespaceForm):
         self.validate_email_func = validate_email_func
         super(ChangeEmailForm, self).__init__(*args, **kwargs)
 
-    email_address = email_address()
+    email_address = email_address(blank_validation=_l("Enter your email address to continue"))
 
     def validate_email_address(self, field):
         is_valid = self.validate_email_func(field.data)
         if is_valid:
-            raise ValidationError(_l("The email address is already in use"))
+            raise ValidationError(_l("This email address already has a GC Notify account"))
 
 
 class ChangeNonGovEmailForm(ChangeEmailForm):

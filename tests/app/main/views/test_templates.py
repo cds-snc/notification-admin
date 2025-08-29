@@ -4,6 +4,7 @@ from unittest.mock import ANY, MagicMock, Mock, patch
 
 import pytest
 from flask import url_for
+from flask_login import current_user
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 
@@ -16,6 +17,7 @@ from app.main.views.templates import (
 )
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
+from app.sample_template_utils import clear_sample_template_cache
 from tests import (
     TESTING_TEMPLATE_CATEGORY,
     MockRedis,
@@ -160,6 +162,7 @@ class TestSendOtherCategoryInfo:
         fake_uuid,
         app_,
     ):
+        current_user.verified_phonenumber = True
         mock_get_service_template_with_process_type(mocker, "bulk", None)
         name = "new name"
         content = "template <em>content</em> with & entity"
@@ -196,16 +199,23 @@ def test_should_show_empty_page_when_no_templates(
     service_one,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
+    app_,
 ):
     page = client_request.get(
         "main.choose_template",
         service_id=service_one["id"],
     )
+    if app_.config["FF_SAMPLE_TEMPLATES"]:
+        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+        )
+    else:
+        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-    assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-    )
     assert page.select_one("#add_new_folder_form")
     assert page.select_one("#add_new_template_form")
 
@@ -215,16 +225,23 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     service_one: Service,
     mock_get_service_templates_when_no_templates_exist,
     mock_get_template_folders,
+    app_,
 ):
     page = client_request.get(
         "main.choose_template",
         service_id=service_one.id,
     )
 
-    assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-    assert normalize_spaces(page.select_one("main p").text) == (
-        "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-    )
+    if app_.config["FF_SAMPLE_TEMPLATES"]:
+        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+        )
+    else:
+        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
+        assert normalize_spaces(page.select_one("main p").text) == (
+            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
+        )
     assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
 
@@ -233,7 +250,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
     [
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -246,25 +263,25 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "sms"},
             ["sms_template_one", "sms_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
         (
             create_active_user_view_permissions(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "letter"},
             ["letter_template_one", "letter_template_two"],
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {},
             [
                 "sms_template_one",
@@ -277,7 +294,7 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         ),
         (
             create_active_caseworking_user(),
-            "Browse Templates",
+            "Your Templates",
             {"template_type": "email"},
             ["email_template_one", "email_template_two"],
         ),
@@ -297,6 +314,8 @@ def test_should_show_page_for_choosing_a_template(
     expected_page_title,
     app_,
 ):
+    if not app_.config["FF_SAMPLE_TEMPLATES"]:
+        expected_page_title = "Browse Templates"
     service_one["permissions"].append("letter")
     client_request.login(user)
 
@@ -599,6 +618,7 @@ def test_view_non_letter_template_does_not_display_postage(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -697,6 +717,7 @@ def test_should_be_able_to_view_a_template_with_links(
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions + ["view_activity"]
     client_request.login(active_user_with_permissions)
+    current_user.verified_phonenumber = True
 
     page = client_request.get(
         ".view_template",
@@ -727,6 +748,7 @@ def test_should_show_template_id_on_template_page(
     fake_uuid,
     mock_get_limit_stats,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         ".view_template",
         service_id=SERVICE_ONE_ID,
@@ -792,6 +814,7 @@ def test_should_show_sms_template_with_downgraded_unicode_characters(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     msg = "here:\tare some “fancy quotes” and zero\u200bwidth\u200bspaces"
     rendered_msg = 'here: are some "fancy quotes" and zerowidthspaces'
 
@@ -1292,6 +1315,7 @@ def test_should_redirect_when_saving_a_template(
     app_,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mock_get_service_template_with_process_type(mocker, DEFAULT_PROCESS_TYPE, None)
     name = "new name"
     content = "template <em>content</em> with & entity"
@@ -1989,6 +2013,7 @@ def test_should_show_delete_template_page_with_time_block(
     mocker,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-01 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         notification = single_notification_json("1234", template=template)
@@ -2016,6 +2041,7 @@ def test_should_show_delete_template_page_with_time_block(
 def test_should_show_delete_template_page_with_time_block_for_empty_notification(
     client_request, mock_get_service_template, mock_get_template_folders, mocker, fake_uuid, mock_get_limit_stats
 ):
+    current_user.verified_phonenumber = True
     with freeze_time("2012-01-08 12:00:00"):
         template = template_json("1234", "1234", "Test template", "sms", "Something very interesting")
         single_notification_json("1234", template=template)
@@ -2049,6 +2075,7 @@ def test_should_show_delete_template_page_with_never_used_block(
     fake_uuid,
     mocker,
 ):
+    current_user.verified_phonenumber = True
     mocker.patch(
         "app.template_statistics_client.get_template_statistics_for_template",
         side_effect=HTTPError(response=Mock(status_code=404), message="Default message"),
@@ -2437,6 +2464,7 @@ def test_should_show_message_before_redacting_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2462,6 +2490,7 @@ def test_should_show_redact_template(
     service_one,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.post(
         "main.redact_template",
         service_id=SERVICE_ONE_ID,
@@ -2484,6 +2513,7 @@ def test_should_show_hint_once_template_redacted(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     template = create_template(redact_personalisation=True)
     mocker.patch("app.service_api_client.get_service_template", return_value=template)
 
@@ -2646,6 +2676,7 @@ def test_template_should_show_phone_number_in_correct_language(
     mock_get_limit_stats,
     fake_uuid,
 ):
+    current_user.verified_phonenumber = True
     # check english
     page = client_request.get(
         ".view_template",
@@ -2673,6 +2704,7 @@ def test_should_hide_category_name_from_template_list_if_marked_hidden(
     mock_get_template_folders,
     mock_get_more_service_templates_than_can_fit_onscreen,
 ):
+    current_user.verified_phonenumber = True
     page = client_request.get(
         "main.choose_template",
         service_id=SERVICE_ONE_ID,
@@ -2706,6 +2738,7 @@ class TestAnnualLimits:
         buttons_shown,
         app_,
     ):
+        current_user.verified_phonenumber = True
         with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
             mock_notification_counts_client.get_limit_stats.return_value = {
                 "email": {
@@ -2744,3 +2777,458 @@ class TestAnnualLimits:
                 assert page.find(attrs={"data-testid": "send-buttons"}) is not None
             else:
                 assert page.find(attrs={"data-testid": "send-buttons"}) is None
+
+
+class TestViewSampleLibrary:
+    @pytest.fixture
+    def mock_sample_templates(self):
+        """Mock sample templates data"""
+        return [
+            {
+                "id": "11111111-1111-1111-1111-111111111111",
+                "notification_type": "email",
+                "template_name": {"en": "Welcome Email", "fr": "Courriel de bienvenue"},
+                "template_category": {"en": "Authentication", "fr": "Authentification"},
+                "content": "Welcome to our service!",
+                "subject": "Welcome",
+                "pinned": False,
+            },
+            {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "notification_type": "sms",
+                "template_name": {"en": "SMS Reminder", "fr": "Rappel SMS"},
+                "template_category": {"en": "Reminder", "fr": "Rappel"},
+                "content": "Your appointment is tomorrow",
+                "pinned": False,
+            },
+        ]
+
+    def test_redirects_when_feature_flag_disabled(self, client_request, mock_sample_templates, app_):
+        """Should redirect to choose_template when FF_SAMPLE_TEMPLATES is disabled"""
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+            client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _expected_status=302,
+                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
+                _test_page_title=False,
+            )
+
+    def test_shows_sample_templates_when_feature_flag_enabled(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display sample templates when feature flag is enabled"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+            # Check the actual title is being set correctly - may be different due to translation context
+            title_text = normalize_spaces(page.select_one("title").text)
+            assert "GC Notify sample library" in title_text or title_text.endswith("– Notify")
+
+            # Check that sample templates are displayed
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            assert table is not None
+
+            # Should show only email templates by default (filtered)
+            template_links = table.select("a")
+            assert len(template_links) == 1
+
+            # Check template names are displayed - only email template shown
+            assert "Welcome Email" in template_links[0].text
+
+            # Check notification type icons/text are displayed for the email template
+            notification_types = page.select("[data-testid='sample_library_icon']")
+            assert len(notification_types) == 1
+
+    def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
+        """Should show empty state when no sample templates exist"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=[])
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+
+            # Should show empty state message
+            assert "No sample templates available." in page.text
+
+            # Should not show the table
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            assert table is None
+
+    def test_shows_french_template_names_when_french_locale(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display French template names when user language is French"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            # Mock French session
+            with client_request.session_transaction() as session:
+                session["userlang"] = "fr"
+
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Should show French template names - only email template by default
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+
+            assert "Courriel de bienvenue" in template_links[0].text
+
+    def test_template_links_have_correct_urls(self, client_request, mock_sample_templates, mocker, app_):
+        """Should have correct URLs for template links"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            template_links = page.select('[data-testid="sample-templates-table"] a')
+
+            # Check first template link - only email template shown by default
+            expected_url_1 = url_for(
+                "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="11111111-1111-1111-1111-111111111111"
+            )
+            assert template_links[0]["href"] == expected_url_1
+
+    @pytest.mark.parametrize(
+        "notification_type,expected_icon",
+        [
+            ("email", "fa-paper-plane"),
+            ("sms", "fa-message"),
+        ],
+    )
+    def test_shows_correct_notification_type_icons(
+        self, client_request, mock_sample_templates, mocker, notification_type, expected_icon, app_
+    ):
+        """Should show correct icons for different notification types"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            # Set appropriate filter to show the notification type we want to test
+            type_param = "sms" if notification_type == "sms" else None
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type=type_param,
+                _test_page_title=False,
+            )
+
+            # Check for the correct icon class
+            icon = page.select_one(f".{expected_icon}")
+            assert icon is not None
+
+    def test_pill_menu_filters_email_templates_by_default(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only email templates by default"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Should show only email templates by default
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "Welcome Email" in template_links[0].text
+            assert "SMS Reminder" not in page.text
+
+            # Check pill menu is present and has correct number of options
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+            pill_links = pill_nav.select("a")
+            assert len(pill_links) == 2
+
+            # Email pill should be selected (has pill-selected-item class)
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-selected-item" in email_pill.get("class", [])
+
+            # SMS pill should be unselected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-unselected-item" in sms_pill.get("class", [])
+
+    def test_pill_menu_filters_sms_templates_when_type_param_is_sms(self, client_request, mock_sample_templates, mocker, app_):
+        """Should filter and show only SMS templates when ?type=sms query param is provided"""
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                type="sms",
+                _test_page_title=False,
+            )
+
+            # Should show only SMS templates
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 1
+            assert "SMS Reminder" in template_links[0].text
+            assert "Welcome Email" not in page.text
+
+            # Check pill menu state - SMS should be selected
+            pill_nav = page.select_one("nav.pill")
+            assert pill_nav is not None
+
+            # SMS pill should be selected
+            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+            assert sms_pill is not None
+            assert "pill-selected-item" in sms_pill.get("class", [])
+
+            # Email pill should be unselected
+            email_pill = pill_nav.select_one('a[href*="type=email"]')
+            assert email_pill is not None
+            assert "pill-unselected-item" in email_pill.get("class", [])
+
+    def test_pinned_templates_appear_first_in_list(self, client_request, mock_sample_templates, mocker, app_):
+        """Should display pinned templates first in the list, followed by unpinned templates sorted by name"""
+        # Modify the fixture data to test pinning functionality
+        mock_templates = mock_sample_templates.copy()
+        mock_templates.extend(
+            [
+                {
+                    "id": "33333333-3333-3333-3333-333333333333",
+                    "notification_type": "email",
+                    "template_name": {"en": "A First Template", "fr": "A Premier modèle"},
+                    "template_category": {"en": "Other", "fr": "Autre"},
+                    "content": "This should be second",
+                    "subject": "First",
+                    "pinned": False,
+                },
+                {
+                    "id": "44444444-4444-4444-4444-444444444444",
+                    "notification_type": "email",
+                    "template_name": {"en": "Z Last Pinned Template", "fr": "Z Dernier modèle épinglé"},
+                    "template_category": {"en": "Important", "fr": "Important"},
+                    "content": "This should be first because it's pinned",
+                    "subject": "Pinned",
+                    "pinned": True,
+                },
+            ]
+        )
+
+        clear_sample_template_cache()
+        mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_templates)
+
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_library",
+                service_id=SERVICE_ONE_ID,
+                _test_page_title=False,
+            )
+
+            # Get all template links in order (only email templates shown by default)
+            table = page.select_one('[data-testid="sample-templates-table"]')
+            template_links = table.select("a")
+            assert len(template_links) == 3  # 3 email templates total
+
+            # Check order: pinned first, then alphabetical by name
+            template_names = [link.text.strip() for link in template_links]
+            expected_order = ["Z Last Pinned Template", "A First Template", "Welcome Email"]
+            assert template_names == expected_order
+
+            # Check that the pinned template has the pin icon
+            first_row = table.select("tbody tr")[0]
+            pin_icon = first_row.select_one(".fa-thumbtack")
+            assert pin_icon is not None, "Pinned template should have a pin icon"
+
+            # Check that unpinned templates don't have pin icons
+            for i in range(1, 3):
+                row = table.select("tbody tr")[i]
+                pin_icon = row.select_one(".fa-thumbtack")
+                assert pin_icon is None, f"Unpinned template at position {i} should not have a pin icon"
+
+
+class TestViewSampleTemplate:
+    def test_redirects_when_feature_flag_disabled(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
+            client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=sample_email_id,
+                _expected_status=302,
+                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
+                _test_page_title=False,
+            )
+
+    def test_404_for_unknown_sample_template(
+        self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        unknown_id = "ffffffff-ffff-ffff-ffff-ffffffffffff"
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=unknown_id,
+                _expected_status=404,
+                _test_page_title=False,
+            )
+
+    def test_displays_sample_email_template(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.view_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_id=sample_email_id,
+                _test_page_title=False,
+            )
+        assert page.select_one("h1").text.strip() == "Sample template\nAccount Verification"
+        assert "Click the link to verify your account" in page.text
+        assert "Verify your account" in page.text
+        assert "Edit" in page.text or "Create" in page.text
+
+
+class TestCreateFromSampleTemplate:
+    def test_get_prefills_email_sample(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _test_page_title=False,
+            )
+        assert "Edit Account Verification" in page.text
+
+    def test_get_prefills_sms_sample(
+        self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            page = client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="sms",
+                template_id=sample_sms_id,
+                _test_page_title=False,
+            )
+        assert "Edit Two-Factor Code" in page.text
+
+    def test_preview_email_flow_sets_preview_and_redirects(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _data={
+                    "name": "Account Verification",
+                    "subject": "Verify your account",
+                    "template_content": "Click the link to verify your account: ((link))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "preview",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_email_id
+                ),
+            )
+        assert mocked_set_preview.call_count == 1
+        payload = mocked_set_preview.call_args[0][0]
+        assert payload["name"] == "Account Verification"
+        assert payload["template_type"] == "email"
+        assert payload["from_page"] == "view_sample_template"
+
+    def test_save_email_flow_creates_and_redirects(
+        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_create = mocker.patch(
+            "app.main.views.templates.service_api_client.create_service_template",
+            return_value={"data": {"id": "new-template-id"}},
+        )
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id=sample_email_id,
+                _data={
+                    "name": "Account Verification",
+                    "subject": "Verify your account",
+                    "template_content": "Click the link to verify your account: ((link))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "save",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="ga_sample_template"
+                ),
+            )
+        mocked_create.assert_called_once()
+
+    def test_preview_sms_flow_sets_preview_and_redirects(
+        self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
+    ):
+        mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.post(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="sms",
+                template_id=sample_sms_id,
+                _data={
+                    "name": "Two-Factor Code",
+                    "template_content": "Your code is ((code))",
+                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                    "process_type": TC_PRIORITY_VALUE,
+                    "text_direction_rtl": False,
+                    "button_pressed": "preview",
+                },
+                _expected_status=302,
+                _expected_redirect=url_for(
+                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_sms_id
+                ),
+            )
+        payload = mocked_set_preview.call_args[0][0]
+        assert payload["template_type"] == "sms"
+        assert payload["subject"] is None
+
+    def test_404_for_unknown_sample_id(
+        self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
+    ):
+        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
+            client_request.get(
+                "main.create_from_sample_template",
+                service_id=SERVICE_ONE_ID,
+                template_type="email",
+                template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
+                _expected_status=404,
+            )

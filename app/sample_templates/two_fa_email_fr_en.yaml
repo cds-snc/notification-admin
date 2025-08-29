@@ -1,0 +1,45 @@
+id: "31062d26-5369-4743-9a49-3002fc896bfd"
+template_name:
+  en: "FR|en Two-step verification code"
+  fr: "FR|en Code de vérification à deux étapes"
+notification_type: "email"
+template_category: "authentication"
+pinned: false
+subject: "Connectez-vous | Sign in"
+example_subject: "Connectez-vous | Sign in"
+content: |
+  [[fr]]
+  Bonjour ((name)),
+
+  Voici votre code de vérification pour vous connecter à -nom de l'application-:
+
+  ^ ((verify_code))
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi ((name)),
+
+  Here is your verification code to log in to -application name-:
+
+  ^ ((verify_code))
+  [[/en]]
+example_content: |
+  [[fr]]
+  Bonjour Jane Smith,
+
+  Voici votre code de vérification pour vous connecter à Notification GC:
+
+  ^ 12345
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi Jane Smith,
+
+  Here is your verification code to log in to GC Notify:
+
+  ^ 12345
+  [[/en]]

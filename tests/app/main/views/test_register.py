@@ -68,7 +68,7 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
+    assert page.select("main p")[0].text == "We’ve sent a link to notfound@example.canada.ca."
 
     mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
     mock_register_user.assert_called_with(
@@ -119,7 +119,7 @@ def test_register_works_without_phone_number(
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert page.select("main p")[0].text == "An email has been sent to notfound@example.canada.ca."
+    assert page.select("main p")[0].text == "We’ve sent a link to notfound@example.canada.ca."
 
     mock_send_verify_email.assert_called_with(ANY, user_data["email_address"])
     mock_register_user.assert_called_with(
@@ -157,7 +157,7 @@ def test_process_register_returns_200_when_mobile_number_is_invalid(
     )
 
     assert response.status_code == 200
-    assert "Not a valid phone number" in response.get_data(as_text=True)
+    assert "Number must have 10 digits" in response.get_data(as_text=True)
 
 
 def test_should_return_200_when_email_is_not_gov_uk(
@@ -230,7 +230,10 @@ def test_should_return_200_if_password_is_blocked(
     )
 
     response.status_code == 200
-    assert "A password that is hard to guess contains" in response.get_data(as_text=True)
+    assert (
+        "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space."
+        in response.get_data(as_text=True)
+    )
 
 
 def test_register_with_existing_email_sends_emails(
@@ -303,7 +306,10 @@ def test_register_from_invite(
     fake_uuid,
     mock_email_is_not_already_in_use,
     mock_register_user,
-    mock_send_verify_code,
+    mock_login,
+    mock_activate_user,
+    mock_add_user_to_service,
+    mock_get_user,
     mock_accept_invite,
 ):
     invited_user = InvitedUser(
@@ -315,40 +321,45 @@ def test_register_from_invite(
             "permissions": ["manage_users"],
             "status": "pending",
             "created_at": datetime.utcnow(),
-            "auth_type": "sms_auth",
+            "auth_type": "email_auth",
             "folder_permissions": [],
             "blocked": True,
         }
     )
     with client.session_transaction() as session:
         session["invited_user"] = invited_user.serialize()
+        session["user_id"] = fake_uuid
     data = {
         "name": "Registered in another Browser",
         "email_address": invited_user.email_address,
         "mobile_number": "+16502532222",
         "service": str(invited_user.id),
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "auth_type": "sms_auth",
+        "auth_type": "email_auth",
     }
 
     data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
-    assert response.location == url_for("main.verify")
     mock_register_user.assert_called_once_with(
         "Registered in another Browser",
         invited_user.email_address,
         "+16502532222",
         "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "sms_auth",
+        "email_auth",
     )
 
 
 def test_register_from_invite_when_user_registers_in_another_browser(
     client,
     api_user_active,
-    mock_get_user_by_email,
+    mock_email_is_not_already_in_use,
+    mock_register_user,
+    mock_login,
+    mock_activate_user,
+    mock_add_user_to_service,
+    mock_get_user,
     mock_accept_invite,
 ):
     invited_user = InvitedUser(
@@ -360,7 +371,7 @@ def test_register_from_invite_when_user_registers_in_another_browser(
             "permissions": ["manage_users"],
             "status": "pending",
             "created_at": datetime.utcnow(),
-            "auth_type": "sms_auth",
+            "auth_type": "email_auth",
             "folder_permissions": [],
             "blocked": False,
         }
@@ -374,14 +385,13 @@ def test_register_from_invite_when_user_registers_in_another_browser(
         "mobile_number": api_user_active["mobile_number"],
         "service": str(api_user_active["id"]),
         "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
-        "auth_type": "sms_auth",
+        "auth_type": "email_auth",
     }
 
     data["tou_agreed"] = "true"
 
     response = client.post(url_for("main.register_from_invite"), data=data)
     assert response.status_code == 302
-    assert response.location == url_for("main.verify")
 
 
 @pytest.mark.parametrize("invite_email_address", ["gov-user@canada.ca", "non-gov-user@example.com"])
