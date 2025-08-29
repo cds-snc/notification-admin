@@ -847,7 +847,6 @@ class TestBackLinks:
 
         if link == "main.user_profile_disable_platform_admin_view":
             client_request.login(platform_admin_user)
-
         page = client_request.get(link, _follow_redirects=True)
         back_link = page.select_one("a.back-link")
         assert back_link is not None, f"Back link not found on page {link}"

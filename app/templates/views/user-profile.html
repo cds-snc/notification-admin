@@ -12,7 +12,6 @@
   {% set change = _('Change') %}
 
   <h1 class="heading-large">{{ _('Your profile') }}</h1>
-}
     <div class="pb-8">
       {{ profile_item(_('Name'), text_field(current_user.name), '.user_profile_name', testid="user_profile_name") }}
       {{ profile_item(_('Email address'), text_field(current_user.email_address), '.user_profile_email' if can_see_edit else None, testid="user_profile_email") }}
