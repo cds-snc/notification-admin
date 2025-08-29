@@ -5,11 +5,10 @@
     <!-- TODO: remove `use_styled_checkbox` and this if statement once we decide on the UI element to use here  -->
 
     <fieldset class="contain-floats w-full" role="radiogroup">
-        <legend class="mb-4">
+        <legend class="mb-4" {% if hint %}aria-describedby="{{ content_field.name }}-hint"{% endif %}>
             <span>{{ label }}</span>
         </legend>
         {% if hint %}
-            {% set describedby = content_field.name + '-hint ' %}
             <span id="{{ content_field.name }}-hint" class="form-hint pb-4">
                 {{ hint }}
             </span>
