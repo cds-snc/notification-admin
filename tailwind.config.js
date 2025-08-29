@@ -195,6 +195,12 @@ module.exports = {
       orange: {
         light: "#fef9f6",
         DEFAULT: "#C86117",
+      },
+      purple: {
+        300: "#9D8CF2"
+      },
+      rose: {
+        300: "#DF93EC"
       }
     },
     extend: {

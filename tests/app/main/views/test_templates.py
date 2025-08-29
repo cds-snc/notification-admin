@@ -3156,7 +3156,7 @@ class TestCreateFromSampleTemplate:
                 },
                 _expected_status=302,
                 _expected_redirect=url_for(
-                    "main.preview_template", service_id=SERVICE_ONE_ID, sample_template_id=sample_email_id
+                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_email_id
                 ),
             )
         assert mocked_set_preview.call_count == 1
@@ -3189,9 +3189,7 @@ class TestCreateFromSampleTemplate:
                 },
                 _expected_status=302,
                 _expected_redirect=url_for(
-                    "main.view_template",
-                    service_id=SERVICE_ONE_ID,
-                    template_id="new-template-id",
+                    "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="ga_sample_template"
                 ),
             )
         mocked_create.assert_called_once()
@@ -3215,7 +3213,9 @@ class TestCreateFromSampleTemplate:
                     "button_pressed": "preview",
                 },
                 _expected_status=302,
-                _expected_redirect=url_for("main.preview_template", service_id=SERVICE_ONE_ID, sample_template_id=sample_sms_id),
+                _expected_redirect=url_for(
+                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_sms_id
+                ),
             )
         payload = mocked_set_preview.call_args[0][0]
         assert payload["template_type"] == "sms"

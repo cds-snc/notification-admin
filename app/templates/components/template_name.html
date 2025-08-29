@@ -1,0 +1,24 @@
+
+{# 
+    Macro: sample_template_name
+    --------------------------
+    Renders a sample template block with the given template name.  If the template name begins with 'en|fr' or 'fr|en', the language code will be displayed more distinctly.
+
+    Parameters:
+        tmpl_name (str): The name of the template to be rendered or referenced.
+
+    Usage:
+        Call this macro with the desired template name to include or display a specific template section.        
+#}
+
+{% from "components/badge.html" import badge %}
+
+{% macro sample_template_name(tmpl_name) %}
+  {% set t = tmpl_name or '' %}
+  {% set prefix = t[:5].lower() %}
+  {% if prefix in ['en|fr', 'fr|en'] %}
+  {{ badge(t[:5], bg_class='bg-purple-300' if prefix == 'en|fr' else 'bg-rose-300', extra_class='min-w-[60px] justify-center mr-3 no-underline', hide_icon=true) -}}{{ t[6:] | e }}
+  {% else %}
+    {{ t | e }}
+  {% endif %}
+{% endmacro %}
