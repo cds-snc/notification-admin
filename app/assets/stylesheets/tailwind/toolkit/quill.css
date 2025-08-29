@@ -1,0 +1,190 @@
+.ql-container {
+  @apply font-body text-small
+}
+.ql-container.ql-snow {
+    @apply border-2 border-t-0 border-black;
+}
+#branding {
+  border-bottom-style: dashed;
+  @apply border-l-2 border-r-2 border-b-1 border-black border-b-gray-300;
+}
+#branding:hover {
+  cursor: not-allowed;
+}
+
+.ql-toolbar.ql-snow {
+    @apply p-0 font-body border-2 border-black;
+}
+
+.ql-snow.ql-toolbar button,
+.ql-snow .ql-toolbar button {
+  height: 45px;
+  width: auto;
+  @apply flex min-w-target items-center justify-center p-0 px-3 bg-white;
+}
+
+.ql-snow.ql-toolbar button svg,
+.ql-snow .ql-toolbar button svg {
+  @apply h-8;
+}
+
+:is(.ql-snow.ql-toolbar, .ql-snow .ql-toolbar) :is(button, .ql-picker-label, .ql-picker-item):focus-visible {
+  @apply bg-yellow text-black no-underline outline outline-offset-0 outline-[3px] outline-yellow;
+}
+
+.ql-snow.ql-toolbar button:hover,
+.ql-snow .ql-toolbar button:hover,
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow .ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-snow .ql-toolbar .ql-picker-item:hover {
+  box-shadow: inset 0 -4px;
+  @apply bg-blue-lighter text-blue-lightblue;
+}
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow .ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+    @apply bg-blue-lightblue text-white;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow .ql-toolbar button:hover .ql-fill,
+.ql-snow.ql-toolbar button:focus .ql-fill,
+.ql-snow .ql-toolbar button:focus .ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-fill,
+.ql-snow .ql-toolbar button.ql-active .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+.ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+    fill: currentColor;
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow .ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button:focus .ql-stroke,
+.ql-snow .ql-toolbar button:focus .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow .ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+    stroke: currentColor;
+}
+
+.ql-snow .ql-editor, #branding {
+  @apply p-gutterHalf;
+}
+
+.ql-snow .ql-editor h2 {
+    @apply font-sans text-titlelarge font-bold block;
+}
+.ql-snow .ql-editor h3 {
+    @apply font-sans text-title font-bold block;
+}
+
+.ql-snow .ql-editor blockquote {
+    @apply border-l-4 border-gray-300 my-gutterHalf px-gutterHalf;
+}
+
+.ql-toolbar.ql-snow {
+  @apply flex flex-wrap border-black bg-gray-300 gap-1 border-2 font-body p-0;
+}
+.ql-toolbar :is(button, .ql-picker) {
+  @apply bg-white text-black;
+}
+.ql-snow .ql-picker {
+    @apply h-auto text-smaller;
+}
+.ql-snow .ql-picker-label {
+    @apply flex items-center border-0;
+}
+.ql-toolbar.ql-snow .ql-picker-label {
+    border: none;
+}
+.ql-snow .ql-picker-options {
+    @apply p-0;
+}
+.ql-snow .ql-picker-options .ql-picker-item {
+    padding: 4px 8px;
+}
+
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+  @apply border-0 bg-blue-lightblue text-white;
+}
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    @apply border-gray-300 border-2;
+}
+.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    margin-top: -4px;
+    margin-left: -1px;
+    z-index: 10;
+}
+.ql-snow .ql-picker.ql-header {
+    width: 12ch;
+}
+
+.ql-editor :is([lang="en-CA"], [lang="fr-CA"]) {
+  @apply relative border-l-2 pl-3;
+}
+.ql-editor :is([lang="en-CA"], [lang="fr-CA"]):before {
+  @apply whitespace-nowrap text-right text-small block w-max px-3 -ml-3;
+}
+.ql-editor [lang="fr-CA"] {
+  @apply border-rose-300;
+}
+.ql-editor [lang="en-CA"] {
+  @apply border-purple-300;
+}
+.ql-editor [lang="fr-CA"]:before {
+  content: "FR";
+  @apply bg-rose-300 ;
+}
+.ql-editor [lang="en-CA"]:before {
+  content: "EN";
+  @apply bg-purple-300;
+}
+.ql-editor [lang="fr-CA"] + [lang="fr-CA"]:before,
+.ql-editor [lang="en-CA"] + [lang="en-CA"]:before {
+  content: "";
+  @apply m-0 p-0;
+}
