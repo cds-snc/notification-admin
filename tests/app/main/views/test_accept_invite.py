@@ -167,13 +167,11 @@ def test_accepting_invite_removes_invite_from_session(
     mocker.patch("app.billing_api_client.get_billable_units", return_value="")
 
     client_request.login(user)
-
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get(
-            "main.accept_invite",
-            token="thisisnotarealtoken",
-            _follow_redirects=True,
-        )
+    page = client_request.get(
+        "main.accept_invite",
+        token="thisisnotarealtoken",
+        _follow_redirects=True,
+    )
     assert normalize_spaces(page.select_one("h1").text) == landing_page_title
 
     with client_request.session_transaction() as session:

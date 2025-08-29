@@ -47,12 +47,10 @@
     window.APP_COMPONENTS = {
       sample_template_button: `
       {% set badge_text = _('New') %}
-      {% if config["FF_SAMPLE_TEMPLATES"] %}
         {{ indicator(
           '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
           badge(badge_text, bg_class='bg-blue-100', hide_icon=true)
-        )}}
-      {% endif %}`,
+        )}}`,
     }
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",

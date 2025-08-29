@@ -127,44 +127,6 @@ def test_redirect_caseworkers_to_templates(
     )
 
 
-# TODO: Remove this test when FF_SAMPLE_TEMPLATES is removed
-@pytest.mark.parametrize(
-    "permissions, text_in_page, text_not_in_page",
-    [
-        (["view_activity", "manage_templates"], ["Create template"], ["Select template"]),
-        (["view_activity", "send_messages"], ["Select template"], ["Create template"]),
-        (["view_activity"], [], ["Create template", "Select template"]),
-        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Select template"], []),
-    ],
-)
-def test_task_shortcuts_are_visible_based_on_permissions_REMOVE_FF(
-    client_request: ClientRequest,
-    active_user_with_permissions,
-    mock_get_service_templates,
-    mock_get_jobs,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    permissions: list,
-    text_in_page: list,
-    text_not_in_page: list,
-    app_,
-):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
-        active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
-        client_request.login(active_user_with_permissions)
-
-        page = client_request.get(
-            "main.service_dashboard",
-            service_id=SERVICE_ONE_ID,
-        )
-
-        for text in text_in_page:
-            assert text in page.text
-
-        for text in text_not_in_page:
-            assert text not in page.text
-
-
 @pytest.mark.parametrize(
     "permissions, text_in_page, text_not_in_page",
     [
@@ -187,20 +149,19 @@ def test_task_shortcuts_are_visible_based_on_permissions_with_templates(
     text_not_in_page: list,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
-        client_request.login(active_user_with_permissions)
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
+    client_request.login(active_user_with_permissions)
 
-        page = client_request.get(
-            "main.service_dashboard",
-            service_id=SERVICE_ONE_ID,
-        )
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=SERVICE_ONE_ID,
+    )
 
-        for text in text_in_page:
-            assert text in page.text
+    for text in text_in_page:
+        assert text in page.text
 
-        for text in text_not_in_page:
-            assert text not in page.text
+    for text in text_not_in_page:
+        assert text not in page.text
 
 
 @pytest.mark.parametrize(
@@ -225,20 +186,19 @@ def test_task_shortcuts_are_visible_based_on_permissions_with_no_templates(
     text_not_in_page: list,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
-        client_request.login(active_user_with_permissions)
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
+    client_request.login(active_user_with_permissions)
 
-        page = client_request.get(
-            "main.service_dashboard",
-            service_id=SERVICE_ONE_ID,
-        )
+    page = client_request.get(
+        "main.service_dashboard",
+        service_id=SERVICE_ONE_ID,
+    )
 
-        for text in text_in_page:
-            assert text in page.text
+    for text in text_in_page:
+        assert text in page.text
 
-        for text in text_not_in_page:
-            assert text not in page.text
+    for text in text_not_in_page:
+        assert text not in page.text
 
 
 @pytest.mark.parametrize(
@@ -1825,9 +1785,8 @@ def test_new_badge_on_dashboard_when_no_templates(
     mock_get_jobs,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
-        assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+    assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
 
 
 def test_new_badge_on_dashboard_when_some_templates(
@@ -1838,6 +1797,5 @@ def test_new_badge_on_dashboard_when_some_templates(
     mock_get_jobs,
     app_,
 ):
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
-        assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+    assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
