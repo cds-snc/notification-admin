@@ -205,17 +205,11 @@ def test_should_show_empty_page_when_no_templates(
         "main.choose_template",
         service_id=service_one["id"],
     )
-    if app_.config["FF_SAMPLE_TEMPLATES"]:
-        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
-        assert normalize_spaces(page.select_one("main p").text) == (
-            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
-        )
-    else:
-        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-        assert normalize_spaces(page.select_one("main p").text) == (
-            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-        )
 
+    assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+    assert normalize_spaces(page.select_one("main p").text) == (
+        "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+    )
     assert page.select_one("#add_new_folder_form")
     assert page.select_one("#add_new_template_form")
 
@@ -231,17 +225,10 @@ def test_should_show_create_template_button_if_service_has_folder_permission(
         "main.choose_template",
         service_id=service_one.id,
     )
-
-    if app_.config["FF_SAMPLE_TEMPLATES"]:
-        assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
-        assert normalize_spaces(page.select_one("main p").text) == (
-            "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
-        )
-    else:
-        assert normalize_spaces(page.select_one("h1").text) == ("Templates")
-        assert normalize_spaces(page.select_one("main p").text) == (
-            "You need to create a template to send emails or text messages. You can also create folders to organize your templates."
-        )
+    assert normalize_spaces(page.select_one("h1").text) == ("Your Templates")
+    assert normalize_spaces(page.select_one("main p").text) == (
+        "To send messages, create a template or work from an existing template. You can also create folders to organize your templates."
+    )
     assert "Create template" in page.select_one("#add_new_template_form a.button").text
 
 
@@ -314,8 +301,6 @@ def test_should_show_page_for_choosing_a_template(
     expected_page_title,
     app_,
 ):
-    if not app_.config["FF_SAMPLE_TEMPLATES"]:
-        expected_page_title = "Browse Templates"
     service_one["permissions"].append("letter")
     client_request.login(user)
 
@@ -2803,111 +2788,96 @@ class TestViewSampleLibrary:
             },
         ]
 
-    def test_redirects_when_feature_flag_disabled(self, client_request, mock_sample_templates, app_):
-        """Should redirect to choose_template when FF_SAMPLE_TEMPLATES is disabled"""
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
-            client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _expected_status=302,
-                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
-                _test_page_title=False,
-            )
-
     def test_shows_sample_templates_when_feature_flag_enabled(self, client_request, mock_sample_templates, mocker, app_):
         """Should display sample templates when feature flag is enabled"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
-            # Check the actual title is being set correctly - may be different due to translation context
-            title_text = normalize_spaces(page.select_one("title").text)
-            assert "GC Notify sample library" in title_text or title_text.endswith("– Notify")
+        assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+        # Check the actual title is being set correctly - may be different due to translation context
+        title_text = normalize_spaces(page.select_one("title").text)
+        assert "GC Notify sample library" in title_text or title_text.endswith("– Notify")
 
-            # Check that sample templates are displayed
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            assert table is not None
+        # Check that sample templates are displayed
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        assert table is not None
 
-            # Should show only email templates by default (filtered)
-            template_links = table.select("a")
-            assert len(template_links) == 1
+        # Should show only email templates by default (filtered)
+        template_links = table.select("a")
+        assert len(template_links) == 1
 
-            # Check template names are displayed - only email template shown
-            assert "Welcome Email" in template_links[0].text
+        # Check template names are displayed - only email template shown
+        assert "Welcome Email" in template_links[0].text
 
-            # Check notification type icons/text are displayed for the email template
-            notification_types = page.select("[data-testid='sample_library_icon']")
-            assert len(notification_types) == 1
+        # Check notification type icons/text are displayed for the email template
+        notification_types = page.select("[data-testid='sample_library_icon']")
+        assert len(notification_types) == 1
 
     def test_shows_empty_state_when_no_sample_templates(self, client_request, mocker, app_):
         """Should show empty state when no sample templates exist"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=[])
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
+        assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
 
-            # Should show empty state message
-            assert "No sample templates available." in page.text
+        # Should show empty state message
+        assert "No sample templates available." in page.text
 
-            # Should not show the table
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            assert table is None
+        # Should not show the table
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        assert table is None
 
     def test_shows_french_template_names_when_french_locale(self, client_request, mock_sample_templates, mocker, app_):
         """Should display French template names when user language is French"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            # Mock French session
-            with client_request.session_transaction() as session:
-                session["userlang"] = "fr"
+        # Mock French session
+        with client_request.session_transaction() as session:
+            session["userlang"] = "fr"
 
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            # Should show French template names - only email template by default
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            template_links = table.select("a")
+        # Should show French template names - only email template by default
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        template_links = table.select("a")
 
-            assert "Courriel de bienvenue" in template_links[0].text
+        assert "Courriel de bienvenue" in template_links[0].text
 
     def test_template_links_have_correct_urls(self, client_request, mock_sample_templates, mocker, app_):
         """Should have correct URLs for template links"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            template_links = page.select('[data-testid="sample-templates-table"] a')
+        template_links = page.select('[data-testid="sample-templates-table"] a')
 
-            # Check first template link - only email template shown by default
-            expected_url_1 = url_for(
-                "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="11111111-1111-1111-1111-111111111111"
-            )
-            assert template_links[0]["href"] == expected_url_1
+        # Check first template link - only email template shown by default
+        expected_url_1 = url_for(
+            "main.view_sample_template", service_id=SERVICE_ONE_ID, template_id="11111111-1111-1111-1111-111111111111"
+        )
+        assert template_links[0]["href"] == expected_url_1
 
     @pytest.mark.parametrize(
         "notification_type,expected_icon",
@@ -2923,88 +2893,85 @@ class TestViewSampleLibrary:
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            # Set appropriate filter to show the notification type we want to test
-            type_param = "sms" if notification_type == "sms" else None
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                type=type_param,
-                _test_page_title=False,
-            )
+        # Set appropriate filter to show the notification type we want to test
+        type_param = "sms" if notification_type == "sms" else None
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            type=type_param,
+            _test_page_title=False,
+        )
 
-            # Check for the correct icon class
-            icon = page.select_one(f".{expected_icon}")
-            assert icon is not None
+        # Check for the correct icon class
+        icon = page.select_one(f".{expected_icon}")
+        assert icon is not None
 
     def test_pill_menu_filters_email_templates_by_default(self, client_request, mock_sample_templates, mocker, app_):
         """Should filter and show only email templates by default"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            # Should show only email templates by default
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            template_links = table.select("a")
-            assert len(template_links) == 1
-            assert "Welcome Email" in template_links[0].text
-            assert "SMS Reminder" not in page.text
+        # Should show only email templates by default
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        template_links = table.select("a")
+        assert len(template_links) == 1
+        assert "Welcome Email" in template_links[0].text
+        assert "SMS Reminder" not in page.text
 
-            # Check pill menu is present and has correct number of options
-            pill_nav = page.select_one("nav.pill")
-            assert pill_nav is not None
-            pill_links = pill_nav.select("a")
-            assert len(pill_links) == 2
+        # Check pill menu is present and has correct number of options
+        pill_nav = page.select_one("nav.pill")
+        assert pill_nav is not None
+        pill_links = pill_nav.select("a")
+        assert len(pill_links) == 2
 
-            # Email pill should be selected (has pill-selected-item class)
-            email_pill = pill_nav.select_one('a[href*="type=email"]')
-            assert email_pill is not None
-            assert "pill-selected-item" in email_pill.get("class", [])
+        # Email pill should be selected (has pill-selected-item class)
+        email_pill = pill_nav.select_one('a[href*="type=email"]')
+        assert email_pill is not None
+        assert "pill-selected-item" in email_pill.get("class", [])
 
-            # SMS pill should be unselected
-            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
-            assert sms_pill is not None
-            assert "pill-unselected-item" in sms_pill.get("class", [])
+        # SMS pill should be unselected
+        sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+        assert sms_pill is not None
+        assert "pill-unselected-item" in sms_pill.get("class", [])
 
     def test_pill_menu_filters_sms_templates_when_type_param_is_sms(self, client_request, mock_sample_templates, mocker, app_):
         """Should filter and show only SMS templates when ?type=sms query param is provided"""
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_sample_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                type="sms",
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            type="sms",
+            _test_page_title=False,
+        )
 
-            # Should show only SMS templates
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            template_links = table.select("a")
-            assert len(template_links) == 1
-            assert "SMS Reminder" in template_links[0].text
-            assert "Welcome Email" not in page.text
+        # Should show only SMS templates
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        template_links = table.select("a")
+        assert len(template_links) == 1
+        assert "SMS Reminder" in template_links[0].text
+        assert "Welcome Email" not in page.text
 
-            # Check pill menu state - SMS should be selected
-            pill_nav = page.select_one("nav.pill")
-            assert pill_nav is not None
+        # Check pill menu state - SMS should be selected
+        pill_nav = page.select_one("nav.pill")
+        assert pill_nav is not None
 
-            # SMS pill should be selected
-            sms_pill = pill_nav.select_one('a[href*="type=sms"]')
-            assert sms_pill is not None
-            assert "pill-selected-item" in sms_pill.get("class", [])
+        # SMS pill should be selected
+        sms_pill = pill_nav.select_one('a[href*="type=sms"]')
+        assert sms_pill is not None
+        assert "pill-selected-item" in sms_pill.get("class", [])
 
-            # Email pill should be unselected
-            email_pill = pill_nav.select_one('a[href*="type=email"]')
-            assert email_pill is not None
-            assert "pill-unselected-item" in email_pill.get("class", [])
+        # Email pill should be unselected
+        email_pill = pill_nav.select_one('a[href*="type=email"]')
+        assert email_pill is not None
+        assert "pill-unselected-item" in email_pill.get("class", [])
 
     def test_pinned_templates_appear_first_in_list(self, client_request, mock_sample_templates, mocker, app_):
         """Should display pinned templates first in the list, followed by unpinned templates sorted by name"""
@@ -3036,72 +3003,57 @@ class TestViewSampleLibrary:
         clear_sample_template_cache()
         mocker.patch("app.sample_template_utils.get_sample_templates", return_value=mock_templates)
 
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_library",
-                service_id=SERVICE_ONE_ID,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_library",
+            service_id=SERVICE_ONE_ID,
+            _test_page_title=False,
+        )
 
-            # Get all template links in order (only email templates shown by default)
-            table = page.select_one('[data-testid="sample-templates-table"]')
-            template_links = table.select("a")
-            assert len(template_links) == 3  # 3 email templates total
+        # Get all template links in order (only email templates shown by default)
+        table = page.select_one('[data-testid="sample-templates-table"]')
+        template_links = table.select("a")
+        assert len(template_links) == 3  # 3 email templates total
 
-            # Check order: pinned first, then alphabetical by name
-            template_names = [link.text.strip() for link in template_links]
-            expected_order = ["Z Last Pinned Template", "A First Template", "Welcome Email"]
-            assert template_names == expected_order
+        # Check order: pinned first, then alphabetical by name
+        template_names = [link.text.strip() for link in template_links]
+        expected_order = ["Z Last Pinned Template", "A First Template", "Welcome Email"]
+        assert template_names == expected_order
 
-            # Check that the pinned template has the pin icon
-            first_row = table.select("tbody tr")[0]
-            pin_icon = first_row.select_one(".fa-thumbtack")
-            assert pin_icon is not None, "Pinned template should have a pin icon"
+        # Check that the pinned template has the pin icon
+        first_row = table.select("tbody tr")[0]
+        pin_icon = first_row.select_one(".fa-thumbtack")
+        assert pin_icon is not None, "Pinned template should have a pin icon"
 
-            # Check that unpinned templates don't have pin icons
-            for i in range(1, 3):
-                row = table.select("tbody tr")[i]
-                pin_icon = row.select_one(".fa-thumbtack")
-                assert pin_icon is None, f"Unpinned template at position {i} should not have a pin icon"
+        # Check that unpinned templates don't have pin icons
+        for i in range(1, 3):
+            row = table.select("tbody tr")[i]
+            pin_icon = row.select_one(".fa-thumbtack")
+            assert pin_icon is None, f"Unpinned template at position {i} should not have a pin icon"
 
 
 class TestViewSampleTemplate:
-    def test_redirects_when_feature_flag_disabled(
-        self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
-    ):
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", False):
-            client_request.get(
-                "main.view_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_id=sample_email_id,
-                _expected_status=302,
-                _expected_redirect=url_for("main.choose_template", service_id=SERVICE_ONE_ID),
-                _test_page_title=False,
-            )
-
     def test_404_for_unknown_sample_template(
         self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
     ):
         unknown_id = "ffffffff-ffff-ffff-ffff-ffffffffffff"
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.get(
-                "main.view_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_id=unknown_id,
-                _expected_status=404,
-                _test_page_title=False,
-            )
+
+        client_request.get(
+            "main.view_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=unknown_id,
+            _expected_status=404,
+            _test_page_title=False,
+        )
 
     def test_displays_sample_email_template(
         self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
     ):
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.view_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_id=sample_email_id,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.view_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=sample_email_id,
+            _test_page_title=False,
+        )
         assert page.select_one("h1").text.strip() == "Sample template\nAccount Verification"
         assert "Click the link to verify your account" in page.text
         assert "Verify your account" in page.text
@@ -3112,53 +3064,51 @@ class TestCreateFromSampleTemplate:
     def test_get_prefills_email_sample(
         self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
     ):
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="email",
-                template_id=sample_email_id,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            template_id=sample_email_id,
+            _test_page_title=False,
+        )
         assert "Edit Account Verification" in page.text
 
     def test_get_prefills_sms_sample(
         self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mock_get_template_categories
     ):
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            page = client_request.get(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="sms",
-                template_id=sample_sms_id,
-                _test_page_title=False,
-            )
+        page = client_request.get(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="sms",
+            template_id=sample_sms_id,
+            _test_page_title=False,
+        )
         assert "Edit Two-Factor Code" in page.text
 
     def test_preview_email_flow_sets_preview_and_redirects(
         self, client_request, sample_email_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
     ):
         mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.post(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="email",
-                template_id=sample_email_id,
-                _data={
-                    "name": "Account Verification",
-                    "subject": "Verify your account",
-                    "template_content": "Click the link to verify your account: ((link))",
-                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
-                    "process_type": TC_PRIORITY_VALUE,
-                    "text_direction_rtl": False,
-                    "button_pressed": "preview",
-                },
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_email_id
-                ),
-            )
+
+        client_request.post(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            template_id=sample_email_id,
+            _data={
+                "name": "Account Verification",
+                "subject": "Verify your account",
+                "template_content": "Click the link to verify your account: ((link))",
+                "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                "process_type": TC_PRIORITY_VALUE,
+                "text_direction_rtl": False,
+                "button_pressed": "preview",
+            },
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_email_id
+            ),
+        )
         assert mocked_set_preview.call_count == 1
         payload = mocked_set_preview.call_args[0][0]
         assert payload["name"] == "Account Verification"
@@ -3172,51 +3122,50 @@ class TestCreateFromSampleTemplate:
             "app.main.views.templates.service_api_client.create_service_template",
             return_value={"data": {"id": "new-template-id"}},
         )
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.post(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="email",
-                template_id=sample_email_id,
-                _data={
-                    "name": "Account Verification",
-                    "subject": "Verify your account",
-                    "template_content": "Click the link to verify your account: ((link))",
-                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
-                    "process_type": TC_PRIORITY_VALUE,
-                    "text_direction_rtl": False,
-                    "button_pressed": "save",
-                },
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="ga_sample_template"
-                ),
-            )
+
+        client_request.post(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            template_id=sample_email_id,
+            _data={
+                "name": "Account Verification",
+                "subject": "Verify your account",
+                "template_content": "Click the link to verify your account: ((link))",
+                "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                "process_type": TC_PRIORITY_VALUE,
+                "text_direction_rtl": False,
+                "button_pressed": "save",
+            },
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.view_template", service_id=SERVICE_ONE_ID, template_id="new-template-id", source="ga_sample_template"
+            ),
+        )
         mocked_create.assert_called_once()
 
     def test_preview_sms_flow_sets_preview_and_redirects(
         self, client_request, sample_sms_id, app_, mock_create_temporary_sample_template, mocker, mock_get_template_categories
     ):
         mocked_set_preview = mocker.patch("app.main.views.templates.set_preview_data")
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.post(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="sms",
-                template_id=sample_sms_id,
-                _data={
-                    "name": "Two-Factor Code",
-                    "template_content": "Your code is ((code))",
-                    "template_category_id": TESTING_TEMPLATE_CATEGORY,
-                    "process_type": TC_PRIORITY_VALUE,
-                    "text_direction_rtl": False,
-                    "button_pressed": "preview",
-                },
-                _expected_status=302,
-                _expected_redirect=url_for(
-                    "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_sms_id
-                ),
-            )
+        client_request.post(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="sms",
+            template_id=sample_sms_id,
+            _data={
+                "name": "Two-Factor Code",
+                "template_content": "Your code is ((code))",
+                "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                "process_type": TC_PRIORITY_VALUE,
+                "text_direction_rtl": False,
+                "button_pressed": "preview",
+            },
+            _expected_status=302,
+            _expected_redirect=url_for(
+                "main.preview_template_sample", service_id=SERVICE_ONE_ID, sample_template_id=sample_sms_id
+            ),
+        )
         payload = mocked_set_preview.call_args[0][0]
         assert payload["template_type"] == "sms"
         assert payload["subject"] is None
@@ -3224,11 +3173,10 @@ class TestCreateFromSampleTemplate:
     def test_404_for_unknown_sample_id(
         self, client_request, app_, mock_create_temporary_sample_template, mock_get_template_categories
     ):
-        with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-            client_request.get(
-                "main.create_from_sample_template",
-                service_id=SERVICE_ONE_ID,
-                template_type="email",
-                template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
-                _expected_status=404,
-            )
+        client_request.get(
+            "main.create_from_sample_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
+            _expected_status=404,
+        )

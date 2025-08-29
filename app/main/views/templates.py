@@ -1499,9 +1499,6 @@ def template_category(template_category_id):
 @main.route("/services/<service_id>/templates/sample-library", methods=["GET"])
 @user_has_permissions()
 def view_sample_library(service_id):
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
-
     all_templates = get_sample_templates()
     email_templates = get_sample_templates_by_type("email")
     sms_templates = get_sample_templates_by_type("sms")
@@ -1526,8 +1523,7 @@ def view_sample_library(service_id):
 @user_has_permissions()
 def view_sample_template(service_id, template_id):
     delete_preview_data(service_id, template_id)
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
+
     # Create a template obj
     template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id, preview=True)
 
