@@ -14,8 +14,8 @@
   <button class="ql-italic" aria-label="Italic"><i class="fa fa-italic"></i></button>
   <button class="ql-list" value="ordered" aria-label="Insert ordered list"><i class="fa-solid fa-list-ol"></i></button>
   <button class="ql-list" value="bullet" aria-label="Insert bullet list"><i class="fa fa-list-ul"></i></button>
-  <button class="ql-indent" value="increase" aria-label="Increase indent"><i class="fa fa-indent"></i></button>
-  <button class="ql-indent" value="decrease" aria-label="Decrease indent"><i class="fa fa-outdent"></i></button>
+  <button class="ql-indent" value="+1" aria-label="Increase indent"><i class="fa fa-indent"></i></button>
+  <button class="ql-indent" value="-1" aria-label="Decrease indent"><i class="fa fa-outdent"></i></button>
   <button id="divider-button" value="divider" aria-label="Insert divider">Divider</button>
   <button class="ql-link" aria-label="Insert link"><i class="fa fa-link"></i></button>
   <button class="ql-blockquote" aria-label="Insert blockquote"><i class="fa fa-quote-left"></i></button>
@@ -63,8 +63,10 @@ icons['list'] = {
   'ordered': '<i class="fa-solid fa-list-ol"></i>',
   'bullet': '<i class="fa-solid fa-list-ul"></i>'
 };
-icons['outdent'] = '<i class="fa-solid fa-outdent"></i>';
-icons['indent'] = '<i class="fa-solid fa-indent"></i>';
+icons['indent'] = {
+  '+1': '<i class="fa-solid fa-indent"></i>',
+  '-1': '<i class="fa-solid fa-outdent"></i>'
+};
 icons['link'] = '<i class="fa-solid fa-link"></i>';
 icons['blockquote'] = '<i class="fa-solid fa-quote-left"></i>';
 icons['direction'] = {
