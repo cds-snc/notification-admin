@@ -164,16 +164,27 @@
 }
 
 .ql-editor :is([lang="en-CA"], [lang="fr-CA"]) {
-  @apply relative;
+  @apply relative border-l-2 pl-3;
 }
 .ql-editor :is([lang="en-CA"], [lang="fr-CA"]):before {
-  @apply whitespace-nowrap text-right text-small  w-[2ch] h-full absolute -left-[2ch];
+  @apply whitespace-nowrap text-right text-small block w-max px-3 -ml-3;
+}
+.ql-editor [lang="fr-CA"] {
+  @apply border-rose-300;
+}
+.ql-editor [lang="en-CA"] {
+  @apply border-purple-300;
 }
 .ql-editor [lang="fr-CA"]:before {
   content: "FR";
-  @apply bg-blue-300;
+  @apply bg-rose-300 ;
 }
 .ql-editor [lang="en-CA"]:before {
   content: "EN";
-  @apply bg-red-300;
+  @apply bg-purple-300;
+}
+.ql-editor [lang="fr-CA"] + [lang="fr-CA"]:before,
+.ql-editor [lang="en-CA"] + [lang="en-CA"]:before {
+  content: "";
+  @apply m-0 p-0;
 }
