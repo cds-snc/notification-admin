@@ -1601,8 +1601,8 @@ werkzeug = "3.0.4"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "fix/bullet-padding"
-resolved_reference = "d5a2fea0e87c2f1d52edd55a9d3878bceda6a7c9"
+reference = "53.2.5"
+resolved_reference = "0a8ac9e3a2af5ad332cd3255ea445e74f7d06998"
 
 [[package]]
 name = "openpyxl"
@@ -2782,4 +2782,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "b7aaad4dbbf09d74a0283f1420074abdb47ec8ed5c0b8307e9fa5bb30273ace4"
+content-hash = "883f0dc325001f0b42c147237abf5ad352fba379f0c29f2299311a0d65ec73df"
