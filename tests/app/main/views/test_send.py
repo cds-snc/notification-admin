@@ -2584,7 +2584,7 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     )
 
     # remove excess whitespace from element
-    details = page.findAll("h2")[1]
+    details = page.findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
