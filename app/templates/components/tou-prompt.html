@@ -17,7 +17,7 @@
     <h2 class="heading-medium">{{ _('Review your activity') }}</h1>
     <p>{{ _('GC Notify always shows your local time, except where we state otherwise.') }}</p>
     <p>{{ _('Review our records of your last 3 sign in times:') }}</p>
-    <div class="space-y-4 divide-y divide-slate-200 mb-8" role="list" aria-label="{{ _('Recent sign in activity') }}">
+    <div class="space-y-4 divide-y divide-slate-200 mb-8" role="list">
       {% for event in session[events_key] %}
         <div role="listitem" class="flex items-start gap-4 pt-4">
           <div class="w-1/3 flex-shrink-0">
