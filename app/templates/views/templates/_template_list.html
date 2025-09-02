@@ -28,7 +28,7 @@
       <fieldset>
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
-    <div id="template-list-container" aria-label="Search results" aria-live="polite" role="region">
+    <section id="template-list-container" aria-label="Search results" aria-live="polite" role="region">
       <span class="sr-only" id="template-list-status" aria-live="polite">
         {{ template_list | length }} results found
       </span>
@@ -80,7 +80,19 @@
             {{ empty_list(_('No matching templates'), _('Change your filters or search for more templates'), 'emptyBirdHole') }}
           </div>
         {% endif %}
-    </div>
+    </section>
+    {% if template_list_length > 0 and not sending_view %}
+      <div class="template-list-footer {% if display_checkboxes %}template-list-footer-with-checkbox{% endif %} {% if not show_template_nav and not show_search_box %}top-gutter-5px contain-floats{% endif %}">
+        <span class="template-list-count" data-testid="template-count">
+          {{ folder_contents_count(template_list_length, template_type) }}
+        </span>
+        {% if show_template_nav %}
+          <div class="template-list-pagination">
+            {{ pagination_links(pagination, '.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=template_list.template_folder_id, view='sending' if sending_view else None) }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
     {% if display_checkboxes %}
       </fieldset>
     {% endif %}
