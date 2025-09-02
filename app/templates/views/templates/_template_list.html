@@ -81,18 +81,6 @@
           </div>
         {% endif %}
     </section>
-    {% if template_list_length > 0 and not sending_view %}
-      <div class="template-list-footer {% if display_checkboxes %}template-list-footer-with-checkbox{% endif %} {% if not show_template_nav and not show_search_box %}top-gutter-5px contain-floats{% endif %}">
-        <span class="template-list-count" data-testid="template-count">
-          {{ folder_contents_count(template_list_length, template_type) }}
-        </span>
-        {% if show_template_nav %}
-          <div class="template-list-pagination">
-            {{ pagination_links(pagination, '.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=template_list.template_folder_id, view='sending' if sending_view else None) }}
-          </div>
-        {% endif %}
-      </div>
-    {% endif %}
     {% if display_checkboxes %}
       </fieldset>
     {% endif %}
