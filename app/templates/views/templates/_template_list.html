@@ -28,7 +28,10 @@
       <fieldset>
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
-    <div id="template-list-container">
+    <div id="template-list-container" aria-label="Search results" aria-live="polite" role="region">
+      <span class="sr-only" id="template-list-status" aria-live="polite">
+        {{ template_list | length }} results found
+      </span>
       {% set template_list_length = template_list | length %}
       {% for item in template_list %}
         <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ _('Other') if item.template_category.hidden else item.template_category[template_category_name_col] }}" data-testid="template-row">
