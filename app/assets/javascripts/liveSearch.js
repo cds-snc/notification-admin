@@ -18,9 +18,13 @@
 
     if (statusElement) {
       if (query === "") {
-        statusElement.text(`${$targets.length} templates found`);
+        statusElement.text(
+          `${$targets.length} ${window.APP_PHRASES.templates_found_sr_status}`,
+        );
       } else {
-        statusElement.text(`${visibleCount} templates found`);;
+        statusElement.text(
+          `${visibleCount} ${window.APP_PHRASES.templates_found_sr_status}`,
+        );
       }
     }
   };
