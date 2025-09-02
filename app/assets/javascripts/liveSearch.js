@@ -14,13 +14,13 @@
 
   let updateAriaLiveStatus = ($targets, query) => {
     let visibleCount = $targets.filter(":visible").length;
-    let statusElement = document.getElementById("template-list-status");
+    let statusElement = $("#template-list-status");
 
     if (statusElement) {
       if (query === "") {
-        statusElement.textContent = `${$targets.length} results found`;
+        statusElement.text(`${$targets.length} templates found`);
       } else {
-        statusElement.textContent = `${visibleCount} results found for "${query}"`;
+        statusElement.text(`${visibleCount} templates found`);;
       }
     }
   };
