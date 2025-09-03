@@ -4,7 +4,7 @@ template_name:
   fr: "EN|fr Code de vérification à deux étapes"
 notification_type: "sms"
 template_category: "authentication"
-pinned: true
+pinned: false
 content: |
   ((verify_code)) is your -application name- verification code | ((verify_code)) est votre code de vérification de -nom de l'application-
 example_content: |
