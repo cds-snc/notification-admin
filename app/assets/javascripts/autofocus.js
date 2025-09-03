@@ -11,8 +11,8 @@
         return;
       }
 
-      // prevent more than 1 component from being focused. 
-      // only focus on page load when nothing is focused yet. 
+      // prevent more than 1 component from being focused.
+      // only focus on page load when nothing is focused yet.
       // if something is already focused, we don't want to change that.
       if ($(":focus").length > 0) {
         return;
