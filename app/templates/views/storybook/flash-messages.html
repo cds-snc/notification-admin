@@ -104,7 +104,7 @@
       <div class="mb-12 clear-both contain-floats">
         {{ banner("Check your settings and try again.", subhead="Upload Failed", type="dangerous") }}
       </div>
-      <h4 class="heading-small mb-2">Code</h4>
+      <h3 class="heading-small mb-2">Code</h3>
       <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
         <pre><code>{% raw %}{{ banner(
   "Check your settings and try again.", 
@@ -127,7 +127,7 @@
           delete_button="Yes, delete service"
         ) }}
       </div>
-      <h4 class="heading-small mb-2">Code</h4>
+      <h3 class="heading-small mb-2">Code</h3>
       <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
         <pre><code>{% raw %}{{ banner(
   "This action cannot be undone. All data associated with this service will be permanently deleted.",
@@ -139,18 +139,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<hr class="mt-12 mb-8" />
-
-<h2 class="heading-medium mb-4">Focus Testing Notes</h2>
-<div class="bg-blue-50 p-6 rounded">
-  <p class="mb-4"><strong>What to test for each variation:</strong></p>
-  <ul class="list list-bullet ml-8 space-y-1">
-    <li>Banner receives focus when it appears (check <code>tabindex="-1"</code>)</li>
-    <li>Screen readers announce the content appropriately</li>
-    <li>Role is set correctly: <code>role="alert"</code> for dangerous, <code>role="status"</code> for others</li>
-    <li>Focus is not lost when banner appears</li>
-    <li>Action buttons within banners are accessible</li>
-  </ul>
 </div>
