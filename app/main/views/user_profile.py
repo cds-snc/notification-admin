@@ -15,7 +15,6 @@ from flask import (
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
-from notifications_utils.decorators import requires_feature
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
@@ -536,7 +535,6 @@ def user_profile_disable_platform_admin_view():
 
 @main.route("/user-profile/verify-mobile-number/send", methods=["GET"])
 @user_is_logged_in
-@requires_feature("FF_AUTH_V2")
 def verify_mobile_number_send():
     """
     Send the verification code and redirect to the verification form.
@@ -577,7 +575,6 @@ def verify_mobile_number_send():
 
 @main.route("/user-profile/verify-mobile-number", methods=["GET"])
 @user_is_logged_in
-@requires_feature("FF_AUTH_V2")
 def verify_mobile_number():
     """
     Display the verification form. Does not send a code.
@@ -616,7 +613,6 @@ def verify_mobile_number():
 
 @main.route("/user-profile/verify-mobile-number", methods=["POST"])
 @user_is_logged_in
-@requires_feature("FF_AUTH_V2")
 def verify_mobile_number_post():
     """
     Handle the verification code submission.
@@ -661,83 +657,81 @@ def verify_mobile_number_post():
 @main.route("/user-profile/2fa", methods=["GET", "POST"])
 @user_is_logged_in
 def user_profile_2fa():
-    if current_app.config["FF_AUTH_V2"]:
-        # IF they have not authenticated yet, do it now
-        if not session.get(HAS_AUTHENTICATED):
-            return redirect(url_for(".user_profile_2fa_authenticate"))
-        data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
-        if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
-            if len(current_user.security_keys) > 1:
-                data.extend([("security_key", _("Use existing security keys"))])
-            else:
-                data.extend([("security_key", _("Use existing security key"))])
-        data.append(("new_key", _("Add a new security key")))
-        hints = {
-            "email": current_user.email_address,
-            "sms": current_user.mobile_number
-            if current_user.mobile_number
-            else _("Add a mobile number to your profile to use this option."),
-            "new_key": _(
-                "Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key."
-            ),
-        }
-        badge_options = {
-            "email": [_("Verified"), "success"],
-            "sms": None
-            if current_user.mobile_number is None
-            else [_("Not verified"), "default"]
-            if not current_user.verified_phonenumber
-            else [_("Verified"), "success"],
-            "new_key": None,
-        }
-
-        if current_user.auth_type == "email_auth":
-            current_auth_method = "email"
-        elif current_user.auth_type == "sms_auth":
-            current_auth_method = "sms"
-        elif current_user.auth_type == "security_key_auth":
-            current_auth_method = "security_key"
+    # IF they have not authenticated yet, do it now
+    if not session.get(HAS_AUTHENTICATED):
+        return redirect(url_for(".user_profile_2fa_authenticate"))
+    data = [("email", _("Receive a code by email")), ("sms", _("Receive a code by text message"))]
+    if getattr(current_user, "security_keys", None) and current_user.security_keys != []:
+        if len(current_user.security_keys) > 1:
+            data.extend([("security_key", _("Use existing security keys"))])
         else:
-            # todo: add a case for security keys
-            current_auth_method = "email"
-        form = AuthMethodForm(all_auth_methods=data, current_auth_method=current_auth_method)
+            data.extend([("security_key", _("Use existing security key"))])
+    data.append(("new_key", _("Add a new security key")))
+    hints = {
+        "email": current_user.email_address,
+        "sms": current_user.mobile_number
+        if current_user.mobile_number
+        else _("Add a mobile number to your profile to use this option."),
+        "new_key": _(
+            "Enhance your account’s security by adding a security key such as a government issued Yubi key. Follow prompts to add the key."
+        ),
+    }
+    badge_options = {
+        "email": [_("Verified"), "success"],
+        "sms": None
+        if current_user.mobile_number is None
+        else [_("Not verified"), "default"]
+        if not current_user.verified_phonenumber
+        else [_("Verified"), "success"],
+        "new_key": None,
+    }
 
-        if request.method == "POST" and form.validate_on_submit():
-            # Update user's auth type based on selected 2FA method
-            new_auth_type = form.auth_method.data
-            if new_auth_type == "email":
-                auth_type = "email_auth"
-            elif new_auth_type == "sms":
-                auth_type = "sms_auth"
+    if current_user.auth_type == "email_auth":
+        current_auth_method = "email"
+    elif current_user.auth_type == "sms_auth":
+        current_auth_method = "sms"
+    elif current_user.auth_type == "security_key_auth":
+        current_auth_method = "security_key"
+    else:
+        # todo: add a case for security keys
+        current_auth_method = "email"
+    form = AuthMethodForm(all_auth_methods=data, current_auth_method=current_auth_method)
 
-                if not current_user.mobile_number:
-                    session["from_send_page"] = "user_profile_2fa"
-                    return redirect(url_for(".user_profile_mobile_number"))
-            elif new_auth_type == "security_key":
-                auth_type = "security_key_auth"
-            elif new_auth_type == "new_key":
-                # Redirect to add a new security key
+    if request.method == "POST" and form.validate_on_submit():
+        # Update user's auth type based on selected 2FA method
+        new_auth_type = form.auth_method.data
+        if new_auth_type == "email":
+            auth_type = "email_auth"
+        elif new_auth_type == "sms":
+            auth_type = "sms_auth"
+
+            if not current_user.mobile_number:
                 session["from_send_page"] = "user_profile_2fa"
-                return redirect(url_for(".user_profile_add_security_keys"))
-            # todo: add a case for existing security keys
-            else:
-                # Default to email auth if something unexpected is selected
-                auth_type = "email_auth"
+                return redirect(url_for(".user_profile_mobile_number"))
+        elif new_auth_type == "security_key":
+            auth_type = "security_key_auth"
+        elif new_auth_type == "new_key":
+            # Redirect to add a new security key
+            session["from_send_page"] = "user_profile_2fa"
+            return redirect(url_for(".user_profile_add_security_keys"))
+        # todo: add a case for existing security keys
+        else:
+            # Default to email auth if something unexpected is selected
+            auth_type = "email_auth"
 
-            if not current_user.verified_phonenumber and new_auth_type == "sms":
-                return redirect(url_for(".verify_mobile_number_send"))
+        if not current_user.verified_phonenumber and new_auth_type == "sms":
+            return redirect(url_for(".verify_mobile_number_send"))
 
-            # Flash a success message
-            flash(_("Two-step verification method updated"), "default_with_tick")
-            # Update the user's auth type
-            current_user.update(auth_type=auth_type)
+        # Flash a success message
+        flash(_("Two-step verification method updated"), "default_with_tick")
+        # Update the user's auth type
+        current_user.update(auth_type=auth_type)
 
-            # Redirect back to user profile and revoke their additional authentication
-            session.pop(HAS_AUTHENTICATED, None)
-            return redirect(url_for(".user_profile"))
+        # Redirect back to user profile and revoke their additional authentication
+        session.pop(HAS_AUTHENTICATED, None)
+        return redirect(url_for(".user_profile"))
 
-        return render_template("views/user-profile/2fa.html", form=form, hints=hints, badge_options=badge_options)
-    return redirect(url_for(".user_profile"))
+    return render_template("views/user-profile/2fa.html", form=form, hints=hints, badge_options=badge_options)
 
 
 @main.route("/user-profile/2fa/authenticate", methods=["GET", "POST"])
