@@ -6,38 +6,38 @@ describe("Flash Messages Focus Behavior", () => {
       name: "Default Message",
       component: "flash-messages-default",
       expectedRole: "status",
-      description: "basic success message"
+      description: "basic success message",
     },
     {
       name: "Default with Tick",
-      component: "flash-messages-default-with-tick", 
+      component: "flash-messages-default-with-tick",
       expectedRole: "status",
-      description: "success message with tick icon"
+      description: "success message with tick icon",
     },
     {
       name: "Dangerous/Error Message",
       component: "flash-messages-dangerous",
       expectedRole: "alert",
-      description: "error message that should interrupt"
+      description: "error message that should interrupt",
     },
     {
       name: "Message with Context",
       component: "flash-messages-with-context",
-      expectedRole: "status", 
-      description: "message with additional context text"
+      expectedRole: "status",
+      description: "message with additional context text",
     },
     {
       name: "Message with Action Button",
       component: "flash-messages-with-button",
       expectedRole: "alert",
-      description: "dangerous message with action button"
+      description: "dangerous message with action button",
     },
     {
-      name: "Message with Subheading", 
+      name: "Message with Subheading",
       component: "flash-messages-with-subhead",
       expectedRole: "alert",
-      description: "error message with subheading"
-    }
+      description: "error message with subheading",
+    },
   ];
 
   flashMessageVariations.forEach((variation) => {
@@ -51,28 +51,33 @@ describe("Flash Messages Focus Behavior", () => {
       });
 
       it(`should have the correct ARIA role for ${variation.description}`, () => {
-        cy.get('[data-testid="flash_message"]')
-          .should("have.attr", "role", variation.expectedRole);
+        cy.get('[data-testid="flash_message"]').should(
+          "have.attr",
+          "role",
+          variation.expectedRole,
+        );
       });
 
       it(`should have tabindex="-1" for ${variation.description}`, () => {
-        cy.get('[data-testid="flash_message"]')
-          .should("have.attr", "tabindex", "-1");
+        cy.get('[data-testid="flash_message"]').should(
+          "have.attr",
+          "tabindex",
+          "-1",
+        );
       });
 
       it(`should receive focus when page loads for ${variation.description}`, () => {
         // Check that the flash message is focused
-        cy.get('[data-testid="flash_message"]')
-          .should("be.focused");
+        cy.get('[data-testid="flash_message"]').should("be.focused");
       });
 
       if (variation.component === "flash-messages-with-button") {
         it("should allow keyboard navigation to action button", () => {
           // Focus should start on the banner
           cy.get('[data-testid="flash_message"]').should("be.focused");
-          
+
           // Tab should move to the button within the banner
-          cy.realPress('Tab');
+          cy.realPress("Tab");
           cy.get('[data-testid="flash_message"] button[type="submit"]')
             .should("be.focused")
             .and("be.visible");
@@ -109,7 +114,7 @@ describe("Flash Messages Focus Behavior", () => {
 
   describe("Flash Messages Overview Page", () => {
     const overviewURL = "/_storybook?component=flash-messages";
-    
+
     beforeEach(() => {
       cy.visit(overviewURL);
     });
@@ -136,7 +141,7 @@ describe("Flash Messages Focus Behavior", () => {
       // Click on a test link and verify back navigation
       cy.get('a[href*="flash-messages-default"]').first().click();
       cy.url().should("include", "flash-messages-default");
-      
+
       // Check for back link
       cy.get('a[href*="flash-messages"]')
         .contains("Back to Flash Messages Overview")
