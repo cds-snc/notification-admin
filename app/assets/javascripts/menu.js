@@ -117,44 +117,43 @@
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
     var menuItems = $items.children();
 
+    // Listbox Popup Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
+    // Left and Right arrows do nothing if the box is not editable.
+
     if ($menu.attr("aria-expanded") == "true") {
       // Support for Home/End on Windows and Linux + Cmd + Arrows for Mac
-      if (event.key == "Home" || (event.metaKey && event.key == "ArrowLeft")) {
+      if (event.key == "Home") {
+        // Home (Optional): Either moves focus to and selects the first option or, if the combobox is editable, returns focus to the combobox and places the cursor on the first character.
         event.preventDefault();
         $menu.selectedMenuItem = 0;
-      } else if (
-        event.key == "End" ||
-        (event.metaKey && event.key == "ArrowRight")
-      ) {
+      } else if (event.key == "End") {
+        // End (Optional): Either moves focus to the last option or, if the combobox is editable, returns focus to the combobox and places the cursor after the last character.
         event.preventDefault();
         $menu.selectedMenuItem = menuItems.length - 1;
-      } else if (
-        event.key === "ArrowUp" ||
-        event.key === "ArrowLeft" ||
-        (event.shiftKey && event.key === "Tab")
-      ) {
+      } else if (event.key === "ArrowUp") {
+        // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, does nothing.
         event.preventDefault();
-        $menu.selectedMenuItem =
-          $menu.selectedMenuItem == 0
-            ? menuItems.length - 1
-            : Math.max(0, $menu.selectedMenuItem - 1);
-      } else if (
-        event.key === "ArrowDown" ||
-        event.key === "ArrowRight" ||
-        event.key === "Tab"
-      ) {
+        $menu.selectedMenuItem = Math.max(0, $menu.selectedMenuItem - 1);
+      } else if (event.key === "ArrowDown") {
+        // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, does nothing.
         event.preventDefault();
-        $menu.selectedMenuItem =
-          $menu.selectedMenuItem == menuItems.length - 1
-            ? 0
-            : Math.min(menuItems.length - 1, $menu.selectedMenuItem + 1);
+        $menu.selectedMenuItem = Math.min(
+          menuItems.length - 1,
+          $menu.selectedMenuItem + 1,
+        );
       } else if (event.key === "Escape") {
+        // Escape: Closes the popup and returns focus to the combobox. Optionally, if the combobox is editable, clears the contents of the combobox.
         event.preventDefault();
         close($menu, $items);
         $menu.focus();
+      } else if (event.key === "Tab") {
+        // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
+        close($menu, $items);
+        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.
+        return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $($items.children()[$menu.selectedMenuItem]).find("a").focus();
+      $($items.children()[$menu.selectedMenuItem]).find("a").trigger("focus");
     }
   }
 
