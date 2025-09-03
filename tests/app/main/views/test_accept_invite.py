@@ -512,37 +512,6 @@ def test_existing_user_accepts_and_sets_email_auth(
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
 
 
-def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
-    app_,
-    client_request,
-    api_user_active,
-    service_one,
-    sample_invite,
-    mock_get_user_by_email,
-    mock_get_users_by_service,
-    mock_accept_invite,
-    mock_update_user_attribute,
-    mock_add_user_to_service,
-    mocker,
-):
-    with set_config(app_, "FF_AUTH_V2", False):
-        sample_invite["email_address"] = api_user_active["email_address"]
-
-        assert "email_auth" not in service_one["permissions"]
-
-        sample_invite["auth_type"] = "email_auth"
-        mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
-
-        client_request.get(
-            "main.accept_invite",
-            token="thisisnotarealtoken",
-            _expected_status=302,
-            _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
-        )
-
-        assert not mock_update_user_attribute.called
-
-
 def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
     app_,
     client_request,
