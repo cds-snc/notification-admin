@@ -85,6 +85,26 @@
               {{ _('Request a password reset for this user') }}
             </a>
           </li>
+          <li class="browse-list-item">
+            <details>
+              <summary>{{ _('Change auth type') }}</summary>
+              {% set current_auth = user.auth_type or '' %}
+              {% set selected_auth_type = 'sms' if current_auth == 'sms_auth' else 'email' %}
+              <form method="post" action="{{ url_for('main.update_user_auth_type', user_id=user.id) }}" class="mt-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                  <label class="form-label" for="auth_type">
+                    {{ _('Authentication type') }}: {{ current_auth or 'unknown' }}
+                  </label>
+                  <select id="auth_type" name="auth_type" class="form-control">
+                    <option value="sms" {{ 'selected' if selected_auth_type == 'sms' else '' }}>sms</option>
+                    <option value="email" {{ 'selected' if selected_auth_type == 'email' else '' }}>email</option>
+                  </select>
+                </div>
+                <button type="submit" class="button">{{ _('Save') }}</button>
+              </form>
+            </details>
+          </li>
           </ul>
         </nav>
       {% endif %}
