@@ -65,4 +65,10 @@
   .menu-overlay button:focus {
     @apply outline-yellow text-black border-transparent shadow-focusLine2;
   }
+
+  /* manage visibility of elements referenced by aria-activedescendant */
+  [data-module="menu"] ~ [role="listbox"] [role="option"][aria-selected="true"] {
+    @apply bg-yellow text-black;
+  }
+
 }

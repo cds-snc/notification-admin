@@ -16,8 +16,10 @@
     }
 
     $menu.attr("aria-expanded", true);
+    // Combobox stays in focus, children receives aria-selected
+    $menu.attr("aria-activedescendant", $items.children().first().attr("id"));
+    $items.children().first().attr("aria-selected", true);
     $menu.isExpanded = true;
-    $items.children()[0].querySelector("a").focus();
   }
 
   function close($menu, $items) {
@@ -29,6 +31,7 @@
     }
 
     $menu.attr("aria-expanded", false);
+    $menu.attr("aria-activedescendant", "");
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
 
@@ -73,7 +76,7 @@
         menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0],
     );
     openMenus.forEach((menu) => {
-      close($(menu), $(`ul[id=${$(menu).attr("data-menu-items")}]`));
+      close($(menu), $(`ul[id=${$(menu).attr("aria-controls")}]`));
     });
 
     // We're using aria-expanded to determine the open/close state of the menu.
@@ -145,24 +148,31 @@
         // Escape: Closes the popup and returns focus to the combobox. Optionally, if the combobox is editable, clears the contents of the combobox.
         event.preventDefault();
         close($menu, $items);
-        $menu.focus();
       } else if (event.key === "Tab") {
         // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
         close($menu, $items);
-        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.
+        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.        
         return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $($items.children()[$menu.selectedMenuItem]).find("a").trigger("focus");
+      $selected_item = $($items.children()[$menu.selectedMenuItem]);
+      $menu.attr("aria-activedescendant", $selected_item.attr("id"));
+      $items.find("[aria-selected='true']").removeAttr("aria-selected");
+      $selected_item.attr("aria-selected", true);
     }
   }
 
   function init($menu) {
-    const itemsId = "#" + $menu.attr("data-menu-items");
+    const itemsId = "#" + $menu.attr("aria-controls");
     const $items = $(itemsId);
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
     $menu.touchStarted = false;
+    $menu.attr({"role": "combobox", "aria-activedescendant": ""});
+    $items.attr("role", "listbox");
+    $items.children().each(function(index) {
+      $(this).attr({"role": "option", "id": `${$menu.attr("aria-controls")}-option-${index}`});
+    });
 
     // Enhanced touch/click handling for iOS
     $menu.on("touchstart", function (e) {
