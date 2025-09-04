@@ -41,14 +41,14 @@
   {% set is_collapsible = collapsible_opts|length %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
     <fieldset id="{{ field.id }}" class="contain-floats w-full" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %} {% if field.errors %}data-module="autofocus"{% endif %}>
-      <legend id="{{ field.id }}-label"  class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }} {% endif %}">
+      <legend id="{{ field.id }}-label"  class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }} {% endif %}" {% if hint %}aria-describedby="{{ field.id }}-hint"{% endif %}>
         {% if is_page_heading %}<h1 class="heading-large">{% endif %}
         {% if hide_legend %}<span class="visually-hidden">{% endif %}
         {{ field.label.text|safe }}
         {% if hide_legend %}</span>{% endif %}
         {% if is_page_heading %}</h1>{% endif %}
         {% if hint %}
-          <span class="form-hint">
+          <span id="{{ field.id }}-hint" class="form-hint">
             {{ hint }}
           </span>
         {% endif %}
