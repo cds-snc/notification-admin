@@ -404,6 +404,14 @@ def process_folder_management_form(form, current_folder_id):
         move_to_id = new_folder_id or form.move_to.data
 
         current_service.move_to_folder(ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
+        flash(
+            _("Moved {} {} to the '{}' folder").format(
+                len(form.templates_and_folders.data),
+                _("template or folder") if len(form.templates_and_folders.data) == 1 else _("templates or folders"),
+                current_service.get_template_folder(move_to_id)["name"],
+            ),
+            "default_with_tick",
+        )
 
     return redirect(request.url)
 
