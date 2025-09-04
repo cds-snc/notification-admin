@@ -17,8 +17,9 @@
 
     $menu.attr("aria-expanded", true);
     // Combobox stays in focus, children receives aria-selected
-    $menu.attr("aria-activedescendant", $items.children().first().attr("id"));
-    $items.children().first().attr("aria-selected", true);
+    $items.children().find("[href]").attr("tabindex", "-1");
+    $items.children().first().find("[href]").trigger("focus");
+    $items.children().first().find("[href]").attr("tabindex", "0");
     $menu.isExpanded = true;
   }
 
@@ -31,7 +32,6 @@
     }
 
     $menu.attr("aria-expanded", false);
-    $menu.attr("aria-activedescendant", "");
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
 
@@ -134,16 +134,13 @@
         event.preventDefault();
         $menu.selectedMenuItem = menuItems.length - 1;
       } else if (event.key === "ArrowUp") {
-        // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, does nothing.
+        // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, wraps to the last item.
         event.preventDefault();
-        $menu.selectedMenuItem = Math.max(0, $menu.selectedMenuItem - 1);
+        $menu.selectedMenuItem = ($menu.selectedMenuItem - 1 + menuItems.length) % menuItems.length;
       } else if (event.key === "ArrowDown") {
-        // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, does nothing.
+        // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, wraps to the first item.
         event.preventDefault();
-        $menu.selectedMenuItem = Math.min(
-          menuItems.length - 1,
-          $menu.selectedMenuItem + 1,
-        );
+        $menu.selectedMenuItem = ($menu.selectedMenuItem + 1) % menuItems.length;
       } else if (event.key === "Escape") {
         // Escape: Closes the popup and returns focus to the combobox. Optionally, if the combobox is editable, clears the contents of the combobox.
         event.preventDefault();
@@ -155,10 +152,10 @@
         return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $selected_item = $($items.children()[$menu.selectedMenuItem]);
-      $menu.attr("aria-activedescendant", $selected_item.attr("id"));
-      $items.find("[aria-selected='true']").removeAttr("aria-selected");
-      $selected_item.attr("aria-selected", true);
+      $selected_item = $($items.children()[$menu.selectedMenuItem]).find("[href]");
+      $selected_item.trigger("focus");
+      $items.children().find("[href]").attr("tabindex", "-1");
+      $selected_item.attr("tabindex", "0");
     }
   }
 
@@ -168,11 +165,9 @@
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
     $menu.touchStarted = false;
-    $menu.attr({"role": "combobox", "aria-activedescendant": ""});
-    $items.attr("role", "listbox");
-    $items.children().each(function(index) {
-      $(this).attr({"role": "option", "id": `${$menu.attr("aria-controls")}-option-${index}`});
-    });
+    $items.attr({"role": "menu", "aria-labelledby": $menu.attr("id")});
+    $items.children().attr("role", "none");
+    $items.children().find("[href]").attr({"role": "menuitem", "tabindex": "-1"});
 
     // Enhanced touch/click handling for iOS
     $menu.on("touchstart", function (e) {
