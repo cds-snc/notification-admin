@@ -61,7 +61,6 @@
     {% else %}
       {% set field_class = '{} {}'.format(width, 'text-right' if suffix else '') %}
     {% endif %}
-    <span></span>
 
     {% set field_class = 'form-control ' + field_class + (
       ' form-control-error' if field.errors else ''

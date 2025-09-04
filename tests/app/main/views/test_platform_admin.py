@@ -95,7 +95,9 @@ def test_should_show_research_and_restricted_mode(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     # get first column in first row, which contains service name and flags as a span in a single th.
     table_body = page.find_all("table")[0].find_all("tbody")[0]
-    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].find_all("th")[0].find_all("span")[0].text.strip()
+    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].find_all("th")[0]
+    service_mode_span = service_mode.find("span")
+    service_mode = service_mode_span.text.strip() if service_mode_span else ""
     assert service_mode == displayed
 
 
