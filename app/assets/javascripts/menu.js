@@ -120,7 +120,8 @@
     var menuItems = $items.children();
 
     // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
-    // Left and Right arrows do nothing
+    // Left and Right arrows do nothing because we don't support sub menus
+    // Note the difference between menubar and menu in the above guidance. We made a menu, not a menubar.
 
     if ($menu.attr("aria-expanded") == "true") {
       if (event.key === "ArrowUp") {

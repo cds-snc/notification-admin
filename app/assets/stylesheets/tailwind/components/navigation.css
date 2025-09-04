@@ -135,6 +135,7 @@
     @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-bold no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue hover:border-gray-300;
   }
   .nav-menu-item:focus {
+    box-shadow: 0 0 0 1px black;
     @apply border-b-4 bg-yellow border-black outline-none;
   }
 
