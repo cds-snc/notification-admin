@@ -60,11 +60,7 @@ def verify_email(token):
     if not user.mobile_number:
         return activate_user(user.id)
 
-    if current_app.config["FF_AUTH_V2"]:
-        return activate_user(user.id)
-    else:
-        user.send_verify_code()
-        return redirect(url_for("main.verify"))
+    return activate_user(user.id)
 
 
 def activate_user(user_id):
