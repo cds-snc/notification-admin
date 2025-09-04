@@ -145,7 +145,7 @@
         return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $selected_item = $($items.children()[$menu.selectedMenuItem]).find(
+      var $selected_item = $($items.children()[$menu.selectedMenuItem]).find(
         "[href]",
       );
       $selected_item.trigger("focus");
