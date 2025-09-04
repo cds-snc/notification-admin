@@ -16,7 +16,6 @@
     }
 
     $menu.attr("aria-expanded", true);
-    // Combobox stays in focus, children receives aria-selected
     $items.children().find("[href]").attr("tabindex", "-1");
     $items.children().first().find("[href]").trigger("focus");
     $items.children().first().find("[href]").attr("tabindex", "0");
@@ -120,27 +119,20 @@
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
     var menuItems = $items.children();
 
-    // Listbox Popup Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
-    // Left and Right arrows do nothing if the box is not editable.
+    // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+    // Left and Right arrows do nothing
 
     if ($menu.attr("aria-expanded") == "true") {
-      // Support for Home/End on Windows and Linux + Cmd + Arrows for Mac
-      if (event.key == "Home") {
-        // Home (Optional): Either moves focus to and selects the first option or, if the combobox is editable, returns focus to the combobox and places the cursor on the first character.
-        event.preventDefault();
-        $menu.selectedMenuItem = 0;
-      } else if (event.key == "End") {
-        // End (Optional): Either moves focus to the last option or, if the combobox is editable, returns focus to the combobox and places the cursor after the last character.
-        event.preventDefault();
-        $menu.selectedMenuItem = menuItems.length - 1;
-      } else if (event.key === "ArrowUp") {
+      if (event.key === "ArrowUp") {
         // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, wraps to the last item.
         event.preventDefault();
-        $menu.selectedMenuItem = ($menu.selectedMenuItem - 1 + menuItems.length) % menuItems.length;
+        $menu.selectedMenuItem =
+          ($menu.selectedMenuItem - 1 + menuItems.length) % menuItems.length;
       } else if (event.key === "ArrowDown") {
         // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, wraps to the first item.
         event.preventDefault();
-        $menu.selectedMenuItem = ($menu.selectedMenuItem + 1) % menuItems.length;
+        $menu.selectedMenuItem =
+          ($menu.selectedMenuItem + 1) % menuItems.length;
       } else if (event.key === "Escape") {
         // Escape: Closes the popup and returns focus to the combobox. Optionally, if the combobox is editable, clears the contents of the combobox.
         event.preventDefault();
@@ -148,11 +140,13 @@
       } else if (event.key === "Tab") {
         // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
         close($menu, $items);
-        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.        
+        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.
         return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $selected_item = $($items.children()[$menu.selectedMenuItem]).find("[href]");
+      $selected_item = $($items.children()[$menu.selectedMenuItem]).find(
+        "[href]",
+      );
       $selected_item.trigger("focus");
       $items.children().find("[href]").attr("tabindex", "-1");
       $selected_item.attr("tabindex", "0");
@@ -165,9 +159,9 @@
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
     $menu.touchStarted = false;
-    $items.attr({"role": "menu", "aria-labelledby": $menu.attr("id")});
+    $items.attr({ role: "menu", "aria-labelledby": $menu.attr("id") });
     $items.children().attr("role", "none");
-    $items.children().find("[href]").attr({"role": "menuitem", "tabindex": "-1"});
+    $items.children().find("[href]").attr({ role: "menuitem", tabindex: "-1" });
 
     // Enhanced touch/click handling for iOS
     $menu.on("touchstart", function (e) {
