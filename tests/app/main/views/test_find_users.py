@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
@@ -269,3 +271,42 @@ def test_archive_user_does_not_create_event_if_user_client_raises_exception(
         assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
         mock_user_client.assert_called_once_with("/user/{}/archive".format(api_user_active["id"]), data=None)
         assert not mock_events.called
+
+
+def test_user_information_page_shows_change_auth_type_control(
+    platform_admin_client,
+    api_user_active,
+    mock_get_organisations_and_services_for_user,
+):
+    response = platform_admin_client.get(url_for("main.user_information", user_id=api_user_active["id"]))
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+    assert page.find("summary", string="Change auth type") is not None
+
+
+def test_update_auth_type_sms_updates_and_redirects(platform_admin_client, api_user_active, mocker):
+    fake_user = mocker.Mock()
+    mocker.patch("app.models.user.User.from_id", return_value=fake_user)
+
+    response = platform_admin_client.post(
+        url_for("main.update_user_auth_type", user_id=api_user_active["id"]),
+        data={"auth_type": "sms"},
+    )
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
+    fake_user.update.assert_called_once_with(auth_type="sms_auth", updated_by=ANY)
+
+
+def test_update_auth_type_email_updates_and_redirects(platform_admin_client, api_user_active, mocker):
+    fake_user = mocker.Mock()
+    mocker.patch("app.models.user.User.from_id", return_value=fake_user)
+
+    response = platform_admin_client.post(
+        url_for("main.update_user_auth_type", user_id=api_user_active["id"]),
+        data={"auth_type": "email"},
+    )
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.user_information", user_id=api_user_active["id"])
+    fake_user.update.assert_called_once_with(auth_type="email_auth", updated_by=ANY)
