@@ -42,12 +42,16 @@
     )
   }}
 
+  {# Added live region for screen readers; referenced by file input described_by #}
+  <div id="page-errors" class="visually-hidden" aria-live="assertive">
+    {{ page_title }}
+  </div>
+
   <div class="mb-12 clear-both contain-floats">
     
-
       {% if recipients.too_many_rows %}
         {% call banner_wrapper(type='dangerous') %}
-          <h2 class='banner-title' data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
+          <h2 class='banner-title' role="alert" data-module="track-error" data-error-type="Too many rows" data-error-label="{{ upload_id }}">
             {{ _('Include only {} recipients per spreadsheet.').format(recipients.max_rows | format_number) }}
           </h2>
           <p class="mb-0">
@@ -56,7 +60,7 @@
         {% endcall %}
       {% elif not count_of_recipients %}
         {% call banner_wrapper(type='dangerous') %}
-          <h2 class='banner-title' data-module="track-error" data-error-type="No rows" data-error-label="{{ upload_id }}">
+          <h2 class='banner-title' role="alert" data-module="track-error" data-error-type="No rows" data-error-label="{{ upload_id }}">
             {% if recipients.missing_column_headers %}
             {{ _('Your spreadsheet is missing columns and needs at least 1 row with recipient information.') }}
             {% else %}
@@ -80,7 +84,7 @@
 
       {% elif not recipients.has_recipient_columns %}
         {% call banner_wrapper(type='dangerous') %}
-          <h2 class='banner-title' data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
+          <h2 class='banner-title' role="alert" data-module="track-error" data-error-type="Missing recipient columns" data-error-label="{{ upload_id }}">
             {{ _('Your spreadsheet is missing') }} {{ (
               recipients.missing_column_headers
               if template.template_type == 'letter' else required_recipient_columns
@@ -97,7 +101,7 @@
       {% elif recipients.duplicate_recipient_column_headers %}
         {% call banner_wrapper(type='dangerous') %}
           {% set or_txt = _('or') %}
-          <h2 class='banner-title' data-module="track-error" data-error-type="Duplicate recipient columns" data-error-label="{{ upload_id }}">
+          <h2 class='banner-title' role="alert" data-module="track-error" data-error-type="Duplicate recipient columns" data-error-label="{{ upload_id }}">
             {{ _('Spreadsheets can only have one column called') }} {{ (
               recipients.duplicate_recipient_column_headers
             ) | formatted_list(
@@ -119,7 +123,7 @@
       {% elif recipients.missing_column_headers %}
         {% call banner_wrapper(type='dangerous') %}
           {% set and_txt = _('and') %}
-          <h2 class='banner-title' data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
+          <h2 class='banner-title' role="alert" data-module="track-error" data-error-type="Missing placeholder columns" data-error-label="{{ upload_id }}">
             {{ _('Your spreadsheet is missing') }} {{ recipients.missing_column_headers | formatted_list(
               conjunction=and_txt,
               prefix=prefix_txt,
@@ -136,20 +140,24 @@
         {% endcall %}
       {% elif sent_previously %}
         {% call banner_wrapper(type='dangerous') %}
-          {% include "partials/check/sent-previously.html" %}
+          <div role="alert">
+            {% include "partials/check/sent-previously.html" %}
+          </div>
         {% endcall %}
       {% elif not recipients.allowed_to_send_to %}
         {% call banner_wrapper(type='dangerous') %}
-          {% with
-            count_of_recipients=count_of_recipients,
-            template_type_label=recipients.recipient_column_headers[0]
-          %}
-            {% include "partials/check/not-allowed-to-send-to.html" %}
-          {% endwith %}
+          <div role="alert">
+            {% with
+              count_of_recipients=count_of_recipients,
+              template_type_label=recipients.recipient_column_headers[0]
+            %}
+              {% include "partials/check/not-allowed-to-send-to.html" %}
+            {% endwith %}
+          </div>
         {% endcall %}
       {% elif trying_to_send_letters_in_trial_mode %}
         {% call banner_wrapper(type='dangerous') %}
-          <div class="mb-12 clear-both contain-floats">
+          <div class="mb-12 clear-both contain-floats" role="alert">
             {% with
               count_of_recipients=count_of_recipients
             %}
@@ -159,7 +167,9 @@
         {% endcall %}
       {% elif send_exceeds_daily_limit %}
         {% call banner_wrapper(type='dangerous') %}
-          {% include "partials/check/too-many-sms-message-parts.html" %}
+          <div role="alert">
+            {% include "partials/check/too-many-sms-message-parts.html" %}
+          </div>
         {% endcall %}
         <h2 class="heading-medium">{{ _('You cannot send all these text messages today') }}</h2>
           <p>
@@ -168,11 +178,15 @@
           </p>
       {% elif send_exceeds_annual_limit %}
         {% call banner_wrapper(type='dangerous') %}
-          {% include "partials/check/too-many-messages-annual.html" %}
+          <div role="alert">
+            {% include "partials/check/too-many-messages-annual.html" %}
+          </div>
         {% endcall %}
       {% elif recipients.more_rows_than_can_send %}
         {% call banner_wrapper(type='dangerous') %}
-          {% include "partials/check/too-many-email-messages.html" %}
+          <div role="alert">
+            {% include "partials/check/too-many-email-messages.html" %}
+          </div>
         {% endcall %}
         <h2 class="heading-medium">{{ _('You cannot send all these email messages today') }}</h2>
         <p>
@@ -184,12 +198,14 @@
 
   {% if not send_exceeds_daily_limit %}
     <div class="form-group contain-floats box-border">
+      {# Associate file input with live error region #}
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
         {{ file_upload(
           form.file,
           action=url_for('.send_messages', service_id=current_service.id, template_id=template.id),
-          button_text=_('Choose file')
+          button_text=_('Choose file'),
+          described_by='page-errors'
         ) }}
       {% endif %}
     </div>
