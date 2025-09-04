@@ -149,12 +149,9 @@
       accept_button.classList.add("disabled");
     }
 
-    // Focus on the first focusable element, or the terms div if there are no focusable elements
-    if (focusableElements.length) {
-      firstFocusableElement.focus();
-    } else {
-      terms.focus();
-    }
+    // Always focus on the terms div first as expected by tests
+    // This ensures the content is immediately accessible to screen readers
+    terms.focus();
   }
 
   function closeModal() {
