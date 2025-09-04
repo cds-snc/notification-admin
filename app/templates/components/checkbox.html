@@ -29,7 +29,7 @@
 {% endmacro %}
 
 
-{% macro checkbox_input(id, name, data=None, value="y", class="", testid=None) %}
+{% macro checkbox_input(id, name, data=None, value="y", class="", testid=None, controls=None) %}
   <input
     id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}" class="{{ class }}"
     {% if data %}
@@ -37,6 +37,9 @@
     {% endif %}
     {% if testid %}
       data-testid="{{ testid }}"
+    {% endif %}
+    {% if controls %}
+      aria-controls="{{ controls }}"
     {% endif %}
   >
 {% endmacro %}
