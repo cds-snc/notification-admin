@@ -253,12 +253,11 @@ label {
 }
 
 .skiplink:focus {
-  @apply px-2 py-2 outline-none bg-yellow border-b-2 border-blue no-underline;
-  left: 0;
+  @apply flex outline-none bg-yellow border-b-2 border-blue no-underline;
   z-index: 1;
 }
 
-.skiplink {
+.skiplink:not(:focus) {
   @apply absolute;
   left: -9999em;
 }
@@ -268,21 +267,9 @@ label {
   color: #0b0c0c;
 }
 
-#skiplink-container {
-  text-align: center;
-  background: #0b0c0c;
-}
-
-#skiplink-container div {
-  text-align: left;
-  margin: 0 auto;
-  max-width: 1020px;
-}
-
 #skiplink-container .skiplink {
   display: -moz-inline-stack;
   display: inline-block;
-  margin: 0.75em 0 0 30px;
 }
 
 @layer components {
