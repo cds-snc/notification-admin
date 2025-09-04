@@ -402,16 +402,16 @@ def process_folder_management_form(form, current_folder_id):
     if form.is_move_op:
         # if we've just made a folder, we also want to move there
         move_to_id = new_folder_id or form.move_to.data
-
         current_service.move_to_folder(ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
+
         is_multi_move = len(form.templates_and_folders.data) > 1
-        # Fetch the folder name from the form when moving a template to a new folder, else fetch from existing folders
+        # Fetch the folder name from the form when moving a template to a newly created folder, else fetch from existing folders
         destination_folder_name = form.get_folder_name() or current_service.get_template_folder(move_to_id)["name"]
+        msg = _("Moved {} items to the '{}' folder") if is_multi_move else _("Moved {} item to the '{}' folder")
 
         flash(
-            _("Moved {} {} to the '{}' folder").format(
+            msg.format(
                 len(form.templates_and_folders.data),
-                _("templates or folders") if is_multi_move else _("template or folder"),
                 destination_folder_name,
             ),
             "default_with_tick",

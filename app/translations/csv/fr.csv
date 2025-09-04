@@ -2326,6 +2326,5 @@
 "Change auth type","Modifier l'authentification"
 "Please choose a valid authentication type.","Veuillez choisir un type d’authentification valide."
 "templates found","gabarits trouvés"
-"template or folder","gabarit ou dossier"
-"templates or folders","gabarits ou dossiers"
-"Moved {} {} to the '{}' folder","Déplacement de {} {} vers le dossier '{}'"
+"Moved {} items to the '{}' folder","{} items déplacés vers le dossier '{}'"
+"Moved {} item to the '{}' folder","{} item déplacés vers le dossier '{}'"
