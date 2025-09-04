@@ -15,7 +15,7 @@
   </div>
   {% endif %}
 
-  <h1 id="{{ id_text }}" class="heading-large">{{ h1 }}</h1>
+  <h1 {% if id_text %}id="{{ id_text }}"{% endif %} class="heading-large">{{ h1 }}</h1>
 
 {% endmacro %}
 
