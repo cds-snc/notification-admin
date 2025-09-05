@@ -48,7 +48,7 @@
 
       {{ field(**{ 'class': 'file-upload-field', 'accept': accept, 'aria-describedby': 'file-description', 'data-error-msg': field.validators and field.validators[0].message, 'data-testid': field_testid}) }}
 
-      <label id="file-upload-button" class="file-upload-button button {{ button_class }}" for="{{ field.name }}" role="link">{{ button_text }}</label>
+      <label id="file-upload-button" class="file-upload-button button {{ button_class }}" for="{{ field.name }}">{{ button_text }}</label>
 
     <div class="file-upload-extra pt-gutterHalf flex flex-col gap-4">
       <span id="file-description">{{ _("No file currently selected") }}</span>
