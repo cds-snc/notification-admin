@@ -32,5 +32,10 @@
       max-height: calc(100vh - 6rem);
     }
   }
+
+  button#tou-dialog-trigger:focus-visible {
+    @apply bg-yellow text-black border-b-2 border-blue no-underline outline outline-offset-0 outline-2 outline-yellow;
+    width: 100%;
+  }
   /*! purgecss end ignore */
 }
