@@ -10,8 +10,9 @@
 
 <div class="container px-gutterHalf">
   <!-- start sub nav -->
-  <div class="pt-5 lg:justify-between grid md:grid-cols-2">
-    <div>
+  <div class="pt-5 lg:justify-between grid md:grid-cols-3">
+
+    <div class="pb-4">
       {% if session["userlang"] == "en" %}
         <img
           alt="{{ _('Government of Canada') }}"
@@ -28,6 +29,11 @@
         />
       {% endif %}
     </div>
+      <div class="flex w-full justify-start lg:justify-center items-center" id="skiplink-container">
+        <div>
+          <a href="#main_content" class="skiplink px-2 py-2">{{ _('Skip to main content') }}</a>
+        </div>
+      </div>
     <!-- start sub nav -->
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
          class="xs:hidden smaller:hidden sm:hidden md:flex">
@@ -83,9 +89,9 @@
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
       <div class="flex flex-col items-start md:flex-row md:items-center">
-        <h2 class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
+        <div class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
           {{ url_text }}
-        </h2>
+        </div>
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
         <a
           class="mt-2 min-h-target inline-flex flex-col items-start sm:flex-row sm:items-center focus:outline-none border-b-2 border-transparent focus:border-blue text-small underline visited:text-blue link:text-blue"
