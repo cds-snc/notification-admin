@@ -50,7 +50,7 @@
     @apply text-small hidden;
   }
 
-  details [id^="details-content"] {
+  details .details-body {
     box-shadow: inset 5px 0 0 theme("colors.gray.border");
     @apply pl-gutter;
   }
