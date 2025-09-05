@@ -117,13 +117,13 @@
    * @param {jQuery Object} $items The unordered list containing menu items
    */
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
-    var menuItems = $items.children();
-
-    // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
-    // Left and Right arrows do nothing because we don't support sub menus
-    // Note the difference between menubar and menu in the above guidance. We made a menu, not a menubar.
-
     if ($menu.attr("aria-expanded") == "true") {
+      // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+      // Left and Right arrows do nothing because we don't support sub menus
+      // Note the difference between menubar and menu in the above guidance. We made a menu, not a menubar.
+
+      var menuItems = $items.children();
+
       if (event.key === "ArrowUp") {
         // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, wraps to the last item.
         event.preventDefault();
@@ -135,9 +135,10 @@
         $menu.selectedMenuItem =
           ($menu.selectedMenuItem + 1) % menuItems.length;
       } else if (event.key === "Escape") {
-        // Escape: Closes the popup and returns focus to the combobox. Optionally, if the combobox is editable, clears the contents of the combobox.
+        // Escape: Close the menu that contains focus and return focus to the element or context, e.g., menu button or parent menuitem, from which the menu was opened.
         event.preventDefault();
         close($menu, $items);
+        $menu.trigger("focus");
       } else if (event.key === "Tab") {
         // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
         close($menu, $items);

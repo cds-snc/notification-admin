@@ -36,43 +36,43 @@ describe("Mobile menu", () => {
     MainMenu.Components.Menu().should("not.be.visible");
   });
 
-  it("Navigate the menu forward using right arrow, down arrow", () => {
+  it("Navigate the menu forward using down arrow only", () => {
     cy.then(Cypress.session.clearCurrentSessionData);
     MainMenu.OpenMenu();
     MainMenu.Components.Menu().should("be.visible"); // menu should be visible
 
-    // press arrow right to focus the next menu item
+    // press arrow right. Nothing should happen
     MainMenu.ArrowRight();
     MainMenu.Components.MenuItems().then((menuItems) => {
-      // second menu item should be focused
-      cy.get(menuItems[1]).should("have.focus");
+      // same menu item should be focused
+      cy.get(menuItems[0]).should("have.focus");
     });
 
     // press arrow down to focus the next menu item
     MainMenu.ArrowDown();
     MainMenu.Components.MenuItems().then((menuItems) => {
       // second menu item should be focused
-      cy.get(menuItems[2]).should("have.focus");
+      cy.get(menuItems[1]).should("have.focus");
     });
   });
 
-  it("Navigate the menu backward using left arrow, up arrow", () => {
+  it("Navigate the menu backward using up arrow only", () => {
     cy.then(Cypress.session.clearCurrentSessionData);
     MainMenu.OpenMenu();
     MainMenu.Components.Menu().should("be.visible"); // menu should be visible
 
-    // press arrow left to focus the previous menu item
+    // press arrow left. Nothing should happen
     MainMenu.ArrowLeft();
     MainMenu.Components.MenuItems().then((menuItems) => {
-      // second menu item should be focused
-      cy.get(menuItems[menuItems.length - 1]).should("have.focus");
+      // same menu item should be focused
+      cy.get(menuItems[0]).should("have.focus");
     });
 
     // press arrow up to focus the previous menu item
     MainMenu.ArrowUp();
     MainMenu.Components.MenuItems().then((menuItems) => {
-      // second menu item should be focused
-      cy.get(menuItems[menuItems.length - 2]).should("have.focus");
+      // last menu item should be focused
+      cy.get(menuItems[menuItems.length - 1]).should("have.focus");
     });
   });
 
@@ -87,7 +87,7 @@ describe("Mobile menu", () => {
     });
 
     // press arrow right to focus the next menu item
-    MainMenu.ArrowRight();
+    MainMenu.ArrowDown();
     MainMenu.Components.MenuItems().then((menuItems) => {
       // second menu item should be focused
       cy.get(menuItems[1]).should("have.focus");
@@ -106,7 +106,7 @@ describe("Mobile menu", () => {
     });
 
     // press arrow right to focus the next menu item
-    MainMenu.ArrowRight();
+    MainMenu.ArrowDown();
     MainMenu.Components.MenuItems().then((menuItems) => {
       // second menu item should be focused
       cy.get(menuItems[1]).should("have.focus");
