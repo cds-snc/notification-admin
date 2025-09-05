@@ -1,9 +1,9 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% macro banner(body, type=None, with_tick=False, delete_button=None, subhead=None, context=None, action=None) %}
-  {% set t = type or 'default' %}
+  {% set t = type %}
   <div
-    class="banner banner-{{ t }}{% if with_tick %}-with-tick{% endif %}"
+    class="banner{% if t %} banner-{{ t }}{% endif %}{% if with_tick and not t %} banner-with-tick{% elif with_tick and t %} banner-{{ t }}-with-tick{% endif %}"
     {% if type == "dangerous" %}
       role="alert"
     {% else %}
