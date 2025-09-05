@@ -4,19 +4,18 @@
 {% macro template_content(content_field, checkbox_field, label=_('Email message'), hint=False) %}
     <!-- TODO: remove `use_styled_checkbox` and this if statement once we decide on the UI element to use here  -->
 
-    <fieldset class="contain-floats w-full" role="radiogroup">
-        <legend class="mb-4">
+    <fieldset class="contain-floats w-full">
+        <legend class="mb-4" {% if hint %}aria-describedby="{{ content_field.name }}-hint"{% endif %}>
             <span>{{ label }}</span>
         </legend>
         {% if hint %}
-            {% set describedby = content_field.name + '-hint ' %}
             <span id="{{ content_field.name }}-hint" class="form-hint pb-4">
                 {{ hint }}
             </span>
         {% endif %}
         <div class="p-2 bg-gray-300 flex items-center">
-            {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2", testid="template-rtl") }}
-            <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }}<span class="sr-only"> {{ _('email content') }} </span> {{ _('right to left') }}</label>
+            {{ checkbox_input(checkbox_field.id, checkbox_field.name, checkbox_field.data, class="h-8 w-8 mr-2", testid="template-rtl", controls=content_field.id) }}
+            <label class="pb-0 inline-block text-small" for="text_direction_rtl">{{ _('Display') }} {{ _('email content') }} {{ _('right to left') }}</label>
         </div>
         {{ textbox(content_field, highlight_tags=True, width='w-full', rows=8, testid="template-content", label_class="sr-only") }}
     </fieldset>
