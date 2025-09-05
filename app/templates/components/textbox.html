@@ -19,7 +19,7 @@
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
-    data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
+    data-module="{% if autofocus or field.errors %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
   >
     {% set describedby = '' %}
 
@@ -106,7 +106,7 @@
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
-    data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}">
+    data-module="{% if autofocus or field.errors %}autofocus{% elif colour_preview %}colour-preview{% endif %}">
     <div>
       {% set describedby = '' %}
       <label class="form-label" for="{{ field.name }}">
