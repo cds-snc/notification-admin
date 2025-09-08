@@ -1,0 +1,16 @@
+{% from "components/banner.html" import banner %}
+
+<div class="heading-large mb-8">Flash Message: With Subheading</div>
+
+<p class="mb-8">
+  <a href="{{ url_for('main.storybook', component='flash-messages') }}" class="text-blue-500 hover:underline">&larr; Back to Flash Messages Overview</a>
+</p>
+
+<!-- The actual flash message to test -->
+<div class="mb-12 clear-both contain-floats">
+  {{ banner(
+    "The file you uploaded could not be processed. Please check the format and try again.",
+    type="dangerous",
+    subhead="Upload Failed"
+  ) }}
+</div>
