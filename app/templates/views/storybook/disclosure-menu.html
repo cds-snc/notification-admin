@@ -2,16 +2,16 @@
 With class of <code>menu-overlay</code>
 <nav class="relative" aria-label="Disclosure Menu Story 1">
     <button aria-expanded="false" aria-haspopup="true" id="menu-overlay" data-module="menu"
-            data-menu-items="disclosure-menu-story"
+            aria-controls="disclosure-menu-story"
             class="nav-menu-item gap-2 px-4"
             type="button">
             {{ _("Menu") }}
             <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
     </button>
     <ul id="disclosure-menu-story" class="hidden menu-overlay">
-        {% for item in ["Menu item 1", "Menu item 2", "Menu item 3"] %}
+        {% for item in ["Home", "Terms", "Sitemap"] %}
             <li>
-                <a href="#" class="nav-menu-item">
+                <a href="/{{ item }}" class="nav-menu-item">
                     {{ item }}
                 </a>
             </li>
@@ -26,7 +26,7 @@ With many items in a row
     <ul class="flex border-b-1 border-gray-300">
         <li class="relative">
     <button aria-expanded="false" aria-haspopup="true" id="menu_2" data-module="menu"
-            data-menu-items="disclosure-menu-story-2"
+            aria-controls="disclosure-menu-story-2"
             class="nav-menu-item gap-2 px-4"
             type="button">
             {{ _("Menu") }}
@@ -44,7 +44,7 @@ With many items in a row
 </li>
 <li class="relative">
     <button aria-expanded="false" aria-haspopup="true" id="template_menu" data-module="menu"
-            data-menu-items="disclosure-menu-story-templates"
+            aria-controls="disclosure-menu-story-templates"
             class="nav-menu-item gap-2 px-4"
             type="button">
             {{ _("Templates") }}
@@ -62,7 +62,7 @@ With many items in a row
     </li>
     <li class="relative">
     <button aria-expanded="false" aria-haspopup="true" id="service_menu" data-module="menu"
-            data-menu-items="disclosure-menu-story-services"
+            aria-controls="disclosure-menu-story-services"
             class="nav-menu-item gap-2 px-4"
             type="button">
             {{ _("Services") }}
@@ -86,7 +86,7 @@ With custom appearance. This one opens without blocking content behind it.
 
 <nav class="relative" aria-label="Disclosure Menu Story 3">
     <button aria-expanded="false" aria-haspopup="true" id="menu-overlay-3" data-module="menu"
-            data-menu-items="disclosure-menu-story-3"
+            aria-controls="disclosure-menu-story-3"
             class="button gap-2 px-4"
             type="button">
             {{ _("Menu") }}
