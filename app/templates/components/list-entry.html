@@ -10,7 +10,7 @@
   {% if error %}
     <div class="validation-wrapper">
   {% endif %}
-    <fieldset class="form-group contain-floats w-full box-border{% if field.errors %} form-group-error{% endif %}" id="{{ field.name }}">
+    <fieldset class="form-group contain-floats w-full box-border{% if field.errors %} form-group-error{% endif %}" id="{{ field.name }}" {% if field.errors %}data-module="autofocus"{% endif %}>
       <legend class="float-left w-full mb-4">
         <span class="form-label">
           {{ field.label.text }}
