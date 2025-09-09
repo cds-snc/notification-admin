@@ -1,18 +1,20 @@
-{% macro remaining_messages(header, total, used, muted=false) %}
-  {% set near_limit = ((used/total) >= 0.8) %}
-  <div class="remaining-messages{% if muted %} muted{% endif %}">
-    <div class="rm-header mb-2">{{ header }}</div>
+{% macro remaining_messages(header, total, used, for, muted=false) %}
+  {% set near_limit = ((used/total) >= 0.8 and used/total < 1) %}
+  {% set at_limit = (used/total >= 1) %}
+  {% set id_from_header = header.lower().replace(' ', '_') %}
+  <div role="region" aria-labelledby="{{for}}-label {{for}}-{{id_from_header}}-type{% if near_limit %} {{for}}-{{id_from_header}}-near{% endif %}" class="remaining-messages{% if muted %} muted{% endif %}">
+    <h3 id="{{for}}-{{id_from_header}}-type" class="rm-header mb-2">{{ header }}</h3>
     <div class="rm-message mb-2">
       <span class="rm-used">{{ "{:,}".format(used) if session['userlang'] == 'en' else "{:,}".format(used).replace(',', ' ') }}</span>
       <span class="rm-total">{{ _('of') }} {{ "{:,}".format(total) if session['userlang'] == 'en' else "{:,}".format(total).replace(',', ' ') }}</span>
       <span class="visually-hidden">{{ header }}</span>
       {% if near_limit %}
-          <span class="visually-hidden"> - {{ _('You are nearing the daily {} limit').format(header.lower()) }}</span>
+          <span id="{{for}}-{{id_from_header}}-near" class="visually-hidden"> - {{ _('You are nearing the daily {} limit').format(header) }}</span>
         {% endif %}
     </div>
     
     <div class="rm-bar">
-      <div class="rm-bar-usage {{ 'text-red-300' if near_limit else 'text-green-300' }}" style="--usage: {{ (used/total)*100 }}%;">
+      <div class="rm-bar-usage {{ 'text-red-300' if near_limit or at_limit else 'text-green-300' }}" style="--usage: {{ (used/total)*100 }}%;">
         
       </div>
     </div>
