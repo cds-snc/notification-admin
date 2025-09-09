@@ -22,7 +22,7 @@
       {% set count = item[3] %}
       {% set icon = item[4] if item|length > 4 else None %}
       {% if current_value == option or (loop.index == 1 and ns.current_value_not_in_items) %}
-        <a href="{{ link }}" class='pill-selected-item' aria-current='true'>
+        <a href="{{ link }}" class='pill-selected-item' id="pill-selected-item" aria-current='true'>
       {% else %}
         <a href="{{ link }}" class='pill-unselected-item'>
       {% endif %}
