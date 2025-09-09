@@ -43,7 +43,6 @@ const javascripts = () => {
     paths.src + "javascripts/utils.js",
     paths.src + "javascripts/webpackLoader.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
-    paths.src + "javascripts/detailsPolyfill.js",
     paths.src + "javascripts/apiKey.js",
     paths.src + "javascripts/cbor.js",
     paths.src + "javascripts/fido2.js",
