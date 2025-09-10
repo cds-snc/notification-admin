@@ -80,28 +80,25 @@
   smaller=False,
   smallest=False
 ) %}
-  <div role="region" aria-labelledby="review-emails-with-status-label" class="big-number-with-status">
+  {% set detailed_label = pass_label %}
+  {% if number >= 1 %}
+    {% if problem_percentage < 0.1 %}
+      {% set detailed_label = _('Less than {}').format( "0.1% " if session['userlang'] == 'en' else "0,1&nbsp;% "|safe) ~ _('problem addresses') %}
+    {% else %}
+      {% set detailed_label = problem_percentage|round(1)|string ~ ("% " if session["userlang"] == 'en' else problem_percentage|round(1)|replace('.', ',')|string ~ " % ") ~ _('problem addresses') %}
+    {% endif %}
+  {% endif %}
+  <div role="region" aria-label="{{ detailed_label }}" class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
 
     <div class="text-white block border-solid {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %}">
       {% if failure_link %}
         <a class="big-number-link border-transparent border-0 focus:border-b-0 bg-transparent focus:text-white focus:bg-transparent" href="{{ failure_link }}">
       {% endif %}
-      <div id="review-emails-with-status-label" class="pb-4 p-4 flex flex-col gap-4 no-underline text-current">
-        {% if number >= 1 %}
-            {% if failure_link %}
-                  {% if problem_percentage < 0.1 %}
-                    {{ _('Less than {}').format( '0.1%' if session['userlang'] == 'en' else "0,1&nbsp;%"|safe) }}
-                  {% else %}
-                    {{ problem_percentage|round(1)|string + "%" if session["userlang"] == 'en' else problem_percentage|round(1)|replace('.', ',')|string + " %"}}
-                  {% endif %}
-                  {{ _('problem addresses') }}
-                <span class="w-full no-underline border-b-1 border-current flex gap-4 justify-between items-end">{{ failure_link_label }}<i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i></span>
-            {% else %}
-              {{ _('failed') }} – {{ failure_percentage }}%
-            {% endif %}
-          {% else %}
-            {{ pass_label }}
+      <div class="p-6 flex flex-col gap-4 no-underline text-current">
+        {{ detailed_label }}
+        {% if failure_link %}
+          <span class="w-full no-underline border-b-1 border-current flex gap-4 justify-between items-end">{{ failure_link_label }}<i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i></span>
         {% endif %}
       </div>
       {% if failure_link %}

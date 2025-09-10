@@ -48,11 +48,13 @@
 <p>Displaying Problem emails with a variation of the big number component.</p>
 
 <div class="grid grid-cols-2 gap-4" data-testid="big-number-review-emails-with-status">
-    {{ big_number_review_emails_with_status(0, problem_email_label(0), problem_percentage=0, bounce_status="normal", below_volume_threshold=True, failure_link="#") }}
+
+    {{ big_number_review_emails_with_status(0, problem_email_label(0), problem_percentage=0, bounce_status="normal", below_volume_threshold=True) }}
     {{ big_number_review_emails_with_status(1, problem_email_label(1), problem_percentage=100, bounce_status="normal", below_volume_threshold=True, failure_link="#") }}
-    {{ big_number_review_emails_with_status(100, problem_email_label(100), problem_percentage=1, bounce_status="normal", below_volume_threshold=False, failure_link="#") }}
-    {{ big_number_review_emails_with_status(300, problem_email_label(300), problem_percentage=10, bounce_status="warning", below_volume_threshold=False, failure_link="#") }}
-    {{ big_number_review_emails_with_status(50, problem_email_label(50), problem_percentage=45, bounce_status="critical", below_volume_threshold=False, failure_link="#") }}
+    {{ big_number_review_emails_with_status(100, problem_email_label(100), problem_percentage=0.005, bounce_status="normal", below_volume_threshold=False, failure_link="#") }}
+    {{ big_number_review_emails_with_status(300, problem_email_label(300), problem_percentage=10.76, bounce_status="warning", below_volume_threshold=False, failure_link="#") }}
+    {{ big_number_review_emails_with_status(50, problem_email_label(50), problem_percentage=45.245, bounce_status="critical", below_volume_threshold=False, failure_link="#") }}
     {{ big_number_review_emails_with_status(70, problem_email_label(70), problem_percentage=60, bounce_status="critical", below_volume_threshold=False, failure_link="#") }}
+    
 </div>
 
