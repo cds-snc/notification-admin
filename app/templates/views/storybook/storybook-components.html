@@ -1,0 +1,24 @@
+{% macro macro_prop_table(macro_name, props) %}
+<details class="mb-8">
+  <summary class="no-underline font-mono">{{macro_name}}(...)</summary>
+  <table class="">
+    <caption class="sr-only">Properties for {{ macro_name }} macro</caption>    <caption class="text-title">Properties for {{ macro_name }} macro</caption>
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for prop in props %}
+        <tr>
+            <td class="font-mono border-b border-b-gray-300 py-2">{{ prop.split(':')[0] }}</td>
+            <td class="font-mono italic text-gray-700 border-b border-b-gray-300 py-2">{{ prop.split(':')[1].split('=')[0] }}</td>
+            <td class="font-mono border-b border-b-gray-300 py-2">{{ prop.split(':')[1].split('=')[1] or "None (Implicit)" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</details>
+{% endmacro %}
