@@ -3,7 +3,9 @@
  */
 (function () {
   // Update selector to match both English and French contact form actions
-  const contactForm = document.querySelector("form[action$='/contact/message']");
+  const contactForm = document.querySelector(
+    "form[action$='/contact/message']",
+  );
   const contactMessage = contactForm
     ? contactForm.querySelector("textarea[name='message']")
     : null;
