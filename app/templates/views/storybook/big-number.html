@@ -2,9 +2,9 @@
 {% from "components/message-count-label.html" import problem_email_label %}
 {% from "views/storybook/storybook-components.html" import macro_prop_table %}
 
-<h1 class="heading-large">Big Number</h1>
+<h2 class="heading-large">Big Number</h2>
 
-<h2 class="heading-medium">Big Number with Status</h2>
+<h3 class="heading-medium">Big Number with Status</h3>
 {{ macro_prop_table("big_number_with_status", [
   "number:string",
   "label:string",
@@ -30,7 +30,7 @@
     {{ big_number_with_status(123456, _('item eight'), link="#", smallest=True) }}
 </div>
 
-<h2 class="heading-medium">Big Number for problem emails</h2>
+<h3 class="heading-medium">Big Number for problem emails</h3>
 {{ macro_prop_table("big_number_review_emails_with_status", [
   "number:number",
   "label:string",

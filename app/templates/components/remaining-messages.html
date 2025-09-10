@@ -2,7 +2,7 @@
   {% set near_limit = ((used/total) >= 0.8 and used/total < 1) %}
   {% set at_limit = (used/total >= 1) %}
   {% set id_from_header = header.lower().replace(' ', '_') %}
-  <div role="region" aria-labelledby="{{for}}-label {{for}}-{{id_from_header}}-type{% if near_limit %} {{for}}-{{id_from_header}}-near{% endif %}" class="remaining-messages{% if muted %} muted{% endif %}">
+  <section role="region" aria-labelledby="{{for}}-label {{for}}-{{id_from_header}}-type{% if near_limit %} {{for}}-{{id_from_header}}-near{% endif %}" class="remaining-messages{% if muted %} muted{% endif %}">
     <h3 id="{{for}}-{{id_from_header}}-type" class="rm-header mb-2">{{ header }}</h3>
     <div class="rm-message mb-2">
       <span class="rm-used">{{ "{:,}".format(used) if session['userlang'] == 'en' else "{:,}".format(used).replace(',', ' ') }}</span>
@@ -18,5 +18,5 @@
         
       </div>
     </div>
-  </div>  
+  </section>  
 {% endmacro %}

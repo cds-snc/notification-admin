@@ -88,7 +88,7 @@
       {% set detailed_label = problem_percentage|round(1)|string ~ ("% " if session["userlang"] == 'en' else problem_percentage|round(1)|replace('.', ',')|string ~ " % ") ~ _('problem addresses') %}
     {% endif %}
   {% endif %}
-  <div role="region" aria-label="{{ detailed_label }}" class="big-number-with-status">
+  <section role="region" aria-label="{{ detailed_label }}" class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
 
     <div class="text-white block border-solid {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %}">
@@ -105,7 +105,7 @@
         </a>
       {% endif %}
     </div>
-  </div>
+  </section>
 {% endmacro %}
 
 
