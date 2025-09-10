@@ -2,8 +2,8 @@
  * Sanitize PII in the user entered message of the contact form
  */
 (function () {
-  // Update selector to match new form attribute
-  const contactForm = document.querySelector("form[data-module='contact-form']");
+  // Update selector to match both English and French contact form actions
+  const contactForm = document.querySelector("form[action$='/contact']");
   const contactMessage = contactForm
     ? contactForm.querySelector("textarea[name='message']")
     : null;
