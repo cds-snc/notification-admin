@@ -83,17 +83,18 @@
       <h1 class="heading-large">
         {{ _('Delivery report') }}
       </h1>
-
       {% if just_sent %}
         {{ banner(just_sent_message, type='default', with_tick=True) }}
       {% else %}
         {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
       {% endif %}
-
+      <!-- PILLS-->
       {{ ajax_block(partials, updates_url, 'counts', finished=finished) }}
-
       {% if not job.archived %}
+        <!-- CHECKBOX only show-->
         {{ ajax_block(partials, updates_url, 'notifications_header', finished=finished) }}
+        
+        <!-- Notifications table -->
         {{ ajax_block(partials, updates_url, 'notifications', finished=finished) }}
       {% else %}
 
