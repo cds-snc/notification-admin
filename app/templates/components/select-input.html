@@ -55,7 +55,7 @@
       </legend>
        {% if field.errors %}
           <span class="error-message mb-4" tabindex="-1" autofocus data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" id="{{ field.name }}-error">
-            <span class="sr-only">{{ _('Error:') }}</span> {{ field.errors[0] }}
+            <span class="sr-only">{{ _('Error') }}:</span> {{ field.errors[0] }}
           </span>
         {% endif %}
       {% if is_collapsible %}
