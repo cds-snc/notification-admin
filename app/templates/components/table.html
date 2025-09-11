@@ -91,6 +91,12 @@
 <th class="table-field {{ cell_width if cell_width}}" scope="row" rowspan="{{ rowspan }}">
     {{ caller() }}
   </th>
+{% endmacro %}
+
+{% macro empty_field() -%}
+  {% call field(align='right') %}
+    <div aria-label="{{_('No value')}}"></div>
+  {% endcall %}
 {%- endmacro %}
 
 {% macro index_field(text=None) -%}
