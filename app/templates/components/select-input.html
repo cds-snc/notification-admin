@@ -40,7 +40,7 @@
 {% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", is_page_heading=False, use_aria_labelledby=True, testid=None, optional=False) %}
   {% set is_collapsible = collapsible_opts|length %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
-    <fieldset id="{{ field.id }}" class="contain-floats w-full" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %} {% if field.errors %}data-module="autofocus" aria-describedby="{{ field.name }}-error"{% endif %}>
+    <fieldset id="{{ field.id }}" class="contain-floats w-full" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %} {% if field.errors %}aria-describedby="{{ field.name }}-error"{% endif %}>
       <legend id="{{ field.id }}-label"  class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }} {% endif %}" {% if hint %}aria-describedby="{{ field.id }}-hint"{% endif %}>
         {% if is_page_heading %}<h1 class="heading-large">{% endif %}
         {% if hide_legend %}<span class="visually-hidden">{% endif %}
@@ -54,8 +54,8 @@
         {% endif %}
       </legend>
        {% if field.errors %}
-          <span class="error-message mb-4" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" id="{{ field.name }}-error">
-            {{ field.errors[0] }}
+          <span class="error-message mb-4" tabindex="-1" autofocus data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" id="{{ field.name }}-error">
+            <span class="sr-only">{{ _('Error:') }}</span> {{ field.errors[0] }}
           </span>
         {% endif %}
       {% if is_collapsible %}
