@@ -60,20 +60,18 @@
   <div data-testid="rms">
     {% for section in sections if not section.skip %}
       {% if textOnly == None %}
-        <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small " data-testid="rms-item">
+        <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" {% if section.warn %}role="alert"{% endif %} data-testid="rms-item">
           {% set icon_class = icon_default %}
           {% set icon_type = "default" %}
           {% if section.warn %}
-          {% set icon_class = icon_warning %}
-          {% set icon_type = "warning" %}
+            {% set icon_class = icon_warning %}
+            {% set icon_type = "warning" %}
           {% endif %}
-          <span data-testid="rms-icon-{{ icon_type }}"></span>
+          <span class="sr-only">{{ _('Daily limit warning') if section.type == 'daily' else _('Annual limit warning') }}</span>
           <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" {{ 'aria-label=' ~ _('warning') if icon_type=="warning"
-            else "" }}></i>
-          <div class="flex flex-wrap items-baseline gap-x-2">
-            <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
-            }}
-          </div>
+          else "" }}></i>
+          <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
+          }}
           <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="ml-auto text-blue-500">{{
             section.link_text }}</a>
         </div>
@@ -101,8 +99,8 @@
     </p>
   {% elif not headingMode and sections[0].remaining == "0" %}
     <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="daily-sending-paused">
-      {{ _('Sending paused until 7pm ET. You can schedule more messages to send later.') }}      
+      {{ _('Sending paused until 7pm ET. You can schedule more messages to send later.') }}
     </p>
   {% endif %}
-  
+
 {% endmacro %}
