@@ -61,7 +61,7 @@ def test_form_with_no_branding_should_warn_this_cant_be_empty(
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert normalize_spaces(page.select_one(".error-message").text) == ("This cannot be empty")
+    assert normalize_spaces(page.select_one(".error-message").text) == ("Error: This cannot be empty")
 
 
 def test_form_with_invalid_branding_should_request_another_valid_value(
@@ -76,7 +76,7 @@ def test_form_with_invalid_branding_should_request_another_valid_value(
         current_step="choose_logo",
         _expected_status=200,
     )
-    assert normalize_spaces(page.select_one(".error-message").text) == ("You need to choose an option")
+    assert normalize_spaces(page.select_one(".error-message").text) == ("Error: You need to choose an option")
 
 
 def test_wizard_no_flow_information_should_go_to_step1(

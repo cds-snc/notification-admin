@@ -986,8 +986,8 @@ def test_request_to_go_live_use_case_page(
     assert store_mock.call_count == 1
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("department_org_name", "This field is required."),
-        ("main_use_case", "This field is required."),
-        ("intended_recipients", "This field is required."),
+        ("main_use_case", "Error: This field is required."),
+        ("intended_recipients", "Error: This field is required."),
     ]
 
     page = client_request.post(
