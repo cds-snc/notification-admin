@@ -96,7 +96,7 @@
         <a class="big-number-link border-transparent border-0 focus:border-b-0 bg-transparent focus:text-white focus:bg-transparent" href="{{ failure_link }}">
       {% endif %}
       <div class="p-6 flex flex-col gap-4 no-underline text-current">
-        {{ detailed_label }}
+        <span class="review-email-label">{{ detailed_label }}</span>
         {% if failure_link %}
           <span class="w-full no-underline border-b-1 border-current flex gap-4 justify-between items-end">{{ failure_link_label }}<i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i></span>
         {% endif %}
