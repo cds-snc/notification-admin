@@ -125,8 +125,8 @@ def test_create_new_organisation_validates(
     )
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "This cannot be empty"),
-        ("org_type", "You need to choose an option"),
-        ("crown_status", "You need to choose an option"),
+        ("org_type", "Error: You need to choose an option"),
+        ("crown_status", "Error: You need to choose an option"),
     ]
     assert mock_create_organisation.called is False
 
