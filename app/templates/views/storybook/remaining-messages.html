@@ -2,45 +2,45 @@
 
 <h2 class="heading-large">remaining_messages</h2>
 <hr />
-<h2 class="heading-medium">Below limits</h2>
+<h2 id="story-1-label" class="heading-medium">Below limits</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-below">
-  {{ remaining_messages(header=_('emails'), total=1000, used=1) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=250) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=500) }}  
-  {{ remaining_messages(header=_('emails'), total=1000, used=799) }}  
+  {{ remaining_messages(header='example one', total=1000, used=1, for="story-1") }}
+  {{ remaining_messages(header='example two', total=1000, used=250, for="story-1") }}
+  {{ remaining_messages(header='example three', total=1000, used=500, for="story-1") }}  
+  {{ remaining_messages(header='example four', total=1000, used=799, for="story-1") }}  
 </div>
 
-<h2 class="heading-medium">Warning</h2>
+<h2 id="story-2-label" class="heading-medium">Warning</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-warning">
-  {{ remaining_messages(header=_('emails'), total=1000, used=800) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=825) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=900) }}  
-  {{ remaining_messages(header=_('emails'), total=1000, used=999) }}  
+  {{ remaining_messages(header='example 1', total=1000, used=800, for="story-2") }}
+  {{ remaining_messages(header='example 2', total=1000, used=825, for="story-2") }}
+  {{ remaining_messages(header='example 3', total=1000, used=900, for="story-2") }}  
+  {{ remaining_messages(header='example 4', total=1000, used=999, for="story-2") }}  
 </div>
 
-<h2 class="heading-medium">At limit</h2>
+<h2 id="story-3-label" class="heading-medium">At limit</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-limit">
-  {{ remaining_messages(header=_('emails'), total=1000, used=1000) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=1000, for="story-3") }}
 </div>
 
 
-<h2 class="heading-medium">Muted - Below limits</h2>
+<h2 id="story-4-label" class="heading-medium">Muted - Below limits</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-muted-below">
-  {{ remaining_messages(header=_('emails'), total=1000, used=1, muted=true) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=250, muted=true) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=500, muted=true) }}  
-  {{ remaining_messages(header=_('emails'), total=1000, used=799, muted=true) }}  
+  {{ remaining_messages(header='example 1', total=1000, used=1, for="story-4", muted=true) }}
+  {{ remaining_messages(header='example 2', total=1000, used=250, for="story-4", muted=true) }}
+  {{ remaining_messages(header='example 3', total=1000, used=500, for="story-4", muted=true) }}  
+  {{ remaining_messages(header='example 4', total=1000, used=799, for="story-4", muted=true) }}  
 </div>
 
-<h2 class="heading-medium">Muted - Warning</h2>
+<h2 id="story-5-label" class="heading-medium">Muted - Warning</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-muted-warning">
-  {{ remaining_messages(header=_('emails'), total=1000, used=800, muted=true) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=825, muted=true) }}
-  {{ remaining_messages(header=_('emails'), total=1000, used=900, muted=true) }}  
-  {{ remaining_messages(header=_('emails'), total=1000, used=999, muted=true) }}  
+  {{ remaining_messages(header='example 1', total=1000, used=800, for="story-5", muted=true) }}
+  {{ remaining_messages(header='example 2', total=1000, used=825, for="story-5", muted=true) }}
+  {{ remaining_messages(header='example 3', total=1000, used=900, for="story-5", muted=true) }}  
+  {{ remaining_messages(header='example 4', total=1000, used=999, for="story-5", muted=true) }}  
 </div>
 
-<h2 class="heading-medium">Muted - At limit</h2>
+<h2 id="story-6-label" class="heading-medium">Muted - At limit</h2>
 <div class="grid grid-cols-2 gap-4" data-testid="rm-muted-limit">
-  {{ remaining_messages(header=_('emails'), total=1000, used=1000, muted=true) }}
+  {{ remaining_messages(header=_('emails'), total=1000, used=1000, for="story-6", muted=true) }}
 </div>
