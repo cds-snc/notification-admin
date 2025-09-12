@@ -13,10 +13,10 @@
       </p>
       <div class="grid-row contain-floats mb-10">
         <div class="{{column_width}}">
-          {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for="daily-usage", muted=true) }}
+          {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), muted=true) }}
         </div>
         <div class="{{column_width}}">
-          {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for="daily-usage", muted=true) }}
+          {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true) }}
         </div>
       </div>
       {{ show_more(url_for('main.contact'), _('Request a daily limit increase')) }}  
@@ -31,10 +31,10 @@
       </p>
     <div class="grid-row contain-floats">
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for="daily-usage") }}
+        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage')) }}
       </div>
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for="daily-usage") }}
+        {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage')) }}
       </div>
     </div>
   </div>
