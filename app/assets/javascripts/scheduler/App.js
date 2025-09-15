@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useEffect } from "react";
 import { StateProvider, setIntialState, defaultState } from "./store";
 import { I18nProvider, I18nContext } from "./i18n";
 import { ErrorMessage } from "./ErrorMessage/ErrorMessage";
@@ -26,7 +26,13 @@ export const App = () => {
       <StateProvider value={providerState}>
         <DomEventHandler />
         <ErrorMessage />
-        <p className="messageTextStyle">{translate("select_date")}</p>
+        <p
+          className="messageTextStyle"
+          tabIndex="-1"
+          id="scheduler_instructions"
+        >
+          {translate("select_date")}
+        </p>
         <div className="schedule">
           <Calendar />
           <DateTime />
