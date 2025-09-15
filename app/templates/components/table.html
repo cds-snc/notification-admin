@@ -95,7 +95,7 @@
 
 {% macro empty_field() -%}
   {% call field(align='right') %}
-    <div aria-label="{{_('No value')}}"></div>
+    <div><span class="sr-only">{{_("No value")}}</span></div>
   {% endcall %}
 {%- endmacro %}
 
