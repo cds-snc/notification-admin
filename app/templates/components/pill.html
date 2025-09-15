@@ -5,7 +5,8 @@
   current_value=None,
   big_number_args={'smaller': True},
   show_count=True,
-  label=""
+  label="",
+  include_id=True
 ) %}
   {% set ns = namespace(current_value_not_in_items=True) %}
   {% for item in items %}
@@ -22,7 +23,7 @@
       {% set count = item[3] %}
       {% set icon = item[4] if item|length > 4 else None %}
       {% if current_value == option or (loop.index == 1 and ns.current_value_not_in_items) %}
-        <a href="{{ link }}" class='pill-selected-item' aria-current='true'>
+        <a href="{{ link }}" class='pill-selected-item'{% if include_id %} id="pill-selected-item"{% endif %} aria-current='true'>
       {% else %}
         <a href="{{ link }}" class='pill-unselected-item'>
       {% endif %}
