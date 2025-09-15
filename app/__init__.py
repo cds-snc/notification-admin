@@ -3,6 +3,7 @@ import os
 import re
 import secrets
 import urllib
+import uuid
 from datetime import datetime, timedelta, timezone
 from numbers import Number
 from time import monotonic
@@ -124,6 +125,16 @@ def get_current_locale(application):
 
 
 def create_app(application):
+    def random_id(n=None):
+        prefix = "a"
+        rid = prefix + uuid.uuid4().hex
+        if n is not None:
+            try:
+                n = int(n)
+            except Exception:
+                n = None
+        return rid[:n] if n else rid
+
     setup_commands(application)
 
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
@@ -229,6 +240,9 @@ def create_app(application):
     application.jinja_env.globals["parse_ua"] = parse
     application.jinja_env.globals["events_key"] = EVENTS_KEY
     application.jinja_env.globals["now"] = datetime.utcnow
+
+    # helper functions for templates
+    application.jinja_env.globals["random_id"] = random_id
 
     # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:
