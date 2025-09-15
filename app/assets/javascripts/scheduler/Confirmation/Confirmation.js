@@ -21,7 +21,7 @@ export const Confirmation = () => {
         class="confirmationIcon fa-xl fa-solid fa-paper-plane"
       ></i>
 
-      <div className="confirmationMessage">
+      <div className="confirmationMessage" role="status" aria-atomic="true">
         <p>{translate("message_will_be_sent")}</p>
         <p className="confirmationTime">
           <time datetime={date}>
