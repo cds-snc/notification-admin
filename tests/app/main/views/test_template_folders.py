@@ -1407,7 +1407,7 @@ def test_radio_button_with_no_value_shows_error_message(
         _expected_redirect=None,
     )
 
-    assert page.select_one("span.error-message").text.strip() == "You need to choose an option"
+    assert page.select_one("span.error-message").text.strip() == "Error: You need to choose an option"
 
 
 @pytest.mark.parametrize(
