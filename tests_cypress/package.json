@@ -20,7 +20,6 @@
     "cypress": "^14.5.3",
     "cypress-axe": "^1.6.0",
     "cypress-html-validate": "^7.1.0",
-    "cypress-real-events": "^1.14.0",
-    "form-data": ">=4.0.4"
+    "cypress-real-events": "^1.14.0"
   }
 }
