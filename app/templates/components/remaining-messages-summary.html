@@ -63,19 +63,27 @@
         <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small " data-testid="rms-item">
           {% set icon_class = icon_default %}
           {% set icon_type = "default" %}
+          {% set icon_label = _("Within daily limits") if section.type == 'daily' else _("Within annual limits") %}
           {% if section.warn %}
-          {% set icon_class = icon_warning %}
-          {% set icon_type = "warning" %}
+            {% set icon_class = icon_warning %}
+            {% set icon_type = "warning" %}
+            {% set icon_label = _("Warning: nearing daily limit") if section.type == 'daily' else _("Warning: nearing annual limits") %}
           {% endif %}
+          {% set unique_id = random_id(12) %}
           <span data-testid="rms-icon-{{ icon_type }}"></span>
-          <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" {{ 'aria-label=' ~ _('warning') if icon_type=="warning"
-            else "" }}></i>
-          <div class="flex flex-wrap items-baseline gap-x-2">
+          <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" aria-label="{{ icon_label }}" id="{{ unique_id ~ "_icon" }}"></i>
+          <div class="flex flex-wrap items-baseline gap-x-2" id="{{ unique_id }}">
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
             }}
           </div>
-          <a href="{{ section.link_href }}" data-testid="rms-{{ section.type }}-link" class="ml-auto text-blue-500">{{
-            section.link_text }}</a>
+          <a 
+            href="{{ section.link_href }}" 
+            data-testid="rms-{{ section.type }}-link" 
+            class="ml-auto text-blue-500"
+            aria-describedby="{{ unique_id ~ "_icon" ~ " " ~ unique_id }}"
+          >
+            {{section.link_text }}
+          </a>
         </div>
       {% else %}
         <p class="m-0 p-0" data-testid="rms-item">
