@@ -112,7 +112,7 @@
   }
 
   main,
-  pre code {
+  .wp pre code {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
