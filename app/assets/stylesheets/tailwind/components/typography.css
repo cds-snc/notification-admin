@@ -111,9 +111,11 @@
     @apply mt-gutterHalf;
   }
 
-  main {
+  main, 
+  pre code {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
+
   .product-page-intro h1 {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
