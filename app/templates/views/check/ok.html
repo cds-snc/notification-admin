@@ -42,8 +42,9 @@
           ] + recipients.column_headers
         ) %}
         {% call index_field() %}
-          <a class="text-small" href="{{url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(item.index + 2), original_file_name=original_file_name, _anchor='ok-preview')}}">
-            {{item.index + 2}}
+          {% set row_index = item.index + 2 %}
+          <a class="text-small" href="{{url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=row_index, original_file_name=original_file_name, _anchor='ok-preview')}}" aria-label="{{'Preview row {} of {}'.format(row_index, original_file_name)}}">
+            {{row_index}}
           </a>
         {% endcall %}
 
