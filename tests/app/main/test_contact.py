@@ -62,7 +62,7 @@ def test_identity_step_validates(client_request):
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "Enter your name"),
         ("email_address", "Enter a valid email address"),
-        ("support_type", "You need to choose an option"),
+        ("support_type", "Error: You need to choose an option"),
     ]
     assert_no_back_link(page)
 
