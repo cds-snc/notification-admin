@@ -2,7 +2,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/problem-email-checkbox.html" import problem_email_checkbox %}
 
-<div class="ajax-block-container" aria-labelledby='pill-selected-item'>
+<div class="ajax-block-container">
   {% if job.job_status == 'scheduled' %}
     {% set btn_txt = _('Cancel scheduled send') %}
     <div class="page-footer">
