@@ -3,42 +3,45 @@
 {% from "components/empty-list.html" import empty_list  %}
 
 <div class='dashboard-table ajax-block-container'>
-  {% call(item, row_number) list_table(
-    jobs,
-    caption=_("Bulk sends"),
-    caption_visible=False,
-    empty_message=empty_list(_('Scheduled messages will be sent soon'), _('Come back later to find your delivery reports'), "emptyTruck"),
-    field_headings=[
-      _('List name'),
-      _('Sending'),
-      _('Delivered'),
-      _('Failed')
-    ],
-    field_headings_visible=False if jobs|length == 0 else True
-  ) %}
-  
-    {% call row_heading() %}
-      <div class="file-list">
-        <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
-        <span class="file-list-hint">
-          {{ _('Sent') }}
-            <time class="local-datetime-short">
-              {{item.scheduled_for if item.scheduled_for else item.created_at}}
-            </time>
-        </span>
-      </div>
+  {% if jobs | length < 1 %}
+    {{ empty_list(_('Scheduled messages will be sent soon'), _('Come back later to find your delivery reports'), "emptyTruck") }}
+  {% else %}
+    {% call(item, row_number) list_table(
+      jobs,
+      caption=_("Bulk sends"),
+      caption_visible=False,
+      field_headings=[
+        _('List name'),
+        _('Sending'),
+        _('Delivered'),
+        _('Failed')
+      ],
+      field_headings_visible=False if jobs|length == 0 else True
+    ) %}
+    
+      {% call row_heading() %}
+        <div class="file-list">
+          <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.id) }}">{{ item.original_file_name }}</a>
+          <span class="file-list-hint">
+            {{ _('Sent') }}
+              <time class="local-datetime-short">
+                {{item.scheduled_for if item.scheduled_for else item.created_at}}
+              </time>
+          </span>
+        </div>
+      {% endcall %}
+      {% call field() %}
+        {{ big_number(
+          item.get('notification_count', 0) - item.get('notifications_delivered', 0) - item.get('notifications_failed', 0),
+          smallest=True
+        ) }}
+      {% endcall %}
+      {% call field() %}
+        {{ big_number(item.get('notifications_delivered', 0), smallest=True) }}
+      {% endcall %}
+      {% call field(status='error' if item.get('failure_rate', 0) > 3 else '') %}
+        {{ big_number(item.get('notifications_failed', 0), smallest=True) }}
+      {% endcall %}
     {% endcall %}
-    {% call field() %}
-      {{ big_number(
-        item.get('notification_count', 0) - item.get('notifications_delivered', 0) - item.get('notifications_failed', 0),
-        smallest=True
-      ) }}
-    {% endcall %}
-    {% call field() %}
-      {{ big_number(item.get('notifications_delivered', 0), smallest=True) }}
-    {% endcall %}
-    {% call field(status='error' if item.get('failure_rate', 0) > 3 else '') %}
-      {{ big_number(item.get('notifications_failed', 0), smallest=True) }}
-    {% endcall %}
-  {% endcall %}
+  {% endif %}
 </div>

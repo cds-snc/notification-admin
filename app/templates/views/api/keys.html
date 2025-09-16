@@ -36,14 +36,15 @@
   <h2 class="heading-small">
      {{ _('Existing API keys') }}
   </h2>
-  {% set empty_txt = empty_list(heading=_('You have not created any API keys yet')) %}
   {% set keys_txt = _('API keys') %}
   {% set heading_1 = _('API keys') %}
   {% set heading_2 = _('Action') %}
   <div class="body-copy-table">
+    {% if current_service.api_keys | length < 1 %}
+      {{ empty_list(heading=_('You have not created any API keys yet')) }}
+    {% else %}
     {% call(item, row_number) list_table(
       current_service.api_keys,
-      empty_message=empty_txt,
       caption=keys_txt,
       caption_visible=false,
       field_headings=[
@@ -94,6 +95,7 @@
         {% endcall %}
       {% endif %}
     {% endcall %}
+    {% endif %}
   </div>
 
 {% endblock %}

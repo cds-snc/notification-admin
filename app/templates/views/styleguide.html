@@ -116,12 +116,6 @@
     {% endcall %} {% call field( align='right', status='error' if item.status ==
     'Failed' else 'default' ) %}
     {{ item.status }}
-    {% endcall %} {% endcall %} {% call(item, row_number) list_table( [],
-    caption='Jobs', field_headings=['Job', 'Time'], caption_visible=True,
-    empty_message=empty_list(heading='You haven’t scheduled any jobs yet') ) %} {% call field() %}
-    {{ item.job }}
-    {% endcall %} {% call field() %}
-    {{ item.time }}
     {% endcall %} {% endcall %}
     <p class="table-show-more-link">
       <a href="#">Add a job now</a>

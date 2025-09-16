@@ -14,26 +14,27 @@
     {{ _("Email complaints") }}
   </h1>
 
+  {% if complaints | length < 1 %}
+    {{ empty_list(heading=_('No complaints')) }}
+  {% else %}
+    {% call(item, row_number) list_table(
+        complaints,
+        caption=_("Complaints"),
+        caption_visible=False,
+        field_headings=[_('Notification Id'), _('Service'), _('Complaint type'), _('Complaint Date')],
+        field_headings_visible=True
+    ) %}
 
-  {% call(item, row_number) list_table(
-      complaints,
-      caption=_("Complaints"),
-      caption_visible=False,
-      empty_message=empty_list(heading=_('No complaints')),
-      field_headings=[_('Notification Id'), _('Service'), _('Complaint type'), _('Complaint Date')],
-      field_headings_visible=True
-  ) %}
+        {{ link_field(item.notification_id, url_for('main.view_notification', service_id=item.service_id, notification_id=item.notification_id)) }}
 
-      {{ link_field(item.notification_id, url_for('main.view_notification', service_id=item.service_id, notification_id=item.notification_id)) }}
+        {{ link_field(item.service_name, url_for('main.service_dashboard', service_id=item.service_id)) }}
 
-      {{ link_field(item.service_name, url_for('main.service_dashboard', service_id=item.service_id)) }}
+        {{ text_field(item.complaint_type) }}
 
-      {{ text_field(item.complaint_type) }}
+        <time class="local-datetime-short">{{ text_field(item.complaint_date if item.complaint_date else None) }}</time>
 
-      <time class="local-datetime-short">{{ text_field(item.complaint_date if item.complaint_date else None) }}</time>
-
-  {% endcall %}
-
+    {% endcall %}
+  {% endif %}
   {{ previous_next_navigation(prev_page, next_page) }}
 
 {% endblock %}
