@@ -90,7 +90,7 @@ describe("TOU Dialog", () => {
       RegisterPage.Components.TOUTrigger().should(
         "have.attr",
         "aria-describedby",
-        "tou-status tou-error-message"
+        "tou-status tou-error-message",
       );
     });
 
