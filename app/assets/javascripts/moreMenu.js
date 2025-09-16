@@ -1,7 +1,6 @@
 (function (Modules) {
   "use strict";
 
-  const registerKeyDownEscape = window.utils.registerKeyDownEscape;
   const registerKeyBasedMenuNavigation =
     window.utils.registerKeyBasedMenuNavigation;
 
