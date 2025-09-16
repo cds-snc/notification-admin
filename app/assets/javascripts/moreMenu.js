@@ -1,13 +1,23 @@
 (function (Modules) {
   "use strict";
 
+  const registerKeyBasedMenuNavigation =
+    window.utils.registerKeyBasedMenuNavigation;
+
   // Toggles the visibility of the more menu and updates the aria-expanded attribute.
-  function toggleMenu($moreMenuButton, $moreMenu) {
+  function toggleMenu($moreMenuButton, $moreMenu, $items) {
     const isExpanded = $moreMenuButton.attr("aria-expanded") == "true";
     // Toggle the aria-expanded attribute FIRST
     $moreMenuButton.attr("aria-expanded", !isExpanded);
     // If true, class is added. To show the menu, we toggle with the inverse of isExpanded.
     $moreMenu.toggleClass("hidden", isExpanded);
+    // If opening the menu, set focus to the first item
+    if (!isExpanded) {
+      $moreMenuButton.selectedMenuItem = 0;
+      $items.children().find("[href]").attr("tabindex", "-1");
+      $items.children().first().find("[href]").trigger("focus");
+      $items.children().first().find("[href]").attr("tabindex", "0");
+    }
   }
 
   // Initializes the more menu functionality.
@@ -18,10 +28,80 @@
 
     const $menuItems = $(menuItemsId);
     const $moreMenu = $(menuContainerId);
+    const $moreMenuItems = $(
+      `#${$moreMenuButton.attr("data-module-menu-more-items")}`,
+    );
     let itemsWidth = 0;
+    //$moreMenuButton.selectedMenuItem = 0;
 
     // Attach click event handler
-    $moreMenuButton.click(() => toggleMenu($moreMenuButton, $moreMenu));
+    $moreMenuButton.click(() =>
+      toggleMenu($moreMenuButton, $moreMenu, $moreMenuItems),
+    );
+
+    // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu
+    registerKeyBasedMenuNavigation($(window), (event) =>
+      handleKeyBasedMenuNavigation(
+        event,
+        $moreMenuButton,
+        $moreMenu,
+        $moreMenuItems,
+      ),
+    );
+
+    // // Keep Escape key functionality for accessibility
+    // registerKeyDownEscape($(window), () => toggleMenu($moreMenuButton, $moreMenuItems));
+
+    /**
+     * Handles the keydown event for the $menu so the user can navigate the menu items via the keyboard.
+     * This function supports the following key presses:
+     * - Home/End to navigate to the first and last items in the menu
+     * - Up/Left/Shift + Tab to navigate to the previous item in the menu
+     * - Down/Right/Tab to navigate to the next item in the menu
+     * - Meta + (Left/Right OR Up/Down) to navigate to the first/last items in the menu
+     *
+     * @param {KeyboardEvent} event The keydown event object
+     * @param {jQuery Object} $menu The menu button that controls the disclosure menu items container
+     * @param {jQuery Object} $items The unordered list containing menu items
+     */
+    function handleKeyBasedMenuNavigation(event, $menu, $container, $items) {
+      if ($menu.attr("aria-expanded") == "true") {
+        // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+        // Left and Right arrows do nothing because we don't support sub menus
+        // Note the difference between menubar and menu in the above guidance. We made a menu, not a menubar.
+
+        var menuItems = $items.children();
+
+        if (event.key === "ArrowUp") {
+          // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, wraps to the last item.
+          event.preventDefault();
+          $menu.selectedMenuItem =
+            ($menu.selectedMenuItem - 1 + menuItems.length) % menuItems.length;
+        } else if (event.key === "ArrowDown") {
+          // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, wraps to the first item.
+          event.preventDefault();
+          $menu.selectedMenuItem =
+            ($menu.selectedMenuItem + 1) % menuItems.length;
+        } else if (event.key === "Escape") {
+          // Escape: Close the menu that contains focus and return focus to the element or context, e.g., menu button or parent menuitem, from which the menu was opened.
+          event.preventDefault();
+          toggleMenu($menu, $container, $items);
+          $menu.trigger("focus");
+        } else if (event.key === "Tab") {
+          // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
+          toggleMenu($menu, $container, $items);
+          // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.
+          return;
+        }
+        // Once we've determined the new selected menu item, we need to focus on it
+        var $selected_item = $($items.children()[$menu.selectedMenuItem]).find(
+          "[href]",
+        );
+        $selected_item.trigger("focus");
+        $items.children().find("[href]").attr("tabindex", "-1");
+        $selected_item.attr("tabindex", "0");
+      }
+    }
 
     // Determines whether an element overflows, excluding the more button.
     function shouldItemOverflow(element, containerWidth, moreButtonWidth) {

@@ -12,15 +12,22 @@ When we have a lot of menu items, we can use a more menu to hide elements into a
             </li>
         {% endfor %}
     </ul>
+    <!-- $moreMenuButton -->
     <button id="more-menu-story-button" type="button"
         aria-expanded="false" aria-haspopup="true"
+        aria-label="{{ _('More menu items') }}"
         class="nav-menu-item justify-end px-4 w-min"
-        data-module-menu-container="more-menu-story-container" data-has-items="false"
-        data-module="more-menu" data-module-menu-items="more-menu-story">
+        data-module-menu-container="more-menu-story-container"
+        data-has-items="false"
+        data-module="more-menu"
+        data-module-menu-items="more-menu-story"
+        data-module-menu-more-items="more-menu-story-items">
         {{ _("More") }}
         <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
       </button>
+      <!-- $moreMenu -->
       <div id="more-menu-story-container" class="relative self-end hidden">
+        <!-- $menuItems -->
         <ul id="more-menu-story-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
       </div>
 </nav>
@@ -38,15 +45,22 @@ More menu should remove itself once items fit in the menu.
             </li>
         {% endfor %}
     </ul>
+    <!-- $moreMenuButton -->
     <button id="more-menu-story-2-button" type="button"
-        aria-expanded="false" aria-haspopup="true"
+        aria-expanded="false"
+        aria-haspopup="true"
         class="nav-menu-item justify-end px-4 w-min"
-        data-module-menu-container="more-menu-story-2-container" data-has-items="false"
-        data-module="more-menu" data-module-menu-items="more-menu-story-2">
+        data-module-menu-container="more-menu-story-2-container"
+        data-has-items="false"
+        data-module="more-menu"
+        data-module-menu-items="more-menu-story-2"
+        data-module-menu-more-items="more-menu-story-2-items">
         {{ _("More") }}
         <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
       </button>
+      <!-- $moreMenu -->
       <div id="more-menu-story-2-container" class="relative self-end hidden">
+        <!-- $menuItems -->
         <ul id="more-menu-story-2-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
       </div>
 </nav>
