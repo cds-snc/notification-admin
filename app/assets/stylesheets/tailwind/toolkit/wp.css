@@ -170,6 +170,10 @@
     @apply -mt-2;
   }
 
+  .page-content pre code {
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
   /** Block
       wp-block-post-template
       after page-content
