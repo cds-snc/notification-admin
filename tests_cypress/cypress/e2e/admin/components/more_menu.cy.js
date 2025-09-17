@@ -188,4 +188,63 @@ describe("Disclosure Menu components", () => {
       cy.get("#more-menu-story-2-container ul").should("be.empty");
     });
   });
+
+  describe("Accessibility and keyboard navigation for More menu", () => {
+    beforeEach(() => {
+      cy.visit(PageURL);
+      cy.viewport(1000, 800);
+      cy.get("#more-menu-story-button").should("be.visible");
+      cy.get("#more-menu-story-button").click();
+      cy.get("#more-menu-story-container").should("not.have.class", "hidden");
+    });
+
+    it("focuses the first menu item when expanded", () => {
+      cy.get("#more-menu-story-container ul li")
+        .first()
+        .find("a")
+        .should("have.focus");
+    });
+
+    it("navigates menu items with arrow keys and wraps focus", () => {
+      cy.get("#more-menu-story-container ul li").as("menuItems");
+      cy.get("@menuItems").first().find("a").should("have.focus");
+
+      // Arrow down to next item
+      cy.focused().type("{downArrow}");
+      cy.get("@menuItems").eq(1).find("a").should("have.focus");
+
+      // Arrow down to last item
+      cy.get("@menuItems").then(($items) => {
+        const lastIndex = $items.length - 1;
+        cy.log("Last index:", lastIndex);
+        // cy.pause();
+        for (let i = 1; i < lastIndex; i++) {
+          cy.focused().type("{downArrow}");
+        }
+        cy.get("@menuItems").eq(lastIndex).find("a").should("have.focus");
+
+        // Arrow down again should wrap to first
+        cy.focused().type("{downArrow}");
+        cy.get("@menuItems").first().find("a").should("have.focus");
+      });
+
+      // Arrow up from first should wrap to last
+      cy.focused().type("{upArrow}");
+      cy.get("@menuItems").last().find("a").should("have.focus");
+    });
+
+    it("closes menu and returns focus to button on Esc", () => {
+      cy.get("#more-menu-story-container ul li").as("menuItems");
+      cy.get("@menuItems").first().find("a").should("have.focus");
+      // cy.pause()
+      cy.focused().type("{esc}");
+      cy.focused().should("match", "#more-menu-story-button");
+    });
+
+    it("More button has aria-label", () => {
+      cy.get("#more-menu-story-button")
+        .should("have.attr", "aria-label")
+        .and("not.be.empty");
+    });
+  });
 });
