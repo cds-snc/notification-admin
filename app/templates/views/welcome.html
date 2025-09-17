@@ -6,30 +6,23 @@
 
 {% block maincolumn_content %}
 
-    <div class="grid-row contain-floats">
-        <h1 class="heading-large">{{ _('Welcome to GC Notify') }}</h1>
-        <p class="pt-4">{{ _('To get started, you’ll need to create a service. A service is a shared space where you and your team can write messages and track sending. Your service will start out in <strong>trial mode</strong>.')}}</p>
-        <p class="pt-4 mb-4">{{ _('In <strong>trial mode</strong>, you can:') }}</p>
-        <ul class="list-disc ml-10">
-            <li class="pt-4 leading-tight">{{ _('Send messages to yourself and team members.') }}</li>
-            <li class="pt-4 leading-tight">{{ _('Send up to {} messages per day.').format(default_limit | format_number) }}</li>
-        </ul>
-        <p class="pt-10">{{ _("When you’re ready to send more than 50 messages per day, you can request to go live in settings.") }}</p>
-        <a href="{{ url_for('main.add_service', first='first') }}" class="mt-4 button">{{ _('Create your first service') }}</a>
-    </div>
+  <h1 class="heading-large pb-8">{{ _('Welcome to GC Notify') }}</h1>
+  <h2 class="heading-medium">{{ _('Create a service to get started') }}</h2>
+  <div class="space-y-6">
+    <p class="mb-0">{{ _('A service is a shared space where your team can write messages and track sending.') }}</p>
+    <p>{{ _('Your service starts in trial mode.') }}</p>
+    <p>{{ _('In <strong>trial mode</strong>, you can:') }}</p>
+    <ul class="list-disc ml-10">
+      <li>{{ _('Send messages to yourself and members of your team.') }}</li>
+      <li>{{ _('Send up to 50 messages per day.') }}</li>
+    </ul>
+  </div>
+  <p class="pt-10">{{ _("When you’re ready to send more than 50 messages per day, you can request to go live in settings.") }}</p>
+  <a href="{{ url_for('main.add_service', first='first') }}" class="button">{{ _('Create your first service') }}</a>
 
-    <div class="grid-row contain-floats py-10">
-        <h2 class="heading-medium">{{ _('Join an existing service') }}</h2>
-        <p data-testid="guidance-join-existing-service">{{ _("To join an existing service, check your email for an invitation from the team for that service.  GC Notify staff cannot send these invitations.") }}</p>
-        <details data-testid="details-join-existing-service">
-          <summary class="flex gap-10 py-2">{{ _("If you do not have an invitation") }}</summary>
-          <div class="details-body">
-            <p>{{ _('Ask which team members have permission to invite you. If the team is unsure, from a GC Notify account visit the main menu and select “Team members.” That page:') }}</p>
-            <ul class="list list-bullet">
-              <li>{{ _('Includes an invitation button at the top of the page, if the member is permitted to send invitations.') }}</li>
-              <li>{{ _('Lists permitted tasks under the name of each member.') }}</li>
-            </ul>
-          </div>
-        </details>
-      </div>
+  <h2 class="heading-medium pt-12">{{ _('Join an existing service') }}</h2>
+  <div class="space-y-6">
+    <p data-testid="guidance-join-existing-service">{{ _("Check your email for an invitation from the team for that service. GC Notify staff cannot send these invitations.") }}</p>
+    <p>{{ _('If you do not have an invitation, ask your team.') }}</p>
+  </div>
 {% endblock %}
