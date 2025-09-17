@@ -111,8 +111,7 @@
     @apply mt-gutterHalf;
   }
 
-  main,
-  .wp pre code {
+  main {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
