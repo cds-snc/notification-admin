@@ -3,6 +3,7 @@ import Polyglot from "node-polyglot";
 import Moment from "moment";
 import { DiffDOM } from "diff-dom";
 import FontAwesomeIconLoader from "./fontawesome";
+import "./scrollableTabindex";
 
 FontAwesomeIconLoader();
 
