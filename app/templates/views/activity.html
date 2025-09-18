@@ -43,8 +43,8 @@
       <div class="font-sans text-lg font-bold">{{ sms_total | format_number }}</div>
     </div>
   </div>
-
-  <h2 class="heading-medium">{{ _('Notifications sent over time') }}</h2>
+  {% set heading_text = _('Notifications sent over time') %}
+  <h2 class="heading-medium">{{ heading_text }}</h2>
 
   <div class="text-right">
     <a id="link-activity-download" href="{{ url_for('main.activity_download') }}" class="text-small">
@@ -53,6 +53,7 @@
   </div>
 
   {% call mapping_table(
+    caption=heading_text,
     field_headings=[
       _('Month'),
       _('Total'),
@@ -61,7 +62,7 @@
     ],
     field_headings_visible=True,
     equal_length=True,
-    caption_visible=False
+    caption_visible=False,
   ) %}
 
     {% for month, data in monthly_stats.items() %}
