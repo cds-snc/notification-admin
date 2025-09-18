@@ -51,6 +51,12 @@
             'path': 'flash-messages'
         }
     ] %}
+    {% set components = components + [
+        {
+            'name': 'Autocomplete',
+            'path': 'autocomplete'
+        }
+    ] %}
     <ul class="list list-bullet ml-10">
         <!-- loop through components -->
         {% for component in components %}

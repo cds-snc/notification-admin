@@ -1,0 +1,19 @@
+{# Storybook: Autocomplete #}
+{% from "components/autocomplete.html" import autocomplete with context %}
+{% from "components/textbox.html" import textbox with context %}
+{% block storybook_content %}
+    <div class="heading-large">Autocomplete component examples</div>
+    <hr />
+
+    <h2 class="heading-medium">Basic</h2>
+    {# form1 should include a field matching the autocomplete macro call #}
+    {% set options = ['Ontario', 'Quebec', 'British Columbia', 'Alberta'] %}
+    {{ autocomplete(ac1.search, options) }}
+
+    <h2 class="heading-medium">With hint</h2>
+    {{ autocomplete(ac2.search2, options, hint='Start typing a province name') }}
+
+    <h2 class="heading-medium">With error</h2>
+    {# Error example uses a server-prepared form instance with an errors list set in the view. #}
+    {{ autocomplete(ac3.search3, options) }}
+{% endblock %}

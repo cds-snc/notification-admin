@@ -1,6 +1,6 @@
 from flask import render_template, request
 from flask_wtf import FlaskForm as Form
-from wtforms import RadioField
+from wtforms import RadioField, SelectField
 
 from app.main import main
 
@@ -41,6 +41,33 @@ class Exampleform3(Form):
         ]
 
 
+class ExampleAutocomplete(Form):
+    search = SelectField("Search for a place")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # provide some default options; story will pass explicit options too
+        self.search.choices = [("", ""), ("Ontario", "Ontario"), ("Quebec", "Quebec")]
+
+
+class ExampleAutocomplete2(Form):
+    search2 = SelectField("Search for a place")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # provide some default options; story will pass explicit options too
+        self.search2.choices = [("", ""), ("Ontario", "Ontario"), ("Quebec", "Quebec")]
+
+
+class ExampleAutocomplete3(Form):
+    search3 = SelectField("Search for a place")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # provide some default options; story will pass explicit options too
+        self.search3.choices = [("", ""), ("Ontario", "Ontario"), ("Quebec", "Quebec")]
+
+
 @main.route("/_storybook")
 def storybook():
     component = None
@@ -51,5 +78,27 @@ def storybook():
     form1 = Exampleform1()
     form2 = Exampleform2()
     form3 = Exampleform3()
+    # dedicated autocomplete demo instances
+    ac1 = ExampleAutocomplete()
+    ac2 = ExampleAutocomplete2()
+    ac3 = ExampleAutocomplete3()
+    # simulate a validation error for the third autocomplete example
+    try:
+        # wtforms fields expose .errors as a list; ensure it's a list we can append to
+        if not getattr(ac3.search3, "errors", None):
+            ac3.search3.errors = []
+        ac3.search3.errors.append("Please select an option")
+    except Exception:
+        # fallback: ensure attribute exists
+        ac3.search3.errors = ["Please select an option"]
 
-    return render_template("views/storybook.html", component=component, form1=form1, form2=form2, form3=form3)
+    return render_template(
+        "views/storybook.html",
+        component=component,
+        form1=form1,
+        form2=form2,
+        form3=form3,
+        ac1=ac1,
+        ac2=ac2,
+        ac3=ac3,
+    )
