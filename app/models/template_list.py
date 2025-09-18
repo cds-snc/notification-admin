@@ -73,6 +73,9 @@ class TemplateLists:
         )
         self.user = user
 
+    def __len__(self):
+        return sum(1 for _ in self)
+
     def __iter__(self):
         if len(self.services) == 1:
             for template_or_folder in TemplateList(self.services[0], user=self.user):
