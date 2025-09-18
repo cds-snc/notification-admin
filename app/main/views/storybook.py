@@ -1,6 +1,7 @@
 from flask import render_template, request
 from flask_wtf import FlaskForm as Form
-from wtforms import RadioField
+from wtforms import BooleanField, RadioField, StringField
+from wtforms.validators import DataRequired
 
 from app.main import main
 
@@ -41,7 +42,22 @@ class Exampleform3(Form):
         ]
 
 
-@main.route("/_storybook")
+class ExampleFullForm(Form):
+    name = StringField("Full name", validators=[DataRequired(message="This cannot be empty")])
+    email = StringField("Email address", validators=[DataRequired(message="This cannot be empty")])
+    contact_method = RadioField("Preferred contact method", validators=[DataRequired(message="This cannot be empty")])
+    newsletter = BooleanField("Sign up for newsletter", validators=[DataRequired(message="This cannot be empty")])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.contact_method.choices = [
+            ("email", "Email"),
+            ("phone", "Phone"),
+            ("none", "Do not contact"),
+        ]
+
+
+@main.route("/_storybook", methods=["GET", "POST"])
 def storybook():
     component = None
     if "component" in request.args:
@@ -51,5 +67,17 @@ def storybook():
     form1 = Exampleform1()
     form2 = Exampleform2()
     form3 = Exampleform3()
+    full_form = ExampleFullForm()
 
-    return render_template("views/storybook.html", component=component, form1=form1, form2=form2, form3=form3)
+    # run validation on POST so field.errors are populated and shown in the template
+    if request.method == "POST":
+        full_form.validate()
+
+    return render_template(
+        "views/storybook.html",
+        component=component,
+        form1=form1,
+        form2=form2,
+        form3=form3,
+        full_form=full_form,
+    )
