@@ -98,7 +98,7 @@ def test_should_render_change_email_continue_after_authenticate_email(
         data={"password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02"},
         _expected_status=200,
     )
-    assert "Click the link in the email to confirm the change to your email address." in page.text
+    assert "Use the link in the email to confirm the change to your email address." in page.text
 
 
 def test_should_redirect_to_user_profile_when_user_confirms_email_link(
