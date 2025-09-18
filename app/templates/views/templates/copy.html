@@ -14,15 +14,10 @@
       <h1 class="heading-large">{{ _('Copy an existing template') }} {{ _("into") }} {{ current_service.name }}</h1>
       {{ copy_folder_path(template_folder_path, current_service.id, from_service, current_user) }}
     </div>
-
     {% if not services_templates_and_folders.templates_to_show %}
-      <p class="template-list-empty">
-        {{ _('This folder is empty') }}
-      </p>
-    {% elif not services_templates_and_folders.services_to_show %}
-      <p class="template-list-empty">
-        {{ empty_list(heading=_("Nothing to copy yet"), message=_("When you create templates or join existing services with templates, you will be able to copy them from this list."), img="emptyBirdCurious") }}
-      </p>
+      {{ empty_list(heading=_("Nothing to copy yet"), message=_("This folder is empty"), img="emptyBirdCurious") }}
+    {% elif services_templates_and_folders | length == 0 %}
+      {{ empty_list(heading=_("Nothing to copy yet"), message=_("When you create templates or join existing services with templates, you will be able to copy them from this list."), img="emptyBirdCurious") }}
     {% else %}
       {{ live_search(target_selector='#template-list .template-list-item', show=True, form=search_form) }}
       <nav id="template-list" aria-label="{{ _('Templates and folders') }}">
