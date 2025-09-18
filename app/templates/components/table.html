@@ -1,7 +1,7 @@
 {% from "components/big-number.html" import big_number %}
 
 {% macro mapping_table(caption='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, font_size="table-font-xsmall", testid=None) -%}
-  <section class="scrollable-table" tabindex="0">
+  <section class="scrollable-table">
    <table class="table {{fontsize}}"{% if testid %} data-testid="{{ testid }}"{% endif %}>
     <caption class="heading-medium table-heading{{ ' visuallyhidden' if not caption_visible }}">
       {{ caption }}
