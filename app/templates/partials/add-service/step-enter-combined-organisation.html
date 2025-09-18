@@ -1,10 +1,10 @@
 {% from "components/radios.html" import radios %}
-{% from "components/autocomplete.html" import autocomplete %}
+{% from "components/autocomplete.html" import autocomplete with context %}
 
 <p id="info-text">{{ _("We use this information to improve GC Notify.") }}</p>
 
 <div data-module="url-typer" class="form-wrap" aria-labelledby="info-text">
-  {% call form_wrapper() %}
+  {% call form_wrapper(show_validation_summary=true, form=form) %}
 
     <div class="mb-gutterAndAHalf">
       <label for="parent_organisation_name">{{ _("Name of parent organisation") }}</label>
