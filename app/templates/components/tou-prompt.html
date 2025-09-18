@@ -4,7 +4,7 @@
 
 {% macro tou_prompt(next_url) %}
 
-  <h1 class="heading-large py-1 mt-0 mb-3" tabindex="0" autofocus>{{ _('Before you continue') }}</h1>
+  <h1 class="heading-large py-1 mt-0 mb-3">{{ _('Before you continue') }}</h1>
 
   {% if config["FF_CARETAKER"] %}
     {% call notice(type="warning", title=_("Communicating during caretaker period"), headingLevel=2) %}
