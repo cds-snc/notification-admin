@@ -97,6 +97,10 @@ class TemplateLists:
     def templates_to_show(self):
         return bool(self.services)
 
+    @property
+    def services_to_show(self):
+        return len(self.services) > 1
+
 
 class TemplateListItem:
     is_service = False

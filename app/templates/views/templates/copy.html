@@ -1,5 +1,6 @@
 {% from "components/folder-path.html" import copy_folder_path, page_title_folder_path %}
 {% from "components/live-search.html" import live_search %}
+{% from "components/empty-list.html" import empty_list  %}
 
 {% extends "admin_template.html" %}
 
@@ -13,9 +14,14 @@
       <h1 class="heading-large">{{ _('Copy an existing template') }} {{ _("into") }} {{ current_service.name }}</h1>
       {{ copy_folder_path(template_folder_path, current_service.id, from_service, current_user) }}
     </div>
+
     {% if not services_templates_and_folders.templates_to_show %}
       <p class="template-list-empty">
         {{ _('This folder is empty') }}
+      </p>
+    {% elif not services_templates_and_folders.services_to_show %}
+      <p class="template-list-empty">
+        {{ empty_list(heading=_("Nothing to copy yet"), message=_("When you create templates or join existing services with templates, you will be able to copy them from this list."), img="emptyBirdCurious") }}
       </p>
     {% else %}
       {{ live_search(target_selector='#template-list .template-list-item', show=True, form=search_form) }}
