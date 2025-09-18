@@ -19,7 +19,7 @@
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
-    data-module="{% if autofocus or field.errors %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
+    data-module="{% if colour_preview %}colour-preview{% endif %}"
   >
     {% set describedby = '' %}
 
@@ -77,6 +77,7 @@
       aria_required='true' if required != false else false,
       aria_describedby=describedby|trim if describedby != '' else false,
       data_testid=testid,
+      autofocus=true if autofocus or field.errors else false,
       **kwargs
     ) }}
 
