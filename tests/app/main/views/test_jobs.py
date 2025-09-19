@@ -740,7 +740,7 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
 
 
-def test_a11y_ensure_headings_are_not_there_when_no_data_on_view_job_page(
+def test_a11y_ensure_table_does_not_exist_when_no_data_on_view_job_page(
     client_request,
     fake_uuid,
     service_one,
@@ -756,7 +756,14 @@ def test_a11y_ensure_headings_are_not_there_when_no_data_on_view_job_page(
         job_id=fake_uuid,
         status="sending",
     )
-    assert len(page.find_all("thead")) == 0
+    # On a detailed job page, there are two tables - one for job info and one for notifications
+    # We should at least have one table on the page. This table should have no visible headings.
+    assert len(page.find_all("table")) == 1
+    assert len(page.find_all("thead", {"class": "table-field-headings-visible"})) == 0
+    # When notifications are past the retention period, the notifications table is not shown at all
+    assert len(page.find_all("thead", {"class": "table-field-headings"})) == 0
+    # Instead, we show an empty state component. Which is not a table.
+    assert len(page.select("[data-testid='empty-list']", {"class": "min-h-emptyState"})) == 1
 
 
 class TestBounceRate:
