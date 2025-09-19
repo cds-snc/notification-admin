@@ -34,22 +34,21 @@
 
 {% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True, equal_length=False, testid=None) -%}
   {% set parent_caller = caller %}
-
-  {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length, testid=testid) %}
-    {% for item in items %}
-      {% call row(item.id) %}
-        {{ parent_caller(item, loop.index + 1) }}
-      {% endcall %}
-    {% endfor %}
-    {% if not items %}
-      {% call row() %}
-        <td class="table-empty-message h-10" colspan="10">
-          {{ empty_message }}
-        </td>
-      {% endcall %}
+  {% if not items %}
+    {% if empty_message is string and not empty_message.strip().startswith('<') %}
+      <p>{{empty_message}}</p>
+    {% else %}
+      {{empty_message|safe}}
     {% endif %}
-  {%- endcall %}
-
+  {% else %}
+    {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible, equal_length, testid=testid) %}
+      {% for item in items %}
+        {% call row(item.id) %}
+          {{ parent_caller(item, loop.index + 1) }}
+        {% endcall %}
+      {% endfor %}
+    {%- endcall %}
+  {% endif %}
 {%- endmacro %}
 
 {% macro row(id=None, classes=None) -%}
