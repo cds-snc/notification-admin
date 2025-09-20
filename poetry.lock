@@ -287,17 +287,6 @@ files = [
 ]
 
 [[package]]
-name = "chardet"
-version = "5.2.0"
-description = "Universal encoding detector for Python 3"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970"},
-    {file = "chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7"},
-]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.3.2"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -555,37 +544,41 @@ test-randomorder = ["pytest-randomly"]
 
 [[package]]
 name = "debugpy"
-version = "1.8.12"
+version = "1.8.17"
 description = "An implementation of the Debug Adapter Protocol for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "debugpy-1.8.12-cp310-cp310-macosx_14_0_x86_64.whl", hash = "sha256:a2ba7ffe58efeae5b8fad1165357edfe01464f9aef25e814e891ec690e7dd82a"},
-    {file = "debugpy-1.8.12-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cbbd4149c4fc5e7d508ece083e78c17442ee13b0e69bfa6bd63003e486770f45"},
-    {file = "debugpy-1.8.12-cp310-cp310-win32.whl", hash = "sha256:b202f591204023b3ce62ff9a47baa555dc00bb092219abf5caf0e3718ac20e7c"},
-    {file = "debugpy-1.8.12-cp310-cp310-win_amd64.whl", hash = "sha256:9649eced17a98ce816756ce50433b2dd85dfa7bc92ceb60579d68c053f98dff9"},
-    {file = "debugpy-1.8.12-cp311-cp311-macosx_14_0_universal2.whl", hash = "sha256:36f4829839ef0afdfdd208bb54f4c3d0eea86106d719811681a8627ae2e53dd5"},
-    {file = "debugpy-1.8.12-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a28ed481d530e3138553be60991d2d61103ce6da254e51547b79549675f539b7"},
-    {file = "debugpy-1.8.12-cp311-cp311-win32.whl", hash = "sha256:4ad9a94d8f5c9b954e0e3b137cc64ef3f579d0df3c3698fe9c3734ee397e4abb"},
-    {file = "debugpy-1.8.12-cp311-cp311-win_amd64.whl", hash = "sha256:4703575b78dd697b294f8c65588dc86874ed787b7348c65da70cfc885efdf1e1"},
-    {file = "debugpy-1.8.12-cp312-cp312-macosx_14_0_universal2.whl", hash = "sha256:7e94b643b19e8feb5215fa508aee531387494bf668b2eca27fa769ea11d9f498"},
-    {file = "debugpy-1.8.12-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:086b32e233e89a2740c1615c2f775c34ae951508b28b308681dbbb87bba97d06"},
-    {file = "debugpy-1.8.12-cp312-cp312-win32.whl", hash = "sha256:2ae5df899732a6051b49ea2632a9ea67f929604fd2b036613a9f12bc3163b92d"},
-    {file = "debugpy-1.8.12-cp312-cp312-win_amd64.whl", hash = "sha256:39dfbb6fa09f12fae32639e3286112fc35ae976114f1f3d37375f3130a820969"},
-    {file = "debugpy-1.8.12-cp313-cp313-macosx_14_0_universal2.whl", hash = "sha256:696d8ae4dff4cbd06bf6b10d671e088b66669f110c7c4e18a44c43cf75ce966f"},
-    {file = "debugpy-1.8.12-cp313-cp313-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:898fba72b81a654e74412a67c7e0a81e89723cfe2a3ea6fcd3feaa3395138ca9"},
-    {file = "debugpy-1.8.12-cp313-cp313-win32.whl", hash = "sha256:22a11c493c70413a01ed03f01c3c3a2fc4478fc6ee186e340487b2edcd6f4180"},
-    {file = "debugpy-1.8.12-cp313-cp313-win_amd64.whl", hash = "sha256:fdb3c6d342825ea10b90e43d7f20f01535a72b3a1997850c0c3cefa5c27a4a2c"},
-    {file = "debugpy-1.8.12-cp38-cp38-macosx_14_0_x86_64.whl", hash = "sha256:b0232cd42506d0c94f9328aaf0d1d0785f90f87ae72d9759df7e5051be039738"},
-    {file = "debugpy-1.8.12-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9af40506a59450f1315168d47a970db1a65aaab5df3833ac389d2899a5d63b3f"},
-    {file = "debugpy-1.8.12-cp38-cp38-win32.whl", hash = "sha256:5cc45235fefac57f52680902b7d197fb2f3650112379a6fa9aa1b1c1d3ed3f02"},
-    {file = "debugpy-1.8.12-cp38-cp38-win_amd64.whl", hash = "sha256:557cc55b51ab2f3371e238804ffc8510b6ef087673303890f57a24195d096e61"},
-    {file = "debugpy-1.8.12-cp39-cp39-macosx_14_0_x86_64.whl", hash = "sha256:b5c6c967d02fee30e157ab5227706f965d5c37679c687b1e7bbc5d9e7128bd41"},
-    {file = "debugpy-1.8.12-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:88a77f422f31f170c4b7e9ca58eae2a6c8e04da54121900651dfa8e66c29901a"},
-    {file = "debugpy-1.8.12-cp39-cp39-win32.whl", hash = "sha256:a4042edef80364239f5b7b5764e55fd3ffd40c32cf6753da9bda4ff0ac466018"},
-    {file = "debugpy-1.8.12-cp39-cp39-win_amd64.whl", hash = "sha256:f30b03b0f27608a0b26c75f0bb8a880c752c0e0b01090551b9d87c7d783e2069"},
-    {file = "debugpy-1.8.12-py2.py3-none-any.whl", hash = "sha256:274b6a2040349b5c9864e475284bce5bb062e63dce368a394b8cc865ae3b00c6"},
-    {file = "debugpy-1.8.12.tar.gz", hash = "sha256:646530b04f45c830ceae8e491ca1c9320a2d2f0efea3141487c82130aba70dce"},
+    {file = "debugpy-1.8.17-cp310-cp310-macosx_15_0_x86_64.whl", hash = "sha256:c41d2ce8bbaddcc0009cc73f65318eedfa3dbc88a8298081deb05389f1ab5542"},
+    {file = "debugpy-1.8.17-cp310-cp310-manylinux_2_34_x86_64.whl", hash = "sha256:1440fd514e1b815edd5861ca394786f90eb24960eb26d6f7200994333b1d79e3"},
+    {file = "debugpy-1.8.17-cp310-cp310-win32.whl", hash = "sha256:3a32c0af575749083d7492dc79f6ab69f21b2d2ad4cd977a958a07d5865316e4"},
+    {file = "debugpy-1.8.17-cp310-cp310-win_amd64.whl", hash = "sha256:a3aad0537cf4d9c1996434be68c6c9a6d233ac6f76c2a482c7803295b4e4f99a"},
+    {file = "debugpy-1.8.17-cp311-cp311-macosx_15_0_universal2.whl", hash = "sha256:d3fce3f0e3de262a3b67e69916d001f3e767661c6e1ee42553009d445d1cd840"},
+    {file = "debugpy-1.8.17-cp311-cp311-manylinux_2_34_x86_64.whl", hash = "sha256:c6bdf134457ae0cac6fb68205776be635d31174eeac9541e1d0c062165c6461f"},
+    {file = "debugpy-1.8.17-cp311-cp311-win32.whl", hash = "sha256:e79a195f9e059edfe5d8bf6f3749b2599452d3e9380484cd261f6b7cd2c7c4da"},
+    {file = "debugpy-1.8.17-cp311-cp311-win_amd64.whl", hash = "sha256:b532282ad4eca958b1b2d7dbcb2b7218e02cb934165859b918e3b6ba7772d3f4"},
+    {file = "debugpy-1.8.17-cp312-cp312-macosx_15_0_universal2.whl", hash = "sha256:f14467edef672195c6f6b8e27ce5005313cb5d03c9239059bc7182b60c176e2d"},
+    {file = "debugpy-1.8.17-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:24693179ef9dfa20dca8605905a42b392be56d410c333af82f1c5dff807a64cc"},
+    {file = "debugpy-1.8.17-cp312-cp312-win32.whl", hash = "sha256:6a4e9dacf2cbb60d2514ff7b04b4534b0139facbf2abdffe0639ddb6088e59cf"},
+    {file = "debugpy-1.8.17-cp312-cp312-win_amd64.whl", hash = "sha256:e8f8f61c518952fb15f74a302e068b48d9c4691768ade433e4adeea961993464"},
+    {file = "debugpy-1.8.17-cp313-cp313-macosx_15_0_universal2.whl", hash = "sha256:857c1dd5d70042502aef1c6d1c2801211f3ea7e56f75e9c335f434afb403e464"},
+    {file = "debugpy-1.8.17-cp313-cp313-manylinux_2_34_x86_64.whl", hash = "sha256:3bea3b0b12f3946e098cce9b43c3c46e317b567f79570c3f43f0b96d00788088"},
+    {file = "debugpy-1.8.17-cp313-cp313-win32.whl", hash = "sha256:e34ee844c2f17b18556b5bbe59e1e2ff4e86a00282d2a46edab73fd7f18f4a83"},
+    {file = "debugpy-1.8.17-cp313-cp313-win_amd64.whl", hash = "sha256:6c5cd6f009ad4fca8e33e5238210dc1e5f42db07d4b6ab21ac7ffa904a196420"},
+    {file = "debugpy-1.8.17-cp314-cp314-macosx_15_0_universal2.whl", hash = "sha256:045290c010bcd2d82bc97aa2daf6837443cd52f6328592698809b4549babcee1"},
+    {file = "debugpy-1.8.17-cp314-cp314-manylinux_2_34_x86_64.whl", hash = "sha256:b69b6bd9dba6a03632534cdf67c760625760a215ae289f7489a452af1031fe1f"},
+    {file = "debugpy-1.8.17-cp314-cp314-win32.whl", hash = "sha256:5c59b74aa5630f3a5194467100c3b3d1c77898f9ab27e3f7dc5d40fc2f122670"},
+    {file = "debugpy-1.8.17-cp314-cp314-win_amd64.whl", hash = "sha256:893cba7bb0f55161de4365584b025f7064e1f88913551bcd23be3260b231429c"},
+    {file = "debugpy-1.8.17-cp38-cp38-macosx_15_0_x86_64.whl", hash = "sha256:8deb4e31cd575c9f9370042876e078ca118117c1b5e1f22c32befcfbb6955f0c"},
+    {file = "debugpy-1.8.17-cp38-cp38-manylinux_2_34_x86_64.whl", hash = "sha256:b75868b675949a96ab51abc114c7163f40ff0d8f7d6d5fd63f8932fd38e9c6d7"},
+    {file = "debugpy-1.8.17-cp38-cp38-win32.whl", hash = "sha256:17e456da14848d618662354e1dccfd5e5fb75deec3d1d48dc0aa0baacda55860"},
+    {file = "debugpy-1.8.17-cp38-cp38-win_amd64.whl", hash = "sha256:e851beb536a427b5df8aa7d0c7835b29a13812f41e46292ff80b2ef77327355a"},
+    {file = "debugpy-1.8.17-cp39-cp39-macosx_15_0_x86_64.whl", hash = "sha256:f2ac8055a0c4a09b30b931100996ba49ef334c6947e7ae365cdd870416d7513e"},
+    {file = "debugpy-1.8.17-cp39-cp39-manylinux_2_34_x86_64.whl", hash = "sha256:eaa85bce251feca8e4c87ce3b954aba84b8c645b90f0e6a515c00394a9f5c0e7"},
+    {file = "debugpy-1.8.17-cp39-cp39-win32.whl", hash = "sha256:b13eea5587e44f27f6c48588b5ad56dcb74a4f3a5f89250443c94587f3eb2ea1"},
+    {file = "debugpy-1.8.17-cp39-cp39-win_amd64.whl", hash = "sha256:bb1bbf92317e1f35afcf3ef0450219efb3afe00be79d8664b250ac0933b9015f"},
+    {file = "debugpy-1.8.17-py2.py3-none-any.whl", hash = "sha256:60c7dca6571efe660ccb7a9508d73ca14b8796c4ed484c2002abba714226cfef"},
+    {file = "debugpy-1.8.17.tar.gz", hash = "sha256:fd723b47a8c08892b1a16b2c6239a8b96637c62a59b94bb5dab4bac592a58a8e"},
 ]
 
 [[package]]
@@ -810,13 +803,13 @@ tests = ["coverage", "pytest", "pytest-mock"]
 
 [[package]]
 name = "flask-wtf"
-version = "1.2.1"
+version = "1.2.2"
 description = "Form rendering, validation, and CSRF protection for Flask with WTForms."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "flask_wtf-1.2.1-py3-none-any.whl", hash = "sha256:fa6793f2fb7e812e0fe9743b282118e581fb1b6c45d414b8af05e659bd653287"},
-    {file = "flask_wtf-1.2.1.tar.gz", hash = "sha256:8bb269eb9bb46b87e7c8233d7e7debdf1f8b74bf90cc1789988c29b37a97b695"},
+    {file = "flask_wtf-1.2.2-py3-none-any.whl", hash = "sha256:e93160c5c5b6b571cf99300b6e01b72f9a101027cab1579901f8b10c5daf0b70"},
+    {file = "flask_wtf-1.2.2.tar.gz", hash = "sha256:79d2ee1e436cf570bccb7d916533fa18757a2f18c290accffab1b9a0b684666b"},
 ]
 
 [package.dependencies]
@@ -829,13 +822,13 @@ email = ["email-validator"]
 
 [[package]]
 name = "freezegun"
-version = "1.5.1"
+version = "1.5.5"
 description = "Let your Python tests travel through time"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "freezegun-1.5.1-py3-none-any.whl", hash = "sha256:bf111d7138a8abe55ab48a71755673dbaa4ab87f4cff5634a4442dfec34c15f1"},
-    {file = "freezegun-1.5.1.tar.gz", hash = "sha256:b29dedfcda6d5e8e083ce71b2b542753ad48cfec44037b3fc79702e2980a89e9"},
+    {file = "freezegun-1.5.5-py3-none-any.whl", hash = "sha256:cd557f4a75cf074e84bc374249b9dd491eaeacd61376b9eb3c423282211619d2"},
+    {file = "freezegun-1.5.5.tar.gz", hash = "sha256:ac7742a6cc6c25a2c35e9292dfd554b897b517d2dec26891a2e8debf205cb94a"},
 ]
 
 [package.dependencies]
@@ -1159,13 +1152,13 @@ dev = ["Sphinx (>=5.1.1)", "black (==23.12.1)", "build (>=0.10.0)", "coverage (>
 
 [[package]]
 name = "lml"
-version = "0.1.0"
+version = "0.2.0"
 description = "Load me later. A lazy plugin management system."
 optional = false
 python-versions = "*"
 files = [
-    {file = "lml-0.1.0-py2.py3-none-any.whl", hash = "sha256:ec06e850019942a485639c8c2a26bdb99eae24505bee7492b649df98a0bed101"},
-    {file = "lml-0.1.0.tar.gz", hash = "sha256:57a085a29bb7991d70d41c6c3144c560a8e35b4c1030ffb36d85fa058773bcc5"},
+    {file = "lml-0.2.0-py2.py3-none-any.whl", hash = "sha256:20c80728189e46e8d986f5d0cdf6d83c493471fc25b1c31a8cb3fa96e80b58f8"},
+    {file = "lml-0.2.0.tar.gz", hash = "sha256:8dd5afb4367a593d1cdb2144a05874cd9938f5266bebb0c9e1413200423c0d74"},
 ]
 
 [[package]]
@@ -1790,18 +1783,17 @@ files = [
 
 [[package]]
 name = "pyexcel"
-version = "0.7.0"
+version = "0.7.3"
 description = "A wrapper library that provides one API to read, manipulate and writedata in different excel formats"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyexcel-0.7.0-py2.py3-none-any.whl", hash = "sha256:ddc6904512bfa2ecda509fb3b58229bb30db14498632fd9e7a5ba7bbfb02ed1b"},
-    {file = "pyexcel-0.7.0.tar.gz", hash = "sha256:fbf0eee5d93b96cef6f19a9f00703f22c0a64f19728d91b95428009a52129709"},
+    {file = "pyexcel-0.7.3-py2.py3-none-any.whl", hash = "sha256:394df2445364fa1960fed4a9bb04c62efdff5435026f3d1346f614a94fe5ba7a"},
+    {file = "pyexcel-0.7.3.tar.gz", hash = "sha256:57b3c3fb55dd09a62cbbf2ae9f1e78aa11b627c2bfc6072ff2d9587c022b06d4"},
 ]
 
 [package.dependencies]
-chardet = "*"
-lml = ">=0.0.4"
+lml = ">=0.2.0"
 pyexcel-io = ">=0.6.2"
 texttable = ">=0.8.2"
 
@@ -1826,19 +1818,20 @@ lxml = "*"
 
 [[package]]
 name = "pyexcel-io"
-version = "0.6.6"
+version = "0.6.7"
 description = "A python library to read and write structured data in csv, zipped csvformat and to/from databases"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyexcel-io-0.6.6.tar.gz", hash = "sha256:f6084bf1afa5fbf4c61cf7df44370fa513821af188b02e3e19b5efb66d8a969f"},
-    {file = "pyexcel_io-0.6.6-py2.py3-none-any.whl", hash = "sha256:19ff1d599a8a6c0982e4181ef86aa50e1f8d231410fa7e0e204d62e37551c1d6"},
+    {file = "pyexcel_io-0.6.7-py2.py3-none-any.whl", hash = "sha256:add9f3c1489070ab0a3226bab7d23d4b84a364f5b44f3a14e2ce785ede88fcb3"},
+    {file = "pyexcel_io-0.6.7.tar.gz", hash = "sha256:2c33d8df505e21a13bed585ac6ab7d30ec826a9f156b758394af5d22359bddb9"},
 ]
 
 [package.dependencies]
 lml = ">=0.0.4"
 
 [package.extras]
+extra = ["chardet"]
 ods = ["pyexcel-ods3 (>=0.6.0)"]
 xls = ["pyexcel-xls (>=0.6.0)"]
 xlsx = ["pyexcel-xlsx (>=0.6.0)"]
@@ -1861,13 +1854,13 @@ pyexcel-io = ">=0.6.2"
 
 [[package]]
 name = "pyexcel-xls"
-version = "0.7.0"
+version = "0.7.1"
 description = "A wrapper library to read, manipulate and write data in xls format. Itreads xlsx and xlsm format"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyexcel-xls-0.7.0.tar.gz", hash = "sha256:5ec606ef8667aafbb0c3fbd8242a7c23bf175ee7c10b08f70799b84fb2db84cb"},
-    {file = "pyexcel_xls-0.7.0-py2.py3-none-any.whl", hash = "sha256:31c6652ddc8758428ed59c7f2c34a1173abb8f3c7ebdba6fce051ff6f78b8135"},
+    {file = "pyexcel_xls-0.7.1-py2.py3-none-any.whl", hash = "sha256:5fd1bc29a50ad7abf5e5d5b6b0dfa1f83e01a97dbb3e7a9dc8ef118d5b78b46a"},
+    {file = "pyexcel_xls-0.7.1.tar.gz", hash = "sha256:0e8c598dc840f9216507f1c16975c18b06e36df09acd79bda1a9de2f9cad0761"},
 ]
 
 [package.dependencies]
@@ -1877,13 +1870,13 @@ xlwt = "*"
 
 [[package]]
 name = "pyexcel-xlsx"
-version = "0.6.0"
+version = "0.6.1"
 description = "A wrapper library to read, manipulate and write data in xlsx and xlsmformat"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyexcel-xlsx-0.6.0.tar.gz", hash = "sha256:55754f764252461aca6871db203f4bd1370ec877828e305e6be1de5f9aa6a79d"},
-    {file = "pyexcel_xlsx-0.6.0-py2.py3-none-any.whl", hash = "sha256:16530f96a77c97ebcba7941517d2756ac52d3ce2903d81eecd7f300778d5242a"},
+    {file = "pyexcel_xlsx-0.6.1-py2.py3-none-any.whl", hash = "sha256:c17d8c90ae6c2ae5672e469e6afe4336597e4ff479e5a93ba846ae46b7b80769"},
+    {file = "pyexcel_xlsx-0.6.1.tar.gz", hash = "sha256:80b7985d394b73abf5c52212027bbbc0c7f6090192bcbc76403f8672d74c7960"},
 ]
 
 [package.dependencies]
@@ -2413,13 +2406,13 @@ files = [
 
 [[package]]
 name = "types-python-dateutil"
-version = "2.9.0.20241003"
+version = "2.9.0.20250822"
 description = "Typing stubs for python-dateutil"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "types-python-dateutil-2.9.0.20241003.tar.gz", hash = "sha256:58cb85449b2a56d6684e41aeefb4c4280631246a0da1a719bdbe6f3fb0317446"},
-    {file = "types_python_dateutil-2.9.0.20241003-py3-none-any.whl", hash = "sha256:250e1d8e80e7bbc3a6c99b907762711d1a1cdd00e978ad39cb5940f6f0a87f3d"},
+    {file = "types_python_dateutil-2.9.0.20250822-py3-none-any.whl", hash = "sha256:849d52b737e10a6dc6621d2bd7940ec7c65fcb69e6aa2882acf4e56b2b508ddc"},
+    {file = "types_python_dateutil-2.9.0.20250822.tar.gz", hash = "sha256:84c92c34bd8e68b117bff742bc00b692a1e8531262d4507b33afcc9f7716cd53"},
 ]
 
 [[package]]
@@ -2446,13 +2439,13 @@ files = [
 
 [[package]]
 name = "types-requests"
-version = "2.32.0.20240914"
+version = "2.32.4.20250913"
 description = "Typing stubs for requests"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "types-requests-2.32.0.20240914.tar.gz", hash = "sha256:2850e178db3919d9bf809e434eef65ba49d0e7e33ac92d588f4a5e295fffd405"},
-    {file = "types_requests-2.32.0.20240914-py3-none-any.whl", hash = "sha256:59c2f673eb55f32a99b2894faf6020e1a9f4a402ad0f192bfee0b64469054310"},
+    {file = "types_requests-2.32.4.20250913-py3-none-any.whl", hash = "sha256:78c9c1fffebbe0fa487a418e0fa5252017e9c60d1a2da394077f1780f655d7e1"},
+    {file = "types_requests-2.32.4.20250913.tar.gz", hash = "sha256:abd6d4f9ce3a9383f269775a9835a4c24e5cd6b9f647d64f88aa4613c33def5d"},
 ]
 
 [package.dependencies]
@@ -2782,4 +2775,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "18976250be08265857e3c0a7a77d8f1bc760f38608a612e1b41354e0d75dbfdd"
+content-hash = "cd68d1c6be0db68e71677208a8448b0b5ecdb423e6d23e5a9f7afba31e76b4f7"
