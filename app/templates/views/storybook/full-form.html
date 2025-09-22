@@ -2,18 +2,36 @@
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/autocomplete.html" import autocomplete %}
+{% from "components/checkbox.html" import checkboxes, checkbox_input %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/radios.html" import radios %}
 
 {% block story_content %}
   <h2 class="heading-medium">Full form example</h2>
   {% call form_wrapper(action='#', autocomplete=True, show_validation_summary=False, form=full_form) %}
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    {{ textbox(full_form.name, label='Full name', hint='As it appears on official documents', autocomplete='name', autofocus=True) }}
+    {{ textbox(full_form.name, label='Full name', hint='As it appears on official documents', autocomplete='name') }}
     {{ textbox(full_form.email, label='Email address', hint='We will send notifications here', autocomplete='email') }}
 
     {{ select(full_form.contact_method, hint='How should we contact you?', input='radio') }}
 
+    {{ autocomplete(full_form.autocomplete, full_form.autocomplete.choices, hint=_("For example: Halifax")) }}
+
+    {{ checkboxes(full_form.main_use_case, option_hints=full_form.main_use_case_hints, use_aria_labelledby=false) }}
+
+    <div>
+      {{ checkbox_input("checkbox123", "checkbox123") }}
+      <label class="pb-0 inline-block text-small" for="checkbox123">{{ _('Display') }} {{ _('email content') }} {{ _('right to left') }}</label>
+    </div>
+    
+    
+    {{ radios(full_form.process_type, hint='This is only manageable by platform admins',  use_aria_labelledby=false) }}
+
     <div class="mt-4">
       <button class="button" type="submit">Submit</button>
     </div>
-  {% endcall %}
+    
+    
+    {% endcall %}
 {% endblock %}

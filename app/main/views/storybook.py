@@ -4,6 +4,7 @@ from wtforms import BooleanField, RadioField, StringField
 from wtforms.validators import DataRequired
 
 from app.main import main
+from app.main.forms import MultiCheckboxField
 
 
 class Exampleform1(Form):
@@ -47,6 +48,36 @@ class ExampleFullForm(Form):
     email = StringField("Email address", validators=[DataRequired(message="This cannot be empty")])
     contact_method = RadioField("Preferred contact method", validators=[DataRequired(message="This cannot be empty")])
     newsletter = BooleanField("Sign up for newsletter", validators=[DataRequired(message="This cannot be empty")])
+    autocomplete = StringField("Select your ciy", validators=[DataRequired("Choose city from drop-down menu")])
+    main_use_case = MultiCheckboxField(
+        "For what purpose are you using GC Notify?",
+        default="",
+        choices=[
+            ("service", "Government service or program delivery"),
+            ("account_management", "Account management and verification"),
+            ("broadcast", "Informational broadcasts"),
+            ("alerts", "Monitoring and alerts"),
+            ("scheduling", "Scheduling and booking"),
+            ("workflow", "Workflow management"),
+        ],
+        validators=[DataRequired()],
+    )
+    main_use_case_hints = {
+        "service": "Applications, permits, licenses, official documents, and benefit claims",
+        "account_management": "User authentication, password resets, profile updates",
+        "broadcast": "Newsletters, digests, announcements, policy updates, general communications",
+        "alerts": "System status, maintenance windows, outages, closures, emergency notices",
+        "scheduling": "Appointments, reservations, confirmations, availability updates, reminders",
+        "workflow": "Shift scheduling, inventory tracking, access requests, automated responses",
+    }
+    process_type = RadioField(
+        ("Select a priority queue"),
+        choices=[
+            ("bulk", "Bulk — Not time-sensitive"),
+            ("normal", "Normal"),
+            ("priority", "Priority — Time-sensitive"),
+        ],
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -55,6 +86,7 @@ class ExampleFullForm(Form):
             ("phone", "Phone"),
             ("none", "Do not contact"),
         ]
+        self.autocomplete.choices = ["Halifax", "Montreal", "Ottawa", "Toronto"]
 
 
 @main.route("/_storybook", methods=["GET", "POST"])
