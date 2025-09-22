@@ -31,7 +31,7 @@ def accept_invite(token):
         message = Markup(
             _(
                 "You’re signed in as %(email)s. This invite is for another email address. "
-                + "<a href=%(href)s>Sign out</a> and click the link again to accept this invite.",
+                + "<a href=%(href)s>Sign out</a> and select the link again to accept this invite.",
                 email=current_user.email_address,
                 href=url_for("main.sign_out", _external=True),
             )
@@ -106,7 +106,7 @@ def accept_org_invite(token):
         message = Markup(
             _(
                 "You’re signed in as %(email)s. This invite is for another email address. "
-                + "<a href=%(href)s>Sign out</a> and click the link again to accept this invite.",
+                + "<a href=%(href)s>Sign out</a> and select the link again to accept this invite.",
                 email=current_user.email_address,
                 href=url_for("main.sign_out", _external=True),
             )
