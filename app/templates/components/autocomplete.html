@@ -2,7 +2,7 @@
   <div class="w-full md:w-1/2 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
     
     <label for="{{ field.name }}">
-      <strong>{{ field.label }}</strong>
+      <strong>{{ field.label.text }}</strong>
       {% if hint %}
         {% set hint_id = field.name + '-hint' %}
         <span id="{{ hint_id }}" class="form-hint">{{ hint }}</span>
@@ -13,11 +13,17 @@
         </span>
       {% endif %}
     </label>
-    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
-      <option value=""></option>
-      {% for option in options %}
-        <option value="{{ option }}">{{ option }}</option>
-      {% endfor %}
-    </select>
+    {% if field.errors %}
+      <div role="alert" tabindex="-1" autofocus>
+    {% endif %}
+      <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
+        <option value=""></option>
+        {% for option in options %}
+          <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+      </select>
+    {% if field.errors %}
+      </div>
+    {% endif %}
   </div>  
 {% endmacro %}
