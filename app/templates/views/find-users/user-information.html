@@ -13,6 +13,7 @@
       </h1>
       <p>{{ user.email_address }}</p>
       <p class="{{ '' if user.mobile_number else 'hint' }}">{{ user.mobile_number or 'No mobile number'}}</p>
+      <p>{{ _('Platform admin') }}: {{ _('Yes') if user.platform_admin else _('No') }}</p>
       <h2 class="heading-medium">{{ _('Live services') }}</h2>
       <nav class="browse-list">
         {% if user.live_services %}
@@ -85,6 +86,16 @@
               {{ _('Request a password reset for this user') }}
             </a>
           </li>
+          {% if not user.platform_admin %}
+          <li class="browse-list-item">
+            <form method="post" action="{{ url_for('main.make_user_platform_admin', user_id=user.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="button-secondary">
+                {{ _('Make platform admin') }}
+              </button>
+            </form>
+          </li>
+          {% endif %}
           <li class="browse-list-item">
             <details>
               <summary>{{ _('Change auth type') }}</summary>

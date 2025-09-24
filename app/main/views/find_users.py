@@ -86,6 +86,24 @@ def reset_password(user_id):
         return user_information(user_id)
 
 
+@main.route("/users/<uuid:user_id>/make-platform-admin", methods=["POST"])
+@user_is_platform_admin
+def make_user_platform_admin(user_id):
+    user = User.from_id(user_id)
+    if user.platform_admin:
+        flash([_("User is already a platform admin.")], "info")
+        return redirect(url_for(".user_information", user_id=user_id))
+
+    # Optional: ensure only active users can be promoted
+    if user.state != "active":
+        flash([_("Only active users can be made platform admins.")], "error")
+        return redirect(url_for(".user_information", user_id=user_id))
+
+    user.update(platform_admin=True, updated_by=current_user.id)
+    flash([_("User promoted to platform admin.")], "default")
+    return redirect(url_for(".user_information", user_id=user_id))
+
+
 @main.route("/users/<uuid:user_id>/update_auth_type", methods=["GET", "POST"])
 @user_is_platform_admin
 def update_user_auth_type(user_id):
