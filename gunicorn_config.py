@@ -54,6 +54,13 @@ start_time = time.time()
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+    server.log.info(f"Using worker class: {worker_class}")
+
+    # Log telemetry configuration
+    otel_vars = ["OTEL_SERVICE_NAME", "OTEL_RESOURCE_ATTRIBUTES", "OTEL_EXPORTER_OTLP_ENDPOINT"]
+    otel_detected = any(os.environ.get(var) for var in otel_vars)
+    server.log.info(f"OpenTelemetry detected: {otel_detected}")
+    server.log.info("Using OpenTelemetry for all tracing (AWS X-Ray removed)")
 
 
 def worker_abort(worker):
