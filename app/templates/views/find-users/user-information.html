@@ -60,8 +60,16 @@
       {% endif %}
       {% if user.state == 'active' %}
         <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
+        <p>{{ _('Platform admin status') }}: {{ _('Yes') if user.platform_admin_status else _('No') }}</p>
         <nav class="browse-list">
           <ul>
+          {% if not user.platform_admin_status %}
+            <li class="browse-list-item">
+              <a href="{{ url_for('main.make_user_platform_admin', user_id=user.id) }}">
+                {{ _('Make user an admin') }}
+              </a>
+            </li>
+          {% endif %}
             <li class="browse-list-item delete-link">
               <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
                 {{ _('Archive user') }}

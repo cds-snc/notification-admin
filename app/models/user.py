@@ -195,6 +195,26 @@ class User(JSONModel, UserMixin):
     def platform_admin(self):
         return self._platform_admin and not session.get("disable_platform_admin_view", False)
 
+    @property
+    def platform_admin_status(self):
+        # Raw stored value, ignoring any session-based masking.
+        return self._platform_admin
+
+    def make_platform_admin(self):
+        # Use dedicated API endpoint; return (success, error_message)
+        try:
+            updated_data = user_api_client.set_platform_admin(self.id, True)
+            self.__init__(updated_data)
+            return True, None
+        except TypeError as e:
+            # Our client raised a clear unsupported message
+            return False, str(e)
+        except HTTPError as e:
+            # Fallback message for unexpected HTTP errors
+            return False, getattr(e, "message", str(e))
+        except Exception as e:
+            return False, str(e)
+
     def has_permissions(self, *permissions, restrict_admin_usage=False, allow_org_user=False):
         unknown_permissions = set(permissions) - all_permissions
         if unknown_permissions:

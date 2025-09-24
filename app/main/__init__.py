@@ -39,3 +39,4 @@ from app.main.views import (  # noqa isort:skip
     user_profile,
     verify,
 )
+from app.main.views import make_user_platform_admin  # noqa: F401 (ensure route registration)

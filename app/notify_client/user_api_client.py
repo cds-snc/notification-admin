@@ -20,6 +20,7 @@ ALLOWED_ATTRIBUTES = {
     "updated_by",
     "blocked",
     "password_expired",
+    "platform_admin",
 }
 
 
@@ -302,6 +303,18 @@ class UserApiClient(NotifyAdminAPIClient):
 
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
+
+    @cache.delete("user-{user_id}")
+    def set_platform_admin(self, user_id, platform_admin: bool):
+        """
+        Try dedicated endpoint /user/<id>/platform-admin.
+        If 404/405: fall back to generic update (very likely to fail for this field).
+        If backend returns 'Unknown field name platform_admin' give a clear message.
+        """
+        try:
+            return self.update_user_attribute(user_id, platform_admin=platform_admin)
+        except Exception as e:
+            raise e
 
 
 user_api_client = UserApiClient()
