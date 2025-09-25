@@ -3,6 +3,12 @@ import sys
 import time
 import traceback
 
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
 # Check if OpenTelemetry auto-instrumentation is active
 # If so, use sync workers to avoid monkey patching conflicts
 otel_env_vars = [
@@ -82,6 +88,18 @@ if otel_detected:
 start_time = time.time()
 
 
+def post_fork(server, worker):
+    server.log.info("Worker spawned (pid: %s)", worker.pid)
+
+    resource = Resource.create(attributes={"service.name": "notification-admin"})
+
+    trace.set_tracer_provider(TracerProvider(resource=resource))
+    span_processor = BatchSpanProcessor(
+        OTLPSpanExporter(endpoint="http://signoz-otel-collector.signoz.svc.cluster.local:4317", insecure=True)
+    )
+    trace.get_tracer_provider().add_span_processor(span_processor)
+
+
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
     server.log.info(f"Using worker class: {worker_class}")
@@ -91,7 +109,7 @@ def on_starting(server):
 
     if otel_detected:
         server.log.info("✅ OpenTelemetry auto-instrumentation active - using sync workers to avoid SSL conflicts")
-        # Log which env vars triggered detection
+        # Log which env vars triggered detection´
         active_vars = [var for var in otel_env_vars if os.environ.get(var)]
         if active_vars:
             server.log.info(f"OTEL environment variables: {active_vars}")
