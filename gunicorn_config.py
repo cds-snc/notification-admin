@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import traceback
+import uuid
 
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -36,7 +37,7 @@ newrelic.agent.initialize(environment=environment)  # noqa: E402
 gunicorn.SERVER = "Undisclosed"
 
 # Use sync workers when OpenTelemetry is detected to avoid SSL monkey patching conflicts
-worker_class = "sync" if otel_detected else "gevent"
+worker_class = "gevent"
 
 # Adjust worker count based on worker class
 # Sync workers need more processes to handle the same load as gevent
@@ -90,8 +91,8 @@ start_time = time.time()
 
 def post_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
-
-    resource = Resource.create(attributes={"service.name": "notification-admin"})
+    id = uuid.uuid4()
+    resource = Resource.create(attributes={"service.name": f"notification-admin-{id}"})
 
     trace.set_tracer_provider(TracerProvider(resource=resource))
     span_processor = BatchSpanProcessor(
