@@ -4,6 +4,19 @@ import time
 import traceback
 import uuid
 
+# Import and configure gevent BEFORE any other imports that might use SSL
+from gevent import monkey
+
+# Monkey patch early, but exclude SSL to avoid conflicts with OpenTelemetry
+if os.environ.get("OTEL_SERVICE_NAME") or any(
+    os.environ.get(var) for var in ["OTEL_RESOURCE_ATTRIBUTES", "OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_TRACES_EXPORTER"]
+):
+    # When OpenTelemetry is detected, patch everything EXCEPT SSL and subprocess
+    monkey.patch_all(ssl=False, subprocess=False)
+else:
+    # Normal gevent patching when no OpenTelemetry
+    monkey.patch_all()
+
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import Resource
@@ -28,10 +41,8 @@ if "otel-auto-instrumentation" in pythonpath or "opentelemetry" in pythonpath:
     otel_detected = True
 
 import gunicorn  # type: ignore
-import newrelic.agent  # See https://bit.ly/2xBVKBH
 
 environment = os.environ.get("NOTIFY_ENVIRONMENT")
-newrelic.agent.initialize(environment=environment)  # noqa: E402
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
@@ -39,12 +50,7 @@ gunicorn.SERVER = "Undisclosed"
 # Use sync workers when OpenTelemetry is detected to avoid SSL monkey patching conflicts
 worker_class = "gevent"
 
-# Adjust worker count based on worker class
-# Sync workers need more processes to handle the same load as gevent
-if otel_detected:
-    workers = 8  # More workers for sync mode
-else:
-    workers = 5  # Standard worker count for gevent
+workers = 5  # Standard worker count for gevent
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 
