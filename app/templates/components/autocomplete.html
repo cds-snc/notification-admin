@@ -1,4 +1,4 @@
-{% macro autocomplete(field, options, hint=None) %}
+{% macro autocomplete(field, options, hint=None, testid=None) %}
   <div class="w-full md:w-1/2 form-group contain-floats box-border {% if field.errors %} form-group-error{% endif %}">
     
     <label for="{{ field.name }}">
@@ -8,22 +8,16 @@
         <span id="{{ hint_id }}" class="form-hint">{{ hint }}</span>
       {% endif %}
       {% if field.errors %}
-        <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}">
+        <span id="{{ field.name }}-error-message" class="error-message" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" tabindex="-1" autofocus>
           {% if not safe_error_message %}{{ _(field.errors[0]) }}{% else %}{{ field.errors[0]|safe }}{% endif %}
         </span>
       {% endif %}
     </label>
-    {% if field.errors %}
-      <div role="alert" tabindex="-1" autofocus>
-    {% endif %}
-      <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}">
-        <option value=""></option>
-        {% for option in options %}
-          <option value="{{ option }}">{{ option }}</option>
-        {% endfor %}
-      </select>
-    {% if field.errors %}
-      </div>
-    {% endif %}
+    <select data-module="autocomplete" name="{{ field.name }}" id="{{ field.name }}" {% if testid %}data-testid="{{ testid }}"{% endif %}>
+      <option value=""></option>
+      {% for option in options %}
+        <option value="{{ option }}">{{ option }}</option>
+      {% endfor %}
+    </select>
   </div>  
 {% endmacro %}
