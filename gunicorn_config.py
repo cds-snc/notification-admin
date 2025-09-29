@@ -3,6 +3,23 @@ import sys
 import time
 import traceback
 
+# Check if OpenTelemetry auto-instrumentation is active
+# If so, use sync workers to avoid monkey patching conflicts
+otel_env_vars = [
+    "OTEL_SERVICE_NAME",
+    "OTEL_RESOURCE_ATTRIBUTES",
+    "OTEL_EXPORTER_OTLP_ENDPOINT",
+    "OTEL_TRACES_EXPORTER",
+    "OTEL_METRICS_EXPORTER",
+]
+
+otel_detected = any(os.environ.get(var) for var in otel_env_vars)
+
+# Also check if opentelemetry is in the Python path (auto-instrumentation)
+pythonpath = os.environ.get("PYTHONPATH", "")
+if "otel-auto-instrumentation" in pythonpath or "opentelemetry" in pythonpath:
+    otel_detected = True
+
 import gunicorn  # type: ignore
 import newrelic.agent  # See https://bit.ly/2xBVKBH
 
@@ -12,8 +29,15 @@ newrelic.agent.initialize(environment=environment)  # noqa: E402
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
 
-workers = 5
-worker_class = "gevent"
+# Use sync workers when OpenTelemetry is detected to avoid SSL monkey patching conflicts
+worker_class = "sync" if otel_detected else "gevent"
+
+# Adjust worker count based on worker class
+# Sync workers need more processes to handle the same load as gevent
+if otel_detected:
+    workers = 8  # More workers for sync mode
+else:
+    workers = 5  # Standard worker count for gevent
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 
@@ -48,12 +72,36 @@ if on_aws:
     graceful_timeout = 85
     timeout = 90
 
+# Additional configuration for sync workers when using OpenTelemetry
+if otel_detected:
+    # Sync workers might need slightly longer timeout for instrumented requests
+    timeout = 95
+    graceful_timeout = 90
+
 # Start timer for total running time
 start_time = time.time()
 
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+    server.log.info(f"Using worker class: {worker_class}")
+
+    # Log telemetry configuration using the same detection logic
+    server.log.info(f"OpenTelemetry detected: {otel_detected}")
+
+    if otel_detected:
+        server.log.info("✅ OpenTelemetry auto-instrumentation active - using sync workers to avoid SSL conflicts")
+        # Log which env vars triggered detection
+        active_vars = [var for var in otel_env_vars if os.environ.get(var)]
+        if active_vars:
+            server.log.info(f"OTEL environment variables: {active_vars}")
+        pythonpath = os.environ.get("PYTHONPATH", "")
+        if "otel-auto-instrumentation" in pythonpath:
+            server.log.info("OTEL auto-instrumentation detected in PYTHONPATH")
+    else:
+        server.log.info("No OpenTelemetry detected - using gevent workers for better performance")
+
+    server.log.info("AWS X-Ray removed - OpenTelemetry handles all tracing")
 
 
 def worker_abort(worker):
@@ -70,3 +118,17 @@ def on_exit(server):
 
 def worker_int(worker):
     worker.log.info("worker: received SIGINT {}".format(worker.pid))
+
+
+def post_worker_init(worker):
+    """Initialize worker process - useful for OpenTelemetry sync workers"""
+    if otel_detected:
+        worker.log.info(f"Initializing sync worker {worker.pid} for OpenTelemetry instrumentation")
+        # Ensure clean SSL context in sync workers
+        import ssl
+
+        # Reset any cached SSL contexts to prevent recursion issues
+        if hasattr(ssl, "_create_default_https_context"):
+            ssl._create_default_https_context = ssl.create_default_context
+    else:
+        worker.log.info(f"Initializing gevent worker {worker.pid}")
