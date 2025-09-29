@@ -50,8 +50,8 @@ window.formatAllDates = function () {
         .attr("datetime", datetimeRaw)
         .text(
           datetime.toLocaleDateString(locale, { dateStyle: "long" }) +
-          ", " +
-          datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
+            ", " +
+            datetime.toLocaleTimeString(locale, { timeStyle: "short" }),
         );
     }
   });
@@ -94,7 +94,6 @@ var showHideContent = new GOVUK.ShowHideContent();
 showHideContent.init();
 
 $(() => GOVUK.modules.start());
-
 
 (function () {
   "use strict";
@@ -166,7 +165,7 @@ $(() => GOVUK.modules.start());
     root.GOVUK = {};
   }
 
-  GOVUK.addCookieMessage = function () { };
+  GOVUK.addCookieMessage = function () {};
 }).call(this);
 (function () {
   "use strict";
@@ -186,8 +185,8 @@ $(() => GOVUK.modules.start());
         // jshint ignore:line
         e.preventDefault();
         var target = document.getElementById(
-          this.getAttribute("href").substr(1),
-        ),
+            this.getAttribute("href").substr(1),
+          ),
           targetClass = target.getAttribute("class") || "",
           sourceClass = this.getAttribute("class") || "";
 
