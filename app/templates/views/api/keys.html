@@ -54,7 +54,7 @@
     ) %}
       {% call field() %}
         <div class="file-list">
-          {{ item.name }}
+          <span class="hint">{{ "{}:".format(_("Key name"))}}</span> {{ item.name }}
           {% if (
               'total_sends' in item and
               'email_sends' in item and
