@@ -37,7 +37,7 @@
 
     {{ select(full_form.contact_method, hint='How should we contact you?', input='radio') }}
 
-    {{ autocomplete(full_form.autocomplete, full_form.autocomplete.choices, hint=_("For example: Halifax"), testid="test-autocomplete") }}
+    {{ autocomplete(full_form.autocomplete, full_form.autocomplete.choices, hint="For example: Halifax", testid="test-autocomplete") }}
 
     {{ checkboxes(full_form.main_use_case, option_hints=full_form.main_use_case_hints, use_aria_labelledby=false) }}    
     
