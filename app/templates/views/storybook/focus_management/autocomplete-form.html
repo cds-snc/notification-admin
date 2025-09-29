@@ -1,0 +1,16 @@
+{% from "components/autocomplete.html" import autocomplete %}
+{% from "components/form.html" import form_wrapper %}
+
+
+{% block story_content %}
+  <h2 class="heading-medium">Autocomplete form example</h2>
+  {% call form_wrapper(action='#', autocomplete=True, show_validation_summary=False, form=full_form) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {{ autocomplete(full_form.autocomplete, full_form.autocomplete.choices, hint=_("For example: Halifax"), testid="test-autocomplete") }}
+
+    <div class="mt-4">
+      <button class="button" type="submit">Submit</button>
+    </div>
+    
+  {% endcall %}
+{% endblock %}
