@@ -8,7 +8,7 @@ const AutoFocusPage = {
     AutocompleteField: () => cy.get("#autocomplete"),
     AutocompleteAutoFocusField: () => cy.get("#autocomplete-error-message"),
     CheckboxesAutoFocusField: () => cy.get("#main_use_case-error"),
-    CheckboxField: () => cy.get("#checkbox123"),
+    CheckboxField: () => cy.get("#main_use_case-0"),
     CheckboxAutoFocusField: () => cy.get("#checkbox123-error"),
     RadioField: () => cy.getByTestId("bulk"),
     RadioAutoFocusField: () => cy.get("#process_type-error"),
@@ -32,7 +32,7 @@ describe("Form autofocus", () => {
     it("for select", () => {
       cy.visit(`${baseUrl}select-form`);
       AutoFocusPage.Actions.SubmitForm();
-      AutoFocusPage.Components.ContactAutoFocusField().should(
+      AutoFocusPage.Components.ContactMethodField().should(
         "have.attr",
         "autofocus",
       );
@@ -50,19 +50,13 @@ describe("Form autofocus", () => {
     it("for checkboxes", () => {
       cy.visit(`${baseUrl}checkboxes-form`);
       AutoFocusPage.Actions.SubmitForm();
-      AutoFocusPage.Components.CheckboxesAutoFocusField().should(
-        "have.attr",
-        "autofocus",
-      );
+      AutoFocusPage.Components.CheckboxField().should("have.attr", "autofocus");
     });
 
     it("for radios", () => {
       cy.visit(`${baseUrl}radios-form`);
       AutoFocusPage.Actions.SubmitForm();
-      AutoFocusPage.Components.RadioAutoFocusField().should(
-        "have.attr",
-        "autofocus",
-      );
+      AutoFocusPage.Components.RadioField().should("have.attr", "autofocus");
     });
   });
 
@@ -93,7 +87,7 @@ describe("Form autofocus", () => {
       AutoFocusPage.Components.EmailField().type("test@example.com");
       AutoFocusPage.Actions.SubmitForm();
       // ensure autofocus is on the next field with an error
-      AutoFocusPage.Components.ContactAutoFocusField().should(
+      AutoFocusPage.Components.ContactMethodField().should(
         "have.attr",
         "autofocus",
       );
@@ -107,11 +101,7 @@ describe("Form autofocus", () => {
       AutoFocusPage.Components.ContactMethodField().check();
       AutoFocusPage.Actions.SubmitForm();
       // ensure autofocus is on the next field with an error
-      AutoFocusPage.Components.AutocompleteAutoFocusField().should(
-        "have.attr",
-        "autofocus",
-      );
-      AutoFocusPage.Components.ContactAutoFocusField().should("not.exist");
+      AutoFocusPage.Components.CheckboxField().should("have.attr", "autofocus");
       AutoFocusPage.Components.EmailField().should(
         "not.have.attr",
         "autofocus",
@@ -122,15 +112,11 @@ describe("Form autofocus", () => {
       AutoFocusPage.Components.AutocompleteField().type("Hal{enter}");
       AutoFocusPage.Actions.SubmitForm();
       // ensure autofocus is on the next field with an error
-      AutoFocusPage.Components.CheckboxesAutoFocusField().should(
-        "have.attr",
-        "autofocus",
-      );
+      AutoFocusPage.Components.CheckboxField().should("have.attr", "autofocus");
       AutoFocusPage.Components.AutocompleteField().should(
         "not.have.attr",
         "autofocus",
       );
-      AutoFocusPage.Components.ContactAutoFocusField().should("not.exist");
 
       AutoFocusPage.Components.EmailField().should(
         "not.have.attr",
@@ -155,10 +141,7 @@ describe("Form autofocus", () => {
       AutoFocusPage.Components.AutocompleteField().type("Hal{enter}"); // bug with autocomplete losing value when other fields are interacted with
       AutoFocusPage.Actions.SubmitForm();
       // ensure autofocus is on the next field with an error
-      AutoFocusPage.Components.RadioAutoFocusField().should(
-        "have.attr",
-        "autofocus",
-      );
+      AutoFocusPage.Components.RadioField().should("have.attr", "autofocus");
     });
 
     it("for banners", () => {
