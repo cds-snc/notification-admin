@@ -36,7 +36,7 @@ Flask-Login = "0.6.3"
 Flask-WTF = "1.2.1"
 gevent = "23.9.1"
 greenlet = "3.1.1"
-gunicorn = "22.0.0"
+gunicorn = "23.0.0"
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "10.3.0"
