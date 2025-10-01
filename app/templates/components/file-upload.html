@@ -32,7 +32,7 @@
   accept="",
   testid=None
 ) %}
-  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %} relative inline-flex flex-col gap-2 items-start" {% if field.errors %}data-module="autofocus"{% endif %}>
+  <div class="file-upload-group {% if field.errors %}form-group-error{% endif %} relative inline-flex flex-col gap-2 items-start" {% if field.errors %}autofocus{% endif %}>
 
       {% if hint %}
         <span class="form-hint">

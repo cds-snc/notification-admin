@@ -1,0 +1,52 @@
+{% from "components/textbox.html" import textbox %}
+{% from "components/select-input.html" import select %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/autocomplete.html" import autocomplete %}
+{% from "components/checkbox.html" import checkboxes, checkbox_input %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/radios.html" import radios %}
+
+{% set story_links = [
+  ('focus_management/textbox-form', 'Textbox'),
+  ('focus_management/select-form', 'Select'),
+  ('focus_management/autocomplete-form', 'Autocomplete'),
+  ('focus_management/checkboxes-form', 'Checkboxes'),
+  ('focus_management/radios-form', 'Radios'),
+  ('focus_management/full-val-summary', 'Full Validation Summary'),
+] %}
+
+{% block story_nav %}
+<h2 class="heading-medium">Individual form examples</h2>
+  <ul class="list list-bullet ml-8 space-y-2">
+    {% for component, title in story_links %}
+      <li>
+        <a href="{{ url_for('main.storybook', component=component) }}" class="{{ 'active' if request.args.get('component') == component }}">{{ title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block story_content %}
+  <h2 class="heading-medium">Full form example</h2>
+  {% if full_form.process_type.data == 'bulk' %}
+    {{ banner("Warning: You have selected the bulk process type. This may take longer to process.") }}
+  {% endif %}
+  {% call form_wrapper(action='#', autocomplete=True, show_validation_summary=False, form=full_form) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {{ textbox(full_form.name, label='Full name', hint='As it appears on official documents', autocomplete='name', testid="test-name") }}
+    {{ textbox(full_form.email, label='Email address', hint='We will send notifications here', autocomplete='email', testid="test-email") }}
+
+    {{ select(full_form.contact_method, hint='How should we contact you?', input='radio') }}
+
+    {{ autocomplete(full_form.autocomplete, full_form.autocomplete.choices, hint="For example: Halifax", testid="test-autocomplete") }}
+
+    {{ checkboxes(full_form.main_use_case, option_hints=full_form.main_use_case_hints, use_aria_labelledby=false) }}    
+    
+    {{ radios(full_form.process_type, hint='This is only manageable by platform admins',  use_aria_labelledby=false) }}
+
+    <div class="mt-4">
+      <button class="button" type="submit">Submit</button>
+    </div>
+    
+  {% endcall %}
+{% endblock %}
