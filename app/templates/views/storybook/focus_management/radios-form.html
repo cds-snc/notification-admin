@@ -1,0 +1,16 @@
+{% from "components/radios.html" import radios %}
+{% from "components/form.html" import form_wrapper %}
+
+
+{% block story_content %}
+  <h2 class="heading-medium">Radios form example</h2>
+  {% call form_wrapper(action='#', autocomplete=True, show_validation_summary=False, form=full_form) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {{ radios(full_form.process_type, hint='This is only manageable by platform admins',  use_aria_labelledby=false) }}
+
+    <div class="mt-4">
+      <button class="button" type="submit">Submit</button>
+    </div>
+    
+  {% endcall %}
+{% endblock %}
