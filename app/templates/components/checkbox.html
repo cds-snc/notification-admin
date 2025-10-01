@@ -6,7 +6,7 @@
   width='w-full md:w-2/3'
 ) %}
   <div class="multiple-choice">
-    {{ checkbox_input(field.id, field.name, field.data) }}
+    {{ checkbox_input(field.id, field.name, field.data, field=field) }}
     <label for="{{ field.id }}">
       {{ field.label.text }}
       {% if hint %}
@@ -29,9 +29,13 @@
 {% endmacro %}
 
 
-{% macro checkbox_input(id, name, data=None, value="y", class="", testid=None, controls=None) %}
+{% macro checkbox_input(id, name, data=None, value="y", class="", testid=None, controls=None, field=None) %}
   <input
-    id="{{ id }}" name="{{ name }}" type="checkbox" value="{{ value }}" class="{{ class }}"
+    id="{{ id }}" 
+    name="{{ name }}" 
+    type="checkbox" 
+    value="{{ value }}" 
+    class="{{ class }}"
     {% if data %}
       checked
     {% endif %}
@@ -41,12 +45,13 @@
     {% if controls %}
       aria-controls="{{ controls }}"
     {% endif %}
+    {% if field.errors %}autofocus{% endif %}
   >
 {% endmacro %}
 
-{% macro unlabelled_checkbox(id, name, data=None, value="y", label="") %}
+{% macro unlabelled_checkbox(id, name, data=None, value="y", label="", field=None) %}
   <div class="multiple-choice">
-    {{ checkbox_input(id, name, data, value) }}
+  {{ checkbox_input(id, name, data, value, field=field) }}
     <label for="{{id}}">
       <span class="sr-only">{{label}}</span>
     </label>
