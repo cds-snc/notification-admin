@@ -169,7 +169,7 @@ class TestApiKeys:
         page = client_request.get("main.api_keys", service_id=SERVICE_ONE_ID)
         rows = [normalize_spaces(row.text) for row in page.select("main tr")]
 
-        assert rows[0] == "API keys Action"
+        assert rows[0] == "API key details Action"
         assert "Key name: another key name Recent activity: 20 total sends in the last 7 days (20 email, 0 sms)" in rows[1]
         assert "Revoke API key some key name" in rows[2]
 
