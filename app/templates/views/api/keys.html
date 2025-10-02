@@ -53,40 +53,62 @@
       field_headings_visible=False
     ) %}
       {% call field() %}
-        <div class="file-list">
-          <span class="hint">{{ "{}:".format(_("Key name"))}}</span> {{ item.name }}
+        <ul class="list">
+          <li>
+            <div role="text">
+              {{ _("Key name:") }}
+              <span class="hint">{{ item.name }}</span>
+            </div>
+          </li>
           {% if (
-              'total_sends' in item and
-              'email_sends' in item and
-              'sms_sends' in item )  %}
-            <div class="hint">
-              {{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
-            </div>
+            'total_sends' in item and
+            'email_sends' in item and
+            'sms_sends' in item )  %}
+            <li>
+                {{ _("Recent activity:")}}
+                <span class="hint">{{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})</span>
+            </li>
           {% endif %}
-          <div class="hint">
-            {{ _('Key type:') }}
-            {% if item.key_type == 'normal' %}
-              {{ _('Live – sends to anyone') }}
-            {% elif item.key_type == 'team' %}
-              {{ _('Team and safelist – limits who you can send to') }}
-            {% elif item.key_type == 'test' %}
-              {{ _('Test – pretends to send messages') }}
-            {% endif %}
-          </div>
-            <div class="hint">
-              {{ _('Created:') }} <time class="local-datetime-full">{{ item.created_at }}</time>
-            </div>
-            <div class="hint">
-              {{ _('Expires:') }} <time class="local-datetime-full">{{ item.expiry_date }}</time>
-            </div>
-            <div class="hint">
-              {{ _('Last used:') }} <time class="local-datetime-full">{{ item.last_send }}</time>
-            </div>
-        </div>
+          <li>
+              {{ _('Key type:') }}
+              <span class="hint" >
+                {% if item.key_type == 'normal' %}
+                  {{ _('Live – sends to anyone') }}
+                {% elif item.key_type == 'team' %}
+                  {{ _('Team and safelist – limits who you can send to') }}
+                {% elif item.key_type == 'test' %}
+                  {{ _('Test – pretends to send messages') }}
+                {% endif %}
+              </span>
+          </li>
+
+          <li aria-label="{{ _('Created:') }} {{ item.created_at | format_datetime_full }}">
+            <span aria-hidden="true">{{ _('Created:') }}</span>
+            <time aria-hidden="true" datetime="{{ item.created_at }}" class=" hint">
+              {{ item.created_at | format_datetime_full }}
+            </time>
+          </li>
+
+          <li aria-label="{{ _('Expires:') }} {{ item.expires_at | format_datetime_full }}">
+            <span aria-hidden="true">{{ _('Expires:') }}</span>
+            <time aria-hidden="true" datetime="{{ item.expires_at }}" class="hint">
+              {{ item.expires_at | format_datetime_full }}
+            </time>
+          </li>
+
+          <li aria-label="{{ _('Last used:') }} {{ item.last_used_at | format_datetime_full }}">
+            <span aria-hidden="true">{{ _('Last used:') }}</span>
+            <time aria-hidden="true" datetime="{{ item.last_used_at }}" class="hint">
+              {{ item.last_used_at | format_datetime_full }}
+            </time>
+          </li>
+        </ul>
       {% endcall %}
       {% if item.expiry_date %}
         {% call field(align='right') %}
-          <span class='hint'>{{ _('Revoked') }} <time class="local-datetime-short">{{ item.expiry_date }}</time></span>
+        <time class="hint" datetime="{{ item.expiry_date }}">
+          {{ _('Revoked') }} {{ item.expiry_date | format_datetime_full }}
+        </time>
         {% endcall %}
       {% else %}
         {% call field(align='right', status='error') %}
