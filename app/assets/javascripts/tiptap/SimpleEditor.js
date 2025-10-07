@@ -1,6 +1,19 @@
 import React from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+// Import only the specific extensions we need instead of StarterKit
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import Heading from '@tiptap/extension-heading';
+import Blockquote from '@tiptap/extension-blockquote';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import ListItem from '@tiptap/extension-list-item';
+import Bold from '@tiptap/extension-bold';
+import Italic from '@tiptap/extension-italic';
+import HorizontalRule from '@tiptap/extension-horizontal-rule';
+import HardBreak from '@tiptap/extension-hard-break';
+import History from '@tiptap/extension-history';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import './editor.css';
@@ -201,7 +214,28 @@ const SimpleEditor = () => {
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
-      StarterKit,
+      // Core extensions - required for basic functionality
+      Document,
+      Paragraph,
+      Text,
+      HardBreak,
+      History,
+      
+      // Node extensions that match toolbar features
+      Heading.configure({
+        levels: [2, 3], // Only allow H2 and H3 as shown in toolbar
+      }),
+      Blockquote.configure({
+        content: 'block+', // Allow any block content inside blockquotes (paragraphs, lists, etc.)
+      }),
+      BulletList,
+      OrderedList,
+      ListItem,
+      HorizontalRule,
+      
+      // Mark extensions that match toolbar features
+      Bold,
+      Italic,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
