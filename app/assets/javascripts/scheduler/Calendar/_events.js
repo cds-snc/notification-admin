@@ -17,5 +17,10 @@ export const onKeyDown = ({ key, dispatch }) => {
     }
   }
 
+  // Handle Enter and Space key for selection
+  if (key === "Enter" || key === " ") {
+    dispatch({ type: "SELECT_FOCUSED_DATE", payload: "" });
+  }
+
   return null;
 };
