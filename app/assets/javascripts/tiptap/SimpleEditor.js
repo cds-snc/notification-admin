@@ -18,6 +18,7 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { EnglishBlock, FrenchBlock } from "./LanguageNode";
+import { Markdown } from "tiptap-markdown";
 import "./editor.css";
 
 const MenuBar = ({ editor }) => {
@@ -42,6 +43,24 @@ const MenuBar = ({ editor }) => {
 
     // update link
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  };
+
+  const exportToMarkdown = () => {
+    try {
+      // Use the tiptap-markdown extension's storage method
+      const markdown = editor.storage.markdown.getMarkdown();
+
+      console.log("Markdown output:");
+      console.log(markdown);
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(markdown).then(() => {
+        alert("Markdown copied to clipboard!");
+      });
+    } catch (error) {
+      console.error("Error converting to Markdown:", error);
+      alert("Error converting to Markdown. Check console for details.");
+    }
   };
 
   return (
@@ -332,6 +351,18 @@ const MenuBar = ({ editor }) => {
           FR
         </button>
       </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={exportToMarkdown}
+          className="toolbar-button"
+          title="Export to Markdown"
+        >
+          MD
+        </button>
+      </div>
     </div>
   );
 };
@@ -373,23 +404,35 @@ const SimpleEditor = () => {
       }),
       EnglishBlock,
       FrenchBlock,
+      
+      // Add Markdown extension for export functionality
+      Markdown,
     ],
-    content: `
-      <h2>Welcome to the Editor</h2>
-      <p>This is a simple editor with the controls you need. Try formatting some text:</p>
-      <ul>
-        <li>Make text <strong>bold</strong> or <em>italic</em></li>
-        <li>Create bullet or numbered lists</li>
-        <li>Add headings and links</li>
-      </ul>
-      <p>Start editing to see it in action!</p>
-    `,
+    // Don't set content here when using Markdown extension
+    // We'll set it after the editor is created
     editorProps: {
       attributes: {
         class: "tiptap",
       },
     },
   });
+
+  // Set initial content as Markdown after editor is created
+  React.useEffect(() => {
+    if (editor) {
+      const initialMarkdown = `## Welcome to the Editor
+
+This is a simple editor with the controls you need. Try formatting some text:
+
+- Make text **bold** or *italic*
+- Create bullet or numbered lists  
+- Add headings and links
+
+Start editing to see it in action!`;
+      
+      editor.commands.setContent(initialMarkdown);
+    }
+  }, [editor]);
 
   return (
     <div className="editor-wrapper">
