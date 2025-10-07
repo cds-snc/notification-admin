@@ -131,7 +131,7 @@
   div[lang="fr-CA"] {
     border-color: #df93ec;
   }
-  
+
   div[lang="fr-CA"]:before {
     content: "FR";
     background-color: #df93ec;

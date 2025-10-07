@@ -1,7 +1,7 @@
-import { Mark } from '@tiptap/core';
+import { Mark } from "@tiptap/core";
 
 const VariableMark = Mark.create({
-  name: 'variable',
+  name: "variable",
 
   addOptions() {
     return {
@@ -13,9 +13,7 @@ const VariableMark = Mark.create({
   inclusive: false,
 
   // Don't group with other marks
-  group: 'variable',
-
-
+  group: "variable",
 
   parseHTML() {
     return [
@@ -27,43 +25,47 @@ const VariableMark = Mark.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-        'span', 
-        { 
-            'data-type': 'variable', 
-            ...HTMLAttributes 
-        }, 
-        0,
+      "span",
+      {
+        "data-type": "variable",
+        ...HTMLAttributes,
+      },
+      0,
     ];
   },
 
   // Add commands for variable mark
   addCommands() {
     return {
-      setVariable: (attributes = {}) => ({ commands }) => {
-        return commands.insertContent({
-          type: 'text',
-          marks: [{ type: this.name, attrs: attributes }],
-          text: 'variable',
-        });
-      },
-      toggleVariable: (attributes = {}) => ({ commands, editor }) => {
-        if (editor.isActive(this.name)) {
-          return commands.unsetMark(this.name);
-        }
-        
-        // If text is selected, just apply the variable mark
-        const { from, to } = editor.state.selection;
-        if (from !== to) {
-          return commands.setMark(this.name, attributes);
-        }
-        
-        // No selection, insert a template variable
-        return commands.insertContent({
-          type: 'text',
-          marks: [{ type: this.name, attrs: attributes }],
-          text: 'variable',
-        });
-      },
+      setVariable:
+        (attributes = {}) =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: "text",
+            marks: [{ type: this.name, attrs: attributes }],
+            text: "variable",
+          });
+        },
+      toggleVariable:
+        (attributes = {}) =>
+        ({ commands, editor }) => {
+          if (editor.isActive(this.name)) {
+            return commands.unsetMark(this.name);
+          }
+
+          // If text is selected, just apply the variable mark
+          const { from, to } = editor.state.selection;
+          if (from !== to) {
+            return commands.setMark(this.name, attributes);
+          }
+
+          // No selection, insert a template variable
+          return commands.insertContent({
+            type: "text",
+            marks: [{ type: this.name, attrs: attributes }],
+            text: "variable",
+          });
+        },
     };
   },
 
@@ -71,57 +73,62 @@ const VariableMark = Mark.create({
     return {
       markdown: {
         serialize: {
-          open: '((',
-          close: '))',
+          open: "((",
+          close: "))",
         },
         parse: {
           setup(markdownit) {
             // Add a simple inline rule to parse (( )) syntax
-            markdownit.inline.ruler.before('emphasis', 'variable', (state, silent) => {
-              const start = state.pos;
-              const max = state.posMax;
-              
-              // Check if we have (( at current position
-              if (start + 4 > max) return false;
-              if (state.src.slice(start, start + 2) !== '((') return false;
-              
-              // Find the closing ))
-              let pos = start + 2;
-              let found = false;
-              
-              while (pos < max - 1) {
-                if (state.src.slice(pos, pos + 2) === '))') {
-                  found = true;
-                  break;
+            markdownit.inline.ruler.before(
+              "emphasis",
+              "variable",
+              (state, silent) => {
+                const start = state.pos;
+                const max = state.posMax;
+
+                // Check if we have (( at current position
+                if (start + 4 > max) return false;
+                if (state.src.slice(start, start + 2) !== "((") return false;
+
+                // Find the closing ))
+                let pos = start + 2;
+                let found = false;
+
+                while (pos < max - 1) {
+                  if (state.src.slice(pos, pos + 2) === "))") {
+                    found = true;
+                    break;
+                  }
+                  pos++;
                 }
-                pos++;
-              }
-              
-              if (!found) return false;
-              
-              // Don't run if in silent mode
-              if (silent) return true;
-              
-              // Create the token
-              const content = state.src.slice(start + 2, pos);
-              const token = state.push('variable_open', 'span', 1);
-              token.attrs = [['data-type', 'variable']];
-              
-              const textToken = state.push('text', '', 0);
-              textToken.content = content;
-              
-              state.push('variable_close', 'span', -1);
-              
-              state.pos = pos + 2;
-              return true;
-            });
-            
+
+                if (!found) return false;
+
+                // Don't run if in silent mode
+                if (silent) return true;
+
+                // Create the token
+                const content = state.src.slice(start + 2, pos);
+                const token = state.push("variable_open", "span", 1);
+                token.attrs = [["data-type", "variable"]];
+
+                const textToken = state.push("text", "", 0);
+                textToken.content = content;
+
+                state.push("variable_close", "span", -1);
+
+                state.pos = pos + 2;
+                return true;
+              },
+            );
+
             // Add renderer rules
-            markdownit.renderer.rules.variable_open = () => '<span data-type="variable">';
-            markdownit.renderer.rules.variable_close = () => '</span>';
-          }
-        }
-      }
+            markdownit.renderer.rules.variable_open = () =>
+              '<span data-type="variable">';
+            markdownit.renderer.rules.variable_close = () => "</span>";
+          },
+        },
+      },
     };
   },
 });

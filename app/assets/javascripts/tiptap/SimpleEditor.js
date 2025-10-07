@@ -53,7 +53,7 @@ const MenuBar = ({ editor }) => {
 
       console.log("Markdown output:");
       console.log(markdown);
-      
+
       // Copy to clipboard
       navigator.clipboard.writeText(markdown).then(() => {
         alert("Markdown copied to clipboard!");
@@ -430,17 +430,17 @@ const SimpleEditor = () => {
       }),
       EnglishBlock,
       FrenchBlock,
-      
+
       // Add Markdown extension with paste handling enabled
       Markdown.configure({
-        html: true,                  // Allow HTML in markdown
-        tightLists: true,           // Use tight list formatting  
-        tightListClass: 'tight',    // CSS class for tight lists
-        bulletListMarker: '-',      // Use - for bullet lists
-        linkify: false,             // Don't auto-linkify URLs
-        breaks: false,              // Don't convert line breaks to <br>
-        transformPastedText: true,  // Transform pasted text to markdown
-        transformCopiedText: true,  // Transform copied text to markdown
+        html: true, // Allow HTML in markdown
+        tightLists: true, // Use tight list formatting
+        tightListClass: "tight", // CSS class for tight lists
+        bulletListMarker: "-", // Use - for bullet lists
+        linkify: false, // Don't auto-linkify URLs
+        breaks: false, // Don't convert line breaks to <br>
+        transformPastedText: true, // Transform pasted text to markdown
+        transformCopiedText: true, // Transform copied text to markdown
       }),
     ],
     // Don't set content here when using Markdown extension
@@ -451,22 +451,25 @@ const SimpleEditor = () => {
       },
       handlePaste: (view, event, slice) => {
         // Get the plain text from clipboard
-        const text = event.clipboardData?.getData('text/plain');
-        
+        const text = event.clipboardData?.getData("text/plain");
+
         if (text) {
           // Check if text contains variable syntax ((variable))
           const hasVariables = /\(\([^)]+\)\)/.test(text);
-          
+
           if (hasVariables) {
             // Prevent default paste behavior
             event.preventDefault();
-            
+
             // Process variables in the text
             let processedText = text;
-            
+
             // Replace ((variable)) with HTML spans
-            processedText = processedText.replace(/\(\(([^)]+)\)\)/g, '<span data-type="variable">$1</span>');
-            
+            processedText = processedText.replace(
+              /\(\(([^)]+)\)\)/g,
+              '<span data-type="variable">$1</span>',
+            );
+
             // Insert the processed HTML
             if (editor) {
               editor.commands.insertContent(processedText);
@@ -476,18 +479,18 @@ const SimpleEditor = () => {
             // No variables, handle as regular markdown
             // Prevent default paste behavior
             event.preventDefault();
-            
+
             // Use setContent which supports markdown format
             if (editor) {
               // Get current content and append the new content
               const currentContent = editor.storage.markdown.getMarkdown();
-              const newContent = currentContent + '\n\n' + text;
+              const newContent = currentContent + "\n\n" + text;
               editor.commands.setContent(newContent);
               return true;
             }
           }
         }
-        
+
         // Return false to allow default paste behavior if no text
         return false;
       },
@@ -506,7 +509,7 @@ This is a simple editor with the controls you need. Try formatting some text:
 - Add headings and links
 
 Start editing to see it in action!`;
-      
+
       editor.commands.setContent(initialMarkdown);
     }
   }, [editor]);

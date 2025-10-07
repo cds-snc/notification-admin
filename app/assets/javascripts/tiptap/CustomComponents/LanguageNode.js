@@ -60,90 +60,108 @@ const createLanguageNode = (language, langCode) => {
             setup(markdownit) {
               // Add a custom rule to parse [[en]] and [[fr]] blocks
               const langPrefix = langCode.toLowerCase().slice(0, 2);
-              
+
               markdownit.use((md) => {
-                md.block.ruler.before('paragraph', `${langPrefix}_block`, (state, start, end, silent) => {
-                  const startMarker = `[[${langPrefix}]]`;
-                  const endMarker = `[[/${langPrefix}]]`;
-                  
-                  let pos = state.bMarks[start] + state.tShift[start];
-                  let max = state.eMarks[start];
-                  
-                  // Check if line starts with our marker
-                  if (pos + startMarker.length > max) return false;
-                  if (state.src.slice(pos, pos + startMarker.length) !== startMarker) return false;
-                  
-                  pos += startMarker.length;
-                  let firstLine = state.src.slice(pos, max).trim();
-                  
-                  // Find the end marker
-                  let nextLine = start + 1;
-                  let autoClosed = false;
-                  
-                  while (nextLine < end) {
-                    pos = state.bMarks[nextLine] + state.tShift[nextLine];
-                    max = state.eMarks[nextLine];
-                    
-                    if (pos < max && state.sCount[nextLine] < state.blkIndent) {
-                      break;
+                md.block.ruler.before(
+                  "paragraph",
+                  `${langPrefix}_block`,
+                  (state, start, end, silent) => {
+                    const startMarker = `[[${langPrefix}]]`;
+                    const endMarker = `[[/${langPrefix}]]`;
+
+                    let pos = state.bMarks[start] + state.tShift[start];
+                    let max = state.eMarks[start];
+
+                    // Check if line starts with our marker
+                    if (pos + startMarker.length > max) return false;
+                    if (
+                      state.src.slice(pos, pos + startMarker.length) !==
+                      startMarker
+                    )
+                      return false;
+
+                    pos += startMarker.length;
+                    let firstLine = state.src.slice(pos, max).trim();
+
+                    // Find the end marker
+                    let nextLine = start + 1;
+                    let autoClosed = false;
+
+                    while (nextLine < end) {
+                      pos = state.bMarks[nextLine] + state.tShift[nextLine];
+                      max = state.eMarks[nextLine];
+
+                      if (
+                        pos < max &&
+                        state.sCount[nextLine] < state.blkIndent
+                      ) {
+                        break;
+                      }
+
+                      if (
+                        state.src.slice(pos, pos + endMarker.length) ===
+                        endMarker
+                      ) {
+                        autoClosed = true;
+                        break;
+                      }
+
+                      nextLine++;
                     }
-                    
-                    if (state.src.slice(pos, pos + endMarker.length) === endMarker) {
-                      autoClosed = true;
-                      break;
+
+                    if (!autoClosed) return false;
+
+                    if (silent) return true;
+
+                    let token = state.push(
+                      `${langPrefix}_block_open`,
+                      "div",
+                      1,
+                    );
+                    token.markup = startMarker;
+                    token.block = true;
+                    token.info = "";
+                    token.map = [start, nextLine];
+
+                    // Parse content between markers
+                    let contentStart = start + 1;
+                    if (firstLine) {
+                      // If there's content on the same line as opening marker
+                      let contentToken = state.push("paragraph_open", "p", 1);
+                      contentToken.map = [start, start + 1];
+
+                      let inlineToken = state.push("inline", "", 0);
+                      inlineToken.content = firstLine;
+                      inlineToken.map = [start, start + 1];
+                      inlineToken.children = [];
+
+                      state.push("paragraph_close", "p", -1);
                     }
-                    
-                    nextLine++;
-                  }
-                  
-                  if (!autoClosed) return false;
-                  
-                  if (silent) return true;
-                  
-                  let token = state.push(`${langPrefix}_block_open`, 'div', 1);
-                  token.markup = startMarker;
-                  token.block = true;
-                  token.info = '';
-                  token.map = [start, nextLine];
-                  
-                  // Parse content between markers
-                  let contentStart = start + 1;
-                  if (firstLine) {
-                    // If there's content on the same line as opening marker
-                    let contentToken = state.push('paragraph_open', 'p', 1);
-                    contentToken.map = [start, start + 1];
-                    
-                    let inlineToken = state.push('inline', '', 0);
-                    inlineToken.content = firstLine;
-                    inlineToken.map = [start, start + 1];
-                    inlineToken.children = [];
-                    
-                    state.push('paragraph_close', 'p', -1);
-                  }
-                  
-                  if (contentStart < nextLine) {
-                    state.md.block.tokenize(state, contentStart, nextLine);
-                  }
-                  
-                  token = state.push(`${langPrefix}_block_close`, 'div', -1);
-                  token.markup = endMarker;
-                  token.block = true;
-                  
-                  state.line = nextLine + 1;
-                  return true;
-                });
-                
+
+                    if (contentStart < nextLine) {
+                      state.md.block.tokenize(state, contentStart, nextLine);
+                    }
+
+                    token = state.push(`${langPrefix}_block_close`, "div", -1);
+                    token.markup = endMarker;
+                    token.block = true;
+
+                    state.line = nextLine + 1;
+                    return true;
+                  },
+                );
+
                 // Add renderer
                 md.renderer.rules[`${langPrefix}_block_open`] = () => {
                   return `<div lang="${langCode}" data-lang="${language.toLowerCase()}" data-type="${language.toLowerCase()}-block">`;
                 };
                 md.renderer.rules[`${langPrefix}_block_close`] = () => {
-                  return '</div>';
+                  return "</div>";
                 };
               });
-            }
-          }
-        }
+            },
+          },
+        },
       };
     },
 
