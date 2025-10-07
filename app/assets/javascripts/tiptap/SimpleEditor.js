@@ -1,0 +1,242 @@
+import React from 'react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import TextAlign from '@tiptap/extension-text-align';
+import './editor.css';
+
+const MenuBar = ({ editor }) => {
+  if (!editor) {
+    return null;
+  }
+
+  const setLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('URL', previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    }
+
+    // empty
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+
+    // update link
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
+
+  return (
+    <div className="toolbar">
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className={'toolbar-button' + (editor.isActive('heading', { level: 2 }) ? ' is-active' : '')}
+          title="Heading 2"
+        >
+          H2
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          className={'toolbar-button' + (editor.isActive('heading', { level: 3 }) ? ' is-active' : '')}
+          title="Heading 3"
+        >
+          H3
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={'toolbar-button' + (editor.isActive('blockquote') ? ' is-active' : '')}
+          title="Blockquote"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={'toolbar-button' + (editor.isActive('bulletList') ? ' is-active' : '')}
+          title="Bullet List"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="8" y1="6" x2="21" y2="6" />
+            <line x1="8" y1="12" x2="21" y2="12" />
+            <line x1="8" y1="18" x2="21" y2="18" />
+            <line x1="3" y1="6" x2="3.01" y2="6" />
+            <line x1="3" y1="12" x2="3.01" y2="12" />
+            <line x1="3" y1="18" x2="3.01" y2="18" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={'toolbar-button' + (editor.isActive('orderedList') ? ' is-active' : '')}
+          title="Numbered List"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="10" y1="6" x2="21" y2="6" />
+            <line x1="10" y1="12" x2="21" y2="12" />
+            <line x1="10" y1="18" x2="21" y2="18" />
+            <path d="M4 6h1v4" />
+            <path d="M4 10h2" />
+            <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          disabled={!editor.can().chain().focus().toggleBold().run()}
+          className={'toolbar-button' + (editor.isActive('bold') ? ' is-active' : '')}
+          title="Bold"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          className={'toolbar-button' + (editor.isActive('italic') ? ' is-active' : '')}
+          title="Italic"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="19" y1="4" x2="10" y2="4" />
+            <line x1="14" y1="20" x2="5" y2="20" />
+            <line x1="15" y1="4" x2="9" y2="20" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={setLink}
+          className={'toolbar-button' + (editor.isActive('link') ? ' is-active' : '')}
+          title="Link"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          className={'toolbar-button' + (editor.isActive({ textAlign: 'left' }) ? ' is-active' : '')}
+          title="Align Left"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="17" y1="10" x2="3" y2="10" />
+            <line x1="21" y1="6" x2="3" y2="6" />
+            <line x1="21" y1="14" x2="3" y2="14" />
+            <line x1="17" y1="18" x2="3" y2="18" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          className={'toolbar-button' + (editor.isActive({ textAlign: 'center' }) ? ' is-active' : '')}
+          title="Align Center"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="10" x2="6" y2="10" />
+            <line x1="21" y1="6" x2="3" y2="6" />
+            <line x1="21" y1="14" x2="3" y2="14" />
+            <line x1="18" y1="18" x2="6" y2="18" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          className={'toolbar-button' + (editor.isActive({ textAlign: 'right' }) ? ' is-active' : '')}
+          title="Align Right"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="21" y1="10" x2="7" y2="10" />
+            <line x1="21" y1="6" x2="3" y2="6" />
+            <line x1="21" y1="14" x2="3" y2="14" />
+            <line x1="21" y1="18" x2="7" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="toolbar-separator"></div>
+
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          className="toolbar-button"
+          title="Horizontal Rule"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SimpleEditor = () => {
+  const editor = useEditor({
+    shouldRerenderOnTransaction: true,
+    extensions: [
+      StarterKit,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'link',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+    ],
+    content: `
+      <h2>Welcome to the Editor</h2>
+      <p>This is a simple editor with the controls you need. Try formatting some text:</p>
+      <ul>
+        <li>Make text <strong>bold</strong> or <em>italic</em></li>
+        <li>Create bullet or numbered lists</li>
+        <li>Add headings and links</li>
+      </ul>
+      <p>Start editing to see it in action!</p>
+    `,
+    editorProps: {
+      attributes: {
+        class: 'tiptap',
+      },
+    },
+  });
+
+  return (
+    <div className="editor-wrapper">
+      <MenuBar editor={editor} />
+      <div className="editor-content">
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+};
+
+export default SimpleEditor;
