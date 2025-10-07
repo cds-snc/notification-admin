@@ -66,6 +66,7 @@ const MenuBar = ({ editor }) => {
 
   return (
     <div className="toolbar">
+      {/* Headings group */}
       <div className="toolbar-group">
         <button
           onClick={() =>
@@ -95,14 +96,31 @@ const MenuBar = ({ editor }) => {
 
       <div className="toolbar-separator"></div>
 
+      {/* Variable group */}
       <div className="toolbar-group">
         <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            onClick={() => editor.chain().focus().toggleVariable().run()}
+            disabled={!editor.can().chain().focus().toggleVariable().run()}
+            className={
+              "toolbar-button" + (editor.isActive("variable") ? " is-active" : "")
+            }
+            title="Variable"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 4c-2.5 5 -2.5 10 0 16m14 -16c2.5 5 2.5 10 0 16m-10 -11h1c1 0 1 1 2.016 3.527c.984 2.473 .984 3.473 1.984 3.473h1"></path><path d="M8 16c1.5 0 3 -2 4 -3.5s2.5 -3.5 4 -3.5"></path></svg>
+        </button>
+      </div>
+    
+      <div className="toolbar-separator"></div>
+
+      {/* Text styles group */}
+      <div className="toolbar-group">
+        <button
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          disabled={!editor.can().chain().focus().toggleBold().run()}
           className={
-            "toolbar-button" +
-            (editor.isActive("blockquote") ? " is-active" : "")
+            "toolbar-button" + (editor.isActive("bold") ? " is-active" : "")
           }
-          title="Blockquote"
+          title="Bold"
         >
           <svg
             width="20"
@@ -112,14 +130,36 @@ const MenuBar = ({ editor }) => {
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
-            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
+            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          className={
+            "toolbar-button" + (editor.isActive("italic") ? " is-active" : "")
+          }
+          title="Italic"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="19" y1="4" x2="10" y2="4" />
+            <line x1="14" y1="20" x2="5" y2="20" />
+            <line x1="15" y1="4" x2="9" y2="20" />
           </svg>
         </button>
       </div>
 
       <div className="toolbar-separator"></div>
 
+      {/* Lists group */}
       <div className="toolbar-group">
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -173,76 +213,7 @@ const MenuBar = ({ editor }) => {
 
       <div className="toolbar-separator"></div>
 
-      <div className="toolbar-group">
-        <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editor.can().chain().focus().toggleBold().run()}
-          className={
-            "toolbar-button" + (editor.isActive("bold") ? " is-active" : "")
-          }
-          title="Bold"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-          </svg>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editor.can().chain().focus().toggleItalic().run()}
-          className={
-            "toolbar-button" + (editor.isActive("italic") ? " is-active" : "")
-          }
-          title="Italic"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="19" y1="4" x2="10" y2="4" />
-            <line x1="14" y1="20" x2="5" y2="20" />
-            <line x1="15" y1="4" x2="9" y2="20" />
-          </svg>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleVariable().run()}
-          disabled={!editor.can().chain().focus().toggleVariable().run()}
-          className={
-            "toolbar-button" + (editor.isActive("variable") ? " is-active" : "")
-          }
-          title="Variable"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M8 8l8 8" />
-            <path d="m8 16 8-8" />
-            <path d="m16 8-8 8" />
-            <path d="M8 8h8v8" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="toolbar-separator"></div>
-
+      {/* Link, divider, blockquote */}
       <div className="toolbar-group">
         <button
           onClick={setLink}
@@ -263,10 +234,47 @@ const MenuBar = ({ editor }) => {
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </svg>
         </button>
+        <button
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          className="toolbar-button"
+          title="Horizontal Rule"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="3" y1="12" x2="21" y2="12" />
+          </svg>
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={
+            "toolbar-button" +
+            (editor.isActive("blockquote") ? " is-active" : "")
+          }
+          title="Blockquote"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
+          </svg>
+        </button>
       </div>
 
       <div className="toolbar-separator"></div>
 
+      {/* Text align group */}
       <div className="toolbar-group">
         <button
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -338,23 +346,8 @@ const MenuBar = ({ editor }) => {
 
       <div className="toolbar-separator"></div>
 
+      {/* Language blocks group */}
       <div className="toolbar-group">
-        <button
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="toolbar-button"
-          title="Horizontal Rule"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="3" y1="12" x2="21" y2="12" />
-          </svg>
-        </button>
         <button
           onClick={() => editor.chain().focus().toggleEnglishBlock().run()}
           className={
@@ -376,7 +369,6 @@ const MenuBar = ({ editor }) => {
           FR
         </button>
       </div>
-
       <div className="toolbar-separator"></div>
 
       <div className="toolbar-group">
