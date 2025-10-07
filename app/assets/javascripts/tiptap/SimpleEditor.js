@@ -405,14 +405,44 @@ const SimpleEditor = () => {
       EnglishBlock,
       FrenchBlock,
       
-      // Add Markdown extension for export functionality
-      Markdown,
+      // Add Markdown extension with paste handling enabled
+      Markdown.configure({
+        html: true,                  // Allow HTML in markdown
+        tightLists: true,           // Use tight list formatting  
+        tightListClass: 'tight',    // CSS class for tight lists
+        bulletListMarker: '-',      // Use - for bullet lists
+        linkify: false,             // Don't auto-linkify URLs
+        breaks: false,              // Don't convert line breaks to <br>
+        transformPastedText: true,  // Transform pasted text to markdown
+        transformCopiedText: true,  // Transform copied text to markdown
+      }),
     ],
     // Don't set content here when using Markdown extension
     // We'll set it after the editor is created
     editorProps: {
       attributes: {
         class: "tiptap",
+      },
+      handlePaste: (view, event, slice) => {
+        // Get the plain text from clipboard
+        const text = event.clipboardData?.getData('text/plain');
+        
+        if (text) {
+          // Prevent default paste behavior
+          event.preventDefault();
+          
+          // Use setContent which supports markdown format
+          if (editor) {
+            // Get current content and append the new content
+            const currentContent = editor.storage.markdown.getMarkdown();
+            const newContent = currentContent + '\n\n' + text;
+            editor.commands.setContent(newContent);
+            return true;
+          }
+        }
+        
+        // Return false to allow default paste behavior if no text
+        return false;
       },
     },
   });
