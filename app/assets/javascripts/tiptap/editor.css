@@ -1,8 +1,8 @@
 /* Basic editor styles */
 .tiptap {
-    &:focus {
-        outline: none;
-    }
+  &:focus {
+    outline: none;
+  }
   :first-child {
     margin-top: 0;
   }
@@ -19,8 +19,8 @@
     }
   }
 
-  ol { 
-        list-style-type: decimal;
+  ol {
+    list-style-type: decimal;
   }
 
   /* Heading styles */
@@ -30,10 +30,10 @@
   h4,
   h5,
   h6 {
-    Margin: 0 0 20px 0;
+    margin: 0 0 20px 0;
     padding: 0;
     font-weight: bold;
-    color: #0B0C0C;
+    color: #0b0c0c;
   }
 
   h1 {
@@ -44,12 +44,11 @@
   h2 {
     font-size: 27px;
     line-height: 35px;
-   
   }
 
   h3 {
-     line-height: 26px;
-    color: #0B0C0C;
+    line-height: 26px;
+    color: #0b0c0c;
     font-size: 24px;
   }
 
@@ -72,7 +71,7 @@
     background: var(--black);
     border-radius: 0.5rem;
     color: var(--white);
-    font-family: 'JetBrainsMono', monospace;
+    font-family: "JetBrainsMono", monospace;
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
 
@@ -85,8 +84,8 @@
   }
 
   blockquote {
-    Margin: 0 0 20px 0;
-    border-left: 10px solid #BFC1C3;
+    margin: 0 0 20px 0;
+    border-left: 10px solid #bfc1c3;
     padding: 15px 0 0.1px 15px;
     font-size: 19px;
     line-height: 25px;
@@ -99,7 +98,8 @@
   }
 
   /* Language blocks */
-  div[lang="en-CA"], div[lang="fr-CA"] {
+  div[lang="en-CA"],
+  div[lang="fr-CA"] {
     background-color: #f3f4f6;
     border-left: 4px solid;
     margin: 1.5rem 0;
@@ -107,7 +107,8 @@
     position: relative;
   }
 
-  div[lang="en-CA"]:before, div[lang="fr-CA"]:before {
+  div[lang="en-CA"]:before,
+  div[lang="fr-CA"]:before {
     color: white;
     font-size: 0.75rem;
     font-weight: 600;
@@ -117,10 +118,20 @@
     top: 0;
   }
 
-  div[lang="en-CA"]:before { content: "EN"; background-color: #9D8CF2; }
-  div[lang="en-CA"] { border-color: #9D8CF2; }
-  div[lang="fr-CA"] { border-color: #DF93EC; }
-  div[lang="fr-CA"]:before { content: "FR"; background-color: #DF93EC; }
+  div[lang="en-CA"]:before {
+    content: "EN";
+    background-color: #9d8cf2;
+  }
+  div[lang="en-CA"] {
+    border-color: #9d8cf2;
+  }
+  div[lang="fr-CA"] {
+    border-color: #df93ec;
+  }
+  div[lang="fr-CA"]:before {
+    content: "FR";
+    background-color: #df93ec;
+  }
 }
 
 /* Placeholder (at the top) */

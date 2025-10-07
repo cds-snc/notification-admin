@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SimpleEditor from './SimpleEditor';
+import SimpleEditor from "./SimpleEditor";
 
 /**
  * Call the module function `load` by passing the element upon which to

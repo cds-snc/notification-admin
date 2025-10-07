@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { Node } from "@tiptap/core";
 
 // Factory function to create language-specific nodes
 const createLanguageNode = (language, langCode) => {
@@ -6,10 +6,10 @@ const createLanguageNode = (language, langCode) => {
     name: `${language.toLowerCase()}Block`,
 
     // Allow this node to contain other content
-    content: 'block+',
+    content: "block+",
 
     // This is a block-level node that can wrap other content
-    group: 'block',
+    group: "block",
 
     // Allow this node to be selected as a whole
     selectable: true,
@@ -34,12 +34,16 @@ const createLanguageNode = (language, langCode) => {
     },
 
     renderHTML({ HTMLAttributes }) {
-      return ['div', { 
-        'lang': langCode, 
-        'data-lang': language.toLowerCase(),
-        'data-type': `${language.toLowerCase()}-block`,
-        ...HTMLAttributes 
-      }, 0];
+      return [
+        "div",
+        {
+          lang: langCode,
+          "data-lang": language.toLowerCase(),
+          "data-type": `${language.toLowerCase()}-block`,
+          ...HTMLAttributes,
+        },
+        0,
+      ];
     },
 
     addCommands() {
@@ -53,7 +57,7 @@ const createLanguageNode = (language, langCode) => {
               attrs: attributes,
               content: [
                 {
-                  type: 'paragraph',
+                  type: "paragraph",
                 },
               ],
             });
@@ -94,8 +98,8 @@ const createLanguageNode = (language, langCode) => {
 };
 
 // Create the specific language node extensions
-export const EnglishBlock = createLanguageNode('English', 'en-CA');
-export const FrenchBlock = createLanguageNode('French', 'fr-CA');
+export const EnglishBlock = createLanguageNode("English", "en-CA");
+export const FrenchBlock = createLanguageNode("French", "fr-CA");
 
 // For backward compatibility, export English as default
 export default EnglishBlock;
