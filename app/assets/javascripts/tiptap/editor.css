@@ -123,15 +123,26 @@
     content: "EN";
     background-color: #9d8cf2;
   }
+
   div[lang="en-CA"] {
     border-color: #9d8cf2;
   }
+
   div[lang="fr-CA"] {
     border-color: #df93ec;
   }
+  
   div[lang="fr-CA"]:before {
     content: "FR";
     background-color: #df93ec;
+  }
+
+  span[data-type="variable"] {
+    background-color: #ffbf47;
+    font-family: monospace;
+    padding: 0.125rem 0.35rem;
+    border-radius: 3px;
+    border: 1px solid #e6a000;
   }
 }
 
