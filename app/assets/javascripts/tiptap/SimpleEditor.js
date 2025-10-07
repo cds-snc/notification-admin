@@ -17,7 +17,8 @@ import History from "@tiptap/extension-history";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 
-import { EnglishBlock, FrenchBlock } from "./LanguageNode";
+import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import VariableMark from "./CustomComponents/VariableMark";
 import { Markdown } from "tiptap-markdown";
 import "./editor.css";
 
@@ -214,6 +215,30 @@ const MenuBar = ({ editor }) => {
             <line x1="15" y1="4" x2="9" y2="20" />
           </svg>
         </button>
+        <button
+          onClick={() => editor.chain().focus().toggleVariable().run()}
+          disabled={!editor.can().chain().focus().toggleVariable().run()}
+          className={
+            "toolbar-button" + (editor.isActive("variable") ? " is-active" : "")
+          }
+          title="Variable"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 8l8 8" />
+            <path d="m8 16 8-8" />
+            <path d="m16 8-8 8" />
+            <path d="M8 8h8v8" />
+          </svg>
+        </button>
       </div>
 
       <div className="toolbar-separator"></div>
@@ -393,6 +418,7 @@ const SimpleEditor = () => {
       // Mark extensions that match toolbar features
       Bold,
       Italic,
+      VariableMark,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -428,16 +454,37 @@ const SimpleEditor = () => {
         const text = event.clipboardData?.getData('text/plain');
         
         if (text) {
-          // Prevent default paste behavior
-          event.preventDefault();
+          // Check if text contains variable syntax ((variable))
+          const hasVariables = /\(\([^)]+\)\)/.test(text);
           
-          // Use setContent which supports markdown format
-          if (editor) {
-            // Get current content and append the new content
-            const currentContent = editor.storage.markdown.getMarkdown();
-            const newContent = currentContent + '\n\n' + text;
-            editor.commands.setContent(newContent);
-            return true;
+          if (hasVariables) {
+            // Prevent default paste behavior
+            event.preventDefault();
+            
+            // Process variables in the text
+            let processedText = text;
+            
+            // Replace ((variable)) with HTML spans
+            processedText = processedText.replace(/\(\(([^)]+)\)\)/g, '<span data-type="variable">$1</span>');
+            
+            // Insert the processed HTML
+            if (editor) {
+              editor.commands.insertContent(processedText);
+              return true;
+            }
+          } else {
+            // No variables, handle as regular markdown
+            // Prevent default paste behavior
+            event.preventDefault();
+            
+            // Use setContent which supports markdown format
+            if (editor) {
+              // Get current content and append the new content
+              const currentContent = editor.storage.markdown.getMarkdown();
+              const newContent = currentContent + '\n\n' + text;
+              editor.commands.setContent(newContent);
+              return true;
+            }
           }
         }
         
