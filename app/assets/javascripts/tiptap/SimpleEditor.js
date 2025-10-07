@@ -16,6 +16,8 @@ import HardBreak from '@tiptap/extension-hard-break';
 import History from '@tiptap/extension-history';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
+
+import { EnglishBlock, FrenchBlock } from './LanguageNode';
 import './editor.css';
 
 const MenuBar = ({ editor }) => {
@@ -205,6 +207,20 @@ const MenuBar = ({ editor }) => {
             <line x1="3" y1="12" x2="21" y2="12" />
           </svg>
         </button>
+        <button
+          onClick={() => editor.chain().focus().toggleEnglishBlock().run()}
+          className={'toolbar-button' + (editor.isActive('englishBlock') ? ' is-active' : '')}
+          title="English Block"
+        >
+          EN
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleFrenchBlock().run()}
+          className={'toolbar-button' + (editor.isActive('frenchBlock') ? ' is-active' : '')}
+          title="French Block"
+        >
+          FR
+        </button>
       </div>
     </div>
   );
@@ -220,7 +236,7 @@ const SimpleEditor = () => {
       Text,
       HardBreak,
       History,
-      
+
       // Node extensions that match toolbar features
       Heading.configure({
         levels: [2, 3], // Only allow H2 and H3 as shown in toolbar
@@ -232,7 +248,7 @@ const SimpleEditor = () => {
       OrderedList,
       ListItem,
       HorizontalRule,
-      
+
       // Mark extensions that match toolbar features
       Bold,
       Italic,
@@ -245,6 +261,8 @@ const SimpleEditor = () => {
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      EnglishBlock,
+      FrenchBlock
     ],
     content: `
       <h2>Welcome to the Editor</h2>

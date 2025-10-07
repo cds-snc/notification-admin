@@ -97,6 +97,30 @@
     border-top: 1px solid var(--gray-2);
     margin: 2rem 0;
   }
+
+  /* Language blocks */
+  div[lang="en-CA"], div[lang="fr-CA"] {
+    background-color: #f3f4f6;
+    border-left: 4px solid;
+    margin: 1.5rem 0;
+    padding: 2rem 1rem 0.5rem;
+    position: relative;
+  }
+
+  div[lang="en-CA"]:before, div[lang="fr-CA"]:before {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    left: 0;
+    padding: 0.25rem 1rem;
+    position: absolute;
+    top: 0;
+  }
+
+  div[lang="en-CA"]:before { content: "EN"; background-color: #9D8CF2; }
+  div[lang="en-CA"] { border-color: #9D8CF2; }
+  div[lang="fr-CA"] { border-color: #DF93EC; }
+  div[lang="fr-CA"]:before { content: "FR"; background-color: #DF93EC; }
 }
 
 /* Placeholder (at the top) */
