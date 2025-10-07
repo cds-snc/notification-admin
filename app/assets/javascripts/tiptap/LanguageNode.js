@@ -69,20 +69,11 @@ const createLanguageNode = (language, langCode) => {
         // Command to toggle the language block (wrap if not present, unwrap if present)
         [`toggle${language}Block`]:
           (attributes = {}) =>
-          ({ commands, state }) => {
-            const { selection } = state;
-            const { $from, $to } = selection;
+          ({ commands, editor }) => {
+            // Use TipTap's built-in isActive method which is more reliable
+            const isActive = editor.isActive(this.name);
 
-            // Check if we're already inside this language block
-            let languageBlock = null;
-            state.doc.nodesBetween($from.pos, $to.pos, (node, pos) => {
-              if (node.type.name === this.name) {
-                languageBlock = { node, pos };
-                return false; // Stop searching
-              }
-            });
-
-            if (languageBlock) {
+            if (isActive) {
               // We're inside this language block, so unwrap it
               return commands.lift(this.name);
             } else {
