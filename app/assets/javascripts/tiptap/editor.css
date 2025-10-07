@@ -1,5 +1,6 @@
 /* Basic editor styles */
 .tiptap {
+  min-height: 400px;
   &:focus {
     outline: none;
   }
