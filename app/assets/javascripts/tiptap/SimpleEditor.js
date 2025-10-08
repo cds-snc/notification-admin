@@ -398,7 +398,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const SimpleEditor = ({ inputId }) => {
+const SimpleEditor = ({ inputId, initialContent }) => {
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
@@ -506,17 +506,7 @@ const SimpleEditor = ({ inputId }) => {
   // Set initial content as Markdown after editor is created
   React.useEffect(() => {
     if (editor) {
-      const initialMarkdown = `## Welcome to the Editor
-
-This is a simple editor with the controls you need. Try formatting some text:
-
-- Make text **bold** or *italic*
-- Create bullet or numbered lists  
-- Add headings and links
-
-Start editing to see it in action!`;
-
-      editor.commands.setContent(initialMarkdown);
+      editor.commands.setContent(initialContent);
     }
   }, [editor]);
 

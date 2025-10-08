@@ -1,4 +1,4 @@
-{% macro tiptap_editor(id) %}
+{% macro tiptap_editor(id, initialContent) %}
     <div id="tiptap-editor-{{ id }}"></div>
     
     <script nonce="{{ request_nonce }}">
@@ -11,14 +11,14 @@
             script.onload = function() {
                 window.tiptapLoaded = true;
                 if (window.Tiptap) {
-                    Tiptap.load(document.getElementById('tiptap-editor-{{ id }}'), '{{ id }}');
+                    Tiptap.load(document.getElementById('tiptap-editor-{{ id }}'), '{{ id }}', `{{ initialContent }}`);
                 }
             };
             document.head.appendChild(script);
         } else {
             // TipTap already loaded, initialize immediately
             if (window.Tiptap) {
-                Tiptap.load(document.getElementById('tiptap-editor-{{ id }}'), '{{ id }}');
+                Tiptap.load(document.getElementById('tiptap-editor-{{ id }}'), '{{ id }}', `{{ initialContent }}`);
             }
         }
     </script>
