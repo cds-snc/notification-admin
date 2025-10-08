@@ -4,6 +4,9 @@
   &:focus {
     outline: none;
   }
+  p + p {
+    margin-top: 0;
+  }
   :first-child {
     margin-top: 0;
   }
