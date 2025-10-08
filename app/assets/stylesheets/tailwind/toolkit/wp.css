@@ -172,6 +172,7 @@
 
   .page-content pre code {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    @apply whitespace-break-spaces;
   }
 
   /** Block
