@@ -11,7 +11,7 @@
         <tr>
           {% for field_heading in field_headings %}
             {% if field_heading == '' %}
-            <td class="table-field-index"></td>
+            <th scope="col" class="table-field-index" aria-hidden="true"></th>
             {% else %}
               <th scope="col" class="table-field-heading{% if loop.first and not equal_length %}-first{% endif %}{% if not field_headings_visible %} border-0{% endif %}" {% if equal_length %}{{ 'style=\"width: {0}%\"'.format((100 / field_headings|length)|int)|safe }}{% endif %}>
                 {% if field_headings_visible %}
