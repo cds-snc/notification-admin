@@ -70,6 +70,18 @@ const MenuBar = ({ editor }) => {
       <div className="toolbar-group">
         <button
           onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          className={
+            "toolbar-button" +
+            (editor.isActive("heading", { level: 1 }) ? " is-active" : "")
+          }
+          title="Heading 1"
+        >
+          H1
+        </button>
+        <button
+          onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
           className={
@@ -79,18 +91,6 @@ const MenuBar = ({ editor }) => {
           title="Heading 2"
         >
           H2
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("heading", { level: 3 }) ? " is-active" : "")
-          }
-          title="Heading 3"
-        >
-          H3
         </button>
       </div>
 
@@ -397,7 +397,7 @@ const SimpleEditor = () => {
 
       // Node extensions that match toolbar features
       Heading.configure({
-        levels: [2, 3], // Only allow H2 and H3 as shown in toolbar
+        levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
       }),
       Blockquote.configure({
         content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
