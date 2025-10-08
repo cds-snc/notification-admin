@@ -1,0 +1,22 @@
+
+{% block storybook_content %}
+  <!-- In your Jinja template -->
+  <div class="form-group">
+    <!-- Hidden field that will store the HTML content -->
+    <input type="hidden" id="message_content" name="content" value="">
+
+    <!-- Remirror container -->
+    <div id="remirror-theme"
+        data-module="webpack-loader"
+        data-webpack-loader="Remirror"
+        data-field-name="message_content"
+        data-placeholder="Type your message here..."
+        data-initial-content=""
+        data-readonly="false">
+    </div>
+  </div>
+
+  <script nonce="{{ request_nonce }}" type="text/javascript"
+          src="{{ asset_url('javascripts/remirror.min.js') }}">
+  </script>
+{% endblock %}

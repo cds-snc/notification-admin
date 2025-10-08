@@ -1,0 +1,9 @@
+.remirror-editor ol{
+    list-style-type: auto;
+    padding-left: 40px;
+}
+
+.remirror-editor ul {
+    list-style-type: disc;
+    padding-left: 40px;
+}
