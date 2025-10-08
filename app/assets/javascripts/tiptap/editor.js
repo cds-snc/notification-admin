@@ -7,5 +7,8 @@ import SimpleEditor from "./SimpleEditor";
  * render the editor.
  */
 export const load = function (element, id, initialContent) {
-  ReactDOM.render(<SimpleEditor inputId={id} initialContent={initialContent} />, element);
+  ReactDOM.render(
+    <SimpleEditor inputId={id} initialContent={initialContent} />,
+    element,
+  );
 };
