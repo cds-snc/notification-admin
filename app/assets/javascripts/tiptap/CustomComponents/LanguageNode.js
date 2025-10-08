@@ -201,14 +201,14 @@ const createLanguageNode = (language, langCode) => {
               return commands.lift(this.name);
             } else {
               // Check if we're already inside ANY language block
-              const isInsideEnglishBlock = editor.isActive('englishBlock');
-              const isInsideFrenchBlock = editor.isActive('frenchBlock');
-              
+              const isInsideEnglishBlock = editor.isActive("englishBlock");
+              const isInsideFrenchBlock = editor.isActive("frenchBlock");
+
               if (isInsideEnglishBlock || isInsideFrenchBlock) {
                 // Don't allow nesting language blocks - return false to indicate command failed
                 return false;
               }
-              
+
               // Not inside any language block, so wrap selection in one
               return commands.wrapIn(this.name, attributes);
             }
