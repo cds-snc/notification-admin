@@ -170,7 +170,7 @@
     @apply -mt-2;
   }
 
-  .page-content pre code {
+  .page-content code {
     font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     @apply whitespace-break-spaces;
   }
