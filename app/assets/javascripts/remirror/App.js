@@ -1,16 +1,11 @@
-import "remirror/styles/all.css";
 import "./style.css";
 
-import React, { useCallback, useState,  } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
-    Remirror,
-    useRemirror,
     useHelpers,
-    useKeymap,
-    EditorComponent,
 } from '@remirror/react';
 
-import { BoldExtension, ItalicExtension, MarkdownExtension } from 'remirror/extensions';
+import { MarkdownExtension } from 'remirror/extensions';
 import { NotifyEditor } from './editor';
 
 const RemirrorEditor = ({ config }) => {
