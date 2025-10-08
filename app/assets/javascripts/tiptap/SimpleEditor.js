@@ -398,7 +398,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const SimpleEditor = () => {
+const SimpleEditor = ({ inputId }) => {
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
@@ -519,6 +519,38 @@ Start editing to see it in action!`;
       editor.commands.setContent(initialMarkdown);
     }
   }, [editor]);
+
+  // Update hidden input field when content changes
+  React.useEffect(() => {
+    if (editor && inputId) {
+      const updateHiddenInput = () => {
+        const hiddenInput = document.getElementById(inputId);
+        if (hiddenInput) {
+          try {
+            const markdown = editor.storage.markdown.getMarkdown();
+            hiddenInput.value = markdown;
+
+            // Trigger change event for form validation
+            const event = new Event("change", { bubbles: true });
+            hiddenInput.dispatchEvent(event);
+          } catch (error) {
+            console.error("Error getting markdown:", error);
+          }
+        }
+      };
+
+      // Listen for content changes
+      editor.on("update", updateHiddenInput);
+
+      // Initial update
+      updateHiddenInput();
+
+      // Cleanup
+      return () => {
+        editor.off("update", updateHiddenInput);
+      };
+    }
+  }, [editor, inputId]);
 
   return (
     <div className="editor-wrapper">
