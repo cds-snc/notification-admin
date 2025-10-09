@@ -15,6 +15,13 @@ module.exports = {
         type: 'window',
       },
     },
+    remirror: {
+      import: "./app/assets/javascripts/remirror/remirror.js",
+      library: {
+        name: "remirror",
+        type: "window",
+      }
+    }
   },
   watch: false,
   output: {
