@@ -121,7 +121,7 @@
       {% endif %}
     </label>
       {% if has_conditional %}
-        <div class="conditional">
+        <div class="conditional" aria-live="polite">
         {{ textbox(
             option_conditionals[option.data],
             label=_(option_conditionals[option.data].label.text)|capitalize,

@@ -2624,6 +2624,28 @@ def test_add_recipients_redirects_one_recipient(template_type, template_data, cl
     )
 
 
+@pytest.mark.parametrize(
+    "template_type, template_data",
+    [
+        ("email", create_email_template()),
+        ("sms", create_sms_template()),
+    ],
+)
+def test_add_recipients_has_aria_live_on_conditional_content(template_type, template_data, client_request, fake_uuid, mocker):
+    """Test that conditional content has aria-live attribute for screen reader accessibility."""
+    mocker.patch("app.service_api_client.get_service_template", return_value=template_data)
+
+    page = client_request.get(
+        "main.add_recipients",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+    )
+
+    # Check that conditional div has aria-live="polite" attribute
+    conditional_divs = page.select('div.conditional[aria-live="polite"]')
+    assert len(conditional_divs) > 0, "Conditional content should have aria-live='polite' attribute"
+
+
 def test_template_should_show_email_address_in_correct_language(
     client_request,
     mock_get_service_email_template,
