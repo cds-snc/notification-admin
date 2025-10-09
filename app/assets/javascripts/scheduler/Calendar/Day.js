@@ -39,8 +39,9 @@ export const Day = ({ day }) => {
     <button
       ref={inputEl}
       type="button"
+      role="gridcell"
       aria-label={label}
-      aria-pressed={pressed === -1 ? false : true}
+      {...(pressed && { "aria-selected": true })}
       className={["Calendar-item", bthState].join(" ")}
       data-timestamp={day.unix()}
       data-day={`${dayNum}`}

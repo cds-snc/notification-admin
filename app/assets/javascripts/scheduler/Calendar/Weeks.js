@@ -18,11 +18,11 @@ export const Weeks = () => {
         onKeyDown({ key, dispatch });
       }}
       aria-label={translate("calendar_dates")}
-      role="application"
+      role="grid"
     >
       {weeks.map((week) => {
         return (
-          <div key={yearMonthDay(week[0])} className="Calendar-row">
+          <div key={yearMonthDay(week[0])} className="Calendar-row" role="row">
             <Days week={week} />
           </div>
         );

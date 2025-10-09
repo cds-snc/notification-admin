@@ -17,6 +17,7 @@ import {
   yearMonthDay,
   getFirstAvailableDay,
 } from "./Calendar/index";
+import { get } from "jquery";
 
 const LANGUAGES = ["en", "fr-ca"]; // en
 const LOCALE = window.APP_LANG === "en" ? LANGUAGES[0] : LANGUAGES[1];
@@ -212,6 +213,20 @@ export const StateProvider = ({ value, children }) => {
         newState = {
           ...state,
           ...getNextDay(Number(state.focusedDayNum) - 1, state, "left"),
+        };
+        break;
+      case "KEY_HOME":
+        // Move to first available day even if it's in the previous month
+        newState = {
+          ...state,
+          ...getFirstDay(state.date)
+        };
+        break;
+      case "KEY_END":
+        // Move to last available day even if it's in the next month
+        newState = {
+          ...state,
+          ...getLastDay(state.date)
         };
         break;
       default:
