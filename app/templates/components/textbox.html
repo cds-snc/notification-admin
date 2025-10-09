@@ -19,7 +19,7 @@
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
-    data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}"
+    data-module="{% if colour_preview %}colour-preview{% endif %}"
   >
     {% set describedby = '' %}
 
@@ -61,7 +61,6 @@
     {% else %}
       {% set field_class = '{} {}'.format(width, 'text-right' if suffix else '') %}
     {% endif %}
-    <span></span>
 
     {% set field_class = 'form-control ' + field_class + (
       ' form-control-error' if field.errors else ''
@@ -78,6 +77,7 @@
       aria_required='true' if required != false else false,
       aria_describedby=describedby|trim if describedby != '' else false,
       data_testid=testid,
+      autofocus=true if autofocus or field.errors else false,
       **kwargs
     ) }}
 
@@ -107,7 +107,7 @@
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
-    data-module="{% if autofocus %}autofocus{% elif colour_preview %}colour-preview{% endif %}">
+    data-module="{% if colour_preview %}colour-preview{% endif %}">
     <div>
       {% set describedby = '' %}
       <label class="form-label" for="{{ field.name }}">
@@ -145,6 +145,7 @@
           required='' if required != false else false,
           aria_required='true' if required != false else false,
           aria_describedby=describedby|trim if describedby != '' else false,
+          autofocus=true if autofocus or field.errors else false,
           **kwargs
         ) }}
 

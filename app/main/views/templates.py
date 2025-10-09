@@ -402,8 +402,20 @@ def process_folder_management_form(form, current_folder_id):
     if form.is_move_op:
         # if we've just made a folder, we also want to move there
         move_to_id = new_folder_id or form.move_to.data
-
         current_service.move_to_folder(ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
+
+        is_multi_move = len(form.templates_and_folders.data) > 1
+        # Fetch the folder name from the form when moving a template to a newly created folder, else fetch from existing folders
+        destination_folder_name = form.get_folder_name() or current_service.get_template_folder(move_to_id)["name"]
+        msg = _("Moved {} items to the '{}' folder") if is_multi_move else _("Moved {} item to the '{}' folder")
+
+        flash(
+            msg.format(
+                len(form.templates_and_folders.data),
+                destination_folder_name,
+            ),
+            "default_with_tick",
+        )
 
     return redirect(request.url)
 
@@ -1499,9 +1511,6 @@ def template_category(template_category_id):
 @main.route("/services/<service_id>/templates/sample-library", methods=["GET"])
 @user_has_permissions()
 def view_sample_library(service_id):
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
-
     all_templates = get_sample_templates()
     email_templates = get_sample_templates_by_type("email")
     sms_templates = get_sample_templates_by_type("sms")
@@ -1526,8 +1535,6 @@ def view_sample_library(service_id):
 @user_has_permissions()
 def view_sample_template(service_id, template_id):
     delete_preview_data(service_id, template_id)
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
     # Create a template obj
     template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id, preview=True)
 

@@ -25,8 +25,8 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro terms_of_use() %}
-    <h2 class="heading-medium mt-0">{{ _('Your responsibilities') }}</h2>
+{% macro terms_of_use(title_id=None) %}
+    <h2 class="heading-medium mt-0" {% if title_id %}id="{{ title_id }}"{% endif %}>{{ _('Your responsibilities') }}</h2>
     <p>
     <em>{{ _('For CDS responsibilities, read GC Notify’s ') }} </em
     ><a href="{{ gca_url_for('service-level-agreement') }}"

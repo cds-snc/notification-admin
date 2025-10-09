@@ -17,7 +17,6 @@ from tests.conftest import (
     create_active_user_view_permissions,
     create_active_user_with_permissions,
     normalize_spaces,
-    set_config,
 )
 
 ROOT_FOLDER_ID = "__NONE__"
@@ -304,13 +303,12 @@ def test_should_show_templates_folder_page(
 
     service_one["permissions"] += ["letter"]
 
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get(
-            "main.choose_template",
-            service_id=SERVICE_ONE_ID,
-            _test_page_title=False,
-            **extra_args,
-        )
+    page = client_request.get(
+        "main.choose_template",
+        service_id=SERVICE_ONE_ID,
+        _test_page_title=False,
+        **extra_args,
+    )
 
     assert normalize_spaces(page.select_one("title").text) == expected_title_tag
     assert normalize_spaces(page.select_one("h1").text) == expected_page_title
@@ -1409,7 +1407,7 @@ def test_radio_button_with_no_value_shows_error_message(
         _expected_redirect=None,
     )
 
-    assert page.select_one("span.error-message").text.strip() == "You need to choose an option"
+    assert page.select_one("span.error-message").text.strip() == "Error: You need to choose an option"
 
 
 @pytest.mark.parametrize(

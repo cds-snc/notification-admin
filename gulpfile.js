@@ -17,6 +17,9 @@ plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
 plugins.uglify = require("gulp-uglify");
+plugins.postcss = require('gulp-postcss');
+plugins.cssnano = require('cssnano');
+// compression plugins intentionally not used here to avoid extra deps
 
 // 2. CONFIGURATION
 // - - - - - - - - - - - - - - -
@@ -40,12 +43,10 @@ const javascripts = () => {
     paths.src + "javascripts/utils.js",
     paths.src + "javascripts/webpackLoader.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
-    paths.src + "javascripts/detailsPolyfill.js",
     paths.src + "javascripts/apiKey.js",
     paths.src + "javascripts/cbor.js",
     paths.src + "javascripts/fido2.js",
     paths.src + "javascripts/autocomplete.js",
-    paths.src + "javascripts/autofocus.js",
     paths.src + "javascripts/contactSanitizePii.js",
     paths.src + "javascripts/highlightTags.js",
     paths.src + "javascripts/fileUpload.js",
@@ -121,11 +122,14 @@ const minifyIndividualJs = () => {
 const static_css = () => {
   return src(paths.src + "/stylesheets/index.css")
     .pipe(plugins.concat("index.css"))
-    .pipe(plugins.cleanCSS({ 
-      level: 2,
-    }, (details) => {
-      console.log(`${details.name}: Original size:${details.stats.originalSize} - Minified size: ${details.stats.minifiedSize}`)
-    }))
+    // Minify with PostCSS + cssnano and remove all comments
+    .pipe(plugins.postcss([
+      plugins.cssnano({
+        preset: ['default', {
+          discardComments: { removeAll: true }
+        }]
+      })
+    ]))
     .pipe(dest(paths.dist + "stylesheets/"));
 };
 

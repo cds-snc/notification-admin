@@ -48,12 +48,10 @@
     window.APP_COMPONENTS = {
       sample_template_button: `
       {% set badge_text = _('New') %}
-      {% if config["FF_SAMPLE_TEMPLATES"] %}
-        {{ indicator(
-          '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
-          badge(badge_text, bg_class='bg-blue-100', hide_icon=true)
-        )}}
-      {% endif %}`,
+      {{ indicator(
+        '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
+        badge(badge_text, bg_class='bg-blue-100', hide_icon=true)
+      )}}`,
     }
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
@@ -68,6 +66,7 @@
       create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
       selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
       move_template_legend: "{{ _('Move templates to a new or existing folder') }}",
+      templates_found_sr_status: "{{ _('templates found') }}",
       selection: "{{ _('selection') }}",
       selections: "{{ _('selections') }}",
       chosen_time_button: "{{ _('Choose a different time') }}",
@@ -99,7 +98,7 @@
       folder: "{{ _('folder') }}",
       folders: "{{ _('folders') }}",
       all_folders: "{{ _('All folders') }}",
-      choose_folders: "{{ _('Choose folders') }}",
+      choose_folders: "{{ _('Show folders') }}",
       "choosing folders": "{{ _('choosing folders') }}",
       "choosing team members": "{{ _('choosing team members') }}",
       no_folders_only_outside_folder: "{{ _('No folders (only templates outside a folder)') }}",
@@ -167,14 +166,6 @@
 
 {% block body_start %}{% endblock %}
 
-<div id="skiplink-container">
-  <div>
-    <a
-      href="#main_content"
-      class="skiplink"
-    >{{ _('Skip to main content') }}</a>
-  </div>
-</div>
 {% block gc_header %}
 
 {% if g.preview_url %}
