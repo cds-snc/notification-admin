@@ -757,7 +757,7 @@ def test_upload_valid_csv_shows_preview_and_table(
         for index, cell in enumerate(row):
             row = page.select("table tbody tr")[row_index]
             assert "id" not in row
-            assert normalize_spaces(str(row.select("td")[index + 1])) == cell
+            assert normalize_spaces(str(row.select("td")[index])) == cell
 
 
 def test_upload_valid_csv_only_sets_meta_if_filename_known(
