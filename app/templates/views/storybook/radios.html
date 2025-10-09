@@ -14,7 +14,7 @@
 
     <h2 class="heading-medium">With badges</h2>
     {% call component_code_example(radios(form3.auth_method3, badge_options={'email-3': ['Verified', 'success'], 'sms-3': ['Unverified', 'default']}, bordered=true)) %}
-{% raw %}
+{%- raw -%}
 radios(
     form3.auth_method3, 
     badge_options={
@@ -23,6 +23,6 @@ radios(
     }, 
     bordered=true
 )
-{% endraw %}
+{%- endraw -%}
     {% endcall %}
 {% endblock %}

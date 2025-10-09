@@ -25,8 +25,8 @@
 
 {% macro component_code_example(example) %}
     <div class="bg-white border-1 border-black p-0">
-        <div class="p-4 border-b-1 border-black flex flex-wrap gap-gutterHalf">
-            {% if example | length > 1 %}
+        <div class="p-4 border-b-1 border-black {% if example is not string %}flex flex-wrap gap-gutterHalf{% endif %}">
+            {% if example is not string %}
                 {% for ex in example %}
                     {{ ex | safe}}
                 {% endfor %}
