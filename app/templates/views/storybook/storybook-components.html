@@ -22,3 +22,21 @@
     </table>
 </details>
 {% endmacro %}
+
+{% macro component_code_example(example) %}
+    <div class="bg-white border-1 border-black p-0">
+        <div class="p-4 border-b-1 border-black flex flex-wrap gap-gutterHalf">
+            {% if example | length > 1 %}
+                {% for ex in example %}
+                    {{ ex | safe}}
+                {% endfor %}
+            {% else %}
+                {{ example | safe}}
+            {% endif %}
+        </div>
+        <h3 class="heading-small p-4 m-0 w-full border-black">Code example</h3>
+        <div class="bg-gray-200 p-4 border-0 border-t-1 border-black">
+            <pre><code class="whitespace-break-spaces">{{ caller() }}</code></pre>
+        </div>
+    </div>
+{% endmacro %}
