@@ -167,11 +167,13 @@ class TestApiKeys:
         mock_get_api_key_statistics,
     ):
         page = client_request.get("main.api_keys", service_id=SERVICE_ONE_ID)
-        rows = [normalize_spaces(row.text) for row in page.select("main tr")]
+        key_name = normalize_spaces(page.select("div h3[id=api-key-name]")).split(" -")[0]
+        revoke = normalize_spaces(page.select("div a[href*=revoke]"))
+        rows = [normalize_spaces(row.text) for row in page.select("main dl div")]
 
-        assert rows[0] == "API key details Action"
-        assert "Key name: another key name Recent activity: 20 total sends in the last 7 days (20 email, 0 sms)" in rows[1]
-        assert "Revoke API key some key name" in rows[2]
+        assert rows[0] == "Recent activity: 20 total sends in the last 7 days (20 email, 0 sms)"
+        assert key_name == "another key name"
+        assert revoke == "Revoke API key some key name"
 
         mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)
 

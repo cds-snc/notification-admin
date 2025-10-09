@@ -263,14 +263,6 @@
     @apply bg-gray-grey4;
   }
 
-  .body-copy-table table th,
-  .body-copy-table table td {
-    @apply text-smaller leading-tight font-normal break-words;
-  }
-  .body-copy-table table thead th {
-    @apply text-smaller leading-tight font-bold;
-  }
-
   /*
   * Responsive Tables
   */
