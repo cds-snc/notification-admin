@@ -120,6 +120,29 @@ def test_wizard_flow_with_step_2_should_display_email_from(
     assert page.select_one("h2").text.strip() == "Service name"
 
 
+def test_wizard_flow_with_step_2_email_preview_has_aria_live_for_accessibility(
+    client_request,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    """Test that the email preview in create service page has aria-live attribute for screen reader accessibility"""
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+    page = client_request.post(
+        "main.add_service",
+        _data={},
+        current_step="choose_service_name",
+        _expected_status=200,
+    )
+    
+    # Verify the preview div has aria-live attribute
+    preview_div = page.select_one("#preview")
+    assert preview_div is not None, "Preview div should exist"
+    assert preview_div.get("aria-live") == "polite", "Preview div should have aria-live='polite' for accessibility"
+
+
 def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
     client_request,
     mock_service_email_from_is_unique,

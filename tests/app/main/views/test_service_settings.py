@@ -725,6 +725,26 @@ def test_service_email_from_change(client_request, app_, sending_domain, active_
     assert f"@{sending_domain}" in page.text
 
 
+def test_service_email_from_change_has_aria_live_for_accessibility(
+    client_request, app_, sending_domain, active_user_with_permissions, service_one
+):
+    """Test that the email preview has aria-live attribute for screen reader accessibility"""
+    sending_domain = sending_domain or app_.config["SENDING_DOMAIN"]
+    service = service_one | {"sending_domain": sending_domain}
+    client_request.login(active_user_with_permissions, service)
+
+    page = client_request.get(
+        "main.service_email_from_change",
+        service_id=SERVICE_ONE_ID,
+        _expected_status=200,
+    )
+
+    # Verify the preview div has aria-live attribute
+    preview_div = page.select_one("#preview")
+    assert preview_div is not None, "Preview div should exist"
+    assert preview_div.get("aria-live") == "polite", "Preview div should have aria-live='polite' for accessibility"
+
+
 def test_should_redirect_after_service_email_from_confirmation(
     client_request,
     mock_update_service,
