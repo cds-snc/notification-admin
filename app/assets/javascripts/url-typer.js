@@ -8,12 +8,14 @@
 
     // if there is an input value at all
     if (inputValue.length) {
+      // Update the text first
+      $("#fixed-email-address").text(inputValue);
+
       if (!previewVisible) {
         // show the "Your preview email" string
         $("#preview").show();
         previewVisible = true;
       }
-      $("#fixed-email-address").text(inputValue);
     } else {
       if (previewVisible) {
         // hide the preview text
