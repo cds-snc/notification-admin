@@ -39,23 +39,22 @@
       {{ _('Existing API keys') }}
     </h2>
     {% for item in current_service.api_keys %}
-        <div class="flex items-center gap-4">
-          <h3 id="api-key-name" class="heading-medium mt-0">
-            {{ item.name }} -
+        <div class="flex flex-col gap-4">
+          <h3 id="api-key-name" class="text-titlelarge mt-0">
+            {{ item.name }}
           </h3>
           {% if item.expiry_date %}
-            <time class="table-field-status-error mb-6" datetime="{{ item.expiry_date }}">
+            <time class="table-field-status-error" datetime="{{ item.expiry_date }}">
               <span class="sr-only">{{ _('API key') + ' ' + item.name }} </span>{{ _('Revoked') }} {{ item.expiry_date | format_datetime_full }}
             </time>
           {% else %}
-            <a href="{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}" class="mb-6 table-field-status-error">
+            <a href="{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}" class="table-field-status-error">
               {{ _('Revoke') }}<span class="sr-only"> {{_('API key') + ' ' + item.name }}</span>
             </a>
           {% endif %}
         </div>
 
-
-        <dl aria-labelledby="api-key-name" class="space-y-4">
+        <dl aria-labelledby="api-key-name" class="space-y-4 mt-4">
           {% if (
             'total_sends' in item and
             'email_sends' in item and
