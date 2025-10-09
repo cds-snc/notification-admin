@@ -53,7 +53,7 @@
             {% endfor %}
             {# TODO: Add Cypress test to ensure describedby is present and properly associated with the link #}
             {% if item.is_folder %}
-              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" aria-describedby="sr-{{ item.id }}1 sr-{{ item.id }}2" class="template-list-folder">
+              <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, template_folder_id=item.id, view='sending' if sending_view else None) }}" aria-describedby="sr-{{ item.id }}1" class="template-list-folder">
                 <span class="live-search-relevant">{{ format_item_name(item.name) }}</span>
               </a>
             {% else %}
