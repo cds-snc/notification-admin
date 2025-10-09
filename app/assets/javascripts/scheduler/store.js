@@ -16,6 +16,7 @@ import {
   getNextDay,
   yearMonthDay,
   getFirstAvailableDay,
+  formattedDay,
 } from "./Calendar/index";
 
 const LANGUAGES = ["en", "fr-ca"]; // en
@@ -213,6 +214,46 @@ export const StateProvider = ({ value, children }) => {
           ...state,
           ...getNextDay(Number(state.focusedDayNum) - 1, state, "left"),
         };
+        break;
+      case "SELECT_FOCUSED_DATE":
+        // Get the current focused date from state.date and focusedDayNum
+        const focusedDate = dayjs(state.date)
+          .date(Number(state.focusedDayNum))
+          .format("YYYY-MM-DD");
+        // Check if the focused date is not blocked
+        if (!state.isBlockedDay(dayjs(focusedDate))) {
+          let newTime = dateIsToday([focusedDate])
+            ? timeValuesToday([focusedDate], state.time_values)[0].val
+            : state.time;
+          const isLastDay = dateIsLastAvailable(
+            [focusedDate],
+            state.lastAvailableDate,
+          );
+          // If selecting the last day, make sure we don't select a
+          // time after the latest valid datetime
+          if (isLastDay) {
+            const timeValuesForLastDay = timeValuesLastDay(
+              focusedDate,
+              state.time_values,
+            );
+            const validTime = timeValuesForLastDay
+              .map((t) => t.val)
+              .includes(newTime);
+            newTime = !validTime
+              ? timeValuesForLastDay[timeValuesForLastDay.length - 1].val
+              : newTime;
+          }
+
+          newState = {
+            ...state,
+            selected: setSelected(state.selected, focusedDate),
+            time: newTime,
+            updateMessage: `selected ${formattedDay(dayjs(focusedDate))}`,
+          };
+          newState.errors = "";
+        } else {
+          newState = { ...state };
+        }
         break;
       default:
         newState = state;

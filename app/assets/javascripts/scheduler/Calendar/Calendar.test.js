@@ -50,6 +50,17 @@ describe("Calendar", function () {
       .getAttribute("aria-label");
 
     expect(label).toEqual("Unavailable, Friday February 28 2020");
+
+    // Verify ARIA grid structure
+    const calendarDates = container.querySelector("#Calendar-dates");
+    expect(calendarDates).toHaveAttribute("role", "grid");
+
+    // Verify gridcell role on date buttons
+    const dayButton = container.querySelector(`[data-day="29"]`);
+    expect(dayButton).toHaveAttribute("role", "gridcell");
+
+    // Verify aria-selected attribute exists
+    expect(dayButton).toHaveAttribute("aria-selected");
   });
 
   test("Handles key nav events", async () => {
@@ -98,5 +109,39 @@ describe("Calendar", function () {
 
     // should navigate into the next month
     expect(container.querySelector(`.Nav--month`)).toHaveTextContent("March");
+  });
+
+  test("Handles Enter and Space key selection", async () => {
+    const { container } = render(
+      <I18nProvider value={i18nState}>
+        <StateProvider value={providerState}>
+          <Calendar />
+        </StateProvider>
+      </I18nProvider>,
+    );
+
+    // Navigate to a different date
+    fireEvent.keyDown(document.activeElement, {
+      key: "ArrowRight",
+      code: 39,
+    });
+
+    await wait(() => expect(document.activeElement).toHaveTextContent("1"));
+
+    // Initially, the first day (Feb 29) should be selected
+    let selectedDay = container.querySelector(`[aria-selected="true"]`);
+    expect(selectedDay).toHaveAttribute("data-day", "29");
+
+    // Press Enter to select the focused date (March 1)
+    fireEvent.keyDown(document.activeElement, {
+      key: "Enter",
+      code: 13,
+    });
+
+    // Wait for selection to update
+    await wait(() => {
+      selectedDay = container.querySelector(`[aria-selected="true"]`);
+      expect(selectedDay).toHaveAttribute("data-day", "1");
+    });
   });
 });
