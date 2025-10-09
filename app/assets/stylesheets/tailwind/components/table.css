@@ -30,7 +30,8 @@
   }
 
   .table-font-xsmall th,
-  .table-font-xsmall td.table-field-index {
+  .table-font-xsmall td.table-field-index,
+  .table-font-xsmall th.table-field-index {
     @apply font-bold;
   }
   .table-font-xsmall td {
