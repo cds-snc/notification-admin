@@ -44,8 +44,8 @@
             {{ item.name }} -
           </h3>
           {% if item.expiry_date %}
-            <time class="table-field-status-error api-key-revoked mb-6" datetime="{{ item.expiry_date }}">
-              {{ _('Revoked') }} {{ item.expiry_date | format_datetime_full }}
+            <time class="table-field-status-error mb-6" datetime="{{ item.expiry_date }}">
+              <span class="sr-only">{{ _('API key') + ' ' + item.name }} </span>{{ _('Revoked') }} {{ item.expiry_date | format_datetime_full }}
             </time>
           {% else %}
             <a href="{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}" class="mb-6 table-field-status-error">
