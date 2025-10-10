@@ -27,15 +27,10 @@
     type="image/x-icon"
   />
 
-  <link
-    href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
-    rel="stylesheet"
-  />
-  <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Noto+Sans+Arabic:wght@100..900&family=Noto+Sans+Canadian+Aboriginal:wght@100..900&family=Noto+Sans+Mono:wdth,wght@75,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta
@@ -49,7 +44,7 @@
       {% set badge_text = _('New') %}
       {{ indicator(
         '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
-        badge(badge_text, bg_class='bg-blue-100', hide_icon=true)
+        badge(badge_text, variant='blue')
       )}}`,
     }
     window.APP_PHRASES = {

@@ -8,12 +8,9 @@
 
     {{ macro_prop_table("badge", [
         "text:string", 
-        "variant:string='default' | 'success'", 
-        "extra_class:string=None", 
-        "bg_class:string=None", 
-        "style:string=None", 
-        "icon_override:string=None", 
-        "hide_icon:boolean=false", 
+        "variant:string=gray|green|lime|red|yellow|blue", 
+        "icon:string=None", 
+        "icon_label:string=None", 
         "testid:string=None", 
         "id:string=None"
         ]) }}
@@ -30,12 +27,12 @@
 
     <h2 class="heading-medium mt-8">Examples</h2>
 
-    {% call component_code_example([badge('Default', 'default'), badge('Custom', 'success', bg_class='bg-blue-300'), badge('Sent', 'default', icon_override='fa-paper-plane'), badge('No Icon', hide_icon=true)]) %}
+    {% call component_code_example([badge('Default', variant='rose'), badge('Success', variant='purple'), badge('Sent', variant='lime', icon='fa-paper-plane', icon_label='Status'), badge('Not completed', variant='red')]) %}
 {% raw %}
-{{ badge('Default', 'default') }}
-{{ badge('Custom', 'success', bg_class='bg-blue-300') }}
-{{ badge('Sent', 'default', icon_override='fa-paper-plane') }}
-{{ badge('No Icon', hide_icon=true) }}
+{{ badge('Default', variant='gray') }}
+{{ badge('Success', variant='green') }}
+{{ badge('Sent', variant='lime', icon='fa-paper-plane', icon_label='Status') }}
+{{ badge('Not completed', variant='red') }}
 {% endraw %}
     {% endcall %}
 {% endblock %}
