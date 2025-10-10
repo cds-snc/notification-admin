@@ -167,11 +167,13 @@ class TestApiKeys:
         mock_get_api_key_statistics,
     ):
         page = client_request.get("main.api_keys", service_id=SERVICE_ONE_ID)
-        rows = [normalize_spaces(row.text) for row in page.select("main tr")]
+        key_names = normalize_spaces(page.select("div h3[id=api-key-name]"))
+        revoke = normalize_spaces(page.select("div a[href*=revoke]"))
+        rows = [normalize_spaces(row.text) for row in page.select("main dl div")]
 
-        assert rows[0] == "API keys Action"
-        assert "another key name 20 total sends in the last 7 days (20 email, 0 sms)" in rows[1]
-        assert "Revoke API key some key name" in rows[2]
+        assert rows[0] == "Recent activity: 20 total sends in the last 7 days (20 email, 0 sms)"
+        assert "another key name" in key_names
+        assert revoke == "Revoke API key some key name"
 
         mock_get_api_keys.assert_called_once_with(SERVICE_ONE_ID)
 
@@ -200,7 +202,7 @@ class TestApiKeys:
                 True,
                 False,
                 [
-                    ("Live – sends to anyone " "Not available because your service is in trial mode."),
+                    ("Live – sends to anyone Not available because your service is in trial mode."),
                     "Team and safelist – limits who you can send to",
                     "Test – pretends to send messages",
                 ],
@@ -219,7 +221,7 @@ class TestApiKeys:
                 True,
                 [
                     "Live – sends to anyone",
-                    ("Team and safelist – limits who you can send to" ""),
+                    ("Team and safelist – limits who you can send to"),
                     "Test – pretends to send messages",
                 ],
             ),
