@@ -15,11 +15,11 @@
 
   .browse-list-item,
   .browse-list-sub-item {
-    @apply text-title leading-tight font-bold mb-gutterHalf list-none;
+    @apply text-title leading-tight mb-gutterHalf list-none;
   }
 
   .browse-list-link {
-    @apply text-title leading-tight font-bold;
+    @apply text-title leading-tight;
   }
   .browse-list-link-destructive,
   .browse-list-link-destructive:visited,
