@@ -17,7 +17,7 @@
   {% set t = tmpl_name or '' %}
   {% set prefix = t[:5].lower() %}
   {% if prefix in ['en|fr', 'fr|en'] %}
-    {{ badge(t[:5], variant='purple' if prefix == 'en|fr' else 'rose', class="min-w-[60px]") -}}{{ t[6:] | e }}
+    {{ badge(t[:5], variant='purple' if prefix == 'en|fr' else 'rose', class="min-w-[60px] justify-center mr-3 no-underline") -}}{{ t[6:] | e }}
   {% else %}
     {{ t | e }}
   {% endif %}
