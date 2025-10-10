@@ -1,0 +1,213 @@
+
+
+<div class="max-w-[600px] grid grid-rows-[auto_56px_1fr] h-full">
+<div id="toolbar">
+  <!-- Add font size dropdown -->
+  <select class="ql-header">
+    <option value="3">Heading 3</option>
+    <option value="2">Heading 2</option>
+    <!-- Note a missing, thus falsy value, is used to reset to default -->
+    <option selected value="false">Normal</option>
+  </select>
+  <button id="var-button" value="var" aria-label="Insert variable">((var))</button>
+  <button class="ql-bold" aria-label="Bold"><i class="fa fa-bold"></i></button>
+  <button class="ql-italic" aria-label="Italic"><i class="fa fa-italic"></i></button>
+  <button class="ql-list" value="ordered" aria-label="Insert ordered list"><i class="fa-solid fa-list-ol"></i></button>
+  <button class="ql-list" value="bullet" aria-label="Insert bullet list"><i class="fa fa-list-ul"></i></button>
+  <button class="ql-indent" value="+1" aria-label="Increase indent"><i class="fa fa-indent"></i></button>
+  <button class="ql-indent" value="-1" aria-label="Decrease indent"><i class="fa fa-outdent"></i></button>
+  <button id="divider-button" value="divider" aria-label="Insert divider">Divider</button>
+  <button class="ql-link" aria-label="Insert link"><i class="fa fa-link"></i></button>
+  <button class="ql-blockquote" aria-label="Insert blockquote"><i class="fa fa-quote-left"></i></button>
+  <button id="en-lang-button" value="en-CA" aria-label="Insert English block">EN</button>
+  <button id="fr-lang-button" value="fr-CA" aria-label="Insert French block">FR</button>
+  <button class="ql-direction" value="rtl" aria-label="Change text direction to right-to-left"></button>
+</div>
+<div id="branding">
+    <img
+          alt="{{ _('Government of Canada') }}"
+          height="32px"
+          class="h-full w-auto"
+          src="{{ asset_s3_url('gov-canada-en.svg') }}"
+          contenteditable="false"
+        />
+</div>
+<div id="editor">
+  <p>Hello World!</p>
+  <p>Some initial <strong>bold</strong> text</p>
+  <p><br /></p>
+</div>
+</div>
+<script nonce="{{ request_nonce }}">
+
+  // Importing Quill modules for customizations
+  const Inline = Quill.import('blots/inline');
+  const BlockEmbed = Quill.import('blots/block/embed');
+  const Block = Quill.import('blots/block');
+  const Container = Quill.import('blots/container');
+  const Delta = Quill.import('delta');
+  const icons = Quill.import('ui/icons');
+  const Parchment = Quill.import('parchment');
+
+console.log('Available Parchment objects:', Object.keys(Parchment.Attributor));
+
+// Create custom block attributors
+class LanguageAttributor extends Parchment.Attributor {
+  add(node, value) {
+    node.setAttribute('lang', value);
+    return true;
+  }
+}
+
+// Customizing button icons
+icons['bold'] = '<i class="fa-solid fa-bold"></i>';
+icons['italic'] = '<i class="fa-solid fa-italic"></i>';
+icons['list'] = {
+  'ordered': '<i class="fa-solid fa-list-ol"></i>',
+  'bullet': '<i class="fa-solid fa-list-ul"></i>'
+};
+icons['indent'] = {
+  '+1': '<i class="fa-solid fa-indent"></i>',
+  '-1': '<i class="fa-solid fa-outdent"></i>'
+};
+icons['link'] = '<i class="fa-solid fa-link"></i>';
+icons['blockquote'] = '<i class="fa-solid fa-quote-left"></i>';
+icons['direction'] = {
+  '': '<i class="fa-solid fa-arrow-right-arrow-left"></i>',      // LTR
+  'rtl': '<i class="fa-solid fa-arrow-right-arrow-left"></i>'   // RTL
+};
+
+// Utility function to add event listeners to multiple elements
+const onClick = (selector, callback) => {
+  document.querySelectorAll(selector).forEach(element => {
+    element.addEventListener('click', callback);
+  });
+};
+
+// Create instances of our custom attributors. To add attributes to blocks
+const Lang = new LanguageAttributor('lang', 'lang', {
+  scope: Parchment.Scope.BLOCK
+});
+
+// Register with Quill
+Quill.register({
+  'formats/lang': Lang,
+}, true);
+
+// Then update your click handler
+onClick('#en-lang-button, #fr-lang-button', (event) => {
+  const lang = event.currentTarget.value;
+  const range = quill.getSelection(true);
+  
+  if (!range) return;
+  
+  console.log(`Applying language ${lang} to selection`, range);
+  
+  // Format all blocks in the selection with both attributes
+  quill.formatLine(range.index, range.length || 1, 'lang', lang);
+  quill.formatLine(range.index, range.length || 1, 'lang-block', lang);
+});
+class DividerBlot extends BlockEmbed {
+  static blotName = 'divider';
+  static tagName = 'hr';
+}
+
+Quill.register(DividerBlot);
+
+class VarBlot extends Inline {
+  static blotName = 'var';
+  static tagName = 'span';
+  static className = 'placeholder';
+}
+
+Quill.register(VarBlot);
+
+
+
+onClick('#var-button', () => {
+  // Add (( before the selection range
+  const range = quill.getSelection(true);
+  if (range) {
+    const selectedText = quill.getText(range.index, range.length);
+    quill.deleteText(range.index, range.length);
+    quill.insertText(range.index, `((${selectedText}))`, 'var', Quill.sources.USER);
+    // Optionally, restore selection
+    quill.setSelection(range.index + 2, selectedText.length);
+  }
+  // If no selection, just insert (( at the current cursor position
+  else {
+    quill.insertText(quill.getSelection().index, '((', 'var', Quill.sources.USER);
+    quill.setSelection(quill.getSelection().index + 3, Quill.sources.SILENT);
+  }
+  // Ensure the variable is formatted correctly 
+  quill.format('var', true);
+});
+onClick('#divider-button', () => {
+  const range = quill.getSelection(true);
+  quill.insertText(range.index, '\n', Quill.sources.USER);
+  quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER);
+  quill.setSelection(range.index + 2, Quill.sources.SILENT);
+});
+
+  const bindings = {
+    tab: {
+    key: 9,
+    handler: function() {
+      // Handle tab
+      // focus on next interactive element
+      return true
+    }
+  },
+  }
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: '#toolbar',
+      keyboard: {
+        bindings: bindings
+      }
+    }
+  });
+
+  window.quill = quill;
+function makeQuillLinkActionsAccessible() {
+  const actions = document.querySelectorAll('.ql-tooltip .ql-action, .ql-tooltip .ql-remove');
+  actions.forEach(el => {
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    if (el.classList.contains('ql-action')) el.setAttribute('aria-label', 'Edit link');
+    if (el.classList.contains('ql-remove')) el.setAttribute('aria-label', 'Remove link');
+
+    // Remove any previous handler to avoid duplicates
+    el.removeEventListener('keydown', quillLinkActionKeyHandler);
+    el.addEventListener('keydown', quillLinkActionKeyHandler);
+  });
+}
+
+function quillLinkActionKeyHandler(e) {
+  if (e.key === ' ' || e.key === 'Enter' || e.keyCode === 32 || e.keyCode === 13) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.click();
+  }
+}
+
+quill.on('selection-change', function(range) {
+  if (range) setTimeout(makeQuillLinkActionsAccessible, 0);
+});
+
+// Add custom handler for variable button
+const toolbar = quill.getModule('toolbar');
+toolbar.addHandler('var', function() {
+  const range = quill.getSelection();
+  if (range && range.length > 0) {
+    const selectedText = quill.getText(range.index, range.length);
+    quill.deleteText(range.index, range.length);
+    quill.insertText(range.index, `((${selectedText}))`);
+    // Optionally, restore selection
+    quill.setSelection(range.index + 2, selectedText.length);
+  }
+});
+
+
+</script>
