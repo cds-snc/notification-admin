@@ -231,9 +231,11 @@ module.exports = {
         10: "10px",
       },
       fontFamily: {
-        sans: ["lato"],
+        sans: ["Lato", "Arial", "sans-serif"],
         body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"],
+        monospace: ["Noto Mono", "monospace"],
+        arabic: ["Noto Sans Arabic", "Arial", "sans-serif"],
+        aboriginal: ["Noto Sans Canadian Aboriginal", "Arial", "sans-serif"],
       },
       inset: {
         2: "2px",
