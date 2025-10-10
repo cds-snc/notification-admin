@@ -1,0 +1,30 @@
+.badge {
+  @apply inline-flex gap-2 items-center px-4 py-2 rounded-full text-xs font-medium bg-brand-100 text-brand-700;
+}
+
+.badge-gray,
+.badge-default {
+  @apply bg-gray-100 text-gray-700;
+}
+.badge-green,
+.badge-success {
+  @apply bg-green-100 text-green-700;
+}
+.badge-blue {
+  @apply bg-brand-100 text-brand-700;
+}
+.badge-yellow {
+  @apply bg-yellow-100 text-yellow-700;
+}
+.badge-lime {
+  @apply bg-lime-100 text-lime-700;
+}
+.badge-red {
+  @apply bg-red-100 text-red-700;
+}
+.badge-purple {
+  @apply bg-purple-300 text-black;
+}
+.badge-rose {
+  @apply bg-rose-300 text-black;
+}

@@ -107,7 +107,7 @@
   <label class="block-label w-full" for="{{ option.id }}">
     {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
     {% if badge_options and badge_options[option.data] %}
-      {{ badge(badge_options[option.data][0], badge_options[option.data][1], extra_class="float-right") }}
+        {{ badge(badge_options[option.data][0], badge_options[option.data][1], class="float-right") }}
     {% endif %}
     {% if '||' in option.label.text %}
       <span id="{{ option.id }}-img">

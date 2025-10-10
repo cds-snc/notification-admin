@@ -1,5 +1,7 @@
 {# Storybook: Radios #}
 {% from "components/radios.html" import radios, radio %}
+{% from "views/storybook/storybook-components.html" import component_code_example %}
+
 
 {% block storybook_content %}
     <div class="heading-large">Radios component examples</div>
@@ -11,5 +13,16 @@
     {{ radios(form2.auth_method2, bordered=true) }}
 
     <h2 class="heading-medium">With badges</h2>
-    {{ radios(form3.auth_method3, badge_options={'email-3': ['Verified', 'success'], 'sms-3': ['Unverified', 'default']}, bordered=true) }}
+    {% call component_code_example(radios(form3.auth_method3, badge_options={'email-3': ['Verified', 'success'], 'sms-3': ['Unverified', 'default']}, bordered=true)) %}
+{%- raw -%}
+radios(
+    form3.auth_method3, 
+    badge_options={
+        'email-3': ['Verified', 'success'], 
+        'sms-3': ['Unverified', 'default']
+    }, 
+    bordered=true
+)
+{%- endraw -%}
+    {% endcall %}
 {% endblock %}
