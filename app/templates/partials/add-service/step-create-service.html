@@ -33,7 +33,7 @@
           <p class="m-0">{{_("Check that your email address is formatted correctly.")}}</p>
           <p class="m-0">
             {{_("Your service’s email address will be: ")}}
-            <b><span id='fixed-email-address'></span>@{{sending_domain}}</b>
+            <span aria-live="polite" aria-atomic="true"><b><span id='fixed-email-address'></span>@{{sending_domain}}</b></span>
           </p>
         {% endcall %}
       </div>
