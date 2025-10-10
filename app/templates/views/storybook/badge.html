@@ -15,23 +15,28 @@
         "id:string=None"
         ]) }}
 
-    <p>The badge component is used to highlight new or important information. It can be used with or without an icon. When the label is meaningful for the understanding of the content it relates to, you should find a way to include the badge text in the accessible name.</p>
-    <p>Moderate use of this component is key to its success, if there are too many badges, they become overwhelming.</p>
+    <p>The badge component is used to highlight new or important information. It can be used with or without an icon.</p>
+    <p>Moderate use of this component is key to its success, if there are too many badges, they become less effective in attracting attention.</p>
 
-    <p>Techniques for making badge text accessible:</p>
-    <ul class="list-disc list-inside">
-        <li>Don't use a badge if you can use a more descriptive label instead</li>
-        <li>Include the badge text in the accessible name of the related element</li>
-        <li>Pass an id to the badge, and reference it through aria-describedby on the related element.</li>
-    </ul>
+    <p>The badge has two parts:</p>
+    <ol class="list-inside">
+        <li>The label (required)</li>
+        <li>The icon (optional)</li>
+        <li>The icon meaning (optional)</li>
+    </ol>
+
+    <p>When using an icon, you need to think about what it represents. It should usually act as a way to shorten a prefix to the label, such as "Category: General communication". Sometimes, you need no prefix at all.</p>
+    <p>The badge component will not render an icon if you don't have an icon label, as this is important for screen readers.</p>
+    <p>The badge component has 6 variants to choose from, mostly based on the color you need: gray, green, blue, yellow, lime, red, purple, and rose.</p>
+    <p>There are two keyword variants for success (green) and default (gray).</p>
 
     <h2 class="heading-medium mt-8">Examples</h2>
 
-    {% call component_code_example([badge('Default', variant='rose'), badge('Success', variant='purple'), badge('Sent', variant='lime', icon='fa-paper-plane', icon_label='Status'), badge('Not completed', variant='red')]) %}
+    {% call component_code_example([badge('Default'), badge('Success', variant='green'), badge('General communication', variant='lime', icon='fa-tag', icon_label='Category'), badge('Not completed', variant='red')]) %}
 {% raw %}
 {{ badge('Default', variant='gray') }}
 {{ badge('Success', variant='green') }}
-{{ badge('Sent', variant='lime', icon='fa-paper-plane', icon_label='Status') }}
+{{ badge('General communication', variant='lime', icon='fa-tag', icon_label='Category') }}
 {{ badge('Not completed', variant='red') }}
 {% endraw %}
     {% endcall %}
