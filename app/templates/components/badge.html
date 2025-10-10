@@ -1,5 +1,5 @@
-{%- macro badge(text, variant="gray", icon=None, icon_label=None, testid=None, id=None) -%}
-    <strong class="badge badge-{{ variant }} inline-flex gap-2 items-center px-4 py-2 rounded-full text-xs font-medium " {% if testid %} data-testid="{{ testid }}"{% endif %}{% if id %} id="{{ id }}"{% endif %}>
+{%- macro badge(text, variant="gray", icon=None, icon_label=None, class=None, testid=None, id=None) -%}
+    <strong class="badge badge-{{ variant }} inline-flex gap-2 items-center px-4 py-2 rounded-full text-xs font-medium {{ class }}" {% if testid %} data-testid="{{ testid }}"{% endif %}{% if id %} id="{{ id }}"{% endif %}>
         {% if icon and icon_label %}
             <i aria-label="{{ icon_label }}" class="fa-solid fa-lg {{ icon }}"></i>
         {% endif %}

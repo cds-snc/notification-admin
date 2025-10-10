@@ -2,10 +2,12 @@
     @apply inline-flex gap-2 items-center px-4 py-2 rounded-full text-xs font-medium bg-brand-100 text-brand-700;
 }
 
-.badge-gray {
+.badge-gray,
+.badge-default {
     @apply bg-gray-100 text-gray-700;
 }
-.badge-green {
+.badge-green,
+.badge-success {
     @apply bg-green-100 text-green-700;
 }
 .badge-blue {
