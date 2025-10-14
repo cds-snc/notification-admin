@@ -461,26 +461,40 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
           // Prevent default paste behavior
           event.preventDefault();
 
-          // Check if the text contains Markdown syntax
-          const isMarkdown = /[*_`#>-]|\[.*\]\(.*\)/.test(text);
+          // Check if the text contains variables
+          const hasVariables = /\(\([^)]+\)\)/.test(text);
 
-          if (isMarkdown) {
-            // Use TipTap's Markdown extension to parse and insert content
-            editor.commands.insertContent(text);
+          if (hasVariables) {
+            // Replace variables with HTML spans
+            const processedText = text.replace(
+              /\(\(([^)]+)\)\)/g,
+              '<span data-type="variable">$1</span>'
+            );
+
+            // Insert the processed HTML at the current cursor position
+            editor.commands.insertContent(processedText);
           } else {
-            // Handle plain text by splitting into lines
-            const lines = text.split("\n");
+            // Check if the text contains Markdown syntax
+            const isMarkdown = /[*_`#>-]|\[.*\]\(.*\)/.test(text);
 
-            // Create an array of paragraph nodes
-            const nodes = lines.map((line) => {
-              return {
-                type: "paragraph",
-                content: line.trim() ? [{ type: "text", text: line }] : [],
-              };
-            });
+            if (isMarkdown) {
+              // Use TipTap's Markdown extension to parse and insert content
+              editor.commands.insertContent(text);
+            } else {
+              // Handle plain text by splitting into lines
+              const lines = text.split("\n");
 
-            // Insert the nodes into the editor
-            editor.commands.insertContent({ type: "doc", content: nodes });
+              // Create an array of paragraph nodes
+              const nodes = lines.map((line) => {
+                return {
+                  type: "paragraph",
+                  content: line.trim() ? [{ type: "text", text: line }] : [],
+                };
+              });
+
+              // Insert the nodes into the editor
+              editor.commands.insertContent({ type: "doc", content: nodes });
+            }
           }
 
           return true;
