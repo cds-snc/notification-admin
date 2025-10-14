@@ -1,0 +1,29 @@
+{% extends "admin_template.html" %}
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
+{% from "components/textbox.html" import textbox %}
+
+
+{% block maincolumn_content %}
+  <h1 class="heading-medium">
+    <span>Edit template</span>
+  </h1>
+  <div class="md:w-2/3">
+    {{ textbox(form.name, label='Template name', autocomplete='name', width="w-full", testid="test-name", required=false) }}
+    {{ textbox(form.subject, label='Subject line of the email', hint="Tell recipients what the email is about. Try to use less than 10 words.", autocomplete='name', width="w-full", testid="test-name", required=false) }}
+  </div>
+  <label class="form-label" id="tiptap-editor-label">Email message</label>
+  {{ tiptap_editor(editorId='tiptap-editor', labelId='tiptap-editor-label', initialContent='Hi,\n
+  We hope this newsletter finds you well! As we dive into the new year, we want to ensure you\'re up to speed with the latest happenings. Here\'s a quick recap!\n
+  Things You May Have Missed:\n
+  We are flying to the moon\n
+  We are investing in modular home fabrication\n
+  Steps to Sign Up:\n
+  Visit our website\n
+  Look for the News section on the homepage.\n
+  Look for the Subscribe link on the News page\n
+  Enter your email address in the provided field.\n
+  Click Subscribe to start receiving our regular updates directly in your inbox.\n
+  More Information:\n
+  For more details on our products, services, or any other inquiries, feel free to reach out to our dedicated support team at support@email.com or visit our About page at https://www.canada.ca/en/government/system.html. We value your feedback and are here to assist you in any way we can.\n') }}
+
+{% endblock %}
