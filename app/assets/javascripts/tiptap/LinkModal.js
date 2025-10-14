@@ -61,7 +61,7 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
 
   const saveLink = () => {
     let formattedUrl = url;
-    if (url && !/^https?:\/\//i.test(url)) {
+    if (url && !/^(https?:\/\/|mailto:)/i.test(url)) {
       formattedUrl = `https://${url}`;
     }
 
