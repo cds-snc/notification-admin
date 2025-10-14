@@ -382,7 +382,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
   );
 };
 
-const SimpleEditor = ({ inputId, initialContent }) => {
+const SimpleEditor = ({ inputId, labelId, initialContent }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
@@ -442,7 +442,7 @@ const SimpleEditor = ({ inputId, initialContent }) => {
       attributes: {
         class: "tiptap",
         role: "textbox",
-        "aria-label": "Rich text editor",
+        "aria-labelledby": labelId,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -455,45 +455,35 @@ const SimpleEditor = ({ inputId, initialContent }) => {
         return false;
       },
       handlePaste: (view, event, slice) => {
-        // Get the plain text from clipboard
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
-          // Check if text contains variable syntax ((variable))
-          const hasVariables = /\(\([^)]+\)\)/.test(text);
+          // Prevent default paste behavior
+          event.preventDefault();
 
-          if (hasVariables) {
-            // Prevent default paste behavior
-            event.preventDefault();
+          // Check if the text contains Markdown syntax
+          const isMarkdown = /[*_`#>-]|\[.*\]\(.*\)/.test(text);
 
-            // Process variables in the text
-            let processedText = text;
-
-            // Replace ((variable)) with HTML spans
-            processedText = processedText.replace(
-              /\(\(([^)]+)\)\)/g,
-              '<span data-type="variable">$1</span>',
-            );
-
-            // Insert the processed HTML
-            if (editor) {
-              editor.commands.insertContent(processedText);
-              return true;
-            }
+          if (isMarkdown) {
+            // Use TipTap's Markdown extension to parse and insert content
+            editor.commands.insertContent(text);
           } else {
-            // No variables, handle as regular markdown
-            // Prevent default paste behavior
-            event.preventDefault();
+            // Handle plain text by splitting into lines
+            const lines = text.split("\n");
 
-            // Use setContent which supports markdown format
-            if (editor) {
-              // Get current content and append the new content
-              const currentContent = editor.storage.markdown.getMarkdown();
-              const newContent = currentContent + "\n\n" + text;
-              editor.commands.setContent(newContent);
-              return true;
-            }
+            // Create an array of paragraph nodes
+            const nodes = lines.map((line) => {
+              return {
+                type: "paragraph",
+                content: line.trim() ? [{ type: "text", text: line }] : [],
+              };
+            });
+
+            // Insert the nodes into the editor
+            editor.commands.insertContent({ type: "doc", content: nodes });
           }
+
+          return true;
         }
 
         // Return false to allow default paste behavior if no text
