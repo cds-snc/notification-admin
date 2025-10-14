@@ -93,9 +93,9 @@
 {%- endmacro %}
 
 {% macro index_field(text=None) -%}
-  <td class="table-field-index">
+  <th scope="row" class="table-field-index">
     {{ text if text != None else caller()  }}
-  </td>
+  </th>
 {%- endmacro %}
 
 {% macro text_field(text, status='', truncate=false, date_format=None, cell_width=None, attributes=None) -%}
