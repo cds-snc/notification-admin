@@ -186,7 +186,7 @@
 /* Basic editor wrapper styles */
 .editor-wrapper {
   background-color: #fff;
-  border: 1px solid #e5e7eb;
+  border: 2px solid black;
   border-radius: 0.75rem;
   color: #0d0d0d;
   display: flex;
@@ -195,8 +195,7 @@
 }
 
 .editor-wrapper:focus-within {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(255, 191, 71) 0px 0px 0px 3px;
 }
 
 .editor-content {
