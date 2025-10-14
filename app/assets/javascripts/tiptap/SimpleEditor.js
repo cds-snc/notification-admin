@@ -47,24 +47,6 @@ const MenuBar = ({ editor, openLinkModal }) => {
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
-  const exportToMarkdown = () => {
-    try {
-      // Use the tiptap-markdown extension's storage method
-      const markdown = editor.storage.markdown.getMarkdown();
-
-      console.log("Markdown output:");
-      console.log(markdown);
-
-      // Copy to clipboard
-      navigator.clipboard.writeText(markdown).then(() => {
-        alert("Markdown copied to clipboard!");
-      });
-    } catch (error) {
-      console.error("Error converting to Markdown:", error);
-      alert("Error converting to Markdown. Check console for details.");
-    }
-  };
-
   return (
     <div className="toolbar">
       {/* Headings group */}
@@ -396,16 +378,6 @@ const MenuBar = ({ editor, openLinkModal }) => {
         </button>
       </div>
       <div className="toolbar-separator"></div>
-
-      <div className="toolbar-group">
-        <button
-          onClick={exportToMarkdown}
-          className="toolbar-button"
-          title="Export to Markdown"
-        >
-          MD
-        </button>
-      </div>
     </div>
   );
 };
