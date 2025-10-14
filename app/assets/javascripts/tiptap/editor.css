@@ -279,3 +279,10 @@
   height: 1.25rem;
   stroke-width: 2;
 }
+
+/* Link Modal Styles */
+.link-modal {
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.35), 0px -2px 3px rgba(0,0,0,0.35), -3px 2px 3px rgba(0,0,0,0.35);
+}
+
+
