@@ -125,4 +125,4 @@ def rte():
             "Subject field", default="Annual newsletter", validators=[DataRequired(message="This cannot be empty")]
         )
 
-    return render_template("views/rte.html", form=ExampleFullForm())
+    return render_template("views/rte.html", form=ExampleFullForm(), showStructure=len(request.args) == 0)

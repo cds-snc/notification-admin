@@ -26,4 +26,14 @@
   More Information:\n
   For more details on our products, services, or any other inquiries, feel free to reach out to our dedicated support team at support@email.com or visit our About page at https://www.canada.ca/en/government/system.html. We value your feedback and are here to assist you in any way we can.\n') }}
 
+  
+{% endblock %}
+
+{% block page_script %}
+  <script type="text/javascript" nonce="{{ request_nonce }}">
+    if ("{{showStructure}}" == "False") {
+      document.querySelector('header').remove();
+      document.querySelector('footer').remove();
+    }
+  </script>
 {% endblock %}
