@@ -12,7 +12,7 @@ export const Weeks = () => {
       onKeyDown={(event) => {
         const key = event.key.replace("Arrow", "");
         // Prevent up and down scrolling with arrows
-        if (key.match(/Up|Down/)) {
+        if (key.match(/Up|Down|Home|End/)) {
           event.preventDefault();
         }
         onKeyDown({ key, dispatch });

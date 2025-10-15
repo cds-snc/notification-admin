@@ -126,15 +126,44 @@ export const afterLastDayInMonth = (state) => {
 
 export const getNextDay = (day, state, direction) => {
   if (day <= 0) {
-    console.log("get date before", day, state, direction);
+    // console.log("get date before", day, state, direction);
 
     return beforeFirstDayInMonth(state);
   }
 
   if (direction !== "left" && Number(day) > Number(state.lastDay)) {
-    console.log("get date after", day, state, direction);
+    // console.log("get date after", day, state, direction);
 
     return afterLastDayInMonth(state);
+  }
+
+  // Handle first/last available day navigation
+  if (direction === "first") {
+    const firstAvailableMonth = yearMonthDay(state.firstAvailableDate);
+    const firstAvailableDay = parseDay(state.firstAvailableDate);
+    
+    if (state.date !== firstAvailableMonth) {
+      return {
+        updateMessage: "",
+        date: firstAvailableMonth,
+        focusedDayNum: Number(firstAvailableDay)
+      };
+    }
+    return { updateMessage: "", focusedDayNum: Number(firstAvailableDay) };
+  }
+
+  if (direction === "last") {
+    const lastAvailableMonth = yearMonthDay(state.lastAvailableDate);
+    const lastAvailableDay = parseDay(state.lastAvailableDate);
+    
+    if (state.date !== lastAvailableMonth) {
+      return {
+        updateMessage: "",
+        date: lastAvailableMonth,
+        focusedDayNum: Number(lastAvailableDay)
+      };
+    }
+    return { updateMessage: "", focusedDayNum: Number(lastAvailableDay) };
   }
 
   return { updateMessage: "", focusedDayNum: day };

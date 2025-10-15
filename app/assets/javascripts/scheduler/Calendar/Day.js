@@ -18,7 +18,7 @@ export const Day = ({ day }) => {
   const isDisabled = isBlockedDay(day);
   const isCurrent = day.isSame(today);
   const formattedDate = yearMonthDay(day);
-  const pressed = isSelected(selected, formattedDate);
+  const pressed = isSelected(selected, formattedDate) == -1 ? false : true;
   const bthState = isDisabled
     ? "Calendar-item--unavailable"
     : "Calendar-item--active";

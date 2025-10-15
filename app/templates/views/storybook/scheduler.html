@@ -1,0 +1,22 @@
+{% from "components/badge.html" import badge %}
+
+{% block maincolumn_content %}
+    
+    <div class="heading-large">Scheduler</div>
+    <div class="mb-12 clear-both contain-floats">
+        <form action="/_storybook?component=scheduler" class='page-footer'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
+            <button type="submit" class="button hidden" id="js-send-now-button">{{ _('Send all now') }}</button>
+            <button type="submit" class="button button-secondary" id="js-send-later-button">
+                {{ _('Schedule for later') }}
+            </button>
+            <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
+            <button type="submit" class="button hidden" id="js-schedule-button">
+                {{ _('Schedule') }}
+            </button>
+        </form>
+    </div>
+    <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+
+    {% endblock %}
