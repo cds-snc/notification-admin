@@ -6,20 +6,19 @@ import { AllStyledComponent } from '@remirror/styles/emotion';
 
 import { NotifyToolbar } from './toolbar';
 import { NotifyPreset } from './preset';
+import { FloatingLinkToolbar } from './components/FloatingLinkToolbar';
 
 export const NotifyEditor = ({
-  placeholder,
   stringHandler,
   children,
   theme,
   ...rest
 }) => {
-  const extensions = useCallback(
-    () => [new PlaceholderExtension({ placeholder }), ...NotifyPreset()],
-    [placeholder],
-  );
-
-  const { manager } = useRemirror({ extensions, stringHandler });
+  const { manager } = useRemirror({
+    extensions: () => [...NotifyPreset()],
+    content: '',
+    stringHandler: stringHandler || 'markdown',
+  });
 
   return (
     <AllStyledComponent>
@@ -27,6 +26,7 @@ export const NotifyEditor = ({
         <Remirror manager={manager} i18nFormat={i18nFormat} {...rest}>
           <NotifyToolbar />
           <EditorComponent />
+          <FloatingLinkToolbar />
           {children}
         </Remirror>
       </ThemeProvider>

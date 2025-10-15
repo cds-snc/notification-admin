@@ -6,6 +6,7 @@ module.exports = {
   target: "web",
   // mode: "development", //development
   mode: "production",
+  //devtool: 'source-map',
   entry: {
     index: ["./app/assets/javascripts/index.js"],
     scheduler: {

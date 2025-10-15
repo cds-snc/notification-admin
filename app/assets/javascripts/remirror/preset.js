@@ -18,6 +18,10 @@ import { ShortcutsExtension } from '@remirror/extension-shortcuts';
 import { StrikeExtension } from '@remirror/extension-strike';
 import { TrailingNodeExtension } from '@remirror/extension-trailing-node';
 import { UnderlineExtension } from '@remirror/extension-underline';
+import { HighlightExtension } from './extensions/HighlightExtension';
+import { MarkdownExtension } from 'remirror/extensions';
+import { MarkdownLinkInputRuleExtension } from './extensions/MarkdownLinkInputRuleExtension';
+
 
 const DEFAULT_OPTIONS = {
   ...BidiExtension.defaultOptions,
@@ -26,6 +30,7 @@ const DEFAULT_OPTIONS = {
   ...DropCursorExtension.defaultOptions,
   ...TrailingNodeExtension.defaultOptions,
   ...HeadingExtension.defaultOptions,
+  ...MarkdownExtension.defaultOptions
 };
 
 /**
@@ -46,9 +51,15 @@ export function NotifyPreset(options = {}) {
   const bulletListExtension = new BulletListExtension();
   const orderedListExtension = new OrderedListExtension();
   const shortcutsExtension = new ShortcutsExtension();
+  const highlightExtension = new HighlightExtension();
+
+  const markdownExtension = new MarkdownExtension();
+  //const markdownLinkInputRuleExtension = new MarkdownLinkInputRuleExtension();
 
   const { selectTextOnClick } = options;
-  const linkExtension = new LinkExtension({ autoLink: true, selectTextOnClick });
+  const linkExtension = new LinkExtension({
+    autoLink: false
+  });
 
   const { autoUpdate, defaultDirection, excludeNodes } = options;
   const bidiExtension = new BidiExtension({ autoUpdate, defaultDirection, excludeNodes });
@@ -89,6 +100,7 @@ export function NotifyPreset(options = {}) {
     gapCursorExtension,
     shortcutsExtension,
     trailingNodeExtension,
+    //markdownLinkInputRuleExtension,
 
     // Nodes
     hardBreakExtension,
@@ -106,5 +118,8 @@ export function NotifyPreset(options = {}) {
     italicExtension,
     linkExtension,
     underlineExtension,
+    highlightExtension,
+
+    markdownExtension
   ];
 }

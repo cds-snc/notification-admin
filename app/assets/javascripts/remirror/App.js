@@ -77,12 +77,11 @@ const RemirrorEditor = ({ config }) => {
     return (
         <div className="remirror-theme">
             <NotifyEditor
-                placeholder="Start typing..."
-                stringHandler="html"
+                stringHandler="markdown"
                 initialContent={config.initialContent}
                 hooks={hooks}
             />
-            <div class="py-4">
+            <div className="py-4">
                 <button className="button" onClick={handleJsonSaveClick}>
                     View JSON
                 </button>
