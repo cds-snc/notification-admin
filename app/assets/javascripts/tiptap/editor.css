@@ -196,7 +196,10 @@
 }
 
 .editor-wrapper:focus-within {
-  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(255, 191, 71) 0px 0px 0px 3px;
+  box-shadow:
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgb(255, 191, 71) 0px 0px 0px 3px;
 }
 
 .editor-content {
@@ -218,8 +221,8 @@
   border-radius: 0.75rem 0.75rem 0 0;
   flex-wrap: wrap;
   position: sticky;
-  top: 0; 
-  z-index: 1000; 
+  top: 0;
+  z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -286,7 +289,8 @@
 
 /* Link Modal Styles */
 .link-modal {
-  box-shadow: 2px 2px 3px rgba(0,0,0,0.35), 0px -2px 3px rgba(0,0,0,0.35), -3px 2px 3px rgba(0,0,0,0.35);
+  box-shadow:
+    2px 2px 3px rgba(0, 0, 0, 0.35),
+    0px -2px 3px rgba(0, 0, 0, 0.35),
+    -3px 2px 3px rgba(0, 0, 0, 0.35);
 }
-
-

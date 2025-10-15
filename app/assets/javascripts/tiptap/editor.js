@@ -8,7 +8,11 @@ import SimpleEditor from "./SimpleEditor";
  */
 export const load = function (element, id, labelId, initialContent) {
   ReactDOM.render(
-    <SimpleEditor inputId={id} labelId={labelId} initialContent={initialContent} />,
+    <SimpleEditor
+      inputId={id}
+      labelId={labelId}
+      initialContent={initialContent}
+    />,
     element,
   );
 };
