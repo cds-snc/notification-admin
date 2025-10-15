@@ -1,16 +1,12 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createMarkPositioner, LinkExtension } from 'remirror/extensions';
 import {
-  EditorComponent,
   FloatingWrapper,
-  Remirror,
-  ThemeProvider,
   useActive,
   useAttrs,
   useChainedCommands,
   useCurrentSelection,
   useExtensionEvent,
-  useRemirror,
   useUpdateReason,
 } from '@remirror/react';
 import { CommandButton, FloatingToolbar } from '@remirror/react-ui';

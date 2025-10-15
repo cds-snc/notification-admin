@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { PlaceholderExtension } from 'remirror/extensions';
+import React from 'react';
 import { i18nFormat } from '@remirror/i18n';
 import { EditorComponent, Remirror, ThemeProvider, useRemirror } from '@remirror/react';
 import { AllStyledComponent } from '@remirror/styles/emotion';

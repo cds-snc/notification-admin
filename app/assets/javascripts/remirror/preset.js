@@ -20,7 +20,7 @@ import { TrailingNodeExtension } from '@remirror/extension-trailing-node';
 import { UnderlineExtension } from '@remirror/extension-underline';
 import { HighlightExtension } from './extensions/HighlightExtension';
 import { MarkdownExtension } from 'remirror/extensions';
-import { MarkdownLinkInputRuleExtension } from './extensions/MarkdownLinkInputRuleExtension';
+
 
 
 const DEFAULT_OPTIONS = {
