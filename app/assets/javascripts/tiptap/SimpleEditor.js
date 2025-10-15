@@ -468,7 +468,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
             // Replace variables with HTML spans
             const processedText = text.replace(
               /\(\(([^)]+)\)\)/g,
-              '<span data-type="variable">$1</span>'
+              '<span data-type="variable">$1</span>',
             );
 
             // Insert the processed HTML at the current cursor position
