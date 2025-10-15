@@ -141,12 +141,12 @@ export const getNextDay = (day, state, direction) => {
   if (direction === "first") {
     const firstAvailableMonth = yearMonthDay(state.firstAvailableDate);
     const firstAvailableDay = parseDay(state.firstAvailableDate);
-    
+
     if (state.date !== firstAvailableMonth) {
       return {
         updateMessage: "",
         date: firstAvailableMonth,
-        focusedDayNum: Number(firstAvailableDay)
+        focusedDayNum: Number(firstAvailableDay),
       };
     }
     return { updateMessage: "", focusedDayNum: Number(firstAvailableDay) };
@@ -155,12 +155,12 @@ export const getNextDay = (day, state, direction) => {
   if (direction === "last") {
     const lastAvailableMonth = yearMonthDay(state.lastAvailableDate);
     const lastAvailableDay = parseDay(state.lastAvailableDate);
-    
+
     if (state.date !== lastAvailableMonth) {
       return {
         updateMessage: "",
         date: lastAvailableMonth,
-        focusedDayNum: Number(lastAvailableDay)
+        focusedDayNum: Number(lastAvailableDay),
       };
     }
     return { updateMessage: "", focusedDayNum: Number(lastAvailableDay) };

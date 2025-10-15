@@ -40,7 +40,7 @@ export const defaultState = (
 
   // Add defensive check
   if (!firstDay) {
-    console.warn('firstDay is undefined, falling back to default');
+    console.warn("firstDay is undefined, falling back to default");
     firstDay = defautFirstDay;
   }
 
@@ -223,21 +223,21 @@ export const StateProvider = ({ value, children }) => {
         break;
       case "SELECT_FIRST":
         // Navigate to first available day
-          const firstDayNum = getFirstDay(state.firstAvailableDate);
+        const firstDayNum = getFirstDay(state.firstAvailableDate);
 
-          newState = {
-            ...state,
-            ...getNextDay(Number(state.focusedDayNum), state, "first"),
-          };
+        newState = {
+          ...state,
+          ...getNextDay(Number(state.focusedDayNum), state, "first"),
+        };
         break;
       case "SELECT_LAST":
-        // Navigate to last available day  
-          const lastDayNum = getLastDay(state.lastAvailableDate);
+        // Navigate to last available day
+        const lastDayNum = getLastDay(state.lastAvailableDate);
 
-          newState = {
-            ...state,
-            ...getNextDay(Number(state.focusedDayNum), state, "last"),
-          };
+        newState = {
+          ...state,
+          ...getNextDay(Number(state.focusedDayNum), state, "last"),
+        };
         break;
       default:
         newState = state;
