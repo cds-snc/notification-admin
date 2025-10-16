@@ -14,14 +14,10 @@ export const onKeyDown = ({ key, dispatch }) => {
         dispatch({ type: "KEY_DOWN", payload: "" });
         break;
       case "Home":
-        dispatch({ type: "SELECT_FIRST", payload: "" });
-        break;
-      case "End":
-        dispatch({ type: "SELECT_LAST", payload: "" });
-        break;
       case "PageUp":
         dispatch({ type: "SELECT_FIRST", payload: "" });
         break;
+      case "End":
       case "PageDown":
         dispatch({ type: "SELECT_LAST", payload: "" });
         break;
