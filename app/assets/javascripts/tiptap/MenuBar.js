@@ -30,15 +30,18 @@ const AccessibleToolbar = ({ children, label }) => {
     return Array.from(toolbarRef.current.querySelectorAll(focusableSelectors));
   }, []);
 
-  const updateTabIndex = useCallback((focusIndex = 0) => {
-    const focusableElements = getFocusableElements();
+  const updateTabIndex = useCallback(
+    (focusIndex = 0) => {
+      const focusableElements = getFocusableElements();
 
-    focusableElements.forEach((element, index) => {
-      element.tabIndex = index === focusIndex ? 0 : -1;
-    });
+      focusableElements.forEach((element, index) => {
+        element.tabIndex = index === focusIndex ? 0 : -1;
+      });
 
-    currentFocusIndexRef.current = focusIndex;
-  }, [getFocusableElements]);
+      currentFocusIndexRef.current = focusIndex;
+    },
+    [getFocusableElements],
+  );
 
   const moveFocus = useCallback(
     (newIndex) => {
@@ -56,13 +59,15 @@ const AccessibleToolbar = ({ children, label }) => {
       updateTabIndex(targetIndex);
       focusableElements[targetIndex]?.focus();
     },
-    [getFocusableElements, updateTabIndex]
+    [getFocusableElements, updateTabIndex],
   );
 
   const handleKeyDown = useCallback(
     (event) => {
       const focusableElements = getFocusableElements();
-      const currentIndex = focusableElements.findIndex((el) => el === event.target);
+      const currentIndex = focusableElements.findIndex(
+        (el) => el === event.target,
+      );
 
       if (currentIndex === -1) return;
 
@@ -89,7 +94,7 @@ const AccessibleToolbar = ({ children, label }) => {
           break;
       }
     },
-    [getFocusableElements, moveFocus]
+    [getFocusableElements, moveFocus],
   );
 
   useEffect(() => {
@@ -131,7 +136,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           }
           title="Heading 1"
         >
-          {editor.isActive("heading", { level: 1 }) ? "Remove Heading 1" : "Apply Heading 1"}
+          {editor.isActive("heading", { level: 1 })
+            ? "Remove Heading 1"
+            : "Apply Heading 1"}
         </button>
         <button
           onClick={() =>
@@ -144,7 +151,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="Heading 2"
         >
           <span className="sr-only">
-            {editor.isActive("heading", { level: 2 }) ? "Remove Heading 2" : "Apply Heading 2"}
+            {editor.isActive("heading", { level: 2 })
+              ? "Remove Heading 2"
+              : "Apply Heading 2"}
           </span>
           H2
         </button>
@@ -252,7 +261,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="Bullet List"
         >
           <span className="sr-only">
-            {editor.isActive("bulletList") ? "Remove Bullet List" : "Apply Bullet List"}
+            {editor.isActive("bulletList")
+              ? "Remove Bullet List"
+              : "Apply Bullet List"}
           </span>
           <svg
             width="20"
@@ -280,7 +291,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="Numbered List"
         >
           <span className="sr-only">
-            {editor.isActive("orderedList") ? "Remove Numbered List" : "Apply Numbered List"}
+            {editor.isActive("orderedList")
+              ? "Remove Numbered List"
+              : "Apply Numbered List"}
           </span>
           <svg
             width="20"
@@ -355,7 +368,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="Blockquote"
         >
           <span className="sr-only">
-            {editor.isActive("blockquote") ? "Remove Blockquote" : "Apply Blockquote"}
+            {editor.isActive("blockquote")
+              ? "Remove Blockquote"
+              : "Apply Blockquote"}
           </span>
           <svg
             width="20"
@@ -385,7 +400,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="English Block"
         >
           <span className="sr-only">
-            {editor.isActive("englishBlock") ? "Remove English Block" : "Apply English Block"}
+            {editor.isActive("englishBlock")
+              ? "Remove English Block"
+              : "Apply English Block"}
           </span>
           EN
         </button>
@@ -398,7 +415,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="French Block"
         >
           <span className="sr-only">
-            {editor.isActive("frenchBlock") ? "Remove French Block" : "Apply French Block"}
+            {editor.isActive("frenchBlock")
+              ? "Remove French Block"
+              : "Apply French Block"}
           </span>
           FR
         </button>
