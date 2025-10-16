@@ -50,6 +50,10 @@ export const LinkButton = () => {
     const { empty } = useCurrentSelection();
     const attrs = useAttrs();
     
+    // Check if cursor is currently within a link (for active state)
+    const active = useActive().link();
+    const enabled = commands.updateLink.enabled();
+    
     // Local state for input interface
     const [isEditing, setIsEditing] = useState(false);
     const [href, setHref] = useState('');
@@ -158,10 +162,6 @@ export const LinkButton = () => {
             }
         }
     }, []);
-
-    // Check if cursor is currently within a link (for active state)
-    const active = useActive().link();
-    const enabled = commands.updateLink.enabled();
 
     // Add keyboard shortcut for Ctrl+K (or Cmd+K on Mac) using useKeymap
     // This will override any default LinkExtension shortcuts.

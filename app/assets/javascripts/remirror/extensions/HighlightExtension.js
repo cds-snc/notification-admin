@@ -1,16 +1,10 @@
 import {
-  ApplySchemaAttributes,
   command,
-  CommandFunction,
   extension,
   ExtensionTag,
   getTextSelection,
   keyBinding,
-  KeyBindingProps,
   MarkExtension,
-  MarkExtensionSpec,
-  MarkSpecOverride,
-  PrimitiveSelection,
   toggleMark,
 } from 'remirror';
 
