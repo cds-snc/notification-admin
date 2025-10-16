@@ -14,7 +14,10 @@ export const Day = ({ day }) => {
   const { translate } = useContext(I18nContext);
   const { $D: dayNum = 0 } = day;
   const { $D: todayDayNum = 0 } = today;
-  const tabIndex = dayNum !== todayDayNum ? { tabIndex: -1 } : {};
+  const tabIndex =
+    Number(dayNum) === Number(focusedDayNum)
+      ? { tabIndex: 0 }
+      : { tabIndex: -1 };
   const isDisabled = isBlockedDay(day);
   const isCurrent = day.isSame(today);
   const formattedDate = yearMonthDay(day);
