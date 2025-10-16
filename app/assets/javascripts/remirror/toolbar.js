@@ -21,10 +21,10 @@ export const NotifyToolbar = () => (
     orientation="horizontal"
   >
     <Toolbar>
-      <HistoryButtonGroup />
+      {/* <HistoryButtonGroup />
       <VerticalDivider />
       <DataTransferButtonGroup />
-      <VerticalDivider />
+      <VerticalDivider /> */}
       <HeadingLevelButtonGroup />
       <VerticalDivider />
       <BasicFormattingButtonGroup />

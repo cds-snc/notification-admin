@@ -81,7 +81,7 @@ const RemirrorEditor = ({ config }) => {
                 initialContent={config.initialContent}
                 hooks={hooks}
             />
-            <div className="py-4">
+            {/* <div className="py-4">
                 <button className="button" onClick={handleJsonSaveClick}>
                     View JSON
                 </button>
@@ -100,7 +100,7 @@ const RemirrorEditor = ({ config }) => {
                     rows="25"
                     cols="100"
                 />
-            </div>
+            </div> */}
         </div>
     );
 };

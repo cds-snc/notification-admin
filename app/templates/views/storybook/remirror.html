@@ -1,5 +1,6 @@
 
-{% block storybook_content %}
+{% block maincolumn_content %}
+<h2 class="heading-medium mb-gutter">Remirror rich text editor</h2>
   <div class="form-group">
     <input type="hidden" id="message_content" name="content" value="">
     <div id="remirror-theme"
@@ -14,5 +15,8 @@
 
   <script nonce="{{ request_nonce }}" type="text/javascript"
           src="{{ asset_url('javascripts/remirror.min.js') }}">
+  </script>
+  <script type="text/javascript" nonce="{{ request_nonce }}">
+    document.getElementById("storybook-menu").remove();
   </script>
 {% endblock %}
