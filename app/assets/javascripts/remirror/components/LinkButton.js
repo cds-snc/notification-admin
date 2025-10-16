@@ -67,15 +67,28 @@ export const LinkButton = () => {
         if (!enabled) {
             return;
         }
-        // If we're in an existing link, select it first for editing
-        if (active) {
-            chain.selectLink().run();
-        }
+        // TODO: This is hacky, the AccessibleToolbar intercepts key events before
+        // they properly bubble up to the linkbutton, causing keyboard activation
+        // of the link button to not activate the popup dialog until focus is returned
+        // to the editor itself. We don't have this issue when using mouse clicks or
+        // when using the shortcut mod+k because focus never leaves the editor
 
-        // Get current link URL if we're editing an existing link
-        const currentHref = active ? attrs.link()?.href || '' : '';
-        setHref(currentHref);
-        setIsEditing(true);
+        // Force focus back to editor to ensure commands are enabled
+        const editorElement = document.querySelector('[data-remirror-editor]') || 
+                            document.querySelector('.ProseMirror');
+        if (editorElement) {
+            editorElement.focus();
+            
+            // Wait for focus to settle, then execute
+            setTimeout(() => {
+                if (active) {
+                    chain.selectLink().run();
+                }
+                const currentHref = active ? attrs.link()?.href || '' : '';
+                setHref(currentHref);
+                setIsEditing(true);
+            }, 0);
+        }
     }, [chain, active, enabled, attrs]);
 
     /**
