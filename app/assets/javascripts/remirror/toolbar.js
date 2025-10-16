@@ -12,6 +12,7 @@ import { VerticalDivider } from '@remirror/react-ui';
 
 //import { ToggleBidiButton } from './components/bidiButton';
 import { ToggleVariableButton } from './components/VariableButton';
+import { LinkButton } from './components/LinkButton';
 import { AccessibleToolbar } from './components/AccessibleToolbar';
 
 export const NotifyToolbar = () => (
@@ -28,8 +29,10 @@ export const NotifyToolbar = () => (
       <VerticalDivider />
       <BasicFormattingButtonGroup />
       <VerticalDivider />
-      <ListButtonGroup />
+      <LinkButton />
       <ToggleVariableButton/>
+      <VerticalDivider />
+      <ListButtonGroup />
       {/* <ToggleBidiButton/> */}
     </Toolbar>
   </AccessibleToolbar>

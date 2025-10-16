@@ -5,7 +5,6 @@ import { AllStyledComponent } from '@remirror/styles/emotion';
 
 import { NotifyToolbar } from './toolbar';
 import { NotifyPreset } from './preset';
-import { FloatingLinkToolbar } from './components/FloatingLinkToolbar';
 
 export const NotifyEditor = ({
   stringHandler,
@@ -25,7 +24,6 @@ export const NotifyEditor = ({
         <Remirror manager={manager} i18nFormat={i18nFormat} {...rest}>
           <NotifyToolbar />
           <EditorComponent />
-          <FloatingLinkToolbar />
           {children}
         </Remirror>
       </ThemeProvider>

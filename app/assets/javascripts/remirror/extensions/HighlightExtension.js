@@ -5,6 +5,8 @@ import {
   extension,
   ExtensionTag,
   getTextSelection,
+  keyBinding,
+  KeyBindingProps,
   MarkExtension,
   MarkExtensionSpec,
   MarkSpecOverride,
@@ -91,5 +93,10 @@ export class HighlightExtension extends MarkExtension {
       dispatch?.(tr.removeMark(from, to, this.type));
       return true;
     };
+  }
+
+  @keyBinding({ shortcut: 'Mod-Shift-h', command: 'toggleHighlight' })
+  shortcut(props) {
+    return this.toggleHighlight()(props);
   }
 }

@@ -21,7 +21,7 @@ export const ToggleVariableButton = () => {
             enabled={enabled}
             onSelect={handleSelect}
             icon="bracesLine"
-            label="Toggle variable"
+            label={`Toggle variable`}
         />
     );
 };
