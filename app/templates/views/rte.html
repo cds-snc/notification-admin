@@ -1,0 +1,70 @@
+{% extends "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+
+
+{% block maincolumn_content %}
+  <h1 class="heading-medium">
+    <span>Edit template</span>
+  </h1>
+  <div class="md:w-2/3">
+    {{ textbox(form.name, label='Template name', autocomplete='name', width="w-full", testid="test-name", required=false) }}
+    {{ textbox(form.subject, label='Subject line of the email', hint="Tell recipients what the email is about. Try to use less than 10 words.", autocomplete='name', width="w-full", testid="test-name", required=false) }}
+  </div>
+  <div class="form-group">
+    <label class="form-label" id="editor-label">Email message</label>
+    <input type="hidden" id="message_content" name="content" value="">
+    <div id="remirror-theme"
+        data-module="webpack-loader"
+        data-webpack-loader="Remirror"
+        data-field-name="message_content"
+        data-placeholder="Type your message here..."
+        data-initial-content="
+Hi,
+
+We hope this newsletter finds you well! As we dive into the new year, we want to ensure you\'re up to speed with the latest happenings. Here\'s a quick recap!
+
+Things You May Have Missed:
+
+We are flying to the moon
+
+We are investing in modular home fabrication
+
+Steps to Sign Up:
+
+Visit our website
+
+Look for the News section on the homepage.
+
+Look for the Subscribe link on the News page
+
+Enter your email address in the provided field.
+
+Click Subscribe to start receiving our regular updates directly in your inbox.
+
+More Information:
+
+For more details on our products, services, or any other inquiries, feel free to reach out to our dedicated support team at support@email.com or visit our About page at https://www.canada.ca/en/government/system.html. We value your feedback and are here to assist you in any way we can."
+        data-readonly="false">
+    </div>
+  </div>
+  <script nonce="{{ request_nonce }}" type="text/javascript"
+          src="{{ asset_url('javascripts/remirror.min.js') }}">
+  </script>
+  <script nonce="{{ request_nonce }}" type="text/javascript">
+    // Initialize Remirror after script loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const remirrorElement = document.getElementById('remirror-theme');
+      if (remirrorElement && window.Remirror) {
+        window.Remirror.load(remirrorElement);
+      }
+    });
+  </script>
+{% endblock %}
+{% block page_script %}
+  <script type="text/javascript" nonce="{{ request_nonce }}">
+    if ("{{showStructure}}" == "False") {
+      document.querySelector('header').remove();
+      document.querySelector('footer').remove();
+    }
+  </script>
+{% endblock %}
