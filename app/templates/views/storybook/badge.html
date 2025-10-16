@@ -1,28 +1,43 @@
 {% from "components/badge.html" import badge %}
+{% from "views/storybook/storybook-components.html" import component_code_example, macro_prop_table %}
+
 
 {% block maincolumn_content %}
     
     <div class="heading-large">Badge component examples</div>
 
-    <hr />
-    <p>Variants:</p>
-    <div class="space-x-4">
-        {{ badge('Success', 'success') }}
-        {{ badge('Default', 'default') }}
-        {{ badge('Custom', 'success', bg_class='bg-blue-300') }}
-        {{ badge('Sent', 'default', icon_override='fa-paper-plane') }}
-        {{ badge('No Icon', hide_icon=true) }}
-    </div>
+    {{ macro_prop_table("badge", [
+        "text:string", 
+        "variant:string=gray|green|lime|red|yellow|blue", 
+        "icon:string=None", 
+        "icon_label:string=None", 
+        "testid:string=None", 
+        "id:string=None"
+        ]) }}
 
-    <h2 class="mt-8">Usage</h2>
-    <pre>
-    <code>
-    {% raw %}{{ badge('Success', 'success') }}
-    {{ badge('Default', 'default') }}
-    {{ badge('Custom', 'success', bg_class='bg-blue-300') }}
-    {{ badge('Sent', 'default', icon_override='fa-paper-plane') }}
-    {{ badge('No Icon', hide_icon=true) }}
-    {% endraw %}
-    </code>
-</pre>
+    <p>The badge component is used to highlight new or important information. It can be used with or without an icon.</p>
+    <p>Moderate use of this component is key to its success, if there are too many badges, they become less effective in attracting attention.</p>
+
+    <p>The badge has two parts:</p>
+    <ol class="list-number list-inside mb-gutter">
+        <li>The label (required)</li>
+        <li>The icon (optional)</li>
+        <li>The icon meaning (optional)</li>
+    </ol>
+
+    <p>When using an icon, you need to think about what it represents. It should usually act as a way to shorten a prefix to the label, such as "Category: General communication". Sometimes, you need no prefix at all.</p>
+    <p>The badge component will not render an icon if you don't have an icon label, as this is important for screen readers.</p>
+    <p>The badge component has 6 variants to choose from, mostly based on the color you need: gray, green, blue, yellow, lime, red, purple, and rose.</p>
+    <p>There are two keyword variants for success (green) and default (gray).</p>
+
+    <h2 class="heading-medium mt-8">Examples</h2>
+
+    {% call component_code_example([badge('Default'), badge('Success', variant='green'), badge('General communication', variant='lime', icon='fa-tag', icon_label='Category'), badge('Not completed', variant='red')]) %}
+{% raw %}
+{{ badge('Default', variant='gray') }}
+{{ badge('Success', variant='green') }}
+{{ badge('General communication', variant='lime', icon='fa-tag', icon_label='Category') }}
+{{ badge('Not completed', variant='red') }}
+{% endraw %}
+    {% endcall %}
 {% endblock %}
