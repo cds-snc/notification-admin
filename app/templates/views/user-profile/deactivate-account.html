@@ -1,0 +1,46 @@
+{% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% set title = _("Are you sure you want to deactivate your account?") %}
+{% set back_link = url_for('main.user_profile') %}
+
+{% block per_page_title %}
+  {{ title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    title,
+    back_link=back_link
+  ) }}
+
+  <div class="grid-row contain-floats">
+    <div class="md:w-2/3 float-left py-0 px-0 px-gutterHalf box-border">
+
+      <p>{{ _("After deactivating, you'll:") }}</p>
+      <ul class="list list-bullet">
+        <li>{{ _('No longer have access to GC Notify services.') }}</li>
+        <li>{{ _('Receive a final email confirming deactivation') }}</li>
+      </ul>
+
+      <p>{{ _("We will:") }}</p>
+      <ul class="list list-bullet">
+        <li>{{ _('Sign you out of GC Notify.') }}</li>
+        <li>{{ _('Suspend services that now have only one team member.') }}</li>
+        <li>{{ _('Remove your profile in our system.') }}</li>
+        <li>{{ _('Keep your user name and email in case you need information in future.') }}</li>
+      </ul>
+
+      {% call form_wrapper(action=url_for('main.deactivate_account'), method="post") %}
+        {{ page_footer(
+          button_text=_('Continue'),
+          cancel_button_link=back_link
+        ) }}
+      {% endcall %}
+    </div>
+  </div>
+
+{% endblock %}

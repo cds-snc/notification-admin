@@ -13,7 +13,7 @@ from flask import (
     url_for,
 )
 from flask_babel import _
-from flask_login import current_user
+from flask_login import current_user, logout_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
@@ -752,4 +752,37 @@ def user_profile_2fa_authenticate():
         thing=_("email address"),
         form=form,
         back_link=url_for(".user_profile"),
+    )
+
+
+@main.route("/user-profile/deactivate", methods=["GET", "POST"])
+@user_is_logged_in
+def deactivate_account():
+    # First step: show info / warning page. POST moves to password auth.
+    if request.method == "POST":
+        return redirect(url_for(".deactivate_account_authenticate"))
+    return render_template(
+        "views/user-profile/deactivate-account.html",
+        back_link=url_for(".user_profile"),
+    )
+
+
+@main.route("/user-profile/deactivate/authenticate", methods=["GET", "POST"])
+@user_is_logged_in
+def deactivate_account_authenticate():
+    def _check_password(pwd):
+        return user_api_client.verify_password(current_user.id, pwd)
+
+    form = ConfirmPasswordForm(_check_password)
+
+    if form.validate_on_submit():
+        # TODO: add function to deactive the users account
+        # TODO: Change the below redirect to the sign in page
+        logout_user()
+
+    return render_template(
+        "views/user-profile/deactivate-profile.html",
+        thing=_("account"),
+        form=form,
+        back_link=url_for(".deactivate_account"),
     )
