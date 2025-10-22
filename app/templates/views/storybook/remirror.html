@@ -1,0 +1,19 @@
+
+{% block maincolumn_content %}
+<h2 class="heading-medium mb-gutter">Remirror rich text editor</h2>
+  <div class="form-group">
+    <input type="hidden" id="message_content" name="content" value="">
+    <div id="remirror-theme"
+        data-module="webpack-loader"
+        data-webpack-loader="Remirror"
+        data-field-name="message_content"
+        data-placeholder="Type your message here..."
+        data-initial-content=""
+        data-readonly="false">
+    </div>
+  </div>
+
+  <script nonce="{{ request_nonce }}" type="text/javascript"
+          src="{{ asset_url('javascripts/remirror.min.js') }}">
+  </script>
+{% endblock %}

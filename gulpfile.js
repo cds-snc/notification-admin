@@ -85,9 +85,9 @@ const javascripts = () => {
         //paths.npm + "diff-dom/diffDOM.js",
         paths.npm + "textarea-caret/index.js",
         paths.npm +
-          "accessible-autocomplete/dist/accessible-autocomplete.min.js",
+        "accessible-autocomplete/dist/accessible-autocomplete.min.js",
         paths.npm +
-          "@cdssnc/sanitize-pii/dist/umd/sanitize-pii.min.js",
+        "@cdssnc/sanitize-pii/dist/umd/sanitize-pii.min.js",
       ])
     )
     .pipe(plugins.uglify())
@@ -96,6 +96,7 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
+        paths.src + "javascripts/remirror.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
