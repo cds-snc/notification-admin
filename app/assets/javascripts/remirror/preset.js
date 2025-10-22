@@ -58,7 +58,7 @@ export function NotifyPreset(options = {}) {
 
   const { selectTextOnClick } = options;
   const linkExtension = new LinkExtension({
-    autoLink: false,
+    autoLink: true,
     shortcuts: {} // Disable all default shortcuts
   });
 

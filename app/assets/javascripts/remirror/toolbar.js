@@ -6,6 +6,8 @@ import {
   HeadingLevelButtonGroup,
   HistoryButtonGroup,
   ListButtonGroup,
+  ToggleBlockquoteButton,
+  InsertHorizontalRuleButton
 } from '@remirror/react-ui';
 import { Toolbar } from '@remirror/react-ui';
 import { VerticalDivider } from '@remirror/react-ui';
@@ -28,6 +30,9 @@ export const NotifyToolbar = () => (
       <HeadingLevelButtonGroup />
       <VerticalDivider />
       <BasicFormattingButtonGroup />
+      <VerticalDivider />
+      <ToggleBlockquoteButton />
+      <InsertHorizontalRuleButton />
       <VerticalDivider />
       <LinkButton />
       <ToggleVariableButton/>
