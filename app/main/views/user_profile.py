@@ -776,8 +776,8 @@ def deactivate_account_authenticate():
     form = ConfirmPasswordForm(_check_password)
 
     if form.validate_on_submit():
-        # TODO: add function to deactive the users account
-        # TODO: Change the below redirect to the sign in page
+        session[HAS_AUTHENTICATED] = True
+        user_api_client.suspend_user(current_user.id)
         logout_user()
 
     return render_template(
