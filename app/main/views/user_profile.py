@@ -776,6 +776,8 @@ def deactivate_account_authenticate():
     form = ConfirmPasswordForm(_check_password)
 
     if form.validate_on_submit():
+        # TODO: The below has to be tested
+        # TODO: Potential try except block?
         session[HAS_AUTHENTICATED] = True
         user_api_client.suspend_user(current_user.id)
         logout_user()
