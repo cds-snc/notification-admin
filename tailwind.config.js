@@ -234,7 +234,7 @@ module.exports = {
         10: "10px",
       },
       fontFamily: {
-        sans: ["lato"],
+        sans: ["Lato", "Arial", "sans-serif"],
         body: ["Noto Sans", "Arial", "sans-serif"],
         monospace: ["Noto Mono", "monospace"],
         arabic: ["Noto Sans Arabic", "Arial", "sans-serif"],
