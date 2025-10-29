@@ -35,4 +35,10 @@
         {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view', testid="user_profile_disable_platform_admin_view") }}
       {% endif %}
     </div>
+    <h2 class="heading-large">{{ _("Account Management") }}</h2>
+    <div>
+      <a href="{{ url_for('main.deactivate_account')}}">
+        {{ _('Deactivate your account') }}
+      </a>
+    </div>
 {% endblock %}

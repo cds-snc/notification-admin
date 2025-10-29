@@ -303,5 +303,9 @@ class UserApiClient(NotifyAdminAPIClient):
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
 
+    def suspend_user(self, user_id):
+        endpoint = f"/user/{user_id}/deactivate"
+        return self.post(endpoint, {})
+
 
 user_api_client = UserApiClient()
