@@ -15,10 +15,33 @@
   </div>
   {% endif %}
 
-  <h1 id="{{ id_text }}" class="heading-large">{{ h1 }}</h1>
+  <h1 {% if id_text %}id="{{ id_text }}"{% endif %} class="heading-large">{{ h1 }}</h1>
 
 {% endmacro %}
 
+{% macro multi_line_page_header(
+  lines,
+  back_link=None,
+  sub_text=None,
+  id_text=None,
+  back_link_aria_label=None
+) %}
+
+  {% if back_link %}
+    {{ govuk_back_link(back_link, aria_label=back_link_aria_label) }}
+  {% endif %}
+  {% if sub_text %}
+  <div class="text-small text-gray-grey1 my-5">
+    <p>{{ sub_text }}</p>
+  </div>
+  {% endif %}
+
+  <h1 id="{{ id_text }}" class="heading-large">
+    {% for line in lines %}
+      <span class="shim">{{ line }}</span>
+    {% endfor %}
+  </h1>
+{% endmacro %}
 
 {% macro govuk_back_link(back_link, aria_label=None) %}
   {% if aria_label %}

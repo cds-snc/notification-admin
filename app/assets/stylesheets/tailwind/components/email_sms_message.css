@@ -53,5 +53,11 @@
   .email-message-body li:first-child {
     margin-top: 0 !important;
   }
+
+  /* Force reset padding and margin for nested list tables */
+  .email-message-body li table[role="presentation"] {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
   /*! purgecss end ignore */
 }

@@ -16,8 +16,10 @@
     }
 
     $menu.attr("aria-expanded", true);
+    $items.children().find("[href]").attr("tabindex", "-1");
+    $items.children().first().find("[href]").trigger("focus");
+    $items.children().first().find("[href]").attr("tabindex", "0");
     $menu.isExpanded = true;
-    $items.children()[0].querySelector("a").focus();
   }
 
   function close($menu, $items) {
@@ -39,6 +41,25 @@
   }
 
   /**
+   * Closes the menu and detaches any global event handlers that were attached when the menu
+   * was opened.
+   * This is called when menu items with the `data-menu-close-on-click` attribute are clicked,
+   * as it signifies that the item will not navigate to a new page and may instead modify the
+   * DOM in some way, requiring us to clean up our event handlers after closing the menu to
+   * ensure they do not interfere with any other components on the page.
+   * e.g. Preserving tab navigation, a modal dialog was opened, new form elements were added
+   * to the page, etc.
+   *
+   * @param {jQuery} $menu The menu button that controls the disclosure menu items container
+   * @param {jQuery} $items The unordered list containing menu items
+   */
+  function closeAndDetach($menu, $items) {
+    close($menu, $items);
+    // Detach global keydown handlers
+    $(window).off("keydown");
+  }
+
+  /**
    * Toggles the aria-expanded state of the menu to show/hide the disclosure menu's items.
    * Before opening a menu, it checks for any other menus that may be open and closes them
    *
@@ -54,7 +75,7 @@
         menu.getAttribute("aria-expanded") == "true" && menu !== $menu[0],
     );
     openMenus.forEach((menu) => {
-      close($(menu), $(`ul[id=${$(menu).attr("data-menu-items")}]`));
+      close($(menu), $(`ul[id=${$(menu).attr("aria-controls")}]`));
     });
 
     // We're using aria-expanded to determine the open/close state of the menu.
@@ -96,55 +117,53 @@
    * @param {jQuery Object} $items The unordered list containing menu items
    */
   function handleKeyBasedMenuNavigation(event, $menu, $items) {
-    var menuItems = $items.children();
-
     if ($menu.attr("aria-expanded") == "true") {
-      // Support for Home/End on Windows and Linux + Cmd + Arrows for Mac
-      if (event.key == "Home" || (event.metaKey && event.key == "ArrowLeft")) {
-        event.preventDefault();
-        $menu.selectedMenuItem = 0;
-      } else if (
-        event.key == "End" ||
-        (event.metaKey && event.key == "ArrowRight")
-      ) {
-        event.preventDefault();
-        $menu.selectedMenuItem = menuItems.length - 1;
-      } else if (
-        event.key === "ArrowUp" ||
-        event.key === "ArrowLeft" ||
-        (event.shiftKey && event.key === "Tab")
-      ) {
+      // Menu Button Keyboard Interaction: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+      // Left and Right arrows do nothing because we don't support sub menus
+      // Note the difference between menubar and menu in the above guidance. We made a menu, not a menubar.
+
+      var menuItems = $items.children();
+
+      if (event.key === "ArrowUp") {
+        // Up Arrow: Moves focus to and selects the previous option. If focus is on the first option, wraps to the last item.
         event.preventDefault();
         $menu.selectedMenuItem =
-          $menu.selectedMenuItem == 0
-            ? menuItems.length - 1
-            : Math.max(0, $menu.selectedMenuItem - 1);
-      } else if (
-        event.key === "ArrowDown" ||
-        event.key === "ArrowRight" ||
-        event.key === "Tab"
-      ) {
+          ($menu.selectedMenuItem - 1 + menuItems.length) % menuItems.length;
+      } else if (event.key === "ArrowDown") {
+        // Down Arrow: Moves focus to and selects the next option. If focus is on the last option, wraps to the first item.
         event.preventDefault();
         $menu.selectedMenuItem =
-          $menu.selectedMenuItem == menuItems.length - 1
-            ? 0
-            : Math.min(menuItems.length - 1, $menu.selectedMenuItem + 1);
+          ($menu.selectedMenuItem + 1) % menuItems.length;
       } else if (event.key === "Escape") {
+        // Escape: Close the menu that contains focus and return focus to the element or context, e.g., menu button or parent menuitem, from which the menu was opened.
         event.preventDefault();
         close($menu, $items);
-        $menu.focus();
+        $menu.trigger("focus");
+      } else if (event.key === "Tab") {
+        // Tab: Nothing. Should close the popup and move to the next interactive element on the page, so we will close the menu so it does not obscure anything.
+        close($menu, $items);
+        // We don't prevent default. We don't trigger focus, because the selectedMenuItem is in the collapsed menu.
+        return;
       }
       // Once we've determined the new selected menu item, we need to focus on it
-      $($items.children()[$menu.selectedMenuItem]).find("a").focus();
+      var $selected_item = $($items.children()[$menu.selectedMenuItem]).find(
+        "[href]",
+      );
+      $selected_item.trigger("focus");
+      $items.children().find("[href]").attr("tabindex", "-1");
+      $selected_item.attr("tabindex", "0");
     }
   }
 
   function init($menu) {
-    const itemsId = "#" + $menu.attr("data-menu-items");
+    const itemsId = "#" + $menu.attr("aria-controls");
     const $items = $(itemsId);
     $menu.isExpanded = false;
     $menu.selectedMenuItem = 0;
     $menu.touchStarted = false;
+    $items.attr({ role: "menu", "aria-labelledby": $menu.attr("id") });
+    $items.children().attr("role", "none");
+    $items.children().find("[href]").attr({ role: "menuitem", tabindex: "-1" });
 
     // Enhanced touch/click handling for iOS
     $menu.on("touchstart", function (e) {
@@ -170,6 +189,14 @@
         e.stopPropagation();
         toggleMenu($menu, $items);
       }
+    });
+
+    // Some items in the menu may not link to a new page, they may perform
+    // an action that modifies the DOM. In this case the menu's event handlers
+    // interfere with tab based navigation, so we need to close the menu and
+    // detach the event handlers when the user clicks on these menu items.
+    $items.on("click", "[data-menu-close-on-click='true']", function (e) {
+      closeAndDetach($menu, $items);
     });
 
     // Bind Keypress events to the window so the user can use the arrow/home/end keys to navigate the drop down menu

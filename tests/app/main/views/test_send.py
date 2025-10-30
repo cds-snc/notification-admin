@@ -757,7 +757,7 @@ def test_upload_valid_csv_shows_preview_and_table(
         for index, cell in enumerate(row):
             row = page.select("table tbody tr")[row_index]
             assert "id" not in row
-            assert normalize_spaces(str(row.select("td")[index + 1])) == cell
+            assert normalize_spaces(str(row.select("td")[index])) == cell
 
 
 def test_upload_valid_csv_only_sets_meta_if_filename_known(
@@ -2584,7 +2584,7 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     )
 
     # remove excess whitespace from element
-    details = page.findAll("h2")[1]
+    details = page.findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 

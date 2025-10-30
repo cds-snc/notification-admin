@@ -6,39 +6,40 @@
 {% from "components/live-search.html" import live_search %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/empty-list.html" import empty_list  %}
+
 
 {% extends "admin_template.html" %}
 
-{% set page_title = _('Templates') %}
+{% set page_title = _('Your Templates') %}
 
 {% block service_page_title %}
-  {% if (not current_service.all_templates) and (not current_service.all_template_folders) %}
-    {{ page_title_folder_path(template_folder_path) }}
-  {% else %}
-    {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
-  {% endif %}
+    {% if not current_template_folder_id %}
+      {{ _('Your {}').format(page_title_folder_path(template_folder_path)) }}
+    {% else %}
+      {{ _('Browse {}').format(page_title_folder_path(template_folder_path)) }}
+    {% endif %}
 {% endblock %}
 
 {% block maincolumn_content %}
 
   {% if (not current_service.all_templates) and (not current_service.all_template_folders) %}
-
     <h1 class="heading-medium">
       {{ page_title }}
     </h1>
     {% if current_user.has_permissions('manage_templates') %}
-       <p class="mb-12 clear-both mt-12 block clear-both contain-floats">
-        {% set need_txt = _('You need to create a template to send') %}
-        {{ need_txt }}
-        {% if 'letter' in current_service.permissions %}
-          {% set list = _('emails, text messages or letters') %}
-        {%- else -%}
-          {% set list = _('emails or text messages') %}
-        {%- endif %}
-        {{ list }}.
-        {% set folder_txt = _('You can also create folders to organize your templates.') %}
-        {{ folder_txt }}
-       </p>
+      {% call empty_list(_('Create or edit templates'), _('To send messages, create a template or work from an existing template. You can also create folders to organize your templates.').format(limit_days), 'emptyFlower') %}
+        {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+          {% call form_wrapper(
+              class='sticky-scroll-area',
+              module='template-folder-form',
+              data_kwargs={'prev-state': templates_and_folders_form.op or None}
+          ) %}
+            {% include 'views/templates/_template_list.html' %}
+            {% include 'views/templates/_move_to.html' %}
+          {% endcall %}
+        {% endif %}
+      {% endcall %}
     {% else %}
       <p class="mt-12 block clear-both contain-floats">
         {{ _('You need to ask your service manager to add templates before you can send') }}
@@ -51,7 +52,7 @@
     {% endif %}
 
   {% else %}
-    
+
     <div class="grid-row contain-floats">
       <div class="{% if current_user.has_permissions('manage_templates') %} md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border {% else %} w-full float-left py-0 px-0 px-gutterHalf box-border {% endif %}">
         {{ folder_path(
@@ -69,26 +70,32 @@
       {% endif %}
     </div>
     <h1 class="heading-medium">
-      {{ _('Browse {}').format(current_template_folder.name) }}
+      {% if current_template_folder_id is none %}
+        {{ _('Your Templates') }}
+      {% else %}
+        {{ _('Browse {}').format(current_template_folder.name) }}
+      {% endif %}
     </h1>
   {% endif %}
-    {% if sending_view %}
-      <p>{{ _('Select template to send.') }}
-    {% endif %}
-    {% if show_template_nav %}
-      <div class="mb-12 clear-both contain-floats">
-        {{
-        template_filter(".template-list-item", template_types, template_categories,
-          "data-notification-type",
-          "data-template-category"
-          )
-        }}
-      </div>
-    {% endif %}
 
-    {{ live_search(target_selector='#template-list .template-list-item', show=show_search_box, form=search_form) }}
+  {% if sending_view %}
+    <p>{{ _('Select template to send.') }}
+  {% endif %}
+  {% if show_template_nav %}
+    <div class="mb-12 clear-both contain-floats">
+      {{
+      template_filter(".template-list-item", template_types, template_categories,
+        "data-notification-type",
+        "data-template-category"
+        )
+      }}
+    </div>
+  {% endif %}
 
-    {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+  {{ live_search(target_selector='#template-list .template-list-item', show=show_search_box, form=search_form) }}
+
+  {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+    {% if template_list|length > 0 or current_template_folder_id %}
       {% call form_wrapper(
           class='sticky-scroll-area',
           module='template-folder-form',
@@ -97,10 +104,8 @@
         {% include 'views/templates/_template_list.html' %}
         {% include 'views/templates/_move_to.html' %}
       {% endcall %}
-
-    {% else %}
-      {% include 'views/templates/_template_list.html' %}
     {% endif %}
-
-
+  {% else %}
+    {% include 'views/templates/_template_list.html' %}
+  {% endif %}
 {% endblock %}

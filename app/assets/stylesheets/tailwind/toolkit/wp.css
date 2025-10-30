@@ -170,6 +170,11 @@
     @apply -mt-2;
   }
 
+  .page-content code {
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    @apply whitespace-break-spaces;
+  }
+
   /** Block
       wp-block-post-template
       after page-content

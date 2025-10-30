@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/page-header.html" import page_header, govuk_back_link %}
+{% from "components/page-header.html" import govuk_back_link %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
 {% from "components/form.html" import form_wrapper %}
@@ -15,8 +15,7 @@
   {{ govuk_back_link(back_url) }}
 
   {% call form_wrapper() %}
-    {{ page_header( form.what_type.label.text | safe ) }}
-    {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints, hide_legend=True, testid="template-type") }}
+    {{ radios(form.what_type, disable=disabled_options, option_hints=option_hints, is_page_heading=True, testid="template-type") }}
     {{ page_footer(_('Continue')) }}
   {% endcall %}
 

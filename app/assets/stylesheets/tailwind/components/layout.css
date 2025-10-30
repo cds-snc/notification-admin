@@ -10,6 +10,9 @@
   .banner:focus,
   .banner-default-with-tick:focus {
     @apply outline-yellow;
+    outline-style: solid;
+    outline-offset: 1px;
+    outline-width: 3px;
   }
 
   .banner-dangerous {

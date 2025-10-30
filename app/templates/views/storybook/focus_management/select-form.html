@@ -1,0 +1,16 @@
+{% from "components/select-input.html" import select %}
+{% from "components/form.html" import form_wrapper %}
+
+
+{% block story_content %}
+  <h2 class="heading-medium">Select form example</h2>
+  {% call form_wrapper(action='#', autocomplete=True, show_validation_summary=False, form=full_form) %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    {{ select(full_form.contact_method, hint='How should we contact you?', input='radio') }}
+
+    <div class="mt-4">
+      <button class="button" type="submit">Submit</button>
+    </div>
+    
+  {% endcall %}
+{% endblock %}

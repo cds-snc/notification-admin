@@ -3,6 +3,7 @@ import os
 import re
 import secrets
 import urllib
+import uuid
 from datetime import datetime, timedelta, timezone
 from numbers import Number
 from time import monotonic
@@ -21,6 +22,7 @@ from flask import (
 )
 from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
+from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -124,6 +126,16 @@ def get_current_locale(application):
 
 
 def create_app(application):
+    def random_id(n=None):
+        prefix = "a"
+        rid = prefix + uuid.uuid4().hex
+        if n is not None:
+            try:
+                n = int(n)
+            except Exception:
+                n = None
+        return rid[:n] if n else rid
+
     setup_commands(application)
 
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
@@ -229,6 +241,9 @@ def create_app(application):
     application.jinja_env.globals["parse_ua"] = parse
     application.jinja_env.globals["events_key"] = EVENTS_KEY
     application.jinja_env.globals["now"] = datetime.utcnow
+
+    # helper functions for templates
+    application.jinja_env.globals["random_id"] = random_id
 
     # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:
@@ -360,6 +375,26 @@ def format_date_numeric(date):
 
 def format_time_24h(date):
     return utc_string_to_aware_gmt_datetime(date).strftime("%H:%M")
+
+
+def format_datetime_full(dt):
+    """Format datetime for full display with locale support"""
+    if not dt or dt == "None":
+        return _("Never")
+
+    if isinstance(dt, str):
+        dt = utc_string_to_aware_gmt_datetime(dt)
+
+    if not isinstance(dt, datetime):
+        return dt
+
+    # Get current language from session
+    lang = session.get("userlang", "en")
+
+    if lang == "fr":
+        return f"{dt.day} {_l(dt.strftime('%B'))} {dt.year}, {dt.hour} h {dt.minute:02d}"
+    else:
+        return f"{dt.strftime('%B %d, %Y')}, {dt.strftime('%-I:%M %p')}"
 
 
 def get_human_day(time):
@@ -878,5 +913,6 @@ def add_template_filters(application):
         format_phone_number_human_readable,
         format_thousands,
         id_safe,
+        format_datetime_full,
     ]:
         application.add_template_filter(fn)

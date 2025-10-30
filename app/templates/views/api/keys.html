@@ -1,9 +1,8 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import list_table, field, hidden_field_heading %}
 {% from "components/api-key.html" import api_key %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
-{% from "components/empty-list.html" import empty_list  %}
+{% from "components/empty-list.html" import empty_list %}
 {% from "components/notice.html" import notice %}
 
 {% block service_page_title %}
@@ -29,71 +28,90 @@
     {{ _("Create an API key to connect your web application or back-office system with GC Notify. Learn more in the <a href='{}'>API key documentation</a>.").format(documentation_url('keys')) }}
   </p>
 
-  <div class="js-stick-at-bottom-when-scrolling">
-    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary">{{ _('Create API key') }}</a>
+  <div>
+    <a href="{{ url_for('.create_api_key', service_id=current_service.id) }}" class="button button-secondary mb-4">{{ _('Create API key') }}</a>
   </div>
 
-  <h2 class="heading-small">
-     {{ _('Existing API keys') }}
-  </h2>
-  {% set empty_txt = empty_list(heading=_('You have not created any API keys yet')) %}
-  {% set keys_txt = _('API keys') %}
-  {% set heading_1 = _('API keys') %}
-  {% set heading_2 = _('Action') %}
-  <div class="body-copy-table">
-    {% call(item, row_number) list_table(
-      current_service.api_keys,
-      empty_message=empty_txt,
-      caption=keys_txt,
-      caption_visible=false,
-      field_headings=[
-        heading_1,
-        heading_2
-      ],
-      field_headings_visible=False
-    ) %}
-      {% call field() %}
-        <div class="file-list">
-          {{ item.name }}
+  {% if not current_service.api_keys %}
+      <p>{{ empty_list(heading=_('You have not created any API keys yet')) }}</p>
+  {% else %}
+    <h2 class="heading-medium">
+      {{ _('Existing API keys') }}
+    </h2>
+    {% for item in current_service.api_keys %}
+        <div class="flex flex-col gap-4">
+          <h3 id="api-key-name" class="text-titlelarge mt-0">
+            {{ item.name }}
+          </h3>
+          {% if item.expiry_date %}
+            <time class="table-field-status-error" datetime="{{ item.expiry_date }}">
+              <span class="sr-only">{{ _('API key') + ' ' + item.name }} </span>{{ _('Revoked') }} {{ item.expiry_date | format_datetime_full }}
+            </time>
+          {% else %}
+            <a href="{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}" class="table-field-status-error">
+              {{ _('Revoke') }}<span class="sr-only"> {{_('API key') + ' ' + item.name }}</span>
+            </a>
+          {% endif %}
+        </div>
+
+        <dl aria-labelledby="api-key-name" class="space-y-4 mt-4">
           {% if (
-              'total_sends' in item and
-              'email_sends' in item and
-              'sms_sends' in item )  %}
-            <div class="hint">
-              {{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }} ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
+            'total_sends' in item and
+            'email_sends' in item and
+            'sms_sends' in item )
+          %}
+            <div class="flex flex-col gap-1">
+              <dt>{{ _("Recent activity:") }}</dt>
+              <dd class="hint ml-0">
+                {{ "{:,}".format(item.total_sends) }} {{ _('total sends in the last 7 days') }}
+                ({{ "{:,}".format(item.email_sends) }} {{ _('email') }}, {{ "{:,}".format(item.sms_sends) }} {{ _('sms') }})
+              </dd>
             </div>
           {% endif %}
-          <div class="hint">
-            {{ _('Key type:') }}
-            {% if item.key_type == 'normal' %}
-              {{ _('Live – sends to anyone') }}
-            {% elif item.key_type == 'team' %}
-              {{ _('Team and safelist – limits who you can send to') }}
-            {% elif item.key_type == 'test' %}
-              {{ _('Test – pretends to send messages') }}
-            {% endif %}
-          </div>
-            <div class="hint">
-              {{ _('Created:') }} <time class="local-datetime-full">{{ item.created_at }}</time>
-            </div>
-            <div class="hint">
-              {{ _('Expires:') }} <time class="local-datetime-full">{{ item.expiry_date }}</time>
-            </div>
-            <div class="hint">
-              {{ _('Last used:') }} <time class="local-datetime-full">{{ item.last_send }}</time>
-            </div>
-        </div>
-      {% endcall %}
-      {% if item.expiry_date %}
-        {% call field(align='right') %}
-          <span class='hint'>{{ _('Revoked') }} <time class="local-datetime-short">{{ item.expiry_date }}</time></span>
-        {% endcall %}
-      {% else %}
-        {% call field(align='right', status='error') %}
-          <a href='{{ url_for('.revoke_api_key', service_id=current_service.id, key_id=item.id) }}'>{{ _('Revoke') }}<span class="sr-only"> {{_('API key') + ' ' + item.name }}</span></a>
-        {% endcall %}
-      {% endif %}
-    {% endcall %}
-  </div>
 
+          <div class="flex flex-col gap-1">
+            <dt>{{ _('Key type:') }}</dt>
+            <dd class="hint ml-0">
+              {% if item.key_type == 'normal' %}
+                {{ _('Live – sends to anyone') }}
+              {% elif item.key_type == 'team' %}
+                {{ _('Team and safelist – limits who you can send to') }}
+              {% elif item.key_type == 'test' %}
+                {{ _('Test – pretends to send messages') }}
+              {% endif %}
+            </dd>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <dt>{{ _('Created:') }}</dt>
+            <dd class="ml-0">
+              <time datetime="{{ item.created_at }}" class="hint">
+                {{ item.created_at | format_datetime_full }}
+              </time>
+            </dd>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <dt>{{ _('Expires:') }}</dt>
+            <dd class="ml-0">
+              <time datetime="{{ item.expires_at }}" class="hint">
+                {{ item.expires_at | format_datetime_full }}
+              </time>
+            </dd>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <dt>{{ _('Last used:') }}</dt>
+            <dd class="ml-0">
+              <time datetime="{{ item.last_used_at }}" class="hint">
+                {{ item.last_used_at | format_datetime_full }}
+              </time>
+            </dd>
+          </div>
+        </dl>
+        {% if not item == current_service.api_keys[-1] %}
+          <hr>
+        {% endif %}
+    {% endfor %}
+  {% endif %}
 {% endblock %}

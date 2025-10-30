@@ -58,7 +58,7 @@ from app.models.template_list import (
     TemplateLists,
 )
 from app.notify_client.notification_counts_client import notification_counts_client
-from app.sample_template_utils import get_sample_templates
+from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
@@ -174,10 +174,17 @@ def view_template(service_id, template_id):
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
+@main.route(
+    "/services/<service_id>/templates/sample/<uuid:sample_template_id>/preview",
+    methods=["GET", "POST"],
+    endpoint="preview_template_sample",
+)
 @main.route("/services/<service_id>/templates/preview", methods=["GET", "POST"])
 @user_has_permissions()
-def preview_template(service_id, template_id=None):
-    template = get_preview_data(service_id, template_id)
+def preview_template(service_id, template_id=None, sample_template_id=None):
+    template = (
+        get_preview_data(service_id, sample_template_id) if sample_template_id else get_preview_data(service_id, template_id)
+    )
     if not template:
         # template == {} if the user has not yet clicked the preview link
         template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
@@ -186,6 +193,16 @@ def preview_template(service_id, template_id=None):
         if request.form["button_pressed"] == "edit":
             if template["id"]:
                 return redirect(url_for(".edit_service_template", service_id=current_service.id, template_id=template_id))
+            if template.get("from_page") == "view_sample_template":
+                return redirect(
+                    url_for(
+                        ".create_from_sample_template",
+                        service_id=current_service.id,
+                        template_type=template["template_type"],
+                        template_id=template["sample_template_id"],
+                        template_folder_id=None,
+                    )
+                )
             else:
                 return redirect(
                     url_for(
@@ -229,6 +246,7 @@ def preview_template(service_id, template_id=None):
                         ".view_template",
                         service_id=service_id,
                         template_id=template_id,
+                        source="ga_sample_template" if sample_template_id else None,
                     )
                 )
             except HTTPError as e:
@@ -252,12 +270,21 @@ def preview_template(service_id, template_id=None):
     if template["id"]:
         back_link = url_for(".edit_service_template", service_id=current_service.id, template_id=template["id"])
     else:
-        back_link = url_for(
-            ".add_service_template",
-            service_id=current_service.id,
-            template_type=template["template_type"],
-            template_folder_id=template["folder"],
-        )
+        if template.get("from_page") == "view_sample_template":
+            back_link = url_for(
+                ".create_from_sample_template",
+                service_id=current_service.id,
+                template_type=template["template_type"],
+                template_id=template["sample_template_id"],
+                template_folder_id=None,
+            )
+        else:
+            back_link = url_for(
+                ".add_service_template",
+                service_id=current_service.id,
+                template_type=template["template_type"],
+                template_folder_id=template["folder"],
+            )
     return render_template(
         "views/templates/preview_template.html",
         template=get_email_preview_template(template, template["id"], service_id),
@@ -375,8 +402,20 @@ def process_folder_management_form(form, current_folder_id):
     if form.is_move_op:
         # if we've just made a folder, we also want to move there
         move_to_id = new_folder_id or form.move_to.data
-
         current_service.move_to_folder(ids_to_move=form.templates_and_folders.data, move_to=move_to_id)
+
+        is_multi_move = len(form.templates_and_folders.data) > 1
+        # Fetch the folder name from the form when moving a template to a newly created folder, else fetch from existing folders
+        destination_folder_name = form.get_folder_name() or current_service.get_template_folder(move_to_id)["name"]
+        msg = _("Moved {} items to the '{}' folder") if is_multi_move else _("Moved {} item to the '{}' folder")
+
+        flash(
+            msg.format(
+                len(form.templates_and_folders.data),
+                destination_folder_name,
+            ),
+            "default_with_tick",
+        )
 
     return redirect(request.url)
 
@@ -797,6 +836,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 "folder": template_folder_id,
                 "template_category_id": form.template_category_id.data,
                 "text_direction_rtl": form.text_direction_rtl.data,
+                "from_page": request.form.get("from_page"),
             }
             set_preview_data(preview_template_data, service_id)
             return redirect(
@@ -1471,43 +1511,182 @@ def template_category(template_category_id):
 @main.route("/services/<service_id>/templates/sample-library", methods=["GET"])
 @user_has_permissions()
 def view_sample_library(service_id):
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
-
-    sample_templates = get_sample_templates()
+    all_templates = get_sample_templates()
+    email_templates = get_sample_templates_by_type("email")
+    sms_templates = get_sample_templates_by_type("sms")
 
     # Get the current filter from query params
     notification_type_filter = request.args.get("type", "email")
-
-    # Filter templates based on notification type
-    if notification_type_filter == "email":
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
-    elif notification_type_filter == "sms":
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "sms"]
-    else:
-        filtered_templates = [t for t in sample_templates if t.get("notification_type") == "email"]
-
+    filtered_templates = sms_templates if notification_type_filter == "sms" else email_templates
     # Sort filtered templates by pinned status first (pinned templates at top), then by name
     filtered_templates.sort(key=lambda x: (not x.get("pinned", False), x.get("template_name", {}).get("en", "")))
-
-    email_count = len([t for t in sample_templates if t.get("notification_type") == "email"])
-    sms_count = len([t for t in sample_templates if t.get("notification_type") == "sms"])
-    total_count = len(sample_templates)
 
     return render_template(
         "views/templates/sample_library.html",
         sample_templates=filtered_templates,
         notification_type_filter=notification_type_filter,
-        email_count=email_count,
-        sms_count=sms_count,
-        total_count=total_count,
+        email_count=len(email_templates),
+        sms_count=len(sms_templates),
+        total_count=len(all_templates),
     )
 
 
-@main.route("/services/<service_id>/templates/sample-templates/<template_id>", methods=["GET"])
+@main.route("/services/<service_id>/templates/sample-library/<template_id>", methods=["GET"])
 @user_has_permissions()
 def view_sample_template(service_id, template_id):
-    if not current_app.config["FF_SAMPLE_TEMPLATES"]:
-        return redirect(url_for(".choose_template", service_id=service_id))
-    # TODO: implement this page
-    return redirect(url_for(".view_sample_library", service_id=service_id))
+    delete_preview_data(service_id, template_id)
+    # Create a template obj
+    template = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id, preview=True)
+
+    page_title = [
+        _l("Sample template"),
+        template["name"] if get_current_locale(current_app) == "en" else template["name_fr"],
+    ]
+
+    back_link = url_for(".view_sample_library", service_id=service_id, type="email")
+    if template["template_type"] == "sms":
+        back_link = url_for(".view_sample_library", service_id=service_id, type="sms")
+
+    return render_template(
+        "views/templates/view_sample_template.html",
+        page_title=page_title,
+        template=get_email_preview_template(template, template_id, service_id),
+        back_link=back_link,
+    )
+
+
+@main.route("/services/<service_id>/templates/add-from-sample-<template_type>/<template_id>", methods=["GET", "POST"])
+@user_has_permissions("manage_templates")
+def create_from_sample_template(service_id, template_type, template_id, template_folder_id=None):  # noqa: C901
+    new_template_data = create_temporary_sample_template(template_id=template_id, current_user_id=current_user.id)
+
+    if template_type not in ["sms", "email"]:
+        abort(404)
+
+    template = get_preview_data(service_id, template_id)
+
+    lang = get_current_locale(current_app)
+    new_template_name = ""
+    if lang == "en":
+        new_template_name = new_template_data["name"]
+    else:
+        new_template_name = new_template_data["name_fr"]
+
+    # If the template data above is empty, we will switch the fields with data from the sample_template
+    form, other_category, template_category_hints = _get_categories_and_prepare_form(template, template_type)
+    form.name.data = form.name.data if form.name.data else new_template_name
+    form.template_content.data = (
+        form.template_content.data if form.template_content.data else new_template_data["instruction_content"]
+    )
+    form.template_category_id.data = (
+        form.template_category_id.data if form.template_category_id.data else new_template_data["template_category_id"]
+    )
+    if template_type == "email":
+        form.subject.data = form.subject.data if form.subject.data else new_template_data["subject"]
+    form.text_direction_rtl.data = (
+        form.text_direction_rtl.data if form.text_direction_rtl.data else new_template_data.get("text_direction_rtl", False)
+    )
+
+    if form.validate_on_submit():
+        if form.process_type.data != TC_PRIORITY_VALUE:
+            abort_403_if_not_admin_user()
+        if request.form.get("button_pressed") == "preview":
+            preview_template_data = {
+                "name": form.name.data,
+                "content": form.template_content.data,
+                "template_content": form.template_content.data,
+                "subject": form.subject.data if hasattr(form, "subject") else None,
+                "template_type": template_type,
+                "id": None,
+                "process_type": form.process_type.data,
+                "folder": template_folder_id,
+                "template_category_id": form.template_category_id.data,
+                "text_direction_rtl": form.text_direction_rtl.data,
+                "from_page": "view_sample_template",
+                "sample_template_id": template_id,
+            }
+            set_preview_data(preview_template_data, service_id, template_id)
+            return redirect(url_for(".preview_template_sample", service_id=service_id, sample_template_id=template_id))
+        try:
+            new_template = service_api_client.create_service_template(
+                form.name.data,
+                template_type,
+                form.template_content.data,
+                service_id,
+                form.subject.data if hasattr(form, "subject") else None,
+                None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
+                template_folder_id,
+                form.template_category_id.data,
+            )
+            # Send the information in form's template_category_other field to Freshdesk
+            if form.template_category_other.data:
+                is_english = get_current_locale(current_app) == "en"
+                try:
+                    current_user.send_new_template_category_request(
+                        current_user.id,
+                        current_service.id,
+                        form.template_category_other.data if is_english else None,
+                        form.template_category_other.data if not is_english else None,
+                        new_template["data"]["id"],
+                    )
+                except HTTPError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
+                except AttributeError as e:
+                    current_app.logger.error(
+                        f"Failed to send new template category request to Freshdesk: {e} for template {new_template['data']['id']}, data is {form.template_category_other.data}"
+                    )
+        except HTTPError as e:
+            if (
+                e.status_code == 400
+                and "content" in e.message
+                and any(["character count greater than" in x for x in e.message["content"]])
+            ):
+                error_message = get_char_limit_error_msg()
+                form.template_content.errors.extend([error_message])
+            elif "name" in e.message and any(["Template name must be less than" in x for x in e.message["name"]]):
+                error_message = (_("Template name must be less than {char_limit} characters")).format(
+                    char_limit=TEMPLATE_NAME_CHAR_COUNT_LIMIT + 1
+                )
+                form.name.errors.extend([error_message])
+            else:
+                raise e
+        else:
+            flash(_("‘{}’ template saved").format(form.name.data), "default_with_tick")
+            delete_preview_data(service_id, template_id)
+            return redirect(
+                url_for(
+                    ".view_template",
+                    service_id=service_id,
+                    template_id=new_template["data"]["id"],
+                    source="ga_sample_template",
+                )
+            )
+
+    if email_or_sms_not_enabled(template_type, current_service.permissions):
+        return redirect(
+            url_for(
+                ".action_blocked",
+                service_id=service_id,
+                notification_type=template_type,
+                template_folder_id=template_folder_id,
+                return_to="templates",
+                template_id="0",
+            )
+        )
+    else:
+        heading = _l("Edit {}").format(new_template_name) if new_template_name else _l("Create reusable template")
+        return render_template(
+            f"views/edit-{template_type}-template.html",
+            form=form,
+            template_type=template_type,
+            template_folder_id=template_folder_id,
+            service_id=service_id,
+            heading=heading,
+            template_category_hints=template_category_hints,
+            other_category=other_category,
+            template_category_mode="expand",
+            from_page="view_sample_template",
+            back_link=url_for(".view_sample_template", service_id=service_id, template_id=template_id),
+        )

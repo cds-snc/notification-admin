@@ -23,13 +23,15 @@
   </p>
 {% else %}
   {% set display_checkboxes = current_user.has_permissions('manage_templates') and not sending_view and template_list.templates_to_show %}
-
   <nav id="template-list" class="{{ 'top-gutter-5px contain-floats' if (not show_template_nav and not show_search_box) else '' }}"  aria-label="{{ _('Templates and folders') }}">
     {% if display_checkboxes %}
       <fieldset>
         <legend class="sr-only">{{ _("Select templates and folders")}}</legend>
     {% endif %}
-    <div id="template-list-container">
+    <section id="template-list-container" aria-label="Search results" aria-live="polite" role="region">
+      <span class="sr-only" id="template-list-status" aria-live="polite">
+        {{ template_list | length }} results found
+      </span>
       {% set template_list_length = template_list | length %}
       {% for item in template_list %}
         <div class="template-list-item {% if display_checkboxes %}template-list-item-with-checkbox{% endif %} {% if item.ancestors %}template-list-item-hidden-by-default{% endif %} {% if not item.ancestors %}template-list-item-without-ancestors{% endif %}" data-notification-type="{{ item.hint }}" data-template-category="{{ _('Other') if item.template_category.hidden else item.template_category[template_category_name_col] }}" data-testid="template-row">
@@ -39,7 +41,8 @@
               name='templates_and_folders',
               data=templates_and_folders_form.is_selected(item.id),
               value=item.id,
-              label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint)
+              label=_("Select the {name} {type}").format(name=item.name, type=_("folder") if item.is_folder else item.hint),
+              field=item
             ) }}
           {% endif %}
           <span class="message-name">
@@ -78,7 +81,7 @@
             {{ empty_list(_('No matching templates'), _('Change your filters or search for more templates'), 'emptyBirdHole') }}
           </div>
         {% endif %}
-    </div>
+    </section>
     {% if display_checkboxes %}
       </fieldset>
     {% endif %}

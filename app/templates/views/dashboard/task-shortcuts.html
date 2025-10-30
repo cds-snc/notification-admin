@@ -2,63 +2,41 @@
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/links.html" import content_link with context %}
 
+{% set label = _('Visit Guidance on Getting started') %}
+
 <h2 class="heading-medium">{{ _("Start sending messages")}}</h2>
-{% if config["FF_SAMPLE_TEMPLATES"] %}
-  <p>
-    {{ _("New to GC Notify?") }}
-    {{ content_link(id_key='nav-footer-secondary-privacy', class="whitespace-nowrap",label=_('Visit Guidance on Getting started'), href=gca_url_for('getting_started'), is_external_link=true) }}
-  </p>
-  <div class="flex space-x-gutter mb-16 mt-12">
-    {% if current_service.has_templates %}
-      {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
-        {{ task_shortcut(
-            description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
-            link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
-            link_text=_("Choose template"),
-            icon="arrow-right"
-        )}}
-      {% endif %}
-    {% else %}
-      {% if current_user.has_permissions('manage_templates') %}
-        {{ task_shortcut(
-            description=_("Start here to write a new message."),
-            link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
-            link_text=_("Create template"),
-            icon="plus"
-        )}}
-      {% endif %}
-    {% endif %}
-    {% if current_user.has_permissions('manage_templates') %}
+<p>
+  {{ _('New to GC Notify?') }}
+  {{ content_link(id_key='nav-footer-secondary-privacy', label=label, href=gca_url_for('getting_started'), is_external_link=true) }}
+</p>
+<div class="flex space-x-gutter mb-16 mt-12">
+  {% if current_service.has_templates %}
+    {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
       {{ task_shortcut(
-        description=_("Edit and customize sample messages to meet your needs."),
-        link_url=url_for('.view_sample_library', service_id=current_service.id),
-        link_text=_("Explore our sample library"),
-        icon="arrow-right",
-        badge=badge(text="New", hide_icon=true, bg_class='bg-blue-100', testid="dashboard-sample-library-badge", id="dashboard-new-badge"),
-        ad="dashboard-new-badge"
+          description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
+          link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
+          link_text=_("Choose template"),
+          icon="arrow-right"
       )}}
     {% endif %}
-  </div>
-{% else %}
-  <p>{{_("If you’re sending to more than 1 recipient, use the API or <a href='{}'>prepare a&nbsp;spreadsheet</a>.<br/>Next, write your message. Start by creating a template, or reuse a template you’ve already&nbsp;created.").format(gca_url_for('spreadsheets')) }}</p>
-  <div class="flex space-x-gutter mb-16 mt-12">
+  {% else %}
     {% if current_user.has_permissions('manage_templates') %}
       {{ task_shortcut(
           description=_("Start here to write a new message."),
           link_url=url_for('.create_template', service_id=current_service.id, source="dashboard"),
           link_text=_("Create template"),
           icon="plus"
-        )
-      }}
+      )}}
     {% endif %}
-    {% if current_user.has_permissions('send_messages') and current_service.has_templates %}
-      {{ task_shortcut(
-          description=_("Edit and send a message you’ve already created. You can also share templates with your team. "),
-          link_url=url_for('.choose_template', service_id=current_service.id, view="sending"),
-          link_text=_("Select template"),
-          icon="arrow-right"
-        )
-      }}
-    {% endif %}
-  </div>
-{% endif %}
+  {% endif %}
+  {% if current_user.has_permissions('manage_templates') %}
+    {{ task_shortcut(
+      description=_("Edit and customize sample messages to meet your needs."),
+      link_url=url_for('.view_sample_library', service_id=current_service.id),
+      link_text=_("Explore our sample library"),
+      icon="arrow-right",
+      badge=badge(text=_("New"), variant='blue', testid="dashboard-sample-library-badge", id="dashboard-new-badge"),
+      ad="dashboard-new-badge"
+    )}}
+  {% endif %}
+</div>

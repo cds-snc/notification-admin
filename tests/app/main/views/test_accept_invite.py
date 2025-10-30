@@ -13,7 +13,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_sample_invite,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -135,7 +134,7 @@ def test_invite_goes_in_session(
     "user, landing_page_title",
     [
         (create_active_user_with_permissions(), "Dashboard"),
-        (create_active_caseworking_user(), "Browse Templates"),
+        (create_active_caseworking_user(), "Your Templates"),
     ],
 )
 def test_accepting_invite_removes_invite_from_session(
@@ -159,6 +158,7 @@ def test_accepting_invite_removes_invite_from_session(
     fake_uuid,
     user,
     landing_page_title,
+    app_,
 ):
     sample_invite["email_address"] = user["email_address"]
 
@@ -389,7 +389,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     banner_contents = flash_banners[0].text.strip()
     assert "You’re signed in as test@user.canada.ca." in banner_contents
     assert "This invite is for another email address." in banner_contents
-    assert "Sign out and click the link again to accept this invite." in banner_contents
+    assert "Sign out and select the link again to accept this invite." in banner_contents
     assert mock_accept_invite.call_count == 0
 
 
@@ -508,37 +508,6 @@ def test_existing_user_accepts_and_sets_email_auth(
 
     mock_get_unknown_user_by_email.assert_called_once_with("test@user.canada.ca")
     mock_add_user_to_service.assert_called_once_with(ANY, USER_ONE_ID, ANY, ANY)
-
-
-def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
-    app_,
-    client_request,
-    api_user_active,
-    service_one,
-    sample_invite,
-    mock_get_user_by_email,
-    mock_get_users_by_service,
-    mock_accept_invite,
-    mock_update_user_attribute,
-    mock_add_user_to_service,
-    mocker,
-):
-    with set_config(app_, "FF_AUTH_V2", False):
-        sample_invite["email_address"] = api_user_active["email_address"]
-
-        assert "email_auth" not in service_one["permissions"]
-
-        sample_invite["auth_type"] = "email_auth"
-        mocker.patch("app.invite_api_client.check_token", return_value=sample_invite)
-
-        client_request.get(
-            "main.accept_invite",
-            token="thisisnotarealtoken",
-            _expected_status=302,
-            _expected_redirect=url_for("main.service_dashboard", service_id=service_one["id"]),
-        )
-
-        assert not mock_update_user_attribute.called
 
 
 def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
