@@ -19,7 +19,7 @@
     </div>
 
     <h2 class="heading-large">{{ _("Security") }}</h2>
-    <div>
+    <div class="pb-8">
       {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password', testid="user_profile_password") }}
       {% if current_user.auth_type == 'email_auth' %}
         {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa', testid="user_profile_2fa") }}
