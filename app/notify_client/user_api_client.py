@@ -1,5 +1,6 @@
 import hashlib
 import os
+from contextlib import suppress
 from datetime import datetime, timedelta
 from typing import Dict
 
@@ -303,9 +304,53 @@ class UserApiClient(NotifyAdminAPIClient):
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
 
+    @cache.delete("user-{user_id}")
     def suspend_user(self, user_id):
         endpoint = f"/user/{user_id}/deactivate"
-        return self.post(endpoint, {})
+        api_response = self.post(endpoint, {})
+
+        # try to get the list of services that were affected by the deactivate call
+        service_ids = []
+        try:
+            # preferred: backend includes explicit list of suspended services
+            if isinstance(api_response, dict):
+                data = api_response.get("data") or api_response
+                if isinstance(data, dict) and data.get("services_suspended"):
+                    service_ids = data.get("services_suspended") or []
+
+            # fallback: query organisations and services for the user
+            if not service_ids:
+                try:
+                    orgs_and_services = self.get_organisations_and_services_for_user(user_id)
+                    if orgs_and_services and orgs_and_services.get("data"):
+                        for org in orgs_and_services["data"]:
+                            for service in org.get("services", []):
+                                sid = service.get("id")
+                                if sid:
+                                    service_ids.append(sid)
+                except Exception:
+                    # don't fail suspend if the lookup fails; best-effort cache invalidation
+                    service_ids = []
+
+            # delete related cache keys for affected services
+            for sid in set(service_ids):
+                try:
+                    # delete specific known keys
+                    redis_client.delete(
+                        f"service-{sid}",
+                        f"service-{sid}-templates",
+                        f"service-{sid}-template-folders",
+                        f"service-{sid}-data-retention",
+                    )
+                except Exception:
+                    # if delete of specific keys fails, try pattern delete as a fallback
+                    with suppress(Exception):
+                        redis_client.delete_cache_keys_by_pattern(f"service-{sid}*")
+        except Exception:
+            # anything went wrong in the cache invalidation path - don't block the suspend
+            pass
+
+        return api_response
 
 
 user_api_client = UserApiClient()
