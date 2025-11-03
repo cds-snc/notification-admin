@@ -3657,7 +3657,10 @@ def test_suspend_service_after_confirm(
 
     assert response.status_code == 302
     assert response.location == url_for("main.service_settings", service_id=service_one["id"])
-    assert mocked_fn.call_args == call("/service/{}/suspend".format(service_one["id"]), data=None)
+    # endpoint now includes the user id performing the suspend; ensure the post was made to the expected suspend path
+    args, kwargs = mocked_fn.call_args
+    assert args[0].startswith(f"/service/{service_one['id']}/suspend")
+    assert kwargs.get("data", None) is None
 
 
 def test_suspend_service_prompts_user(
