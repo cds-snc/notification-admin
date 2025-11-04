@@ -885,3 +885,49 @@ def test_user_with_phone_but_unverified_can_add_security_key(
 
     page = client_request.get("main.user_profile_add_security_keys")
     assert "security key" in page.text.lower()
+
+
+def test_deactivate_account_shows_info_page(client_request):
+    """GET /user-profile/deactivate shows the info/warning page"""
+    page = client_request.get("main.deactivate_account")
+    assert "Are you sure you want to deactivate your account?" in page.text
+
+
+def test_deactivate_account_post_redirects_to_authenticate(client_request):
+    """POST to the deactivate info page redirects to authenticate step"""
+    client_request.post(
+        "main.deactivate_account",
+        _data={},
+        _expected_status=302,
+        _expected_redirect=url_for("main.deactivate_account_authenticate"),
+    )
+
+
+def test_deactivate_account_authenticate_calls_suspend_and_logout_on_success(client_request, mocker, mock_verify_password):
+    """Submitting correct password calls deactivate_user and logs the user out, then redirects to sign-in"""
+    suspend_mock = mocker.patch("app.user_api_client.deactivate_user")
+    logout_mock = mocker.patch("app.main.views.user_profile.logout_user")
+
+    client_request.post(
+        "main.deactivate_account_authenticate",
+        _data={"password": "correct-password"},
+        _expected_status=302,
+        _expected_redirect=url_for("main.sign_in"),
+    )
+
+    # ensure deactivate_user called with current user's id and logout was triggered
+    suspend_mock.assert_called_once_with(current_user.id)
+    assert logout_mock.called is True
+
+
+def test_deactivate_account_authenticate_with_wrong_password_shows_form(client_request, mocker):
+    """If the password is incorrect, the authenticate form is re-rendered (status 200)"""
+    mocker.patch("app.user_api_client.verify_password", return_value=False)
+
+    page = client_request.post(
+        "main.deactivate_account_authenticate",
+        _data={"password": "wrong-password"},
+        _expected_status=200,
+    )
+
+    assert "Deactivate Account" in page.text
