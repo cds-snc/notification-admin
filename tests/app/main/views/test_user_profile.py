@@ -904,8 +904,8 @@ def test_deactivate_account_post_redirects_to_authenticate(client_request):
 
 
 def test_deactivate_account_authenticate_calls_suspend_and_logout_on_success(client_request, mocker, mock_verify_password):
-    """Submitting correct password calls suspend_user and logs the user out, then redirects to sign-in"""
-    suspend_mock = mocker.patch("app.user_api_client.suspend_user")
+    """Submitting correct password calls deactivate_user and logs the user out, then redirects to sign-in"""
+    suspend_mock = mocker.patch("app.user_api_client.deactivate_user")
     logout_mock = mocker.patch("app.main.views.user_profile.logout_user")
 
     client_request.post(
@@ -915,7 +915,7 @@ def test_deactivate_account_authenticate_calls_suspend_and_logout_on_success(cli
         _expected_redirect=url_for("main.sign_in"),
     )
 
-    # ensure suspend_user called with current user's id and logout was triggered
+    # ensure deactivate_user called with current user's id and logout was triggered
     suspend_mock.assert_called_once_with(current_user.id)
     assert logout_mock.called is True
 

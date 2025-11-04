@@ -777,7 +777,7 @@ def deactivate_account_authenticate():
 
     if form.validate_on_submit():
         session[HAS_AUTHENTICATED] = True
-        user_api_client.suspend_user(current_user.id)
+        user_api_client.deactivate_user(current_user.id)
         logout_user()
         return redirect(url_for("main.sign_in"))
 

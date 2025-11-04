@@ -305,7 +305,12 @@ class UserApiClient(NotifyAdminAPIClient):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
 
     @cache.delete("user-{user_id}")
-    def suspend_user(self, user_id):
+    def deactivate_user(self, user_id):
+        """This function sends an api request to deactivate a user account. The API suspends
+        services that now have 1 member and deactivates services that now have 0 members.
+        We delete certain redis data so that these service changes are visible immediately
+        """
+
         endpoint = f"/user/{user_id}/deactivate"
         api_response = self.post(endpoint, {})
 
