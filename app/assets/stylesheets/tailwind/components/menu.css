@@ -50,7 +50,7 @@
   /* Improve menu item touch targets */
   .menu-overlay a,
   button {
-    @apply py-3 px-4;
+    @apply py-5 px-4;
     min-height: 44px;
     display: flex;
     align-items: center;
@@ -65,4 +65,10 @@
   .menu-overlay button:focus {
     @apply outline-yellow text-black border-transparent shadow-focusLine2;
   }
+
+  /* Just the main navigation */
+  #proposition-links .nav-menu-item {
+    @apply md:px-0
+  }
+
 }

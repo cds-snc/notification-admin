@@ -10,7 +10,7 @@
     <a
       {% if id_key %}id="{{ id_key }}"{% endif %}
       href="{{ url }}"
-      class="nav-menu-item {{ css_classes }}"
+      class="nav-menu-item {{ css_classes or '' }}"
       {% if is_external_link %}target="_blank"{% endif %}
       {% if is_active %}aria-current="page"{% endif %}
     >{{ localised_txt }}

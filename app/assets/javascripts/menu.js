@@ -206,6 +206,19 @@
 
     // Keep Escape key functionality for accessibility
     registerKeyDownEscape($(window), () => close($menu, $items));
+
+    // Add a Resize Observer to automatically close the menu above the md breakpoint
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const width = entry.contentRect.width;
+        if (width >= 768) {
+          close($menu, $items);
+        }
+      }
+    });
+
+    resizeObserver.observe(document.body);
+
   }
 
   Modules.Menu = function () {
