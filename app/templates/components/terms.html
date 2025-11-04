@@ -11,7 +11,7 @@
     { "title": 'Manage and protect personal information of your recipients' },
     { "title": 'Get consent before sending messages' },
     { "title": 'Keep accurate contact information' },
-    { "title": 'Send information that’s unclassified or Protected A only' },
+    { "title": 'Send only non-emergency, unclassified or Protected A information' },
     { "title": 'Practice continuous security, including security of API keys' },
 ] %}
 
@@ -33,12 +33,16 @@
         ><em>{{ _('service level agreement') }}</em></a
     ><em>.</em>
     </p>
-
     <h2 class="heading-medium">{{ _(headings[0].title).format(content_link(_('Privacy notice'), gca_url_for('privacy'), is_external_link=true))  }}</h2>
     <p>
-    {{ _('We may suspend your account or service if you break these terms or misuse GC Notify. Misuse includes creating duplicate services or services incompatible with your original purpose.') }}
+        {{ _('We may suspend your account or service if you break these terms or misuse GC Notify.') }}
     </p>
-
+    <p class="mt-0">{{ _("Misuse includes:") }}</p>
+    <ul class="list list-bullet ml-10">
+        <li>{{ _('Creating duplicate services.') }}</li>
+        <li>{{ _('Creating services incompatible with your original purpose.') }}</li>
+        <li>{{ _('Using GC Notify for emergencies.') }}</li>
+    </ul>
     <h2 class="heading-medium">{{ _(headings[1].title) }}</h2>
     <p>
     {{ _('We apply limits to maintain our ') }}
@@ -110,6 +114,7 @@
     <ul class="list list-bullet ml-10">
         <li>{{ _("Assess context to decide what <a href='https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32614&amp;section=html'>degree of injury</a> could result from release of personal information, either accidentally or by a bad actor.") }}</li>
         <li>{{ _("Use GC Notify for <a href='https://www.canada.ca/en/public-services-procurement/services/industrial-security/security-requirements-contracting/safeguarding-equipment-sites-assets-information/levels-security.html'>low-sensitivity personal information</a>.") }}</li>
+        <li>{{ _("Do not send emergency messages with GC Notify.") }}</li>
     </ul>
 
     <h2 class="heading-medium">{{ _(headings[7].title) }}</h2>
