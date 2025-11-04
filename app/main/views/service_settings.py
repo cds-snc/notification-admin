@@ -532,11 +532,11 @@ def archive_service(service_id):
 @user_has_permissions("manage_service")
 def suspend_service(service_id):
     if request.method == "POST":
-        service_api_client.suspend_service(service_id)
+        service_api_client.suspend_service(service_id, current_user.id)
         return redirect(url_for(".service_settings", service_id=service_id))
     else:
         flash(
-            _("This will suspend the service and revoke all API keys. Are you sure you want to suspend this service?"),
+            _("Are you sure you want to suspend this service?"),
             "suspend",
         )
         return service_settings(service_id)
@@ -550,7 +550,7 @@ def resume_service(service_id):
         return redirect(url_for(".service_settings", service_id=service_id))
     else:
         flash(
-            _("This will resume the service. New API keys are required for this service to use the API"),
+            _("Are you sure you want to resume the service?"),
             "resume",
         )
         return service_settings(service_id)

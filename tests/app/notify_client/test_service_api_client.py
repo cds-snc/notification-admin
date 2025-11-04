@@ -347,7 +347,7 @@ def test_returns_value_from_cache(
             {"properties": {}},
         ),
         (service_api_client, "archive_service", [SERVICE_ONE_ID], {}),
-        (service_api_client, "suspend_service", [SERVICE_ONE_ID], {}),
+        (service_api_client, "suspend_service", [SERVICE_ONE_ID, "1"], {}),
         (service_api_client, "resume_service", [SERVICE_ONE_ID], {}),
         (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, ""], {}),
         (service_api_client, "update_safelist", [SERVICE_ONE_ID, {}], {}),
