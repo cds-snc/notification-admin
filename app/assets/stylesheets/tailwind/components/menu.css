@@ -68,7 +68,6 @@
 
   /* Just the main navigation */
   #proposition-links .nav-menu-item {
-    @apply md:px-0
+    @apply md:px-0;
   }
-
 }

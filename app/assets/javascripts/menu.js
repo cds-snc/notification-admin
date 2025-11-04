@@ -218,7 +218,6 @@
     });
 
     resizeObserver.observe(document.body);
-
   }
 
   Modules.Menu = function () {
