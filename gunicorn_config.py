@@ -6,11 +6,11 @@ import traceback
 import gunicorn  # type: ignore
 
 enable_newrelic = os.getenv("ENABLE_NEW_RELIC", "False").lower() == "true"
+environment = os.environ.get("NOTIFY_ENVIRONMENT")
 
 if enable_newrelic:
     import newrelic.agent  # See https://bit.ly/2xBVKBH
 
-    environment = os.environ.get("NOTIFY_ENVIRONMENT")
     newrelic.agent.initialize(environment=environment)  # noqa: E402
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
