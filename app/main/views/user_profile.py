@@ -17,7 +17,7 @@ from flask_login import current_user, logout_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
-from app import user_api_client
+from app import get_current_locale, user_api_client
 from app.main import main
 from app.main.forms import (
     AuthMethodForm,
@@ -777,9 +777,17 @@ def deactivate_account_authenticate():
 
     if form.validate_on_submit():
         session[HAS_AUTHENTICATED] = True
+
+        # deactivate user
         user_api_client.deactivate_user(current_user.id)
+
+        # clear session and sign out
+        currentlang = get_current_locale(current_app)
+        session.clear()
         logout_user()
-        flash(_("You’ve successfully deactivated your account and signed out of GC Notify"), "default_with_tick")
+        session["userlang"] = currentlang
+
+        flash(_("You’ve successfully deactivated your account and signed out of GC Notify"))
         return redirect(url_for("main.sign_in"))
 
     return render_template(
