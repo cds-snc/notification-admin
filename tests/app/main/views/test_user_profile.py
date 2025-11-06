@@ -890,7 +890,7 @@ def test_user_with_phone_but_unverified_can_add_security_key(
 def test_deactivate_account_shows_info_page(client_request):
     """GET /user-profile/deactivate shows the info/warning page"""
     page = client_request.get("main.deactivate_account")
-    assert "Are you sure you want to deactivate your account?" in page.text
+    assert "Are you sure you want to deactivate?" in page.text
 
 
 def test_deactivate_account_post_redirects_to_authenticate(client_request):
