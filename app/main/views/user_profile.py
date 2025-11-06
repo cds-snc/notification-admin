@@ -779,7 +779,7 @@ def deactivate_account_authenticate():
         session[HAS_AUTHENTICATED] = True
         user_api_client.deactivate_user(current_user.id)
         logout_user()
-        flash(_("You’ve successfully deactivated your account and signed out of GC Notify"))
+        flash(_("You’ve successfully deactivated your account and signed out of GC Notify"), "default_with_tick")
         return redirect(url_for("main.sign_in"))
 
     return render_template(
