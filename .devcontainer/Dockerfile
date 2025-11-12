@@ -15,7 +15,7 @@ RUN apt-get update \
     && apt-get -y install \
     curl \
     emacs \
-    exa \
+    eza \
     fd-find \
     fzf \
     git \
@@ -32,14 +32,12 @@ RUN apt-get update \
     openssh-client \
     procps \
     sudo \
-    tldr \
     unzip \
     vim \
     libgtk2.0-0 \
     libgtk-3-0 \
     libgbm-dev \
     libnotify-dev \
-    libgconf-2-4 \
     libnss3 \
     libxss1 \
     libasound2 \
@@ -52,6 +50,9 @@ RUN apt-get update \
 
 # Upgrade pip
 RUN pip install --upgrade pip
+
+# Install tldr via npm (since it's not available in apt)
+RUN npm install -g tldr
 
 COPY --chown=vscode:vscode .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/notify-dev-entrypoint.sh
