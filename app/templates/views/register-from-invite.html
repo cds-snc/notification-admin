@@ -2,6 +2,8 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
+{% from "components/validation-summary.html" import validation_summary with context %}
+{% from "components/tou-dialog.html" import tou_dialog, tou_dialog_trigger with context %}
 
 {% block per_page_title %}
 {{ _('Create an account')  }} 
@@ -16,7 +18,7 @@
       {{ _('Your account will be created with this email address:') }}
       <span class="whitespace-nowrap">{{invited_user.email_address}}</span>
     </p>
-    {% call form_wrapper() %}
+    {% call form_wrapper(show_validation_summary=True, form=form) %}
       {{ textbox(form.name, width='w-full md:w-3/4') }}
       {% set txt = _('Use a work number where we can reach you') %}
       <div class="extra-tracking">
@@ -24,6 +26,10 @@
       </div>
       {% set txt = _('Must be at least 8 characters and hard to guess') %}
       {{ textbox(form.password, hint=txt, width='w-full md:w-3/4', autocomplete='new-password') }}
+
+      {{ tou_dialog_trigger(button_text=_('Read and agree to the terms of use'), is_in_error_state=(form.errors.get('tou_agreed') != None)) }}
+      {{ form.tou_agreed }}
+
       {% set txt = _('Continue') %}
       {{ page_footer(txt) }}
       {{form.service}}
@@ -33,4 +39,8 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block body_end %}
+  {{ tou_dialog() }}
 {% endblock %}

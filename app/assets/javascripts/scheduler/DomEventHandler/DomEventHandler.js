@@ -6,7 +6,7 @@ const useBuildEvent = () => {
 
   useEffect(() => {
     const handler = (data) => {
-      console.log("custom event called", data.detail);
+      // console.log("custom event called", data.detail);
       dispatch(data.detail);
     };
     window.addEventListener("build", handler);
