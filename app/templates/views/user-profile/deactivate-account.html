@@ -3,7 +3,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 
-{% set title = _("Are you sure you want to deactivate your account?") %}
+{% set title = _("Are you sure you want to deactivate?") %}
 {% set back_link = url_for('main.user_profile') %}
 
 {% block per_page_title %}
@@ -26,7 +26,7 @@
         <li>{{ _('Receive a final email confirming deactivation') }}</li>
       </ul>
 
-      <p>{{ _("We will:") }}</p>
+      <p>{{ _("We'll:") }}</p>
       <ul class="list list-bullet">
         <li>{{ _('Sign you out of GC Notify.') }}</li>
         <li>{{ _('Suspend services that now have only one team member.') }}</li>
