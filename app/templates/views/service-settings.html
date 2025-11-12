@@ -522,7 +522,7 @@
 
     {% endif %}
 
-    {% if current_service.active and (current_service.trial_mode or current_user.platform_admin) %}
+    {% if current_service.active and current_user.has_permissions("manage_service") %}
       <p class="mt-gutterHalf block clear-both contain-floats">
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.archive_service', service_id=current_service.id) }}">
