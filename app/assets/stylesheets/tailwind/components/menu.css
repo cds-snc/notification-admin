@@ -44,13 +44,13 @@
     @apply absolute top-full w-max bg-white border-1 border-gray-300 px-0 z-50;
   }
   .menu-overlay:not(.hidden) {
-    @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4;
+    @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4 min-w-full;
   }
 
   /* Improve menu item touch targets */
   .menu-overlay a,
   button {
-    @apply py-3 px-4;
+    @apply py-5 px-4;
     min-height: 44px;
     display: flex;
     align-items: center;
@@ -64,5 +64,10 @@
   .menu-overlay button:active,
   .menu-overlay button:focus {
     @apply outline-yellow text-black border-transparent shadow-focusLine2;
+  }
+
+  /* Just the main navigation */
+  #proposition-links .nav-menu-item {
+    @apply md:px-0;
   }
 }
