@@ -1,8 +1,7 @@
 {% from "components/form.html" import form_wrapper %}
 
-<div class="bg-blue-800 text-white">
+<div class="bg-blue-800 text-white py-gutter">
   <div class="container px-gutterHalf">
-    <div class="md:w-2/3 pr-4">
       <h2 class="heading-large mb-4">{{ _("Subscribe to the Notify newsletter") }}</h2>
       <p class="mb-6">
         {{ _("Receive monthly feature updates, innovative tips and tricks and new research opportunities.") }}
@@ -14,7 +13,7 @@
         autocomplete=False,
         id="newsletter-subscribe-form"
       ) %}
-        <div class="bg-white p-6 border-2 border-t-10 border-brand-900">
+        <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px]">
           <div class="form-group contain-floats box-border mb-6">
             <label class="form-label text-gray-900" for="email">
               {{ _("Email address") }}
@@ -76,13 +75,4 @@
         </div>
       {% endcall %}
     </div>
-    
-    <div class="md:w-1/3 hidden md:block">
-      <div class="bg-gray-300 p-8 rounded h-full flex items-center justify-center min-h-64">
-        <p class="text-gray-800 text-center">
-          {{ _("illustration? Maybe a bird and a loud speaker, newspaper, postcard, etc.") }}
-        </p>
-      </div>
-    </div>
-  </div>
 </div>
