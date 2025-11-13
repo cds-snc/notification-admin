@@ -2154,5 +2154,5 @@ class NewsletterSubscriptionForm(StripWhitespaceForm):
             ("fr", _l("French")),
             ("en", _l("English")),
         ],
-        validators=[DataRequired(message=_l("Select a language"))],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
