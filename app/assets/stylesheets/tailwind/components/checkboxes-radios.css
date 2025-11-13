@@ -94,5 +94,10 @@
     @apply opacity-100 text-gray-grey1 cursor-default;
   }
 
+  /* Override border for newsletter form radio buttons */
+  #newsletter-subscribe-form .multiple-choice {
+    border-bottom: none !important;
+  }
+
   /*! purgecss end ignore */
 }
