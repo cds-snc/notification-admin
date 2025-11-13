@@ -403,13 +403,14 @@ def preview_content():
 def newsletter_subscription():
     """Handle newsletter subscription form submissions"""
     newsletter_form = NewsletterSubscriptionForm()
+    path = "home" if get_current_locale(current_app) == "en" else "accueil"
 
     if newsletter_form.validate_on_submit():
         # TODO: Handle newsletter subscription
-        pass
+        # Redirect back to the home page with success parameter and anchor
+        return redirect(url_for("main.index", subscribed="1") + "#newsletter-section")
 
     # Re-render the home page with form errors if validation failed
-    path = "home" if get_current_locale(current_app) == "en" else "accueil"
     endpoint = "wp/v2/pages"
     lang = get_current_locale(current_app)
     params = {"slug": path, "lang": lang}
@@ -466,6 +467,7 @@ def _render_articles_page(response, newsletter_form=None):
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
         newsletter_form=newsletter_form if newsletter_form else NewsletterSubscriptionForm(),
+        newsletter_subscribed=request.args.get("subscribed") == "1",
     )
 
 

@@ -2,44 +2,52 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/radios.html" import radios %}
 
-<div class="bg-blue-800 text-white py-gutter">
+<div id="newsletter-section" class="bg-blue-800 text-white py-gutter">
   <div class="container px-gutterHalf">
       <h2 class="heading-large mb-4">{{ _("Subscribe to the Notify newsletter") }}</h2>
       <p class="mb-6">
         {{ _("Receive monthly feature updates, innovative tips and tricks and new research opportunities.") }}
       </p>
       
-      {% call form_wrapper(
-        action=url_for('main.newsletter_subscription'),
-        method="post",
-        autocomplete=False,
-        id="newsletter-subscribe-form"
-      ) %}
-        {{ newsletter_form.csrf_token }}
-        <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900">
-          {{ textbox(
-            newsletter_form.email,
-            hint=_("Enter your federal government email address"),
-            width='w-full md:w-3/4',
-            label_class='text-gray-900'
-          ) }}
-
-          <div class="text-gray-900">
-            {{ radios(
-              newsletter_form.language,
-              bordered=true
-            ) }}
-          </div>
-
-          <div>
-            <button 
-              type="submit" 
-              class="button bg-blue-900 text-white px-6 py-3 text-base font-bold hover:bg-blue-950 focus:shadow-outline"
-            >
-              {{ _("Subscribe") }}
-            </button>
-          </div>
+      {% if newsletter_subscribed %}
+        <!-- Success message -->
+        <div class="bg-white p-6 border-2 border-t-10 border-green-600 max-w-[700px] text-gray-900">
+          <h3 class="heading-medium text-green-700 mb-2">{{ _("Success!") }}</h3>
+          <p>{{ _("We have sent you a confirmation email.") }}</p>
         </div>
-      {% endcall %}
+      {% else %}
+        {% call form_wrapper(
+          action=url_for('main.newsletter_subscription'),
+          method="post",
+          autocomplete=False,
+          id="newsletter-subscribe-form"
+        ) %}
+          {{ newsletter_form.csrf_token }}
+          <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900">
+            {{ textbox(
+              newsletter_form.email,
+              hint=_("Enter your federal government email address"),
+              width='w-full md:w-3/4',
+              label_class='text-gray-900'
+            ) }}
+
+            <div class="text-gray-900">
+              {{ radios(
+                newsletter_form.language,
+                bordered=true
+              ) }}
+            </div>
+
+            <div>
+              <button 
+                type="submit" 
+                class="button bg-blue-900 text-white px-6 py-3 text-base font-bold hover:bg-blue-950 focus:shadow-outline"
+              >
+                {{ _("Subscribe") }}
+              </button>
+            </div>
+          </div>
+        {% endcall %}
+      {% endif %}
     </div>
 </div>
