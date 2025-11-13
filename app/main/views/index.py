@@ -448,7 +448,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response, newsletter_form=None):
+def _render_articles_page(response):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -466,7 +466,7 @@ def _render_articles_page(response, newsletter_form=None):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
-        newsletter_form=newsletter_form if newsletter_form else NewsletterSubscriptionForm(),
+        newsletter_form=NewsletterSubscriptionForm(),
         newsletter_subscribed=request.args.get("subscribed") == "1",
     )
 
