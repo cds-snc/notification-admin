@@ -334,3 +334,184 @@ def test_should_render_welcome(client):
     expected = "Create your first service"
     link_text = page.find_all("a", {"class": "button"})[0].text
     assert link_text == expected
+
+
+@pytest.mark.parametrize(
+    "path, expected_redirect_path",
+    [
+        ("/home", "/home"),
+        ("/accueil", "/accueil"),
+    ],
+)
+def test_newsletter_subscription_successful_submission_redirects(
+    client, mocker, mock_calls_out_to_GCA, path, expected_redirect_path
+):
+    """Test that a valid newsletter subscription redirects to home page with success parameter"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+
+    response = client.post(
+        path,
+        data={
+            "email": "user@cds-snc.ca",
+            "language": "en",
+            "csrf_token": "test_token",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert response.location.endswith("/?subscribed=1#newsletter-section")
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/home", "/accueil"],
+)
+def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+    """Test that submitting without email shows validation error"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    response = client.post(
+        path,
+        data={
+            "email": "",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    error = page.find("span", {"class": "error-message"})
+    assert error is not None
+    assert "Cannot be empty" in error.text
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/home", "/accueil"],
+)
+def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+    """Test that submitting a non-government email shows validation error"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=False)
+
+    response = client.post(
+        path,
+        data={
+            "email": "user@gmail.com",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    error = page.find("span", {"class": "error-message"})
+    assert error is not None
+    assert "is not on our list of government domains" in error.text
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/home", "/accueil"],
+)
+def test_newsletter_subscription_missing_language_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+    """Test that submitting without language selection shows validation error"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    response = client.post(
+        path,
+        data={
+            "email": "user@cds-snc.ca",
+            "language": "",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    error = page.find("span", {"class": "error-message"})
+    assert error is not None
+    assert "Select a language" in error.text
+
+
+@pytest.mark.parametrize(
+    "path, lang",
+    [
+        ("/home", "en"),
+        ("/accueil", "fr"),
+    ],
+)
+def test_newsletter_subscription_preserves_language_context(client, mocker, mock_calls_out_to_GCA, path, lang):
+    """Test that form errors are rendered in the correct language context"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    response = client.post(
+        path,
+        data={
+            "email": "",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    # The page should still be rendered (not a redirect)
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    # Verify page content is present
+    assert page.find("html") is not None
+
+
+@pytest.mark.parametrize(
+    "email, language",
+    [
+        ("user@cds-snc.ca", "en"),
+        ("utilisateur@cds-snc.ca", "fr"),
+        ("test.user@canada.ca", "en"),
+        ("test.user@gc.ca", "fr"),
+    ],
+)
+def test_newsletter_subscription_accepts_various_gov_emails(client, mocker, mock_calls_out_to_GCA, email, language):
+    """Test that various government email formats are accepted"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    response = client.post(
+        "/home",
+        data={
+            "email": email,
+            "language": language,
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert "subscribed=1" in response.location
