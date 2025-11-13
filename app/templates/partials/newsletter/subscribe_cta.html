@@ -1,4 +1,6 @@
 {% from "components/form.html" import form_wrapper %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/radios.html" import radios %}
 
 <div class="bg-blue-800 text-white py-gutter">
   <div class="container px-gutterHalf">
@@ -13,58 +15,22 @@
         autocomplete=False,
         id="newsletter-subscribe-form"
       ) %}
-        <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px]">
-          <div class="form-group contain-floats box-border mb-6">
-            <label class="form-label text-gray-900" for="email">
-              {{ _("Email address") }}
-            </label>
-            <span class="form-hint text-gray-700 block mb-2">
-              {{ _("Enter your federal government email address") }}
-            </span>
-            <input 
-              class="form-control w-full md:w-3/4 p-2 border-2 border-gray-800 rounded text-gray-900" 
-              id="email" 
-              name="email" 
-              type="email" 
-              required 
-              placeholder="hello@email.com"
-              autocomplete="email"
-            />
+        <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900">
+          {{ textbox(
+            newsletter_form.email,
+            hint=_("Enter your federal government email address"),
+            width='w-full md:w-3/4',
+            label_class='text-gray-900'
+          ) }}
+
+          <div class="text-gray-900">
+            {{ radios(
+              newsletter_form.language,
+              bordered=true
+            ) }}
           </div>
 
-          <fieldset class="form-group mb-6">
-            <legend class="form-label text-gray-900 mb-4">
-              {{ _("Will you be reading the newsletter in English or French?") }}
-            </legend>
-            <div class="multiple-choice">
-              <input 
-                id="language-french" 
-                name="language" 
-                type="radio" 
-                value="fr" 
-                class="form-input radio"
-              />
-              <label class="block-label text-gray-900" for="language-french">
-                {{ _("French") }}
-              </label>
-            </div>
-            <div class="multiple-choice">
-              <input 
-                id="language-english" 
-                name="language" 
-                type="radio" 
-                value="en" 
-                class="form-input radio"
-                checked
-              />
-              <label class="block-label text-gray-900" for="language-english">
-                {{ _("English") }}
-              </label>
-            </div>
-          </fieldset>
-
           <div>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button 
               type="submit" 
               class="button bg-blue-900 text-white px-6 py-3 text-base font-bold hover:bg-blue-950 focus:shadow-outline"

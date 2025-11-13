@@ -34,6 +34,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterSubscriptionForm,
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
@@ -437,6 +438,7 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
+        newsletter_form=NewsletterSubscriptionForm(),
     )
 
 

@@ -2137,3 +2137,22 @@ class AuthMethodForm(StripWhitespaceForm):
         super().__init__(auth_method=current_auth_method)
 
         self.auth_method.choices = all_auth_methods
+
+
+class NewsletterSubscriptionForm(StripWhitespaceForm):
+    email = EmailField(
+        _l("Email address"),
+        validators=[
+            DataRequired(message=_l("Cannot be empty")),
+            Length(min=5, max=255, message=_l("Email address must be between 5 and 255 characters")),
+        ],
+    )
+    language = RadioField(
+        _l("Will you be reading the newsletter in English or French?"),
+        choices=[
+            ("fr", _l("French")),
+            ("en", _l("English")),
+        ],
+        default="en",
+        validators=[DataRequired(message=_l("Select a language"))],
+    )
