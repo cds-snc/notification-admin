@@ -2145,6 +2145,7 @@ class NewsletterSubscriptionForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("Cannot be empty")),
             Length(min=5, max=255, message=_l("Email address must be between 5 and 255 characters")),
+            ValidGovEmail(),
         ],
     )
     language = RadioField(
