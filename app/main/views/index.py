@@ -398,6 +398,33 @@ def preview_content():
     return _render_articles_page(response)
 
 
+@main.route("/home", methods=["POST"])
+@main.route("/accueil", methods=["POST"])
+def newsletter_subscription():
+    """Handle newsletter subscription form submissions"""
+    newsletter_form = NewsletterSubscriptionForm()
+
+    if newsletter_form.validate_on_submit():
+        # TODO: Handle newsletter subscription
+        pass
+
+    # Re-render the home page with form errors if validation failed
+    path = "home" if get_current_locale(current_app) == "en" else "accueil"
+    endpoint = "wp/v2/pages"
+    lang = get_current_locale(current_app)
+    params = {"slug": path, "lang": lang}
+
+    if current_user.is_authenticated:
+        response = get_page_by_slug(endpoint, params=params)
+    else:
+        response = get_page_by_slug_with_cache(endpoint, params=params)
+
+    if isinstance(response, list):
+        response = response[0]
+
+    return _render_articles_page(response, newsletter_form)
+
+
 @main.route("/<path:path>")
 def page_content(path=""):
     endpoint = "wp/v2/pages"
