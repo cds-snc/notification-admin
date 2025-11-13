@@ -1,9 +1,7 @@
 {% from "components/form.html" import form_wrapper %}
-{% from "components/textbox.html" import textbox %}
-{% from "components/page-footer.html" import page_footer %}
 
-<div class="bg-blue-800 text-white p-8 md:p-12">
-  <div class="grid-row">
+<div class="bg-blue-800 text-white">
+  <div class="container px-gutterHalf">
     <div class="md:w-2/3 pr-4">
       <h2 class="heading-large mb-4">{{ _("Subscribe to the Notify newsletter") }}</h2>
       <p class="mb-6">
@@ -16,7 +14,7 @@
         autocomplete=False,
         id="newsletter-subscribe-form"
       ) %}
-        <div class="bg-white p-6" style="border: 2px solid #0E2A3C; border-top: 10px solid #0E2A3C;">
+        <div class="bg-white p-6 border-2 border-t-10 border-brand-900">
           <div class="form-group contain-floats box-border mb-6">
             <label class="form-label text-gray-900" for="email">
               {{ _("Email address") }}
