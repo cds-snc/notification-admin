@@ -10,11 +10,12 @@
       </p>
       
       {% call form_wrapper(
-        action="/api/newsletter/subscribe",
+        action=url_for('main.newsletter_subscription'),
         method="post",
         autocomplete=False,
         id="newsletter-subscribe-form"
       ) %}
+        {{ newsletter_form.csrf_token }}
         <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900">
           {{ textbox(
             newsletter_form.email,
