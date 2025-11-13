@@ -2149,7 +2149,7 @@ class NewsletterSubscriptionForm(StripWhitespaceForm):
         ],
     )
     language = RadioField(
-        _l("Will you be reading the newsletter in English or French?"),
+        _l("Choose language"),
         choices=[
             ("fr", _l("French")),
             ("en", _l("English")),
