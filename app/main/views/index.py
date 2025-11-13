@@ -423,26 +423,7 @@ def newsletter_subscription():
     if isinstance(response, list):
         response = response[0]
 
-    title = response["title"]["rendered"]
-    slug_en = response["slug_en"]
-    html_content = response["content"]["rendered"]
-    page_id = request.args.get("id")
-
-    nav_items = get_nav_items()
-    set_active_nav_item(nav_items, request.path)
-
-    return render_template(
-        "views/page-content.html",
-        title=title,
-        html_content=html_content,
-        nav_items=nav_items,
-        slug=slug_en,
-        lang_url=get_lang_url(response, bool(page_id)),
-        stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
-        isHome=True if slug_en == "home" else None,
-        newsletter_form=newsletter_form,
-        newsletter_subscribed=False,
-    )
+    return _render_articles_page(response, newsletter_form)
 
 
 @main.route("/<path:path>")
@@ -467,7 +448,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -475,6 +456,9 @@ def _render_articles_page(response):
 
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
+
+    if newsletter_form is None:
+        newsletter_form = NewsletterSubscriptionForm()
 
     return render_template(
         "views/page-content.html",
@@ -485,7 +469,7 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
-        newsletter_form=NewsletterSubscriptionForm(),
+        newsletter_form=newsletter_form,
         newsletter_subscribed=request.args.get("subscribed") == "1",
     )
 

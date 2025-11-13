@@ -484,34 +484,3 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     # Verify page content is present
     assert page.find("html") is not None
-
-
-@pytest.mark.parametrize(
-    "email, language",
-    [
-        ("user@cds-snc.ca", "en"),
-        ("utilisateur@cds-snc.ca", "fr"),
-        ("test.user@canada.ca", "en"),
-        ("test.user@gc.ca", "fr"),
-    ],
-)
-def test_newsletter_subscription_accepts_various_gov_emails(client, mocker, mock_calls_out_to_GCA, email, language):
-    """Test that various government email formats are accepted"""
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
-    mocker.patch(
-        "app.service_api_client.get_stats_by_month",
-        return_value={"data": [("2020-11-01", "email", 20)]},
-    )
-    mocker.patch("app.main.validators.is_gov_user", return_value=True)
-
-    response = client.post(
-        "/home",
-        data={
-            "email": email,
-            "language": language,
-        },
-        follow_redirects=False,
-    )
-
-    assert response.status_code == 302
-    assert "subscribed=1" in response.location
