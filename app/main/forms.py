@@ -2144,7 +2144,7 @@ class NewsletterSubscriptionForm(StripWhitespaceForm):
         _l("Email address"),
         validators=[
             DataRequired(message=_l("This cannot be empty")),
-            Length(min=5, max=255, message=_l("Email address must be between 5 and 255 characters")),
+            Length(min=5, max=255),
             ValidGovEmail(),
         ],
     )
