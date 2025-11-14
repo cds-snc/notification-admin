@@ -457,9 +457,6 @@ def _render_articles_page(response, newsletter_form=None):
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
 
-    if newsletter_form is None:
-        newsletter_form = NewsletterSubscriptionForm()
-
     return render_template(
         "views/page-content.html",
         title=title,
