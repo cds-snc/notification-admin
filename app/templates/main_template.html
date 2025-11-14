@@ -185,10 +185,6 @@
 {% block content %}{% endblock %}
 <div id="global-app-error" class="app-error hidden"></div>
 
-{% if isHome and config["NOTIFY_ENVIRONMENT"].lower() != "production" %}
-  {% include 'partials/newsletter/subscribe_cta.html' %}
-{% endif %}
-
 <!-- start section 9 -->
 {% include 'partials/nav/footer.html' %}
 
