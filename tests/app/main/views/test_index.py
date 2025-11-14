@@ -393,7 +393,7 @@ def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     error = page.find("span", {"class": "error-message"})
     assert error is not None
-    assert "Cannot be empty" in error.text
+    assert "This cannot be empty" in error.text
 
 
 @pytest.mark.parametrize(
@@ -451,7 +451,7 @@ def test_newsletter_subscription_missing_language_shows_error(client, mocker, mo
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     error = page.find("span", {"class": "error-message"})
     assert error is not None
-    assert "Select a language" in error.text
+    assert "You must select an option to continue" in error.text
 
 
 @pytest.mark.parametrize(
