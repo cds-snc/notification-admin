@@ -345,7 +345,7 @@ def test_newsletter_subscription_successful_submission_redirects(client, mocker,
     )
 
     response = client.post(
-        "/newsletter_subscription",
+        "/newsletter-subscription",
         data={
             "email": "user@cds-snc.ca",
             "language": "en",
@@ -368,7 +368,7 @@ def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter_subscription",
+        "/newsletter-subscription",
         data={
             "email": "",
             "language": "en",
@@ -393,7 +393,7 @@ def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=False)
 
     response = client.post(
-        "/newsletter_subscription",
+        "/newsletter-subscription",
         data={
             "email": "user@gmail.com",
             "language": "en",
@@ -418,7 +418,7 @@ def test_newsletter_subscription_missing_language_shows_error(client, mocker, mo
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter_subscription",
+        "/newsletter-subscription",
         data={
             "email": "user@cds-snc.ca",
             "language": "",
@@ -443,7 +443,7 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter_subscription",
+        "/newsletter-subscription",
         data={
             "email": "",
             "language": "en",
