@@ -1,8 +1,0 @@
-{% extends "admin_template.html" %}
-{% from "components/tiptap-editor.html" import tiptap_editor with context %}
-
-{% block maincolumn_content %}
-  <h1 class="heading-medium">Editor test</h1>
-  <label class="form-label" id="tiptap-editor-label">Email message</label>
-  {{ tiptap_editor(editorId='tiptap-editor', labelId='tiptap-editor-label', initialContent='Hello') }}
-{% endblock %}

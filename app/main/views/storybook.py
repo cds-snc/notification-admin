@@ -113,16 +113,3 @@ def storybook():
         form3=form3,
         full_form=full_form,
     )
-
-
-@main.route("/_rte", methods=["GET"])
-def rte():
-    class ExampleFullForm(Form):
-        name = StringField(
-            "Template name", default="Annual newsletter template", validators=[DataRequired(message="This cannot be empty")]
-        )
-        subject = StringField(
-            "Subject field", default="Annual newsletter", validators=[DataRequired(message="This cannot be empty")]
-        )
-
-    return render_template("views/rte.html", form=ExampleFullForm(), showStructure=len(request.args) == 0)
