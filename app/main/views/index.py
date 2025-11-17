@@ -398,8 +398,7 @@ def preview_content():
     return _render_articles_page(response)
 
 
-@main.route("/home", methods=["POST"])
-@main.route("/accueil", methods=["POST"])
+@main.route("/newsletter_subscription", methods=["POST"])
 def newsletter_subscription():
     """Handle newsletter subscription form submissions"""
     newsletter_form = NewsletterSubscriptionForm()
