@@ -19,7 +19,7 @@
     </div>
 
     <h2 class="heading-large">{{ _("Security") }}</h2>
-    <div>
+    <div class="pb-8">
       {{ profile_item(_('Password'), text_field(_('Last changed ') + " " + current_user.password_changed_at|format_delta ), '.user_profile_password', testid="user_profile_password") }}
       {% if current_user.auth_type == 'email_auth' %}
         {{ profile_item(_('Two-step verification method'), text_field(_("Code by email") + " (" + current_user.email_address + ")"), '.user_profile_2fa', testid="user_profile_2fa") }}
@@ -34,5 +34,11 @@
       {% if current_user.platform_admin or session.get('disable_platform_admin_view') %}
         {{ profile_item(_('Use platform admin view'), text_field(_('Yes') if not session.get('disable_platform_admin_view') else _('No')), '.user_profile_disable_platform_admin_view', testid="user_profile_disable_platform_admin_view") }}
       {% endif %}
+    </div>
+    <h2 class="heading-large">{{ _("Account Management") }}</h2>
+    <div>
+      <a href="{{ url_for('main.deactivate_account')}}">
+        {{ _('Deactivate your account') }}
+      </a>
     </div>
 {% endblock %}

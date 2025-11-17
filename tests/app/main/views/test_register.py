@@ -501,3 +501,25 @@ def test_register_from_invite_form_doesnt_show_mobile_number_field_if_email_auth
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.find("input", attrs={"name": "auth_type"}).attrs["value"] == "email_auth"
     assert page.find("input", attrs={"name": "mobile_number"}) is not None
+
+
+def test_register_from_invite_has_terms_of_use_dialog(client, sample_invite, app_):
+    with client.session_transaction() as session:
+        session["invited_user"] = sample_invite
+
+    response = client.get(url_for("main.register_from_invite"))
+
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+
+    # Check that TOU dialog trigger button is present
+    tou_trigger = page.find("button", attrs={"data-testid": "tou-dialog-trigger"})
+    assert tou_trigger is not None
+
+    # Check that TOU dialog is present
+    tou_dialog = page.find("dialog", attrs={"data-testid": "tou-dialog"})
+    assert tou_dialog is not None
+
+    # Check that the hidden tou_agreed field is present
+    tou_agreed_field = page.find("input", attrs={"name": "tou_agreed"})
+    assert tou_agreed_field is not None
