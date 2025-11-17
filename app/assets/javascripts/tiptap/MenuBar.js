@@ -137,9 +137,9 @@ const MenuBar = ({ editor, openLinkModal }) => {
           title="Heading 1"
         >
           <span className="sr-only">
-          {editor.isActive("heading", { level: 1 })
-            ? "Remove Heading 1"
-            : "Apply Heading 1"}
+            {editor.isActive("heading", { level: 1 })
+              ? "Remove Heading 1"
+              : "Apply Heading 1"}
           </span>
           H1
         </button>
