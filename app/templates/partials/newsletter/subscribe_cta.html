@@ -13,9 +13,9 @@
       {% if newsletter_subscribed %}
         <!-- Success message -->
         <div class="bg-white p-6 border-2 border-t-10 border-green-600 max-w-[700px] text-gray-900">
-          <h3 class="heading-medium text-green-700 mb-2">{{ _("Check your email") }}</h3>
-          <p class="text-base">{{ _("We’ve sent an email to <strong>{}</strong>.").format(newsletter_form.email) }}</p>
-          <p class="text-base">{{ _("Use the link in the email to confirm your subscription to the GC Notify newsletter.") }}</p>
+          <h3 class="heading-medium mt-8">{{ _("Check your email") }}</h3>
+          <p class="text-base">{{ _("We've sent an email to <strong>{}</strong>.").format(newsletter_subscribed_email) }}</p>
+          <p class="text-base mt-2">{{ _("Use the link in the email to confirm your subscription to the GC Notify newsletter.") }}</p>
         </div>
       {% else %}
         {% call form_wrapper(

@@ -406,29 +406,10 @@ def newsletter_subscription():
 
     if newsletter_form.validate_on_submit():
         # TODO: Handle newsletter subscription
-        # Store the submitted email to pass to template
         submitted_email = newsletter_form.email.data
-        submitted_language = newsletter_form.language.data
 
-        # Render the page with subscription success
-        endpoint = "wp/v2/pages"
-        lang = get_current_locale(current_app)
-        params = {"slug": path, "lang": lang}
-
-        if current_user.is_authenticated:
-            response = get_page_by_slug(endpoint, params=params)
-        else:
-            response = get_page_by_slug_with_cache(endpoint, params=params)
-
-        if isinstance(response, list):
-            response = response[0]
-
-        return _render_articles_page(
-            response,
-            newsletter_form,
-            newsletter_subscribed_email=submitted_email,
-            newsletter_subscribed_language=submitted_language,
-        )
+        # Redirect back to the home page with success parameter and email
+        return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
 
     # Re-render the home page with form errors if validation failed
     endpoint = "wp/v2/pages"
@@ -468,7 +449,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response, newsletter_form=None, newsletter_subscribed_email=None, newsletter_subscribed_language=None):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -490,9 +471,8 @@ def _render_articles_page(response, newsletter_form=None, newsletter_subscribed_
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
         newsletter_form=newsletter_form,
-        newsletter_subscribed=request.args.get("subscribed") == "1" or newsletter_subscribed_email is not None,
-        newsletter_subscribed_email=newsletter_subscribed_email,
-        newsletter_subscribed_language=newsletter_subscribed_language,
+        newsletter_subscribed=request.args.get("subscribed") == "1",
+        newsletter_subscribed_email=request.args.get("email"),
     )
 
 
