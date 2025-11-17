@@ -34,6 +34,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterLanguageForm,
     NewsletterSubscriptionForm,
     SearchByNameForm,
 )
@@ -425,6 +426,88 @@ def newsletter_subscription():
         response = response[0]
 
     return _render_articles_page(response, newsletter_form)
+
+
+@main.route("/newsletter/subscribe", methods=["GET", "POST"])
+def newsletter_subscribe():
+    """Newsletter subscription page"""
+    newsletter_form = NewsletterSubscriptionForm()
+
+    if newsletter_form.validate_on_submit():
+        # TODO: Handle newsletter subscription with email and language
+        # newsletter_form.email.data, newsletter_form.language.data
+        submitted_email = newsletter_form.email.data
+
+        # Redirect to confirmation page
+        return redirect(url_for("main.newsletter_subscribed", email=submitted_email))
+
+    return render_template("views/newsletter/subscribe.html", form=newsletter_form)
+
+
+@main.route("/newsletter/subscribed", methods=["GET", "POST"])
+def newsletter_subscribed():
+    """Newsletter subscription confirmation page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+
+    if language_form.validate_on_submit():
+        # TODO: Handle language preference change with language_form.language.data
+
+        # Redirect to manage page with success message
+        return redirect(url_for("main.newsletter_manage", email=email, language_changed="1"))
+
+    return render_template("views/newsletter/subscribed.html", form=language_form, email=email)
+
+
+@main.route("/newsletter/unsubscribed", methods=["GET", "POST"])
+def newsletter_unsubscribed():
+    """Newsletter unsubscription confirmation page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+
+    if language_form.validate_on_submit():
+        # TODO: Handle resubscription with language_form.language.data
+
+        # Redirect to subscribed confirmation page
+        return redirect(url_for("main.newsletter_subscribed", email=email))
+
+    return render_template("views/newsletter/unsubscribed.html", form=language_form, email=email)
+
+
+@main.route("/newsletter/change-language", methods=["GET", "POST"])
+def newsletter_change_language():
+    """Change newsletter language preference"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+
+    if language_form.validate_on_submit():
+        # TODO: Handle language change with language_form.language.data
+
+        # Redirect to manage page with success message
+        return redirect(url_for("main.newsletter_manage", email=email, language_changed="1"))
+
+    return render_template("views/newsletter/change-language.html", form=language_form, email=email)
+
+
+@main.route("/newsletter/manage", methods=["GET", "POST"])
+def newsletter_manage():
+    """Newsletter management page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+    language_changed = request.args.get("language_changed") == "1"
+
+    if language_form.validate_on_submit():
+        # TODO: Handle language change with language_form.language.data
+
+        # Redirect to manage page with success message
+        return redirect(url_for("main.newsletter_manage", email=email, language_changed="1"))
+
+    return render_template(
+        "views/newsletter/manage.html",
+        form=language_form,
+        email=email,
+        language_changed=language_changed,
+    )
 
 
 @main.route("/<path:path>")

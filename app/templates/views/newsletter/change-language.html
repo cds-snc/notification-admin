@@ -1,0 +1,41 @@
+{% extends "admin_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Change newsletter language') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-large pb-8">{{ _('Change newsletter language preference') }}</h1>
+  
+  <div class="space-y-6">
+    {% if email %}
+      <p>{{ _('Managing subscription for:') }}</p>
+      <p class="font-bold">{{ email }}</p>
+    {% endif %}
+    
+    <p>{{ _('Choose the language you want to receive the GC Notify newsletter in.') }}</p>
+  </div>
+
+  <form method="post" action="{{ url_for('main.newsletter_change_language', email=email) }}" class="pt-6">
+    {{ form.csrf_token }}
+
+    <div class="mb-6">
+      {{ form.language.label(class="form-label") }}
+      <div class="multiple-choice">
+        {% for subfield in form.language %}
+          <div class="mb-2">
+            {{ subfield(class="form-control") }}
+            {{ subfield.label(class="block-label") }}
+          </div>
+        {% endfor %}
+      </div>
+      {% if form.language.errors %}
+        <span class="error-message">{{ form.language.errors[0] }}</span>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="button">{{ _('Change language') }}</button>
+  </form>
+
+{% endblock %}

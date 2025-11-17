@@ -1,0 +1,51 @@
+{% extends "admin_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Successfully unsubscribed') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <div class="banner-success mb-8" role="alert">
+    <h1 class="heading-large">{{ _('Successfully unsubscribed') }}</h1>
+  </div>
+
+  <div class="space-y-6">
+    {% if email %}
+      <p>{{ _('The email address below has been unsubscribed from the GC Notify newsletter:') }}</p>
+      <p class="font-bold">{{ email }}</p>
+    {% else %}
+      <p>{{ _('You have been successfully unsubscribed from the GC Notify newsletter.') }}</p>
+    {% endif %}
+    
+    <p>{{ _('You will no longer receive our newsletter.') }}</p>
+    
+    <p>{{ _('If you change your mind, you can subscribe again at any time.') }}</p>
+  </div>
+
+  <div class="pt-8">
+    <h2 class="heading-medium mb-6">{{ _('Resubscribe to newsletter') }}</h2>
+    
+    <form method="post" action="{{ url_for('main.newsletter_unsubscribed', email=email) }}">
+      {{ form.csrf_token }}
+
+      <div class="mb-6">
+        {{ form.language.label(class="form-label") }}
+        <div class="multiple-choice">
+          {% for subfield in form.language %}
+            <div class="mb-2">
+              {{ subfield(class="form-control") }}
+              {{ subfield.label(class="block-label") }}
+            </div>
+          {% endfor %}
+        </div>
+        {% if form.language.errors %}
+          <span class="error-message">{{ form.language.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="button">{{ _('Subscribe again') }}</button>
+    </form>
+  </div>
+
+{% endblock %}

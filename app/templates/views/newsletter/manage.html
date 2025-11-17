@@ -1,0 +1,60 @@
+{% extends "admin_template.html" %}
+
+{% block per_page_title %}
+  {{ _('Manage newsletter subscription') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-large pb-8">{{ _('Manage your newsletter subscription') }}</h1>
+
+  {% if language_changed %}
+    <div class="banner-success mb-8" role="alert">
+      <p>{{ _('Your language preference has been updated.') }}</p>
+    </div>
+  {% endif %}
+
+  <div class="space-y-6">
+    {% if email %}
+      <p>{{ _('Managing subscription for:') }}</p>
+      <p class="font-bold">{{ email }}</p>
+    {% endif %}
+    
+    <p>{{ _('Use this page to manage your GC Notify newsletter subscription preferences.') }}</p>
+  </div>
+
+  <div class="pt-8">
+    <h2 class="heading-medium mb-6">{{ _('Change language preference') }}</h2>
+    
+    <form method="post" action="{{ url_for('main.newsletter_manage', email=email) }}">
+      {{ form.csrf_token }}
+
+      <div class="mb-6">
+        {{ form.language.label(class="form-label") }}
+        <div class="multiple-choice">
+          {% for subfield in form.language %}
+            <div class="mb-2">
+              {{ subfield(class="form-control") }}
+              {{ subfield.label(class="block-label") }}
+            </div>
+          {% endfor %}
+        </div>
+        {% if form.language.errors %}
+          <span class="error-message">{{ form.language.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="button">{{ _('Update language preference') }}</button>
+    </form>
+  </div>
+
+  <div class="pt-8 border-t">
+    <h2 class="heading-medium mb-4">{{ _('Unsubscribe') }}</h2>
+    <p class="mb-4">{{ _('You can unsubscribe from the newsletter at any time.') }}</p>
+    <form method="post" action="{{ url_for('main.newsletter_unsubscribed', email=email) }}">
+      {{ form.csrf_token }}
+      <button type="submit" class="button button-secondary">{{ _('Unsubscribe from newsletter') }}</button>
+    </form>
+  </div>
+
+{% endblock %}
