@@ -48,6 +48,8 @@ const createLanguageNode = (language, langCode) => {
 
     addStorage() {
       return {
+        // Custom markdown serialization and parsing to match our existing format, i.e.
+        // [[en]]...[[/en]] and [[fr]]...[[/fr]] blocks
         markdown: {
           serialize(state, node) {
             state.write(`[[${langCode.toLowerCase().slice(0, 2)}]]\n`);
@@ -152,6 +154,7 @@ const createLanguageNode = (language, langCode) => {
                 );
 
                 // Add renderer
+                // TODO: come up with markup that allows screen readers to identify these custom blocks
                 md.renderer.rules[`${langPrefix}_block_open`] = () => {
                   return `<div lang="${langCode}" data-lang="${language.toLowerCase()}" data-type="${language.toLowerCase()}-block">`;
                 };

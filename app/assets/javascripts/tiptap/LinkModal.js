@@ -6,6 +6,10 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
   const inputRef = useRef(null);
 
   useEffect(() => {
+    // When the modal becomes visible, populate the input with the current
+    // link href (if any) from the editor's selection and move keyboard
+    // focus to the input. Using a short timeout ensures focus occurs after
+    // the modal is mounted into the DOM.
     if (isVisible) {
       const currentUrl = editor.getAttributes("link").href || "";
       setUrl(currentUrl);
@@ -17,11 +21,19 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
     }
   }, [isVisible, editor]);
 
+  // Keep the modal open only while the selection still represents a link.
+  // We listen to editor transactions so that if the user moves the cursor,
+  // changes the selection, or the link mark is removed by other commands,
+  // the modal will close automatically. This prevents the modal from
+  // becoming detached from the current editor state.
   useEffect(() => {
     const handleEditorTransaction = () => {
       const { from, to } = editor.state.selection;
       const linkMark = editor.isActive("link");
 
+      // If the selection is no longer a link or the selection changed
+      // (not a collapsed selection), close the modal so it doesn't operate
+      // on stale content.
       if (!linkMark || from !== to) {
         onClose();
       }
@@ -36,6 +48,11 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
     };
   }, [isVisible, editor, onClose]);
 
+  // Handle global keyboard interactions while the modal is visible.
+  // Specifically, pressing Escape should close the modal and return focus
+  // to the editor so keyboard users can continue editing without extra
+  // clicks. We attach the listener on `window` so that Escape is handled
+  // even if focus is currently inside the input.
   useEffect(() => {
     if (isVisible) {
       const handleKeyDown = (event) => {
@@ -53,12 +70,20 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
     }
   }, [isVisible, onClose, editor]);
 
+  // When the user presses Enter inside the input, save the link and close
+  // the modal. This keeps the input behavior consistent with typical form
+  // patterns and prevents the Enter key from leaving the modal unexpectedly.
   const handleInputKeyDown = (event) => {
     if (event.key === "Enter") {
       saveLink();
     }
   };
 
+  // Persist the current URL into the editor as a `link` mark. If the input
+  // is empty we unset the link mark. We also normalize URLs that don't start
+  // with a protocol by prepending `https://` — this mirrors common UX in
+  // editors and reduces user friction. After applying the change we close
+  // the modal and restore focus handling to the editor.
   const saveLink = () => {
     let formattedUrl = url;
     if (url && !/^(https?:\/\/|mailto:)/i.test(url)) {
@@ -78,12 +103,14 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
     onClose();
   };
 
+  // Open the current URL in a new tab. Used by the "Go to Link" control.
   const goToLink = () => {
     if (url) {
       window.open(url, "_blank");
     }
   };
 
+  // Remove the link mark from the current selection and close the modal.
   const removeLink = () => {
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
     onClose();
