@@ -54,7 +54,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
         event.preventDefault();
         // Minimal paste handling: insert plain text paragraphs
         const lines = text.split("\n");
-        const nodes = lines.map((line) => ({ type: "paragraph", content: line.trim() ? [{ type: "text", text: line }] : [] }));
+        const nodes = lines.map((line) => ({
+          type: "paragraph",
+          content: line.trim() ? [{ type: "text", text: line }] : [],
+        }));
         editor.commands.insertContent({ type: "doc", content: nodes });
         return true;
       },
