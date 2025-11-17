@@ -336,16 +336,7 @@ def test_should_render_welcome(client):
     assert link_text == expected
 
 
-@pytest.mark.parametrize(
-    "path, expected_redirect_path",
-    [
-        ("/home", "/home"),
-        ("/accueil", "/accueil"),
-    ],
-)
-def test_newsletter_subscription_successful_submission_redirects(
-    client, mocker, mock_calls_out_to_GCA, path, expected_redirect_path
-):
+def test_newsletter_subscription_successful_submission_redirects(client, mocker, mock_calls_out_to_GCA):
     """Test that a valid newsletter subscription redirects to home page with success parameter"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
@@ -354,7 +345,7 @@ def test_newsletter_subscription_successful_submission_redirects(
     )
 
     response = client.post(
-        path,
+        "/newsletter_subscription",
         data={
             "email": "user@cds-snc.ca",
             "language": "en",
@@ -367,11 +358,7 @@ def test_newsletter_subscription_successful_submission_redirects(
     assert response.location.endswith("/?subscribed=1#newsletter-section")
 
 
-@pytest.mark.parametrize(
-    "path",
-    ["/home", "/accueil"],
-)
-def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_calls_out_to_GCA):
     """Test that submitting without email shows validation error"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
@@ -381,7 +368,7 @@ def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        path,
+        "/newsletter_subscription",
         data={
             "email": "",
             "language": "en",
@@ -396,11 +383,7 @@ def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_
     assert "This cannot be empty" in error.text
 
 
-@pytest.mark.parametrize(
-    "path",
-    ["/home", "/accueil"],
-)
-def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_calls_out_to_GCA):
     """Test that submitting a non-government email shows validation error"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
@@ -410,7 +393,7 @@ def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=False)
 
     response = client.post(
-        path,
+        "/newsletter_subscription",
         data={
             "email": "user@gmail.com",
             "language": "en",
@@ -425,11 +408,7 @@ def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_
     assert "is not on our list of government domains" in error.text
 
 
-@pytest.mark.parametrize(
-    "path",
-    ["/home", "/accueil"],
-)
-def test_newsletter_subscription_missing_language_shows_error(client, mocker, mock_calls_out_to_GCA, path):
+def test_newsletter_subscription_missing_language_shows_error(client, mocker, mock_calls_out_to_GCA):
     """Test that submitting without language selection shows validation error"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
@@ -439,7 +418,7 @@ def test_newsletter_subscription_missing_language_shows_error(client, mocker, mo
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        path,
+        "/newsletter_subscription",
         data={
             "email": "user@cds-snc.ca",
             "language": "",
@@ -454,14 +433,7 @@ def test_newsletter_subscription_missing_language_shows_error(client, mocker, mo
     assert "You must select an option to continue" in error.text
 
 
-@pytest.mark.parametrize(
-    "path, lang",
-    [
-        ("/home", "en"),
-        ("/accueil", "fr"),
-    ],
-)
-def test_newsletter_subscription_preserves_language_context(client, mocker, mock_calls_out_to_GCA, path, lang):
+def test_newsletter_subscription_preserves_language_context(client, mocker, mock_calls_out_to_GCA):
     """Test that form errors are rendered in the correct language context"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
@@ -471,7 +443,7 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        path,
+        "/newsletter_subscription",
         data={
             "email": "",
             "language": "en",
