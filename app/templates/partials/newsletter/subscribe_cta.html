@@ -1,0 +1,51 @@
+{% from "components/form.html" import form_wrapper %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/radios.html" import radios %}
+
+<div id="newsletter-section" class="text-white wp-block-cover alignfull is-light">
+  <span aria-hidden="true" class="wp-block-cover__background has-background-dim-100 has-background-dim" style="background-color:#31455C"></span>
+  <div class="wp-block-cover__inner-container is-layout-constrained wp-block-cover-is-layout-constrained">
+      <h2 class="heading-large mb-4">{{ _("Subscribe to our newsletter") }}</h2>
+      <p class="mb-6 text-base">
+        {{ _("Get updates on new features, helpful tips and opportunities to improve GC Notify.") }}
+      </p>
+      
+      {% if newsletter_subscribed %}
+        <!-- Success message -->
+        <div class="bg-white p-6 border-2 border-t-10 border-green-600 max-w-[700px] text-gray-900">
+          <h3 class="heading-medium text-green-700 mb-2">{{ _("Success!") }}</h3>
+          <p class="text-base">{{ _("We have sent you a confirmation email.") }}</p>
+        </div>
+      {% else %}
+        {% call form_wrapper(
+          action=url_for('main.newsletter_subscription'),
+          method="post",
+          autocomplete=False,
+          id="newsletter-subscribe-form"
+        ) %}
+          {{ newsletter_form.csrf_token }}
+          <div class="bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900">
+            {{ textbox(
+              newsletter_form.email,
+              hint=_("Enter your federal government email address"),
+              width='w-full md:w-3/4',
+              label_class='text-gray-900'
+            ) }}
+
+            <div class="text-gray-900">
+              {{ radios(newsletter_form.language) }}
+            </div>
+
+            <div>
+              <button 
+                type="submit" 
+                class="button bg-blue-900 text-white px-6 py-3 text-base font-bold hover:bg-blue-950 focus:shadow-outline"
+              >
+                {{ _("Subscribe") }}
+              </button>
+            </div>
+          </div>
+        {% endcall %}
+      {% endif %}
+    </div>
+</div>
