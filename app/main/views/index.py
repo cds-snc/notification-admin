@@ -34,6 +34,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterSubscriptionForm,
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
@@ -397,6 +398,33 @@ def preview_content():
     return _render_articles_page(response)
 
 
+@main.route("/newsletter-subscription", methods=["POST"])
+def newsletter_subscription():
+    """Handle newsletter subscription form submissions"""
+    newsletter_form = NewsletterSubscriptionForm()
+    path = "home" if get_current_locale(current_app) == "en" else "accueil"
+
+    if newsletter_form.validate_on_submit():
+        # TODO: Handle newsletter subscription
+        # Redirect back to the home page with success parameter and anchor
+        return redirect(url_for("main.index", subscribed="1") + "#newsletter-section")
+
+    # Re-render the home page with form errors if validation failed
+    endpoint = "wp/v2/pages"
+    lang = get_current_locale(current_app)
+    params = {"slug": path, "lang": lang}
+
+    if current_user.is_authenticated:
+        response = get_page_by_slug(endpoint, params=params)
+    else:
+        response = get_page_by_slug_with_cache(endpoint, params=params)
+
+    if isinstance(response, list):
+        response = response[0]
+
+    return _render_articles_page(response, newsletter_form)
+
+
 @main.route("/<path:path>")
 def page_content(path=""):
     endpoint = "wp/v2/pages"
@@ -419,7 +447,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -427,6 +455,9 @@ def _render_articles_page(response):
 
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
+
+    if newsletter_form is None:
+        newsletter_form = NewsletterSubscriptionForm()
 
     return render_template(
         "views/page-content.html",
@@ -437,6 +468,8 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
+        newsletter_form=newsletter_form,
+        newsletter_subscribed=request.args.get("subscribed") == "1",
     )
 
 
