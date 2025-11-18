@@ -8,13 +8,13 @@ module.exports = {
   mode: "production",
   entry: {
     index: ["./app/assets/javascripts/index.js"],
-    // scheduler: {
-    //   import: './app/assets/javascripts/scheduler/scheduler.js',
-    //   library: {
-    //     name: 'Scheduler',
-    //     type: 'window',
-    //   },
-    // },
+    scheduler: {
+      import: './app/assets/javascripts/scheduler/scheduler.js',
+      library: {
+        name: 'Scheduler',
+        type: 'window',
+      },
+    },
     tiptap: {
       import: './app/assets/javascripts/tiptap/editor.js',
       library: {
