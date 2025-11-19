@@ -460,8 +460,9 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     assert page.find("html") is not None
 
 
-def test_newsletter_subscription_successful_submission_english(client, mocker, mock_calls_out_to_GCA):
-    """Test successful newsletter subscription with English language"""
+@pytest.mark.parametrize("language", ["en", "fr"])
+def test_newsletter_subscription_successful_submission(client, mocker, mock_calls_out_to_GCA, language):
+    """Test successful newsletter subscription with both English and French languages"""
     mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
     mocker.patch(
         "app.service_api_client.get_stats_by_month",
@@ -477,7 +478,7 @@ def test_newsletter_subscription_successful_submission_english(client, mocker, m
         "/newsletter-subscription",
         data={
             "email": "test@cds-snc.ca",
-            "language": "en",
+            "language": language,
         },
         follow_redirects=False,
     )
@@ -485,39 +486,7 @@ def test_newsletter_subscription_successful_submission_english(client, mocker, m
     assert response.status_code == 302
     assert response.location == "/?subscribed=1&email=test@cds-snc.ca#newsletter-section"
 
-    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "en")
-
-
-def test_newsletter_subscription_successful_submission_french(client, mocker, mock_calls_out_to_GCA):
-    """Test successful newsletter subscription with French language"""
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
-    mocker.patch(
-        "app.service_api_client.get_stats_by_month",
-        return_value={"data": [("2020-11-01", "email", 20)]},
-    )
-    mocker.patch("app.main.validators.is_gov_user", return_value=True)
-
-    mock_newsletter_client = mocker.patch(
-        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
-    )
-
-    # Set the locale to French for this test
-    with client.session_transaction() as session:
-        session["userlang"] = "fr"
-
-    response = client.post(
-        "/newsletter-subscription",
-        data={
-            "email": "test@cds-snc.ca",
-            "language": "fr",
-        },
-        follow_redirects=False,
-    )
-
-    assert response.status_code == 302
-    assert response.location == "/?subscribed=1&email=test@cds-snc.ca#newsletter-section"
-
-    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "fr")
+    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", language)
 
 
 def test_newsletter_subscription_invalid_email(client, mocker, mock_calls_out_to_GCA):
