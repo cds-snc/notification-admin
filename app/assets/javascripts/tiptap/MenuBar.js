@@ -125,7 +125,7 @@ const AccessibleToolbar = ({ children, label, editor }) => {
     if (!el) return;
 
     const onRequestFocus = (e) => {
-      console.log('AccessibleToolbar: rte-request-focus received', el);
+      console.log("AccessibleToolbar: rte-request-focus received", el);
       if (e?.defaultPrevented) return;
       e.preventDefault?.();
 
@@ -152,8 +152,8 @@ const AccessibleToolbar = ({ children, label, editor }) => {
       }
     };
 
-    el.addEventListener('rte-request-focus', onRequestFocus);
-    return () => el.removeEventListener('rte-request-focus', onRequestFocus);
+    el.addEventListener("rte-request-focus", onRequestFocus);
+    return () => el.removeEventListener("rte-request-focus", onRequestFocus);
   }, [getFocusableElements, updateTabIndex]);
 
   return (
@@ -214,7 +214,14 @@ const MenuBar = ({ editor, openLinkModal }) => {
 
   return (
     <AccessibleToolbar label="Editor toolbar" editor={editor}>
-      <div className="sr-only" role="alert" aria-atomic="true" data-testid="rte-liveregion">{liveMessage}</div>
+      <div
+        className="sr-only"
+        role="alert"
+        aria-atomic="true"
+        data-testid="rte-liveregion"
+      >
+        {liveMessage}
+      </div>
       <div className="toolbar-group">
         <button
           data-testid="rte-heading_1"
@@ -232,9 +239,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("heading", { level: 1 })}
         >
           <span className="sr-only">
-            {editor.isActive("heading", { level: 1 })
-              ? "Remove "
-              : "Apply "}
+            {editor.isActive("heading", { level: 1 }) ? "Remove " : "Apply "}
           </span>
           H1
         </button>
@@ -255,9 +260,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("heading", { level: 2 })}
         >
           <span className="sr-only">
-            {editor.isActive("heading", { level: 2 })
-              ? "Remove "
-              : "Apply "}
+            {editor.isActive("heading", { level: 2 }) ? "Remove " : "Apply "}
           </span>
           H2
         </button>
@@ -397,9 +400,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("bulletList")}
         >
           <span className="sr-only">
-            {editor.isActive("bulletList")
-              ? "Remove "
-              : "Apply "}Bullet List
+            {editor.isActive("bulletList") ? "Remove " : "Apply "}Bullet List
           </span>
           <svg
             width="20"
@@ -435,9 +436,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("orderedList")}
         >
           <span className="sr-only">
-            {editor.isActive("orderedList")
-              ? "Remove "
-              : "Apply "}Numbered List
+            {editor.isActive("orderedList") ? "Remove " : "Apply "}Numbered List
           </span>
           <svg
             width="20"
@@ -527,9 +526,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("blockquote")}
         >
           <span className="sr-only">
-            {editor.isActive("blockquote")
-              ? "Remove "
-              : "Apply "}Blockquote
+            {editor.isActive("blockquote") ? "Remove " : "Apply "}Blockquote
           </span>
           <svg
             width="20"
@@ -567,9 +564,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("englishBlock")}
         >
           <span className="sr-only">
-            {editor.isActive("englishBlock")
-              ? "Remove "
-              : "Apply "}
+            {editor.isActive("englishBlock") ? "Remove " : "Apply "}
           </span>
           EN
         </button>
@@ -590,9 +585,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           aria-pressed={editor.isActive("frenchBlock")}
         >
           <span className="sr-only">
-            {editor.isActive("frenchBlock")
-              ? "Remove "
-              : "Apply "}
+            {editor.isActive("frenchBlock") ? "Remove " : "Apply "}
           </span>
           FR
         </button>
