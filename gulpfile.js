@@ -96,6 +96,7 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
+        paths.src + "javascripts/tiptap.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
