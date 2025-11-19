@@ -17,5 +17,12 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         resp = self.post(url="/newsletter/unconfirmed-subscriber", data=data)
         return resp
 
+    def confirm_subscriber(self, subscriber_id):
+        # we will switch to this once the api is updated
+        # resp = self.get(url=f"/newsletter/confirm/{subscriber_id}")
+
+        resp = self.post(url=f"/newsletter/confirm/{subscriber_id}", data={})
+        return resp
+
 
 newsletter_api_client = NewsletterAPIClient()
