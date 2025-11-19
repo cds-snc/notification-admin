@@ -14,7 +14,8 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
             Response from the API
         """
         data = {"email": email, "language": language}
-        return self.post(url="/unconfirmed-subscriber", data=data)
+        resp = self.post(url="/newsletter/unconfirmed-subscriber", data=data)
+        return resp
 
 
 newsletter_api_client = NewsletterAPIClient()

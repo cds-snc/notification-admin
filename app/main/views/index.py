@@ -407,7 +407,7 @@ def newsletter_subscription():
 
     if newsletter_form.validate_on_submit():
         submitted_email = newsletter_form.email.data
-        language = get_current_locale(current_app)
+        language = newsletter_form.language.data
 
         # Create unconfirmed subscriber via API
         newsletter_api_client.create_unconfirmed_subscriber(submitted_email, language)
