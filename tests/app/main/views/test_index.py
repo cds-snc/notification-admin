@@ -343,6 +343,8 @@ def test_newsletter_subscription_successful_submission_redirects(client, mocker,
         "app.service_api_client.get_stats_by_month",
         return_value={"data": [("2020-11-01", "email", 20)]},
     )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+    mocker.patch("app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber")
 
     response = client.post(
         "/newsletter-subscription",
@@ -456,3 +458,200 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     # Verify page content is present
     assert page.find("html") is not None
+
+
+def test_newsletter_subscription_successful_submission_english(client, mocker, mock_calls_out_to_GCA):
+    """Test successful newsletter subscription with English language"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "test@cds-snc.ca",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert response.location == "/?subscribed=1&email=test@cds-snc.ca#newsletter-section"
+
+    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "en")
+
+
+def test_newsletter_subscription_successful_submission_french(client, mocker, mock_calls_out_to_GCA):
+    """Test successful newsletter subscription with French language"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    # Set the locale to French for this test
+    with client.session_transaction() as session:
+        session["userlang"] = "fr"
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "test@cds-snc.ca",
+            "language": "fr",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert response.location == "/?subscribed=1&email=test@cds-snc.ca#newsletter-section"
+
+    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "fr")
+
+
+def test_newsletter_subscription_invalid_email(client, mocker, mock_calls_out_to_GCA):
+    """Test newsletter subscription with invalid email format"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.organisations_client.get_domains", return_value=[])
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "invalid-email",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    # API should not be called with invalid email
+    mock_newsletter_client.assert_not_called()
+
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert page.find("html") is not None
+
+
+def test_newsletter_subscription_empty_email(client, mocker, mock_calls_out_to_GCA):
+    """Test newsletter subscription with empty email"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    # API should not be called with empty email
+    mock_newsletter_client.assert_not_called()
+
+
+def test_newsletter_subscription_missing_language(client, mocker, mock_calls_out_to_GCA):
+    """Test newsletter subscription with missing language selection"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "test@cds-snc.ca",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    # API should not be called without language selection
+    mock_newsletter_client.assert_not_called()
+
+
+def test_newsletter_subscription_non_gov_email(client, mocker, mock_calls_out_to_GCA):
+    """Test newsletter subscription with non-government email"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=False)
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "test@gmail.com",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 200
+    # API should not be called with non-government email
+    mock_newsletter_client.assert_not_called()
+
+
+def test_newsletter_subscription_strips_whitespace(client, mocker, mock_calls_out_to_GCA):
+    """Test that email whitespace is stripped before submission"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch("app.main.validators.is_gov_user", return_value=True)
+
+    mock_newsletter_client = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber"
+    )
+
+    response = client.post(
+        "/newsletter-subscription",
+        data={
+            "email": "  test@cds-snc.ca  ",
+            "language": "en",
+        },
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+
+    # Verify the email was stripped of whitespace
+    mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "en")
