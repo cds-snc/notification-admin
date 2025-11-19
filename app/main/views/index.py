@@ -38,6 +38,7 @@ from app.main.forms import (
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
+from app.notify_client.newsletter_api_client import newsletter_api_client
 from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
@@ -405,8 +406,11 @@ def newsletter_subscription():
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
 
     if newsletter_form.validate_on_submit():
-        # TODO: Handle newsletter subscription
         submitted_email = newsletter_form.email.data
+        language = newsletter_form.language.data
+
+        # Create unconfirmed subscriber via API
+        newsletter_api_client.create_unconfirmed_subscriber(submitted_email, language)
 
         # Redirect back to the home page with success parameter and email
         return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
