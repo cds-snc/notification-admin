@@ -355,7 +355,7 @@ def test_newsletter_subscription_successful_submission_redirects(client, mocker,
     )
 
     assert response.status_code == 302
-    assert response.location.endswith("/?subscribed=1#newsletter-section")
+    assert response.location.endswith("/?subscribed=1&email=user@cds-snc.ca#newsletter-section")
 
 
 def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_calls_out_to_GCA):

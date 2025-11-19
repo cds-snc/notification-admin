@@ -224,6 +224,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       </div>
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-heading_1"
           onClick={() =>
             announceToggle(
@@ -244,6 +245,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           H1
         </button>
         <button
+          type="button"
           data-testid="rte-heading_2"
           onClick={() =>
             announceToggle(
@@ -271,6 +273,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       {/* Variable group */}
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-variable"
           onClick={() =>
             announceToggle(
@@ -313,6 +316,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       {/* Text styles group */}
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-bold"
           onClick={() =>
             announceToggle(
@@ -345,6 +349,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           </svg>
         </button>
         <button
+          type="button"
           data-testid="rte-italic"
           onClick={() =>
             announceToggle(
@@ -384,6 +389,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       {/* Lists group */}
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-bullet_list"
           onClick={() =>
             announceToggle(
@@ -420,6 +426,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           </svg>
         </button>
         <button
+          type="button"
           data-testid="rte-numbered_list"
           onClick={() =>
             announceToggle(
@@ -462,6 +469,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       {/* Link, divider, blockquote */}
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-link"
           onClick={() => {
             openLinkModal();
@@ -491,6 +499,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           </svg>
         </button>
         <button
+          type="button"
           data-testid="rte-horizontal_rule"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           className="toolbar-button"
@@ -510,6 +519,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           </svg>
         </button>
         <button
+          type="button"
           data-testid="rte-blockquote"
           onClick={() =>
             announceToggle(
@@ -548,6 +558,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
       {/* Language blocks group */}
       <div className="toolbar-group">
         <button
+          type="button"
           data-testid="rte-english_block"
           onClick={() =>
             announceToggle(
@@ -569,6 +580,7 @@ const MenuBar = ({ editor, openLinkModal }) => {
           EN
         </button>
         <button
+          type="button"
           data-testid="rte-french_block"
           onClick={() =>
             announceToggle(

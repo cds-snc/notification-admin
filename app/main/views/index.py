@@ -406,8 +406,10 @@ def newsletter_subscription():
 
     if newsletter_form.validate_on_submit():
         # TODO: Handle newsletter subscription
-        # Redirect back to the home page with success parameter and anchor
-        return redirect(url_for("main.index", subscribed="1") + "#newsletter-section")
+        submitted_email = newsletter_form.email.data
+
+        # Redirect back to the home page with success parameter and email
+        return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
 
     # Re-render the home page with form errors if validation failed
     endpoint = "wp/v2/pages"
@@ -470,6 +472,7 @@ def _render_articles_page(response, newsletter_form=None):
         isHome=True if slug_en == "home" else None,
         newsletter_form=newsletter_form,
         newsletter_subscribed=request.args.get("subscribed") == "1",
+        newsletter_subscribed_email=request.args.get("email"),
     )
 
 
