@@ -1,6 +1,6 @@
 import RichTextEditor, {
   FORMATTING_OPTIONS,
-} from "../../../Notify/Admin/Components/RichTextEditor";
+} from "../../../../Notify/Admin/Components/RichTextEditor";
 
 // Helper: reliably simulate Alt+F10 using native keyboard events
 const pressAltF10 = () => {
