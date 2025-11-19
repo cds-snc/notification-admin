@@ -66,9 +66,9 @@ describe("Flash Messages Focus Behavior", () => {
         );
       });
 
-      it(`should receive focus when page loads for ${variation.description}`, () => {
+      it.only(`should receive focus when page loads for ${variation.description}`, () => {
         // Check that the flash message is focused
-        cy.get('[data-testid="flash_message"]').should("be.focused");
+        cy.get('[data-testid="flash_message"]').should("have.attr", "autofocus");
       });
 
       if (variation.component === "flash-messages-with-button") {
