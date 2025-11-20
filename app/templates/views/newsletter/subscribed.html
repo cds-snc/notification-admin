@@ -1,55 +1,12 @@
 {% extends "admin_template.html" %}
 
+{% set page_title = _('You’ve subscribed ‘{}’ to GC Notify’s newsletter').format(email) %}
 {% block per_page_title %}
-  {{ _('Successfully subscribed') }}
+  {{ page_title }}
 {% endblock %}
 
 {% block maincolumn_content %}
 
-  <div class="banner-success mb-8" role="alert">
-    <h1 class="heading-large">{{ _('Successfully subscribed') }}</h1>
-  </div>
-
-  <div class="space-y-6">
-    {% if email %}
-      <p>{{ _('We have sent a confirmation email to:') }}</p>
-      <p class="font-bold">{{ email }}</p>
-    {% else %}
-      <p>{{ _('You have been successfully subscribed to the GC Notify newsletter.') }}</p>
-    {% endif %}
-
-    <p>{{ _('You will receive our newsletter in your inbox shortly.') }}</p>
-
-    <p>{{ _('You can manage your subscription preferences at any time.') }}</p>
-  </div>
-
-  <div class="pt-8">
-    <h2 class="heading-medium mb-6">{{ _('Change language preference') }}</h2>
-
-    <form method="post" action="{{ url_for('main.newsletter_subscribed', email=email) }}">
-      {{ form.csrf_token }}
-
-      <div class="mb-6">
-        {{ form.language.label(class="form-label") }}
-        <div class="multiple-choice">
-          {% for subfield in form.language %}
-            <div class="mb-2">
-              {{ subfield(class="form-control") }}
-              {{ subfield.label(class="block-label") }}
-            </div>
-          {% endfor %}
-        </div>
-        {% if form.language.errors %}
-          <span class="error-message">{{ form.language.errors[0] }}</span>
-        {% endif %}
-      </div>
-
-      <button type="submit" class="button">{{ _('Update language preference') }}</button>
-    </form>
-  </div>
-
-  <div class="pt-8">
-    <a href="{{ url_for('main.newsletter_manage', email=email) }}" class="button button-secondary">{{ _('Manage subscription') }}</a>
-  </div>
+<h1 class="heading-large">{{ page_title }}</h1>
 
 {% endblock %}
