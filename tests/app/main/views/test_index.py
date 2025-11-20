@@ -624,3 +624,63 @@ def test_newsletter_subscription_strips_whitespace(client, mocker, mock_calls_ou
 
     # Verify the email was stripped of whitespace
     mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", "en")
+
+
+def test_confirm_newsletter_subscriber_redirects_to_subscribed_page(client, mocker):
+    """Test that confirming a newsletter subscriber redirects to the subscribed page with email"""
+    subscriber_id = "test-subscriber-123"
+    email = "test@cds-snc.ca"
+
+    mock_confirm = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.confirm_subscriber",
+        return_value={"subscriber": {"email": email}},
+    )
+
+    response = client.get(f"/newsletter/confirm/{subscriber_id}", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith(f"/newsletter/subscribed?email={email}")
+    mock_confirm.assert_called_once_with(subscriber_id=subscriber_id)
+
+
+def test_confirm_newsletter_subscriber_with_special_characters_in_email(client, mocker):
+    """Test that confirming a subscriber with special characters in email works correctly"""
+    subscriber_id = "test-subscriber-456"
+    email = "test+tag@cds-snc.ca"
+
+    mock_confirm = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.confirm_subscriber",
+        return_value={"subscriber": {"email": email}},
+    )
+
+    response = client.get(f"/newsletter/confirm/{subscriber_id}", follow_redirects=False)
+
+    assert response.status_code == 302
+    mock_confirm.assert_called_once_with(subscriber_id=subscriber_id)
+
+
+def test_newsletter_subscribed_page_displays_email(client):
+    """Test that the newsletter subscribed page displays correctly with email parameter"""
+    email = "test@cds-snc.ca"
+
+    response = client.get(f"/newsletter/subscribed?email={email}")
+
+    assert response.status_code == 200
+    # Check that the email is present in the page
+    assert email in response.data.decode("utf-8")
+
+
+def test_newsletter_subscribed_page_without_email(client):
+    """Test that the newsletter subscribed page works without email parameter"""
+    response = client.get("/newsletter/subscribed")
+
+    assert response.status_code == 200
+
+
+def test_newsletter_subscribed_page_accepts_post_request(client):
+    """Test that the newsletter subscribed page accepts POST requests"""
+    email = "test@cds-snc.ca"
+
+    response = client.post(f"/newsletter/subscribed?email={email}", data={"language": "en"}, follow_redirects=False)
+
+    assert response.status_code == 200

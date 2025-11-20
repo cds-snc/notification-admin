@@ -34,6 +34,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterLanguageForm,
     NewsletterSubscriptionForm,
     SearchByNameForm,
 )
@@ -429,6 +430,25 @@ def newsletter_subscription():
         response = response[0]
 
     return _render_articles_page(response, newsletter_form)
+
+
+@main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
+def confirm_newsletter_subscriber(subscriber_id):
+    # send an api request with the subscriber_id
+    data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
+    email = data["subscriber"]["email"]
+
+    # redirect to the newsletter_subscribed page
+    return redirect(url_for("main.newsletter_subscribed", email=email))
+
+
+@main.route("/newsletter/subscribed", methods=["GET", "POST"])
+def newsletter_subscribed():
+    """Newsletter subscription confirmation page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+
+    return render_template("views/newsletter/subscribed.html", form=language_form, email=email)
 
 
 @main.route("/<path:path>")
