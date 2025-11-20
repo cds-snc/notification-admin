@@ -22,7 +22,10 @@ describe("Storybook Components Accessibility Tests", () => {
         // For each component link
         cy.wrap(links).each((component, index) => {
           // if Scheduler or Tiptap Editor, skip
-          if (component.name.toLowerCase().includes("scheduler") || component.name.toLowerCase().includes("tiptap editor")) {
+          if (
+            component.name.toLowerCase().includes("scheduler") ||
+            component.name.toLowerCase().includes("tiptap editor")
+          ) {
             cy.log(`***** SKIPPING COMPONENT: ${component.name} *****`);
             return;
           }
