@@ -1,4 +1,3 @@
-TOU_DIALOG.CY.JS
 import RegisterPage from "../../Notify/Admin/Pages/RegisterPage";
 
 describe("TOU Dialog", () => {

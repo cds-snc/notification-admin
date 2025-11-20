@@ -1,4 +1,3 @@
-CYPRESS.CONFIG
 const fs = require('fs'); 
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");

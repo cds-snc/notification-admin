@@ -1,6 +1,3 @@
-FLASH_MESSAGES.CY.JS
-
-
 /// <reference types="cypress" />
 
 describe("Flash Messages Focus Behavior", () => {
