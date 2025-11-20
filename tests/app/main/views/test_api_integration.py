@@ -167,7 +167,7 @@ class TestApiKeys:
         mock_get_api_key_statistics,
     ):
         page = client_request.get("main.api_keys", service_id=SERVICE_ONE_ID)
-        key_names = normalize_spaces(page.select("div h3[id=api-key-name]"))
+        key_names = normalize_spaces(page.select("div h3[id^=api-key-name]"))
         revoke = normalize_spaces(page.select("div a[href*=revoke]"))
         rows = [normalize_spaces(row.text) for row in page.select("main dl div")]
 
