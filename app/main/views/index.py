@@ -439,7 +439,7 @@ def confirm_newsletter_subscriber(subscriber_id):
     email = data["subscriber"]["email"]
 
     # redirect to the newsletter_subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email))
+    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
 
 
 @main.route("/newsletter/subscribed", methods=["GET", "POST"])
@@ -447,8 +447,41 @@ def newsletter_subscribed():
     """Newsletter subscription confirmation page"""
     language_form = NewsletterLanguageForm()
     email = request.args.get("email")
+    subscriber_id = request.args.get("subscriber_id")
 
-    return render_template("views/newsletter/subscribed.html", form=language_form, email=email)
+    return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
+
+
+@main.route("/newsletter/manage", methods=["GET", "POST"])
+def newsletter_manage():
+    """Newsletter subscription management page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+    subscriber_id = request.args.get("subscriber_id")
+
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "change_language" and language_form.validate_on_submit():
+            # Handle language change logic here
+            # You'll need to implement an API method to update the language preference
+            # For now, just redirect back to the manage page
+            return redirect(url_for("main.newsletter_manage", email=email, subscriber_id=subscriber_id))
+
+    return render_template("views/newsletter/manage.html", form=language_form, email=email, subscriber_id=subscriber_id)
+
+
+@main.route("/newsletter/unsubscribe", methods=["GET"])
+def newsletter_unsubscribe():
+    """Newsletter unsubscribe confirmation page"""
+    email = request.args.get("email")
+    subscriber_id = request.args.get("subscriber_id")
+
+    if subscriber_id:
+        # Call API to unsubscribe
+        newsletter_api_client.unsubscribe(subscriber_id)
+
+    return render_template("views/newsletter/unsubscribe.html", email=email)
 
 
 @main.route("/<path:path>")

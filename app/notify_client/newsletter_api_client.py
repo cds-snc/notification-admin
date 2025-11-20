@@ -21,5 +21,9 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         resp = self.get(url=f"/newsletter/confirm/{subscriber_id}")
         return resp
 
+    def unsubscribe(self, subscriber_id):
+        resp = self.get(url=f"/newsletter/unsubscribe/{subscriber_id}")
+        return resp
+
 
 newsletter_api_client = NewsletterAPIClient()

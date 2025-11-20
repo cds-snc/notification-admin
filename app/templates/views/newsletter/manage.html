@@ -1,0 +1,62 @@
+{% extends "admin_template.html" %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% set page_title = _('Manage GC Notify newsletter subscription') %}
+{% block per_page_title %}
+  {{ page_title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<h1 class="heading-large">{{ page_title }}</h1>
+
+<p>
+    {{ _("The newsletter is sent monthly, and gives updates on new features, helpful tips, and opportunities to improve GC Notify. You can change your preferences or unsubscribe at any time.") }}
+</p>
+
+{% if email %}
+  <p class="mt-6">
+    <strong>{{ _("Email:") }}</strong> {{ email }}
+  </p>
+{% endif %}
+
+<div class="mt-8">
+  <h2 class="heading-medium">{{ _("Change language preference") }}</h2>
+  
+  {% call form_wrapper(
+    action=url_for('main.newsletter_manage'),
+    method="post",
+    autocomplete=False
+  ) %}
+    {{ form.csrf_token }}
+    
+    <div class="form-group">
+      {{ radios(form.language) }}
+    </div>
+
+    {{ page_footer(
+      button_text=_("Save changes"),
+      button_name="action",
+      button_value="change_language"
+    ) }}
+  {% endcall %}
+</div>
+
+<div class="mt-8">
+  <h2 class="heading-medium">{{ _("Unsubscribe") }}</h2>
+  <p>
+    {{ _("If you no longer want to receive the GC Notify newsletter, you can unsubscribe.") }}
+  </p>
+  
+  {% if subscriber_id %}
+    <p class="mt-4">
+      <a href="{{ url_for('main.newsletter_unsubscribe', email=email, subscriber_id=subscriber_id) }}" class="button button-red">
+        {{ _("Unsubscribe from newsletter") }}
+      </a>
+    </p>
+  {% endif %}
+</div>
+
+{% endblock %}
