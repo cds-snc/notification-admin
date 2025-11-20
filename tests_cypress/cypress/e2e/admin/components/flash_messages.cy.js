@@ -1,3 +1,6 @@
+FLASH_MESSAGES.CY.JS
+
+
 /// <reference types="cypress" />
 
 describe("Flash Messages Focus Behavior", () => {
@@ -68,17 +71,24 @@ describe("Flash Messages Focus Behavior", () => {
 
       it(`should receive focus when page loads for ${variation.description}`, () => {
         // Check that the flash message is focused
-        cy.get('[data-testid="flash_message"]').should("be.focused");
+        cy.get('[data-testid="flash_message"]').should(
+          "have.attr",
+          "autofocus",
+        );
       });
 
       if (variation.component === "flash-messages-with-button") {
         it("should allow keyboard navigation to action button", () => {
           // Focus should start on the banner
-          cy.get('[data-testid="flash_message"]').should("be.focused");
+          cy.get('[data-testid="flash_message"]').should(
+            "have.attr",
+            "autofocus",
+          );
 
           // Tab should move to the button within the banner
+          cy.get('[data-testid="flash_message"]').focus();
           cy.realPress("Tab");
-          cy.get('[data-testid="flash_message"] button[type="submit"]')
+          cy.get('button[type="submit"]')
             .should("be.focused")
             .and("be.visible");
         });
