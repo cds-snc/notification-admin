@@ -2156,3 +2156,14 @@ class NewsletterSubscriptionForm(StripWhitespaceForm):
         ],
         validators=[DataRequired(message=_l("You must select an option to continue"))],
     )
+
+
+class NewsletterLanguageForm(StripWhitespaceForm):
+    language = RadioField(
+        _l("Choose language"),
+        choices=[
+            ("fr", _l("French")),
+            ("en", _l("English")),
+        ],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
