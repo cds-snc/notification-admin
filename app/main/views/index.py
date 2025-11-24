@@ -454,16 +454,17 @@ def newsletter_subscribed():
     return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/send-latest/<subscriber_id>", methods=["GET"])
-def send_latest_newsletter(subscriber_id):
+@main.route("/newsletter/send-latest", methods=["GET"])
+def send_latest_newsletter():
     """Send the latest newsletter to a subscriber"""
     email = request.args.get("email")
+    subscriber_id = request.args.get("subscriber_id")
 
     # Call API to send latest newsletter
     newsletter_api_client.send_latest_newsletter(subscriber_id)
 
     # Display success message
-    flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
+    flash(_("We've sent you the most recent newsletter"), category="default_with_tick")
 
     # Redirect back to subscribed page
     return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
