@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import TooltipWrapper from "./TooltipWrapper";
 
-const LinkModal = ({ editor, isVisible, position, onClose }) => {
+const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
   const inputRef = useRef(null);
@@ -27,14 +28,17 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
   // the modal will close automatically. This prevents the modal from
   // becoming detached from the current editor state.
   useEffect(() => {
+    const initialSel = { from: editor.state.selection.from, to: editor.state.selection.to };
+
     const handleEditorTransaction = () => {
       const { from, to } = editor.state.selection;
-      const linkMark = editor.isActive("link");
 
-      // If the selection is no longer a link or the selection changed
-      // (not a collapsed selection), close the modal so it doesn't operate
-      // on stale content.
-      if (!linkMark || from !== to) {
+      // Close the modal when the editor selection actually changes from the
+      // selection that was present when the modal opened. This allows the
+      // modal to remain open for creating a new link (when there is no link
+      // mark yet) but will close if the user moves the caret or changes
+      // the selection.
+      if (from !== initialSel.from || to !== initialSel.to) {
         onClose();
       }
     };
@@ -117,15 +121,33 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
   };
 
   if (!isVisible) return null;
+  const labels = {
+    en: {
+      enterLink: "Enter link address",
+      placeholder: "Enter URL",
+      save: "Save",
+      goTo: "Go to Link",
+      remove: "Remove Link",
+    },
+    fr: {
+      enterLink: "Entrez l'adresse du lien",
+      placeholder: "Entrez l'URL",
+      save: "Enregistrer",
+      goTo: "Aller au lien",
+      remove: "Supprimer le lien",
+    },
+  };
+
+  const t = labels[lang] || labels.en;
 
   return (
     <div
       ref={modalRef}
-      className="absolute bg-white border border-gray-300 rounded-lg p-2 z-50 flex items-center space-x-2 link-modal"
+      className="fixed bg-white border border-gray-300 rounded-lg p-2 z-50 flex items-center space-x-2 link-modal"
       style={{ top: position.top, left: position.left }}
     >
       <label htmlFor="link-input" className="sr-only">
-        Enter link address
+        {t.enterLink}
       </label>
       <input
         id="link-input"
@@ -134,15 +156,16 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         onKeyDown={handleInputKeyDown} // Scoped Enter key handling
-        placeholder="Enter URL"
+        placeholder={t.placeholder}
         className="w-48 p-1 border border-gray-300 rounded input focus:shadow-outline"
       />
-      <button
-        onClick={saveLink}
-        title="Save"
-        aria-label="Save"
-        className="p-1 hover:bg-gray-100 rounded"
-      >
+      <TooltipWrapper label={t.save}>
+        <button
+          onClick={saveLink}
+          title={t.save}
+          aria-label={t.save}
+          className="p-1 hover:bg-gray-100 rounded"
+        >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -160,14 +183,16 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
           <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
           <path d="M14 4l0 4l-6 0l0 -4"></path>
         </svg>
-      </button>
-      <button
-        onClick={goToLink}
-        onKeyDown={(e) => e.key === "Enter" && goToLink()} // Handle Enter for Go to Link
-        title="Go to Link"
-        aria-label="Go to Link"
-        className="p-1 hover:bg-gray-100 rounded"
-      >
+        </button>
+      </TooltipWrapper>
+      <TooltipWrapper label={t.goTo}>
+        <button
+          onClick={goToLink}
+          onKeyDown={(e) => e.key === "Enter" && goToLink()} // Handle Enter for Go to Link
+          title={t.goTo}
+          aria-label={t.goTo}
+          className="p-1 hover:bg-gray-100 rounded"
+        >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -185,14 +210,16 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
           <path d="M11 13l9 -9"></path>
           <path d="M15 4h5v5"></path>
         </svg>
-      </button>
-      <button
-        onClick={removeLink}
-        onKeyDown={(e) => e.key === "Enter" && removeLink()} // Handle Enter for Remove Link
-        title="Remove Link"
-        aria-label="Remove Link"
-        className="p-1 hover:bg-gray-100 rounded"
-      >
+        </button>
+      </TooltipWrapper>
+      <TooltipWrapper label={t.remove}>
+        <button
+          onClick={removeLink}
+          onKeyDown={(e) => e.key === "Enter" && removeLink()} // Handle Enter for Remove Link
+          title={t.remove}
+          aria-label={t.remove}
+          className="p-1 hover:bg-gray-100 rounded"
+        >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -212,7 +239,8 @@ const LinkModal = ({ editor, isVisible, position, onClose }) => {
           <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
           <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
         </svg>
-      </button>
+        </button>
+      </TooltipWrapper>
     </div>
   );
 };
