@@ -1,0 +1,39 @@
+.rte-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+.rte-tooltip-box {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: white;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.rte-tooltip-label { margin-bottom: 4px; }
+.rte-tooltip-label.no-shortcut { margin-bottom: 0; }
+.rte-tooltip-shortcut { opacity: 0.85; font-size: 13px; }
+
+.rte-tooltip-caret {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #111827;
+  pointer-events: none;
+}
