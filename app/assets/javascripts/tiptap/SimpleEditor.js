@@ -91,8 +91,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       },
       handleClickOn(view, pos, node, nodePos, event) {
         if (node.type.name === "link") {
-          const { left, bottom } =
-            event.target.getBoundingClientRect();
+          const { left, bottom } = event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
           return true;
