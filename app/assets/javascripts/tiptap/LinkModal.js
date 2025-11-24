@@ -148,6 +148,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
       ref={modalRef}
       className="fixed bg-white border border-gray-300 rounded-lg p-2 z-50 flex items-center space-x-2 link-modal"
       style={{ top: position.top, left: position.left }}
+      data-testid="link-modal"
     >
       <label htmlFor="link-input" className="sr-only">
         {t.enterLink}
@@ -161,6 +162,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
         onKeyDown={handleInputKeyDown} // Scoped Enter key handling
         placeholder={t.placeholder}
         className="w-48 p-1 border border-gray-300 rounded input focus:shadow-outline"
+        data-testid="link-modal-input"
       />
       <TooltipWrapper label={t.save}>
         <button
@@ -168,6 +170,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           title={t.save}
           aria-label={t.save}
           className="p-1 hover:bg-gray-100 rounded"
+          data-testid="link-modal-save-button"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -195,6 +198,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           title={t.goTo}
           aria-label={t.goTo}
           className="p-1 hover:bg-gray-100 rounded"
+          data-testid="link-modal-go-to-button"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -222,6 +226,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           title={t.remove}
           aria-label={t.remove}
           className="p-1 hover:bg-gray-100 rounded"
+          data-testid="link-modal-remove-button"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
