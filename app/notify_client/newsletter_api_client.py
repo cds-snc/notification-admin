@@ -30,5 +30,11 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         resp = self.post(url=f"/newsletter/update-language/{subscriber_id}", data=data)
         return resp
 
+    def send_latest_newsletter(self, subscriber_id):
+        # TODO: Implement actual API endpoint
+        # resp = self.post(url=f"/newsletter/send-latest/{subscriber_id}", data={})
+        # return resp
+        return
+
 
 newsletter_api_client = NewsletterAPIClient()

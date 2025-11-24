@@ -3,7 +3,7 @@
 {% from "components/radios.html" import radios %}
 {% from "components/page-footer.html" import page_footer %}
 
-{% set page_title = _('Manage GC Notify newsletter subscription') %}
+{% set page_title = _("Manage newsletter subscription for ‘{}’").format(email) %}
 {% block per_page_title %}
   {{ page_title }}
 {% endblock %}
@@ -12,23 +12,7 @@
 
 <h1 class="heading-large">{{ page_title }}</h1>
 
-<p>
-    {{ _("The newsletter is sent monthly, and gives updates on new features, helpful tips, and opportunities to improve GC Notify. You can change your preferences or unsubscribe at any time.") }}
-</p>
-
-{% if subscriber_id %}
-  <div class="mt-8">
-
-    <p class="mt-4">
-      <a href="{{ url_for('main.newsletter_unsubscribe', email=email, subscriber_id=subscriber_id) }}" class="button">
-        {{ _("Unsubscribe") }}
-      </a>
-    </p>
-</div>
-{% endif %}
-
 <div class="mt-8">
-    <h2 class="heading-medium">{{ _("Change my preferences") }}</h2>
   {% call form_wrapper(
     action=url_for('main.newsletter_manage'),
     method="post",
@@ -43,7 +27,7 @@
     </div>
 
     {{ page_footer(
-      button_text=_("Save changes"),
+      button_text=_("Change"),
       button_name="action",
       button_value="change_language"
     ) }}

@@ -1,6 +1,6 @@
 {% extends "admin_template.html" %}
 
-{% set page_title = _('You’ve unsubscribed ‘{}’ from GC Notify’s newsletter').format(email) %}
+{% set page_title = _("You’ve unsubscribed ‘{}’ from GC Notify’s newsletter").format(email) %}
 {% block per_page_title %}
   {{ page_title }}
 {% endblock %}
@@ -8,5 +8,7 @@
 {% block maincolumn_content %}
 
 <h1 class="heading-large">{{ page_title }}</h1>
+
+<p>{{ _("You can close this window.") }}</p>
 
 {% endblock %}
