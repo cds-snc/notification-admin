@@ -25,7 +25,7 @@ import "./editor.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 
-const SimpleEditor = ({ inputId, labelId, initialContent }) => {
+const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
@@ -61,9 +61,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
           class: "link",
         },
       }),
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
+      // TextAlign.configure({
+      //   types: ["heading", "paragraph"],
+      // }),
       EnglishBlock,
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       MenubarShortcut,
@@ -84,14 +84,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
     editorProps: {
       attributes: {
         class: "tiptap",
+        lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
         if (node.type.name === "link") {
-          const { top, left } = event.target.getBoundingClientRect();
-          setModalPosition({ top: top + window.scrollY + 20, left });
+          const { top, left, bottom, height } = event.target.getBoundingClientRect();
+          setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
           return true;
         }
@@ -150,17 +151,139 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
   });
 
   const openLinkModal = () => {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      setModalPosition({
-        top: rect.top + window.scrollY + 20,
-        left: rect.left,
-      });
-      setLinkModalVisible(true);
+    try {
+      // Prefer TipTap's view coordsAtPos if available — it's reliable for
+      // collapsed selections and complex node structures.
+      const sel = editor?.state?.selection;
+      if (editor?.view && sel) {
+        const pos = sel.from;
+        const coords = editor.view.coordsAtPos(pos);
+        console.log("openLinkModal: coordsAtPos", { pos, coords });
+        if (coords) {
+          const left = (coords.left || coords.x);
+          const top = (coords.bottom || coords.y) + 8;
+          console.log("openLinkModal: using coordsAtPos ->", { left, top });
+          setModalPosition({ top, left });
+          setLinkModalVisible(true);
+          return;
+        }
+      }
+
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+
+        // Use client rects (works for non-collapsed selections). Prefer the
+        // first client rect for start of selection; fallback to bounding rect.
+        const clientRects = range.getClientRects();
+        let rect = clientRects && clientRects.length ? clientRects[0] : range.getBoundingClientRect();
+
+        // If rect appears empty and selection is collapsed, try expanding
+        // the range slightly to get a caret-like rect.
+        if ((rect?.width === 0 && rect?.height === 0) && selection.isCollapsed) {
+          const tempRange = range.cloneRange();
+          try {
+            if (range.startOffset > 0) {
+              tempRange.setStart(range.startContainer, range.startOffset - 1);
+            }
+            const tempRects = tempRange.getClientRects();
+            rect = tempRects && tempRects.length ? tempRects[0] : rect;
+          } catch (err) {
+            // ignore
+          }
+        }
+
+        const left = (rect.left || 0);
+        const top = (rect.top || 0) + (rect.height || 0) + 6;
+        console.log("openLinkModal: using range rect ->", { rect: { left: rect.left, top: rect.top, height: rect.height }, left, top });
+        setModalPosition({ top, left });
+        setLinkModalVisible(true);
+      }
+    } catch (err) {
+      // If anything goes wrong computing the rect, fall back to opening
+      // the modal roughly in the editor area (center top) so it remains usable.
+      try {
+        const edRect = editor?.view?.dom?.getBoundingClientRect?.();
+        const left = (edRect?.left || 0) + 20;
+        const top = (edRect?.top || 0) + 40;
+        console.log("openLinkModal: fallback editor rect ->", { edRect, left, top });
+        setModalPosition({ top, left });
+        setLinkModalVisible(true);
+      } catch (e) {
+        console.log("openLinkModal: final fallback");
+        setModalPosition({ top: 80, left: 80 });
+        setLinkModalVisible(true);
+      }
     }
   };
+
+  // Recompute and set modal position (viewport coords) based on current selection
+  const computeModalPosition = () => {
+    try {
+      const selState = editor?.state?.selection;
+      if (editor?.view && selState) {
+        const pos = selState.from;
+        const coords = editor.view.coordsAtPos(pos);
+        if (coords) {
+          const left = (coords.left || coords.x);
+          const top = (coords.bottom || coords.y) + 8;
+          setModalPosition({ top, left });
+          return;
+        }
+      }
+
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const clientRects = range.getClientRects();
+        let rect = clientRects && clientRects.length ? clientRects[0] : range.getBoundingClientRect();
+        if ((rect?.width === 0 && rect?.height === 0) && selection.isCollapsed) {
+          const tempRange = range.cloneRange();
+          try {
+            if (range.startOffset > 0) tempRange.setStart(range.startContainer, range.startOffset - 1);
+            const tempRects = tempRange.getClientRects();
+            rect = tempRects && tempRects.length ? tempRects[0] : rect;
+          } catch (err) {
+            // ignore
+          }
+        }
+
+        const left = (rect.left || 0);
+        const top = (rect.top || 0) + (rect.height || 0) + 6;
+        setModalPosition({ top, left });
+      }
+    } catch (err) {
+      // ignore errors during recompute
+    }
+  };
+
+  // While the link modal is visible, update its position on scroll/resize
+  // and when selection/editor state changes so it stays attached to the text.
+  React.useEffect(() => {
+    if (!isLinkModalVisible) return;
+
+    // Initial compute
+    computeModalPosition();
+
+    let rafId = null;
+    const tick = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => computeModalPosition());
+    };
+
+    window.addEventListener("scroll", tick, { passive: true });
+    window.addEventListener("resize", tick);
+    document.addEventListener("selectionchange", tick);
+    if (editor) editor.on("transaction", tick);
+
+    return () => {
+      window.removeEventListener("scroll", tick);
+      window.removeEventListener("resize", tick);
+      document.removeEventListener("selectionchange", tick);
+      if (editor) editor.off("transaction", tick);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [isLinkModalVisible, editor]);
 
   // Set initial content as Markdown after editor is created
   React.useEffect(() => {
@@ -203,7 +326,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
 
   return (
     <div className="editor-wrapper">
-      <MenuBar editor={editor} openLinkModal={openLinkModal} />
+      <MenuBar editor={editor} openLinkModal={openLinkModal} lang={lang} />
       <div className="editor-content">
         <EditorContent editor={editor} data-testid="rte-editor" />
       </div>
@@ -212,6 +335,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
         isVisible={isLinkModalVisible}
         position={modalPosition}
         onClose={() => setLinkModalVisible(false)}
+        lang={lang}
       />
     </div>
   );
