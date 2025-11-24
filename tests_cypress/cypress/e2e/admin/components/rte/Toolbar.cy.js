@@ -12,7 +12,7 @@ describe("Toolbar accessibility tests", () => {
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
     // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().realPress(["Meta", "A"]); 
+    RichTextEditor.Components.Editor().realPress(["Meta", "A"]);
     RichTextEditor.Components.Editor().type("{selectall}{del}");
   });
 
@@ -53,10 +53,10 @@ describe("Toolbar accessibility tests", () => {
           .focus()
           .type("Button test: " + testId);
         RichTextEditor.Components.Editor().focus().type("{selectall}");
-        
+
         // 3) apply formatting
         button.click();
-        
+
         // label should update and aria-pressed should be true
         button.should(($b) => {
           const text = $b.text().trim();
@@ -95,10 +95,10 @@ describe("Toolbar accessibility tests", () => {
 
   context("Toolbar buttons have tooltips", () => {
     Object.entries(FORMATTING_OPTIONS).forEach(([key, testId]) => {
-      it(humanize(key), () => {        
+      it(humanize(key), () => {
         const button = cy.getByTestId(testId);
         button.trigger("mouseover");
-        cy.get(".rte-tooltip-box").should("exist")
+        cy.get(".rte-tooltip-box").should("exist");
         cy.get(".rte-tooltip-label").should("not.be.empty");
         RichTextEditor.Components.Editor().focus();
         button.trigger("mouseleave");
@@ -106,7 +106,7 @@ describe("Toolbar accessibility tests", () => {
       });
     });
   });
-  
+
   it("Toolbar has appropriate role and aria attributes", () => {
     RichTextEditor.Components.Toolbar().should("have.attr", "role", "toolbar");
     RichTextEditor.Components.Toolbar()
@@ -189,19 +189,53 @@ describe("Toolbar accessibility tests", () => {
 
   context("Toolbar formatting shortcuts", () => {
     const shortcutSpecs = [
-      { label: "Heading 1", key: "1", button: () => RichTextEditor.Components.H1Button() },
-      { label: "Heading 2", key: "2", button: () => RichTextEditor.Components.H2Button() },
-      { label: "Variable", key: "3", button: () => RichTextEditor.Components.VariableButton() },
-      { label: "Bullet list", key: "4", button: () => RichTextEditor.Components.BulletListButton() },
-      { label: "Numbered list", key: "5", button: () => RichTextEditor.Components.NumberedListButton() },
-      { label: "Blockquote", key: "7", button: () => RichTextEditor.Components.BlockquoteButton() },
-      { label: "English block", key: "8", button: () => RichTextEditor.Components.EnglishBlockButton() },
-      { label: "French block", key: "9", button: () => RichTextEditor.Components.FrenchBlockButton() },
+      {
+        label: "Heading 1",
+        key: "1",
+        button: () => RichTextEditor.Components.H1Button(),
+      },
+      {
+        label: "Heading 2",
+        key: "2",
+        button: () => RichTextEditor.Components.H2Button(),
+      },
+      {
+        label: "Variable",
+        key: "3",
+        button: () => RichTextEditor.Components.VariableButton(),
+      },
+      {
+        label: "Bullet list",
+        key: "4",
+        button: () => RichTextEditor.Components.BulletListButton(),
+      },
+      {
+        label: "Numbered list",
+        key: "5",
+        button: () => RichTextEditor.Components.NumberedListButton(),
+      },
+      {
+        label: "Blockquote",
+        key: "7",
+        button: () => RichTextEditor.Components.BlockquoteButton(),
+      },
+      {
+        label: "English block",
+        key: "8",
+        button: () => RichTextEditor.Components.EnglishBlockButton(),
+      },
+      {
+        label: "French block",
+        key: "9",
+        button: () => RichTextEditor.Components.FrenchBlockButton(),
+      },
     ];
 
     shortcutSpecs.forEach(({ label, key, button }) => {
       it(`${label} toggles via Mod+Alt+${key}`, () => {
-        RichTextEditor.Components.Editor().focus().type("Shortcut test{selectall}");
+        RichTextEditor.Components.Editor()
+          .focus()
+          .type("Shortcut test{selectall}");
         cy.realPress(["Meta", "Alt", key]);
         button().should("have.attr", "aria-pressed", "true");
 
@@ -212,9 +246,13 @@ describe("Toolbar accessibility tests", () => {
     });
 
     it("opens the link modal via Mod+K", () => {
-      RichTextEditor.Components.Editor().focus().type("Link shortcut{selectall}");
+      RichTextEditor.Components.Editor()
+        .focus()
+        .type("Link shortcut{selectall}");
       cy.realPress(["Meta", "k"]);
-      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
       cy.realPress("Escape");
       RichTextEditor.Components.LinkModal.Modal().should("not.exist");
     });

@@ -9,13 +9,11 @@ describe("Link modal tests", () => {
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
     // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().realPress(["Meta", "A"]); 
+    RichTextEditor.Components.Editor().realPress(["Meta", "A"]);
     RichTextEditor.Components.Editor().type("{selectall}{del}");
 
     // ensure editor has no text
     RichTextEditor.Components.Editor().should("have.text", "");
-
-    
   });
 
   const humanize = (key) =>
@@ -24,16 +22,15 @@ describe("Link modal tests", () => {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
-
   context("Link modal buttons have tooltips", () => {
     // loop over RichTextEditor.Components.LinkModal.Buttons and for each button check tooltip appears on hover
     RichTextEditor.Components.LinkModal.Buttons.forEach((buttonObj) => {
-
-
       const buttonName = Object.keys(buttonObj)[0];
       it(`${buttonName} has a tooltip`, () => {
         // enter text, select it, invoke link modal
-        RichTextEditor.Components.Editor().focus().type("hello world{selectall}");
+        RichTextEditor.Components.Editor()
+          .focus()
+          .type("hello world{selectall}");
         cy.realPress(["Meta", "K"]);
 
         // trigger mouse over
@@ -45,19 +42,19 @@ describe("Link modal tests", () => {
         cy.get(".rte-tooltip-label").should("not.be.empty");
       });
     });
-
-
   });
   it("Link modal displays when clicking the Link button", () => {
     // enter text, select it, invoke link modal
     RichTextEditor.Components.Editor().type("hello world{selectall}");
     RichTextEditor.Components.LinkButton().click();
-    
+
     //scroll to top
     cy.scrollTo("top");
 
     // ensure link modal appears
-    RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+    RichTextEditor.Components.LinkModal.Modal()
+      .should("exist")
+      .and("be.visible");
   });
 
   it("Link modal inserts link into editor", () => {
@@ -77,5 +74,4 @@ describe("Link modal tests", () => {
       .should("exist")
       .and("contain.text", "hello world");
   });
-
 });

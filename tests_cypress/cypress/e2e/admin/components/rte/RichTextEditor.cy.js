@@ -68,7 +68,7 @@ describe("Toolbar accessibility tests", () => {
           .focus()
           .type("Button test: " + testId);
         RichTextEditor.Components.Editor().focus().type("{selectall}");
-        
+
         // 3) apply formatting
         button.click();
 
@@ -110,10 +110,10 @@ describe("Toolbar accessibility tests", () => {
 
   context("Toolbar buttons have tooltips", () => {
     Object.entries(FORMATTING_OPTIONS).forEach(([key, testId]) => {
-      it(humanize(key), () => {        
+      it(humanize(key), () => {
         const button = cy.getByTestId(testId);
         button.trigger("mouseover");
-        cy.get(".rte-tooltip-box").should("exist")
+        cy.get(".rte-tooltip-box").should("exist");
         cy.get(".rte-tooltip-label").should("not.be.empty");
         RichTextEditor.Components.Editor().focus();
         button.trigger("mouseleave");
@@ -121,7 +121,7 @@ describe("Toolbar accessibility tests", () => {
       });
     });
   });
-  
+
   it("Toolbar has appropriate role and aria attributes", () => {
     RichTextEditor.Components.Toolbar().should("have.attr", "role", "toolbar");
     RichTextEditor.Components.Toolbar()
