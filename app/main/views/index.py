@@ -464,7 +464,7 @@ def send_latest_newsletter():
     newsletter_api_client.send_latest_newsletter(subscriber_id)
 
     # Display success message
-    flash(_("We've sent you the most recent newsletter"), category="default_with_tick")
+    flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
 
     # Redirect back to subscribed page
     return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
