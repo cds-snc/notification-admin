@@ -21,9 +21,16 @@
   text-align: center;
 }
 
-.rte-tooltip-label { margin-bottom: 4px; }
-.rte-tooltip-label.no-shortcut { margin-bottom: 0; }
-.rte-tooltip-shortcut { opacity: 0.85; font-size: 13px; }
+.rte-tooltip-label {
+  margin-bottom: 4px;
+}
+.rte-tooltip-label.no-shortcut {
+  margin-bottom: 0;
+}
+.rte-tooltip-shortcut {
+  opacity: 0.85;
+  font-size: 13px;
+}
 
 .rte-tooltip-caret {
   position: absolute;

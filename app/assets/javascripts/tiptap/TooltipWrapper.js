@@ -34,7 +34,13 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
       {cloned}
       {visible && (
         <div role="tooltip" className="rte-tooltip-box">
-          <div className={shortcut ? "rte-tooltip-label" : "rte-tooltip-label no-shortcut"}>{label}</div>
+          <div
+            className={
+              shortcut ? "rte-tooltip-label" : "rte-tooltip-label no-shortcut"
+            }
+          >
+            {label}
+          </div>
           {shortcut && <div className="rte-tooltip-shortcut">{shortcut}</div>}
           <div aria-hidden="true" className="rte-tooltip-caret" />
         </div>

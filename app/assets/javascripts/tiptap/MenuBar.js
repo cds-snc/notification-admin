@@ -78,7 +78,9 @@ const AccessibleToolbar = ({ children, label, editor }) => {
   const handleKeyDown = useCallback(
     (event) => {
       const focusableElements = getFocusableElements();
-      const currentIndex = focusableElements.findIndex((el) => el === event.target);
+      const currentIndex = focusableElements.findIndex(
+        (el) => el === event.target,
+      );
 
       if (currentIndex === -1) return;
 
@@ -156,7 +158,9 @@ const AccessibleToolbar = ({ children, label, editor }) => {
       e.preventDefault?.();
       // Bubble an event so the outer MenuBar component (which receives editor prop) can open the modal
       try {
-        const openEvent = new CustomEvent("rte-open-link-modal-forward", { bubbles: true });
+        const openEvent = new CustomEvent("rte-open-link-modal-forward", {
+          bubbles: true,
+        });
         el.dispatchEvent(openEvent);
       } catch (err) {
         // ignore
@@ -170,7 +174,6 @@ const AccessibleToolbar = ({ children, label, editor }) => {
       el.removeEventListener("rte-open-link-modal", onOpenLinkModal);
     };
   }, [getFocusableElements, updateTabIndex]);
-
 
   return (
     <div
@@ -187,7 +190,6 @@ const AccessibleToolbar = ({ children, label, editor }) => {
     </div>
   );
 };
-
 
 const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
   if (!editor) {
@@ -313,7 +315,6 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
     const id = setTimeout(() => setLiveMessage(""), 2500);
     return () => clearTimeout(id);
   }, [liveMessage]);
-  
 
   // Listen for forwarded open-link events from the toolbar (Mod+K)
   useEffect(() => {
@@ -329,7 +330,8 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
     };
 
     el.addEventListener("rte-open-link-modal-forward", onOpenLink);
-    return () => el.removeEventListener("rte-open-link-modal-forward", onOpenLink);
+    return () =>
+      el.removeEventListener("rte-open-link-modal-forward", onOpenLink);
   }, [editor, openLinkModal, t.linkDialogOpened]);
 
   return (
@@ -345,53 +347,53 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
       <div className="toolbar-group">
         <TooltipWrapper label={t.heading1} shortcut={shortcuts.heading1}>
           <button
-          type="button"
-          data-testid="rte-heading_1"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-              () => editor.isActive("heading", { level: 1 }),
-              t.heading1,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("heading", { level: 1 }) ? " is-active" : "")
-          }
-          aria-pressed={editor.isActive("heading", { level: 1 })}
-        >
-          <span className="sr-only">
-            {editor.isActive("heading", { level: 1 })
-              ? t.removePrefix
-              : t.applyPrefix}
-          </span>
-          H1
+            type="button"
+            data-testid="rte-heading_1"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+                () => editor.isActive("heading", { level: 1 }),
+                t.heading1,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("heading", { level: 1 }) ? " is-active" : "")
+            }
+            aria-pressed={editor.isActive("heading", { level: 1 })}
+          >
+            <span className="sr-only">
+              {editor.isActive("heading", { level: 1 })
+                ? t.removePrefix
+                : t.applyPrefix}
+            </span>
+            H1
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.heading2} shortcut={shortcuts.heading2}>
           <button
-          type="button"
-          data-testid="rte-heading_2"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-              () => editor.isActive("heading", { level: 2 }),
-              t.heading2,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("heading", { level: 2 }) ? " is-active" : "")
-          }
-          title={t.heading2}
-          aria-pressed={editor.isActive("heading", { level: 2 })}
-        >
-          <span className="sr-only">
-            {editor.isActive("heading", { level: 2 })
-              ? t.removePrefix
-              : t.applyPrefix}
-          </span>
-          H2
+            type="button"
+            data-testid="rte-heading_2"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+                () => editor.isActive("heading", { level: 2 }),
+                t.heading2,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("heading", { level: 2 }) ? " is-active" : "")
+            }
+            title={t.heading2}
+            aria-pressed={editor.isActive("heading", { level: 2 })}
+          >
+            <span className="sr-only">
+              {editor.isActive("heading", { level: 2 })
+                ? t.removePrefix
+                : t.applyPrefix}
+            </span>
+            H2
           </button>
         </TooltipWrapper>
       </div>
@@ -413,7 +415,8 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
             }
             disabled={!editor.can().chain().focus().toggleVariable().run()}
             className={
-              "toolbar-button" + (editor.isActive("variable") ? " is-active" : "")
+              "toolbar-button" +
+              (editor.isActive("variable") ? " is-active" : "")
             }
             title={t.variable}
             aria-pressed={editor.isActive("variable")}
@@ -448,75 +451,75 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
       <div className="toolbar-group">
         <TooltipWrapper label={t.bold} shortcut={t.shortcutBold}>
           <button
-          type="button"
-          data-testid="rte-bold"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleBold().run(),
-              () => editor.isActive("bold"),
-              t.bold,
-            )
-          }
-          disabled={!editor.can().chain().focus().toggleBold().run()}
-          className={
-            "toolbar-button" + (editor.isActive("bold") ? " is-active" : "")
-          }
-          title={t.bold}
-          aria-pressed={editor.isActive("bold")}
-        >
-          <span className="sr-only">
-            {editor.isActive("bold") ? t.removePrefix : t.applyPrefix}
-            {t.bold}
-          </span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
+            type="button"
+            data-testid="rte-bold"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleBold().run(),
+                () => editor.isActive("bold"),
+                t.bold,
+              )
+            }
+            disabled={!editor.can().chain().focus().toggleBold().run()}
+            className={
+              "toolbar-button" + (editor.isActive("bold") ? " is-active" : "")
+            }
+            title={t.bold}
+            aria-pressed={editor.isActive("bold")}
           >
-            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-          </svg>
+            <span className="sr-only">
+              {editor.isActive("bold") ? t.removePrefix : t.applyPrefix}
+              {t.bold}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+              <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
+            </svg>
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.italic} shortcut={t.shortcutItalic}>
           <button
-          type="button"
-          data-testid="rte-italic"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleItalic().run(),
-              () => editor.isActive("italic"),
-              t.italic,
-            )
-          }
-          disabled={!editor.can().chain().focus().toggleItalic().run()}
-          className={
-            "toolbar-button" + (editor.isActive("italic") ? " is-active" : "")
-          }
-          title={t.italic}
-          aria-pressed={editor.isActive("italic")}
-        >
-          <span className="sr-only">
-            {editor.isActive("italic") ? t.removePrefix : t.applyPrefix}
-            {t.italic}
-          </span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
+            type="button"
+            data-testid="rte-italic"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleItalic().run(),
+                () => editor.isActive("italic"),
+                t.italic,
+              )
+            }
+            disabled={!editor.can().chain().focus().toggleItalic().run()}
+            className={
+              "toolbar-button" + (editor.isActive("italic") ? " is-active" : "")
+            }
+            title={t.italic}
+            aria-pressed={editor.isActive("italic")}
           >
-            <line x1="19" y1="4" x2="10" y2="4" />
-            <line x1="14" y1="20" x2="5" y2="20" />
-            <line x1="15" y1="4" x2="9" y2="20" />
-          </svg>
+            <span className="sr-only">
+              {editor.isActive("italic") ? t.removePrefix : t.applyPrefix}
+              {t.italic}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <line x1="19" y1="4" x2="10" y2="4" />
+              <line x1="14" y1="20" x2="5" y2="20" />
+              <line x1="15" y1="4" x2="9" y2="20" />
+            </svg>
           </button>
         </TooltipWrapper>
       </div>
@@ -527,82 +530,85 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
       <div className="toolbar-group">
         <TooltipWrapper label={t.bulletList} shortcut={shortcuts.bulletList}>
           <button
-          type="button"
-          data-testid="rte-bullet_list"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleBulletList().run(),
-              () => editor.isActive("bulletList"),
-              t.bulletList,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("bulletList") ? " is-active" : "")
-          }
-          title={t.bulletList}
-          aria-pressed={editor.isActive("bulletList")}
-        >
-          <span className="sr-only">
-            {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
-            {t.bulletList}
-          </span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
+            type="button"
+            data-testid="rte-bullet_list"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleBulletList().run(),
+                () => editor.isActive("bulletList"),
+                t.bulletList,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("bulletList") ? " is-active" : "")
+            }
+            title={t.bulletList}
+            aria-pressed={editor.isActive("bulletList")}
           >
-            <line x1="8" y1="6" x2="21" y2="6" />
-            <line x1="8" y1="12" x2="21" y2="12" />
-            <line x1="8" y1="18" x2="21" y2="18" />
-            <line x1="3" y1="6" x2="3.01" y2="6" />
-            <line x1="3" y1="12" x2="3.01" y2="12" />
-            <line x1="3" y1="18" x2="3.01" y2="18" />
-          </svg>
+            <span className="sr-only">
+              {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
+              {t.bulletList}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
           </button>
         </TooltipWrapper>
-        <TooltipWrapper label={t.numberedList} shortcut={shortcuts.numberedList}>
-          <button
-          type="button"
-          data-testid="rte-numbered_list"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleOrderedList().run(),
-              () => editor.isActive("orderedList"),
-              t.numberedList,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("orderedList") ? " is-active" : "")
-          }
-          title={t.numberedList}
-          aria-pressed={editor.isActive("orderedList")}
+        <TooltipWrapper
+          label={t.numberedList}
+          shortcut={shortcuts.numberedList}
         >
-          <span className="sr-only">
-            {editor.isActive("orderedList") ? t.removePrefix : t.applyPrefix}
-            {t.numberedList}
-          </span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
+          <button
+            type="button"
+            data-testid="rte-numbered_list"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleOrderedList().run(),
+                () => editor.isActive("orderedList"),
+                t.numberedList,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("orderedList") ? " is-active" : "")
+            }
+            title={t.numberedList}
+            aria-pressed={editor.isActive("orderedList")}
           >
-            <line x1="10" y1="6" x2="21" y2="6" />
-            <line x1="10" y1="12" x2="21" y2="12" />
-            <line x1="10" y1="18" x2="21" y2="18" />
-            <path d="M4 6h1v4" />
-            <path d="M4 10h2" />
-            <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
-          </svg>
+            <span className="sr-only">
+              {editor.isActive("orderedList") ? t.removePrefix : t.applyPrefix}
+              {t.numberedList}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <line x1="10" y1="6" x2="21" y2="6" />
+              <line x1="10" y1="12" x2="21" y2="12" />
+              <line x1="10" y1="18" x2="21" y2="18" />
+              <path d="M4 6h1v4" />
+              <path d="M4 10h2" />
+              <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
+            </svg>
           </button>
         </TooltipWrapper>
       </div>
@@ -613,38 +619,41 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
       <div className="toolbar-group">
         <TooltipWrapper label={t.link} shortcut={shortcuts.link}>
           <button
-          type="button"
-          data-testid="rte-link"
-          onClick={() => {
-            openLinkModal();
-            // announce via live region when link modal opens (approx)
-            setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
-          }}
-          className={
-            "toolbar-button" + (editor.isActive("link") ? " is-active" : "")
-          }
-          title={t.link}
-          aria-pressed={editor.isActive("link")}
-        >
-          <span className="sr-only">
-            {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
-            {t.link}
-          </span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
+            type="button"
+            data-testid="rte-link"
+            onClick={() => {
+              openLinkModal();
+              // announce via live region when link modal opens (approx)
+              setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
+            }}
+            className={
+              "toolbar-button" + (editor.isActive("link") ? " is-active" : "")
+            }
+            title={t.link}
+            aria-pressed={editor.isActive("link")}
           >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-          </svg>
+            <span className="sr-only">
+              {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
+              {t.link}
+            </span>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
           </button>
         </TooltipWrapper>
-        <TooltipWrapper label={t.horizontalRule} shortcut={shortcuts.horizontalRule}>
+        <TooltipWrapper
+          label={t.horizontalRule}
+          shortcut={shortcuts.horizontalRule}
+        >
           <button
             type="button"
             data-testid="rte-horizontal_rule"
@@ -666,7 +675,7 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
             </svg>
           </button>
         </TooltipWrapper>
-        
+
         <TooltipWrapper label={t.blockquote} shortcut={shortcuts.blockquote}>
           <button
             type="button"
@@ -709,54 +718,57 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
 
       {/* Language blocks group */}
       <div className="toolbar-group">
-        <TooltipWrapper label={t.englishBlock} shortcut={shortcuts.englishBlock}>
-          <button
-          type="button"
-          data-testid="rte-english_block"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleEnglishBlock().run(),
-              () => editor.isActive("englishBlock"),
-              t.englishBlock,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("englishBlock") ? " is-active" : "")
-          }
-          title={t.englishBlock}
-          aria-pressed={editor.isActive("englishBlock")}
+        <TooltipWrapper
+          label={t.englishBlock}
+          shortcut={shortcuts.englishBlock}
         >
-          <span className="sr-only">
-            {editor.isActive("englishBlock") ? t.removePrefix : t.applyPrefix}
-            {t.englishBlock}
-          </span>
-          EN
+          <button
+            type="button"
+            data-testid="rte-english_block"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleEnglishBlock().run(),
+                () => editor.isActive("englishBlock"),
+                t.englishBlock,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("englishBlock") ? " is-active" : "")
+            }
+            title={t.englishBlock}
+            aria-pressed={editor.isActive("englishBlock")}
+          >
+            <span className="sr-only">
+              {editor.isActive("englishBlock") ? t.removePrefix : t.applyPrefix}
+              {t.englishBlock}
+            </span>
+            EN
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.frenchBlock} shortcut={shortcuts.frenchBlock}>
           <button
-          type="button"
-          data-testid="rte-french_block"
-          onClick={() =>
-            announceToggle(
-              () => editor.chain().focus().toggleFrenchBlock().run(),
-              () => editor.isActive("frenchBlock"),
-              t.frenchBlock,
-            )
-          }
-          className={
-            "toolbar-button" +
-            (editor.isActive("frenchBlock") ? " is-active" : "")
-          }
-          title={t.frenchBlock}
-          aria-pressed={editor.isActive("frenchBlock")}
-        >
-          <span className="sr-only">
-            {editor.isActive("frenchBlock") ? t.removePrefix : t.applyPrefix}
-            {t.frenchBlock}
-          </span>
-          FR
+            type="button"
+            data-testid="rte-french_block"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleFrenchBlock().run(),
+                () => editor.isActive("frenchBlock"),
+                t.frenchBlock,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("frenchBlock") ? " is-active" : "")
+            }
+            title={t.frenchBlock}
+            aria-pressed={editor.isActive("frenchBlock")}
+          >
+            <span className="sr-only">
+              {editor.isActive("frenchBlock") ? t.removePrefix : t.applyPrefix}
+              {t.frenchBlock}
+            </span>
+            FR
           </button>
         </TooltipWrapper>
       </div>

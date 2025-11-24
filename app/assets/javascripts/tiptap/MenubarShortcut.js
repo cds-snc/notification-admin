@@ -33,8 +33,7 @@ export default Extension.create({
       "Mod-Alt-3": () => {
         if (this.editor.can().chain().focus().toggleVariable)
           this.editor.chain().focus().toggleVariable().run();
-        else
-          this.editor.chain().focus().setMark('variable').run?.();
+        else this.editor.chain().focus().setMark("variable").run?.();
         return true;
       },
       "Mod-Alt-4": () => {
@@ -68,7 +67,9 @@ export default Extension.create({
         const toolbar = this.editor?.rteToolbar;
         if (toolbar) {
           try {
-            toolbar.dispatchEvent(new CustomEvent("rte-open-link-modal", { bubbles: true }));
+            toolbar.dispatchEvent(
+              new CustomEvent("rte-open-link-modal", { bubbles: true }),
+            );
             return true;
           } catch (err) {
             // ignore

@@ -28,7 +28,10 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
   // the modal will close automatically. This prevents the modal from
   // becoming detached from the current editor state.
   useEffect(() => {
-    const initialSel = { from: editor.state.selection.from, to: editor.state.selection.to };
+    const initialSel = {
+      from: editor.state.selection.from,
+      to: editor.state.selection.to,
+    };
 
     const handleEditorTransaction = () => {
       const { from, to } = editor.state.selection;
@@ -166,23 +169,23 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           aria-label={t.save}
           className="p-1 hover:bg-gray-100 rounded"
         >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
-          <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-          <path d="M14 4l0 4l-6 0l0 -4"></path>
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
+            <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+            <path d="M14 4l0 4l-6 0l0 -4"></path>
+          </svg>
         </button>
       </TooltipWrapper>
       <TooltipWrapper label={t.goTo}>
@@ -193,23 +196,23 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           aria-label={t.goTo}
           className="p-1 hover:bg-gray-100 rounded"
         >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"></path>
-          <path d="M11 13l9 -9"></path>
-          <path d="M15 4h5v5"></path>
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"></path>
+            <path d="M11 13l9 -9"></path>
+            <path d="M15 4h5v5"></path>
+          </svg>
         </button>
       </TooltipWrapper>
       <TooltipWrapper label={t.remove}>
@@ -220,25 +223,25 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
           aria-label={t.remove}
           className="p-1 hover:bg-gray-100 rounded"
         >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M4 7l16 0"></path>
-          <path d="M10 11l0 6"></path>
-          <path d="M14 11l0 6"></path>
-          <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
-          <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M4 7l16 0"></path>
+            <path d="M10 11l0 6"></path>
+            <path d="M14 11l0 6"></path>
+            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+          </svg>
         </button>
       </TooltipWrapper>
     </div>

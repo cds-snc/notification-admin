@@ -91,7 +91,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       },
       handleClickOn(view, pos, node, nodePos, event) {
         if (node.type.name === "link") {
-          const { top, left, bottom, height } = event.target.getBoundingClientRect();
+          const { top, left, bottom, height } =
+            event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
           return true;
@@ -160,7 +161,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const coords = editor.view.coordsAtPos(pos);
         console.log("openLinkModal: coordsAtPos", { pos, coords });
         if (coords) {
-          const left = (coords.left || coords.x);
+          const left = coords.left || coords.x;
           const top = (coords.bottom || coords.y) + 8;
           console.log("openLinkModal: using coordsAtPos ->", { left, top });
           setModalPosition({ top, left });
@@ -176,11 +177,14 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         // Use client rects (works for non-collapsed selections). Prefer the
         // first client rect for start of selection; fallback to bounding rect.
         const clientRects = range.getClientRects();
-        let rect = clientRects && clientRects.length ? clientRects[0] : range.getBoundingClientRect();
+        let rect =
+          clientRects && clientRects.length
+            ? clientRects[0]
+            : range.getBoundingClientRect();
 
         // If rect appears empty and selection is collapsed, try expanding
         // the range slightly to get a caret-like rect.
-        if ((rect?.width === 0 && rect?.height === 0) && selection.isCollapsed) {
+        if (rect?.width === 0 && rect?.height === 0 && selection.isCollapsed) {
           const tempRange = range.cloneRange();
           try {
             if (range.startOffset > 0) {
@@ -193,9 +197,13 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           }
         }
 
-        const left = (rect.left || 0);
+        const left = rect.left || 0;
         const top = (rect.top || 0) + (rect.height || 0) + 6;
-        console.log("openLinkModal: using range rect ->", { rect: { left: rect.left, top: rect.top, height: rect.height }, left, top });
+        console.log("openLinkModal: using range rect ->", {
+          rect: { left: rect.left, top: rect.top, height: rect.height },
+          left,
+          top,
+        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       }
@@ -206,7 +214,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const edRect = editor?.view?.dom?.getBoundingClientRect?.();
         const left = (edRect?.left || 0) + 20;
         const top = (edRect?.top || 0) + 40;
-        console.log("openLinkModal: fallback editor rect ->", { edRect, left, top });
+        console.log("openLinkModal: fallback editor rect ->", {
+          edRect,
+          left,
+          top,
+        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       } catch (e) {
@@ -225,7 +237,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const pos = selState.from;
         const coords = editor.view.coordsAtPos(pos);
         if (coords) {
-          const left = (coords.left || coords.x);
+          const left = coords.left || coords.x;
           const top = (coords.bottom || coords.y) + 8;
           setModalPosition({ top, left });
           return;
@@ -236,11 +248,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
         const clientRects = range.getClientRects();
-        let rect = clientRects && clientRects.length ? clientRects[0] : range.getBoundingClientRect();
-        if ((rect?.width === 0 && rect?.height === 0) && selection.isCollapsed) {
+        let rect =
+          clientRects && clientRects.length
+            ? clientRects[0]
+            : range.getBoundingClientRect();
+        if (rect?.width === 0 && rect?.height === 0 && selection.isCollapsed) {
           const tempRange = range.cloneRange();
           try {
-            if (range.startOffset > 0) tempRange.setStart(range.startContainer, range.startOffset - 1);
+            if (range.startOffset > 0)
+              tempRange.setStart(range.startContainer, range.startOffset - 1);
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
@@ -248,7 +264,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           }
         }
 
-        const left = (rect.left || 0);
+        const left = rect.left || 0;
         const top = (rect.top || 0) + (rect.height || 0) + 6;
         setModalPosition({ top, left });
       }
