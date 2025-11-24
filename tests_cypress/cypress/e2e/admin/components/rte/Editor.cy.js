@@ -1,6 +1,4 @@
-import RichTextEditor, {
-  FORMATTING_OPTIONS,
-} from "../../../../Notify/Admin/Components/RichTextEditor";
+import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 
 describe("Editor accessibility tests", () => {
   beforeEach(() => {

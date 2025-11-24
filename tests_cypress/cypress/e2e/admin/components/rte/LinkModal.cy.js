@@ -1,6 +1,4 @@
-import RichTextEditor, {
-  FORMATTING_OPTIONS,
-} from "../../../../Notify/Admin/Components/RichTextEditor";
+import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 
 describe("Link modal tests", () => {
   beforeEach(() => {
@@ -15,12 +13,6 @@ describe("Link modal tests", () => {
     // ensure editor has no text
     RichTextEditor.Components.Editor().should("have.text", "");
   });
-
-  const humanize = (key) =>
-    key
-      .toLowerCase()
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase());
 
   context("Link modal buttons have tooltips", () => {
     // loop over RichTextEditor.Components.LinkModal.Buttons and for each button check tooltip appears on hover
