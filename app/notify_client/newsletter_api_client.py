@@ -25,5 +25,10 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         resp = self.get(url=f"/newsletter/unsubscribe/{subscriber_id}")
         return resp
 
+    def update_language(self, subscriber_id, language):
+        data = {"language": language}
+        resp = self.post(url=f"/newsletter/update-language/{subscriber_id}", data=data)
+        return resp
+
 
 newsletter_api_client = NewsletterAPIClient()
