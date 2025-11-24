@@ -34,9 +34,12 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterLanguageForm,
+    NewsletterSubscriptionForm,
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
+from app.notify_client.newsletter_api_client import newsletter_api_client
 from app.tou import accept_terms
 from app.utils import (
     Spreadsheet,
@@ -397,6 +400,57 @@ def preview_content():
     return _render_articles_page(response)
 
 
+@main.route("/newsletter-subscription", methods=["POST"])
+def newsletter_subscription():
+    """Handle newsletter subscription form submissions"""
+    newsletter_form = NewsletterSubscriptionForm()
+    path = "home" if get_current_locale(current_app) == "en" else "accueil"
+
+    if newsletter_form.validate_on_submit():
+        submitted_email = newsletter_form.email.data
+        language = newsletter_form.language.data
+
+        # Create unconfirmed subscriber via API
+        newsletter_api_client.create_unconfirmed_subscriber(submitted_email, language)
+
+        # Redirect back to the home page with success parameter and email
+        return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
+
+    # Re-render the home page with form errors if validation failed
+    endpoint = "wp/v2/pages"
+    lang = get_current_locale(current_app)
+    params = {"slug": path, "lang": lang}
+
+    if current_user.is_authenticated:
+        response = get_page_by_slug(endpoint, params=params)
+    else:
+        response = get_page_by_slug_with_cache(endpoint, params=params)
+
+    if isinstance(response, list):
+        response = response[0]
+
+    return _render_articles_page(response, newsletter_form)
+
+
+@main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
+def confirm_newsletter_subscriber(subscriber_id):
+    # send an api request with the subscriber_id
+    data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
+    email = data["subscriber"]["email"]
+
+    # redirect to the newsletter_subscribed page
+    return redirect(url_for("main.newsletter_subscribed", email=email))
+
+
+@main.route("/newsletter/subscribed", methods=["GET", "POST"])
+def newsletter_subscribed():
+    """Newsletter subscription confirmation page"""
+    language_form = NewsletterLanguageForm()
+    email = request.args.get("email")
+
+    return render_template("views/newsletter/subscribed.html", form=language_form, email=email)
+
+
 @main.route("/<path:path>")
 def page_content(path=""):
     endpoint = "wp/v2/pages"
@@ -419,7 +473,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -427,6 +481,9 @@ def _render_articles_page(response):
 
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
+
+    if newsletter_form is None:
+        newsletter_form = NewsletterSubscriptionForm()
 
     return render_template(
         "views/page-content.html",
@@ -437,6 +494,9 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
+        newsletter_form=newsletter_form,
+        newsletter_subscribed=request.args.get("subscribed") == "1",
+        newsletter_subscribed_email=request.args.get("email"),
     )
 
 

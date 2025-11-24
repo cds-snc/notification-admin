@@ -2137,3 +2137,33 @@ class AuthMethodForm(StripWhitespaceForm):
         super().__init__(auth_method=current_auth_method)
 
         self.auth_method.choices = all_auth_methods
+
+
+class NewsletterSubscriptionForm(StripWhitespaceForm):
+    email = EmailField(
+        _l("Email address"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            Length(min=5, max=255),
+            ValidGovEmail(),
+        ],
+    )
+    language = RadioField(
+        _l("Choose language"),
+        choices=[
+            ("fr", _l("French")),
+            ("en", _l("English")),
+        ],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
+
+
+class NewsletterLanguageForm(StripWhitespaceForm):
+    language = RadioField(
+        _l("Choose language"),
+        choices=[
+            ("fr", _l("French")),
+            ("en", _l("English")),
+        ],
+        validators=[DataRequired(message=_l("You must select an option to continue"))],
+    )
