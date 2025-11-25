@@ -23,6 +23,7 @@ import VariableMark from "./CustomComponents/VariableMark";
 import { Markdown } from "tiptap-markdown";
 import "./editor.css";
 import LinkModal from "./LinkModal";
+import MenubarShortcut from "./MenubarShortcut";
 
 const SimpleEditor = ({ inputId, labelId, initialContent }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
@@ -64,6 +65,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
         types: ["heading", "paragraph"],
       }),
       EnglishBlock,
+      // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
+      MenubarShortcut,
       FrenchBlock,
 
       // Add Markdown extension with paste handling enabled
@@ -202,7 +205,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent }) => {
     <div className="editor-wrapper">
       <MenuBar editor={editor} openLinkModal={openLinkModal} />
       <div className="editor-content">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} data-testid="rte-editor" />
       </div>
       <LinkModal
         editor={editor}
