@@ -80,7 +80,7 @@ describe("TOU Dialog", () => {
       RegisterPage.Components.TOUStatusComplete().should("be.visible");
     });
 
-    it.only("Displays error message/error summary if terms not agreed and user submits form", () => {
+    it("Displays error message/error summary if terms not agreed and user submits form", () => {
       RegisterPage.Continue();
       RegisterPage.Components.TOUErrorMessage().should("be.visible");
       RegisterPage.Components.TOUValidationSummaryErrorMessage().should(
