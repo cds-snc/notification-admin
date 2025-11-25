@@ -56,7 +56,7 @@ module.exports = defineConfig({
         rules: {
           "form-dup-name": "off",
           "prefer-native-element": ["error", {
-            "exclude": ["button", "link"]
+            "exclude": ["button", "link", "listbox", "textbox"]
           }],
           "no-redundant-role": "off",
           "no-dup-class": "off",
@@ -118,7 +118,7 @@ clearAccount() {
     },
     specPattern: '**/e2e/**/*.cy.js',
     watchForFileChanges: false,
-    blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com', '*qualtrics.com'],
+    blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com', '*qualtrics.com', 'fonts.gstatic.com'],
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,

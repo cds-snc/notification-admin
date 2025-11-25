@@ -40,7 +40,8 @@
     </h2>
     {% for item in current_service.api_keys %}
         <div class="flex flex-col gap-4">
-          <h3 id="api-key-name" class="text-titlelarge mt-0">
+          {% set unique_id = random_id(4) %}
+          <h3 id="api-key-name_{{ unique_id }}" class="text-titlelarge mt-0">
             {{ item.name }}
           </h3>
           {% if item.expiry_date %}
@@ -54,7 +55,7 @@
           {% endif %}
         </div>
 
-        <dl aria-labelledby="api-key-name" class="space-y-4 mt-4">
+        <dl aria-describedby="api-key-name_{{ unique_id }}" class="space-y-4 mt-4">
           {% if (
             'total_sends' in item and
             'email_sends' in item and
