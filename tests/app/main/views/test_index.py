@@ -639,7 +639,7 @@ def test_confirm_newsletter_subscriber_redirects_to_subscribed_page(client, mock
     response = client.get(f"/newsletter/confirm/{subscriber_id}", follow_redirects=False)
 
     assert response.status_code == 302
-    assert response.location.endswith(f"/newsletter/subscribed?email={email}")
+    assert response.location.endswith(f"/newsletter/subscribed?email={email}&subscriber_id={subscriber_id}")
     mock_confirm.assert_called_once_with(subscriber_id=subscriber_id)
 
 
@@ -684,3 +684,174 @@ def test_newsletter_subscribed_page_accepts_post_request(client):
     response = client.post(f"/newsletter/subscribed?email={email}", data={"language": "en"}, follow_redirects=False)
 
     assert response.status_code == 200
+
+
+def test_send_latest_newsletter_calls_api_and_redirects(client, mocker):
+    """Test that sending latest newsletter calls the API and redirects with flash message"""
+    subscriber_id = "test-subscriber-123"
+    email = "test@cds-snc.ca"
+
+    mock_send_latest = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.send_latest_newsletter",
+        return_value=None,
+    )
+
+    response = client.get(f"/newsletter/send-latest?subscriber_id={subscriber_id}&email={email}", follow_redirects=False)
+
+    assert response.status_code == 302
+    mock_send_latest.assert_called_once_with(subscriber_id)
+    assert response.location.endswith(f"/newsletter/subscribed?email={email}&subscriber_id={subscriber_id}")
+
+
+def test_send_latest_newsletter_without_email_parameter(client, mocker):
+    """Test that sending latest newsletter works without email parameter"""
+    subscriber_id = "test-subscriber-456"
+
+    mock_send_latest = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.send_latest_newsletter",
+        return_value=None,
+    )
+
+    response = client.get(f"/newsletter/send-latest?subscriber_id={subscriber_id}", follow_redirects=True)
+
+    assert response.status_code == 200
+    mock_send_latest.assert_called_once_with(subscriber_id)
+
+
+def test_newsletter_change_language_get_displays_form(client):
+    """Test that GET request to change language displays the form"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-123"
+
+    response = client.get(f"/newsletter/change-language?email={email}&subscriber_id={subscriber_id}")
+
+    assert response.status_code == 200
+    assert email in response.data.decode("utf-8")
+
+
+def test_newsletter_change_language_post_updates_language(client, mocker):
+    """Test that POST request to change language updates the subscriber's language"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-123"
+    new_language = "fr"
+
+    mock_update_language = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
+        return_value={"subscriber": {"id": subscriber_id, "language": new_language}},
+    )
+
+    response = client.post(
+        "/newsletter/change-language",
+        data={"email": email, "subscriber_id": subscriber_id, "action": "change_language", "language": new_language},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    mock_update_language.assert_called_once_with(subscriber_id=subscriber_id, language=new_language)
+    assert response.location.endswith(f"/newsletter/change-language?email={email}&subscriber_id={subscriber_id}")
+
+
+@pytest.mark.parametrize(
+    "language,language_name",
+    [
+        ("en", "English"),
+        ("fr", "French"),
+    ],
+)
+def test_newsletter_change_language_displays_correct_language_name(client, mocker, language, language_name):
+    """Test that changing language displays the correct language name in flash message"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-123"
+
+    mock_update_language = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
+        return_value={"subscriber": {"id": subscriber_id, "language": language}},
+    )
+
+    response = client.post(
+        "/newsletter/change-language",
+        data={"email": email, "subscriber_id": subscriber_id, "action": "change_language", "language": language},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    mock_update_language.assert_called_once_with(subscriber_id=subscriber_id, language=language)
+
+
+def test_newsletter_change_language_get_with_query_params(client):
+    """Test that GET request preserves email and subscriber_id from query parameters"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-456"
+
+    response = client.get(f"/newsletter/change-language?email={email}&subscriber_id={subscriber_id}")
+
+    assert response.status_code == 200
+    page_content = response.data.decode("utf-8")
+    assert email in page_content
+
+
+def test_newsletter_change_language_post_with_form_params(client, mocker):
+    """Test that POST request uses form parameters when query parameters are not present"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-789"
+
+    mock_update_language = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
+        return_value={"subscriber": {"id": subscriber_id, "language": "en"}},
+    )
+
+    response = client.post(
+        "/newsletter/change-language",
+        data={"email": email, "subscriber_id": subscriber_id, "action": "change_language", "language": "en"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    mock_update_language.assert_called_once_with(subscriber_id=subscriber_id, language="en")
+
+
+def test_newsletter_unsubscribe_calls_api(client, mocker):
+    """Test that unsubscribe route calls the API"""
+    email = "test@cds-snc.ca"
+    subscriber_id = "test-subscriber-123"
+
+    mock_unsubscribe = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.unsubscribe",
+        return_value={"status": "unsubscribed"},
+    )
+
+    response = client.get(f"/newsletter/unsubscribe?email={email}&subscriber_id={subscriber_id}")
+
+    assert response.status_code == 200
+    mock_unsubscribe.assert_called_once_with(subscriber_id)
+    assert email in response.data.decode("utf-8")
+
+
+def test_newsletter_unsubscribe_without_subscriber_id(client, mocker):
+    """Test that unsubscribe page displays without calling API when subscriber_id is missing"""
+    email = "test@cds-snc.ca"
+
+    mock_unsubscribe = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.unsubscribe",
+        return_value={"status": "unsubscribed"},
+    )
+
+    response = client.get(f"/newsletter/unsubscribe?email={email}")
+
+    assert response.status_code == 200
+    mock_unsubscribe.assert_not_called()
+
+
+def test_newsletter_unsubscribe_without_email(client, mocker):
+    """Test that unsubscribe page works without email parameter"""
+    subscriber_id = "test-subscriber-456"
+
+    mock_unsubscribe = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.unsubscribe",
+        return_value={"status": "unsubscribed"},
+    )
+
+    response = client.get(f"/newsletter/unsubscribe?subscriber_id={subscriber_id}")
+
+    assert response.status_code == 200
+    mock_unsubscribe.assert_called_once_with(subscriber_id)
