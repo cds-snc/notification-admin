@@ -48,7 +48,7 @@
             ) }}
           </li>
         {% endif %}
-        {% set set_lang_url = lang_url or request.path %}
+        {% set set_lang_url = lang_url or request.full_path.rstrip('?') %}
         <li>
           {{ nav_button(
             href=url_for('main.set_lang') + "?from=" + set_lang_url,
