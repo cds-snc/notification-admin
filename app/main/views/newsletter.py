@@ -46,6 +46,7 @@ def newsletter_subscription():
     return _render_articles_page(response, newsletter_form)
 
 
+# keep support for the old confirm route until we update the email
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 @main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
@@ -124,10 +125,8 @@ def newsletter_unsubscribe(subscriber_id):
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
 
-    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
-    email = subscriber_data["subscriber"]["email"]
-
     # Call API to unsubscribe
-    newsletter_api_client.unsubscribe(subscriber_id)
+    subscriber_data = newsletter_api_client.unsubscribe(subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     return render_template("views/newsletter/unsubscribe.html", email=email)
