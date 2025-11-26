@@ -2,8 +2,7 @@ import RichTextEditor, {
   FORMATTING_OPTIONS,
 } from "../../../../Notify/Admin/Components/RichTextEditor";
 
-// keep helper for Alt+F10 via realPress
-const pressAltF10 = () => cy.realPress(["Alt", "F10"]);
+const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
 
 describe("Toolbar accessibility tests", () => {
   beforeEach(() => {
@@ -12,7 +11,7 @@ describe("Toolbar accessibility tests", () => {
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
     // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().realPress(["Meta", "A"]);
+    RichTextEditor.Components.Editor().realPress([modKey, "A"]);
     RichTextEditor.Components.Editor().type("{selectall}{del}");
   });
 
@@ -176,13 +175,13 @@ describe("Toolbar accessibility tests", () => {
       RichTextEditor.Components.Editor().focus();
 
       // access toolbar
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
       RichTextEditor.Components.H1Button().should("have.focus");
       // Navigate to variable button
       cy.get("body").type("{rightarrow}{rightarrow}");
 
       RichTextEditor.Components.Editor().focus();
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
       RichTextEditor.Components.VariableButton().should("have.focus");
     });
   });
@@ -236,11 +235,11 @@ describe("Toolbar accessibility tests", () => {
         RichTextEditor.Components.Editor()
           .focus()
           .type("Shortcut test{selectall}");
-        cy.realPress(["Meta", "Alt", key]);
+        cy.realPress([modKey, "Alt", key]);
         button().should("have.attr", "aria-pressed", "true");
 
         RichTextEditor.Components.Editor().focus().type("{selectall}");
-        cy.realPress(["Meta", "Alt", key]);
+        cy.realPress([modKey, "Alt", key]);
         button().should("have.attr", "aria-pressed", "false");
       });
     });
@@ -249,7 +248,7 @@ describe("Toolbar accessibility tests", () => {
       RichTextEditor.Components.Editor()
         .focus()
         .type("Link shortcut{selectall}");
-      cy.realPress(["Meta", "k"]);
+      cy.realPress([modKey, "k"]);
       RichTextEditor.Components.LinkModal.Modal()
         .should("exist")
         .and("be.visible");
