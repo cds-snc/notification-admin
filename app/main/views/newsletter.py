@@ -46,6 +46,7 @@ def newsletter_subscription():
     return _render_articles_page(response, newsletter_form)
 
 
+@main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 @main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
