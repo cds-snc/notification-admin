@@ -1,6 +1,7 @@
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 
 from app import get_current_locale
 from app.articles.pages import get_page_by_slug, get_page_by_slug_with_cache
@@ -47,11 +48,16 @@ def newsletter_subscription():
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
     # send an api request with the subscriber_id
-    data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
-    email = data["subscriber"]["email"]
+    try:
+        data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
+        email = data["subscriber"]["email"]
 
-    # redirect to the newsletter_subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+        # redirect to the newsletter_subscribed page
+        return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+    except HTTPError as e:
+        if e.status_code == 404:
+            abort(404)
+        raise e
 
 
 @main.route("/newsletter/subscribed", methods=["GET", "POST"])
