@@ -1,4 +1,5 @@
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
+const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
 
 describe("Link modal tests", () => {
   beforeEach(() => {
@@ -23,7 +24,7 @@ describe("Link modal tests", () => {
         RichTextEditor.Components.Editor()
           .focus()
           .type("hello world{selectall}");
-        cy.realPress(["Meta", "K"]);
+        cy.realPress([modKey, "K"]);
 
         // trigger mouse over
         const button = buttonObj[buttonName]();
