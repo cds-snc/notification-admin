@@ -1,4 +1,4 @@
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_login import current_user
 
@@ -12,6 +12,8 @@ from app.notify_client.newsletter_api_client import newsletter_api_client
 @main.route("/newsletter-subscription", methods=["POST"])
 def newsletter_subscription():
     """Handle newsletter subscription form submissions"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     newsletter_form = NewsletterSubscriptionForm()
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
 
@@ -46,6 +48,9 @@ def newsletter_subscription():
 
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
+
     # send an api request with the subscriber_id
     data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
     email = data["subscriber"]["email"]
@@ -57,6 +62,8 @@ def confirm_newsletter_subscriber(subscriber_id):
 @main.route("/newsletter/subscribed", methods=["GET", "POST"])
 def newsletter_subscribed():
     """Newsletter subscription confirmation page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     language_form = NewsletterLanguageForm()
     # Get parameters from URL query string
     email = request.args.get("email")
@@ -68,6 +75,8 @@ def newsletter_subscribed():
 @main.route("/newsletter/send-latest", methods=["GET"])
 def send_latest_newsletter():
     """Send the latest newsletter to a subscriber"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     email = request.args.get("email")
     subscriber_id = request.args.get("subscriber_id")
 
@@ -84,6 +93,8 @@ def send_latest_newsletter():
 @main.route("/newsletter/change-language", methods=["GET", "POST"])
 def newsletter_change_language():
     """Newsletter subscription management page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     language_form = NewsletterLanguageForm()
     # Get parameters from URL query string (GET) or hidden form fields (POST)
     email = request.args.get("email") or request.form.get("email")
@@ -112,6 +123,8 @@ def newsletter_change_language():
 @main.route("/newsletter/unsubscribe", methods=["GET"])
 def newsletter_unsubscribe():
     """Newsletter unsubscribe confirmation page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     email = request.args.get("email")
     subscriber_id = request.args.get("subscriber_id")
 
