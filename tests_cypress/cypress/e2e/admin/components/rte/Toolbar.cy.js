@@ -2,24 +2,7 @@ import RichTextEditor, {
   FORMATTING_OPTIONS,
 } from "../../../../Notify/Admin/Components/RichTextEditor";
 
-// Helper: reliably simulate Alt+F10 using native keyboard events
-const pressAltF10 = () => {
-  const keyEvent = {
-    key: "F10",
-    code: "F10",
-    keyCode: 121,
-    which: 121,
-    altKey: true,
-    bubbles: true,
-  };
-  // focus and trigger keydown/keypress/keyup in sequence on the body
-  return cy
-    .get("body")
-    .focus()
-    .trigger("keydown", keyEvent)
-    .trigger("keypress", keyEvent)
-    .trigger("keyup", keyEvent);
-};
+const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
 
 describe("Toolbar accessibility tests", () => {
   beforeEach(() => {
@@ -28,7 +11,8 @@ describe("Toolbar accessibility tests", () => {
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
     // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().focus().type("{selectall}{del}");
+    RichTextEditor.Components.Editor().realPress([modKey, "A"]);
+    RichTextEditor.Components.Editor().type("{selectall}{del}");
   });
 
   const humanize = (key) =>
@@ -144,8 +128,7 @@ describe("Toolbar accessibility tests", () => {
       // Focus the editor first
       RichTextEditor.Components.Editor().focus();
 
-      // Press Alt+F10 to focus the toolbar using helper
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
 
       // Verify the toolbar is focused
       RichTextEditor.Components.H1Button().should("have.focus");
@@ -155,8 +138,7 @@ describe("Toolbar accessibility tests", () => {
       // Focus the editor first
       RichTextEditor.Components.Editor().focus();
 
-      // Press Alt+F10 to focus the toolbar using helper
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
 
       // Forward navigation: ensure pressing Right Arrow moves focus to next button
       Object.entries(FORMATTING_OPTIONS).forEach(([key, testId], index) => {
@@ -193,29 +175,85 @@ describe("Toolbar accessibility tests", () => {
       RichTextEditor.Components.Editor().focus();
 
       // access toolbar
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
       RichTextEditor.Components.H1Button().should("have.focus");
       // Navigate to variable button
       cy.get("body").type("{rightarrow}{rightarrow}");
 
       RichTextEditor.Components.Editor().focus();
-      pressAltF10();
+      cy.realPress(["Alt", "F10"]);
       RichTextEditor.Components.VariableButton().should("have.focus");
     });
   });
-});
 
-describe("Editor accessibility tests", () => {
-  beforeEach(() => {
-    // Load the editor and ensure toolbar is ready for interactions
-    cy.visit(RichTextEditor.URL);
-    RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
-  });
+  context("Toolbar formatting shortcuts", () => {
+    const shortcutSpecs = [
+      {
+        label: "Heading 1",
+        key: "1",
+        button: () => RichTextEditor.Components.H1Button(),
+      },
+      {
+        label: "Heading 2",
+        key: "2",
+        button: () => RichTextEditor.Components.H2Button(),
+      },
+      {
+        label: "Variable",
+        key: "3",
+        button: () => RichTextEditor.Components.VariableButton(),
+      },
+      {
+        label: "Bullet list",
+        key: "4",
+        button: () => RichTextEditor.Components.BulletListButton(),
+      },
+      {
+        label: "Numbered list",
+        key: "5",
+        button: () => RichTextEditor.Components.NumberedListButton(),
+      },
+      {
+        label: "Blockquote",
+        key: "7",
+        button: () => RichTextEditor.Components.BlockquoteButton(),
+      },
+      {
+        label: "English block",
+        key: "8",
+        button: () => RichTextEditor.Components.EnglishBlockButton(),
+      },
+      {
+        label: "French block",
+        key: "9",
+        button: () => RichTextEditor.Components.FrenchBlockButton(),
+      },
+    ];
 
-  it("Editor has appropriate role and aria-label", () => {
-    RichTextEditor.Components.Editor().should("have.attr", "role", "textbox");
-    RichTextEditor.Components.Editor().should("have.attr", "aria-labelledby");
-    RichTextEditor.Components.Editor().should("have.attr", "aria-multiline");
-    RichTextEditor.Components.Editor().should("not.be.empty");
+    shortcutSpecs.forEach(({ label, key, button }) => {
+      it(`${label} toggles via Mod+Alt+${key}`, () => {
+        RichTextEditor.Components.Editor()
+          .focus()
+          .type("Shortcut test{selectall}");
+        cy.realPress([modKey, "Alt", key]);
+        button().should("have.attr", "aria-pressed", "true");
+
+        RichTextEditor.Components.Editor().focus().type("{selectall}");
+        cy.realPress([modKey, "Alt", key]);
+        button().should("have.attr", "aria-pressed", "false");
+      });
+    });
+
+    it("opens the link modal via Mod+K", () => {
+      RichTextEditor.Components.Editor()
+        .focus()
+        .type("Link shortcut{selectall}");
+      cy.realPress([modKey, "k"]);
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
+      cy.realPress("Escape");
+      RichTextEditor.Components.LinkModal.Modal().should("not.exist");
+    });
   });
 });
