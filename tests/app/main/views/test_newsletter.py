@@ -408,45 +408,11 @@ def test_newsletter_change_language_post_with_form_params(client, mocker):
 
 def test_newsletter_unsubscribe_calls_api(client, mocker):
     """Test that unsubscribe route calls the API"""
-    email = "test@cds-snc.ca"
     subscriber_id = "test-subscriber-123"
 
-    mocker.patch(
-        "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
-    )
     mock_unsubscribe = mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.unsubscribe",
-        return_value={"status": "unsubscribed"},
-    )
-
-    response = client.get(f"/newsletter/{subscriber_id}/unsubscribe")
-
-    assert response.status_code == 200
-    mock_unsubscribe.assert_called_once_with(subscriber_id)
-    assert email in response.data.decode("utf-8")
-
-
-def test_newsletter_unsubscribe_without_subscriber_id(client, mocker):
-    """Test that unsubscribe page requires subscriber_id in path"""
-    # This route no longer exists without subscriber_id
-    response = client.get("/newsletter//unsubscribe")
-
-    assert response.status_code == 404
-
-
-def test_newsletter_unsubscribe_without_email(client, mocker):
-    """Test that unsubscribe page fetches email from API"""
-    subscriber_id = "test-subscriber-456"
-    email = "test@cds-snc.ca"
-
-    mocker.patch(
-        "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
-    )
-    mock_unsubscribe = mocker.patch(
-        "app.notify_client.newsletter_api_client.newsletter_api_client.unsubscribe",
-        return_value={"status": "unsubscribed"},
+        return_value={"subscriber": {"id": subscriber_id, "language": "en", "email": "abc@cds-snc.ca"}},
     )
 
     response = client.get(f"/newsletter/{subscriber_id}/unsubscribe")
