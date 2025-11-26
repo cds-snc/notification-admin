@@ -1,0 +1,20 @@
+{% extends "admin_template.html" %}
+
+{% set page_title = _('Check your email') %}
+{% block per_page_title %}
+  {{ page_title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<h1 class="heading-large">{{ page_title }}</h1>
+
+<p class="mt-6">
+  {{ _("We've sent an email to <strong>{}</strong>.").format(email) }}
+</p>
+
+<p class="mt-4">
+  {{ _("Use the link in the email to confirm your subscription to the GC Notify newsletter.") }}
+</p>
+
+{% endblock %}
