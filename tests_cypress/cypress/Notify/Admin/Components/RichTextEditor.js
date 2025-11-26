@@ -18,11 +18,12 @@ let Components = {
     Toolbar: () => cy.getByTestId('rte-toolbar'),
     Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]'),
     LiveRegion: () => cy.getByTestId('rte-liveregion'),
+    // toolbar buttons
     ToolbarButtons: () => {
         // loop thtought FORMATTING_OPTIONS and get a list of cypress elements for each and return them
         const buttons = [];
         Object.entries(FORMATTING_OPTIONS).forEach(([key, value]) => {
-            buttons.push({ 
+            buttons.push({
                 id: key,
                 button: cy.getByTestId(value)
             });
@@ -36,11 +37,24 @@ let Components = {
     ItalicButton: () => cy.getByTestId(FORMATTING_OPTIONS.ITALIC),
     BulletListButton: () => cy.getByTestId(FORMATTING_OPTIONS.BULLET_LIST),
     NumberedListButton: () => cy.getByTestId(FORMATTING_OPTIONS.NUMBERED_LIST),
-    // LinkButton: () => cy.getByTestId(FORMATTING_OPTIONS.LINK),
-    // HorizontalRuleButton: () => cy.getByTestId(FORMATTING_OPTIONS.HORIZONTAL_RULE),
+    LinkButton: () => cy.getByTestId('rte-link'),
+    HorizontalRuleButton: () => cy.getByTestId('rte-horizontal_rule'),
     BlockquoteButton: () => cy.getByTestId(FORMATTING_OPTIONS.BLOCKQUOTE),
     EnglishBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.ENGLISH_BLOCK),
     FrenchBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.FRENCH_BLOCK),
+    //link modal buttons
+    LinkModal: {
+        Modal: () => cy.getByTestId('link-modal'),
+        Buttons: [
+            { SaveButton: () => cy.getByTestId('link-modal-save-button') }, 
+            { GoToButton: () => cy.getByTestId('link-modal-go-to-button') },
+            { RemoveButton: () => cy.getByTestId('link-modal-remove-button') },
+        ],
+        URLInput: () => cy.getByTestId('link-modal-input'),
+    },
+
+
+
 };
 
 // Actions users can take on the component
