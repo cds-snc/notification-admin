@@ -39,7 +39,7 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
 
     @set("subscriber-{subscriber_id}")
     def get_subscriber(self, subscriber_id: str):
-        resp = self.post(url=f"/newsletter/find-subscriber?subscriber_id={subscriber_id}")
+        resp = self.get(url=f"/newsletter/find-subscriber?subscriber_id={subscriber_id}")
         return resp
 
 

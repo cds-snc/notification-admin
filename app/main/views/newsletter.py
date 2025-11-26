@@ -44,50 +44,46 @@ def newsletter_subscription():
     return _render_articles_page(response, newsletter_form)
 
 
-@main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
+@main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
     # send an api request with the subscriber_id
-    data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
-    email = data["subscriber"]["email"]
+    newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
 
     # redirect to the newsletter_subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+    return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
 
-@main.route("/newsletter/subscribed", methods=["GET", "POST"])
-def newsletter_subscribed():
+@main.route("/newsletter/<subscriber_id>/subscribed", methods=["GET", "POST"])
+def newsletter_subscribed(subscriber_id):
     """Newsletter subscription confirmation page"""
     language_form = NewsletterLanguageForm()
-    # Get parameters from URL query string
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
+    # Get subscriber data including email
+    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/send-latest", methods=["GET"])
-def send_latest_newsletter():
+@main.route("/newsletter/<subscriber_id>/send-latest", methods=["GET"])
+def send_latest_newsletter(subscriber_id):
     """Send the latest newsletter to a subscriber"""
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
-
     # Call API to send latest newsletter
     newsletter_api_client.send_latest_newsletter(subscriber_id)
 
     # Display success message
-    flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
+    flash(_("We've sent you the most recent newsletter"), category="default_with_tick")
 
     # Redirect back to subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+    return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
 
-@main.route("/newsletter/change-language", methods=["GET", "POST"])
-def newsletter_change_language():
+@main.route("/newsletter/<subscriber_id>/change-language", methods=["GET", "POST"])
+def newsletter_change_language(subscriber_id):
     """Newsletter subscription management page"""
     language_form = NewsletterLanguageForm()
-    # Get parameters from URL query string (GET) or hidden form fields (POST)
-    email = request.args.get("email") or request.form.get("email")
-    subscriber_id = request.args.get("subscriber_id") or request.form.get("subscriber_id")
+    # Get subscriber data including email
+    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -99,24 +95,24 @@ def newsletter_change_language():
             # Display success message with language name
             language_name = _("English") if selected_language == "en" else _("French")
             flash(
-                _("You’ll receive the next newsletter in {}".format(language_name), email=email, language=language_name),
+                _("You'll receive the next newsletter in {}").format(language_name),
                 category="default_with_tick",
             )
 
             # redirect back to the change_language page
-            return redirect(url_for("main.newsletter_change_language", email=email, subscriber_id=subscriber_id))
+            return redirect(url_for("main.newsletter_change_language", subscriber_id=subscriber_id))
 
     return render_template("views/newsletter/change_language.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/unsubscribe", methods=["GET"])
-def newsletter_unsubscribe():
+@main.route("/newsletter/<subscriber_id>/unsubscribe", methods=["GET"])
+def newsletter_unsubscribe(subscriber_id):
     """Newsletter unsubscribe confirmation page"""
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
+    # Get subscriber data including email
+    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
-    if subscriber_id:
-        # Call API to unsubscribe
-        newsletter_api_client.unsubscribe(subscriber_id)
+    # Call API to unsubscribe
+    newsletter_api_client.unsubscribe(subscriber_id)
 
     return render_template("views/newsletter/unsubscribe.html", email=email)
