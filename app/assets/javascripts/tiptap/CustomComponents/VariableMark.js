@@ -73,8 +73,9 @@ const VariableMark = Mark.create({
     return {
       markdown: {
         serialize: {
-          open: "((",
-          close: "))",
+          open: () => "((",
+          close: () => "))",
+          expelEnclosingWhitespace: true,
         },
         parse: {
           setup(markdownit) {
@@ -86,11 +87,9 @@ const VariableMark = Mark.create({
                 const start = state.pos;
                 const max = state.posMax;
 
-                // Check if we have (( at current position
                 if (start + 4 > max) return false;
                 if (state.src.slice(start, start + 2) !== "((") return false;
 
-                // Find the closing ))
                 let pos = start + 2;
                 let found = false;
 
@@ -104,18 +103,21 @@ const VariableMark = Mark.create({
 
                 if (!found) return false;
 
-                // Don't run if in silent mode
-                if (silent) return true;
+                if (silent) {
+                  state.pos = pos + 2;
+                  return true;
+                }
 
-                // Create the token
                 const content = state.src.slice(start + 2, pos);
-                const token = state.push("variable_open", "span", 1);
-                token.attrs = [["data-type", "variable"]];
+                const tokenOpen = state.push("variable_open", "span", 1);
+                tokenOpen.attrs = [["data-type", "variable"]];
+                tokenOpen.markup = "((";
 
-                const textToken = state.push("text", "", 0);
-                textToken.content = content;
+                const tokenText = state.push("text", "", 0);
+                tokenText.content = content;
 
-                state.push("variable_close", "span", -1);
+                const tokenClose = state.push("variable_close", "span", -1);
+                tokenClose.markup = "))";
 
                 state.pos = pos + 2;
                 return true;
@@ -124,8 +126,7 @@ const VariableMark = Mark.create({
 
             // Add renderer rules
             // TODO: come up with markup that allows screen readers to identify these custom blocks
-            markdownit.renderer.rules.variable_open = () =>
-              '<span data-type="variable">';
+            markdownit.renderer.rules.variable_open = () => '<span data-type="variable">';
             markdownit.renderer.rules.variable_close = () => "</span>";
           },
         },
