@@ -1,3 +1,5 @@
+from urllib.parse import urlparse, urlunparse
+
 from flask import current_app, redirect, request, session, url_for
 
 from app.main import main
@@ -23,10 +25,17 @@ def set_lang():
     # remove non-printable characters from url
     url = "".join(ch for ch in url if ch.isprintable())
 
+    # Parse the URL to handle query strings properly
+    parsed = urlparse(url)
+    path = parsed.path
+
     # Swap /en/ and /fr/ in the path if present
-    if url.startswith("/en/"):
-        url = "/fr/" + url[4:]
-    elif url.startswith("/fr/"):
-        url = "/en/" + url[4:]
+    if path.startswith("/en/"):
+        path = "/fr/" + path[4:]
+    elif path.startswith("/fr/"):
+        path = "/en/" + path[4:]
+
+    # Reconstruct URL with original query string preserved
+    url = urlunparse((parsed.scheme, parsed.netloc, path, parsed.params, parsed.query, parsed.fragment))
 
     return redirect(url)
