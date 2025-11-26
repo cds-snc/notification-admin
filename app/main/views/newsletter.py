@@ -9,7 +9,7 @@ from app.main.forms import NewsletterLanguageForm, NewsletterSubscriptionForm
 from app.notify_client.newsletter_api_client import newsletter_api_client
 
 
-@main.route("/newsletter-subscription", methods=["GET", "POST"])
+@main.route("/newsletter/subscribe", methods=["GET", "POST"])
 def newsletter_subscription():
     """Handle newsletter subscription form submissions and display"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":

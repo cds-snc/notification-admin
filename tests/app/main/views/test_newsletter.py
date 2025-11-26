@@ -34,7 +34,7 @@ def test_newsletter_subscription_successful_submission_redirects(client, mocker,
     mocker.patch("app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber")
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@cds-snc.ca",
             "language": "en",
@@ -58,7 +58,7 @@ def test_newsletter_subscription_missing_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "",
             "language": "en",
@@ -83,7 +83,7 @@ def test_newsletter_subscription_non_gov_email_shows_error(client, mocker, mock_
     mocker.patch("app.main.validators.is_gov_user", return_value=False)
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@gmail.com",
             "language": "en",
@@ -108,7 +108,7 @@ def test_newsletter_subscription_missing_language_shows_error(client, mocker, mo
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@cds-snc.ca",
             "language": "",
@@ -133,7 +133,7 @@ def test_newsletter_subscription_preserves_language_context(client, mocker, mock
     mocker.patch("app.main.validators.is_gov_user", return_value=True)
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "",
             "language": "en",
@@ -163,7 +163,7 @@ def test_newsletter_subscription_successful_submission(client, mocker, mock_call
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "test@cds-snc.ca",
             "language": language,
@@ -437,7 +437,7 @@ def test_newsletter_subscription_invalid_email(client, mocker, mock_calls_out_to
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "invalid-email",
             "language": "en",
@@ -466,7 +466,7 @@ def test_newsletter_subscription_empty_email(client, mocker, mock_calls_out_to_G
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "",
             "language": "en",
@@ -493,7 +493,7 @@ def test_newsletter_subscription_missing_language(client, mocker, mock_calls_out
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "test@cds-snc.ca",
         },
@@ -519,7 +519,7 @@ def test_newsletter_subscription_non_gov_email(client, mocker, mock_calls_out_to
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "test@gmail.com",
             "language": "en",
@@ -546,7 +546,7 @@ def test_newsletter_subscription_strips_whitespace(client, mocker, mock_calls_ou
     )
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "  test@cds-snc.ca  ",
             "language": "en",
@@ -561,8 +561,8 @@ def test_newsletter_subscription_strips_whitespace(client, mocker, mock_calls_ou
 
 
 def test_newsletter_subscription_get_displays_form(client):
-    """Test that GET request to /newsletter-subscription displays the subscription form"""
-    response = client.get("/newsletter-subscription")
+    """Test that GET request to /newsletter/subscribe displays the subscription form"""
+    response = client.get("/newsletter/subscribe")
 
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -590,7 +590,7 @@ def test_newsletter_subscription_from_standalone_redirects_to_check_email(client
     mocker.patch("app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber")
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@cds-snc.ca",
             "language": "en",
@@ -615,7 +615,7 @@ def test_newsletter_subscription_from_home_redirects_to_home(client, mocker, moc
     mocker.patch("app.notify_client.newsletter_api_client.newsletter_api_client.create_unconfirmed_subscriber")
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@cds-snc.ca",
             "language": "en",
@@ -633,7 +633,7 @@ def test_newsletter_subscription_validation_error_from_standalone_renders_standa
     mocker.patch("app.main.validators.is_gov_user", return_value=False)
 
     response = client.post(
-        "/newsletter-subscription",
+        "/newsletter/subscribe",
         data={
             "email": "user@gmail.com",
             "language": "en",
@@ -677,7 +677,7 @@ def test_newsletter_check_email_without_email_redirects(client):
     response = client.get("/newsletter/check-email", follow_redirects=False)
 
     assert response.status_code == 302
-    assert response.location == "/newsletter-subscription"
+    assert response.location == "/newsletter/subscribe"
 
 
 def test_unsubscribe_page_has_resubscribe_button(client, mocker):
@@ -696,6 +696,6 @@ def test_unsubscribe_page_has_resubscribe_button(client, mocker):
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
     # Check for resubscribe link
-    resubscribe_link = page.find("a", href="/newsletter-subscription")
+    resubscribe_link = page.find("a", href="/newsletter/subscribe")
     assert resubscribe_link is not None
     assert "Resubscribe" in resubscribe_link.text
