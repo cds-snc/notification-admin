@@ -14,13 +14,11 @@
 
 <div class="mt-8">
   {% call form_wrapper(
-    action=url_for('main.newsletter_change_language'),
+    action=url_for('main.newsletter_change_language', subscriber_id=subscriber_id),
     method="post",
     autocomplete=False
   ) %}
     {{ form.csrf_token }}
-    <input type="hidden" name="email" value="{{ email }}">
-    <input type="hidden" name="subscriber_id" value="{{ subscriber_id }}">
     
     <div class="form-group">
       {{ radios(form.language) }}
