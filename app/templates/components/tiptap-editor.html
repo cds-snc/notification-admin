@@ -1,4 +1,4 @@
-{% macro tiptap_editor(editorId, labelId, initialContent) %}
+{% macro tiptap_editor(editorId, labelId, initialContent, lang=None) %}
     {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
         {% if not editorId or not labelId %}
             <p class="text-red-300 mt-6 mb-6">
@@ -21,14 +21,14 @@
                 script.onload = function() {
                     window.tiptapLoaded = true;
                     if (window.Tiptap) {
-                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`);
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`, '{{ current_lang }}');
                     }
                 };
                 document.head.appendChild(script);
             } else {
                 // TipTap already loaded, initialize immediately
                 if (window.Tiptap) {
-                    Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`);
+                    Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`, '{{ current_lang }}');
                 }
             }
         </script>
