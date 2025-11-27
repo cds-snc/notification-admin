@@ -1,0 +1,225 @@
+{
+  "total_count": 78,
+  "generated_date": "2025-11-27",
+  "description": "Repositories in cds-snc organization with export_github_data.yml workflow",
+  "repositories": [
+    {
+      "name": "gcds-components",
+      "full_name": "cds-snc/gcds-components",
+      "description": "GC Design System Components is a monorepo managing the web components of the GC Design System.",
+      "html_url": "https://github.com/cds-snc/gcds-components",
+      "private": false
+    },
+    {
+      "name": "terraform-plan",
+      "full_name": "cds-snc/terraform-plan",
+      "description": "GitHub Action to run Terraform plan and add a comment with the changes.",
+      "html_url": "https://github.com/cds-snc/terraform-plan",
+      "private": false
+    },
+    {
+      "name": "cds-website-terraform",
+      "full_name": "cds-snc/cds-website-terraform",
+      "description": "Terraform for Website infrastructure (Strapi)",
+      "html_url": "https://github.com/cds-snc/cds-website-terraform",
+      "private": false
+    },
+    {
+      "name": "gc-notification-github-action",
+      "full_name": "cds-snc/gc-notification-github-action",
+      "description": "Sends messages from a GitHub action using GC Notify (or any other Notify fork)",
+      "html_url": "https://github.com/cds-snc/gc-notification-github-action",
+      "private": false
+    },
+    {
+      "name": "site-reliability-engineering-public",
+      "full_name": "cds-snc/site-reliability-engineering-public",
+      "description": "Public releases of CDS site reliability engineering practices",
+      "html_url": "https://github.com/cds-snc/site-reliability-engineering-public",
+      "private": false
+    },
+    {
+      "name": "simplify-privacy-statements-V2",
+      "full_name": "cds-snc/simplify-privacy-statements-V2",
+      "description": "starter-app repo based version of privacy app.",
+      "html_url": "https://github.com/cds-snc/simplify-privacy-statements-V2",
+      "private": false
+    },
+    {
+      "name": "terraform-tools-setup",
+      "full_name": "cds-snc/terraform-tools-setup",
+      "description": "GitHub action to install all the required Terraform tooling needed at CDS",
+      "html_url": "https://github.com/cds-snc/terraform-tools-setup",
+      "private": false
+    },
+    {
+      "name": "terraform-demo",
+      "full_name": "cds-snc/terraform-demo",
+      "description": "Terraform 101 Workshop Docs + Boilerplate",
+      "html_url": "https://github.com/cds-snc/terraform-demo",
+      "private": false
+    },
+    {
+      "name": "gcds-examples",
+      "full_name": "cds-snc/gcds-examples",
+      "description": "GC Design System repository containing code examples",
+      "html_url": "https://github.com/cds-snc/gcds-examples",
+      "private": false
+    },
+    {
+      "name": "threat-modeling-tool",
+      "full_name": "cds-snc/threat-modeling-tool",
+      "description": "CDS Threat Modeling Tool MVP",
+      "html_url": "https://github.com/cds-snc/threat-modeling-tool",
+      "private": false
+    },
+    {
+      "name": "gc-simple-dictionary",
+      "full_name": "cds-snc/gc-simple-dictionary",
+      "description": "A simple web page with an autocomplete feature to lookup all the acronyms you can stumble on at the Government of Canada",
+      "html_url": "https://github.com/cds-snc/gc-simple-dictionary",
+      "private": false
+    },
+    {
+      "name": "ipv4-geolocate-webservice",
+      "full_name": "cds-snc/ipv4-geolocate-webservice",
+      "description": "The purpose of this webservice is to translate IP v4 (ex. 23.233.63.149) into a geographic location.",
+      "html_url": "https://github.com/cds-snc/ipv4-geolocate-webservice",
+      "private": false
+    },
+    {
+      "name": "smtp-proxy-for-notify",
+      "full_name": "cds-snc/smtp-proxy-for-notify",
+      "description": "SMTP proxy for Notify",
+      "html_url": "https://github.com/cds-snc/smtp-proxy-for-notify",
+      "private": false
+    },
+    {
+      "name": "sentinel-forward-data-action",
+      "full_name": "cds-snc/sentinel-forward-data-action",
+      "description": "A github action that forwards data from a previous action to Sentinel",
+      "html_url": "https://github.com/cds-snc/sentinel-forward-data-action",
+      "private": false
+    },
+    {
+      "name": "notification-api",
+      "full_name": "cds-snc/notification-api",
+      "description": "GC Notify API | GC Notification API",
+      "html_url": "https://github.com/cds-snc/notification-api",
+      "private": false
+    },
+    {
+      "name": "terraform-modules",
+      "full_name": "cds-snc/terraform-modules",
+      "description": "Terraform modules for AWS",
+      "html_url": "https://github.com/cds-snc/terraform-modules",
+      "private": false
+    },
+    {
+      "name": "dns",
+      "full_name": "cds-snc/dns",
+      "description": "DNS Configuration for domains managed by CDS",
+      "html_url": "https://github.com/cds-snc/dns",
+      "private": false
+    },
+    {
+      "name": "secret",
+      "full_name": "cds-snc/secret",
+      "description": "Share Secrets securily",
+      "html_url": "https://github.com/cds-snc/secret",
+      "private": false
+    },
+    {
+      "name": "forms-terraform",
+      "full_name": "cds-snc/forms-terraform",
+      "description": "Infrastructure as Code for the GC Forms environment",
+      "html_url": "https://github.com/cds-snc/forms-terraform",
+      "private": false
+    },
+    {
+      "name": "gcds-docs",
+      "full_name": "cds-snc/gcds-docs",
+      "description": "GC Design System Docs is a documentation website for GC Design System.",
+      "html_url": "https://github.com/cds-snc/gcds-docs",
+      "private": false
+    },
+    {
+      "name": "gcds-tokens",
+      "full_name": "cds-snc/gcds-tokens",
+      "description": "GC Design System Tokens are the smallest building blocks of GC Design System",
+      "html_url": "https://github.com/cds-snc/gcds-tokens",
+      "private": false
+    },
+    {
+      "name": "github-secret-scanning",
+      "full_name": "cds-snc/github-secret-scanning",
+      "description": "GitHub secret scanning alert service",
+      "html_url": "https://github.com/cds-snc/github-secret-scanning",
+      "private": false
+    },
+    {
+      "name": "gcds-css-shortcuts",
+      "full_name": "cds-snc/gcds-css-shortcuts",
+      "description": "GC Design System CSS Shortcuts is a CSS utility framework built to match GC Design System (GCDS) styles",
+      "html_url": "https://github.com/cds-snc/gcds-css-shortcuts",
+      "private": false
+    },
+    {
+      "name": "security-tools",
+      "full_name": "cds-snc/security-tools",
+      "description": "This repository will contain various tools used by CDS to ensure the confidentiality, integrity and availability of CDS applications and services",
+      "html_url": "https://github.com/cds-snc/security-tools",
+      "private": false
+    },
+    {
+      "name": "gc-organisations",
+      "full_name": "cds-snc/gc-organisations",
+      "description": "An exported list of Government of Canada departments, agencies, crown corporations and provincial governments",
+      "html_url": "https://github.com/cds-snc/gc-organisations",
+      "private": false
+    },
+    {
+      "name": "scan-files",
+      "full_name": "cds-snc/scan-files",
+      "description": "File scanning for CDS Platform products",
+      "html_url": "https://github.com/cds-snc/scan-files",
+      "private": false
+    },
+    {
+      "name": "cds-superset",
+      "full_name": "cds-snc/cds-superset",
+      "description": "AWS infrastructure and custom config used to run CDS's instance of Superset.",
+      "html_url": "https://github.com/cds-snc/cds-superset",
+      "private": false
+    },
+    {
+      "name": "forms-api",
+      "full_name": "cds-snc/forms-api",
+      "description": "GC Forms API",
+      "html_url": "https://github.com/cds-snc/forms-api",
+      "private": false
+    },
+    {
+      "name": "data-lake",
+      "full_name": "cds-snc/data-lake",
+      "description": "Infrastructure for the Platform Data Lake",
+      "html_url": "https://github.com/cds-snc/data-lake",
+      "private": false
+    },
+    {
+      "name": "github-repository-metadata-exporter",
+      "full_name": "cds-snc/github-repository-metadata-exporter",
+      "description": "\ud83d\udcef Exports GitHub repository metadata",
+      "html_url": "https://github.com/cds-snc/github-repository-metadata-exporter",
+      "private": false
+    },
+    {
+      "name": "notification-admin",
+      "full_name": "cds-snc/notification-admin",
+      "description": "GC Notify Admin | GC Notification Admin",
+      "html_url": "https://github.com/cds-snc/notification-admin",
+      "private": false
+    }
+  ],
+  "note": "This list includes 31 repositories displayed from the total of 78 repositories found. To get the complete list, you can use the GitHub Code Search API with the query: 'org:cds-snc filename:export_github_data.yml'"
+}

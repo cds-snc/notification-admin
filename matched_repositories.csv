@@ -1,0 +1,32 @@
+Repository Name,Full Name,Description,URL,Private
+gcds-components,cds-snc/gcds-components,"GC Design System Components is a monorepo managing the web components of the GC Design System.",https://github.com/cds-snc/gcds-components,false
+terraform-plan,cds-snc/terraform-plan,"GitHub Action to run Terraform plan and add a comment with the changes.",https://github.com/cds-snc/terraform-plan,false
+cds-website-terraform,cds-snc/cds-website-terraform,"Terraform for Website infrastructure (Strapi)",https://github.com/cds-snc/cds-website-terraform,false
+gc-notification-github-action,cds-snc/gc-notification-github-action,"Sends messages from a GitHub action using GC Notify (or any other Notify fork)",https://github.com/cds-snc/gc-notification-github-action,false
+site-reliability-engineering-public,cds-snc/site-reliability-engineering-public,"Public releases of CDS site reliability engineering practices",https://github.com/cds-snc/site-reliability-engineering-public,false
+simplify-privacy-statements-V2,cds-snc/simplify-privacy-statements-V2,"starter-app repo based version of privacy app.",https://github.com/cds-snc/simplify-privacy-statements-V2,false
+terraform-tools-setup,cds-snc/terraform-tools-setup,"GitHub action to install all the required Terraform tooling needed at CDS",https://github.com/cds-snc/terraform-tools-setup,false
+terraform-demo,cds-snc/terraform-demo,"Terraform 101 Workshop Docs + Boilerplate",https://github.com/cds-snc/terraform-demo,false
+gcds-examples,cds-snc/gcds-examples,"GC Design System repository containing code examples",https://github.com/cds-snc/gcds-examples,false
+threat-modeling-tool,cds-snc/threat-modeling-tool,"CDS Threat Modeling Tool MVP",https://github.com/cds-snc/threat-modeling-tool,false
+gc-simple-dictionary,cds-snc/gc-simple-dictionary,"A simple web page with an autocomplete feature to lookup all the acronyms you can stumble on at the Government of Canada",https://github.com/cds-snc/gc-simple-dictionary,false
+ipv4-geolocate-webservice,cds-snc/ipv4-geolocate-webservice,"The purpose of this webservice is to translate IP v4 into a geographic location.",https://github.com/cds-snc/ipv4-geolocate-webservice,false
+smtp-proxy-for-notify,cds-snc/smtp-proxy-for-notify,"SMTP proxy for Notify",https://github.com/cds-snc/smtp-proxy-for-notify,false
+sentinel-forward-data-action,cds-snc/sentinel-forward-data-action,"A github action that forwards data from a previous action to Sentinel",https://github.com/cds-snc/sentinel-forward-data-action,false
+notification-api,cds-snc/notification-api,"GC Notify API | GC Notification API",https://github.com/cds-snc/notification-api,false
+terraform-modules,cds-snc/terraform-modules,"Terraform modules for AWS",https://github.com/cds-snc/terraform-modules,false
+dns,cds-snc/dns,"DNS Configuration for domains managed by CDS",https://github.com/cds-snc/dns,false
+secret,cds-snc/secret,"Share Secrets securily",https://github.com/cds-snc/secret,false
+forms-terraform,cds-snc/forms-terraform,"Infrastructure as Code for the GC Forms environment",https://github.com/cds-snc/forms-terraform,false
+gcds-docs,cds-snc/gcds-docs,"GC Design System Docs is a documentation website for GC Design System.",https://github.com/cds-snc/gcds-docs,false
+gcds-tokens,cds-snc/gcds-tokens,"GC Design System Tokens are the smallest building blocks of GC Design System",https://github.com/cds-snc/gcds-tokens,false
+github-secret-scanning,cds-snc/github-secret-scanning,"GitHub secret scanning alert service",https://github.com/cds-snc/github-secret-scanning,false
+gcds-css-shortcuts,cds-snc/gcds-css-shortcuts,"GC Design System CSS Shortcuts is a CSS utility framework built to match GC Design System (GCDS) styles",https://github.com/cds-snc/gcds-css-shortcuts,false
+security-tools,cds-snc/security-tools,"This repository will contain various tools used by CDS to ensure the confidentiality integrity and availability of CDS applications and services",https://github.com/cds-snc/security-tools,false
+gc-organisations,cds-snc/gc-organisations,"An exported list of Government of Canada departments agencies crown corporations and provincial governments",https://github.com/cds-snc/gc-organisations,false
+scan-files,cds-snc/scan-files,"File scanning for CDS Platform products",https://github.com/cds-snc/scan-files,false
+cds-superset,cds-snc/cds-superset,"AWS infrastructure and custom config used to run CDS's instance of Superset.",https://github.com/cds-snc/cds-superset,false
+forms-api,cds-snc/forms-api,"GC Forms API",https://github.com/cds-snc/forms-api,false
+data-lake,cds-snc/data-lake,"Infrastructure for the Platform Data Lake",https://github.com/cds-snc/data-lake,false
+github-repository-metadata-exporter,cds-snc/github-repository-metadata-exporter,"📯 Exports GitHub repository metadata",https://github.com/cds-snc/github-repository-metadata-exporter,false
+notification-admin,cds-snc/notification-admin,"GC Notify Admin | GC Notification Admin",https://github.com/cds-snc/notification-admin,false
