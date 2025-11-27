@@ -16,14 +16,14 @@ sentinel-forward-data-action,cds-snc/sentinel-forward-data-action,"A github acti
 notification-api,cds-snc/notification-api,"GC Notify API | GC Notification API",https://github.com/cds-snc/notification-api,false
 terraform-modules,cds-snc/terraform-modules,"Terraform modules for AWS",https://github.com/cds-snc/terraform-modules,false
 dns,cds-snc/dns,"DNS Configuration for domains managed by CDS",https://github.com/cds-snc/dns,false
-secret,cds-snc/secret,"Share Secrets securily",https://github.com/cds-snc/secret,false
+secret,cds-snc/secret,"Share Secrets securely",https://github.com/cds-snc/secret,false
 forms-terraform,cds-snc/forms-terraform,"Infrastructure as Code for the GC Forms environment",https://github.com/cds-snc/forms-terraform,false
 gcds-docs,cds-snc/gcds-docs,"GC Design System Docs is a documentation website for GC Design System.",https://github.com/cds-snc/gcds-docs,false
 gcds-tokens,cds-snc/gcds-tokens,"GC Design System Tokens are the smallest building blocks of GC Design System",https://github.com/cds-snc/gcds-tokens,false
 github-secret-scanning,cds-snc/github-secret-scanning,"GitHub secret scanning alert service",https://github.com/cds-snc/github-secret-scanning,false
 gcds-css-shortcuts,cds-snc/gcds-css-shortcuts,"GC Design System CSS Shortcuts is a CSS utility framework built to match GC Design System (GCDS) styles",https://github.com/cds-snc/gcds-css-shortcuts,false
-security-tools,cds-snc/security-tools,"This repository will contain various tools used by CDS to ensure the confidentiality integrity and availability of CDS applications and services",https://github.com/cds-snc/security-tools,false
-gc-organisations,cds-snc/gc-organisations,"An exported list of Government of Canada departments agencies crown corporations and provincial governments",https://github.com/cds-snc/gc-organisations,false
+security-tools,cds-snc/security-tools,"This repository will contain various tools used by CDS to ensure the confidentiality, integrity and availability of CDS applications and services",https://github.com/cds-snc/security-tools,false
+gc-organisations,cds-snc/gc-organisations,"An exported list of Government of Canada departments, agencies, crown corporations and provincial governments",https://github.com/cds-snc/gc-organisations,false
 scan-files,cds-snc/scan-files,"File scanning for CDS Platform products",https://github.com/cds-snc/scan-files,false
 cds-superset,cds-snc/cds-superset,"AWS infrastructure and custom config used to run CDS's instance of Superset.",https://github.com/cds-snc/cds-superset,false
 forms-api,cds-snc/forms-api,"GC Forms API",https://github.com/cds-snc/forms-api,false

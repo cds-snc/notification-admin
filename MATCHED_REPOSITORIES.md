@@ -24,7 +24,7 @@ This document lists all repositories in the `cds-snc` organization that have the
 15. [notification-api](https://github.com/cds-snc/notification-api) - GC Notify API | GC Notification API
 16. [terraform-modules](https://github.com/cds-snc/terraform-modules) - Terraform modules for AWS
 17. [dns](https://github.com/cds-snc/dns) - DNS Configuration for domains managed by CDS
-18. [secret](https://github.com/cds-snc/secret) - Share Secrets securily
+18. [secret](https://github.com/cds-snc/secret) - Share Secrets securely
 19. [forms-terraform](https://github.com/cds-snc/forms-terraform) - Infrastructure as Code for the GC Forms environment
 20. [gcds-docs](https://github.com/cds-snc/gcds-docs) - GC Design System Docs is a documentation website for GC Design System.
 21. [gcds-tokens](https://github.com/cds-snc/gcds-tokens) - GC Design System Tokens are the smallest building blocks of GC Design System

@@ -125,7 +125,7 @@
     {
       "name": "secret",
       "full_name": "cds-snc/secret",
-      "description": "Share Secrets securily",
+      "description": "Share Secrets securely",
       "html_url": "https://github.com/cds-snc/secret",
       "private": false
     },
