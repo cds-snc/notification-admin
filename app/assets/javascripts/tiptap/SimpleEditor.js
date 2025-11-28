@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -28,6 +28,27 @@ import MenubarShortcut from "./MenubarShortcut";
 const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [markdownValue, setMarkdownValue] = useState(initialContent || "");
+  const viewToggleLabels = {
+    en: { markdown: "Edit markdown", rte: "Return to rich text" },
+    fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
+  };
+  const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
+  const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const updateHiddenInputValue = useCallback(
+    (value = "") => {
+      if (!inputId) return;
+      const hiddenInput = document.getElementById(inputId);
+      if (!hiddenInput) return;
+
+      hiddenInput.value = value;
+      const event = new Event("change", { bubbles: true });
+      hiddenInput.dispatchEvent(event);
+    },
+    [inputId],
+  );
 
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
@@ -302,48 +323,91 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
   // Set initial content as Markdown after editor is created
   React.useEffect(() => {
-    if (editor) {
-      editor.commands.setContent(initialContent);
-    }
-  }, [editor]);
+    if (!editor) return;
+    editor.commands.setContent(initialContent);
+    setMarkdownValue(initialContent || "");
+  }, [editor, initialContent]);
 
   // Update hidden input field when content changes
   React.useEffect(() => {
-    if (editor && inputId) {
-      const updateHiddenInput = () => {
-        const hiddenInput = document.getElementById(inputId);
-        if (hiddenInput) {
-          try {
-            const markdown = editor.storage.markdown.getMarkdown();
-            hiddenInput.value = markdown;
+    if (!editor) return;
+    const updateHiddenInput = () => {
+      try {
+        const markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        updateHiddenInputValue(markdown);
+      } catch (error) {
+        console.error("Error getting markdown:", error);
+      }
+    };
 
-            // Trigger change event for form validation
-            const event = new Event("change", { bubbles: true });
-            hiddenInput.dispatchEvent(event);
-          } catch (error) {
-            console.error("Error getting markdown:", error);
-          }
-        }
-      };
+    editor.on("update", updateHiddenInput);
+    updateHiddenInput();
 
-      // Listen for content changes
-      editor.on("update", updateHiddenInput);
+    return () => editor.off("update", updateHiddenInput);
+  }, [editor, updateHiddenInputValue]);
 
-      // Initial update
-      updateHiddenInput();
-
-      // Cleanup
-      return () => {
-        editor.off("update", updateHiddenInput);
-      };
+  React.useEffect(() => {
+    if (isMarkdownView) {
+      updateHiddenInputValue(markdownValue);
     }
-  }, [editor, inputId]);
+  }, [isMarkdownView, markdownValue, updateHiddenInputValue]);
+
+  const toggleViewMode = () => {
+    if (!editor) return;
+
+    if (isMarkdownView) {
+      const processedMarkdown = (markdownValue || "").replace(
+        /\(\(([^)]+)\)\)/g,
+        '<span data-type="variable">$1</span>',
+      );
+      editor.commands.setContent(processedMarkdown);
+      editor.commands.focus();
+    } else {
+      const markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      setMarkdownValue(markdown);
+    }
+
+    setIsMarkdownView((prev) => !prev);
+  };
+
+  const onMarkdownKeyDown = (event) => {
+    console.log('onMarkdownKeyDown:', { key: event.key, altKey: event.altKey });
+    if (event.altKey && event.key === "F10") {
+      console.log("Markdown view: Alt+F10 pressed, requesting focus back to RTE");
+      event.preventDefault();
+      event.stopPropagation();
+
+      const toolbar = editor?.rteToolbar;
+      if (toolbar) {
+        toolbar.dispatchEvent(new CustomEvent("rte-request-focus", { bubbles: true }));
+      }
+    }
+  };
 
   return (
     <div className="editor-wrapper">
-      <MenuBar editor={editor} openLinkModal={openLinkModal} lang={lang} />
+      <MenuBar
+        editor={editor}
+        openLinkModal={openLinkModal}
+        lang={lang}
+        onToggleMarkdownView={toggleViewMode}
+        isMarkdownView={isMarkdownView}
+        toggleLabel={toggleLabel}
+      />
       <div className="editor-content">
-        <EditorContent editor={editor} data-testid="rte-editor" />
+        {isMarkdownView ? (
+          <textarea
+            value={markdownValue}
+            onChange={(event) => setMarkdownValue(event.target.value)}
+            onKeyDown={onMarkdownKeyDown}
+            className="markdown-view"
+            aria-label={viewLabel.markdown}
+            spellCheck="false"
+            data-testid="markdown-editor"
+          ></textarea>
+        ) : (
+          <EditorContent editor={editor} data-testid="rte-editor" />
+        )}
       </div>
       <LinkModal
         editor={editor}
