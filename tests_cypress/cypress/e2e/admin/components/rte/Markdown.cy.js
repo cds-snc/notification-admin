@@ -26,6 +26,8 @@ describe("Markdown entering and pasting tests", () => {
       cy.realType(before, { delay: 1, pressDelay: 0 });
 
       RichTextEditor.Components.ViewMarkdownButton().click();
+      // small stabilization pause to avoid reading the textarea mid-update in CI
+      cy.wait(150);
       // ensure markdown matches expected
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
 
@@ -42,7 +44,8 @@ describe("Markdown entering and pasting tests", () => {
 
       // switch back to markdown and ensure content is still correct
       RichTextEditor.Components.ViewMarkdownButton().click();
-      RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+      cy.wait(150);
+        RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
     });
   });
 });
