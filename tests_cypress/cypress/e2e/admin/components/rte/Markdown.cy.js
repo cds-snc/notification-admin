@@ -10,12 +10,17 @@ describe("Markdown entering and pasting tests", () => {
     cy.visit(RichTextEditor.URL);
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().realPress(["Meta", "A"]);
-    RichTextEditor.Components.Editor().type("{selectall}{del}");
-
-    // ensure editor has no text
+    // Wait for initial content to load, then clear it
+    // The editor initializes asynchronously with the default content
+    RichTextEditor.Components.Editor().should("not.be.empty");
+    
+    // Clear using keyboard commands (Meta+A, Delete)
+    RichTextEditor.Components.Editor().focus().realPress(["Meta", "A"]);
+    RichTextEditor.Components.Editor().realPress("Backspace");
+    
+    // Wait for editor to be truly empty and stay empty
     RichTextEditor.Components.Editor().should("have.text", "");
+    cy.wait(200); // Give the editor time to stabilize after clearing
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
@@ -24,12 +29,8 @@ describe("Markdown entering and pasting tests", () => {
 
       // enter markdown
       cy.realType(before, { delay: 1, pressDelay: 0 });
-      // allow the editor a short time to process typed input in CI
-      cy.wait(120);
 
       RichTextEditor.Components.ViewMarkdownButton().click();
-      // small stabilization pause to avoid reading the textarea mid-update in CI
-      cy.wait(150);
       // ensure markdown matches expected
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
 
@@ -46,8 +47,7 @@ describe("Markdown entering and pasting tests", () => {
 
       // switch back to markdown and ensure content is still correct
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.wait(150);
-        RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+      RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
     });
   });
 });
