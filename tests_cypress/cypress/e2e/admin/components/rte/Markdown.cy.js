@@ -10,21 +10,22 @@ describe("Markdown entering and pasting tests", () => {
     cy.visit(RichTextEditor.URL);
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Wait for initial content to load, then clear it
-    // The editor initializes asynchronously with the default content
-    RichTextEditor.Components.Editor().should("not.be.empty");
+    // Wait for the editor to be fully initialized with its default content
+    // Check that it contains the expected storybook default text
+    RichTextEditor.Components.Editor().should("contain.text", "Welcome to the Editor");
     
-    // Clear using keyboard commands (Meta+A, Delete)
+    // Now clear it - the editor should be stable at this point
     RichTextEditor.Components.Editor().focus().realPress(["Meta", "A"]);
     RichTextEditor.Components.Editor().realPress("Backspace");
     
-    // Wait for editor to be truly empty and stay empty
+    // Verify it's empty and stays empty
     RichTextEditor.Components.Editor().should("have.text", "");
-    cy.wait(200); // Give the editor time to stabilize after clearing
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
+      // Ensure editor is ready and empty before each test iteration
+      RichTextEditor.Components.Editor().should("have.text", "");
       RichTextEditor.Components.Editor().focus();
 
       // enter markdown

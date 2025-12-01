@@ -70,7 +70,9 @@ in an ((french_block))
 
     },
     TEXT_STYLES: {
-        before: `Some **bold** and _italic_ text
+        before: `> # 3. TEXT STYLES
+
+Some **bold** and _italic_ text
 
 - Some **bold** and _italic_ text in a bullet list
 
@@ -85,7 +87,9 @@ in an ((french_block))
 [[en]]# Some **bold** and _italic_ text in an english block
 
 [[fr]]# Some **bold** and _italic_ text in a french block`,
-        expected: `Some **bold** and *italic* text
+        expected: `> # 3. TEXT STYLES
+
+Some **bold** and *italic* text
 
 - Some **bold** and *italic* text in a bullet list
 
