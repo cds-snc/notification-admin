@@ -405,6 +405,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           <textarea
             value={markdownValue}
             onChange={(event) => setMarkdownValue(event.target.value)}
+            onKeyDown={onMarkdownKeyDown}
             className="markdown-view"
             aria-label={viewLabel.markdown}
             spellCheck="false"

@@ -11,14 +11,13 @@ const MarkdownLink = Link.extend({
       new InputRule({
         find: /\[([^\]]+)\]\(([^)]+)\)$/,
         handler: ({ state, range, match }) => {
-          const { tr, schema } = state;
+          const { tr } = state;
           const start = range.from;
           const end = range.to;
           const href = match[2];
 
           // Find the actual content between [ and ] in the document
           // This may have marks already applied (like variable marks)
-          const $start = state.doc.resolve(start);
           const textStart = start + 1; // After the [
           const textEnd = start + 1 + match[1].length; // Before the ]
 
