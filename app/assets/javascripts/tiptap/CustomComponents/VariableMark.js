@@ -1,4 +1,4 @@
-import { Mark } from "@tiptap/core";
+import { Mark, markInputRule } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -31,6 +31,15 @@ const VariableMark = Mark.create({
         ...HTMLAttributes,
       },
       0,
+    ];
+  },
+
+  addInputRules() {
+    return [
+      markInputRule({
+        find: /\(\(([^)]+)\)\)$/,
+        type: this.type,
+      }),
     ];
   },
 
@@ -126,7 +135,8 @@ const VariableMark = Mark.create({
 
             // Add renderer rules
             // TODO: come up with markup that allows screen readers to identify these custom blocks
-            markdownit.renderer.rules.variable_open = () => '<span data-type="variable">';
+            markdownit.renderer.rules.variable_open = () =>
+              '<span data-type="variable">';
             markdownit.renderer.rules.variable_close = () => "</span>";
           },
         },
