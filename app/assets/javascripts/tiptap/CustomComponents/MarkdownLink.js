@@ -21,16 +21,16 @@ const MarkdownLink = Link.extend({
           const $start = state.doc.resolve(start);
           const textStart = start + 1; // After the [
           const textEnd = start + 1 + match[1].length; // Before the ]
-          
+
           // Get the slice of content that represents the link text
           const slice = state.doc.slice(textStart, textEnd);
-          
+
           // Delete the entire markdown syntax [text](url)
           tr.delete(start, end);
-          
+
           // Insert the slice content back (preserving any marks like variables)
           tr.insert(start, slice.content);
-          
+
           // Add the link mark to the inserted content
           const linkMark = this.type.create({ href });
           tr.addMark(start, start + slice.content.size, linkMark);

@@ -361,11 +361,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
       // Set the content from markdown, letting the Markdown extension parse it
       editor.commands.setContent(processedMarkdown);
-      
+
       // Force editor to re-render by triggering a transaction
       // This ensures all marks and nodes are properly applied
       editor.view.dispatch(editor.state.tr);
-      
+
       editor.commands.focus();
     } else {
       // Switching from rich text to markdown

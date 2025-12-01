@@ -93,58 +93,54 @@ const VariableMark = Mark.create({
             markdownit.use((md) => {
               // Add a simple inline rule to parse (( )) syntax
               // Use 'text' as the reference instead of 'emphasis' to ensure it runs early
-              md.inline.ruler.before(
-                "text",
-                "variable",
-                (state, silent) => {
-                  const start = state.pos;
-                  const max = state.posMax;
+              md.inline.ruler.before("text", "variable", (state, silent) => {
+                const start = state.pos;
+                const max = state.posMax;
 
-                  // Need at least (( + )) = 4 characters
-                  if (start + 4 > max) return false;
-                  if (state.src.slice(start, start + 2) !== "((") return false;
+                // Need at least (( + )) = 4 characters
+                if (start + 4 > max) return false;
+                if (state.src.slice(start, start + 2) !== "((") return false;
 
-                  let pos = start + 2;
-                  let found = false;
+                let pos = start + 2;
+                let found = false;
 
-                  // Search for the closing ))
-                  while (pos < max - 1) {
-                    if (state.src.slice(pos, pos + 2) === "))") {
-                      found = true;
-                      break;
-                    }
-                    pos++;
+                // Search for the closing ))
+                while (pos < max - 1) {
+                  if (state.src.slice(pos, pos + 2) === "))") {
+                    found = true;
+                    break;
                   }
+                  pos++;
+                }
 
-                  if (!found) return false;
+                if (!found) return false;
 
-                  // In silent mode, just advance the position
-                  if (silent) {
-                    state.pos = pos + 2;
-                    return true;
-                  }
-
-                  // Extract the variable name
-                  const content = state.src.slice(start + 2, pos);
-                  
-                  // Create the opening tag token
-                  const tokenOpen = state.push("variable_open", "span", 1);
-                  tokenOpen.attrs = [["data-type", "variable"]];
-                  tokenOpen.markup = "((";
-
-                  // Create the text content token
-                  const tokenText = state.push("text", "", 0);
-                  tokenText.content = content;
-
-                  // Create the closing tag token
-                  const tokenClose = state.push("variable_close", "span", -1);
-                  tokenClose.markup = "))";
-
-                  // Move past the closing ))
+                // In silent mode, just advance the position
+                if (silent) {
                   state.pos = pos + 2;
                   return true;
-                },
-              );
+                }
+
+                // Extract the variable name
+                const content = state.src.slice(start + 2, pos);
+
+                // Create the opening tag token
+                const tokenOpen = state.push("variable_open", "span", 1);
+                tokenOpen.attrs = [["data-type", "variable"]];
+                tokenOpen.markup = "((";
+
+                // Create the text content token
+                const tokenText = state.push("text", "", 0);
+                tokenText.content = content;
+
+                // Create the closing tag token
+                const tokenClose = state.push("variable_close", "span", -1);
+                tokenClose.markup = "))";
+
+                // Move past the closing ))
+                state.pos = pos + 2;
+                return true;
+              });
 
               // Add renderer rules for the tokens
               // TODO: come up with markup that allows screen readers to identify these custom blocks
