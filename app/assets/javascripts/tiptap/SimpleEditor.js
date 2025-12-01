@@ -356,11 +356,17 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     if (!editor) return;
 
     if (isMarkdownView) {
-      const processedMarkdown = (markdownValue || "").replace(
-        /\(\(([^)]+)\)\)/g,
-        '<span data-type="variable">$1</span>',
-      );
-      editor.commands.setContent(processedMarkdown);
+      const processedMarkdown = markdownValue || "";
+
+      // Clear the current document to avoid residual structure affecting parsing
+      editor.commands.setContent("");
+
+      // Let the Markdown extension parse the markdown string back into a doc
+      editor.commands.setContent(processedMarkdown, {
+        parseOptions: {
+          preserveWhitespace: "full",
+        },
+      });
       editor.commands.focus();
     } else {
       const markdown = editor.storage.markdown?.getMarkdown() ?? "";
@@ -371,9 +377,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   };
 
   const onMarkdownKeyDown = (event) => {
-    console.log('onMarkdownKeyDown:', { key: event.key, altKey: event.altKey });
     if (event.altKey && event.key === "F10") {
-      console.log("Markdown view: Alt+F10 pressed, requesting focus back to RTE");
       event.preventDefault();
       event.stopPropagation();
 
@@ -399,7 +403,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           <textarea
             value={markdownValue}
             onChange={(event) => setMarkdownValue(event.target.value)}
-            onKeyDown={onMarkdownKeyDown}
             className="markdown-view"
             aria-label={viewLabel.markdown}
             spellCheck="false"
