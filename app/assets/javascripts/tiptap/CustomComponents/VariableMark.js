@@ -87,57 +87,71 @@ const VariableMark = Mark.create({
           expelEnclosingWhitespace: true,
         },
         parse: {
+          // Update how we set up the markdown parser to use the plugin pattern
           setup(markdownit) {
-            // Add a simple inline rule to parse (( )) syntax
-            markdownit.inline.ruler.before(
-              "emphasis",
-              "variable",
-              (state, silent) => {
-                const start = state.pos;
-                const max = state.posMax;
+            // Use the plugin pattern to ensure proper initialization
+            markdownit.use((md) => {
+              // Add a simple inline rule to parse (( )) syntax
+              // Use 'text' as the reference instead of 'emphasis' to ensure it runs early
+              md.inline.ruler.before(
+                "text",
+                "variable",
+                (state, silent) => {
+                  const start = state.pos;
+                  const max = state.posMax;
 
-                if (start + 4 > max) return false;
-                if (state.src.slice(start, start + 2) !== "((") return false;
+                  // Need at least (( + )) = 4 characters
+                  if (start + 4 > max) return false;
+                  if (state.src.slice(start, start + 2) !== "((") return false;
 
-                let pos = start + 2;
-                let found = false;
+                  let pos = start + 2;
+                  let found = false;
 
-                while (pos < max - 1) {
-                  if (state.src.slice(pos, pos + 2) === "))") {
-                    found = true;
-                    break;
+                  // Search for the closing ))
+                  while (pos < max - 1) {
+                    if (state.src.slice(pos, pos + 2) === "))") {
+                      found = true;
+                      break;
+                    }
+                    pos++;
                   }
-                  pos++;
-                }
 
-                if (!found) return false;
+                  if (!found) return false;
 
-                if (silent) {
+                  // In silent mode, just advance the position
+                  if (silent) {
+                    state.pos = pos + 2;
+                    return true;
+                  }
+
+                  // Extract the variable name
+                  const content = state.src.slice(start + 2, pos);
+                  
+                  // Create the opening tag token
+                  const tokenOpen = state.push("variable_open", "span", 1);
+                  tokenOpen.attrs = [["data-type", "variable"]];
+                  tokenOpen.markup = "((";
+
+                  // Create the text content token
+                  const tokenText = state.push("text", "", 0);
+                  tokenText.content = content;
+
+                  // Create the closing tag token
+                  const tokenClose = state.push("variable_close", "span", -1);
+                  tokenClose.markup = "))";
+
+                  // Move past the closing ))
                   state.pos = pos + 2;
                   return true;
-                }
+                },
+              );
 
-                const content = state.src.slice(start + 2, pos);
-                const tokenOpen = state.push("variable_open", "span", 1);
-                tokenOpen.attrs = [["data-type", "variable"]];
-                tokenOpen.markup = "((";
-
-                const tokenText = state.push("text", "", 0);
-                tokenText.content = content;
-
-                const tokenClose = state.push("variable_close", "span", -1);
-                tokenClose.markup = "))";
-
-                state.pos = pos + 2;
-                return true;
-              },
-            );
-
-            // Add renderer rules
-            // TODO: come up with markup that allows screen readers to identify these custom blocks
-            markdownit.renderer.rules.variable_open = () =>
-              '<span data-type="variable">';
-            markdownit.renderer.rules.variable_close = () => "</span>";
+              // Add renderer rules for the tokens
+              // TODO: come up with markup that allows screen readers to identify these custom blocks
+              md.renderer.rules.variable_open = () =>
+                '<span data-type="variable">';
+              md.renderer.rules.variable_close = () => "</span>";
+            });
           },
         },
       },

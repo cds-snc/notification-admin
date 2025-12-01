@@ -356,19 +356,19 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     if (!editor) return;
 
     if (isMarkdownView) {
+      // Switching back from markdown to rich text
       const processedMarkdown = markdownValue || "";
 
-      // Clear the current document to avoid residual structure affecting parsing
-      editor.commands.setContent("");
-
-      // Let the Markdown extension parse the markdown string back into a doc
-      editor.commands.setContent(processedMarkdown, {
-        parseOptions: {
-          preserveWhitespace: "full",
-        },
-      });
+      // Set the content from markdown, letting the Markdown extension parse it
+      editor.commands.setContent(processedMarkdown);
+      
+      // Force editor to re-render by triggering a transaction
+      // This ensures all marks and nodes are properly applied
+      editor.view.dispatch(editor.state.tr);
+      
       editor.commands.focus();
     } else {
+      // Switching from rich text to markdown
       const markdown = editor.storage.markdown?.getMarkdown() ?? "";
       setMarkdownValue(markdown);
     }
