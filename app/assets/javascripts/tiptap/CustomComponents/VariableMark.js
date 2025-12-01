@@ -1,4 +1,4 @@
-import { Mark } from "@tiptap/core";
+import { Mark, markInputRule } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -31,6 +31,15 @@ const VariableMark = Mark.create({
         ...HTMLAttributes,
       },
       0,
+    ];
+  },
+
+  addInputRules() {
+    return [
+      markInputRule({
+        find: /\(\(([^)]+)\)\)$/,
+        type: this.type,
+      }),
     ];
   },
 
