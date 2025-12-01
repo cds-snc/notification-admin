@@ -24,6 +24,8 @@ describe("Markdown entering and pasting tests", () => {
 
       // enter markdown
       cy.realType(before, { delay: 1, pressDelay: 0 });
+      // allow the editor a short time to process typed input in CI
+      cy.wait(120);
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       // small stabilization pause to avoid reading the textarea mid-update in CI
