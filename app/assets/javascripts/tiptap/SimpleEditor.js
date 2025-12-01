@@ -15,11 +15,11 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
-import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import VariableMark from "./CustomComponents/VariableMark";
+import MarkdownLink from "./CustomComponents/MarkdownLink";
 import { Markdown } from "tiptap-markdown";
 import "./editor.css";
 import LinkModal from "./LinkModal";
@@ -76,7 +76,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       Bold,
       Italic,
       VariableMark,
-      Link.configure({
+      MarkdownLink.configure({
         openOnClick: false,
         HTMLAttributes: {
           class: "link",
