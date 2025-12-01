@@ -135,7 +135,8 @@ const VariableMark = Mark.create({
 
             // Add renderer rules
             // TODO: come up with markup that allows screen readers to identify these custom blocks
-            markdownit.renderer.rules.variable_open = () => '<span data-type="variable">';
+            markdownit.renderer.rules.variable_open = () =>
+              '<span data-type="variable">';
             markdownit.renderer.rules.variable_close = () => "</span>";
           },
         },

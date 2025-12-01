@@ -383,7 +383,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
       const toolbar = editor?.rteToolbar;
       if (toolbar) {
-        toolbar.dispatchEvent(new CustomEvent("rte-request-focus", { bubbles: true }));
+        toolbar.dispatchEvent(
+          new CustomEvent("rte-request-focus", { bubbles: true }),
+        );
       }
     }
   };

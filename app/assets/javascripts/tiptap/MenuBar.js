@@ -796,10 +796,7 @@ const MenuBar = ({
             type="button"
             data-testid="rte-toggle-markdown"
             onClick={toggleHandler}
-            className={
-              "toolbar-button" +
-              (isMarkdownView ? " is-active" : "")
-            }
+            className={"toolbar-button" + (isMarkdownView ? " is-active" : "")}
             title={toggleButtonLabel}
             aria-pressed={isMarkdownView}
           >
