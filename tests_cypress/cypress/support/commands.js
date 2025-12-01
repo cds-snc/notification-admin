@@ -108,6 +108,24 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
+/* Custom command to simulate pasting text into an element.
+* This command sets the element's text to all but the last character of the
+* provided text, then types the last character to trigger any input events.
+*
+* @param {JQuery<HTMLElement>} $element - The target element to paste text into.
+* @param {string} text - The text to paste into the element.
+*/
+Cypress.Commands.add('paste', {
+  prevSubject: true,
+  element: true
+}, ($element, text) => {
+  const subString = text.substr(0, text.length - 1);
+  const lastChar = text.slice(-1);
+
+  $element.text(subString);
+  $element.val(subString);
+  cy.get($element.selector).type(lastChar);
+});
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
     cy.task('createAccount', {
