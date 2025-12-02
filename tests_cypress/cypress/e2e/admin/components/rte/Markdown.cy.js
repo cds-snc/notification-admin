@@ -26,7 +26,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for Headings", () => {
-        cy.realType(MARKDOWN.HEADINGS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.HEADINGS.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
@@ -48,7 +48,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for Variables", () => {
-        cy.realType(MARKDOWN.VARIABLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.VARIABLES.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
@@ -70,7 +70,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for Text Styles", () => {
-        cy.realType(MARKDOWN.TEXT_STYLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.TEXT_STYLES.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
@@ -92,7 +92,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for List Styles", () => {
-        cy.realType(MARKDOWN.LIST_STYLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.LIST_STYLES.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
@@ -114,7 +114,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for Links", () => {
-        cy.realType(MARKDOWN.LINKS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
@@ -136,7 +136,7 @@ describe.only("Markdown entering and pasting tests", () => {
     });
 
     it("Correctly renders markdown for Lang Blocks", () => {
-        cy.realType(MARKDOWN.LANG_BLOCKS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+        RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before);
 
         RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
