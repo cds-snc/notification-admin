@@ -32,23 +32,6 @@ describe.only("Markdown entering and pasting tests", () => {
             });
     });
 
-    // Comprehensive round-trip test (editor -> markdown -> editor -> markdown)
-    it("Verifies full round-trip for Headings", () => {
-        RichTextEditor.Components.Editor().type(MARKDOWN.HEADINGS.before);
-
-        // 1st markdown view
-        RichTextEditor.Components.ViewMarkdownButton().click();
-        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
-
-        // Switch back to editor
-        RichTextEditor.Components.ViewMarkdownButton().click();
-        RichTextEditor.Components.MarkdownEditor().should("not.exist");
-
-        // 2nd markdown view - verify no data loss
-        RichTextEditor.Components.ViewMarkdownButton().click();
-        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
-    });
-
     it("Correctly renders markdown for Headings", () => {
         RichTextEditor.Components.Editor().type(MARKDOWN.HEADINGS.before);
 
@@ -60,7 +43,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.HEADINGS.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
     });
 
@@ -75,7 +65,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.VARIABLES.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
     });
 
@@ -90,7 +87,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.TEXT_STYLES.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
     });
 
@@ -105,7 +109,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LIST_STYLES.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
     });
 
@@ -120,7 +131,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LINKS.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
     });
 
@@ -135,7 +153,14 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.MarkdownEditor().should("have.text", "");
         RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LANG_BLOCKS.expected);
 
-        // ensure markdown is correct after paste
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
         RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
     });
 });
