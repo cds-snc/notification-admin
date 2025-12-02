@@ -207,7 +207,8 @@ jobs:
         path: |
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
-        retention-days: 30
+          tests_cypress/cypress/results
+        retention-days: 7
 
     - name: Output API logs on failure
       if: failure()
