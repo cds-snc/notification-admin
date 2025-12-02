@@ -9,12 +9,23 @@ from app.main.forms import NewsletterLanguageForm, NewsletterSubscriptionForm
 from app.notify_client.newsletter_api_client import newsletter_api_client
 
 
-@main.route("/newsletter-subscription", methods=["POST"])
+@main.route("/newsletter/subscribe", methods=["GET", "POST"])
 def newsletter_subscription():
-    """Handle newsletter subscription form submissions"""
+    """Handle newsletter subscription form submissions and display"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
     newsletter_form = NewsletterSubscriptionForm()
+
+    # Handle GET request - display the form
+    if request.method == "GET":
+        return render_template(
+            "views/newsletter/subscribe.html",
+            newsletter_form=newsletter_form,
+        )
+
+    # Handle POST request - process form submission
+    # Check if the form was submitted from the home page or the standalone page
+    from_home_page = request.form.get("from_page") == "home"
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
 
     if newsletter_form.validate_on_submit():
@@ -24,61 +35,85 @@ def newsletter_subscription():
         # Create unconfirmed subscriber via API
         newsletter_api_client.create_unconfirmed_subscriber(submitted_email, language)
 
-        # Redirect back to the home page with success parameter and email
-        return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
+        # Redirect based on where the form was submitted from
+        if from_home_page:
+            return redirect(url_for("main.index", subscribed="1", email=submitted_email) + "#newsletter-section")
+        else:
+            return redirect(url_for("main.newsletter_check_email", email=submitted_email))
 
-    # Re-render the home page with form errors if validation failed
-    endpoint = "wp/v2/pages"
-    lang = get_current_locale(current_app)
-    params = {"slug": path, "lang": lang}
+    # Re-render with form errors if validation failed
+    if from_home_page:
+        # Re-render the home page with form errors
+        endpoint = "wp/v2/pages"
+        lang = get_current_locale(current_app)
+        params = {"slug": path, "lang": lang}
 
-    if current_user.is_authenticated:
-        response = get_page_by_slug(endpoint, params=params)
+        if current_user.is_authenticated:
+            response = get_page_by_slug(endpoint, params=params)
+        else:
+            response = get_page_by_slug_with_cache(endpoint, params=params)
+
+        if isinstance(response, list):
+            response = response[0]
+
+        # Import here to avoid circular dependency
+        from app.main.views.index import _render_articles_page
+
+        return _render_articles_page(response, newsletter_form)
     else:
-        response = get_page_by_slug_with_cache(endpoint, params=params)
-
-    if isinstance(response, list):
-        response = response[0]
-
-    # Import here to avoid circular dependency
-    from app.main.views.index import _render_articles_page
-
-    return _render_articles_page(response, newsletter_form)
+        # Re-render the standalone page with form errors
+        return render_template(
+            "views/newsletter/subscribe.html",
+            newsletter_form=newsletter_form,
+        )
 
 
+# keep support for the old confirm route until we update the email
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
+@main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
 
     # send an api request with the subscriber_id
-    data = newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
-    email = data["subscriber"]["email"]
+    newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
 
     # redirect to the newsletter_subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+    return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
 
-@main.route("/newsletter/subscribed", methods=["GET", "POST"])
-def newsletter_subscribed():
+@main.route("/newsletter/check-email", methods=["GET"])
+def newsletter_check_email():
+    """Newsletter subscription check email page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
+
+    email = request.args.get("email")
+    if not email:
+        # If no email provided, redirect to subscription page
+        return redirect(url_for("main.newsletter_subscription"))
+
+    return render_template("views/newsletter/check_email.html", email=email)
+
+
+@main.route("/newsletter/<subscriber_id>/subscribed", methods=["GET", "POST"])
+def newsletter_subscribed(subscriber_id):
     """Newsletter subscription confirmation page"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
     language_form = NewsletterLanguageForm()
-    # Get parameters from URL query string
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
+    # Get subscriber data including email
+    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/send-latest", methods=["GET"])
-def send_latest_newsletter():
+@main.route("/newsletter/<subscriber_id>/send-latest", methods=["GET"])
+def send_latest_newsletter(subscriber_id):
     """Send the latest newsletter to a subscriber"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
 
     # Call API to send latest newsletter
     newsletter_api_client.send_latest_newsletter(subscriber_id)
@@ -87,18 +122,18 @@ def send_latest_newsletter():
     flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
 
     # Redirect back to subscribed page
-    return redirect(url_for("main.newsletter_subscribed", email=email, subscriber_id=subscriber_id))
+    return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
 
-@main.route("/newsletter/change-language", methods=["GET", "POST"])
-def newsletter_change_language():
+@main.route("/newsletter/<subscriber_id>/change-language", methods=["GET", "POST"])
+def newsletter_change_language(subscriber_id):
     """Newsletter subscription management page"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
     language_form = NewsletterLanguageForm()
-    # Get parameters from URL query string (GET) or hidden form fields (POST)
-    email = request.args.get("email") or request.form.get("email")
-    subscriber_id = request.args.get("subscriber_id") or request.form.get("subscriber_id")
+    # Get subscriber data including email
+    subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -110,26 +145,24 @@ def newsletter_change_language():
             # Display success message with language name
             language_name = _("English") if selected_language == "en" else _("French")
             flash(
-                _("You’ll receive the next newsletter in {}".format(language_name), email=email, language=language_name),
+                _("You’ll receive the next newsletter in {}").format(language_name),
                 category="default_with_tick",
             )
 
             # redirect back to the change_language page
-            return redirect(url_for("main.newsletter_change_language", email=email, subscriber_id=subscriber_id))
+            return redirect(url_for("main.newsletter_change_language", subscriber_id=subscriber_id))
 
     return render_template("views/newsletter/change_language.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/unsubscribe", methods=["GET"])
-def newsletter_unsubscribe():
+@main.route("/newsletter/<subscriber_id>/unsubscribe", methods=["GET"])
+def newsletter_unsubscribe(subscriber_id):
     """Newsletter unsubscribe confirmation page"""
     if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
         abort(404)
-    email = request.args.get("email")
-    subscriber_id = request.args.get("subscriber_id")
 
-    if subscriber_id:
-        # Call API to unsubscribe
-        newsletter_api_client.unsubscribe(subscriber_id)
+    # Call API to unsubscribe
+    subscriber_data = newsletter_api_client.unsubscribe(subscriber_id)
+    email = subscriber_data["subscriber"]["email"]
 
     return render_template("views/newsletter/unsubscribe.html", email=email)
