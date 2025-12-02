@@ -19,29 +19,27 @@ describe("Markdown entering and pasting tests", () => {
       .click("topLeft")
       .type("{selectall}{del}{del}");
 
-    // Assert default content is gone and editor is empty
-    RichTextEditor.Components.Editor()
-      .should("not.contain.text", "Welcome to the Editor")
-      .and("have.text", "");
-  });
+        // Assert default content is gone and editor is empty
+        RichTextEditor.Components.Editor()
+            .should("not.contain.text", "Welcome to the Editor")
+            .and("have.text", "");
+    });
 
-  Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
-    it(`Correctly renders markdown for ${humanize(key)}`, () => {
-      RichTextEditor.Components.Editor().realType(before, {
-        delay: 0,
-        pressDelay: 0,
-      });
+    Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
+        it(`Correctly renders markdown for ${humanize(key)}`, () => {
+            RichTextEditor.Components.Editor().type(before);
 
-      RichTextEditor.Components.ViewMarkdownButton().click();
-      RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+            RichTextEditor.Components.ViewMarkdownButton().click();
+            RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
 
-      // switch back to editor view and ensure no data loss
-      RichTextEditor.Components.ViewMarkdownButton().click();
-      RichTextEditor.Components.MarkdownEditor().should("not.exist");
+            // switch back to editor view and ensure no data loss
+            RichTextEditor.Components.ViewMarkdownButton().click();
+            RichTextEditor.Components.MarkdownEditor().should("not.exist");
 
-      // switch back to markdown and ensure content is still correct
-      RichTextEditor.Components.ViewMarkdownButton().click();
-      RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+            // switch back to markdown and ensure content is still correct
+            RichTextEditor.Components.ViewMarkdownButton().click();
+            RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+        });
     });
   });
 });
