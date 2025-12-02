@@ -131,6 +131,6 @@ module.exports = defineConfig({
     viewportHeight: 850,
     testIsolation: true,
     pageLoadTimeout: 120000, // 2 minutes for slow CI environments
-    // retries: 2
+    retries: 2
   },
 });
