@@ -6,11 +6,11 @@ import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
 describe.only("Markdown entering and pasting tests", () => {
     beforeEach(() => {
-        // Load the editor with explicit timeout and error handling
-        cy.visit(RichTextEditor.URL, { timeout: 10000 });
+        // Load the editor (will use global pageLoadTimeout from config)
+        cy.visit(RichTextEditor.URL);
 
         // Ensure toolbar is ready for interactions
-        RichTextEditor.Components.Toolbar().should("exist", { timeout: 10000 }).and("be.visible");
+        RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
         // Ensure editor is mounted and ready
         RichTextEditor.Components.Editor().should("exist", { timeout: 10000 });
