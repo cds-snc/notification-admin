@@ -16,16 +16,16 @@ describe.only("Markdown entering and pasting tests", () => {
         RichTextEditor.Components.Editor().should("exist", { timeout: 10000 });
 
         // ensure editor contains "Welcome to the editor" somewhere
-        RichTextEditor.Components.Editor().should("contain.text", "Welcome to the Editor");
+                // Wait for initial default content, then clear robustly
+                RichTextEditor.Components.Editor()
+                    .should("contain.text", "Welcome to the Editor")
+                    .click("topLeft")
+                    .type("{selectall}{del}{del}");
 
-        // Start each test with a cleared editor
-        RichTextEditor.Components.Editor().focus();
-        cy.realPress(["Meta", "A"]);
-        cy.realPress(["Delete"]);
-        // RichTextEditor.Components.Editor().type("{del}");
-
-        // ensure editor has no text
-        RichTextEditor.Components.Editor().should("have.text", "");
+                // Assert default content is gone and editor is empty (Cypress will retry these)
+                RichTextEditor.Components.Editor()
+                    .should("not.contain.text", "Welcome to the Editor")
+                    .and("have.text", "");
     });
 
     Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
