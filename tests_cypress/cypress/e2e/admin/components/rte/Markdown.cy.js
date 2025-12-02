@@ -1,7 +1,5 @@
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 
-import { humanize } from "../../../../support/utils";
-
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
 describe.only("Markdown entering and pasting tests", () => {
@@ -15,43 +13,147 @@ describe.only("Markdown entering and pasting tests", () => {
         // Ensure editor is mounted and ready
         RichTextEditor.Components.Editor().should("exist", { timeout: 10000 });
 
-        // ensure editor contains "Welcome to the editor" somewhere
-                // Wait for initial default content, then clear robustly
-                RichTextEditor.Components.Editor()
-                    .should("contain.text", "Welcome to the Editor")
-                    .click("topLeft")
-                    .type("{selectall}{del}{del}");
+        // Wait for initial default content, then clear robustly
+        RichTextEditor.Components.Editor()
+            .should("contain.text", "Welcome to the Editor")
+            .click("topLeft")
+            .type("{selectall}{del}{del}");
 
-                // Assert default content is gone and editor is empty (Cypress will retry these)
-                RichTextEditor.Components.Editor()
-                    .should("not.contain.text", "Welcome to the Editor")
-                    .and("have.text", "");
+        // Assert default content is gone and editor is empty (Cypress will retry these)
+        RichTextEditor.Components.Editor()
+            .should("not.contain.text", "Welcome to the Editor")
+            .and("have.text", "");
     });
 
-    Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
-        it(`Correctly renders markdown for ${humanize(key)}`, () => {
+    it("Correctly renders markdown for Headings", () => {
+        cy.realType(MARKDOWN.HEADINGS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
 
-            cy.realType(before, { delay: 1, pressDelay: 1 });
-            // RichTextEditor.Components.Editor().type(before);
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
 
-            RichTextEditor.Components.ViewMarkdownButton().click();
-            // ensure markdown matches expected
-            RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.HEADINGS.expected);
 
-            // pasting
-            RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
-            RichTextEditor.Components.MarkdownEditor().should("have.text", "");
-            RichTextEditor.Components.MarkdownEditor().paste(expected);
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
 
-            // ensure markdown is correct
-            RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
-            // switch back to editor view and ensure no data loss
-            RichTextEditor.Components.ViewMarkdownButton().click();
-            RichTextEditor.Components.MarkdownEditor().should("not.exist");
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.HEADINGS.expected);
+    });
 
-            // switch back to markdown and ensure content is still correct
-            RichTextEditor.Components.ViewMarkdownButton().click();
-            RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
-        });
+    it("Correctly renders markdown for Variables", () => {
+        cy.realType(MARKDOWN.VARIABLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
+
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.VARIABLES.expected);
+
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
+    });
+
+    it("Correctly renders markdown for Text Styles", () => {
+        cy.realType(MARKDOWN.TEXT_STYLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
+
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.TEXT_STYLES.expected);
+
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.TEXT_STYLES.expected);
+    });
+
+    it("Correctly renders markdown for List Styles", () => {
+        cy.realType(MARKDOWN.LIST_STYLES.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
+
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LIST_STYLES.expected);
+
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LIST_STYLES.expected);
+    });
+
+    it("Correctly renders markdown for Links", () => {
+        cy.realType(MARKDOWN.LINKS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
+
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LINKS.expected);
+
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
+    });
+
+    it("Correctly renders markdown for Lang Blocks", () => {
+        cy.realType(MARKDOWN.LANG_BLOCKS.before, { delay: 1, pressDelay: 1, timeout: 60000 });
+
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
+
+        // pasting
+        RichTextEditor.Components.MarkdownEditor().type("{selectall}{del}");
+        RichTextEditor.Components.MarkdownEditor().should("have.text", "");
+        RichTextEditor.Components.MarkdownEditor().paste(MARKDOWN.LANG_BLOCKS.expected);
+
+        // ensure markdown is correct
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
+        // switch back to editor view and ensure no data loss
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+
+        // switch back to markdown and ensure content is still correct
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LANG_BLOCKS.expected);
     });
 });
