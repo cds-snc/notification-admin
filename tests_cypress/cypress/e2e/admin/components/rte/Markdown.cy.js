@@ -27,7 +27,7 @@ describe("Markdown entering and pasting tests", () => {
 
     Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
         it(`Correctly renders markdown for ${humanize(key)}`, () => {
-            RichTextEditor.Components.Editor().realType(before, { delay: 0, pressDelay: 0 });
+            RichTextEditor.Components.Editor().type(before);
 
             RichTextEditor.Components.ViewMarkdownButton().click();
             RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
