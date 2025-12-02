@@ -64,11 +64,31 @@ def test_update_language(mocker, language):
     assert result == {"subscriber": {"id": subscriber_id, "language": language}}
 
 
-def test_send_latest_newsletter(mocker):
-    subscriber_id = "test-subscriber-789"
+def test_confirm_subscriber(mocker):
+    subscriber_id = "test-subscriber-123"
+    email = "test@cds-snc.ca"
+    mock_get = mocker.patch(
+        "app.notify_client.newsletter_api_client.NewsletterAPIClient.get",
+        return_value={"subscriber": {"id": subscriber_id, "email": email}},
+    )
 
     client = NewsletterAPIClient()
-    result = client.send_latest_newsletter(subscriber_id)
+    result = client.confirm_subscriber(subscriber_id)
 
-    # Currently this method returns None as it's not fully implemented
-    assert result is None
+    mock_get.assert_called_once_with(url=f"/newsletter/confirm/{subscriber_id}")
+    assert result == {"subscriber": {"id": subscriber_id, "email": email}}
+
+
+def test_get_subscriber(mocker):
+    subscriber_id = "test-subscriber-456"
+    email = "test@cds-snc.ca"
+    mock_get = mocker.patch(
+        "app.notify_client.newsletter_api_client.NewsletterAPIClient.get",
+        return_value={"subscriber": {"id": subscriber_id, "email": email}},
+    )
+
+    client = NewsletterAPIClient()
+    result = client.get_subscriber(subscriber_id)
+
+    mock_get.assert_called_once_with(url=f"/newsletter/find-subscriber?subscriber_id={subscriber_id}")
+    assert result == {"subscriber": {"id": subscriber_id, "email": email}}

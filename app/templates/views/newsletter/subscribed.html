@@ -15,7 +15,7 @@
 
 {% if subscriber_id %}
   <p class="mt-4">
-    <a href="{{ url_for('main.send_latest_newsletter', email=email, subscriber_id=subscriber_id) }}" class="button">
+    <a href="{{ url_for('main.send_latest_newsletter', subscriber_id=subscriber_id) }}" class="button">
       {{ _("Send me the most recent newsletter") }}
     </a>
   </p>
