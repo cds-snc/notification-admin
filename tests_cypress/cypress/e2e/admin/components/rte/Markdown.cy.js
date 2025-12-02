@@ -4,7 +4,7 @@ import { humanize } from "../../../../support/utils";
 
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
-describe("Markdown entering and pasting tests", () => {
+describe.only("Markdown entering and pasting tests", () => {
   beforeEach(() => {
     // Load the editor and ensure toolbar is ready for interactions
     cy.visit(RichTextEditor.URL);
@@ -16,6 +16,9 @@ describe("Markdown entering and pasting tests", () => {
 
     // ensure editor has no text
     RichTextEditor.Components.Editor().should("have.text", "");
+    
+    // Brief wait to ensure clearing is complete and no async re-population occurs
+    cy.wait(100);
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
