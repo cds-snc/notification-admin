@@ -776,6 +776,21 @@ def test_set_lang_external_route(client_request):
     assert len(page.findAll(text="/accounts-or-dashboard")) == 1
 
 
+def test_set_lang_preserves_query_string(client_request):
+    # test that query string parameters are preserved when changing language
+    response = client_request.get(
+        **{
+            "endpoint": "main.set_lang",
+            "from": "/newsletter/change-language?email=test@example.com&subscriber_id=123",
+            "_expected_status": 302,
+            "_follow_redirects": False,
+            "_return_response": True,
+        }
+    )
+    # The redirect location should preserve the query string
+    assert response.location == "/newsletter/change-language?email=test@example.com&subscriber_id=123"
+
+
 def test_get_new_default_reply_to_address_returns_next_in_list(mocker: MockerFixture, app_, service_one):
     reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_1@example.com", is_default=True)
     reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_2@example.com", is_default=False)

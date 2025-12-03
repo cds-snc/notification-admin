@@ -21,7 +21,7 @@
             </a>
           </li>
         {% endif %}
-        {% set set_lang_url = lang_url or request.path %}
+        {% set set_lang_url = lang_url or request.full_path.rstrip('?') %}
         <li>
             <a id="header-lang" href="{{ url_for('main.set_lang') ~ '?from=' ~ set_lang_url }}" lang="{{_('fr-CA')}}" class="nav-menu-item">
               {{_('Français')}}
@@ -54,7 +54,7 @@
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
       <div class="flex flex-col items-start md:flex-row md:items-center">
-        <div class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
+        <div class="text-titlelarge text-black inline mr-gutterHalf ">
           {{ url_text }}
         </div>
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}

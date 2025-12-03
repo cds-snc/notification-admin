@@ -134,7 +134,7 @@
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "16.20.0"
+			"version": "16.20.2"
 		}
 	},
 	"postCreateCommand": "/usr/local/bin/notify-dev-entrypoint.sh",

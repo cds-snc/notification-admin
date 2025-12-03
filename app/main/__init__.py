@@ -20,6 +20,7 @@ from app.main.views import (  # noqa isort:skip
     jobs,
     manage_users,
     new_password,
+    newsletter,
     notifications,
     organisations,
     platform_admin,

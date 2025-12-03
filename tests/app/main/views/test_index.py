@@ -225,8 +225,8 @@ def test_terms_page_has_correct_content(client_request):
     "css_file_start",
     [
         "http://localhost:6012/static/stylesheets/index.css",
-        "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
-        "https://fonts.googleapis.com/css?",
+        "https://fonts.googleapis.com/css2?family=Lato:wght@700",
+        "https://fonts.googleapis.com/css2?",
     ],
 )
 def test_css_is_served_from_correct_path(client_request, css_file_start):
