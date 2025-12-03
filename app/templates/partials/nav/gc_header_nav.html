@@ -1,6 +1,6 @@
 {% from "components/nav_menu_item.html" import nav_menu_item with context %}
 
-<hr class="m-0 md:hidden bg-blue border-blue border-0 border-b-2"/>
+<hr class="m-0 md:hidden border-gray-300 border-0 border-b-1"/>
 {% if withnav %}
   <nav class="md:bg-gray flex" aria-label="{{ _('Main menu') }}">
     <div class="container px-gutterHalf relative flex flex-nowrap">
@@ -10,7 +10,7 @@
         type="button"
         aria-expanded="false"
         aria-haspopup="true"
-        class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 w-full"
+        class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 my-gutterHalf w-full"
         data-module="menu" 
         aria-controls="proposition-links">
         {{ _("Menu") }}

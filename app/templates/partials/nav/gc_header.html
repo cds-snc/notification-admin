@@ -11,7 +11,7 @@
         />
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
          class="flex self-justify-end w-full sm:w-max max-sm:border-t-1 border-gray-300">
-      <ul class="flex gap-gutterHalf w-full justify-end">
+      <ul class="flex gap-gutterHalf w-full justify-between">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu.html' %}
         {% else %}
