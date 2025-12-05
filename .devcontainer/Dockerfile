@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.12
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-trixie
 
 ENV POETRY_VERSION="1.7.1"
 
@@ -32,6 +32,7 @@ RUN apt-get update \
     openssh-client \
     procps \
     sudo \
+    tealdeer \
     unzip \
     vim \
     libgtk2.0-0 \
@@ -50,9 +51,6 @@ RUN apt-get update \
 
 # Upgrade pip
 RUN pip install --upgrade pip
-
-# Install tldr via npm (since it's not available in apt)
-RUN npm install -g tldr
 
 COPY --chown=vscode:vscode .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/notify-dev-entrypoint.sh
