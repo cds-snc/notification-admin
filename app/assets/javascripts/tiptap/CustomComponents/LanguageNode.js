@@ -1,4 +1,4 @@
-import { Node } from "@tiptap/core";
+import { Node, wrappingInputRule } from "@tiptap/core";
 
 // Factory function to create language-specific nodes
 const createLanguageNode = (language, langCode) => {
@@ -20,6 +20,16 @@ const createLanguageNode = (language, langCode) => {
         language: language,
         langCode: langCode,
       };
+    },
+
+    addInputRules() {
+      const langPrefix = langCode.toLowerCase().slice(0, 2);
+      return [
+        wrappingInputRule({
+          find: new RegExp(`^\\[\\[${langPrefix}\\]\\]$`),
+          type: this.type,
+        }),
+      ];
     },
 
     parseHTML() {

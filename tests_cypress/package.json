@@ -6,20 +6,23 @@
   },
   "dependencies": {
     "cypress-recurse": "^1.23.0",
+    "form-data": ">=4.0.4",
     "html-validate": "^8.7.1",
     "imap-simple": "^5.1.0",
     "jsrsasign": "^11.0.0",
     "mailparser": "^3.7.1",
     "nanoid": "^5.0.4",
     "nodemailer": "^6.9.15",
-    "uuid": "^11.1.0",
-    "form-data": ">=4.0.4"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "axe-core": "^4.7.2",
     "cypress": "^14.5.3",
     "cypress-axe": "^1.6.0",
     "cypress-html-validate": "^7.1.0",
-    "cypress-real-events": "^1.14.0"
+    "cypress-real-events": "^1.14.0",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.1.0",
+    "mochawesome-report-generator": "^6.3.2"
   }
 }

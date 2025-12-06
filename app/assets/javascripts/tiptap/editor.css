@@ -289,6 +289,30 @@
   stroke-width: 2;
 }
 
+.toolbar.markdown-mode .toolbar-group:not(.toolbar-switch-group),
+.toolbar.markdown-mode .toolbar-separator {
+  display: none;
+}
+
+.toolbar-switch-group {
+  margin-left: auto;
+}
+
+.markdown-view {
+  width: 100%;
+  min-height: 400px;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-family: "JetBrainsMono", monospace;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #0d0d0d;
+  background-color: transparent;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
 /* Link Modal Styles */
 .link-modal {
   box-shadow:

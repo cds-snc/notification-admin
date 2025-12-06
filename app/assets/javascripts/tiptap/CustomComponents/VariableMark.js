@@ -1,4 +1,4 @@
-import { Mark } from "@tiptap/core";
+import { Mark, markInputRule } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -31,6 +31,15 @@ const VariableMark = Mark.create({
         ...HTMLAttributes,
       },
       0,
+    ];
+  },
+
+  addInputRules() {
+    return [
+      markInputRule({
+        find: /\(\(([^)]+)\)\)$/,
+        type: this.type,
+      }),
     ];
   },
 
@@ -73,27 +82,29 @@ const VariableMark = Mark.create({
     return {
       markdown: {
         serialize: {
-          open: "((",
-          close: "))",
+          open: () => "((",
+          close: () => "))",
+          expelEnclosingWhitespace: true,
         },
         parse: {
+          // Update how we set up the markdown parser to use the plugin pattern
           setup(markdownit) {
-            // Add a simple inline rule to parse (( )) syntax
-            markdownit.inline.ruler.before(
-              "emphasis",
-              "variable",
-              (state, silent) => {
+            // Use the plugin pattern to ensure proper initialization
+            markdownit.use((md) => {
+              // Add a simple inline rule to parse (( )) syntax
+              // Use 'text' as the reference instead of 'emphasis' to ensure it runs early
+              md.inline.ruler.before("text", "variable", (state, silent) => {
                 const start = state.pos;
                 const max = state.posMax;
 
-                // Check if we have (( at current position
+                // Need at least (( + )) = 4 characters
                 if (start + 4 > max) return false;
                 if (state.src.slice(start, start + 2) !== "((") return false;
 
-                // Find the closing ))
                 let pos = start + 2;
                 let found = false;
 
+                // Search for the closing ))
                 while (pos < max - 1) {
                   if (state.src.slice(pos, pos + 2) === "))") {
                     found = true;
@@ -104,29 +115,39 @@ const VariableMark = Mark.create({
 
                 if (!found) return false;
 
-                // Don't run if in silent mode
-                if (silent) return true;
+                // In silent mode, just advance the position
+                if (silent) {
+                  state.pos = pos + 2;
+                  return true;
+                }
 
-                // Create the token
+                // Extract the variable name
                 const content = state.src.slice(start + 2, pos);
-                const token = state.push("variable_open", "span", 1);
-                token.attrs = [["data-type", "variable"]];
 
-                const textToken = state.push("text", "", 0);
-                textToken.content = content;
+                // Create the opening tag token
+                const tokenOpen = state.push("variable_open", "span", 1);
+                tokenOpen.attrs = [["data-type", "variable"]];
+                tokenOpen.markup = "((";
 
-                state.push("variable_close", "span", -1);
+                // Create the text content token
+                const tokenText = state.push("text", "", 0);
+                tokenText.content = content;
 
+                // Create the closing tag token
+                const tokenClose = state.push("variable_close", "span", -1);
+                tokenClose.markup = "))";
+
+                // Move past the closing ))
                 state.pos = pos + 2;
                 return true;
-              },
-            );
+              });
 
-            // Add renderer rules
-            // TODO: come up with markup that allows screen readers to identify these custom blocks
-            markdownit.renderer.rules.variable_open = () =>
-              '<span data-type="variable">';
-            markdownit.renderer.rules.variable_close = () => "</span>";
+              // Add renderer rules for the tokens
+              // TODO: come up with markup that allows screen readers to identify these custom blocks
+              md.renderer.rules.variable_open = () =>
+                '<span data-type="variable">';
+              md.renderer.rules.variable_close = () => "</span>";
+            });
           },
         },
       },
