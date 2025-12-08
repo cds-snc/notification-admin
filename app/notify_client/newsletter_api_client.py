@@ -1,5 +1,5 @@
 from app.notify_client import NotifyAdminAPIClient
-from app.notify_client.cache import set
+from app.notify_client.cache import delete, set
 
 
 class NewsletterAPIClient(NotifyAdminAPIClient):
@@ -18,24 +18,25 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         resp = self.post(url="/newsletter/unconfirmed-subscriber", data=data)
         return resp
 
+    @delete("subscriber-{subscriber_id}")
     def confirm_subscriber(self, subscriber_id: str):
         resp = self.get(url=f"/newsletter/confirm/{subscriber_id}")
         return resp
 
+    @delete("subscriber-{subscriber_id}")
     def unsubscribe(self, subscriber_id: str):
         resp = self.get(url=f"/newsletter/unsubscribe/{subscriber_id}")
         return resp
 
+    @delete("subscriber-{subscriber_id}")
     def update_language(self, subscriber_id: str, language: str):
         data = {"language": language}
         resp = self.post(url=f"/newsletter/update-language/{subscriber_id}", data=data)
         return resp
 
     def send_latest_newsletter(self, subscriber_id: str):
-        # TODO: Implement actual API endpoint
-        # resp = self.post(url=f"/newsletter/send-latest/{subscriber_id}", data={})
-        # return resp
-        return
+        resp = self.get(url=f"/newsletter/send-latest/{subscriber_id}")
+        return resp
 
     @set("subscriber-{subscriber_id}")
     def get_subscriber(self, subscriber_id: str):

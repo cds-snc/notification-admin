@@ -1,4 +1,4 @@
-const fs = require('fs'); 
+const fs = require('fs');
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");
 const CreateAccount = require("./cypress/plugins/create-account");
@@ -9,6 +9,14 @@ const isDocker = fs.existsSync('/.dockerenv');
 
 module.exports = defineConfig({
   e2e: {
+    reporter: 'mochawesome',
+    reporterOptions: {
+      reportDir: 'cypress/results',
+      overwrite: false,
+      html: false,
+      json: true,
+    },
+
     // static values for all environments
     env: {
       ADMIN_USERNAME: "notify-admin",
@@ -51,7 +59,7 @@ module.exports = defineConfig({
       // Set the baseUrl to the correct environment if no override is specified (this is how CI overrides the baseUrl for each PR review env)
       if (!config.baseUrl)
         config.baseUrl = config.env.Environment[envName].Hostnames.Admin;
-      
+
       htmlvalidate.install(on, {
         rules: {
           "form-dup-name": "off",
@@ -81,7 +89,7 @@ module.exports = defineConfig({
         fetchEmail(acct) {
           return emailAccount.fetchEmail(acct)
         },
-clearAccount() {
+        clearAccount() {
           global.acct = null;
           return null;
         },
@@ -122,6 +130,7 @@ clearAccount() {
     viewportWidth: 1280,
     viewportHeight: 850,
     testIsolation: true,
+    pageLoadTimeout: 120000, // 2 minutes for slow CI environments
     retries: 2
   },
 });

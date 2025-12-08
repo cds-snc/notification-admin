@@ -1,0 +1,54 @@
+{% from "components/form.html" import form_wrapper %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/radios.html" import radios %}
+
+{# 
+  Reusable newsletter subscription form component
+  
+  Parameters:
+    - newsletter_form: The form object (required)
+    - newsletter_subscribed: Boolean indicating if subscription was successful (optional)
+    - newsletter_subscribed_email: Email address that was subscribed (optional, required if newsletter_subscribed is True)
+    - wrapper_class: Additional CSS classes for the form wrapper (optional, default: none)
+    - use_wordpress_styles: Whether to apply WordPress-specific styling classes (optional, default: False)
+#}
+
+{% if newsletter_subscribed %}
+  <!-- Success message -->
+  <div class="{% if use_wordpress_styles %}bg-white p-6 border-2 border-t-10 border-green-600 max-w-[700px] text-gray-900{% else %}banner-default-with-tick{% endif %}">
+    <h3 class="{% if use_wordpress_styles %}heading-medium mt-8{% else %}heading-medium{% endif %}">{{ _("Check your email") }}</h3>
+    <p class="{% if use_wordpress_styles %}text-base{% endif %}">{{ _("We've sent an email to <strong>{}</strong>.").format(newsletter_subscribed_email) }}</p>
+    <p class="{% if use_wordpress_styles %}text-base mt-2{% else %}mt-4{% endif %}">{{ _("Use the link in the email to confirm your subscription to the GC Notify newsletter.") }}</p>
+  </div>
+{% else %}
+  {% call form_wrapper(
+    action=url_for('main.newsletter_subscription'),
+    method="post",
+    autocomplete=False,
+    id="newsletter-subscribe-form"
+  ) %}
+    {{ newsletter_form.csrf_token }}
+    <input type="hidden" name="from_page" value="{% if use_wordpress_styles %}home{% else %}standalone{% endif %}">
+    <div class="{% if use_wordpress_styles %}bg-white p-6 border-2 border-t-10 border-brand-900 max-w-[700px] text-gray-900{% endif %} {{ wrapper_class }}">
+      {{ textbox(
+        newsletter_form.email,
+        hint=_("Enter your Government of Canada email address"),
+        width='w-full md:w-3/4',
+        label_class='{% if use_wordpress_styles %}text-gray-900{% endif %}'
+      ) }}
+
+      <div class="{% if use_wordpress_styles %}text-gray-900{% endif %}">
+        {{ radios(newsletter_form.language) }}
+      </div>
+
+      <div>
+        <button 
+          type="submit" 
+          class="{% if use_wordpress_styles %}button bg-blue-900 text-white px-6 py-3 text-base font-bold hover:bg-blue-950 focus:shadow-outline{% else %}button{% endif %}"
+        >
+          {{ _("Subscribe") }}
+        </button>
+      </div>
+    </div>
+  {% endcall %}
+{% endif %}

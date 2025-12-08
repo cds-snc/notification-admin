@@ -11,4 +11,10 @@
 
 <p>{{ _("You can close this window.") }}</p>
 
+<p class="mt-6">
+  <a href="{{ url_for('main.newsletter_subscription') }}" class="button">
+    {{ _("Resubscribe") }}
+  </a>
+</p>
+
 {% endblock %}
