@@ -51,8 +51,8 @@ from app.utils import (
 
 @main.route("/")
 def index():
-    # If user is authenticated and there are no query parameters (like newsletter subscription confirmation),
-    # redirect to their accounts page
+    # If user is authenticated and they have not just signed up to the newsletter,
+    # redirect to their choose_account page
     if current_user and current_user.is_authenticated and not request.args.get("subscribed"):
         return redirect(url_for("main.choose_account"))
 
