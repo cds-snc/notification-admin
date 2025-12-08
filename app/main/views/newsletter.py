@@ -138,6 +138,8 @@ def newsletter_change_language(subscriber_id):
     # Get subscriber data including email
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
     email = subscriber_data["subscriber"]["email"]
+    if subscriber_data["subscriber"]["status"] != "subscribed":
+        return redirect(url_for("main.newsletter_subscription"))
 
     if request.method == "POST":
         action = request.form.get("action")
