@@ -17,6 +17,7 @@ export const FORMATTING_OPTIONS = {
 let Components = {
     Toolbar: () => cy.getByTestId('rte-toolbar'),
     Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]'),
+    MarkdownEditor: () => cy.getByTestId('markdown-editor'),
     LiveRegion: () => cy.getByTestId('rte-liveregion'),
     // toolbar buttons
     ToolbarButtons: () => {
@@ -42,6 +43,7 @@ let Components = {
     BlockquoteButton: () => cy.getByTestId(FORMATTING_OPTIONS.BLOCKQUOTE),
     EnglishBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.ENGLISH_BLOCK),
     FrenchBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.FRENCH_BLOCK),
+    ViewMarkdownButton: () => cy.getByTestId('rte-toggle-markdown'),
     //link modal buttons
     LinkModal: {
         Modal: () => cy.getByTestId('link-modal'),
