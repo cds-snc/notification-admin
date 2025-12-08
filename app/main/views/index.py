@@ -51,7 +51,9 @@ from app.utils import (
 
 @main.route("/")
 def index():
-    if current_user and current_user.is_authenticated:
+    # If user is authenticated and there are no query parameters (like newsletter subscription confirmation),
+    # redirect to their accounts page
+    if current_user and current_user.is_authenticated and not request.args.get("subscribed"):
         return redirect(url_for("main.choose_account"))
 
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
