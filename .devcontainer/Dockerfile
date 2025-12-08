@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.12
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-trixie
 
 ENV POETRY_VERSION="1.7.1"
 
@@ -15,7 +15,7 @@ RUN apt-get update \
     && apt-get -y install \
     curl \
     emacs \
-    exa \
+    eza \
     fd-find \
     fzf \
     git \
@@ -32,14 +32,13 @@ RUN apt-get update \
     openssh-client \
     procps \
     sudo \
-    tldr \
+    tealdeer \
     unzip \
     vim \
     libgtk2.0-0 \
     libgtk-3-0 \
     libgbm-dev \
     libnotify-dev \
-    libgconf-2-4 \
     libnss3 \
     libxss1 \
     libasound2 \
