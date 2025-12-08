@@ -27,7 +27,11 @@ describe("Markdown entering and pasting tests", () => {
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
-      RichTextEditor.Components.Editor().type(before);
+      // use real events plugin to simulate user typing faster
+      RichTextEditor.Components.Editor().focus();
+      cy.realType(before, { delay: 1, pressDelay: 1 });
+
+      // RichTextEditor.Components.Editor().type(before);
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
@@ -40,5 +44,35 @@ describe("Markdown entering and pasting tests", () => {
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
     });
+  });
+
+  it('Variables are correctly rendered coming back from markdown view', () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.VARIABLES.before);
+
+    // Editor should have 9 marked up variables
+    RichTextEditor.Components.Editor().find('span[data-type="variable"]').should('have.length', 9);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.VARIABLES.expected);
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should have 9 marked up variables
+    RichTextEditor.Components.Editor().find('span[data-type="variable"]').should('have.length', 9);
+  });
+
+  it('Links are correctly rendered coming back from markdown view', () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
+
+    // Editor should have 9 marked up links
+    RichTextEditor.Components.Editor().find('a').should('have.length', 9);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.text", MARKDOWN.LINKS.expected);
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should have 9 marked up links
+    RichTextEditor.Components.Editor().find('a').should('have.length', 9);
   });
 });
