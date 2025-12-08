@@ -157,14 +157,19 @@ const VariableMark = Mark.create({
 
                 for (let i = 0; i < state.tokens.length; i++) {
                   const blockToken = state.tokens[i];
-                  if (blockToken.type !== "inline" || !blockToken.children) continue;
+                  if (blockToken.type !== "inline" || !blockToken.children)
+                    continue;
 
                   const newChildren = [];
 
                   for (let j = 0; j < blockToken.children.length; j++) {
                     const child = blockToken.children[j];
 
-                    if (child.type === "text" && child.content && child.content.includes("((")) {
+                    if (
+                      child.type === "text" &&
+                      child.content &&
+                      child.content.includes("((")
+                    ) {
                       let remaining = child.content;
 
                       while (remaining.length > 0) {
