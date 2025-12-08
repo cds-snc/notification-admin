@@ -17,7 +17,7 @@
     </button>
   </div>
   <div id="tou-terms" class="dialog-content p-gutter mb-4 focus:outline-none" tabindex="0" data-testid="tou-terms" role="document">
-    {{ terms_of_use(title_id="tou-dialog-title", autofocus_title=True) }}
+    {{ terms_of_use(title_id="tou-dialog-title") }}
   </div>
   <div class="dialog-sticky-footer p-gutterHalf items-baseline" data-testid="tou-instruction">
     <i aria-hidden="true" class="fa-solid fa-lg fa-circle-info"></i>
@@ -49,7 +49,7 @@
   {% endif %}
   <ul class="task-list mt-6">
     <li class="task-list-item">
-      <button type="button" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status"
+      <button type="button" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status{% if is_in_error_state %} tou-error-message{% endif %}"
         data-testid="tou-dialog-trigger">{{ button_text }}</button>
       <span id="tou-status">
         {{ task_list_item_complete('tou-complete', testid='tou-complete') }}

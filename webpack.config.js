@@ -15,6 +15,13 @@ module.exports = {
         type: 'window',
       },
     },
+    tiptap: {
+      import: './app/assets/javascripts/tiptap/editor.js',
+      library: {
+        name: 'Tiptap',
+        type: 'window',
+      },
+    },
   },
   watch: false,
   output: {

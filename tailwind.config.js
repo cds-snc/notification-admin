@@ -129,7 +129,6 @@ module.exports = {
         lightblue25: "#d5e8f3",
         lightblue: "#0154B0",
         slightlight: "#284162",
-        /* trying to slowly implement a more consistent scale below */
         100: "#AEE4FE",
         200: "#D7E5F5",
         300: "#71A7F3",
@@ -174,8 +173,11 @@ module.exports = {
       yellow: {
         DEFAULT: "#ffbf47",
         light: "#FFE7BB",
-        300: "#c18b00",
-        500: "#986200",
+        100: "#FFDA3D",
+        300: "#B79000",
+        500: "#977100",
+        700: "#755300",
+        900: "#392300",
       },
       green: {
         DEFAULT: "#00672F",
@@ -185,6 +187,7 @@ module.exports = {
         green: "#006435",
         100: "#8CF39C",
         300: "#29A35A",
+        700: "#1E662D",
       },
       black: "#000",
       lime: {
@@ -231,9 +234,11 @@ module.exports = {
         10: "10px",
       },
       fontFamily: {
-        sans: ["lato"],
+        sans: ["Lato", "Arial", "sans-serif"],
         body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"],
+        monospace: ["Noto Mono", "monospace"],
+        arabic: ["Noto Sans Arabic", "Arial", "sans-serif"],
+        aboriginal: ["Noto Sans Canadian Aboriginal", "Arial", "sans-serif"],
       },
       inset: {
         2: "2px",

@@ -86,6 +86,12 @@ describe("TOU Dialog", () => {
       RegisterPage.Components.TOUValidationSummaryErrorMessage().should(
         "be.visible",
       );
+      // ensure #tou-dialog-trigger has aria-describedby="tou-status tou-error-message"
+      RegisterPage.Components.TOUTrigger().should(
+        "have.attr",
+        "aria-describedby",
+        "tou-status tou-error-message",
+      );
     });
 
     it("Error message/summary is removed after agreeing to terms and submitting the form", () => {

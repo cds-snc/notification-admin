@@ -22,6 +22,7 @@ from flask import (
 )
 from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
+from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -74,6 +75,7 @@ from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.job_api_client import job_api_client
 from app.notify_client.letter_branding_client import letter_branding_client
 from app.notify_client.letter_jobs_client import letter_jobs_client
+from app.notify_client.newsletter_api_client import newsletter_api_client
 from app.notify_client.notification_api_client import notification_api_client
 from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
@@ -171,6 +173,7 @@ def create_app(application):
         job_api_client,
         letter_branding_client,
         letter_jobs_client,
+        newsletter_api_client,
         notification_api_client,
         org_invite_api_client,
         organisations_client,
@@ -374,6 +377,26 @@ def format_date_numeric(date):
 
 def format_time_24h(date):
     return utc_string_to_aware_gmt_datetime(date).strftime("%H:%M")
+
+
+def format_datetime_full(dt):
+    """Format datetime for full display with locale support"""
+    if not dt or dt == "None":
+        return _("Never")
+
+    if isinstance(dt, str):
+        dt = utc_string_to_aware_gmt_datetime(dt)
+
+    if not isinstance(dt, datetime):
+        return dt
+
+    # Get current language from session
+    lang = session.get("userlang", "en")
+
+    if lang == "fr":
+        return f"{dt.day} {_l(dt.strftime('%B'))} {dt.year}, {dt.hour} h {dt.minute:02d}"
+    else:
+        return f"{dt.strftime('%B %d, %Y')}, {dt.strftime('%-I:%M %p')}"
 
 
 def get_human_day(time):
@@ -892,5 +915,6 @@ def add_template_filters(application):
         format_phone_number_human_readable,
         format_thousands,
         id_safe,
+        format_datetime_full,
     ]:
         application.add_template_filter(fn)

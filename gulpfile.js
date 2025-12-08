@@ -47,7 +47,6 @@ const javascripts = () => {
     paths.src + "javascripts/cbor.js",
     paths.src + "javascripts/fido2.js",
     paths.src + "javascripts/autocomplete.js",
-    paths.src + "javascripts/autofocus.js",
     paths.src + "javascripts/contactSanitizePii.js",
     paths.src + "javascripts/highlightTags.js",
     paths.src + "javascripts/fileUpload.js",
@@ -97,6 +96,7 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
+        paths.src + "javascripts/tiptap.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));

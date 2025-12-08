@@ -33,24 +33,24 @@ Flask = "2.3.3"
 Flask-Babel = "2.0.0"
 Flask-Caching = "1.11.1"
 Flask-Login = "0.6.3"
-Flask-WTF = "1.2.1"
+Flask-WTF = "1.2.2"
 gevent = "23.9.1"
 greenlet = "3.1.1"
 gunicorn = "22.0.0"
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
-newrelic = "10.3.0"
+newrelic = "11.0.0"
 notifications-python-client = "6.4.1"
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.5" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.12" }
 pwnedpasswords = "2.0.0"
-pyexcel = "0.7.0"
-pyexcel-io = "0.6.6"
+pyexcel = "0.7.4"
+pyexcel-io = "0.6.7"
 pyexcel-ods3 = "0.6.1"
-pyexcel-xls = "0.7.0"
-pyexcel-xlsx = "0.6.0"
+pyexcel-xls = "0.7.1"
+pyexcel-xlsx = "0.6.1"
 python-dotenv = "1.0.1"
 pytz = "2021.3"
-PyYAML = "6.0.2"
+PyYAML = "6.0.3"
 redis = "3.5.3" # pinned for now
 timeago = "1.0.16"
 translate-toolkit = "3.13.2"
@@ -60,14 +60,14 @@ unidecode = "^1.3.8"
 user-agents = "2.2.0"
 
 validators = "^0.28.3"
-Werkzeug = "3.0.4"
+Werkzeug = "3.0.6"
 WTForms = "3.1.2"
 xlrd = "1.2.0" # this is pinned so that we can continue to support .xslm files; see https://github.com/pyexcel/pyexcel-xls/issues/53
 
 [tool.poetry.group.test.dependencies]
 beautifulsoup4 = "4.12.3"
 coveralls = "1.11.1"
-freezegun = "1.5.1"
+freezegun = "1.5.5"
 # used for creating manifest file locally
 jinja2-cli = { version = "^0.8.2", extras = ["yaml"] }
 monkeytype = "23.3.0"
@@ -84,9 +84,9 @@ ruff = "^0.8.2"
 types-beautifulsoup4 = "^4.12.0.6"
 
 # stubs libraries to keep mypy happy
-types-python-dateutil = "2.9.0.20241003"
+types-python-dateutil = "2.9.0.20251115"
 types-pytz = "2021.3.8"
-types-requests = "2.32.0.20240914"
+types-requests = "2.32.4.20250913"
 
 
 

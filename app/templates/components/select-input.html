@@ -6,10 +6,12 @@
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input, is_page_heading, use_aria_labelledby, testid, optional
   ) %}
   {% for option in field %}
-    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data, badge_options=badge_options, bordered=bordered) }}
+    {{ select_input(option, disable, option_hints, input=input, option_conditionals=option_conditionals, testid=option.data, badge_options=badge_options, bordered=bordered, autofocus=field.errors) }}
   {% endfor %}
   {% endcall %}
 {% endmacro %}
+
+
 {% macro select_list(options, child_map, disable=[], option_hints={}, input="radio") %}
   <ul>
     {% for option in options %}
@@ -23,6 +25,8 @@
     {% endfor %}
   </ul>
 {% endmacro %}
+
+
 {% macro select_nested(field, child_map, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio") %}
   {% call select_wrapper(
     field, hint, disable, option_hints, hide_legend, collapsible_opts, legend_style, input
@@ -37,10 +41,12 @@
   </div>
   {% endcall %}
 {% endmacro %}
+
+
 {% macro select_wrapper(field, hint=None, disable=[], option_hints={}, hide_legend=False, collapsible_opts={}, legend_style="text", input="radio", is_page_heading=False, use_aria_labelledby=True, testid=None, optional=False) %}
   {% set is_collapsible = collapsible_opts|length %}
   <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter {% if field.errors %} form-group-error{% endif %}" {% if is_collapsible %} data-module="collapsible-checkboxes" {% if collapsible_opts.field %} data-field-label="{{ collapsible_opts.field }}" {% endif %} {% endif %}>
-    <fieldset id="{{ field.id }}" class="contain-floats w-full" {% if use_aria_labelledby %} aria-labelledby="{{ field.id }}-label"{% endif %} {% if testid %}data-testid="{{testid}}"{% endif %} {% if field.errors %}aria-describedby="{{ field.name }}-error"{% endif %}>
+  <fieldset id="{{ field.id }}" class="contain-floats w-full" {% if testid %}data-testid="{{testid}}"{% endif %} {% if field.errors %}aria-describedby="{{ field.name }}-error"{% endif %}>
       <legend id="{{ field.id }}-label"  class="form-label heading-small{% if legend_style != 'text' %} {{ legend_style }} {% endif %}" {% if hint %}aria-describedby="{{ field.id }}-hint"{% endif %}>
         {% if is_page_heading %}<h1 class="heading-large">{% endif %}
         {% if hide_legend %}<span class="visually-hidden">{% endif %}
@@ -54,7 +60,7 @@
         {% endif %}
       </legend>
        {% if field.errors %}
-          <span class="error-message mb-4" tabindex="-1" autofocus data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" id="{{ field.name }}-error">
+          <span class="error-message mb-4" data-module="track-error" data-error-type="{{ field.errors[0] }}" data-error-label="{{ field.name }}" id="{{ field.name }}-error">
             <span class="sr-only">{{ _('Error') }}:</span> {{ field.errors[0] }}
           </span>
         {% endif %}
@@ -65,47 +71,71 @@
     </fieldset>
   </div>
 {% endmacro %}
-{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None, badge_options=None, bordered=None) %}
+
+
+{% macro select_input(option, disable=[], option_hints={}, data_target=None, as_list_item=False, input="radio", option_conditionals={}, testid=None, badge_options=None, bordered=None, autofocus=False) %}
   {% set has_conditional = option_conditionals[option.data] %}
   {% if as_list_item %}
     <li class="multiple-choice" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
-    {% else %}
-      {% set border_class = ' border-b-1 border-gray-200' if bordered else '' %}
-      <div class="multiple-choice{{ ' w-3/4' if bordered else '' }}{{ border_class }}{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
+  {% else %}
+    {% set border_class = ' border-b-1 border-gray-200' if bordered else '' %}
+    <div class="multiple-choice{{ ' w-3/4' if bordered else '' }}{{ border_class }}{{ ' has-conditional' if has_conditional}}" {% if data_target %} data-target="{{ data_target }}" {% endif %}>
+  {% endif %}
+  <input 
+    id="{{ option.id }}" 
+    name="{{ option.name }}"
+    type="{{ input }}"
+    value="{{ option.data }}"
+    {% if testid %} 
+      data-testid="{{ testid }}" 
+    {% endif %}
+    {% if option.data in disable %} 
+      disabled 
+    {% endif %} 
+    {% if option.checked %} 
+      checked
+    {% endif %}
+    class="form-input {{ 'radio' if input == 'radio' else 'checkbox' }}"
+    {% if bordered %}
+      bordered
+    {% endif %}
+    {% if autofocus %}
+      autofocus
+      aria-describedby="{{ option.name }}-error"
+    {% endif %}
+  />
+  <label class="block-label w-full" for="{{ option.id }}">
+    {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
+    {% if badge_options and badge_options[option.data] %}
+        {{ badge(badge_options[option.data][0], badge_options[option.data][1], class="float-right") }}
+    {% endif %}
+    {% if '||' in option.label.text %}
+      <span id="{{ option.id }}-img">
+        <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}">
+      </span>
       {% endif %}
-      <input id="{{ option.id }}" name="{{ option.name }}" type="{{ input }}" value="{{ option.data }}" {% if testid %} data-testid="{{ testid }}" {% endif %} {% if option.data in disable %} disabled {% endif %} {% if option.checked %} checked {% endif %}>
-        <label class="block-label w-full" for="{{ option.id }}">
-          {{ option.label.text.split("||")[0] if '||' in option.label.text else option.label.text }}
-          {% if badge_options and badge_options[option.data] %}
-            {{ badge(badge_options[option.data][0], badge_options[option.data][1], extra_class="float-right") }}
-          {% endif %}
-          {% if '||' in option.label.text %}
-            <span id="{{ option.id }}-img">
-              <img src="{{ option.label.text.split('||')[1] }}" alt="{{ option.label.text.split('||')[2] }}">
-            </span>
-            {% endif %}
-            {% if option_hints[option.data] %}
-              <span class="block block-label-hint max-w-80ch text-balance">
-                {{ option_hints[option.data] }}
-              </span>
-            {% endif %}
-          </label>
-          {% if has_conditional %}
-              <div class="conditional">
-              {{ textbox(
-                  option_conditionals[option.data],
-                  label=_(option_conditionals[option.data].label.text)|capitalize,
-                  hint=hint_txt if optional_placeholder else None,
-                  width='w-full',
-                ) }}
-              </div>
-            {% endif %}
-            {% if caller %}
-              {{ caller() }}
-            {% endif %}
-            {% if as_list_item %}
-            </li>
-        {% else %}
-          </div>
-        {% endif %}
-      {% endmacro %}
+      {% if option_hints[option.data] %}
+        <span class="block block-label-hint max-w-80ch text-balance">
+          {{ option_hints[option.data] }}
+        </span>
+      {% endif %}
+    </label>
+      {% if has_conditional %}
+        <div class="conditional">
+        {{ textbox(
+            option_conditionals[option.data],
+            label=_(option_conditionals[option.data].label.text)|capitalize,
+            hint=hint_txt if optional_placeholder else None,
+            width='w-full',
+          ) }}
+        </div>
+      {% endif %}
+      {% if caller %}
+        {{ caller() }}
+      {% endif %}
+      {% if as_list_item %}
+        </li>
+      {% else %}
+        </div>
+    {% endif %}
+{% endmacro %}

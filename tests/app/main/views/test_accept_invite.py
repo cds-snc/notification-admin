@@ -13,7 +13,6 @@ from tests.conftest import (
     create_active_user_with_permissions,
     create_sample_invite,
     normalize_spaces,
-    set_config,
 )
 
 
@@ -168,12 +167,11 @@ def test_accepting_invite_removes_invite_from_session(
 
     client_request.login(user)
 
-    with set_config(app_, "FF_SAMPLE_TEMPLATES", True):
-        page = client_request.get(
-            "main.accept_invite",
-            token="thisisnotarealtoken",
-            _follow_redirects=True,
-        )
+    page = client_request.get(
+        "main.accept_invite",
+        token="thisisnotarealtoken",
+        _follow_redirects=True,
+    )
     assert normalize_spaces(page.select_one("h1").text) == landing_page_title
 
     with client_request.session_transaction() as session:
@@ -391,7 +389,7 @@ def test_signed_in_existing_user_cannot_use_anothers_invite(
     banner_contents = flash_banners[0].text.strip()
     assert "You’re signed in as test@user.canada.ca." in banner_contents
     assert "This invite is for another email address." in banner_contents
-    assert "Sign out and click the link again to accept this invite." in banner_contents
+    assert "Sign out and select the link again to accept this invite." in banner_contents
     assert mock_accept_invite.call_count == 0
 
 

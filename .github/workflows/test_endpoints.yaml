@@ -22,7 +22,7 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-            
+
     - name: Install poetry
       env:
         POETRY_VERSION: "1.7.1"
@@ -58,7 +58,7 @@ jobs:
         echo "PYTHONPATH=/github/workspace/env/site-packages:${{ env.PYTHONPATH}}" >> $GITHUB_ENV
 
     - name: Checks for new endpoints against AWS WAF rules
-      uses: cds-snc/notification-utils/.github/actions/waffles@53.2.5
+      uses: cds-snc/notification-utils/.github/actions/waffles@53.2.12
       with:
         app-loc: '/github/workspace'
         app-libs: '/github/workspace/env/site-packages'
