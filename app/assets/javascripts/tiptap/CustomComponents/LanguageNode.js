@@ -138,19 +138,41 @@ const createLanguageNode = (language, langCode) => {
                     // Parse content between markers
                     let contentStart = start + 1;
                     if (firstLine) {
-                      // If there's content on the same line as opening marker
-                      let contentToken = state.push("paragraph_open", "p", 1);
-                      contentToken.map = [start, start + 1];
+                      // If there's content on the same line as opening marker,
+                      // tokenize it using the inline parser so inline rules (like variables)
+                      // are applied. This ensures things like ((variable)) are parsed
+                      // even when they appear immediately after the opening marker.
+                      const lineStart = start;
+                      const lineEnd = start + 1;
 
-                      let inlineToken = state.push("inline", "", 0);
+                      // push paragraph_open so the renderer gets proper structure
+                      const contentOpen = state.push("paragraph_open", "p", 1);
+                      contentOpen.map = [lineStart, lineEnd];
+
+                      const inlineToken = state.push("inline", "", 0);
                       inlineToken.content = firstLine;
-                      inlineToken.map = [start, start + 1];
+                      inlineToken.map = [lineStart, lineEnd];
                       inlineToken.children = [];
+
+                      // Explicitly parse inline content so markdown-it runs inline rules
+                      // (such as the variable inline rule) and populates `children`.
+                      try {
+                        state.md.inline.parse(
+                          firstLine,
+                          state.md,
+                          state.env,
+                          inlineToken.children,
+                        );
+                      } catch (e) {
+                        // Fall back to leaving children empty if parse fails
+                        inlineToken.children = inlineToken.children || [];
+                      }
 
                       state.push("paragraph_close", "p", -1);
                     }
 
                     if (contentStart < nextLine) {
+                      // Tokenize block content normally for following lines inside the block
                       state.md.block.tokenize(state, contentStart, nextLine);
                     }
 
