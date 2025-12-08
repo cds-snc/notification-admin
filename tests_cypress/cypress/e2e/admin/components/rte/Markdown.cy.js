@@ -27,11 +27,7 @@ describe("Markdown entering and pasting tests", () => {
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
-      // use real events plugin to simulate user typing faster
-      RichTextEditor.Components.Editor().focus();
-      cy.realType(before, { delay: 1, pressDelay: 1 });
-
-      // RichTextEditor.Components.Editor().type(before);
+      RichTextEditor.Components.Editor().type(before);
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
