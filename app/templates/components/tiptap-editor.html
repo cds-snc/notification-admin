@@ -21,16 +21,18 @@
                 script.onload = function() {
                     window.tiptapLoaded = true;
                     if (window.Tiptap) {
-                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`, '{{ current_lang }}');
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}');
                     }
                 };
                 document.head.appendChild(script);
             } else {
                 // TipTap already loaded, initialize immediately
                 if (window.Tiptap) {
-                    Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', `{{ initialContent }}`, '{{ current_lang }}');
+                    Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}');
                 }
             }
+
+            console.log('output', `{{ initialContent | tojson }}`);
         </script>
         <input type="hidden" id="{{ editorId }}" name="{{ editorId }}">
     {% endif %}
