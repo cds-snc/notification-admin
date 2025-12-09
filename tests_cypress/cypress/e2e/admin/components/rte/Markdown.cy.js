@@ -84,7 +84,9 @@ describe("Markdown entering and pasting tests", () => {
 
   it.only("Renders initial markdown samples correctly after converting to markdown", () => {
     // Visit the Storybook page for the text editor
-    cy.visit("http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown");
+    cy.visit(
+      "http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown",
+    );
 
     // Ensure the editor is loaded
     RichTextEditor.Components.Editor().should("exist");
@@ -98,6 +100,9 @@ describe("Markdown entering and pasting tests", () => {
       .join("\n\n");
 
     // Assert that the editor's content matches the concatenated expected values
-    RichTextEditor.Components.MarkdownEditor().should("have.text", concatenatedExpected);
+    RichTextEditor.Components.MarkdownEditor().should(
+      "have.text",
+      concatenatedExpected,
+    );
   });
 });
