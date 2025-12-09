@@ -81,4 +81,23 @@ describe("Markdown entering and pasting tests", () => {
     // Editor should have 9 marked up links
     RichTextEditor.Components.Editor().find("a").should("have.length", 9);
   });
+
+  it.only("Renders initial markdown samples correctly after converting to markdown", () => {
+    // Visit the Storybook page for the text editor
+    cy.visit("http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown");
+
+    // Ensure the editor is loaded
+    RichTextEditor.Components.Editor().should("exist");
+
+    // Switch to markdown mode
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Concatenate all expected values from markdownSamples
+    const concatenatedExpected = Object.values(MARKDOWN)
+      .map(({ expected }) => expected)
+      .join("\n\n");
+
+    // Assert that the editor's content matches the concatenated expected values
+    RichTextEditor.Components.MarkdownEditor().should("have.text", concatenatedExpected);
+  });
 });
