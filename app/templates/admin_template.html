@@ -24,7 +24,7 @@
             {% include 'partials/flash_messages.html' %}
             {% block maincolumn_content %}{% endblock %}
           {% endif %}
-          {% if isHome and config["NOTIFY_ENVIRONMENT"].lower() != "production" %}
+          {% if isHome %}
             {% include 'partials/newsletter/subscribe_cta.html' %}
           {% endif %}
         </main>
