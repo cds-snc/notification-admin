@@ -90,6 +90,12 @@
 <th class="table-field {{ cell_width if cell_width}}" scope="row" rowspan="{{ rowspan }}">
     {{ caller() }}
   </th>
+{% endmacro %}
+
+{% macro empty_field() -%}
+  {% call field(align='right') %}
+    <span class="sr-only">{{_("No value")}}</span>
+  {% endcall %}
 {%- endmacro %}
 
 {% macro index_field(text=None) -%}
