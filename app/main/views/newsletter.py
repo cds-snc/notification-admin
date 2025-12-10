@@ -1,6 +1,7 @@
-from flask import abort, current_app, flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 
 from app import get_current_locale
 from app.articles.pages import get_page_by_slug, get_page_by_slug_with_cache
@@ -12,8 +13,6 @@ from app.notify_client.newsletter_api_client import newsletter_api_client
 @main.route("/newsletter/subscribe", methods=["GET", "POST"])
 def newsletter_subscription():
     """Handle newsletter subscription form submissions and display"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
     newsletter_form = NewsletterSubscriptionForm()
 
     # Handle GET request - display the form
@@ -72,9 +71,6 @@ def newsletter_subscription():
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 @main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
-
     # send an api request with the subscriber_id
     newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
 
@@ -85,8 +81,6 @@ def confirm_newsletter_subscriber(subscriber_id):
 @main.route("/newsletter/check-email", methods=["GET"])
 def newsletter_check_email():
     """Newsletter subscription check email page"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
 
     email = request.args.get("email")
     if not email:
@@ -99,8 +93,6 @@ def newsletter_check_email():
 @main.route("/newsletter/<subscriber_id>/subscribed", methods=["GET", "POST"])
 def newsletter_subscribed(subscriber_id):
     """Newsletter subscription confirmation page"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
     language_form = NewsletterLanguageForm()
     # Get subscriber data including email
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
@@ -112,11 +104,12 @@ def newsletter_subscribed(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/send-latest", methods=["GET"])
 def send_latest_newsletter(subscriber_id):
     """Send the latest newsletter to a subscriber"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
 
     # Call API to send latest newsletter
-    newsletter_api_client.send_latest_newsletter(subscriber_id)
+    try:
+        newsletter_api_client.send_latest_newsletter(subscriber_id)
+    except HTTPError:
+        return redirect(url_for("main.newsletter_subscription"))
 
     # Display success message
     flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
@@ -128,12 +121,12 @@ def send_latest_newsletter(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/change-language", methods=["GET", "POST"])
 def newsletter_change_language(subscriber_id):
     """Newsletter subscription management page"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
     language_form = NewsletterLanguageForm()
     # Get subscriber data including email
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
     email = subscriber_data["subscriber"]["email"]
+    if subscriber_data["subscriber"]["status"] != "subscribed":
+        return redirect(url_for("main.newsletter_subscription"))
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -158,8 +151,6 @@ def newsletter_change_language(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/unsubscribe", methods=["GET"])
 def newsletter_unsubscribe(subscriber_id):
     """Newsletter unsubscribe confirmation page"""
-    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
-        abort(404)
 
     # Call API to unsubscribe
     subscriber_data = newsletter_api_client.unsubscribe(subscriber_id)

@@ -1,5 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
+from notifications_python_client.errors import HTTPError
 
 services = [
     {
@@ -294,6 +295,22 @@ def test_send_latest_newsletter_without_email_parameter(client, mocker):
     mock_send_latest.assert_called_once_with(subscriber_id)
 
 
+def test_send_latest_newsletter_handles_http_error(client, mocker):
+    """Test that send_latest_newsletter redirects to subscription page on HTTPError"""
+    subscriber_id = "test-subscriber-123"
+
+    mock_send_latest = mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.send_latest_newsletter",
+        side_effect=HTTPError(response=mocker.Mock(status_code=400, json=lambda: {"error": "Invalid subscriber"})),
+    )
+
+    response = client.get(f"/newsletter/{subscriber_id}/send-latest", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location == "/newsletter/subscribe"
+    mock_send_latest.assert_called_once_with(subscriber_id)
+
+
 def test_newsletter_change_language_get_displays_form(client, mocker):
     """Test that GET request to change language displays the form"""
     email = "test@cds-snc.ca"
@@ -301,7 +318,7 @@ def test_newsletter_change_language_get_displays_form(client, mocker):
 
     mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
+        return_value={"subscriber": {"email": email, "status": "subscribed"}},
     )
 
     response = client.get(f"/newsletter/{subscriber_id}/change-language")
@@ -318,7 +335,7 @@ def test_newsletter_change_language_post_updates_language(client, mocker):
 
     mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
+        return_value={"subscriber": {"email": email, "status": "subscribed"}},
     )
     mock_update_language = mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
@@ -350,7 +367,7 @@ def test_newsletter_change_language_displays_correct_language_name(client, mocke
 
     mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
+        return_value={"subscriber": {"email": email, "status": "subscribed"}},
     )
     mock_update_language = mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
@@ -374,7 +391,7 @@ def test_newsletter_change_language_get_with_query_params(client, mocker):
 
     mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
+        return_value={"subscriber": {"email": email, "status": "subscribed"}},
     )
 
     response = client.get(f"/newsletter/{subscriber_id}/change-language")
@@ -391,7 +408,7 @@ def test_newsletter_change_language_post_with_form_params(client, mocker):
 
     mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
-        return_value={"subscriber": {"email": email}},
+        return_value={"subscriber": {"email": email, "status": "subscribed"}},
     )
     mock_update_language = mocker.patch(
         "app.notify_client.newsletter_api_client.newsletter_api_client.update_language",
@@ -699,3 +716,19 @@ def test_unsubscribe_page_has_resubscribe_button(client, mocker):
     resubscribe_link = page.find("a", href="/newsletter/subscribe")
     assert resubscribe_link is not None
     assert "Resubscribe" in resubscribe_link.text
+
+
+def test_newsletter_change_language_redirects_if_not_subscribed(client, mocker):
+    """Test that change language page redirects to subscription page if user is not subscribed"""
+    subscriber_id = "test-subscriber-123"
+    email = "test@cds-snc.ca"
+
+    mocker.patch(
+        "app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber",
+        return_value={"subscriber": {"email": email, "status": "unsubscribed"}},
+    )
+
+    response = client.get(f"/newsletter/{subscriber_id}/change-language", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location == "/newsletter/subscribe"
