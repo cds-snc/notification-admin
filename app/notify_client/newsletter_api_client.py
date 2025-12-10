@@ -1,5 +1,3 @@
-from flask import current_app
-
 from app.notify_client import NotifyAdminAPIClient
 from app.notify_client.cache import delete, set
 
@@ -37,20 +35,12 @@ class NewsletterAPIClient(NotifyAdminAPIClient):
         return resp
 
     def send_latest_newsletter(self, subscriber_id: str):
-        url = f"/newsletter/send-latest/{subscriber_id}"
-        current_app.logger.info(
-            f"[admin-newsletter-debug] - Sending latest newsletter to subscriber: {subscriber_id}. URL: {url}"
-        )
-
-        resp = self.get(url=url)
+        resp = self.get(url=f"/newsletter/send-latest/{subscriber_id}")
         return resp
 
     @set("subscriber-{subscriber_id}")
     def get_subscriber(self, subscriber_id: str):
-        url = f"/newsletter/find-subscriber?subscriber_id={subscriber_id}"
-        current_app.logger.info(f"[admin-newsletter-debug] - Finding subscriber {subscriber_id}. URL: {url}")
-
-        resp = self.get(url=url)
+        resp = self.get(url=f"/newsletter/find-subscriber?subscriber_id={subscriber_id}")
         return resp
 
 
