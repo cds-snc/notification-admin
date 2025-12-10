@@ -213,6 +213,7 @@
         const width = entry.contentRect.width;
         if (width >= 768) {
           close($menu, $items);
+          $items.children().find("[href]").removeAttr("tabindex");
         }
       }
     });

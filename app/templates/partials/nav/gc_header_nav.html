@@ -3,14 +3,15 @@
 <hr class="m-0 md:hidden border-gray-300 border-0 border-b-1"/>
 {% if withnav %}
   <nav class="md:bg-gray flex" aria-label="{{ _('Main menu') }}">
-    <div class="container px-gutterHalf relative flex flex-nowrap">
+    <div class="container p-gutterHalf md:py-0 flex flex-nowrap">
+      <div class="relative w-full">
       <button
         id="menu"
         data-testid="main-menu-button"
         type="button"
         aria-expanded="false"
         aria-haspopup="true"
-        class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 my-gutterHalf w-full"
+        class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 w-full"
         data-module="menu" 
         aria-controls="proposition-links">
         {{ _("Menu") }}
@@ -47,6 +48,7 @@
       </button>
       <div id="more-menu-container" class="relative self-end hidden">
         <ul id="more-menu-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
+      </div>
       </div>
     </div>
   </nav>
