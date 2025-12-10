@@ -107,10 +107,6 @@ def newsletter_subscribed(subscriber_id):
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
     email = subscriber_data["subscriber"]["email"]
 
-    current_app.logger.info(
-        f"[ui-newsletter-debug] - Subscriber data: {subscriber_data} subscriber_id from route: {subscriber_id}"
-    )
-
     return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
@@ -122,12 +118,8 @@ def send_latest_newsletter(subscriber_id):
 
     # Call API to send latest newsletter
     try:
-        current_app.logger.info(f"[ui-newsletter-debug] - Sending latest newsletter to subscriber_id: {subscriber_id}")
         newsletter_api_client.send_latest_newsletter(subscriber_id)
-    except HTTPError as e:
-        current_app.logger.error(
-            f"[ui-newsletter-error] - Error sending latest newsletter to subscriber_id: {subscriber_id}. Error: {e}"
-        )
+    except HTTPError:
         return redirect(url_for("main.newsletter_subscription"))
 
     # Display success message
