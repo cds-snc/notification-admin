@@ -82,7 +82,7 @@ describe("Markdown entering and pasting tests", () => {
     RichTextEditor.Components.Editor().find("a").should("have.length", 9);
   });
 
-  it.only("Renders initial markdown samples correctly after converting to markdown", () => {
+  it("Renders initial markdown samples correctly after converting to markdown", () => {
     // Visit the Storybook page for the text editor
     cy.visit(
       "http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown",
