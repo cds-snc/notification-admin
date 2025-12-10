@@ -11,7 +11,7 @@ import TooltipWrapper from "./TooltipWrapper";
  * - Tab key moves focus in/out of toolbar
  * - Uses roving tabindex for proper focus management
  */
-const AccessibleToolbar = ({ children, label, editor }) => {
+const AccessibleToolbar = ({ children, label, editor, className = "" }) => {
   const toolbarRef = useRef(null);
   const currentFocusIndexRef = useRef(0);
 
@@ -177,7 +177,7 @@ const AccessibleToolbar = ({ children, label, editor }) => {
 
   return (
     <div
-      className="toolbar"
+      className={["toolbar", className].filter(Boolean).join(" ")}
       ref={toolbarRef}
       role="toolbar"
       aria-label={label}
@@ -191,7 +191,14 @@ const AccessibleToolbar = ({ children, label, editor }) => {
   );
 };
 
-const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
+const MenuBar = ({
+  editor,
+  openLinkModal,
+  lang = "en",
+  onToggleMarkdownView,
+  isMarkdownView,
+  toggleLabel,
+}) => {
   if (!editor) {
     return null;
   }
@@ -200,6 +207,7 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
   const labels = {
     en: {
       toolbar: "Editor toolbar",
+      toggleMd: "View source",
       shortcutHeading1: "⌘ + Opt + 1",
       shortcutHeading2: "⌘ + Opt + 2",
       shortcutBold: "⌘ + B",
@@ -227,6 +235,7 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
+      toggleMd: "Voir la source",
       shortcutHeading1: "⌘ + Opt + 1",
       shortcutHeading2: "⌘ + Opt + 2",
       shortcutBold: "⌘ + B",
@@ -255,6 +264,8 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
   };
 
   const t = labels[lang] || labels.en;
+  const toggleButtonLabel = toggleLabel || t.toggleMd;
+  const toggleHandler = onToggleMarkdownView || (() => {});
 
   // Platform-aware shortcut labels: use Command on macOS, Ctrl on Windows/Linux
   const getPlatform = () => {
@@ -335,7 +346,11 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
   }, [editor, openLinkModal, t.linkDialogOpened]);
 
   return (
-    <AccessibleToolbar label={t.toolbar} editor={editor}>
+    <AccessibleToolbar
+      label={t.toolbar}
+      editor={editor}
+      className={isMarkdownView ? "markdown-mode" : ""}
+    >
       <div
         className="sr-only"
         role="alert"
@@ -433,8 +448,8 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               aria-hidden="true"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -769,6 +784,62 @@ const MenuBar = ({ editor, openLinkModal, lang = "en" }) => {
               {t.frenchBlock}
             </span>
             FR
+          </button>
+        </TooltipWrapper>
+      </div>
+      <div className="toolbar-separator"></div>
+
+      {/* Markdown toggle group */}
+      <div className="toolbar-group toolbar-switch-group">
+        <TooltipWrapper label={toggleButtonLabel}>
+          <button
+            type="button"
+            data-testid="rte-toggle-markdown"
+            onClick={toggleHandler}
+            className={"toolbar-button" + (isMarkdownView ? " is-active" : "")}
+            title={toggleButtonLabel}
+            aria-pressed={isMarkdownView}
+          >
+            <span className="sr-only">{toggleButtonLabel}</span>
+            {isMarkdownView ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="icon icon-tabler icons-tabler-outline icon-tabler-file-arrow-left"
+                aria-hidden="true"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                <path d="M15 15h-6"></path>
+                <path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5"></path>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M7 8l-4 4l4 4"></path>
+                <path d="M17 8l4 4l-4 4"></path>
+                <path d="M14 4l-4 16"></path>
+              </svg>
+            )}
           </button>
         </TooltipWrapper>
       </div>
