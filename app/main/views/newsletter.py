@@ -1,4 +1,4 @@
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
@@ -13,6 +13,8 @@ from app.notify_client.newsletter_api_client import newsletter_api_client
 @main.route("/newsletter/subscribe", methods=["GET", "POST"])
 def newsletter_subscription():
     """Handle newsletter subscription form submissions and display"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     newsletter_form = NewsletterSubscriptionForm()
 
     # Handle GET request - display the form
@@ -71,6 +73,9 @@ def newsletter_subscription():
 @main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
 @main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
+
     # send an api request with the subscriber_id
     newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
 
@@ -81,6 +86,8 @@ def confirm_newsletter_subscriber(subscriber_id):
 @main.route("/newsletter/check-email", methods=["GET"])
 def newsletter_check_email():
     """Newsletter subscription check email page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
 
     email = request.args.get("email")
     if not email:
@@ -93,6 +100,8 @@ def newsletter_check_email():
 @main.route("/newsletter/<subscriber_id>/subscribed", methods=["GET", "POST"])
 def newsletter_subscribed(subscriber_id):
     """Newsletter subscription confirmation page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     language_form = NewsletterLanguageForm()
     # Get subscriber data including email
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
@@ -104,6 +113,8 @@ def newsletter_subscribed(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/send-latest", methods=["GET"])
 def send_latest_newsletter(subscriber_id):
     """Send the latest newsletter to a subscriber"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
 
     # Call API to send latest newsletter
     try:
@@ -121,6 +132,8 @@ def send_latest_newsletter(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/change-language", methods=["GET", "POST"])
 def newsletter_change_language(subscriber_id):
     """Newsletter subscription management page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
     language_form = NewsletterLanguageForm()
     # Get subscriber data including email
     subscriber_data = newsletter_api_client.get_subscriber(subscriber_id=subscriber_id)
@@ -151,6 +164,8 @@ def newsletter_change_language(subscriber_id):
 @main.route("/newsletter/<subscriber_id>/unsubscribe", methods=["GET"])
 def newsletter_unsubscribe(subscriber_id):
     """Newsletter unsubscribe confirmation page"""
+    if current_app.config["NOTIFY_ENVIRONMENT"].lower() == "production":
+        abort(404)
 
     # Call API to unsubscribe
     subscriber_data = newsletter_api_client.unsubscribe(subscriber_id)
