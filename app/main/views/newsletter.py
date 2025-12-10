@@ -1,6 +1,7 @@
 from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_babel import _
 from flask_login import current_user
+from notifications_python_client.errors import HTTPError
 
 from app import get_current_locale
 from app.articles.pages import get_page_by_slug, get_page_by_slug_with_cache
@@ -106,10 +107,12 @@ def send_latest_newsletter(subscriber_id):
 
     # Call API to send latest newsletter
     ## TODO: uncomment after fixing subscriber_id param issue, query string parts are being included in the subscriber_id somehow
-    # try:
-    newsletter_api_client.send_latest_newsletter(subscriber_id)
-    # except HTTPError:
-    # return redirect(url_for("main.newsletter_subscription"))
+    try:
+        newsletter_api_client.send_latest_newsletter(subscriber_id)
+    except HTTPError:
+        flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
+        # Redirect back to subscribed page
+        return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
     # Display success message
     flash(_("We’ve sent you the most recent newsletter"), category="default_with_tick")
