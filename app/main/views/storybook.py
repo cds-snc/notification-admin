@@ -1,3 +1,6 @@
+import re
+from pathlib import Path
+
 from flask import render_template, request
 from flask_wtf import FlaskForm as Form
 from wtforms import BooleanField, RadioField, StringField
@@ -5,6 +8,29 @@ from wtforms.validators import DataRequired
 
 from app.main import main
 from app.main.forms import MultiCheckboxField
+
+
+def load_markdown_samples():
+    """Read the Cypress markdown fixture and extract the `before` sections.
+
+    This is a lightweight parser that finds JS template literal values assigned
+    to `before:` in the fixture file and concatenates them in a sensible order.
+    """
+    fixture = Path(__file__).resolve().parents[3] / "tests_cypress" / "cypress" / "fixtures" / "markdownSamples.js"
+    if not fixture.exists():
+        return None
+
+    text = fixture.read_text(encoding="utf-8")
+
+    # Find occurrences like expected: `...` (backtick delimited). We capture the contents.
+    matches = re.findall(r"expected:\s*`([\s\S]*?)`", text)
+
+    if not matches:
+        return None
+
+    # Concatenate in the file order. Add two newlines between sections for readability.
+    combined = "\n\n".join(s.strip() for s in matches)
+    return combined
 
 
 class Exampleform1(Form):
@@ -105,6 +131,9 @@ def storybook():
     if request.method == "POST":
         full_form.validate()
 
+    # Attempt to load complex markdown samples (for storybook playgrounds)
+    complex_markdown = load_markdown_samples()
+
     return render_template(
         "views/storybook.html",
         component=component,
@@ -112,4 +141,5 @@ def storybook():
         form2=form2,
         form3=form3,
         full_form=full_form,
+        complex_markdown=complex_markdown,
     )

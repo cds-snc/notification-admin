@@ -36,8 +36,10 @@ export const MARKDOWN = {
 
 ## Heading level 2 with ((variable)) and trailing punctuation!`,
     },
-    VARIABLES: {
+VARIABLES: {
         before: `> # 2. VARIABLES
+
+((variable_by_itself))
 
 Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bold_variable))** and *((italic_variable))*
 
@@ -51,6 +53,8 @@ Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bo
 
 [[fr]]in an ((french_block))`,
         expected: `> # 2. VARIABLES
+
+((variable_by_itself))
 
 Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bold_variable))** and *((italic_variable))*
 
@@ -67,8 +71,7 @@ in an ((english_block))
 [[fr]]
 in an ((french_block))
 [[/fr]]`,
-
-    },
+},
     TEXT_STYLES: {
         before: `> # 3. TEXT STYLES
 
