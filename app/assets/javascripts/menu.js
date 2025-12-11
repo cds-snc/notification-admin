@@ -218,7 +218,10 @@
       }
     });
 
-    resizeObserver.observe(document.body);
+    // Only observe if the menu has the data-menu-type=hybrid attribute
+    if ($menu.data("menu-type") === "hybrid") {
+      resizeObserver.observe(document.body);
+    }
   }
 
   Modules.Menu = function () {

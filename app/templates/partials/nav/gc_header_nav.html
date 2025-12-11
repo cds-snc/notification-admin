@@ -13,11 +13,12 @@
         aria-haspopup="true"
         class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 w-full"
         data-module="menu" 
+        data-menu-type="hybrid"
         aria-controls="proposition-links">
         {{ _("Menu") }}
         <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
       </button>
-      <ul id="proposition-links" data-testid="main-menu-links" class="hidden menu-overlay md:flex flex-nowrap flex-grow items-baseline gap-gutterHalf" role="menu">
+      <ul id="proposition-links" data-testid="main-menu-links" class="hidden max-md:min-w-full menu-overlay md:flex flex-nowrap flex-grow items-baseline gap-gutterHalf" role="menu">
         {% if nav_items %}
             {% for i in nav_items %}
             {# Menu configured in GC Articles #}
