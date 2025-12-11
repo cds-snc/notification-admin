@@ -74,7 +74,7 @@
     @apply border-b-0 border-l-4;
   }
 
-  /* Just the main navigation */
+  /* Align nav menu items with edge of other elements on the document. Just for proposition links*/
   #proposition-links .nav-menu-item {
     @apply md:px-0;
   }
