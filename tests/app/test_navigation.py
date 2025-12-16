@@ -1,6 +1,6 @@
 """Tests for the navigation module."""
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from app.navigation import Navigation
 from tests.conftest import ORGANISATION_ID, SERVICE_ONE_ID
@@ -69,21 +69,27 @@ class TestNavigationGetNav:
             mock_service_nav.assert_called_once()
             assert result == {"service": "nav"}
 
-    @patch("app.navigation.current_user")
-    def test_get_nav_returns_user_nav_when_no_permissions(self, mock_current_user):
+    def test_get_nav_returns_user_nav_when_no_permissions(self):
         """Test that user navigation is returned when user has no permissions."""
         # Setup
         nav = Navigation()
-        mock_current_user.is_authenticated = True
-        mock_current_user.has_permissions.return_value = False
 
-        # Mock get_user_nav to avoid needing full context
-        with patch.object(nav, "get_user_nav", return_value={"user": "nav"}) as mock_user_nav:
-            result = nav.get_nav()
+        with patch("app.navigation.current_user") as mock_current_user:
+            # Configure the mock properly
+            mock_user_instance = Mock()
+            mock_user_instance.is_authenticated = True
+            mock_user_instance.has_permissions = Mock(return_value=False)
+            mock_current_user.return_value = mock_user_instance
+            mock_current_user.is_authenticated = True
+            mock_current_user.has_permissions = Mock(return_value=False)
 
-            # Assert
-            mock_user_nav.assert_called_once()
-            assert result == {"user": "nav"}
+            # Mock get_user_nav to avoid needing full context
+            with patch.object(nav, "get_user_nav", return_value={"user": "nav"}) as mock_user_nav:
+                result = nav.get_nav()
+
+                # Assert
+                mock_user_nav.assert_called_once()
+                assert result == {"user": "nav"}
 
     @patch("app.navigation.current_user")
     def test_get_nav_returns_public_nav_when_not_authenticated(self, mock_current_user):
