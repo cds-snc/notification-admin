@@ -147,6 +147,77 @@ const VariableMark = Mark.create({
               md.renderer.rules.variable_open = () =>
                 '<span data-type="variable">';
               md.renderer.rules.variable_close = () => "</span>";
+
+              // Post-process inline text tokens so any remaining ((...)) sequences
+              // are converted into variable tokens. This ensures variables are
+              // recognized in contexts where inline rules may not run (lists,
+              // blockquotes, language blocks, etc.).
+              md.core.ruler.push("variable_inline_transform", (state) => {
+                const Token = state.Token;
+
+                for (let i = 0; i < state.tokens.length; i++) {
+                  const blockToken = state.tokens[i];
+                  if (blockToken.type !== "inline" || !blockToken.children)
+                    continue;
+
+                  const newChildren = [];
+
+                  for (let j = 0; j < blockToken.children.length; j++) {
+                    const child = blockToken.children[j];
+
+                    if (
+                      child.type === "text" &&
+                      child.content &&
+                      child.content.includes("((")
+                    ) {
+                      let remaining = child.content;
+
+                      while (remaining.length > 0) {
+                        const openIdx = remaining.indexOf("((");
+                        if (openIdx === -1) {
+                          const t = new Token("text", "", 0);
+                          t.content = remaining;
+                          newChildren.push(t);
+                          break;
+                        }
+
+                        if (openIdx > 0) {
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(0, openIdx);
+                          newChildren.push(t);
+                        }
+
+                        const closeIdx = remaining.indexOf("))", openIdx + 2);
+                        if (closeIdx === -1) {
+                          // No closing - push the rest as text
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(openIdx);
+                          newChildren.push(t);
+                          break;
+                        }
+
+                        const varName = remaining.slice(openIdx + 2, closeIdx);
+
+                        const tOpen = new Token("variable_open", "span", 1);
+                        tOpen.attrs = [["data-type", "variable"]];
+                        tOpen.markup = "((";
+                        const tText = new Token("text", "", 0);
+                        tText.content = varName;
+                        const tClose = new Token("variable_close", "span", -1);
+                        tClose.markup = "))";
+
+                        newChildren.push(tOpen, tText, tClose);
+
+                        remaining = remaining.slice(closeIdx + 2);
+                      }
+                    } else {
+                      newChildren.push(child);
+                    }
+                  }
+
+                  blockToken.children = newChildren;
+                }
+              });
             });
           },
         },
