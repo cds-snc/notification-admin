@@ -20,6 +20,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
+import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
 import "./editor.css";
 import LinkModal from "./LinkModal";
@@ -130,11 +131,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           const hasVariables = /\(\([^)]+\)\)/.test(text);
 
           if (hasVariables) {
-            // Replace variables with HTML spans
-            const processedText = text.replace(
-              /\(\(([^)]+)\)\)/g,
-              '<span data-type="variable">$1</span>',
-            );
+            // Replace variables with HTML spans (centralized helper)
+            const processedText = convertVariablesToSpans(text);
 
             // Insert the processed HTML at the current cursor position
             editor.commands.insertContent(processedText);
@@ -359,8 +357,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Switching back from markdown to rich text
       const processedMarkdown = markdownValue || "";
 
-      // Set the content from markdown, letting the Markdown extension parse it
-      editor.commands.setContent(processedMarkdown);
+      // Set the content from markdown, converting variables to HTML spans
+      // so behavior matches paste. We centralize conversion in helper.
+      const processedForInsert = convertVariablesToSpans(processedMarkdown);
+      editor.commands.setContent(processedForInsert);
 
       // Force editor to re-render by triggering a transaction
       // This ensures all marks and nodes are properly applied
