@@ -19,6 +19,7 @@ jobs:
         uses: slackapi/slack-github-action@v2
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
+          webhook-type: 'incoming-webhook'
           payload: |
             {
               "text": "Cypress a11y test failures",
