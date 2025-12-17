@@ -97,10 +97,12 @@ class Navigation:
         }
 
     def get_user_nav(self):
-        return {
-            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+        nav = {
             "choose_account": {"label": _l("Your services"), "view": "choose_account", "id_key": "choose_account"},
         }
+        if current_user.platform_admin:
+            nav = {"platform_admin": {"label": _l("Admin panel"), "view": "live_services"}, **nav}
+        return nav
 
     def get_org_nav(self):
         from app import current_organisation
