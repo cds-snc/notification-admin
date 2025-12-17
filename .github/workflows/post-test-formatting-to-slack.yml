@@ -18,12 +18,12 @@ jobs:
       - name: Post to Slack (incoming webhook)
         uses: slackapi/slack-github-action@v2
         with:
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          # top-level text (fallback / accessibility)
-          text: "Cypress a11y test failures"
-          # blocks inline as a JSON string
-          blocks: |
-            [
-              {"type":"section","text":{"type":"mrkdwn","text":"🧪🧪 *TESTING* 🧪🧪\n\n* Cypress a11y test failures *"}},
-              {"type":"section","text":{"type":"mrkdwn","text":"- Test: *GCA a11y tests [LOCAL] English /terms*\n> CypressError: `cy.request()` failed trying to load:\n> https://www.bokren-link.ca/\n> We attempted to make an http request to this URL but the request failed without a response.\n> We received this error at the network level:\n> > Error: getaddrinfo ENOTFOUND www.bokren-link.ca"}}
-            ]
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: |
+            {
+              "text": "Cypress a11y test failures",
+              "blocks": [
+                {"type":"section","text":{"type":"mrkdwn","text":"🧪🧪 *TESTING* 🧪🧪\n\n* Cypress a11y test failures *"}},
+                {"type":"section","text":{"type":"mrkdwn","text":"- Test: *GCA a11y tests [LOCAL] English /terms*\n> CypressError: `cy.request()` failed trying to load:\n> https://www.bokren-link.ca/\n> We attempted to make an http request to this URL but the request failed without a response.\n> We received this error at the network level:\n> > Error: getaddrinfo ENOTFOUND www.bokren-link.ca"}}
+              ]
+            }
