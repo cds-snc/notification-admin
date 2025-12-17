@@ -45,6 +45,7 @@ from werkzeug.local import LocalProxy
 from app import proxy_fix
 from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
+from app.cens_client import cens_client
 from app.commands import setup_commands
 from app.config import configs
 from app.extensions import (
@@ -194,6 +195,7 @@ def create_app(application):
         zendesk_client,
         redis_client,
         bounce_rate_client,
+        cens_client,
     ):
         client.init_app(application)
 
