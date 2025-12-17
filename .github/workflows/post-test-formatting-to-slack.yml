@@ -1,7 +1,7 @@
 name: Post formatted test message to Slack
 
 on:
-  workflow_dispatch: {}
+  push:
 
 jobs:
   post-formatting:
