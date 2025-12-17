@@ -1,11 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
 
-  header a:hover,
-  .preview-banner a {
-    @apply underline !important;
-  }
-
   header a:link,
   header a:visited,
   header a:link:focus,
