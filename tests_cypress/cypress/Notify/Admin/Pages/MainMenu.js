@@ -1,8 +1,8 @@
 // Parts of the page a user can interact with
 let Components = {
-    MenuButton: () => cy.get('#menu'),
-    Menu: () => cy.get('#main-menu-nav'),
-    MenuItems: () => cy.get('#main-menu-nav a'),
+    MenuButton: () => cy.get('[data-testid="main-menu-button"]'),
+    Menu: () => cy.get('[data-testid="main-menu-links"]'),
+    MenuItems: () => cy.get('[data-testid="main-menu-links"] a'),
 };
 
 // Actions users can take on the page
@@ -13,11 +13,11 @@ let Actions = {
     },
     CloseMenuEsc: () => {
         cy.get("body").type('{esc}');
-        cy.get('#main-menu-nav').should('not.be.visible');
+        Components.Menu().should('not.be.visible');
     },
     CloseMenuClick: () => {
         cy.get("body").click({force: true});
-        cy.get('#main-menu-nav').should('not.be.visible');
+        Components.Menu().should('not.be.visible');
     },
     ArrowLeft: () => {
         cy.get("body").type('{leftarrow}');
