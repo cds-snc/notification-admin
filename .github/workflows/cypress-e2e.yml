@@ -213,8 +213,7 @@ jobs:
         build: npx cypress info
         working-directory: tests_cypress
         spec: |
-          cypress/e2e/admin/ci.cy.js
-
+          cypress/e2e/admin/a11y/gca_pages.cy.js
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
       if: always()
@@ -243,3 +242,92 @@ jobs:
       run: |
         echo "==== FRONTEND LOGS ===="
         cat frontend.log || echo "No frontend logs available"
+
+    - name: Build failure previews from mochawesome
+      if: failure()
+      run: |
+        set -euo pipefail
+        FILE=tests_cypress/cypress/results/mochawesome.json
+        if [ ! -f "$FILE" ]; then
+          echo "No mochawesome found at $FILE" >&2
+          echo "failures=[]" > /tmp/failures.json
+          exit 0
+        fi
+
+        jq -c '[ .results[] | .. | objects
+          | select(.state=="failed")
+          | { fullTitle: (.fullTitle // .title), message: (.err.message // .err.estack // "No error") }
+          ]
+          | unique_by(.fullTitle)
+          | map({ title: .fullTitle, preview: ( .message
+              | split("\n")
+              | map(gsub("^\\s+|\\s+$"; ""))
+              | map(select(length>0))
+              | .[0:5]
+              | map("> " + .)
+              | join("\n") ) })
+          | .[0:5]' "$FILE" > /tmp/failures.json
+
+        jq . /tmp/failures.json || true
+
+    - name: Post parent message (chat.postMessage)
+      if: failure()
+      id: post_parent
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+      run: |
+        set -euo pipefail
+        if [ -z "${SLACK_BOT_TOKEN:-}" ] || [ -z "${SLACK_CHANNEL:-}" ]; then
+          echo "SLACK_BOT_TOKEN or SLACK_CHANNEL secret missing" >&2
+          exit 1
+        fi
+
+        PARENT_TEXT='*:rotating_light: Staging a11y tests failed :rotating_light:*'
+        RUN_LINK='https://github.com/cds-snc/notification-admin/actions/runs/${{ github.run_id }}'
+        LINK_TEXT=':github: Workflow run'
+        FULL_TEXT="$PARENT_TEXT\n<$RUN_LINK|$LINK_TEXT>"
+
+        resp=$(curl -s -X POST \
+          -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
+          -H "Content-type: application/json" \
+          --data "$(jq -nc --arg ch "$SLACK_CHANNEL" --arg txt "$FULL_TEXT" '{channel:$ch, text:$txt, mrkdwn:true}')" \
+          https://slack.com/api/chat.postMessage)
+
+        echo "Parent response: $resp"
+        ok=$(echo "$resp" | jq -r '.ok')
+        if [ "$ok" != "true" ]; then
+          echo "Failed to post parent message: $(echo "$resp" | jq -r '.error')" >&2
+          exit 1
+        fi
+
+        ts=$(echo "$resp" | jq -r '.ts')
+        echo "ts=$ts" >> $GITHUB_OUTPUT
+
+    - name: Post threaded replies (max 5)
+      if: failure()
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+      run: |
+        set -euo pipefail
+        TS="${{ steps.post_parent.outputs.ts }}"
+        if [ -z "$TS" ]; then
+          echo "No parent ts, skipping replies"
+          exit 0
+        fi
+
+        mapfile -t items < <(jq -c '.[]' /tmp/failures.json)
+        emojis=(":one:" ":two:" ":three:" ":four:" ":five:")
+        for idx in "${!items[@]}"; do
+          item=${items[$idx]}
+          title=$(echo "$item" | jq -r '.title')
+          preview=$(echo "$item" | jq -r '.preview')
+          prefix=${emojis[$idx]:-":hash:"}
+          printf -v prefixed_title '%s Test *`%s`* failed' "$prefix" "$title"
+          body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg text "$prefixed_title" --arg preview "$preview" '{channel:$ch, text: ($text + "\n\n" + $preview + "\n\n:wavy_dash:\n"), thread_ts:$thread, mrkdwn:true}')
+
+          echo "Posting reply for $title"
+          curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$body" https://slack.com/api/chat.postMessage | jq . || true
+          sleep 0.5
+        done
