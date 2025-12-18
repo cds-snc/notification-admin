@@ -101,7 +101,7 @@ jobs:
             title=$(echo "$item" | jq -r '.title')
             preview=$(echo "$item" | jq -r '.preview')
             # Build JSON body via jq to avoid shell/backtick issues
-            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n" + $preview + "\n\n:wavy_dash:"), thread_ts:$thread, mrkdwn:true}')
+            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n\n" + $preview + "\n\n:wavy_dash:\n"), thread_ts:$thread, mrkdwn:true}')
 
             echo "Posting reply for $title"
             curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$body" https://slack.com/api/chat.postMessage | jq . || true
