@@ -109,7 +109,7 @@ jobs:
           fi
 
           PARENT_TEXT='*:rotating_light: Staging a11y tests failed :rotating_light:*'
-          RUN_LINK='https://github.com/cds-snc/notification-admin/actions/runs/${{ github.run_id }}'
+          RUN_LINK='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
           LINK_TEXT=':github: Workflow run'
           ARTIFACTS_LINK='${{ steps.artifact_link.outputs.artifact_url }}'
           ARTIFACTS_TEXT=':file_cabinet: Artifacts download'
