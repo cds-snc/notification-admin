@@ -42,6 +42,8 @@ module.exports = {
     "grid-cols-4",
     "col-start-2",
     "col-span-3",
+    "font-arabic",
+    "font-aboriginal",
   ],
   content: [
     "./app/**/*.{html,css,js}",
