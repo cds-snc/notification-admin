@@ -38,7 +38,7 @@
           {{ _("GC Notify") }}
         </a>
         {% else %}
-        <a href="/" id="gc-title" class="back-link text-base">
+        <a href="/" id="gc-title" class="underline hover:underline text-base">
           {{ _("GC Notify") }}
         </a>
         {% endif %}
@@ -52,9 +52,9 @@
         {{ url_text }}
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
         <a
-          class="flex md:inline-flex md:ml-4 gap-2 items-baseline text-xs relative md:top-[-3px]"
+          class="flex md:inline-flex md:ml-4 gap-2 items-baseline text-xs relative md:top-[-3px] border-0 focus:border-0"
           href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}">
-            {{ badge(_('Trial'), variant='blue') }}
+            {{ badge(_('Trial'), variant='blue', id='live-banner') }}
             <span class="underline">
               {% if current_service.pending_live %}
                 {{ _('Request being reviewed') }}
