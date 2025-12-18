@@ -278,7 +278,12 @@ jobs:
       run: |
         set -euo pipefail
         resp=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts")
-        url=$(echo "$resp" | jq -r '.artifacts[0].archive_download_url // empty')
+        artifact_id=$(echo "$resp" | jq -r '.artifacts[0].id // empty')
+        if [ -n "$artifact_id" ]; then
+          url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/$artifact_id"
+        else
+          url=''
+        fi
         echo "artifact_url=$url" >> $GITHUB_OUTPUT
 
     - name: Post parent message (chat.postMessage)
