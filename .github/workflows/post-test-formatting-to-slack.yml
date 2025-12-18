@@ -28,7 +28,7 @@ jobs:
             echo "mochawesome JSON already exists, leaving it in place"
             exit 0
           fi
-          echo '{"results":[{"suites":[{"suites":[{"title":"GCA a11y tests [LOCAL]","suites":[{"title":"English","tests":[{"fullTitle":"GCA a11y tests [LOCAL] English http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]},{"title":"Francais","tests":[{"fullTitle":"GCA a11y tests [LOCAL] Francais http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]}]}]}]}]}' > tests_cypress/cypress/results/mochawesome.json
+          echo '{"results":[{"suites":[{"suites":[{"title":"GCA a11y tests [LOCAL]","suites":[{"title":"English","tests":[{"fullTitle":"GCA a11y tests [LOCAL] English /terms","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]},{"title":"Francais","tests":[{"fullTitle":"GCA a11y tests [LOCAL] Francais /privacy","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]}]}]}]}]}' > tests_cypress/cypress/results/mochawesome.json
 
       - name: Read and build failure previews
         id: build
@@ -66,7 +66,7 @@ jobs:
 
           PARENT_TEXT='*:rotating_light: Staging a11y tests failed :rotating_light:*'
 
-          resp=$(curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$(jq -nc --arg ch "$SLACK_CHANNEL" --arg txt "$PARENT_TEXT" '{channel:$ch, text:$txt}')" https://slack.com/api/chat.postMessage)
+          resp=$(curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$(jq -nc --arg ch "$SLACK_CHANNEL" --arg txt "$PARENT_TEXT" '{channel:$ch, text:$txt, mrkdwn:true}')" https://slack.com/api/chat.postMessage)
 
           echo "Parent response: $resp"
           ok=$(echo "$resp" | jq -r '.ok')
@@ -95,7 +95,7 @@ jobs:
             title=$(echo "$item" | jq -r '.title')
             preview=$(echo "$item" | jq -r '.preview')
             # Build JSON body via jq to avoid shell/backtick issues
-            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n> " + $preview + "\n:wavy_dash:"), thread_ts:$thread}')
+            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n> " + $preview + "\n:wavy_dash:"), thread_ts:$thread, mrkdwn:true}')
 
             echo "Posting reply for $title"
             curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$body" https://slack.com/api/chat.postMessage | jq . || true
