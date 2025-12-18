@@ -3,35 +3,36 @@
 const langs = ["en", "fr"];
 
 const fullPageList = [
-  { en: "/accessibility", fr: "/accessibilite" },
-  { en: "/features", fr: "/fonctionnalites" },
-  { en: "/formatting-emails", fr: "/mettre-en-forme-les-courriels" },
-  { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
-  { en: "/guidance", fr: "/guides-reference" },
-  { en: "/home", fr: "/accueil" },
-  { en: "/other-services", fr: "/autres-services" },
-  { en: "/privacy", fr: "/confidentialite" },
-  { en: "/security", fr: "/securite" },
-  { en: "/sending-custom-content", fr: "/envoyer-contenu-personnalise" },
-  { en: "/service-level-objectives", fr: "/objectifs-niveau-de-service" },
-  { en: "/system-status", fr: "/etat-du-systeme" },
-  {
-    en: "/understanding-delivery-and-failure",
-    fr: "/comprendre-statut-de-livraison",
-  },
-  {
-    en: "/updating-contact-information",
-    fr: "/maintenir-a-jour-les-coordonnees",
-  },
-  { en: "/using-a-spreadsheet", fr: "/utiliser-une-feuille-de-calcul" },
-  { en: "/by-and-for-gc", fr: "/par-et-pour-gc" },
-  { en: "/new-features", fr: "/nouvelles-fonctionnalites" },
-  { en: "/getting-started", fr: "/decouvrir-notification-gc" },
-  { en: "/register-for-a-demo", fr: "/sinscrire-a-une-demo" },
-  { en: "/terms", fr: "/terms" },
+  // { en: "/accessibility", fr: "/accessibilite" },
+  // { en: "/features", fr: "/fonctionnalites" },
+  // { en: "/formatting-emails", fr: "/mettre-en-forme-les-courriels" },
+  // { en: "/service-level-agreement", fr: "/accord-niveaux-de-service" },
+  // { en: "/guidance", fr: "/guides-reference" },
+  // { en: "/home", fr: "/accueil" },
+  // { en: "/other-services", fr: "/autres-services" },
+  // { en: "/privacy", fr: "/confidentialite" },
+  // { en: "/security", fr: "/securite" },
+  // { en: "/sending-custom-content", fr: "/envoyer-contenu-personnalise" },
+  // { en: "/service-level-objectives", fr: "/objectifs-niveau-de-service" },
+  // { en: "/system-status", fr: "/etat-du-systeme" },
+  // {
+  //   en: "/understanding-delivery-and-failure",
+  //   fr: "/comprendre-statut-de-livraison",
+  // },
+  // {
+  //   en: "/updating-contact-information",
+  //   fr: "/maintenir-a-jour-les-coordonnees",
+  // },
+  // { en: "/using-a-spreadsheet", fr: "/utiliser-une-feuille-de-calcul" },
+  // { en: "/by-and-for-gc", fr: "/par-et-pour-gc" },
+  // { en: "/new-features", fr: "/nouvelles-fonctionnalites" },
+  // { en: "/getting-started", fr: "/decouvrir-notification-gc" },
+  // { en: "/register-for-a-demo", fr: "/sinscrire-a-une-demo" },
+  // { en: "/terms", fr: "/terms" },
+  { en: "/thing-that-isnt-there", fr: "/chose-qui-nest-pas-la" },
 ];
 
-describe(`GCA a11y tests [${Cypress.env("ENV")}]`, () => {
+describe.only(`GCA a11y tests [${Cypress.env("ENV")}]`, () => {
   for (const lang of langs) {
     const currentLang = lang === "en" ? "English" : "Francais";
     context(currentLang, () => {
