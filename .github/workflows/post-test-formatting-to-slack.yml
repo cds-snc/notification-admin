@@ -19,48 +19,12 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
+
       - name: Prepare mochawesome JSON (testing mode)
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.testing == 'true' }}
         run: |
           mkdir -p tests_cypress/cypress/results
-          cat > tests_cypress/cypress/results/mochawesome.json <<'MOCHA'
-{
-  "results": [
-    {
-      "suites": [
-        {
-          "suites": [
-            {
-              "title": "GCA a11y tests [LOCAL]",
-              "suites": [
-                {
-                  "title": "English",
-                  "tests": [
-                    {
-                      "fullTitle": "GCA a11y tests [LOCAL] English http://localhost:8000/broken_link.html",
-                      "state": "failed",
-                      "err": { "message": "CypressError: `cy.request()` failed trying to load:\n\nhttps://www.bokren-link.ca/\n\nError: getaddrinfo ENOTFOUND www.bokren-link.ca\n" }
-                    }
-                  ]
-                },
-                {
-                  "title": "Francais",
-                  "tests": [
-                    {
-                      "fullTitle": "GCA a11y tests [LOCAL] Francais http://localhost:8000/broken_link.html",
-                      "state": "failed",
-                      "err": { "message": "CypressError: `cy.request()` failed trying to load:\n\nhttps://www.bokren-link.ca/\n\nError: getaddrinfo ENOTFOUND www.bokren-link.ca\n" }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-  }
-}
-MOCHA
+          echo '{"results":[{"suites":[{"suites":[{"title":"GCA a11y tests [LOCAL]","suites":[{"title":"English","tests":[{"fullTitle":"GCA a11y tests [LOCAL] English http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]},{"title":"Francais","tests":[{"fullTitle":"GCA a11y tests [LOCAL] Francais http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]}]}]}]}]}' > tests_cypress/cypress/results/mochawesome.json
 
       - name: Read and build failure previews
         id: build
@@ -125,10 +89,9 @@ MOCHA
           mapfile -t items < <(jq -c '.[]' /tmp/failures.json)
           for item in "${items[@]}"; do
             title=$(echo "$item" | jq -r '.title')
-            preview=$(echo "$item" | jq -r '.preview' | sed 's/`/\`/g')
-            body=$(jq -nc --arg t "Test *`$title`* failed\n> $preview\n:wavy_dash:" '{text: $t, channel: env.SLACK_CHANNEL, thread_ts: env.TS}')
-            # Fix body to include channel and thread_ts correctly via jq template
-            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg txt "Test *`$title`* failed\n> $preview\n:wavy_dash:" '{channel:$ch, text:$txt, thread_ts:$thread}')
+            preview=$(echo "$item" | jq -r '.preview')
+            # Build JSON body via jq to avoid shell/backtick issues
+            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n> " + $preview + "\n:wavy_dash:"), thread_ts:$thread}')
 
             echo "Posting reply for $title"
             curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$body" https://slack.com/api/chat.postMessage | jq . || true
