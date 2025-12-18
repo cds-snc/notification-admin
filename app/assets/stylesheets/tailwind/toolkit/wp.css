@@ -170,9 +170,8 @@
     @apply -mt-2;
   }
 
-  .page-content code:not[class*="font-"] {
-    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    @apply whitespace-break-spaces;
+  .page-content code:not([class*="font-"]) {
+    @apply font-body whitespace-break-spaces;
   }
 
   /** Block
