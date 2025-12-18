@@ -20,10 +20,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
 
 
-      - name: Prepare mochawesome JSON (testing mode)
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.testing == 'true' }}
+      - name: Ensure mochawesome JSON exists (testing)
         run: |
           mkdir -p tests_cypress/cypress/results
+          FILE=tests_cypress/cypress/results/mochawesome.json
+          if [ -f "$FILE" ]; then
+            echo "mochawesome JSON already exists, leaving it in place"
+            exit 0
+          fi
           echo '{"results":[{"suites":[{"suites":[{"title":"GCA a11y tests [LOCAL]","suites":[{"title":"English","tests":[{"fullTitle":"GCA a11y tests [LOCAL] English http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]},{"title":"Francais","tests":[{"fullTitle":"GCA a11y tests [LOCAL] Francais http://localhost:8000/broken_link.html","state":"failed","err":{"message":"CypressError: `cy.request()` failed trying to load:\nhttps://www.bokren-link.ca/\nError: getaddrinfo ENOTFOUND www.bokren-link.ca"}}]}]}]}]}]}' > tests_cypress/cypress/results/mochawesome.json
 
       - name: Read and build failure previews
