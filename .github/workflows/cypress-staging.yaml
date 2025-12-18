@@ -114,7 +114,7 @@ jobs:
           ARTIFACTS_LINK='${{ steps.artifact_link.outputs.artifact_url }}'
           ARTIFACTS_TEXT=':file_cabinet: Artifacts download'
           if [ -z "$ARTIFACTS_LINK" ]; then
-            ARTIFACTS_LINK='https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts'
+            ARTIFACTS_LINK='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts'
             ARTIFACTS_TEXT=':file_cabinet: Artifacts'
           fi
           printf -v FULL_TEXT '%s\n<%s|%s>\n<%s|%s>' "$PARENT_TEXT" "$RUN_LINK" "$LINK_TEXT" "$ARTIFACTS_LINK" "$ARTIFACTS_TEXT"
