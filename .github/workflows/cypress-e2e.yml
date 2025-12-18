@@ -286,7 +286,7 @@ jobs:
         PARENT_TEXT='*:rotating_light: Staging a11y tests failed :rotating_light:*'
         RUN_LINK='https://github.com/cds-snc/notification-admin/actions/runs/${{ github.run_id }}'
         LINK_TEXT=':github: Workflow run'
-        FULL_TEXT="$PARENT_TEXT\n<$RUN_LINK|$LINK_TEXT>"
+        printf -v FULL_TEXT '%s\n<%s|%s>' "$PARENT_TEXT" "$RUN_LINK" "$LINK_TEXT"
 
         resp=$(curl -s -X POST \
           -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
