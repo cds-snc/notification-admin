@@ -270,6 +270,17 @@ jobs:
 
         jq . /tmp/failures.json || true
 
+    - name: Fetch artifact download URL
+      if: failure()
+      id: artifact_link
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        set -euo pipefail
+        resp=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts")
+        url=$(echo "$resp" | jq -r '.artifacts[0].archive_download_url // empty')
+        echo "artifact_url=$url" >> $GITHUB_OUTPUT
+
     - name: Post parent message (chat.postMessage)
       if: failure()
       id: post_parent
@@ -286,7 +297,13 @@ jobs:
         PARENT_TEXT='*:rotating_light: Staging a11y tests failed :rotating_light:*'
         RUN_LINK='https://github.com/cds-snc/notification-admin/actions/runs/${{ github.run_id }}'
         LINK_TEXT=':github: Workflow run'
-        printf -v FULL_TEXT '%s\n<%s|%s>' "$PARENT_TEXT" "$RUN_LINK" "$LINK_TEXT"
+        ARTIFACTS_LINK='${{ steps.artifact_link.outputs.artifact_url }}'
+        ARTIFACTS_TEXT=':file_cabinet: Artifacts download'
+        if [ -z "$ARTIFACTS_LINK" ]; then
+          ARTIFACTS_LINK='https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts'
+          ARTIFACTS_TEXT=':file_cabinet: Artifacts'
+        fi
+        printf -v FULL_TEXT '%s\n\n<%s|%s> | <%s|%s>' "$PARENT_TEXT" "$RUN_LINK" "$LINK_TEXT" "$ARTIFACTS_LINK" "$ARTIFACTS_TEXT"
 
         resp=$(curl -s -X POST \
           -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
