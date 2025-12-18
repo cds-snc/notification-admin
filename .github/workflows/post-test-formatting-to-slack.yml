@@ -46,7 +46,13 @@ jobs:
             | { fullTitle: (.fullTitle // .title), message: (.err.message // .err.estack // "No error") }
             ]
             | unique_by(.fullTitle)
-            | map({ title: .fullTitle, preview: ( .message | split("\n") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length>0)) | .[0:5] | join("\n") ) })
+            | map({ title: .fullTitle, preview: ( .message
+                | split("\n")
+                | map(gsub("^\\s+|\\s+$"; ""))
+                | map(select(length>0))
+                | .[0:5]
+                | map("> " + .)
+                | join("\n") ) })
             | .[0:5]' $FILE > /tmp/failures.json
 
           echo "Created /tmp/failures.json"
@@ -95,7 +101,7 @@ jobs:
             title=$(echo "$item" | jq -r '.title')
             preview=$(echo "$item" | jq -r '.preview')
             # Build JSON body via jq to avoid shell/backtick issues
-            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n> " + $preview + "\n:wavy_dash:"), thread_ts:$thread, mrkdwn:true}')
+            body=$(jq -nc --arg ch "$SLACK_CHANNEL" --arg thread "$TS" --arg title "$title" --arg preview "$preview" '{channel:$ch, text: ("Test *`" + $title + "`* failed\n" + $preview + "\n\n:wavy_dash:"), thread_ts:$thread, mrkdwn:true}')
 
             echo "Posting reply for $title"
             curl -s -X POST -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" -H "Content-type: application/json" --data "$body" https://slack.com/api/chat.postMessage | jq . || true
