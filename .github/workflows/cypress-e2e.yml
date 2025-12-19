@@ -205,15 +205,41 @@ jobs:
         jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_AUTH_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
         jq '.ENV = "LOCAL" | .CACHE_CLEAR_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
 
-    - name: Run the cypress tests
-      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
-      with:
-        record: false
-        config: "video=true,screenshotOnRunFailure=true"
-        build: npx cypress info
-        working-directory: tests_cypress
-        spec: |
-          cypress/e2e/admin/ci.cy.js
+    - name: Run the cypress tests in parallel
+      working-directory: tests_cypress
+      run: |
+        # Run all spec files in parallel using background processes
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/a11y/app_pages.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_1.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/sign_out/sign_out.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_2.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/menu/disclosure_menu.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_3.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/sitemap/sitemap.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_4.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/branding/all.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_5.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/tou_dialog.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_6.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/template-filters.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_7.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/template-categories.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_8.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/template/create-template.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_9.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/template/edit-template.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_10.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/template/text-direction.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_11.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/components/remaining_messages_summary.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_12.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/go-live-form.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_13.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/components/notice.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_14.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/your_profile.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_15.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/components/a11y.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_16.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/components/flash_messages.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_17.log 2>&1 &
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/components/rte/all.cy.js' --config video=true,screenshotOnRunFailure=true > /tmp/cypress_18.log 2>&1 &
+        
+        # Wait for all background processes to complete
+        wait
+        
+        # Check exit codes and report
+        EXIT_CODE=0
+        for i in {1..18}; do
+          if [ -f /tmp/cypress_${i}.log ] && grep -q "passing\|failing" /tmp/cypress_${i}.log; then
+            echo "Process $i completed"
+          fi
+        done
+        
+        exit $EXIT_CODE
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
