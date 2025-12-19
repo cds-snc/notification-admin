@@ -46,6 +46,15 @@ class Config(object):
 
     BULK_SEND_AWS_BUCKET = os.getenv("BULK_SEND_AWS_BUCKET")
 
+    # CENS Experiment
+    CENS_INTEGRATED_SERVICES: List[str] = [id.strip() for id in os.getenv("CENS_INTEGRATED_SERVICES", "").split(",")]
+    CENS_INTEGRATED_TEMPLATES: List[str] = [id.strip() for id in os.getenv("CENS_INTEGRATED_TEMPLATES", "").split(",")]
+    CENS_URL = os.environ.get("CENS_URL")
+    CENS_USER = os.environ.get("CENS_USER")
+    CENS_SECRET = os.environ.get("CENS_SECRET")
+    # testing mode for local development to use canned CENS responses
+    CENS_TESTING_MODE = env.bool("CENS_TESTING_MODE", False)
+
     CHECK_PROXY_HEADER = False
     CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "assistance+notification@cds-snc.ca")
     CSV_MAX_ROWS = env.int("CSV_MAX_ROWS", 50_000)

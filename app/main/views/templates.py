@@ -1,3 +1,5 @@
+import csv
+import io
 import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
@@ -24,6 +26,7 @@ from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
 from app import (
+    cens_client,
     current_service,
     get_current_locale,
     service_api_client,
@@ -58,6 +61,7 @@ from app.models.template_list import (
     TemplateLists,
 )
 from app.notify_client.notification_counts_client import notification_counts_client
+from app.s3_client.s3_csv_client import s3upload
 from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
@@ -1298,6 +1302,12 @@ def get_human_readable_delta(from_time, until_time):
 def add_recipients(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    # if this template and service is in CENS_INTEGRATED_SERVICES and CENS_INTEGRATED_TEMPLATES, add a third option to radios
+    # Check if service and template are CENS integrated
+    is_cens_integrated = service_id in current_app.config.get("CENS_INTEGRATED_SERVICES", []) and str(
+        template_id
+    ) in current_app.config.get("CENS_INTEGRATED_TEMPLATES", [])
+
     if template["template_type"] == "email":
         form = AddEmailRecipientsForm()
         option_hints = {
@@ -1308,6 +1318,11 @@ def add_recipients(service_id, template_id):
             ),
             "one_recipient": Markup(_l("Enter their email address.")),
         }
+        # add third option if CENS integrated
+        if is_cens_integrated:
+            form.what_type.choices.insert(1, ("cens_recipient", _l("Many recipients (from CENS)")))
+            form.what_type.choices[0] = ("many_recipients", _l("Many recipients (CSV)"))
+            option_hints["cens_recipient"] = Markup(_l("Send to a mailing list stored in the CENS system."))
     else:
         form = AddSMSRecipientsForm()
         option_hints = {
@@ -1330,6 +1345,95 @@ def add_recipients(service_id, template_id):
                         template_id=template_id,
                     )
                 )
+            elif form.what_type.data == "cens_recipient":
+                # call cens and see if we can get the mailing lists
+                # CensClient.has_service
+                try:
+                    has_topics = cens_client.has_service(service_id)
+
+                    if has_topics:
+                        # use get_subscribers_list to get the mailing list JSON
+
+                        try:
+                            recipients = cens_client.get_subscribers_list(service_id)
+                        except Exception as e:
+                            recipients = None
+                            current_app.logger.error("Error fetching mailing lists from CENS: %s", str(e))
+
+                        if recipients:
+                            # Convert the CENS response rows into a CSV and upload to s3 uploads
+                            # The expected structure from CENS is: {"name": "<topic>", "service-id": <service-id>, "rows": [[col1, col2], ...]}
+                            try:
+                                rows = recipients.get("rows", [])
+
+                                # create CSV in memory
+                                buf = io.StringIO()
+                                writer = csv.writer(buf)
+
+                                # write each row
+                                for row in rows:
+                                    writer.writerow(row)
+
+                                csv_data = buf.getvalue().encode("utf-8")
+
+                                # s3upload expects a dict with 'data' and region
+                                upload_id = s3upload(service_id, {"data": csv_data}, current_app.config["AWS_REGION"])
+
+                                # save the original CENS response for later UI use
+                                session["cens_recipients"] = recipients
+
+                                # Redirect to the check endpoint the same way a user-uploaded CSV would
+                                return redirect(
+                                    url_for(
+                                        "main.check_messages",
+                                        service_id=service_id,
+                                        upload_id=upload_id,
+                                        template_id=template_id,
+                                        original_file_name=recipients["name"],
+                                    )
+                                )
+                            except Exception as e:
+                                current_app.logger.exception("Failed to convert or upload CENS recipients: %s", e)
+                                flash(
+                                    _l("There was a problem processing the mailing list from CENS. Please try again later."),
+                                    "error",
+                                )
+                                return redirect(
+                                    url_for(
+                                        "main.add_recipients",
+                                        service_id=service_id,
+                                        template_id=template_id,
+                                    )
+                                )
+                        else:
+                            flash(_l("No mailing lists found for this service in CENS."), "error")
+                            return redirect(
+                                url_for(
+                                    "main.add_recipients",
+                                    service_id=service_id,
+                                    template_id=template_id,
+                                )
+                            )
+                    else:
+                        flash(_l("No mailing lists found for this service in CENS."), "error")
+                        return redirect(
+                            url_for(
+                                "main.add_recipients",
+                                service_id=service_id,
+                                template_id=template_id,
+                            )
+                        )
+                # catch ANY error
+                except Exception as e:
+                    current_app.logger.error("Error connecting to CENS: %s", str(e))
+                    flash(_l("There was a problem connecting to CENS. Please try again later."), "error")
+                    return redirect(
+                        url_for(
+                            "main.add_recipients",
+                            service_id=service_id,
+                            template_id=template_id,
+                        )
+                    )
             elif form.validate_on_submit():
                 session["placeholders"] = {}
                 session["recipient"] = form.placeholder_value.data
