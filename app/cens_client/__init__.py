@@ -44,7 +44,7 @@ class CensClient:
             # return a stable test token
             return "test-token"
 
-        url = self._form_url("provider/get-token")
+        url = self._form_url("get-token")
         data = {"clientId": self.client_id or "", "clientSecret": self.client_secret or ""}
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
