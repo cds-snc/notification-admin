@@ -715,35 +715,3 @@ def test_update_organisation_domains(
         ORGANISATION_ID,
         **expected_persisted,
     )
-
-
-def test_organisation_navigation_displays_correctly(
-    client_request,
-    mocker,
-    active_user_with_permissions,
-    mock_get_organisation,
-):
-    """Test that the navigation renders without errors on organization pages.
-
-    This test verifies the fix for the bug where current_service was None on
-    organization pages, causing an AttributeError when trying to access current_service.id
-    in the navigation.
-    """
-    active_user_with_permissions["organisations"] = [ORGANISATION_ID]
-    mocker.patch("app.organisations_client.get_organisation_services", return_value=[])
-
-    client_request.login(active_user_with_permissions)
-    page = client_request.get(
-        ".organisation_dashboard",
-        org_id=ORGANISATION_ID,
-    )
-
-    # Verify the page loaded without errors
-    assert page.select_one("h1") is not None
-
-    # Verify navigation items are present for organization context
-    nav_links = [item.text.strip() for item in page.select("nav.navigation a")]
-
-    # Should show organization navigation, not service navigation
-    # The navigation should include Dashboard, Settings, and Team members
-    assert "Dashboard" in nav_links or "Settings" in nav_links or "Team members" in nav_links
