@@ -39,6 +39,9 @@ npx cypress install
 | IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER         |
 
 ### Environment-specific values
+Get those from admin and api .env files
+
+TODO: CYPRESS_USER_PASSWORD is called CYPRESS_USER_PW_SECRET in the .env files
 
 | key                           | description                                            |
 | ----------------------------- | ------------------------------------------------------ |
