@@ -44,7 +44,8 @@ describe("Skip Links Accessibility", () => {
       cy.focused().should("satisfy", ($el) => {
         return (
           $el.is('#main_content, #main-content, main, [role="main"]') ||
-          $el.closest('#main_content, #main-content, main, [role="main"]').length > 0
+          $el.closest('#main_content, #main-content, main, [role="main"]')
+            .length > 0
         );
       });
     });
