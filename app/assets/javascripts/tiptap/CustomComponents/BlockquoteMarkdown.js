@@ -32,13 +32,18 @@ export default Extension.create({
   // in the bundled TipTap runtime. We keep only the markdown-it pre
   // processing rule that treats '^' as a blockquote marker on parse.
   addInputRules() {
+    const blockquoteType = this.editor?.schema?.nodes?.blockquote;
+    if (!blockquoteType) {
+      return [];
+    }
+
     // Use wrappingInputRule so typing '^ ' produces a real blockquote node
     // exactly the same way typing '> ' would.
     return [
       wrappingInputRule({
         // Match optional leading whitespace followed by '^ ' at start of block
         find: /^\s*\^\s$/,
-        type: this.editor?.schema?.nodes?.blockquote,
+        type: blockquoteType,
       }),
     ];
   },
