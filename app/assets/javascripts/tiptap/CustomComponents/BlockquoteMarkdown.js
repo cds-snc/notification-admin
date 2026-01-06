@@ -1,4 +1,4 @@
-import { Extension, wrappingInputRule } from '@tiptap/core';
+import { Extension, wrappingInputRule } from "@tiptap/core";
 
 // Extension that ensures inbound markdown containing '^' as a blockquote
 // marker is interpreted as a blockquote by markdown-it. We do a simple
@@ -6,7 +6,7 @@ import { Extension, wrappingInputRule } from '@tiptap/core';
 // '^' to '>' before the parser runs. Outbound serialization to emit '^'
 // is handled centrally in the editor by post-processing markdown output.
 export default Extension.create({
-  name: 'blockquoteMarkdown',
+  name: "blockquoteMarkdown",
 
   addStorage() {
     return {
@@ -15,11 +15,14 @@ export default Extension.create({
           setup(markdownit) {
             // Preprocess source text so lines that start with '^' are
             // treated as blockquotes by the existing blockquote rule.
-            markdownit.core.ruler.push('caret_blockquote_transform', function (state) {
-              if (state && typeof state.src === 'string') {
-                state.src = state.src.replace(/^(\s*)\^/gm, '$1>');
-              }
-            });
+            markdownit.core.ruler.push(
+              "caret_blockquote_transform",
+              function (state) {
+                if (state && typeof state.src === "string") {
+                  state.src = state.src.replace(/^(\s*)\^/gm, "$1>");
+                }
+              },
+            );
           },
         },
       },

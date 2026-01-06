@@ -133,7 +133,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           // Normalize pasted blockquote markers: convert leading '>' to '^'
           // for storage/markdown consistency while allowing the RTE to
           // render normal blockquotes via inbound normalization on parse.
-          const normalizedForStorage = text.replace(/^(\s*)>/gm, '$1^');
+          const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
 
           // Check if the text contains variables
           const hasVariables = /\(\([^)]+\)\)/.test(normalizedForStorage);
@@ -146,7 +146,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             editor.commands.insertContent(processedText);
           } else {
             // Check if the text contains Markdown syntax
-            const isMarkdown = /[*_`#>\-\^]|\[.*\]\(.*\)/.test(normalizedForStorage);
+            const isMarkdown = /[*_`#>\-\^]|\[.*\]\(.*\)/.test(
+              normalizedForStorage,
+            );
 
             if (isMarkdown) {
               // Use TipTap's Markdown extension to parse and insert content
@@ -334,7 +336,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     // Convert inbound stored caret markers '^' back to '>' so the RTE
     // renders normal blockquotes. We then set the markdownValue to the
     // original stored content (so Markdown view shows '^').
-    const inboundForEditor = (initialContent || "").replace(/^(\s*)\^/gm, '$1>');
+    const inboundForEditor = (initialContent || "").replace(
+      /^(\s*)\^/gm,
+      "$1>",
+    );
     editor.commands.setContent(inboundForEditor);
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
@@ -347,7 +352,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
-        markdown = markdown.replace(/^(\s*)>/gm, '$1^');
+        markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
         console.error("Error getting markdown:", error);
@@ -376,7 +381,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Set the content from markdown, converting variables to HTML spans
       // so behavior matches paste. We centralize conversion in helper.
       // Convert caret markers '^' to '>' so the editor renders blockquotes
-      const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, '$1>');
+      const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
       const processedForInsert = convertVariablesToSpans(convertedForEditor);
       editor.commands.setContent(processedForInsert);
 
@@ -389,7 +394,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
       // Normalize outgoing markdown to use '^' instead of '>'
-      markdown = markdown.replace(/^(\s*)>/gm, '$1^');
+      markdown = markdown.replace(/^(\s*)>/gm, "$1^");
       setMarkdownValue(markdown);
     }
 
