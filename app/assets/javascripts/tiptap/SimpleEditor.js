@@ -18,6 +18,7 @@ import History from "@tiptap/extension-history";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import ConditionalNode from "./CustomComponents/ConditionalNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
@@ -72,6 +73,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       OrderedList,
       ListItem,
       HorizontalRule,
+      ConditionalNode,
 
       // Mark extensions that match toolbar features
       Bold,
@@ -90,6 +92,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       MenubarShortcut,
       FrenchBlock,
+
 
       // Add Markdown extension with paste handling enabled
       Markdown.configure({
@@ -118,52 +121,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           setLinkModalVisible(true);
           return true;
         }
-        return false;
-      },
-      handlePaste: (view, event, slice) => {
-        const text = event.clipboardData?.getData("text/plain");
-
-        if (text) {
-          // Prevent default paste behavior
-          event.preventDefault();
-
-          // Check if the text contains variables
-          const hasVariables = /\(\([^)]+\)\)/.test(text);
-
-          if (hasVariables) {
-            // Replace variables with HTML spans (centralized helper)
-            const processedText = convertVariablesToSpans(text);
-
-            // Insert the processed HTML at the current cursor position
-            editor.commands.insertContent(processedText);
-          } else {
-            // Check if the text contains Markdown syntax
-            const isMarkdown = /[*_`#>-]|\[.*\]\(.*\)/.test(text);
-
-            if (isMarkdown) {
-              // Use TipTap's Markdown extension to parse and insert content
-              editor.commands.insertContent(text);
-            } else {
-              // Handle plain text by splitting into lines
-              const lines = text.split("\n");
-
-              // Create an array of paragraph nodes
-              const nodes = lines.map((line) => {
-                return {
-                  type: "paragraph",
-                  content: line.trim() ? [{ type: "text", text: line }] : [],
-                };
-              });
-
-              // Insert the nodes into the editor
-              editor.commands.insertContent({ type: "doc", content: nodes });
-            }
-          }
-
-          return true;
-        }
-
-        // Return false to allow default paste behavior if no text
         return false;
       },
     },

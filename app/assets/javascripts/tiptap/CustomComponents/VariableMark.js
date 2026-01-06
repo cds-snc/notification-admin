@@ -1,4 +1,4 @@
-import { Mark, markInputRule } from "@tiptap/core";
+import { Mark, markInputRule, markPasteRule } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -37,7 +37,19 @@ const VariableMark = Mark.create({
   addInputRules() {
     return [
       markInputRule({
-        find: /\(\(([^)]+)\)\)$/,
+        // Match ((...)) but only if it doesn't contain ??
+        // Negative lookahead to exclude conditional patterns
+        find: /\(\((?!.*\?\?)([^)]+)\)\)$/,
+        type: this.type,
+      }),
+    ];
+  },
+
+  addPasteRules() {
+    return [
+      markPasteRule({
+        // Match ((...)) but only if it doesn't contain ??
+        find: /\(\((?![^)]*\?\?)([^)]+)\)\)/g,
         type: this.type,
       }),
     ];
@@ -115,14 +127,19 @@ const VariableMark = Mark.create({
 
                 if (!found) return false;
 
+                // Extract the variable name
+                const content = state.src.slice(start + 2, pos);
+
+                // Skip if this looks like a conditional block (contains ??)
+                if (content.includes("??")) {
+                  return false;
+                }
+
                 // In silent mode, just advance the position
                 if (silent) {
                   state.pos = pos + 2;
                   return true;
                 }
-
-                // Extract the variable name
-                const content = state.src.slice(start + 2, pos);
 
                 // Create the opening tag token
                 const tokenOpen = state.push("variable_open", "span", 1);
@@ -197,6 +214,16 @@ const VariableMark = Mark.create({
                         }
 
                         const varName = remaining.slice(openIdx + 2, closeIdx);
+
+                        // Skip if this looks like a conditional block (contains ??)
+                        if (varName.includes("??")) {
+                          // Push the whole pattern as text - let ConditionalNode handle it
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(openIdx, closeIdx + 2);
+                          newChildren.push(t);
+                          remaining = remaining.slice(closeIdx + 2);
+                          continue;
+                        }
 
                         const tOpen = new Token("variable_open", "span", 1);
                         tOpen.attrs = [["data-type", "variable"]];

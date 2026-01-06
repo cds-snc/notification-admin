@@ -232,6 +232,7 @@ const MenuBar = ({
       blockquote: "Blockquote",
       englishBlock: "English block",
       frenchBlock: "French block",
+      conditionalBlock: "Conditional block",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -260,6 +261,7 @@ const MenuBar = ({
       blockquote: "Bloc de citation",
       englishBlock: "Bloc anglais",
       frenchBlock: "Bloc français",
+      conditionalBlock: "Bloc conditionnel",
     },
   };
 
@@ -289,6 +291,7 @@ const MenuBar = ({
     blockquote: platform === "mac" ? "⌘+Opt+7" : "Ctrl+Alt+7",
     englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
     frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
+    conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
     link: platform === "mac" ? "⌘+K" : "Ctrl+K",
     bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
     italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
@@ -785,6 +788,43 @@ const MenuBar = ({
             </span>
             FR
           </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.conditionalBlock} shortcut={shortcuts.conditionalBlock}>
+          <button
+            type="button"
+            data-testid="rte-conditional_block"
+            onClick={() =>
+              announceToggle(
+                () => {
+                  // If we're inside a conditional, treat this as "remove".
+                  if (editor.isActive("conditional")) {
+                    return editor.chain().focus().unsetConditional().run();
+                  }
+
+                  // Wrap the current selection, or current block/node the cursor is in
+                  const didWrap = editor.chain().focus().wrapInConditional().run();
+                  if (didWrap) return true;
+
+                  // Fallback: insert an empty conditional block.
+                  return editor.chain().focus().insertConditionalPattern().run();
+                },
+                () => editor.isActive("conditional"),
+                t.conditionalBlock,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("conditional") ? " is-active" : "")
+            }
+            title={t.conditionalBlock}
+            aria-pressed={editor.isActive("conditional")}
+            >
+              <span className="sr-only">
+                {editor.isActive("conditional") ? t.removePrefix : t.applyPrefix}
+                {t.conditionalBlock}
+              </span>
+              Conditional
+            </button>
         </TooltipWrapper>
       </div>
       <div className="toolbar-separator"></div>
