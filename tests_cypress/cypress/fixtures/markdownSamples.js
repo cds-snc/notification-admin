@@ -414,7 +414,89 @@ Basic FR Block!
 [[fr]]
 [link in FR block](https://www.google.ca)
 [[/fr]]`
-    }
+    },
+    QUOTE_BLOCKS: {
+        before: `^ # 7. QUOTE BLOCKS
+
+
+
+^ This is a single-line blockquote.
+
+
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with carets.
+
+
+
+^ - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+^ 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+        expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with carets.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+
+
+    },
+
+    QUOTE_BLOCKS2: {
+        before: `> # 7. QUOTE BLOCKS
+
+
+> This is a single-line blockquote.
+
+
+> This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with greater-than markers.
+
+
+> - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+> 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+> A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+        expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with greater-than markers.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+    },
 };
 
 export default MARKDOWN;
