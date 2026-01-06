@@ -8,7 +8,7 @@
             <ul class="w-full sm:w-3/5 flex flex-wrap items-baseline gap-y-gutterHalf">
               {% for page in group.pages|sort(attribute='link_text') %}
                 <li class="w-full md:w-1/2 pr-gutter">
-                  <a class="inline-flex text-balance" href="{{ page.href }}">{{ page.link_text | safe }}</a>
+                  <a class="inline-flex text-balance" href="{{ page.href }}" {% if page.target %}target="_blank"{% endif %}>{{ page.link_text | safe }}{% if page.target %}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i>{% endif %}</a>
                 </li>
               {% endfor %}
               </ul>
