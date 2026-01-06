@@ -40,6 +40,12 @@ class Config(object):
     ASSET_PATH = "/static/"
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
+    A11Y_FEEDBACK_URL_EN = os.environ.get(
+        "A11Y_FEEDBACK_URL_EN", "https://forms-formulaires.alpha.canada.ca/en/id/cmk30s2qn00qox9018rhryfqa"
+    )
+    A11Y_FEEDBACK_URL_FR = os.environ.get(
+        "A11Y_FEEDBACK_URL_FR", "https://forms-formulaires.alpha.canada.ca/fr/id/cmk30s2qn00qox9018rhryfqa"
+    )
 
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
