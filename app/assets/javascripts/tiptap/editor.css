@@ -321,7 +321,6 @@
     -3px 2px 3px rgba(0, 0, 0, 0.35);
 }
 
-
 /* Conditional block styling - similar to language blocks */
 .conditional-block {
   background-color: #f3f4f6;
@@ -425,4 +424,3 @@
 .conditional-popover-button:hover:not(:disabled) {
   background-color: #e9e9e9;
 }
-

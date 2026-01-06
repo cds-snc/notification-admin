@@ -789,7 +789,10 @@ const MenuBar = ({
             FR
           </button>
         </TooltipWrapper>
-        <TooltipWrapper label={t.conditionalBlock} shortcut={shortcuts.conditionalBlock}>
+        <TooltipWrapper
+          label={t.conditionalBlock}
+          shortcut={shortcuts.conditionalBlock}
+        >
           <button
             type="button"
             data-testid="rte-conditional_block"
@@ -802,11 +805,19 @@ const MenuBar = ({
                   }
 
                   // Wrap the current selection, or current block/node the cursor is in
-                  const didWrap = editor.chain().focus().wrapInConditional().run();
+                  const didWrap = editor
+                    .chain()
+                    .focus()
+                    .wrapInConditional()
+                    .run();
                   if (didWrap) return true;
 
                   // Fallback: insert an empty conditional block.
-                  return editor.chain().focus().insertConditionalPattern().run();
+                  return editor
+                    .chain()
+                    .focus()
+                    .insertConditionalPattern()
+                    .run();
                 },
                 () => editor.isActive("conditional"),
                 t.conditionalBlock,
@@ -818,13 +829,13 @@ const MenuBar = ({
             }
             title={t.conditionalBlock}
             aria-pressed={editor.isActive("conditional")}
-            >
-              <span className="sr-only">
-                {editor.isActive("conditional") ? t.removePrefix : t.applyPrefix}
-                {t.conditionalBlock}
-              </span>
-              Conditional
-            </button>
+          >
+            <span className="sr-only">
+              {editor.isActive("conditional") ? t.removePrefix : t.applyPrefix}
+              {t.conditionalBlock}
+            </span>
+            Conditional
+          </button>
         </TooltipWrapper>
       </div>
       <div className="toolbar-separator"></div>

@@ -112,22 +112,22 @@ const ConditionalNodeView = ({ node, updateAttributes, editor }) => {
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={(event) => {
-                    // Don’t let ProseMirror handle keys originating from the popover.
-                    event.stopPropagation();
+                // Don’t let ProseMirror handle keys originating from the popover.
+                event.stopPropagation();
 
-                    if (event.key === "Escape") {
-                    event.preventDefault();
-                    setDraft(conditionValue);
-                    setOpen(false);
-                    return;
-                    }
+                if (event.key === "Escape") {
+                  event.preventDefault();
+                  setDraft(conditionValue);
+                  setOpen(false);
+                  return;
+                }
 
-                    if (event.key === "Enter") {
-                    event.preventDefault();
-                    commitIfChanged();
-                    setOpen(false);
-                    }
-                }}
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  commitIfChanged();
+                  setOpen(false);
+                }
+              }}
             />
             <div className="conditional-popover-actions">
               <button

@@ -93,7 +93,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       MenubarShortcut,
       FrenchBlock,
 
-
       // Add Markdown extension with paste handling enabled
       Markdown.configure({
         html: true, // Allow HTML in markdown

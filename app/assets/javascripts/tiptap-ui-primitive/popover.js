@@ -1,7 +1,13 @@
 import React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-export function Popover({ children, open, onOpenChange, defaultOpen = false, modal = false }) {
+export function Popover({
+  children,
+  open,
+  onOpenChange,
+  defaultOpen = false,
+  modal = false,
+}) {
   return (
     <PopoverPrimitive.Root
       open={open}
@@ -36,7 +42,9 @@ export function PopoverContent({
       side={side}
       align={align}
       sideOffset={sideOffset}
-      className={["tiptap-popover-content", className].filter(Boolean).join(" ")}
+      className={["tiptap-popover-content", className]
+        .filter(Boolean)
+        .join(" ")}
       {...props}
     >
       {children}

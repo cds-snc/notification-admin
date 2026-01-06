@@ -4,7 +4,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ConditionalNodeView from "./ConditionalNodeView";
 
-// A block node that conditionally renders template content. 
+// A block node that conditionally renders template content.
 // Example: ((under18??Please get your application signed by a parent or guardian.))
 const ConditionalNode = Node.create({
   name: "conditional",
@@ -72,7 +72,6 @@ const ConditionalNode = Node.create({
       new InputRule({
         find: /\(\(([^?)]+)\?\?([^)]*)\)\)$/,
         handler: ({ state, range, match }) => {
-          
           // Do not allow nested conditionals.
           const $from = state.selection.$from;
           for (let depth = $from.depth; depth > 0; depth--) {
@@ -95,9 +94,9 @@ const ConditionalNode = Node.create({
             content
               ? state.schema.nodes.paragraph.create(
                   null,
-                  state.schema.text(content)
+                  state.schema.text(content),
                 )
-              : state.schema.nodes.paragraph.create()
+              : state.schema.nodes.paragraph.create(),
           );
 
           // Insert the conditional node
@@ -112,7 +111,7 @@ const ConditionalNode = Node.create({
   addProseMirrorPlugins() {
     /**
      * Plugin to auto-wrap text between standalone conditional markers into a conditional node.
-     * 
+     *
      * Example:
      * Various nodes, blocks or marks exist and the user manually types the conditional markers to wrap that
      * content in a conditional block:
@@ -152,7 +151,8 @@ const ConditionalNode = Node.create({
       new Plugin({
         appendTransaction: (transactions, oldState, newState) => {
           if (!transactions.some((tr) => tr.docChanged)) return null;
-          if (transactions.some((tr) => tr.getMeta(AUTO_WRAP_META))) return null;
+          if (transactions.some((tr) => tr.getMeta(AUTO_WRAP_META)))
+            return null;
 
           // No nested conditionals, this aligns with the current conditional behaviour in notify
           if (isInsideConditional(newState.selection.$from)) return null;
@@ -265,7 +265,6 @@ const ConditionalNode = Node.create({
         parse: {
           setup(markdownit) {
             markdownit.use((md) => {
-
               // Custom block rule to parse the inline, user-typed version of the conditional: ((condition??content))
               md.block.ruler.before(
                 "paragraph",
@@ -278,7 +277,7 @@ const ConditionalNode = Node.create({
                   }
 
                   const startPattern = /^\(\(([^?]+)\?\?/;
-                  
+
                   let pos = state.bMarks[start] + state.tShift[start];
                   let max = state.eMarks[start];
                   let line = state.src.slice(pos, max);
@@ -308,8 +307,10 @@ const ConditionalNode = Node.create({
                       const nextOpen = chunk.indexOf("((", i);
                       const nextClose = chunk.indexOf("))", i);
                       // Find the next marker, either '((' or '))'
-                      const openIdx = nextOpen === -1 ? Number.POSITIVE_INFINITY : nextOpen;
-                      const closeIdx = nextClose === -1 ? Number.POSITIVE_INFINITY : nextClose;
+                      const openIdx =
+                        nextOpen === -1 ? Number.POSITIVE_INFINITY : nextOpen;
+                      const closeIdx =
+                        nextClose === -1 ? Number.POSITIVE_INFINITY : nextClose;
                       const nextIdx = Math.min(openIdx, closeIdx);
                       // If no inner open or close markers are found, then we're done the rest of the
                       // content is either literal text, other nodes, which we want to collect.
@@ -371,14 +372,22 @@ const ConditionalNode = Node.create({
                   const content = collected.join("");
                   if (content.trim()) {
                     // Disable conditional parsing inside the body.
-                    const innerEnv = { ...(state.env || {}), __notifyDisableConditional: true };
+                    const innerEnv = {
+                      ...(state.env || {}),
+                      __notifyDisableConditional: true,
+                    };
                     const innerTokens = [];
 
                     // Parse only block structure here; markdown-it will run its
                     // core inline parsing pass afterwards to populate children.
                     // TODO: AI claims this, and I have no idea what it's talking about.
                     // Need to get a better handle on markdown-it parsing internals.
-                    state.md.block.parse(content, state.md, innerEnv, innerTokens);
+                    state.md.block.parse(
+                      content,
+                      state.md,
+                      innerEnv,
+                      innerTokens,
+                    );
 
                     for (const t of innerTokens) {
                       if (typeof t.level === "number") t.level += 1;
@@ -396,13 +405,14 @@ const ConditionalNode = Node.create({
 
                   state.line = nextLine + 1;
                   return true;
-                }
+                },
               );
 
               // Add renderer
               md.renderer.rules.conditional_block_open = (tokens, idx) => {
                 const token = tokens[idx];
-                const condition = token.attrGet("data-condition") || "condition";
+                const condition =
+                  token.attrGet("data-condition") || "condition";
                 return `<div data-type="conditional" data-condition="${condition}" class="conditional-block">`;
               };
               md.renderer.rules.conditional_block_close = () => {
@@ -443,12 +453,16 @@ const ConditionalNode = Node.create({
 
           // Also disallow wrapping content that already contains conditionals.
           let containsConditional = false;
-          state.doc.nodesBetween(state.selection.from, state.selection.to, (n) => {
-            if (n.type === this.type) {
-              containsConditional = true;
-              return false;
-            }
-          });
+          state.doc.nodesBetween(
+            state.selection.from,
+            state.selection.to,
+            (n) => {
+              if (n.type === this.type) {
+                containsConditional = true;
+                return false;
+              }
+            },
+          );
           if (containsConditional) return false;
 
           return commands.wrapIn(this.name, { condition });
@@ -468,12 +482,16 @@ const ConditionalNode = Node.create({
             if (editor.isActive(this.name)) return false;
             // Also disallow wrapping content that already contains conditionals.
             let containsConditional = false;
-            state.doc.nodesBetween(state.selection.from, state.selection.to, (n) => {
-              if (n.type === this.type) {
-                containsConditional = true;
-                return false;
-              }
-            });
+            state.doc.nodesBetween(
+              state.selection.from,
+              state.selection.to,
+              (n) => {
+                if (n.type === this.type) {
+                  containsConditional = true;
+                  return false;
+                }
+              },
+            );
             if (containsConditional) return false;
             // Not inside a conditional block, so wrap selection in one
             return commands.wrapIn(this.name, { condition });
