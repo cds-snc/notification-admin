@@ -277,3 +277,31 @@ def test_contact_lang_url_switches_session_language(client_request):
     )
     with client_request.session_transaction() as session:
         assert session["userlang"] == "fr"
+
+
+@pytest.mark.parametrize(
+    "lang_code, expected_url",
+    [
+        ("en", "https://forms-formulaires.alpha.canada.ca/en/id/cmk30s2qn00qox9018rhryfqa"),
+        ("fr", "https://forms-formulaires.alpha.canada.ca/fr/id/cmk30s2qn00qox9018rhryfqa"),
+    ],
+)
+def test_a11y_feedback_redirects_to_external_form(client_request, lang_code, expected_url):
+    """Test that selecting a11y_feedback redirects to the appropriate language feedback form"""
+    client_request.logout()
+
+    # Set session language to match the lang_code to avoid language sync redirect
+    with client_request.session_transaction() as session:
+        session["userlang"] = lang_code
+
+    client_request.post(
+        ".contact_lang",
+        lang_code=lang_code,
+        _expected_status=302,
+        _expected_redirect=expected_url,
+        _data={
+            "name": "John",
+            "email_address": "john@example.com",
+            "support_type": "a11y_feedback",
+        },
+    )
