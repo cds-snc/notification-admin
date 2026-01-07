@@ -39,7 +39,6 @@
     {% if not current_user.is_authenticated %}
         <div class="space-y-gutterHalf my-gutter">
             {% set contact_link = '<a href="{url}" target="_blank">{title}</a>'.format(title=_("Government of Canada contacts"), url=_("https://www.canada.ca/en/contact.html")) | safe %}
-            {% set a11y_form_link = '<a href="{url}" target="_blank">{title}<i aria-hidden="true" class="pl-2 fa-solid fa-arrow-up-right-from-square"></i></a>'.format(title=_("accessibility feedback form"), url=config["A11Y_FEEDBACK_URL_FR"] if current_lang == 'fr' else config["A11Y_FEEDBACK_URL_EN"]) | safe %}
             {% set hint_message = _("Do not include {} or personal information.").format(protected_link) %}
             <p class="">{{_("For other help with GC Notify, government staff can use this form.")}}</p>
             <p class="">{{_("We cannot answer questions from the public. To reach a government service, visit {}.").format(contact_link)}}</p>
