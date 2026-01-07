@@ -22,7 +22,6 @@ def get_sitemap():
                     {
                         "href": current_app.config["A11Y_FEEDBACK_URL_FR" if lang == "fr" else "A11Y_FEEDBACK_URL_EN"],
                         "link_text": _("Share accessibility feedback"),
-                        "target": True,
                     },
                 ],
             },
