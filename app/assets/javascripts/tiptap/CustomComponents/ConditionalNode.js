@@ -238,6 +238,166 @@ const ConditionalNode = Node.create({
           return tr;
         },
       }),
+
+      // Plugin: document-order Tab navigation for embedded focusable controls.
+      // This ensures Tab moves focus to controls that appear AFTER the cursor,
+      // and Shift+Tab moves to controls BEFORE the cursor.
+      new Plugin({
+        props: {
+          handleKeyDown(view, event) {
+            if (event.key !== "Tab") return false;
+
+            const editorDom = view.dom;
+            // Find all focusable controls marked with our data attribute.
+            const focusables = Array.from(
+              editorDom.querySelectorAll("[data-editor-focusable]"),
+            );
+            if (focusables.length === 0) return false;
+
+            // Map each focusable element to its ProseMirror document position.
+            const withPos = focusables
+              .map((el) => {
+                try {
+                  const pos = view.posAtDOM(el, 0);
+                  return { el, pos };
+                } catch {
+                  return null;
+                }
+              })
+              .filter(Boolean)
+              .sort((a, b) => a.pos - b.pos);
+
+            if (withPos.length === 0) return false;
+
+            const cursorPos = view.state.selection.from;
+            const shiftKey = event.shiftKey;
+
+            let target = null;
+
+            if (shiftKey) {
+              // Shift+Tab: find the last focusable BEFORE cursor
+              for (let i = withPos.length - 1; i >= 0; i--) {
+                if (withPos[i].pos < cursorPos) {
+                  target = withPos[i].el;
+                  break;
+                }
+              }
+            } else {
+              // Tab: find the first focusable AFTER cursor
+              for (const item of withPos) {
+                if (item.pos > cursorPos) {
+                  target = item.el;
+                  break;
+                }
+              }
+            }
+
+            if (target) {
+              event.preventDefault();
+              target.focus();
+              return true;
+            }
+
+            // No target found in the desired direction → let browser handle
+            // (moves focus out of editor).
+            return false;
+          },
+        },
+      }),
+
+      // Plugin: auto-focus the conditional trigger when cursor moves to the node boundary.
+      // When the user arrows into a conditional block (selection at node start),
+      // we focus the trigger button so they can interact with it via keyboard.
+      new Plugin({
+        view() {
+          let lastFocusedPos = null;
+
+          return {
+            update(view, prevState) {
+              const { state } = view;
+              // Only act when selection changed
+              if (prevState.selection.eq(state.selection)) {
+                return;
+              }
+
+              const { selection } = state;
+              const { $from } = selection;
+
+              // Helper to focus trigger at a given DOM pos
+              const focusTriggerAtDomPos = (domPos) => {
+                const nodeDom = view.nodeDOM(domPos);
+                const trigger = nodeDom?.querySelector?.(
+                  "[data-editor-focusable]",
+                );
+                if (!trigger) return false;
+
+                // If already focused, skip
+                if (document.activeElement === trigger) return true;
+
+                lastFocusedPos = domPos;
+                setTimeout(() => trigger.focus(), 0);
+                return true;
+              };
+
+              // Case A: NodeSelection of the conditional itself
+              if (
+                selection instanceof NodeSelection &&
+                selection.node?.type?.name === "conditional"
+              ) {
+                focusTriggerAtDomPos(selection.from);
+                return;
+              }
+
+              // Case B: Text cursor near the start of a conditional's content
+              for (let depth = $from.depth; depth > 0; depth--) {
+                const node = $from.node(depth);
+                if (node.type.name !== "conditional") continue;
+
+                const conditionalDomPos = $from.before(depth);
+                // Try to compute the trigger's pos via the DOM element
+                const nodeDom = view.nodeDOM(conditionalDomPos);
+                const triggerEl = nodeDom?.querySelector?.(
+                  "[data-editor-focusable]",
+                );
+
+                if (!triggerEl) break;
+
+                // Determine the trigger's document position
+                let triggerPos = null;
+                try {
+                  triggerPos = view.posAtDOM(triggerEl, 0);
+                } catch (e) {
+                  triggerPos = null;
+                }
+
+                const cursorPos = $from.pos;
+
+                // If cursor is before triggerPos, or very close to node start, focus trigger
+                const shouldFocus =
+                  (typeof triggerPos === "number" && cursorPos <= triggerPos) ||
+                  cursorPos <= $from.start(depth) + 1;
+
+                if (shouldFocus) {
+                  focusTriggerAtDomPos(conditionalDomPos);
+                } else if (lastFocusedPos === conditionalDomPos) {
+                  // Cursor moved away from this conditional, blur the trigger
+                  const nodeDomNow = view.nodeDOM(conditionalDomPos);
+                  const triggerNow = nodeDomNow?.querySelector?.(
+                    "[data-editor-focusable]",
+                  );
+                  if (triggerNow && document.activeElement === triggerNow) {
+                    // Move focus back to editor so user continues typing
+                    setTimeout(() => view.focus(), 0);
+                  }
+                  lastFocusedPos = null;
+                }
+
+                break;
+              }
+            },
+          };
+        },
+      }),
     ];
   },
 

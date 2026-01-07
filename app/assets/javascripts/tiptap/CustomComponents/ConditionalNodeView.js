@@ -11,7 +11,7 @@ const normalizeCondition = (value) => {
   return trimmed;
 };
 
-const ConditionalNodeView = ({ node, updateAttributes, editor }) => {
+const ConditionalNodeView = ({ node, updateAttributes, editor, getPos }) => {
   const inputId = useId();
   const conditionValue = useMemo(
     () => node?.attrs?.condition || "",
@@ -78,12 +78,40 @@ const ConditionalNodeView = ({ node, updateAttributes, editor }) => {
         <PopoverTrigger asChild>
           <button
             type="button"
+            tabIndex={-1}
+            data-editor-focusable="true"
             className="conditional-trigger"
             aria-label="Edit conditional"
             onKeyDown={(event) => {
               // Prevent ProseMirror from interpreting delete keys while editing.
               if (event.key === "Backspace" || event.key === "Delete") {
                 event.stopPropagation();
+              }
+
+              // Arrow keys: return focus to the editor and move cursor
+              if (
+                ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
+                  event.key,
+                )
+              ) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const pos = getPos();
+                if (typeof pos !== "number") return;
+
+                editor.commands.focus();
+
+                // ArrowUp/ArrowLeft: move cursor before the conditional
+                // ArrowDown/ArrowRight: move cursor into the conditional content
+                if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                  // Move to just before this node
+                  editor.commands.setTextSelection(pos);
+                } else {
+                  // Move to start of content inside the conditional
+                  // pos + 1 gets us inside the node, then +1 more for inside the first child block
+                  editor.commands.setTextSelection(pos + 2);
+                }
               }
             }}
           >
