@@ -1,5 +1,20 @@
 import React, { useRef, useEffect, useCallback, useState } from "react";
+import { Icon, Heading1, Heading2, Minus, Bold, Italic, Link, Unlink, List, ListOrdered, TextQuote, CircleQuestionMark, Eye } from 'lucide-react';
 import TooltipWrapper from "./TooltipWrapper";
+
+// Custom icon nodes for TipTap editor
+const variableIcon = [
+  ['ellipse', { cx: '12', cy: '12', rx: '7.2', ry: '9.6', fill: '#ffbf47', stroke: 'none' }],
+  ['path', { d: 'M8 21C8 21 4 18 4 12C4 6 8 3 8 3M16 3C16 3 20 6 20 12C20 18 16 21 16 21M15 9L9 15M9 9L15 15', stroke: 'currentColor', strokeWidth: '2', fill: 'none' }]
+];
+
+const englishBlockIcon = [
+  ['path', { d: 'M10 6H5C4.44772 6 4 6.44772 4 7V12M10 18H5C4.44772 18 4 17.5523 4 17V12M8 12H4M13 18V6.30902C13 6.13835 13.1384 6 13.309 6C13.4261 6 13.5331 6.06613 13.5854 6.17082L19.4146 17.8292C19.4669 17.9339 19.5739 18 19.691 18C19.8616 18 20 17.8616 20 17.691V6' }]
+];
+
+const frenchBlockIcon = [
+  ['path', { d: 'M4 18V12M10 6H5C4.44772 6 4 6.44772 4 7V12M8 12H4M13 12V7C13 6.44772 13.4477 6 14 6H17C18.6569 6 20 7.34315 20 9C20 10.6569 18.6569 12 17 12H16M13 12V18M13 12H16M20 18L16 12' }]
+];
 
 /**
  * AccessibleToolbar component that wraps any toolbar content with proper ARIA accessibility.
@@ -359,6 +374,8 @@ const MenuBar = ({
       >
         {liveMessage}
       </div>
+
+      {/* Structuring elements group: Headings, Horizontal Rule */}
       <div className="toolbar-group">
         <TooltipWrapper label={t.heading1} shortcut={shortcuts.heading1}>
           <button
@@ -382,7 +399,7 @@ const MenuBar = ({
                 ? t.removePrefix
                 : t.applyPrefix}
             </span>
-            H1
+            <Heading1/>
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.heading2} shortcut={shortcuts.heading2}>
@@ -408,61 +425,29 @@ const MenuBar = ({
                 ? t.removePrefix
                 : t.applyPrefix}
             </span>
-            H2
+            <Heading2/>
           </button>
         </TooltipWrapper>
-      </div>
-
-      <div className="toolbar-separator"></div>
-
-      {/* Variable group */}
-      <div className="toolbar-group">
-        <TooltipWrapper label={t.variable} shortcut={shortcuts.variable}>
+        <TooltipWrapper
+          label={t.horizontalRule}
+          shortcut={shortcuts.horizontalRule}
+        >
           <button
             type="button"
-            data-testid="rte-variable"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleVariable().run(),
-                () => editor.isActive("variable"),
-                t.variable,
-              )
-            }
-            disabled={!editor.can().chain().focus().toggleVariable().run()}
-            className={
-              "toolbar-button" +
-              (editor.isActive("variable") ? " is-active" : "")
-            }
-            title={t.variable}
-            aria-pressed={editor.isActive("variable")}
+            data-testid="rte-horizontal_rule"
+            onClick={() => editor.chain().focus().setHorizontalRule().run()}
+            className="toolbar-button"
+            title={t.horizontalRule}
           >
-            <span className="sr-only">
-              {editor.isActive("variable") ? t.removePrefix : t.applyPrefix}
-              {t.variable}
-            </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M5 4c-2.5 5 -2.5 10 0 16m14 -16c2.5 5 2.5 10 0 16m-10 -11h1c1 0 1 1 2.016 3.527c.984 2.473 .984 3.473 1.984 3.473h1"></path>
-              <path d="M8 16c1.5 0 3 -2 4 -3.5s2.5 -3.5 4 -3.5"></path>
-            </svg>
+            <span className="sr-only">{t.horizontalRuleInsert}</span>
+           <Minus/>
           </button>
         </TooltipWrapper>
       </div>
 
       <div className="toolbar-separator"></div>
 
-      {/* Text styles group */}
+      {/* Inline formats group: Bold, Italic, Variable, Links */}
       <div className="toolbar-group">
         <TooltipWrapper label={t.bold} shortcut={t.shortcutBold}>
           <button
@@ -486,18 +471,7 @@ const MenuBar = ({
               {editor.isActive("bold") ? t.removePrefix : t.applyPrefix}
               {t.bold}
             </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-              <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" />
-            </svg>
+            <Bold/>
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.italic} shortcut={t.shortcutItalic}>
@@ -522,67 +496,65 @@ const MenuBar = ({
               {editor.isActive("italic") ? t.removePrefix : t.applyPrefix}
               {t.italic}
             </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <line x1="19" y1="4" x2="10" y2="4" />
-              <line x1="14" y1="20" x2="5" y2="20" />
-              <line x1="15" y1="4" x2="9" y2="20" />
-            </svg>
+            <Italic/>
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.link} shortcut={shortcuts.link}>
+          <button
+            type="button"
+            data-testid="rte-link"
+            onClick={() => {
+              openLinkModal();
+              // announce via live region when link modal opens (approx)
+              setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
+            }}
+            className={
+              "toolbar-button" + (editor.isActive("link") ? " is-active" : "")
+            }
+            title={t.link}
+            aria-pressed={editor.isActive("link")}
+          >
+            <span className="sr-only">
+              {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
+              {t.link}
+            </span>
+            <Link/>
+            
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.variable} shortcut={shortcuts.variable}>
+          <button
+            type="button"
+            data-testid="rte-variable"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleVariable().run(),
+                () => editor.isActive("variable"),
+                t.variable,
+              )
+            }
+            disabled={!editor.can().chain().focus().toggleVariable().run()}
+            className={
+              "toolbar-button" +
+              (editor.isActive("variable") ? " is-active" : "")
+            }
+            title={t.variable}
+            aria-pressed={editor.isActive("variable")}
+          >
+            <span className="sr-only">
+              {editor.isActive("variable") ? t.removePrefix : t.applyPrefix}
+              {t.variable}
+            </span>
+            <Icon iconNode={variableIcon} fill="none" stroke="currentColor" strokeWidth={2} />
           </button>
         </TooltipWrapper>
       </div>
 
       <div className="toolbar-separator"></div>
 
-      {/* Lists group */}
+      {/* Grouping elemenets group */}
       <div className="toolbar-group">
-        <TooltipWrapper label={t.bulletList} shortcut={shortcuts.bulletList}>
-          <button
-            type="button"
-            data-testid="rte-bullet_list"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleBulletList().run(),
-                () => editor.isActive("bulletList"),
-                t.bulletList,
-              )
-            }
-            className={
-              "toolbar-button" +
-              (editor.isActive("bulletList") ? " is-active" : "")
-            }
-            title={t.bulletList}
-            aria-pressed={editor.isActive("bulletList")}
-          >
-            <span className="sr-only">
-              {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
-              {t.bulletList}
-            </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <line x1="8" y1="6" x2="21" y2="6" />
-              <line x1="8" y1="12" x2="21" y2="12" />
-              <line x1="8" y1="18" x2="21" y2="18" />
-              <line x1="3" y1="6" x2="3.01" y2="6" />
-              <line x1="3" y1="12" x2="3.01" y2="12" />
-              <line x1="3" y1="18" x2="3.01" y2="18" />
-            </svg>
-          </button>
-        </TooltipWrapper>
+        
         <TooltipWrapper
           label={t.numberedList}
           shortcut={shortcuts.numberedList}
@@ -608,89 +580,34 @@ const MenuBar = ({
               {editor.isActive("orderedList") ? t.removePrefix : t.applyPrefix}
               {t.numberedList}
             </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <line x1="10" y1="6" x2="21" y2="6" />
-              <line x1="10" y1="12" x2="21" y2="12" />
-              <line x1="10" y1="18" x2="21" y2="18" />
-              <path d="M4 6h1v4" />
-              <path d="M4 10h2" />
-              <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
-            </svg>
+            <ListOrdered/>
           </button>
         </TooltipWrapper>
-      </div>
-
-      <div className="toolbar-separator"></div>
-
-      {/* Link, divider, blockquote */}
-      <div className="toolbar-group">
-        <TooltipWrapper label={t.link} shortcut={shortcuts.link}>
+        <TooltipWrapper label={t.bulletList} shortcut={shortcuts.bulletList}>
           <button
             type="button"
-            data-testid="rte-link"
-            onClick={() => {
-              openLinkModal();
-              // announce via live region when link modal opens (approx)
-              setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
-            }}
-            className={
-              "toolbar-button" + (editor.isActive("link") ? " is-active" : "")
+            data-testid="rte-bullet_list"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleBulletList().run(),
+                () => editor.isActive("bulletList"),
+                t.bulletList,
+              )
             }
-            title={t.link}
-            aria-pressed={editor.isActive("link")}
+            className={
+              "toolbar-button" +
+              (editor.isActive("bulletList") ? " is-active" : "")
+            }
+            title={t.bulletList}
+            aria-pressed={editor.isActive("bulletList")}
           >
             <span className="sr-only">
-              {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
-              {t.link}
+              {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
+              {t.bulletList}
             </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-            </svg>
+            <List/>
           </button>
         </TooltipWrapper>
-        <TooltipWrapper
-          label={t.horizontalRule}
-          shortcut={shortcuts.horizontalRule}
-        >
-          <button
-            type="button"
-            data-testid="rte-horizontal_rule"
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-            className="toolbar-button"
-            title={t.horizontalRule}
-          >
-            <span className="sr-only">{t.horizontalRuleInsert}</span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <line x1="3" y1="12" x2="21" y2="12" />
-            </svg>
-          </button>
-        </TooltipWrapper>
-
         <TooltipWrapper label={t.blockquote} shortcut={shortcuts.blockquote}>
           <button
             type="button"
@@ -713,18 +630,7 @@ const MenuBar = ({
               {editor.isActive("blockquote") ? t.removePrefix : t.applyPrefix}
               {t.blockquote}
             </span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
-              <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
-            </svg>
+            <TextQuote/>
           </button>
         </TooltipWrapper>
       </div>
@@ -758,7 +664,7 @@ const MenuBar = ({
               {editor.isActive("englishBlock") ? t.removePrefix : t.applyPrefix}
               {t.englishBlock}
             </span>
-            EN
+            <Icon iconNode={englishBlockIcon} />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.frenchBlock} shortcut={shortcuts.frenchBlock}>
@@ -783,7 +689,7 @@ const MenuBar = ({
               {editor.isActive("frenchBlock") ? t.removePrefix : t.applyPrefix}
               {t.frenchBlock}
             </span>
-            FR
+            <Icon iconNode={frenchBlockIcon} />
           </button>
         </TooltipWrapper>
       </div>
@@ -802,42 +708,10 @@ const MenuBar = ({
           >
             <span className="sr-only">{toggleButtonLabel}</span>
             {isMarkdownView ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-file-arrow-left"
-                aria-hidden="true"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                <path d="M15 15h-6"></path>
-                <path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5"></path>
-              </svg>
+              <Eye/>
             ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M7 8l-4 4l4 4"></path>
-                <path d="M17 8l4 4l-4 4"></path>
-                <path d="M14 4l-4 16"></path>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM7 15.5V11.5L9 13.5L11 11.5V15.5H13V8.5H11L9 10.5L7 8.5H5V15.5H7ZM18 12.5V8.5H16V12.5H14L17 15.5L20 12.5H18Z" fill="currentColor"/>
               </svg>
             )}
           </button>

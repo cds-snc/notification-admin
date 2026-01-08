@@ -12,17 +12,32 @@
   white-space: nowrap;
   z-index: 9999;
   font-weight: 500;
-  @apply flex flex-col justify-center bg-gray-900 text-white py-4 px-6 text-small;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  --tw-bg-opacity: 1;
+  background-color: rgb(33 38 44 / var(--tw-bg-opacity, 1));
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  font-size: 1.0625rem;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .rte-tooltip-label {
   margin-bottom: 4px;
 }
+
 .rte-tooltip-label.no-shortcut {
   margin-bottom: 0;
 }
+
 .rte-tooltip-shortcut {
-  @apply text-xs text-gray-200;
+  font-size: 0.875rem;
+  --tw-text-opacity: 1;
+  color: rgb(207 213 221 / var(--tw-text-opacity, 1));
 }
 
 .rte-tooltip-caret {

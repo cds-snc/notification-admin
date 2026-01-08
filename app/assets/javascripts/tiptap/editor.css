@@ -73,9 +73,9 @@
     background: var(--black);
     border-radius: 0.5rem;
     color: var(--white);
-    font-family: "JetBrainsMono", monospace;
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
+    @apply font-mono;
 
     code {
       background: none;
@@ -102,48 +102,60 @@
   /* Language blocks */
   div[lang="en-CA"],
   div[lang="fr-CA"] {
-    background-color: #f3f4f6;
-    border-left: 4px solid;
-    margin: 1.5rem 0;
-    padding: 2rem 1rem 0.5rem;
     position: relative;
+    border-style: dashed;
+    border-left-style: solid;
+    @apply -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 px-gutterHalf pb-gutterHalf leading-normal;
   }
+
+  div[lang]:has(+ :not( div[lang])) {
+      @apply border-b-1 mb-gutter;
+  }
+  div[lang]:last-child {
+      @apply border-b-1;
+  }
+
 
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    left: 0;
-    padding: 0.25rem 1rem;
-    position: absolute;
-    top: 0;
+    box-sizing: content-box;
+    @apply -mx-gutterHalf text-black bg-white text-xs font-mono px-gutterHalf block w-min tracking-wide font-medium;
   }
 
   div[lang="en-CA"]:before {
     content: "EN";
-    background-color: #9d8cf2;
+    @apply bg-purple-300/60;
+    /*@apply bg-gradient-to-b from-purple-300/60 to-purple-300/0;*/
   }
 
   div[lang="en-CA"] {
-    border-color: #9d8cf2;
+    @apply border-l-purple-300;
+  }
+  
+  div[lang="fr-CA"]:before {
+    content: "FR";
+    @apply bg-rose-300/60;
+    /*@apply bg-gradient-to-b from-rose-300/60 to-rose-300/0;*/
   }
 
   div[lang="fr-CA"] {
-    border-color: #df93ec;
-  }
-
-  div[lang="fr-CA"]:before {
-    content: "FR";
-    background-color: #df93ec;
+    @apply border-l-rose-300;
   }
 
   span[data-type="variable"] {
-    background-color: #ffbf47;
-    font-family: monospace;
-    padding: 0.125rem 0.35rem;
-    border-radius: 3px;
-    border: 1px solid #e6a000;
+    word-wrap: break-word;
+    border-radius: 13px 13px 8px 8px;
+    box-shadow:
+      inset 0.4em 0 0 0 #fff, inset -0.4em 0 0 0 #fff, inset 0 -0.1em 0 0 #fff, inset 0 0.3em 0 0 #fff;
+    @apply inline bg-yellow text-black break-words;
+  }
+  span[data-type="variable"]:before {
+    content: "((";
+    @apply text-gray-700
+  }
+  span[data-type="variable"]:after {
+    content: "))";
+    @apply text-gray-700
   }
 }
 
@@ -187,7 +199,6 @@
 .editor-wrapper {
   background-color: #fff;
   border: 2px solid black;
-  border-radius: 0.75rem;
   color: #0d0d0d;
   display: flex;
   flex-direction: column;
@@ -206,67 +217,50 @@
   flex: 1 1 auto;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 1.5rem;
   -webkit-overflow-scrolling: touch;
+  @apply px-gutter py-gutterAndAHalf;
 }
 
 /* Toolbar styles */
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #fafafa;
-  border-radius: 0.75rem 0.75rem 0 0;
   flex-wrap: wrap;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  @apply bg-gray-300 p-4;
 }
 
 .toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 0.125rem;
+  @apply flex flex-nowrap items-center bg-gray-200 gap-1;
 }
 
 .toolbar-separator {
-  width: 1px;
-  height: 1.5rem;
-  background-color: #e5e7eb;
-  margin: 0 0.25rem;
+  @apply w-gutter;
 }
-.toolbar-button:focus {
-  outline: 2px solid #1a3152;
-  outline-offset: 0;
+.toolbar-button:focus, .toolbar-button:focus-visible {
+  @apply bg-yellow text-black outline outline-yellow outline-2;
 }
 .toolbar-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2rem;
-  min-width: 2rem;
-  padding: 0 0.5rem;
   background-color: transparent;
   border: none;
-  border-radius: 0.375rem;
-  color: #374151;
   cursor: pointer;
-  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1;
   user-select: none;
+  @apply min-h-target min-w-target p-0 bg-white text-black text-xs;
 }
 
 .toolbar-button:hover:not(:disabled) {
-  background-color: #e9e9e9;
-  color: #111827;
+  @apply bg-gray-200 text-black;
 }
 
 .toolbar-button:active:not(:disabled) {
-  background-color: #e5e7eb;
+  @apply bg-gray-200 text-black;
 }
 
 .toolbar-button:disabled {
@@ -275,17 +269,19 @@
 }
 
 .toolbar-button.is-active {
-  background-color: #e5e7eb;
-  color: #111827;
+  @apply bg-black text-white;
+}
+.toolbar-button.is-active svg * {
+  fill: none;
 }
 
 .toolbar-button.is-active:hover {
-  background-color: #d1d5db;
+  @apply bg-gray-200 text-black;
 }
 
 .toolbar-button svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
   stroke-width: 2;
 }
 
@@ -304,19 +300,20 @@
   height: 100%;
   outline: none;
   border: none;
-  font-family: "JetBrainsMono", monospace;
   font-size: 1rem;
   line-height: 1.6;
   color: #0d0d0d;
   background-color: transparent;
   resize: vertical;
   box-sizing: border-box;
+  @apply font-mono;
 }
 
 /* Link Modal Styles */
 .link-modal {
-  box-shadow:
-    2px 2px 3px rgba(0, 0, 0, 0.35),
-    0px -2px 3px rgba(0, 0, 0, 0.35),
-    -3px 2px 3px rgba(0, 0, 0, 0.35);
+  @apply fixed p-2 z-50 flex flex-nowrap items-center gap-2 bg-white border-1 border-gray-300;
+}
+
+.link-modal input:focus-visible {
+  @apply outline-yellow outline-2 outline-offset-0;
 }
