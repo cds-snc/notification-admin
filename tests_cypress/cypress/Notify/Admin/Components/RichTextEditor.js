@@ -11,6 +11,7 @@ export const FORMATTING_OPTIONS = {
     BLOCKQUOTE: 'rte-blockquote',
     ENGLISH_BLOCK: 'rte-english_block',
     FRENCH_BLOCK: 'rte-french_block',
+    RTL: 'rte-rtl_block',
 };
 
 // Parts of the component a user can interact with
@@ -43,6 +44,7 @@ let Components = {
     BlockquoteButton: () => cy.getByTestId(FORMATTING_OPTIONS.BLOCKQUOTE),
     EnglishBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.ENGLISH_BLOCK),
     FrenchBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.FRENCH_BLOCK),
+    RTLButton: () => cy.getByTestId(FORMATTING_OPTIONS.RTL),
     ViewMarkdownButton: () => cy.getByTestId('rte-toggle-markdown'),
     //link modal buttons
     LinkModal: {

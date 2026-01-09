@@ -62,6 +62,16 @@ export default Extension.create({
           this.editor.chain().focus().toggleFrenchBlock().run();
         return true;
       },
+      "Mod-Alt-R": () => {
+        if (this.editor.can().chain().focus().toggleRtlBlock)
+          this.editor.chain().focus().toggleRtlBlock().run();
+        return true;
+      },
+      "Mod-Alt-r": () => {
+        if (this.editor.can().chain().focus().toggleRtlBlock)
+          this.editor.chain().focus().toggleRtlBlock().run();
+        return true;
+      },
       // Link open with Mod-k (Cmd/Ctrl+K)
       "Mod-k": () => {
         const toolbar = this.editor?.rteToolbar;
