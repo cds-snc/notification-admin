@@ -228,6 +228,11 @@ describe("Toolbar accessibility tests", () => {
         key: "9",
         button: () => RichTextEditor.Components.FrenchBlockButton(),
       },
+      {
+        label: "RTL block",
+        key: "R",
+        button: () => RichTextEditor.Components.RTLButton(),
+      }
     ];
 
     shortcutSpecs.forEach(({ label, key, button }) => {
@@ -239,6 +244,7 @@ describe("Toolbar accessibility tests", () => {
         button().should("have.attr", "aria-pressed", "true");
 
         RichTextEditor.Components.Editor().focus().type("{selectall}");
+        cy.log("pressing:" + [modKey, "Alt", key].toString());
         cy.realPress([modKey, "Alt", key]);
         button().should("have.attr", "aria-pressed", "false");
       });
