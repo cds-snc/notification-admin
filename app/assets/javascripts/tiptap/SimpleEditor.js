@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -32,12 +32,16 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [isMarkdownView, setIsMarkdownView] = useState(false);
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
+  const [justOpenedLink, setJustOpenedLink] = useState(false);
+  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -344,9 +348,43 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
 
+  // Listen to keyboard arrow events and check for link transitions
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const handleTransaction = () => {
+      // This fires after every editor transaction, including arrow key navigation
+      const isOnLink = editor.isActive("link");
+      const linkHref = editor.getAttributes("link").href || null;
+
+      if (isOnLink && linkHref !== currentLinkRef.current) {
+        // Entering a new link - open modal first
+        openLinkModal();
+        currentLinkRef.current = linkHref;
+        
+        // Delay the announcement flag so input text gets read first,
+        // then the label announcement will be read immediately after
+        setTimeout(() => {
+          setJustOpenedLink(true);
+          // Reset the announcement flag after screen reader has time to announce it
+          setTimeout(() => setJustOpenedLink(false), 2500);
+        }, 600);
+      } else if (!isOnLink && currentLinkRef.current) {
+        // Left a link - close modal
+        setLinkModalVisible(false);
+        currentLinkRef.current = null;
+        setJustOpenedLink(false);
+      }
+    };
+
+    editor.on("transaction", handleTransaction);
+    return () => editor.off("transaction", handleTransaction);
+  }, [editor]);
+
   // Update hidden input field when content changes
   React.useEffect(() => {
     if (!editor) return;
+
     const updateHiddenInput = () => {
       try {
         // Get markdown from TipTap and normalize any leading '>' to '^'
@@ -416,7 +454,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   };
 
   return (
-    <div className="editor-wrapper">
+    <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
       <MenuBar
         editor={editor}
         openLinkModal={openLinkModal}
@@ -446,6 +484,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         position={modalPosition}
         onClose={() => setLinkModalVisible(false)}
         lang={lang}
+        justOpened={justOpenedLink}
       />
     </div>
   );
