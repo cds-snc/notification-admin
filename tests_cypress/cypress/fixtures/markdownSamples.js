@@ -36,8 +36,10 @@ export const MARKDOWN = {
 
 ## Heading level 2 with ((variable)) and trailing punctuation!`,
     },
-    VARIABLES: {
-        before: `> # 2. VARIABLES
+VARIABLES: {
+        before: `^ # 2. VARIABLES
+
+((variable_by_itself))
 
 Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bold_variable))** and *((italic_variable))*
 
@@ -45,12 +47,14 @@ Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bo
 
 1. in a numbered ((list))
 
-> In a ((blockquote))
+^ In a ((blockquote))
 
 [[en]]in an ((english_block))
 
 [[fr]]in an ((french_block))`,
-        expected: `> # 2. VARIABLES
+        expected: `^ # 2. VARIABLES
+
+((variable_by_itself))
 
 Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bold_variable))** and *((italic_variable))*
 
@@ -58,7 +62,7 @@ Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bo
 
 1. in a numbered ((list))
 
-> In a ((blockquote))
+^ In a ((blockquote))
 
 [[en]]
 in an ((english_block))
@@ -67,10 +71,9 @@ in an ((english_block))
 [[fr]]
 in an ((french_block))
 [[/fr]]`,
-
-    },
+},
     TEXT_STYLES: {
-        before: `> # 3. TEXT STYLES
+        before: `^ # 3. TEXT STYLES
 
 Some **bold** and _italic_ text
 
@@ -78,7 +81,7 @@ Some **bold** and _italic_ text
 
 1. Some **bold** and _italic_ text in a numbered list
 
-> Some **bold** and _italic_ text in a blockquote
+^ Some **bold** and _italic_ text in a blockquote
 
 # Some **bold** and _italic_ text in a heading
 
@@ -87,7 +90,7 @@ Some **bold** and _italic_ text
 [[en]]# Some **bold** and _italic_ text in an english block
 
 [[fr]]# Some **bold** and _italic_ text in a french block`,
-        expected: `> # 3. TEXT STYLES
+        expected: `^ # 3. TEXT STYLES
 
 Some **bold** and *italic* text
 
@@ -95,7 +98,7 @@ Some **bold** and *italic* text
 
 1. Some **bold** and *italic* text in a numbered list
 
-> Some **bold** and *italic* text in a blockquote
+^ Some **bold** and *italic* text in a blockquote
 
 # Some **bold** and *italic* text in a heading
 
@@ -110,7 +113,7 @@ Some **bold** and *italic* text
 [[/fr]]`,
     },
     LIST_STYLES: {
-        before: `> 4. LISTS
+        before: `^ 4. LISTS
 
 
 - Bullet
@@ -126,17 +129,17 @@ List
 List
 
 
-> - Blockquote
+^ - Blockquote
 Bullet List
 
 
 
-> * Blockquote
+^ * Blockquote
 Bullet List
 
 
 
-> 1. Blockquote
+^ 1. Blockquote
 Numbered List
 
 
@@ -168,7 +171,7 @@ List
 
 [[fr]]1. FR Numbered
 List`,
-        expected: `> 4. LISTS
+        expected: `^ 4. LISTS
 
 - Bullet
 - List
@@ -181,14 +184,14 @@ List`,
 1. Numbered
 2. List
 
-> - Blockquote
-> - Bullet List
+^ - Blockquote
+^ - Bullet List
 
-> - Blockquote
-> - Bullet List
+^ - Blockquote
+^ - Bullet List
 
-> 1. Blockquote
-> 2. Numbered List
+^ 1. Blockquote
+^ 2. Numbered List
 
 [[en]]
 - EN Bullet
@@ -221,7 +224,7 @@ List`,
 [[/fr]]`
     },
     LINKS: {
-        before: `> # 5. LINKS
+        before: `^ # 5. LINKS
 
 [Normal link](https://www.canada.ca)
 
@@ -235,12 +238,12 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
-> [Blockquote link](https://www.canada.ca)
+^ [Blockquote link](https://www.canada.ca)
 
 [[en]][EN link](https://www.canada.ca)
 
 [[fr]][FR link](https://www.canada.ca)`,
-        expected: `> # 5. LINKS
+        expected: `^ # 5. LINKS
 
 [Normal link](https://www.canada.ca)
 
@@ -254,7 +257,7 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
-> [Blockquote link](https://www.canada.ca)
+^ [Blockquote link](https://www.canada.ca)
 
 [[en]]
 [EN link](https://www.canada.ca)
@@ -265,17 +268,17 @@ _[Italic link](https://www.canada.ca)_
 [[/fr]]`
     },
     LANG_BLOCKS: {
-        before: `> # 6. LANGUAGE BLOCKS
+        before: `^ # 6. LANGUAGE BLOCKS
 
 [[en]]Basic EN Block!
 
 [[fr]]Basic FR Block!
 
-> [[en]]EN block in a quote
+^ [[en]]EN block in a quote
 
 
 
-> [[fr]]FR block in a quote
+^ [[fr]]FR block in a quote
 
 
 [[en]]# HEADING 1 in EN block
@@ -330,7 +333,7 @@ fr block
 [[fr]][link](https://www.google.ca) in FR block
 
 `,
-        expected: `> # 6. LANGUAGE BLOCKS
+        expected: `^ # 6. LANGUAGE BLOCKS
 
 [[en]]
 Basic EN Block!
@@ -340,13 +343,13 @@ Basic EN Block!
 Basic FR Block!
 [[/fr]]
 
-> [[en]]
-> EN block in a quote
-> [[/en]]
+^ [[en]]
+^ EN block in a quote
+^ [[/en]]
 
-> [[fr]]
-> FR block in a quote
-> [[/fr]]
+^ [[fr]]
+^ FR block in a quote
+^ [[/fr]]
 
 [[en]]
 # HEADING 1 in EN block
@@ -411,7 +414,89 @@ Basic FR Block!
 [[fr]]
 [link in FR block](https://www.google.ca)
 [[/fr]]`
-    }
+    },
+    QUOTE_BLOCKS: {
+        before: `^ # 7. QUOTE BLOCKS
+
+
+
+^ This is a single-line blockquote.
+
+
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with carets.
+
+
+
+^ - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+^ 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+        expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with carets.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+
+
+    },
+
+    QUOTE_BLOCKS2: {
+        before: `> # 7. QUOTE BLOCKS
+
+
+> This is a single-line blockquote.
+
+
+> This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with greater-than markers.
+
+
+> - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+> 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+> A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+        expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with greater-than markers.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+    },
 };
 
 export default MARKDOWN;
