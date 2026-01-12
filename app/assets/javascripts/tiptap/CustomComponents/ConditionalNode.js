@@ -21,6 +21,14 @@ const ConditionalNode = Node.create({
   // Prevent the node from being filled with itself during auto-fill
   defining: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+      prefix: "IF ((",
+      suffix: ")) is YES",
+    };
+  },
+
   addAttributes() {
     return {
       condition: {
@@ -64,48 +72,6 @@ const ConditionalNode = Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(ConditionalNodeView);
-  },
-
-  addInputRules() {
-    return [
-      // Match ((condition??content)) pattern - must contain ?? to be a conditional
-      new InputRule({
-        find: /\(\(([^?)]+)\?\?([^)]*)\)\)$/,
-        handler: ({ state, range, match }) => {
-          // Do not allow nested conditionals.
-          const $from = state.selection.$from;
-          for (let depth = $from.depth; depth > 0; depth--) {
-            if ($from.node(depth).type === this.type) {
-              return null;
-            }
-          }
-
-          const condition = match[1]?.trim() || "condition";
-          const content = match[2]?.trim() || "";
-
-          const { tr } = state;
-
-          // Delete the matched text
-          tr.delete(range.from, range.to);
-
-          // Create the conditional node with content
-          const conditionalNode = this.type.create(
-            { condition },
-            content
-              ? state.schema.nodes.paragraph.create(
-                  null,
-                  state.schema.text(content),
-                )
-              : state.schema.nodes.paragraph.create(),
-          );
-
-          // Insert the conditional node
-          tr.insert(range.from, conditionalNode);
-
-          return tr;
-        },
-      }),
-    ];
   },
 
   addProseMirrorPlugins() {
@@ -298,6 +264,7 @@ const ConditionalNode = Node.create({
               return true;
             }
 
+
             // No target found in the desired direction → let browser handle
             // (moves focus out of editor).
             return false;
@@ -311,6 +278,7 @@ const ConditionalNode = Node.create({
       new Plugin({
         view() {
           let lastFocusedPos = null;
+          let lastCursorPos = null;
 
           return {
             update(view, prevState) {
@@ -322,6 +290,9 @@ const ConditionalNode = Node.create({
 
               const { selection } = state;
               const { $from } = selection;
+              const prevCursorPos = lastCursorPos;
+              const currentCursorPos = $from.pos;
+              lastCursorPos = currentCursorPos;
 
               // Helper to focus trigger at a given DOM pos
               const focusTriggerAtDomPos = (domPos) => {
@@ -372,10 +343,15 @@ const ConditionalNode = Node.create({
 
                 const cursorPos = $from.pos;
 
-                // If cursor is before triggerPos, or very close to node start, focus trigger
+                // Determine navigation direction: true if moving forward, false if moving backward
+                const movingForward = prevCursorPos === null || cursorPos > prevCursorPos;
+
+                // Only auto-focus trigger when moving forward into the conditional.
+                // When moving backward (from after the block), let cursor navigate into content first.
                 const shouldFocus =
-                  (typeof triggerPos === "number" && cursorPos <= triggerPos) ||
-                  cursorPos <= $from.start(depth) + 1;
+                  movingForward &&
+                  ((typeof triggerPos === "number" && cursorPos <= triggerPos) ||
+                   cursorPos <= $from.start(depth) + 1);
 
                 if (shouldFocus) {
                   focusTriggerAtDomPos(conditionalDomPos);
@@ -425,7 +401,9 @@ const ConditionalNode = Node.create({
         parse: {
           setup(markdownit) {
             markdownit.use((md) => {
-              // Custom block rule to parse the inline, user-typed version of the conditional: ((condition??content))
+              // Custom block rule to parse multi-line block conditionals.
+              // Single-line conditionals like ((condition??content)) within text
+              // are handled by ConditionalInlineMark instead.
               md.block.ruler.before(
                 "paragraph",
                 "conditional_block",
@@ -520,6 +498,13 @@ const ConditionalNode = Node.create({
                   }
 
                   if (!foundEnd) return false;
+                  
+                  // Reject single-line conditionals - those should be handled by ConditionalInlineMark
+                  // Block conditionals must span multiple lines (nextLine > start)
+                  if (nextLine === start) {
+                    return false;
+                  }
+                  
                   if (silent) return true;
 
                   let token = state.push("conditional_block_open", "div", 1);
@@ -650,7 +635,7 @@ const ConditionalNode = Node.create({
                   containsConditional = true;
                   return false;
                 }
-              },
+              }, 
             );
             if (containsConditional) return false;
             // Not inside a conditional block, so wrap selection in one
@@ -707,6 +692,48 @@ const ConditionalNode = Node.create({
 
           return true;
         },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      ArrowUp: ({ editor }) => {
+        const { state } = editor;
+        const { selection } = state;
+        const { $from } = selection;
+
+        // Check if we're inside a conditional at or near the beginning
+        for (let depth = $from.depth; depth > 0; depth--) {
+          const node = $from.node(depth);
+          if (node.type.name !== this.name) continue;
+
+          const conditionalStart = $from.start(depth);
+          const cursorPos = $from.pos;
+
+          // If cursor is at or very close to the start of the conditional content
+          // (within first few characters), prevent default up arrow and let the
+          // auto-focus plugin handle focusing the trigger
+          if (cursorPos <= conditionalStart + 3) {
+            // Find and focus the trigger button
+            setTimeout(() => {
+              try {
+                const conditionalDomPos = $from.before(depth);
+                const nodeDom = editor.view.nodeDOM(conditionalDomPos);
+                const triggerEl = nodeDom?.querySelector?.("[data-editor-focusable]");
+                if (triggerEl) {
+                  triggerEl.focus();
+                }
+              } catch (err) {
+                // Ignore
+              }
+            }, 0);
+            return true; // Prevent default arrow behavior
+          }
+          break;
+        }
+
+        return false; // Allow default arrow behavior
+      },
     };
   },
 });

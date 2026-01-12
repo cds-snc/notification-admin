@@ -145,6 +145,55 @@
     border-radius: 3px;
     border: 1px solid #e6a000;
   }
+
+  span[data-type="conditional-inline"] {
+    background-color: #e6f3ff;
+    padding: 0.125rem 0.35rem;
+    border-radius: 3px;
+    border: 1px solid #0078d4;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    position: relative;
+  }
+
+  span[data-type="conditional-inline"]::before {
+    content: attr(data-prefix) attr(data-condition) attr(data-suffix);
+    font-size: 0.7em;
+    font-weight: 600;
+    color: #0078d4;
+    pointer-events: none;
+  }
+
+  .conditional-inline-edit-widget {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+
+  .conditional-inline-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0 0.25rem;
+    margin: 0 0.125rem;
+    cursor: pointer;
+    color: #0078d4;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    font-size: 0.7em;
+    vertical-align: middle;
+  }
+
+  .conditional-inline-edit-btn:hover {
+    opacity: 1;
+  }
+
+  .conditional-inline-edit-btn i {
+    pointer-events: none;
+  }
 }
 
 /* Placeholder (at the top) */

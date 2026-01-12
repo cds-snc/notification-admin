@@ -233,6 +233,7 @@ const MenuBar = ({
       englishBlock: "English block",
       frenchBlock: "French block",
       conditionalBlock: "Conditional block",
+      conditionalInline: "Inline conditional",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -262,6 +263,7 @@ const MenuBar = ({
       englishBlock: "Bloc anglais",
       frenchBlock: "Bloc français",
       conditionalBlock: "Bloc conditionnel",
+      conditionalInline: "Conditionnel en ligne",
     },
   };
 
@@ -292,6 +294,7 @@ const MenuBar = ({
     englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
     frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
     conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
+    conditionalInline: platform === "mac" ? "⌘+Shift+0" : "Ctrl+Shift+0",
     link: platform === "mac" ? "⌘+K" : "Ctrl+K",
     bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
     italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
@@ -835,6 +838,36 @@ const MenuBar = ({
               {t.conditionalBlock}
             </span>
             Conditional
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper
+          label={t.conditionalInline}
+          shortcut={shortcuts.conditionalInline}
+        >
+          <button
+            type="button"
+            data-testid="rte-conditional_inline"
+            onClick={() => {
+              if (editor.isActive("conditionalInline")) {
+                editor.chain().focus().unsetConditionalInline().run();
+              } else {
+                editor.chain().focus().setConditionalInline("condition").run();
+              }
+            }}
+            className={
+              "toolbar-button" +
+              (editor.isActive("conditionalInline") ? " is-active" : "")
+            }
+            title={t.conditionalInline}
+            aria-pressed={editor.isActive("conditionalInline")}
+          >
+            <span className="sr-only">
+              {editor.isActive("conditionalInline")
+                ? t.removePrefix
+                : t.applyPrefix}
+              {t.conditionalInline}
+            </span>
+            ((?))
           </button>
         </TooltipWrapper>
       </div>

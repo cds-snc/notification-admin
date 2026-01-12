@@ -11,7 +11,9 @@ const normalizeCondition = (value) => {
   return trimmed;
 };
 
-const ConditionalNodeView = ({ node, updateAttributes, editor, getPos }) => {
+const ConditionalNodeView = ({ node, updateAttributes, editor, getPos, extension }) => {
+  const prefix = extension?.options?.prefix || "IF ((";
+  const suffix = extension?.options?.suffix || ")) is YES";
   const inputId = useId();
   const conditionValue = useMemo(
     () => node?.attrs?.condition || "",
@@ -65,7 +67,7 @@ const ConditionalNodeView = ({ node, updateAttributes, editor, getPos }) => {
     }
   };
 
-  const displayText = normalizeCondition(conditionValue) || "condition";
+  const displayText = `${prefix}${normalizeCondition(conditionValue) || 'condition'}${suffix}`;
 
   return (
     <NodeViewWrapper
@@ -115,7 +117,7 @@ const ConditionalNodeView = ({ node, updateAttributes, editor, getPos }) => {
               }
             }}
           >
-            <span className="conditional-trigger-text">{displayText}</span>
+            <span className="conditional-trigger-text" contentEditable="false">{displayText}</span>
             <i
               aria-hidden="true"
               className="fa-solid fa-pen-to-square conditional-trigger-icon"
