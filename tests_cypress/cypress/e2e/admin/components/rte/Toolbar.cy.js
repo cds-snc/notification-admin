@@ -232,7 +232,7 @@ describe("Toolbar accessibility tests", () => {
         label: "RTL block",
         key: "R",
         button: () => RichTextEditor.Components.RTLButton(),
-      }
+      },
     ];
 
     shortcutSpecs.forEach(({ label, key, button }) => {

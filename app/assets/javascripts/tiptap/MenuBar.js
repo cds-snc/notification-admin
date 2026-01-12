@@ -793,7 +793,8 @@ const MenuBar = ({
               )
             }
             className={
-              "toolbar-button" + (editor.isActive("rtlBlock") ? " is-active" : "")
+              "toolbar-button" +
+              (editor.isActive("rtlBlock") ? " is-active" : "")
             }
             title={t.rtlBlock}
             aria-pressed={editor.isActive("rtlBlock")}
@@ -802,7 +803,19 @@ const MenuBar = ({
               {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
               {t.rtlBlock}
             </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-text-direction-rtl" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="icon icon-tabler icons-tabler-outline icon-tabler-text-direction-rtl"
+              aria-hidden="true"
+            >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M16 4h-6.5a3.5 3.5 0 0 0 0 7h.5" />
               <path d="M14 15v-11" />

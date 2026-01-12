@@ -44,7 +44,11 @@ const createRtlNode = () =>
                     let max = state.eMarks[start];
 
                     if (pos + startMarker.length > max) return false;
-                    if (state.src.slice(pos, pos + startMarker.length) !== startMarker) return false;
+                    if (
+                      state.src.slice(pos, pos + startMarker.length) !==
+                      startMarker
+                    )
+                      return false;
 
                     pos += startMarker.length;
                     let firstLine = state.src.slice(pos, max).trim();
@@ -56,11 +60,17 @@ const createRtlNode = () =>
                       pos = state.bMarks[nextLine] + state.tShift[nextLine];
                       max = state.eMarks[nextLine];
 
-                      if (pos < max && state.sCount[nextLine] < state.blkIndent) {
+                      if (
+                        pos < max &&
+                        state.sCount[nextLine] < state.blkIndent
+                      ) {
                         break;
                       }
 
-                      if (state.src.slice(pos, pos + endMarker.length) === endMarker) {
+                      if (
+                        state.src.slice(pos, pos + endMarker.length) ===
+                        endMarker
+                      ) {
                         autoClosed = true;
                         break;
                       }
@@ -91,7 +101,12 @@ const createRtlNode = () =>
                       inlineToken.children = [];
 
                       try {
-                        state.md.inline.parse(firstLine, state.md, state.env, inlineToken.children);
+                        state.md.inline.parse(
+                          firstLine,
+                          state.md,
+                          state.env,
+                          inlineToken.children,
+                        );
                       } catch (e) {
                         inlineToken.children = inlineToken.children || [];
                       }
@@ -126,10 +141,7 @@ const createRtlNode = () =>
     },
 
     parseHTML() {
-      return [
-        { tag: 'div[dir="rtl"]' },
-        { tag: 'div[data-type="rtl-block"]' },
-      ];
+      return [{ tag: 'div[dir="rtl"]' }, { tag: 'div[data-type="rtl-block"]' }];
     },
 
     renderHTML({ HTMLAttributes = {} }) {
