@@ -1,19 +1,61 @@
 import React, { useRef, useEffect, useCallback, useState } from "react";
-import { Icon, Heading1, Heading2, Minus, Bold, Italic, Link, Unlink, List, ListOrdered, TextQuote, CircleQuestionMark, Eye } from 'lucide-react';
+import {
+  Icon,
+  Heading1,
+  Heading2,
+  Minus,
+  Bold,
+  Italic,
+  Link,
+  Unlink,
+  List,
+  ListOrdered,
+  TextQuote,
+  CircleQuestionMark,
+  Eye,
+} from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 
 // Custom icon nodes for TipTap editor
 const variableIcon = [
-  ['ellipse', { cx: '12', cy: '12', rx: '7.2', ry: '9.6', fill: '#ffbf47', stroke: 'none' }],
-  ['path', { d: 'M8 21C8 21 4 18 4 12C4 6 8 3 8 3M16 3C16 3 20 6 20 12C20 18 16 21 16 21M15 9L9 15M9 9L15 15', stroke: 'currentColor', strokeWidth: '2', fill: 'none' }]
+  [
+    "ellipse",
+    {
+      cx: "12",
+      cy: "12",
+      rx: "7.2",
+      ry: "9.6",
+      fill: "#ffbf47",
+      stroke: "none",
+    },
+  ],
+  [
+    "path",
+    {
+      d: "M8 21C8 21 4 18 4 12C4 6 8 3 8 3M16 3C16 3 20 6 20 12C20 18 16 21 16 21M15 9L9 15M9 9L15 15",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      fill: "none",
+    },
+  ],
 ];
 
 const englishBlockIcon = [
-  ['path', { d: 'M10 6H5C4.44772 6 4 6.44772 4 7V12M10 18H5C4.44772 18 4 17.5523 4 17V12M8 12H4M13 18V6.30902C13 6.13835 13.1384 6 13.309 6C13.4261 6 13.5331 6.06613 13.5854 6.17082L19.4146 17.8292C19.4669 17.9339 19.5739 18 19.691 18C19.8616 18 20 17.8616 20 17.691V6' }]
+  [
+    "path",
+    {
+      d: "M10 6H5C4.44772 6 4 6.44772 4 7V12M10 18H5C4.44772 18 4 17.5523 4 17V12M8 12H4M13 18V6.30902C13 6.13835 13.1384 6 13.309 6C13.4261 6 13.5331 6.06613 13.5854 6.17082L19.4146 17.8292C19.4669 17.9339 19.5739 18 19.691 18C19.8616 18 20 17.8616 20 17.691V6",
+    },
+  ],
 ];
 
 const frenchBlockIcon = [
-  ['path', { d: 'M4 18V12M10 6H5C4.44772 6 4 6.44772 4 7V12M8 12H4M13 12V7C13 6.44772 13.4477 6 14 6H17C18.6569 6 20 7.34315 20 9C20 10.6569 18.6569 12 17 12H16M13 12V18M13 12H16M20 18L16 12' }]
+  [
+    "path",
+    {
+      d: "M4 18V12M10 6H5C4.44772 6 4 6.44772 4 7V12M8 12H4M13 12V7C13 6.44772 13.4477 6 14 6H17C18.6569 6 20 7.34315 20 9C20 10.6569 18.6569 12 17 12H16M13 12V18M13 12H16M20 18L16 12",
+    },
+  ],
 ];
 
 /**
@@ -399,7 +441,7 @@ const MenuBar = ({
                 ? t.removePrefix
                 : t.applyPrefix}
             </span>
-            <Heading1/>
+            <Heading1 />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.heading2} shortcut={shortcuts.heading2}>
@@ -425,7 +467,7 @@ const MenuBar = ({
                 ? t.removePrefix
                 : t.applyPrefix}
             </span>
-            <Heading2/>
+            <Heading2 />
           </button>
         </TooltipWrapper>
         <TooltipWrapper
@@ -440,7 +482,7 @@ const MenuBar = ({
             title={t.horizontalRule}
           >
             <span className="sr-only">{t.horizontalRuleInsert}</span>
-           <Minus/>
+            <Minus />
           </button>
         </TooltipWrapper>
       </div>
@@ -471,7 +513,7 @@ const MenuBar = ({
               {editor.isActive("bold") ? t.removePrefix : t.applyPrefix}
               {t.bold}
             </span>
-            <Bold/>
+            <Bold />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.italic} shortcut={t.shortcutItalic}>
@@ -496,7 +538,7 @@ const MenuBar = ({
               {editor.isActive("italic") ? t.removePrefix : t.applyPrefix}
               {t.italic}
             </span>
-            <Italic/>
+            <Italic />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.link} shortcut={shortcuts.link}>
@@ -518,8 +560,7 @@ const MenuBar = ({
               {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
               {t.link}
             </span>
-            <Link/>
-            
+            <Link />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.variable} shortcut={shortcuts.variable}>
@@ -545,7 +586,12 @@ const MenuBar = ({
               {editor.isActive("variable") ? t.removePrefix : t.applyPrefix}
               {t.variable}
             </span>
-            <Icon iconNode={variableIcon} fill="none" stroke="currentColor" strokeWidth={2} />
+            <Icon
+              iconNode={variableIcon}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            />
           </button>
         </TooltipWrapper>
       </div>
@@ -554,7 +600,6 @@ const MenuBar = ({
 
       {/* Grouping elemenets group */}
       <div className="toolbar-group">
-        
         <TooltipWrapper
           label={t.numberedList}
           shortcut={shortcuts.numberedList}
@@ -580,7 +625,7 @@ const MenuBar = ({
               {editor.isActive("orderedList") ? t.removePrefix : t.applyPrefix}
               {t.numberedList}
             </span>
-            <ListOrdered/>
+            <ListOrdered />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.bulletList} shortcut={shortcuts.bulletList}>
@@ -605,7 +650,7 @@ const MenuBar = ({
               {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
               {t.bulletList}
             </span>
-            <List/>
+            <List />
           </button>
         </TooltipWrapper>
         <TooltipWrapper label={t.blockquote} shortcut={shortcuts.blockquote}>
@@ -630,7 +675,7 @@ const MenuBar = ({
               {editor.isActive("blockquote") ? t.removePrefix : t.applyPrefix}
               {t.blockquote}
             </span>
-            <TextQuote/>
+            <TextQuote />
           </button>
         </TooltipWrapper>
       </div>
@@ -708,10 +753,19 @@ const MenuBar = ({
           >
             <span className="sr-only">{toggleButtonLabel}</span>
             {isMarkdownView ? (
-              <Eye/>
+              <Eye />
             ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM7 15.5V11.5L9 13.5L11 11.5V15.5H13V8.5H11L9 10.5L7 8.5H5V15.5H7ZM18 12.5V8.5H16V12.5H14L17 15.5L20 12.5H18Z" fill="currentColor"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM7 15.5V11.5L9 13.5L11 11.5V15.5H13V8.5H11L9 10.5L7 8.5H5V15.5H7ZM18 12.5V8.5H16V12.5H14L17 15.5L20 12.5H18Z"
+                  fill="currentColor"
+                />
               </svg>
             )}
           </button>

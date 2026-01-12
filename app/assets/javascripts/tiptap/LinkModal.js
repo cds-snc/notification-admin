@@ -1,8 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Save, ExternalLink, Unlink } from 'lucide-react';
+import { Save, ExternalLink, Unlink } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 
-const LinkModal = ({ editor, isVisible, position, onClose, outline, lang = "en" }) => {
+const LinkModal = ({
+  editor,
+  isVisible,
+  position,
+  onClose,
+  outline,
+  lang = "en",
+}) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
   const inputRef = useRef(null);

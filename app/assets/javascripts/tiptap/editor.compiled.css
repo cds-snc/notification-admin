@@ -66,10 +66,12 @@
     border-radius: 0.5rem;
     color: var(--white);
     margin: 1.5rem 0;
-    padding: 0.75rem 1rem
+    padding: 0.75rem 1rem;
   }
   pre {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family:
+      Noto Mono,
+      monospace;
   }
   pre {
     code {
@@ -133,10 +135,10 @@
   div[lang="fr-CA"] {
     line-height: 1.5;
   }
-  div[lang]:has(+ :not( div[lang])) {
+  div[lang]:has(+ :not(div[lang])) {
     margin-bottom: 1.875rem;
   }
-  div[lang]:has(+ :not( div[lang])) {
+  div[lang]:has(+ :not(div[lang])) {
     border-bottom-width: 1px;
   }
   div[lang]:last-child {
@@ -172,7 +174,9 @@
   }
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family:
+      Noto Mono,
+      monospace;
   }
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
@@ -221,7 +225,10 @@
     word-wrap: break-word;
     border-radius: 13px 13px 8px 8px;
     box-shadow:
-      inset 0.4em 0 0 0 #fff, inset -0.4em 0 0 0 #fff, inset 0 -0.1em 0 0 #fff, inset 0 0.3em 0 0 #fff;
+      inset 0.4em 0 0 0 #fff,
+      inset -0.4em 0 0 0 #fff,
+      inset 0 -0.1em 0 0 #fff,
+      inset 0 0.3em 0 0 #fff;
   }
   span[data-type="variable"] {
     display: inline;
@@ -238,14 +245,14 @@
     color: rgb(0 0 0 / var(--tw-text-opacity, 1));
   }
   span[data-type="variable"]:before {
-    content: "(("
+    content: "((";
   }
   span[data-type="variable"]:before {
     --tw-text-opacity: 1;
     color: rgb(73 83 93 / var(--tw-text-opacity, 1));
   }
   span[data-type="variable"]:after {
-    content: "))"
+    content: "))";
   }
   span[data-type="variable"]:after {
     --tw-text-opacity: 1;
@@ -289,8 +296,8 @@
   position: absolute;
   top: -1.4em;
   -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  user-select: none;
   white-space: nowrap;
 }
 
@@ -351,7 +358,8 @@
   width: 1.875rem;
 }
 
-.toolbar-button:focus, .toolbar-button:focus-visible {
+.toolbar-button:focus,
+.toolbar-button:focus-visible {
   --tw-bg-opacity: 1;
   background-color: rgb(255 191 71 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
@@ -371,8 +379,8 @@
   font-weight: 500;
   line-height: 1;
   -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  user-select: none;
   min-height: 45px;
   min-width: 45px;
   --tw-bg-opacity: 1;
@@ -447,7 +455,9 @@
   background-color: transparent;
   resize: vertical;
   box-sizing: border-box;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    Noto Mono,
+    monospace;
 }
 
 /* Link Modal Styles */

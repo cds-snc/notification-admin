@@ -75,7 +75,7 @@
     color: var(--white);
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
-    @apply font-mono;
+    @apply font-monospace;
 
     code {
       background: none;
@@ -108,18 +108,17 @@
     @apply -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 px-gutterHalf pb-gutterHalf leading-normal;
   }
 
-  div[lang]:has(+ :not( div[lang])) {
-      @apply border-b-1 mb-gutter;
+  div[lang]:has(+ :not(div[lang])) {
+    @apply border-b-1 mb-gutter;
   }
   div[lang]:last-child {
-      @apply border-b-1;
+    @apply border-b-1;
   }
-
 
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
     box-sizing: content-box;
-    @apply -mx-gutterHalf text-black bg-white text-xs font-mono px-gutterHalf block w-min tracking-wide font-medium;
+    @apply -mx-gutterHalf text-black bg-white text-xs font-monospace px-gutterHalf block w-min tracking-wide font-medium;
   }
 
   div[lang="en-CA"]:before {
@@ -131,7 +130,7 @@
   div[lang="en-CA"] {
     @apply border-l-purple-300;
   }
-  
+
   div[lang="fr-CA"]:before {
     content: "FR";
     @apply bg-rose-300/60;
@@ -146,16 +145,19 @@
     word-wrap: break-word;
     border-radius: 13px 13px 8px 8px;
     box-shadow:
-      inset 0.4em 0 0 0 #fff, inset -0.4em 0 0 0 #fff, inset 0 -0.1em 0 0 #fff, inset 0 0.3em 0 0 #fff;
+      inset 0.4em 0 0 0 #fff,
+      inset -0.4em 0 0 0 #fff,
+      inset 0 -0.1em 0 0 #fff,
+      inset 0 0.3em 0 0 #fff;
     @apply inline bg-yellow text-black break-words;
   }
   span[data-type="variable"]:before {
     content: "((";
-    @apply text-gray-700
+    @apply text-gray-700;
   }
   span[data-type="variable"]:after {
     content: "))";
-    @apply text-gray-700
+    @apply text-gray-700;
   }
 }
 
@@ -239,7 +241,8 @@
 .toolbar-separator {
   @apply w-gutter;
 }
-.toolbar-button:focus, .toolbar-button:focus-visible {
+.toolbar-button:focus,
+.toolbar-button:focus-visible {
   @apply bg-yellow text-black outline outline-yellow outline-2;
 }
 .toolbar-button {
@@ -306,7 +309,7 @@
   background-color: transparent;
   resize: vertical;
   box-sizing: border-box;
-  @apply font-mono;
+  @apply font-monospace;
 }
 
 /* Link Modal Styles */

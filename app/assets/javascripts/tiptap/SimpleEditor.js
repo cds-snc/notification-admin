@@ -59,7 +59,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       if (!selection.rangeCount) return null;
 
       const range = selection.getRangeAt(0);
-      
+
       // For empty/collapsed selections, create a small highlight at cursor position
       if (range.collapsed) {
         const rect = range.getBoundingClientRect();
