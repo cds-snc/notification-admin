@@ -34,6 +34,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
+  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -123,6 +124,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           const { left, bottom } = event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
+          // record current link so transaction listener won't re-open redundantly
+          try {
+            currentLinkRef.current = editor.getAttributes("link").href || null;
+          } catch (e) {}
           return true;
         }
         return false;
@@ -357,16 +362,21 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       const isOnLink = editor.isActive("link");
       const linkHref = editor.getAttributes("link").href || null;
 
-      if (isOnLink && linkHref !== currentLinkRef.current) {
-        // Entering a new link - open modal first
+      const now = Date.now();
+      const lastEvent = lastUserEventRef.current;
+
+      const recentArrowOrClick =
+        lastEvent &&
+        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
+        now - lastEvent.time < 800;
+
+      // Only auto-open on transitions caused by recent arrow navigation or clicks
+      if (isOnLink && linkHref !== currentLinkRef.current && recentArrowOrClick) {
         openLinkModal();
         currentLinkRef.current = linkHref;
-        
-        // Delay the announcement flag so input text gets read first,
-        // then the label announcement will be read immediately after
+
         setTimeout(() => {
           setJustOpenedLink(true);
-          // Reset the announcement flag after screen reader has time to announce it
           setTimeout(() => setJustOpenedLink(false), 2500);
         }, 600);
       } else if (!isOnLink && currentLinkRef.current) {
@@ -378,7 +388,26 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     };
 
     editor.on("transaction", handleTransaction);
-    return () => editor.off("transaction", handleTransaction);
+
+    // listen to DOM keydown/clicks to record recent arrow or click events
+    const dom = editor.view.dom;
+    const onKeyDown = (e) => {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+        lastUserEventRef.current = { type: "arrow", key: e.key, time: Date.now() };
+      }
+    };
+    const onClick = () => {
+      lastUserEventRef.current = { type: "click", time: Date.now() };
+    };
+
+    dom.addEventListener("keydown", onKeyDown);
+    dom.addEventListener("click", onClick);
+
+    return () => {
+      editor.off("transaction", handleTransaction);
+      dom.removeEventListener("keydown", onKeyDown);
+      dom.removeEventListener("click", onClick);
+    };
   }, [editor]);
 
   // Update hidden input field when content changes
