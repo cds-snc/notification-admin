@@ -1,6 +1,5 @@
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
-const modToken = modKey === "Meta" ? "meta" : "ctrl";
 
 describe("Link modal tests", () => {
   beforeEach(() => {
