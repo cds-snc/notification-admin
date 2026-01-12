@@ -1,5 +1,6 @@
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
+const modToken = modKey === "Meta" ? "meta" : "ctrl";
 
 describe("Link modal tests", () => {
   beforeEach(() => {
@@ -7,8 +8,8 @@ describe("Link modal tests", () => {
     cy.visit(RichTextEditor.URL);
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Start each test with a cleared editor
-    RichTextEditor.Components.Editor().realPress(["Meta", "A"]);
+    // Start each test with a cleared editor (use .type for modifier keys)
+    RichTextEditor.Components.Editor().type(`{${modToken}a}`);
     RichTextEditor.Components.Editor().type("{selectall}{del}");
 
     // ensure editor has no text
@@ -24,7 +25,8 @@ describe("Link modal tests", () => {
         RichTextEditor.Components.Editor()
           .focus()
           .type("hello world{selectall}");
-        cy.realPress([modKey, "K"]);
+        // use .type to send modifier+K
+        RichTextEditor.Components.Editor().type(`{${modToken}k}`);
 
         // trigger mouse over
         const button = buttonObj[buttonName]();
@@ -66,5 +68,55 @@ describe("Link modal tests", () => {
       .find('a[href="https://example.com"]')
       .should("exist")
       .and("contain.text", "hello world");
+  });
+
+  context("Arrow key navigation opens modal", () => {
+    it("opens when arrowing right into a link", () => {
+      // type text and insert link for 'world'
+      RichTextEditor.Components.Editor()
+        .focus()
+        .type("hello world")
+        .then(() => {
+          // select the word 'world' (move cursor left then shift-select)
+          RichTextEditor.Components.Editor().type("{leftarrow}{leftarrow}{leftarrow}{leftarrow}{shift}{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+          RichTextEditor.Components.Editor().type(`{${modToken}k}`);
+          RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+          RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+        });
+
+      // move caret to start and arrow right into link
+      RichTextEditor.Components.Editor().click().type("{home}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+
+      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+    });
+
+    it("opens when arrowing left into a link", () => {
+      // create a linked range at the start of the text
+      RichTextEditor.Components.Editor().focus().type("hello world");
+      RichTextEditor.Components.Editor().type("{selectall}");
+      RichTextEditor.Components.Editor().type(`{${modToken}k}`);
+      RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // move caret to end and arrow left into link
+      RichTextEditor.Components.Editor().click().type("{end}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}");
+
+      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+    });
+
+    it("opens when arrowing down into a link", () => {
+      // put a link on the second line
+      RichTextEditor.Components.Editor().focus().type("line1\nline2 link\nline3");
+      // select 'link' and make it a link
+      RichTextEditor.Components.Editor().type("{uparrow}{selectall}");
+      RichTextEditor.Components.Editor().type(`{${modToken}k}`);
+      RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // place caret on first line and arrow down into the link
+      RichTextEditor.Components.Editor().click().type("{home}{downarrow}{downarrow}");
+
+      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+    });
   });
 });
