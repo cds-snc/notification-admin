@@ -1,5 +1,6 @@
 import itertools
 import json
+import time
 from string import ascii_uppercase
 from zipfile import BadZipFile
 
@@ -35,6 +36,7 @@ from xlrd.compdoc import CompDocError
 from xlrd.xldate import XLDateError
 
 from app import (
+    cache,
     current_service,
     get_current_locale,
     job_api_client,
@@ -83,6 +85,19 @@ def daily_sms_count(service_id):
 
 def daily_email_count(service_id):
     return int(redis_client.get(email_daily_count_cache_key(service_id)) or "0")
+
+
+@cache.memoize(timeout=60)  # Cache for 1 minute to avoid redundant API calls
+def get_template_statistics_cached(service_id, limit_days=1):
+    """Cached wrapper for template_statistics_client to reduce redundant API calls."""
+    return template_statistics_client.get_template_statistics_for_service(service_id, limit_days=limit_days)
+
+
+@cache.memoize(timeout=30)  # Cache for 30 seconds
+def get_limit_stats_cached(service_id):
+    """Cached wrapper for notification_counts_client to reduce redundant API calls."""
+    # We need to pass the service object, so fetch it
+    return notification_counts_client.get_limit_stats(current_service)
 
 
 def service_can_bulk_send(service_id):
@@ -142,6 +157,7 @@ def get_example_letter_address(key):
 @main.route("/services/<service_id>/send/<template_id>/csv", methods=["GET", "POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def send_messages(service_id, template_id):
+    start_time = time.time()
     # if there's lots of data in the session, lets log it for debugging purposes
     # TODO: Remove this once we're confident we have session size under control
     if len(session.get("file_uploads", {}).keys()) > 2:
@@ -151,7 +167,11 @@ def send_messages(service_id, template_id):
             )
         )
 
+    time_before_template = time.time()
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    current_app.logger.info(
+        f"[TIMING] get_template_with_user_permission_or_403 took {(time.time() - time_before_template)*1000:.2f}ms"
+    )
 
     email_reply_to = None
     sms_sender = None
@@ -172,6 +192,7 @@ def send_messages(service_id, template_id):
             )
         )
 
+    time_before_get_template = time.time()
     template = get_template(
         db_template,
         current_service,
@@ -186,6 +207,7 @@ def send_messages(service_id, template_id):
         email_reply_to=email_reply_to,
         sms_sender=sms_sender,
     )
+    current_app.logger.info(f"[TIMING] get_template took {(time.time() - time_before_get_template)*1000:.2f}ms")
 
     form = CsvUploadForm()
     if form.validate_on_submit():
@@ -220,20 +242,32 @@ def send_messages(service_id, template_id):
         except CompDocError:
             flash(_("Try creating {} in a different application").format(form.file.data.filename))
 
+    time_before_column_headings = time.time()
     column_headings = get_spreadsheet_column_headings_from_template(template)
+    current_app.logger.info(
+        f"[TIMING] get_spreadsheet_column_headings took {(time.time() - time_before_column_headings)*1000:.2f}ms"
+    )
 
-    return render_template(
+    time_before_example_rows = time.time()
+    example_row = get_example_csv_rows(template)
+    current_app.logger.info(f"[TIMING] get_example_csv_rows took {(time.time() - time_before_example_rows)*1000:.2f}ms")
+
+    time_before_render = time.time()
+    result = render_template(
         "views/send.html",
         template=template,
         column_headings=list(ascii_uppercase[: len(column_headings)]),
         example=[
             column_headings,
-            get_example_csv_rows(template),
-            get_example_csv_rows(template),
-            get_example_csv_rows(template),
+            example_row,
+            example_row,
+            example_row,
         ],
         form=form,
     )
+    current_app.logger.info(f"[TIMING] render_template took {(time.time() - time_before_render)*1000:.2f}ms")
+    current_app.logger.info(f"[TIMING] send_messages total took {(time.time() - start_time)*1000:.2f}ms")
+    return result
 
 
 @main.route("/services/<service_id>/send/<template_id>/s3-send", methods=["GET", "POST"])
@@ -658,6 +692,10 @@ def send_test_preview(service_id, template_id, filetype):
 
 
 def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_pdf=False, user_language="en"):
+    start_time = time.time()
+    current_app.logger.info("[TIMING] _check_messages started")
+
+    time_before_job_check = time.time()
     try:
         # The happy path is that the job doesn’t already exist, so the
         # API will return a 404 and the client will raise HTTPError.
@@ -669,17 +707,38 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         # Rasing a werkzeug.routing redirect means that doesn't happen.
         raise PermanentRedirect(url_for(".send_messages", service_id=service_id, template_id=template_id))
     except HTTPError as e:
+        current_app.logger.info(
+            f"[TIMING] job_api_client.get_job HTTPError check took {(time.time() - time_before_job_check)*1000:.2f}ms"
+        )
         if e.status_code != 404:
             raise
 
+    time_before_daily_counts = time.time()
     sms_sent_today = daily_sms_count(service_id)
     emails_sent_today = daily_email_count(service_id)
     remaining_sms_messages_today = current_service.sms_daily_limit - sms_sent_today
     remaining_email_messages_today = current_service.message_limit - emails_sent_today
+    current_app.logger.info(f"[TIMING] daily counts (Redis) took {(time.time() - time_before_daily_counts)*1000:.2f}ms")
 
+    time_before_s3_download = time.time()
     contents = s3download(service_id, upload_id)
+    current_app.logger.info(f"[TIMING] s3download took {(time.time() - time_before_s3_download)*1000:.2f}ms")
 
+    # Fast count of CSV rows before creating RecipientCSV object
+    # This avoids the expensive len(recipients) call later
+    time_before_row_count = time.time()
+    recipient_count = contents.count("\n")  # Count newlines
+    if recipient_count > 0:
+        recipient_count -= 1  # Subtract header row
+    current_app.logger.info(
+        f"[TIMING] Fast CSV row count took {(time.time() - time_before_row_count)*1000:.2f}ms for {recipient_count} rows"
+    )
+
+    time_before_get_template_permission = time.time()
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    current_app.logger.info(
+        f"[TIMING] get_template_with_user_permission_or_403 took {(time.time() - time_before_get_template_permission)*1000:.2f}ms"
+    )
 
     email_reply_to = None
     sms_sender = None
@@ -691,6 +750,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         email_reply_to = get_email_reply_to_address_from_session()
     elif db_template["template_type"] == "sms":
         sms_sender = get_sms_sender_from_session()
+
+    time_before_get_template = time.time()
     template = get_template(
         db_template,
         current_service,
@@ -711,6 +772,9 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         sms_sender=sms_sender,
         page_count=get_page_count_for_letter(db_template),
     )
+    current_app.logger.info(f"[TIMING] get_template took {(time.time() - time_before_get_template)*1000:.2f}ms")
+
+    time_before_recipient_csv = time.time()
     recipients = RecipientCSV(
         contents,
         template=template,
@@ -728,6 +792,10 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         max_rows=get_csv_max_rows(service_id),
         user_language=user_language,
     )
+    current_app.logger.info(f"[TIMING] RecipientCSV processing took {(time.time() - time_before_recipient_csv)*1000:.2f}ms")
+
+    # Note: recipient_count was already calculated from raw CSV above (fast method)
+    # No need to call len(recipients) which would trigger expensive processing
 
     if request.args.get("from_test"):
         # only happens if generating a letter preview test
@@ -737,34 +805,126 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         back_link = url_for(".send_messages", service_id=service_id, template_id=template.id)
         choose_time_form = ChooseTimeForm()
 
+    time_before_sms_calc = time.time()
     sms_parts_to_send = 0
     is_sms_parts_estimated = False
     if db_template["template_type"] == "sms":
-        if len(recipients) > 1000:
-            # estimate using the first row
-            template.values = recipients[0].recipient_and_personalisation
-            sms_parts_to_send = template.fragment_count * len(recipients)
+        current_app.logger.info(f"[TIMING] SMS calculation: Processing {recipient_count} recipients")
+        if recipient_count > 1000:
+            # estimate using the first row - parse directly from CSV to avoid triggering expensive RecipientCSV processing
+            current_app.logger.info(f"[TIMING] SMS calculation: Using estimation for {recipient_count} recipients")
+            time_before_set_values = time.time()
+
+            # Parse first data row directly from CSV string (skip header)
+            import csv
+            from io import StringIO
+
+            csv_reader = csv.DictReader(StringIO(contents.strip()))
+            try:
+                first_row_dict = next(csv_reader)
+                # Create placeholder dict matching template format
+                placeholder_values = {}
+                for key in template.placeholders:
+                    # Try to find matching column (case-insensitive)
+                    for csv_key, csv_value in first_row_dict.items():
+                        if csv_key and key and csv_key.strip().lower() == key.lower():
+                            placeholder_values[key] = csv_value
+                            break
+                template.values = placeholder_values
+                current_app.logger.info(
+                    f"[TIMING] SMS calculation: Parse first row took {(time.time() - time_before_set_values)*1000:.2f}ms"
+                )
+            except StopIteration:
+                # Empty file, use recipients object as fallback
+                template.values = recipients[0].recipient_and_personalisation if len(recipients) > 0 else {}
+                current_app.logger.info(
+                    f"[TIMING] SMS calculation: Set template values (fallback) took {(time.time() - time_before_set_values)*1000:.2f}ms"
+                )
+
+            time_before_fragment = time.time()
+            fragment_count = template.fragment_count
+            current_app.logger.info(
+                f"[TIMING] SMS calculation: Get fragment_count took {(time.time() - time_before_fragment)*1000:.2f}ms"
+            )
+            sms_parts_to_send = fragment_count * recipient_count
             is_sms_parts_estimated = True
         else:
-            for row in range(len(recipients)):
+            current_app.logger.info(f"[TIMING] SMS calculation: Processing all {recipient_count} recipients individually")
+            for row in range(recipient_count):
                 template.values = recipients[row].recipient_and_personalisation
                 sms_parts_to_send += template.fragment_count
+        current_app.logger.info(f"[TIMING] SMS fragment calculation took {(time.time() - time_before_sms_calc)*1000:.2f}ms")
 
+    time_before_preview = time.time()
     if preview_row < 2:
         abort(404)
 
-    if preview_row < len(recipients) + 2:
-        template.values = recipients[preview_row - 2].recipient_and_personalisation
+    # Fast preview row access: parse directly from CSV without materializing entire RecipientCSV
+    # recipients[index] triggers expensive processing of all rows - avoid it!
+    if preview_row < recipient_count + 2:
+        import csv as csv_module
+        from io import StringIO
+
+        # Parse just the preview row from the CSV
+        csv_reader = csv_module.DictReader(StringIO(contents.strip()))
+        target_row_index = preview_row - 2  # Convert to 0-based index
+
+        # Skip to the target row
+        for i, row_dict in enumerate(csv_reader):
+            if i == target_row_index:
+                # Build recipient_and_personalisation dict from the CSV row
+                recipient_and_personalisation = {}
+                for key, value in row_dict.items():
+                    if key:  # Skip empty keys
+                        recipient_and_personalisation[key] = value
+                template.values = recipient_and_personalisation
+                break
     elif preview_row > 2:
         abort(404)
+    current_app.logger.info(f"[TIMING] Preview row access took {(time.time() - time_before_preview)*1000:.2f}ms")
+
+    time_before_has_sent = time.time()
+    has_sent_previously = job_api_client.has_sent_previously(
+        service_id,
+        template.id,
+        db_template["version"],
+        request.args.get("original_file_name", ""),
+    )
+    current_app.logger.info(f"[TIMING] has_sent_previously check took {(time.time() - time_before_has_sent)*1000:.2f}ms")
+    current_app.logger.info(f"[TIMING] _check_messages total took {(time.time() - start_time)*1000:.2f}ms")
+
+    # Calculate displayed row count without materializing the generator
+    # displayed_rows is either initial_rows (up to max_initial_rows_shown) or
+    # initial_rows_with_errors (up to max_errors_shown) - both are islice generators
+    # We can calculate the count based on the logic without triggering expensive iteration
+    time_before_displayed_count = time.time()
+
+    # Check for truly cheap header-only errors (don't check row count properties)
+    # Properties like too_many_rows, more_rows_than_can_send etc trigger row iteration
+    has_header_errors = bool(recipients.missing_column_headers or recipients.duplicate_recipient_column_headers)
+    current_app.logger.info(f"[TIMING] Check header errors took {(time.time() - time_before_displayed_count)*1000:.2f}ms")
+
+    # Calculate displayed row count
+    if has_header_errors:
+        # Will show up to max_errors_shown rows with errors
+        count_of_displayed_recipients = min(recipients.max_errors_shown, recipient_count)
+    else:
+        # Will show up to max_initial_rows_shown rows
+        count_of_displayed_recipients = min(recipients.max_initial_rows_shown, recipient_count)
+
+    # Always check row-level errors for proper validation
+    time_before_row_errors = time.time()
+    row_errors = get_errors_for_csv(recipients, template.template_type)
+    has_errors = has_header_errors or bool(row_errors)
+    current_app.logger.info(f"[TIMING] get_errors_for_csv took {(time.time() - time_before_row_errors)*1000:.2f}ms")
 
     return dict(
         recipients=recipients,
         template=template,
-        errors=recipients.has_errors,
-        row_errors=get_errors_for_csv(recipients, template.template_type),
-        count_of_recipients=len(recipients),
-        count_of_displayed_recipients=len(list(recipients.displayed_rows)),
+        errors=has_errors,
+        row_errors=row_errors,
+        count_of_recipients=recipient_count,  # Use cached count instead of len(recipients)
+        count_of_displayed_recipients=count_of_displayed_recipients,
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
@@ -783,12 +943,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         ),
         required_recipient_columns=OrderedSet(recipients.recipient_column_headers) - optional_address_columns,
         preview_row=preview_row,
-        sent_previously=job_api_client.has_sent_previously(
-            service_id,
-            template.id,
-            db_template["version"],
-            request.args.get("original_file_name", ""),
-        ),
+        sent_previously=has_sent_previously,
     )
 
 
@@ -799,10 +954,25 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 )
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def check_messages(service_id, template_id, upload_id, row_index=2):
+    start_time = time.time()
+    current_app.logger.info("[TIMING] check_messages started")
+
     current_lang = get_current_locale(current_app)
+
+    time_before_check_messages = time.time()
     data = _check_messages(service_id, template_id, upload_id, row_index, user_language=current_lang)
-    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    current_app.logger.info(f"[TIMING] _check_messages call took {(time.time() - time_before_check_messages)*1000:.2f}ms")
+
+    time_before_stats = time.time()
+    all_statistics_daily = get_template_statistics_cached(service_id, limit_days=1)
+    current_app.logger.info(
+        f"[TIMING] get_template_statistics_for_service (cached) took {(time.time() - time_before_stats)*1000:.2f}ms"
+    )
+
+    time_before_aggregate = time.time()
     data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
+    current_app.logger.info(f"[TIMING] aggregate_notifications_stats took {(time.time() - time_before_aggregate)*1000:.2f}ms")
+
     data["time_to_reset"] = get_limit_reset_time_et()
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
@@ -813,7 +983,9 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         data["send_exceeds_annual_limit"] = False
         data["send_exceeds_daily_limit"] = False
         # determine the remaining sends for daily + annual
-        limit_stats = notification_counts_client.get_limit_stats(current_service)
+        time_before_limit_stats = time.time()
+        limit_stats = get_limit_stats_cached(service_id)
+        current_app.logger.info(f"[TIMING] get_limit_stats (cached) took {(time.time() - time_before_limit_stats)*1000:.2f}ms")
         remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
 
         if remaining_annual < data["count_of_recipients"]:
@@ -865,6 +1037,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     set_metadata_on_csv_upload(service_id, upload_id, **metadata_kwargs)
 
+    current_app.logger.info(f"[TIMING] check_messages total took {(time.time() - start_time)*1000:.2f}ms")
     return render_template("views/check/ok.html", **data)
 
 
@@ -1068,7 +1241,7 @@ def check_notification(service_id, template_id):
 
 def _check_notification(service_id, template_id, exception=None):
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
-    all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
+    all_statistics_daily = get_template_statistics_cached(service_id, limit_days=1)
     stats_daily = aggregate_notifications_stats(all_statistics_daily)
     email_reply_to = None
     sms_sender = None

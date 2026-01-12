@@ -186,8 +186,11 @@ def redirect_to_sign_in(f):
 def get_errors_for_csv(recipients, template_type):
     errors = []
 
-    if any(recipients.rows_with_bad_recipients):
-        number_of_bad_recipients = len(list(recipients.rows_with_bad_recipients))
+    # Convert generators to lists once to avoid iterating multiple times
+    # This is faster than calling any() then len(list()) which would iterate twice
+    rows_with_bad_recipients = list(recipients.rows_with_bad_recipients)
+    if rows_with_bad_recipients:
+        number_of_bad_recipients = len(rows_with_bad_recipients)
         if "sms" == template_type:
             if 1 == number_of_bad_recipients:
                 errors.append(_("fix") + " 1 " + _("phone number"))
@@ -204,24 +207,27 @@ def get_errors_for_csv(recipients, template_type):
             else:
                 errors.append(_("fix") + " {} ".format(number_of_bad_recipients) + _("addresses"))
 
-    if any(recipients.rows_with_missing_data):
-        number_of_rows_with_missing_data = len(list(recipients.rows_with_missing_data))
+    rows_with_missing_data = list(recipients.rows_with_missing_data)
+    if rows_with_missing_data:
+        number_of_rows_with_missing_data = len(rows_with_missing_data)
         if 1 == number_of_rows_with_missing_data:
             errors.append(_("enter missing data in 1 row"))
         else:
             errors.append(_("enter missing data in {} rows").format(number_of_rows_with_missing_data))
 
-    if recipients.template_type == TemplateType.SMS.value and any(recipients.rows_with_combined_variable_content_too_long):
-        num_rows_with_combined_content_too_long = len(list(recipients.rows_with_combined_variable_content_too_long))
-        if num_rows_with_combined_content_too_long == 1:
-            errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
-        else:
-            errors.append(
-                _("added custom content exceeds the {} character limit in {} rows").format(
-                    SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+    if recipients.template_type == TemplateType.SMS.value:
+        rows_with_long_content = list(recipients.rows_with_combined_variable_content_too_long)
+        if rows_with_long_content:
+            num_rows_with_combined_content_too_long = len(rows_with_long_content)
+            if num_rows_with_combined_content_too_long == 1:
+                errors.append(_("added custom content exceeds the {} character limit in 1 row").format(SMS_CHAR_COUNT_LIMIT))
+            else:
+                errors.append(
+                    _("added custom content exceeds the {} character limit in {} rows").format(
+                        SMS_CHAR_COUNT_LIMIT, num_rows_with_combined_content_too_long
+                    )
                 )
-            )
-        # TODO Update the inline cell error messages
+            # TODO Update the inline cell error messages
 
     return errors
 
