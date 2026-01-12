@@ -190,30 +190,6 @@ const ConditionalInlineMark = Mark.create({
   },
 
   addKeyboardShortcuts() {
-    const findInlineConditionalRange = (state, { condition, aroundPos }) => {
-      let from = null;
-      let to = null;
-
-      const min = Math.max(0, aroundPos - 500);
-      const max = Math.min(state.doc.content.size, aroundPos + 500);
-
-      state.doc.nodesBetween(min, max, (node, pos) => {
-        if (!node.isText) return;
-
-        const hasThisMark = node.marks.some(
-          (m) => m.type.name === this.name && m.attrs.condition === condition
-        );
-        if (!hasThisMark) return;
-
-        if (from === null || pos < from) from = pos;
-        const end = pos + node.nodeSize;
-        if (to === null || end > to) to = end;
-      });
-
-      if (from === null || to === null) return null;
-      return { from, to };
-    };
-
     // Helper function to convert inline conditional to block conditional
     const convertToBlockConditional = (editor, mark, splitAtCursor = true) => {
       const { state } = editor;
@@ -229,10 +205,16 @@ const ConditionalInlineMark = Mark.create({
         Math.max(0, $from.pos - 200),
         $from.pos,
         (node, pos) => {
-          if (node.isText && node.marks.some((m) => m.type.name === this.name && m.attrs.condition === condition)) {
+          if (
+            node.isText &&
+            node.marks.some(
+              (m) =>
+                m.type.name === this.name && m.attrs.condition === condition,
+            )
+          ) {
             markFrom = Math.min(markFrom, pos);
           }
-        }
+        },
       );
 
       // Search forward to find the end of the mark
@@ -240,10 +222,16 @@ const ConditionalInlineMark = Mark.create({
         $from.pos,
         Math.min(state.doc.content.size, $from.pos + 200),
         (node, pos) => {
-          if (node.isText && node.marks.some((m) => m.type.name === this.name && m.attrs.condition === condition)) {
+          if (
+            node.isText &&
+            node.marks.some(
+              (m) =>
+                m.type.name === this.name && m.attrs.condition === condition,
+            )
+          ) {
             markTo = Math.max(markTo, pos + node.nodeSize);
           }
-        }
+        },
       );
 
       // Get text before and after cursor within the mark
@@ -264,11 +252,11 @@ const ConditionalInlineMark = Mark.create({
         // Split content at cursor into two paragraphs
         const paragraph1 = schema.nodes.paragraph.create(
           null,
-          textBeforeCursor ? schema.text(textBeforeCursor) : undefined
+          textBeforeCursor ? schema.text(textBeforeCursor) : undefined,
         );
         const paragraph2 = schema.nodes.paragraph.create(
           null,
-          textAfterCursor ? schema.text(textAfterCursor) : undefined
+          textAfterCursor ? schema.text(textAfterCursor) : undefined,
         );
         paragraphs.push(paragraph1, paragraph2);
       } else {
@@ -276,14 +264,14 @@ const ConditionalInlineMark = Mark.create({
         const text = textBeforeCursor + textAfterCursor;
         const paragraph = schema.nodes.paragraph.create(
           null,
-          text ? schema.text(text) : undefined
+          text ? schema.text(text) : undefined,
         );
         paragraphs.push(paragraph);
       }
 
       const conditionalNode = schema.nodes.conditional.create(
         { condition },
-        paragraphs
+        paragraphs,
       );
 
       // Insert the block conditional
@@ -298,7 +286,9 @@ const ConditionalInlineMark = Mark.create({
         // Position at end of content
         cursorPos = markFrom + conditionalNode.nodeSize - 2;
       }
-      tr.setSelection(state.selection.constructor.near(tr.doc.resolve(cursorPos)));
+      tr.setSelection(
+        state.selection.constructor.near(tr.doc.resolve(cursorPos)),
+      );
 
       editor.view.dispatch(tr);
       return true;
@@ -329,7 +319,7 @@ const ConditionalInlineMark = Mark.create({
           Math.max(0, $from.parentOffset - 10),
           $from.parentOffset,
           null,
-          "\ufffc"
+          "\ufffc",
         );
 
         // Check for heading patterns: # or ##
@@ -338,7 +328,10 @@ const ConditionalInlineMark = Mark.create({
         }
 
         // Check for list patterns: -, *, +, 1.
-        if (/^[-*+]$/.test(textBefore.trim()) || /^\d+\.$/.test(textBefore.trim())) {
+        if (
+          /^[-*+]$/.test(textBefore.trim()) ||
+          /^\d+\.$/.test(textBefore.trim())
+        ) {
           return convertToBlockConditional.call(this, editor, mark, false);
         }
 
@@ -358,7 +351,7 @@ const ConditionalInlineMark = Mark.create({
           Math.max(0, $from.parentOffset - 2),
           $from.parentOffset,
           null,
-          "\ufffc"
+          "\ufffc",
         );
 
         // Check for horizontal rule pattern: -- (will become --- after this dash)
@@ -394,7 +387,7 @@ const ConditionalInlineMark = Mark.create({
       state.doc.nodesBetween(parentStart, parentEnd, (node, pos) => {
         if (!node.isText) return;
         const has = node.marks.some(
-          (m) => m.type === markType && m.attrs?.condition === condition
+          (m) => m.type === markType && m.attrs?.condition === condition,
         );
         if (!has) return;
         if (from === null || pos < from) from = pos;
@@ -407,9 +400,7 @@ const ConditionalInlineMark = Mark.create({
       const before = state.doc
         .textBetween(parentStart, from, "\n", "\ufffc")
         .trim();
-      const after = state.doc
-        .textBetween(to, parentEnd, "\n", "\ufffc")
-        .trim();
+      const after = state.doc.textBetween(to, parentEnd, "\n", "\ufffc").trim();
 
       return {
         from,
@@ -422,7 +413,7 @@ const ConditionalInlineMark = Mark.create({
 
     const focusEditButton = (editorDom, { condition, from }) => {
       const button = editorDom.querySelector(
-        `.conditional-inline-edit-btn[data-pos="${from}"][data-condition="${condition}"]`
+        `.conditional-inline-edit-btn[data-pos="${from}"][data-condition="${condition}"]`,
       );
       if (button && typeof button.focus === "function") {
         button.focus();
@@ -449,7 +440,9 @@ const ConditionalInlineMark = Mark.create({
             return findConditionalMarks(doc, markType);
           },
           apply(tr, oldState) {
-            return tr.docChanged ? findConditionalMarks(tr.doc, markType) : oldState;
+            return tr.docChanged
+              ? findConditionalMarks(tr.doc, markType)
+              : oldState;
           },
         },
         props: {
@@ -465,14 +458,18 @@ const ConditionalInlineMark = Mark.create({
         props: {
           handleKeyDown(view, event) {
             if (event.defaultPrevented) return false;
-            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return false;
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight")
+              return false;
 
             const { state } = view;
             if (!state.selection.empty) return false;
 
             const cursorPos = state.selection.from;
-            const storedMark = state.storedMarks?.find?.((m) => m.type === markType) || null;
-            const markAtCursor = state.selection.$from.marks().find((m) => m.type === markType) || null;
+            const storedMark =
+              state.storedMarks?.find?.((m) => m.type === markType) || null;
+            const markAtCursor =
+              state.selection.$from.marks().find((m) => m.type === markType) ||
+              null;
             const markAhead = getMarkAtPos(state.doc, cursorPos + 1);
 
             // Resolve the condition to use for range detection.
@@ -502,7 +499,10 @@ const ConditionalInlineMark = Mark.create({
               // If we're outside-left of the mark at the same boundary position, ArrowLeft
               // should continue moving left rather than snapping back to the edit button.
               if (cursorPos === range.from && (markAtCursor || storedMark)) {
-                const focused = focusEditButton(view.dom, { condition, from: range.from });
+                const focused = focusEditButton(view.dom, {
+                  condition,
+                  from: range.from,
+                });
                 if (focused) {
                   event.preventDefault();
                   return true;
@@ -513,7 +513,12 @@ const ConditionalInlineMark = Mark.create({
 
             // ArrowRight rules
             // Rule 2: from outside-left of a mark, ArrowRight enters mark at boundary without selecting button.
-            if (!markAtCursor && !storedMark && cursorPos === range.from && markAhead) {
+            if (
+              !markAtCursor &&
+              !storedMark &&
+              cursorPos === range.from &&
+              markAhead
+            ) {
               const tr = state.tr;
               tr.setSelection(TextSelection.create(tr.doc, range.from));
               tr.setStoredMarks([markAhead]);
@@ -523,7 +528,11 @@ const ConditionalInlineMark = Mark.create({
             }
 
             // Rule 4/6: exiting to the right when mark is the only thing on the line inserts a space and allowing content to be added to the line.
-            if (markAtCursor && cursorPos === range.to && range.onlyThingOnLine) {
+            if (
+              markAtCursor &&
+              cursorPos === range.to &&
+              range.onlyThingOnLine
+            ) {
               const tr = state.tr;
 
               // Avoid repeatedly inserting spaces if one already exists.
@@ -551,7 +560,8 @@ const ConditionalInlineMark = Mark.create({
             if (!action || typeof pos !== "number") return;
 
             const { state } = editorView;
-            const markAtPos = getMarkAtPos(state.doc, pos + 1) || getMarkAtPos(state.doc, pos);
+            const markAtPos =
+              getMarkAtPos(state.doc, pos + 1) || getMarkAtPos(state.doc, pos);
             if (!markAtPos) return;
 
             const condition = markAtPos.attrs?.condition;
@@ -592,7 +602,7 @@ const ConditionalInlineMark = Mark.create({
               // Otherwise, let the caret flow left naturally by selecting near the left.
               const selection = TextSelection.near(
                 tr.doc.resolve(Math.max(range.from - 1, range.parentStart)),
-                -1
+                -1,
               );
               tr.setSelection(selection);
               tr.setStoredMarks([]);
@@ -602,10 +612,16 @@ const ConditionalInlineMark = Mark.create({
           };
 
           const editorDom = editorView.dom;
-          editorDom.addEventListener("conditionalInlineNavigate", handleNavigate);
+          editorDom.addEventListener(
+            "conditionalInlineNavigate",
+            handleNavigate,
+          );
           return {
             destroy() {
-              editorDom.removeEventListener("conditionalInlineNavigate", handleNavigate);
+              editorDom.removeEventListener(
+                "conditionalInlineNavigate",
+                handleNavigate,
+              );
             },
           };
         },
@@ -632,93 +648,106 @@ const ConditionalInlineMark = Mark.create({
               md.__notifyConditionalInlineInstalled = true;
 
               // Add inline rule to parse ((condition??content)) patterns
-              md.inline.ruler.before("text", "conditional_inline", (state, silent) => {
-                const start = state.pos;
-                const max = state.posMax;
+              md.inline.ruler.before(
+                "text",
+                "conditional_inline",
+                (state, silent) => {
+                  const start = state.pos;
+                  const max = state.posMax;
 
-                // Do not allow inline conditionals inside block conditionals
-                if (state.env?.__notifyDisableConditional === true) {
-                  return false;
-                }
-
-                // Need at least ((c??x)) = 8 characters
-                if (start + 8 > max) return false;
-                if (state.src.slice(start, start + 2) !== "((") return false;
-
-                let pos = start + 2;
-
-                // Find the ?? separator
-                const condEnd = state.src.indexOf("??", pos);
-                if (condEnd === -1 || condEnd >= max) return false;
-
-                const condition = state.src.slice(pos, condEnd);
-
-                // Skip if condition contains newlines (that would be a block conditional)
-                if (condition.includes("\n")) return false;
-
-                pos = condEnd + 2;
-
-                // Find the closing ))
-                let closeIdx = -1;
-                let innerDepth = 0;
-
-                while (pos < max - 1) {
-                  if (state.src.slice(pos, pos + 2) === "((") {
-                    innerDepth += 1;
-                    pos += 2;
-                    continue;
+                  // Do not allow inline conditionals inside block conditionals
+                  if (state.env?.__notifyDisableConditional === true) {
+                    return false;
                   }
 
-                  if (state.src.slice(pos, pos + 2) === "))") {
-                    if (innerDepth > 0) {
-                      innerDepth -= 1;
+                  // Need at least ((c??x)) = 8 characters
+                  if (start + 8 > max) return false;
+                  if (state.src.slice(start, start + 2) !== "((") return false;
+
+                  let pos = start + 2;
+
+                  // Find the ?? separator
+                  const condEnd = state.src.indexOf("??", pos);
+                  if (condEnd === -1 || condEnd >= max) return false;
+
+                  const condition = state.src.slice(pos, condEnd);
+
+                  // Skip if condition contains newlines (that would be a block conditional)
+                  if (condition.includes("\n")) return false;
+
+                  pos = condEnd + 2;
+
+                  // Find the closing ))
+                  let closeIdx = -1;
+                  let innerDepth = 0;
+
+                  while (pos < max - 1) {
+                    if (state.src.slice(pos, pos + 2) === "((") {
+                      innerDepth += 1;
                       pos += 2;
                       continue;
                     }
 
-                    closeIdx = pos;
-                    break;
+                    if (state.src.slice(pos, pos + 2) === "))") {
+                      if (innerDepth > 0) {
+                        innerDepth -= 1;
+                        pos += 2;
+                        continue;
+                      }
+
+                      closeIdx = pos;
+                      break;
+                    }
+
+                    pos++;
                   }
 
-                  pos++;
-                }
+                  if (closeIdx === -1) return false;
 
-                if (closeIdx === -1) return false;
+                  const content = state.src.slice(condEnd + 2, closeIdx);
 
-                const content = state.src.slice(condEnd + 2, closeIdx);
+                  // Skip if content contains newlines (that would be a block conditional)
+                  if (content.includes("\n")) return false;
 
-                // Skip if content contains newlines (that would be a block conditional)
-                if (content.includes("\n")) return false;
+                  if (silent) {
+                    state.pos = closeIdx + 2;
+                    return true;
+                  }
 
-                if (silent) {
+                  // Create the opening tag token
+                  const tokenOpen = state.push(
+                    "conditional_inline_open",
+                    "span",
+                    1,
+                  );
+                  tokenOpen.attrs = [
+                    ["data-type", "conditional-inline"],
+                    ["data-condition", condition.trim()],
+                  ];
+                  tokenOpen.markup = `((${condition}??`;
+
+                  // Create the text content token
+                  const tokenText = state.push("text", "", 0);
+                  tokenText.content = content;
+
+                  // Create the closing tag token
+                  const tokenClose = state.push(
+                    "conditional_inline_close",
+                    "span",
+                    -1,
+                  );
+                  tokenClose.markup = "))";
+
                   state.pos = closeIdx + 2;
                   return true;
-                }
-
-                // Create the opening tag token
-                const tokenOpen = state.push("conditional_inline_open", "span", 1);
-                tokenOpen.attrs = [
-                  ["data-type", "conditional-inline"],
-                  ["data-condition", condition.trim()],
-                ];
-                tokenOpen.markup = `((${condition}??`;
-
-                // Create the text content token
-                const tokenText = state.push("text", "", 0);
-                tokenText.content = content;
-
-                // Create the closing tag token
-                const tokenClose = state.push("conditional_inline_close", "span", -1);
-                tokenClose.markup = "))";
-
-                state.pos = closeIdx + 2;
-                return true;
-              });
+                },
+              );
 
               // Add renderer rules
               md.renderer.rules.conditional_inline_open = (tokens, idx) => {
                 const token = tokens[idx];
-                const condition = token.attrGet("data-condition") || "condition";
+                const condition =
+                  token.attrGet("data-condition") || "condition";
                 return `<span data-type="conditional-inline" data-condition="${condition}" class="conditional-inline">`;
               };
               md.renderer.rules.conditional_inline_close = () => "</span>";
@@ -733,70 +762,71 @@ const ConditionalInlineMark = Mark.create({
 // Helper function to find all conditional inline marks and create widget decorations
 function findConditionalMarks(doc, markType) {
   const decorations = [];
-  
+
   doc.descendants((node, pos) => {
     if (!node.isText) return;
-    
-    const marks = node.marks.filter(m => m.type === markType);
+
+    const marks = node.marks.filter((m) => m.type === markType);
     if (marks.length === 0) return;
-    
+
     // For each conditional mark, add a widget at the beginning
-    marks.forEach(mark => {
+    marks.forEach((mark) => {
       // Check if this is the start of the mark range
       const $pos = doc.resolve(pos);
       const prevNode = $pos.nodeBefore;
-      
+
       // Only add widget if this is the first node with this mark
-      if (!prevNode || !prevNode.marks.some(m => m === mark)) {
+      if (!prevNode || !prevNode.marks.some((m) => m === mark)) {
         // This is the start of the mark, create a simple button
-        const widget = document.createElement('button');
-        widget.type = 'button';
-        widget.className = 'conditional-inline-edit-btn';
-        widget.setAttribute('contenteditable', 'false');
-        widget.setAttribute('data-condition', mark.attrs.condition);
-        widget.setAttribute('data-pos', pos);
-        widget.setAttribute('aria-label', 'Edit conditional');
-        widget.setAttribute('tabindex', '-1');
-        widget.innerHTML = '<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>';
-        
+        const widget = document.createElement("button");
+        widget.type = "button";
+        widget.className = "conditional-inline-edit-btn";
+        widget.setAttribute("contenteditable", "false");
+        widget.setAttribute("data-condition", mark.attrs.condition);
+        widget.setAttribute("data-pos", pos);
+        widget.setAttribute("aria-label", "Edit conditional");
+        widget.setAttribute("tabindex", "-1");
+        widget.innerHTML =
+          '<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>';
+
         // Add keyboard handler for navigation
-        widget.addEventListener('keydown', (event) => {
-          if (event.key === 'ArrowRight') {
+        widget.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowRight") {
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Move cursor to the start of the conditional content
             // Use a custom event to communicate with the editor
-            const customEvent = new CustomEvent('conditionalInlineNavigate', {
+            const customEvent = new CustomEvent("conditionalInlineNavigate", {
               bubbles: true,
-              detail: { action: 'enterFromButton', pos: pos }
+              detail: { action: "enterFromButton", pos: pos },
             });
             widget.dispatchEvent(customEvent);
-          } else if (event.key === 'ArrowLeft') {
+          } else if (event.key === "ArrowLeft") {
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Move focus out of the mark (to before it)
-            const customEvent = new CustomEvent('conditionalInlineNavigate', {
+            const customEvent = new CustomEvent("conditionalInlineNavigate", {
               bubbles: true,
-              detail: { action: 'exitLeftFromButton', pos: pos }
+              detail: { action: "exitLeftFromButton", pos: pos },
             });
             widget.dispatchEvent(customEvent);
           }
         });
-        
+
         decorations.push(
           Decoration.widget(pos, widget, {
             // Keep the edit button visually inside the mark.
             // Also don't let selection/caret rendering treat the widget as a selection target.
             side: 1,
             ignoreSelection: true,
-          })
+          }),
         );
       }
     });
   });
-  
+
   return DecorationSet.create(doc, decorations);
 }
 

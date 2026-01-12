@@ -1,4 +1,4 @@
-import { Node, InputRule } from "@tiptap/core";
+import { Node } from "@tiptap/core";
 import { NodeSelection, Plugin } from "@tiptap/pm/state";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
@@ -264,7 +264,6 @@ const ConditionalNode = Node.create({
               return true;
             }
 
-
             // No target found in the desired direction → let browser handle
             // (moves focus out of editor).
             return false;
@@ -344,14 +343,16 @@ const ConditionalNode = Node.create({
                 const cursorPos = $from.pos;
 
                 // Determine navigation direction: true if moving forward, false if moving backward
-                const movingForward = prevCursorPos === null || cursorPos > prevCursorPos;
+                const movingForward =
+                  prevCursorPos === null || cursorPos > prevCursorPos;
 
                 // Only auto-focus trigger when moving forward into the conditional.
                 // When moving backward (from after the block), let cursor navigate into content first.
                 const shouldFocus =
                   movingForward &&
-                  ((typeof triggerPos === "number" && cursorPos <= triggerPos) ||
-                   cursorPos <= $from.start(depth) + 1);
+                  ((typeof triggerPos === "number" &&
+                    cursorPos <= triggerPos) ||
+                    cursorPos <= $from.start(depth) + 1);
 
                 if (shouldFocus) {
                   focusTriggerAtDomPos(conditionalDomPos);
@@ -498,13 +499,13 @@ const ConditionalNode = Node.create({
                   }
 
                   if (!foundEnd) return false;
-                  
+
                   // Reject single-line conditionals - those should be handled by ConditionalInlineMark
                   // Block conditionals must span multiple lines (nextLine > start)
                   if (nextLine === start) {
                     return false;
                   }
-                  
+
                   if (silent) return true;
 
                   let token = state.push("conditional_block_open", "div", 1);
@@ -635,7 +636,7 @@ const ConditionalNode = Node.create({
                   containsConditional = true;
                   return false;
                 }
-              }, 
+              },
             );
             if (containsConditional) return false;
             // Not inside a conditional block, so wrap selection in one
@@ -719,7 +720,9 @@ const ConditionalNode = Node.create({
               try {
                 const conditionalDomPos = $from.before(depth);
                 const nodeDom = editor.view.nodeDOM(conditionalDomPos);
-                const triggerEl = nodeDom?.querySelector?.("[data-editor-focusable]");
+                const triggerEl = nodeDom?.querySelector?.(
+                  "[data-editor-focusable]",
+                );
                 if (triggerEl) {
                   triggerEl.focus();
                 }

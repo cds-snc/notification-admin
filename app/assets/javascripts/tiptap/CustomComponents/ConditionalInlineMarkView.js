@@ -20,36 +20,40 @@ const ConditionalInlineMarkPopover = ({ editor }) => {
     // Listen for clicks on edit buttons in the decorations
     const handleClick = (event) => {
       const target = event.target;
-      const btn = target.closest?.('.conditional-inline-edit-btn');
-      
+      const btn = target.closest?.(".conditional-inline-edit-btn");
+
       if (!btn) return;
-      
+
       event.preventDefault();
       event.stopPropagation();
-      
-      const pos = parseInt(btn.getAttribute('data-pos'), 10);
-      const condition = btn.getAttribute('data-condition') || 'condition';
-      
+
+      const pos = parseInt(btn.getAttribute("data-pos"), 10);
+      const condition = btn.getAttribute("data-condition") || "condition";
+
       if (isNaN(pos)) return;
-      
+
       // Find the mark at this position
       const { state } = editor;
       const $pos = state.doc.resolve(pos);
-      const mark = $pos.marks().find(m => m.type.name === 'conditionalInline');
-      
+      const mark = $pos
+        .marks()
+        .find((m) => m.type.name === "conditionalInline");
+
       if (!mark) return;
-      
+
       // Find the full range of this mark
       let markFrom = pos;
       let markTo = pos;
-      
+
       state.doc.nodesBetween(
         Math.max(0, pos - 500),
         Math.min(state.doc.content.size, pos + 500),
         (node, nodePos) => {
           if (node.isText) {
             const marks = node.marks.filter(
-              m => m.type.name === 'conditionalInline' && m.attrs.condition === condition
+              (m) =>
+                m.type.name === "conditionalInline" &&
+                m.attrs.condition === condition,
             );
             if (marks.length > 0) {
               if (markFrom === pos || nodePos < markFrom) {
@@ -61,21 +65,21 @@ const ConditionalInlineMarkPopover = ({ editor }) => {
               }
             }
           }
-        }
+        },
       );
-      
+
       // Find the DOM element containing the mark
       const markElement = btn.closest('span[data-type="conditional-inline"]');
-      
+
       setEditState({ markElement, condition, from: markFrom, to: markTo });
       setDraft(condition);
     };
-    
+
     const editorDom = editor.view.dom;
-    editorDom.addEventListener('click', handleClick);
-    
+    editorDom.addEventListener("click", handleClick);
+
     return () => {
-      editorDom.removeEventListener('click', handleClick);
+      editorDom.removeEventListener("click", handleClick);
     };
   }, [editor]);
 
@@ -106,14 +110,16 @@ const ConditionalInlineMarkPopover = ({ editor }) => {
     // Update the mark in the editor
     const { from, to } = editState;
     const tr = editor.state.tr;
-    
+
     tr.removeMark(from, to, editor.schema.marks.conditionalInline);
     tr.addMark(
       from,
       to,
-      editor.schema.marks.conditionalInline.create({ condition: nextCondition })
+      editor.schema.marks.conditionalInline.create({
+        condition: nextCondition,
+      }),
     );
-    
+
     editor.view.dispatch(tr);
     setEditState(null);
   };
@@ -139,14 +145,14 @@ const ConditionalInlineMarkPopover = ({ editor }) => {
               const rect = editState.markElement.getBoundingClientRect();
               const parent = editor.view.dom.offsetParent || document.body;
               const parentRect = parent.getBoundingClientRect();
-              
-              el.style.position = 'absolute';
+
+              el.style.position = "absolute";
               el.style.left = `${rect.right - parentRect.left}px`;
               el.style.top = `${rect.top - parentRect.top}px`;
-              el.style.width = '1px';
-              el.style.height = '1px';
-              el.style.opacity = '0';
-              el.style.pointerEvents = 'none';
+              el.style.width = "1px";
+              el.style.height = "1px";
+              el.style.opacity = "0";
+              el.style.pointerEvents = "none";
             }
           }}
           aria-hidden="true"
