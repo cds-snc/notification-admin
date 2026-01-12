@@ -75,19 +75,26 @@ describe("Link modal tests", () => {
       // type a sentence and make 'with a link' into a link via Cmd/Ctrl+K
       RichTextEditor.Components.Editor()
         .focus()
-        .type("line with a link").setSelection("with a link")
+        .type("line with a link")
+        .setSelection("with a link")
         .then(() => {
           // open link modal with realPress
           cy.realPress([modKey, "k"]);
-          RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+          RichTextEditor.Components.LinkModal.URLInput().type(
+            "https://example.com",
+          );
           RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
         });
 
       // arrow over to the link and ensure modal opens
       RichTextEditor.Components.Editor().type("{uparrow}{uparrow}");
-      RichTextEditor.Components.Editor().type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
-      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
-      
+      RichTextEditor.Components.Editor().type(
+        "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}",
+      );
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
+
       // verify link inserted
       RichTextEditor.Components.Editor()
         .find('a[href="https://example.com"]')
@@ -103,14 +110,20 @@ describe("Link modal tests", () => {
         .setSelection("with a link")
         .then(() => {
           cy.realPress([modKey, "k"]);
-          RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+          RichTextEditor.Components.LinkModal.URLInput().type(
+            "https://example.com",
+          );
           RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
         });
 
       // move caret to end and arrow left into link
-      RichTextEditor.Components.Editor().click().type("{end}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}");
+      RichTextEditor.Components.Editor()
+        .click()
+        .type("{end}{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}");
 
-      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
     });
 
     it("opens when arrowing down into a link", () => {
@@ -121,14 +134,22 @@ describe("Link modal tests", () => {
         .setSelection("link")
         .then(() => {
           cy.realPress([modKey, "k"]);
-          RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+          RichTextEditor.Components.LinkModal.URLInput().type(
+            "https://example.com",
+          );
           RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
         });
 
       // place caret on first line and arrow down into the link
-      RichTextEditor.Components.Editor().click().type("{home}{uparrow}{uparrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+      RichTextEditor.Components.Editor()
+        .click()
+        .type(
+          "{home}{uparrow}{uparrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}",
+        );
       RichTextEditor.Components.Editor().type("{downarrow}");
-      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
     });
 
     it("opens when arrowing down into a link", () => {
@@ -139,14 +160,22 @@ describe("Link modal tests", () => {
         .setSelection("link")
         .then(() => {
           cy.realPress([modKey, "k"]);
-          RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+          RichTextEditor.Components.LinkModal.URLInput().type(
+            "https://example.com",
+          );
           RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
         });
 
       // place caret on first line and arrow down into the link
-      RichTextEditor.Components.Editor().click().type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+      RichTextEditor.Components.Editor()
+        .click()
+        .type(
+          "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}",
+        );
       RichTextEditor.Components.Editor().type("{uparrow}");
-      RichTextEditor.Components.LinkModal.Modal().should("exist").and("be.visible");
+      RichTextEditor.Components.LinkModal.Modal()
+        .should("exist")
+        .and("be.visible");
     });
   });
 });

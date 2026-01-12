@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import TooltipWrapper from "./TooltipWrapper";
 
-const LinkModal = ({ editor, isVisible, position, onClose, lang = "en", justOpened = false }) => {
+const LinkModal = ({
+  editor,
+  isVisible,
+  position,
+  onClose,
+  lang = "en",
+  justOpened = false,
+}) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
   const inputRef = useRef(null);
@@ -142,9 +149,9 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en", justOpen
   };
 
   const t = labels[lang] || labels.en;
-  
+
   // When the modal just opened, include announcement in label for screen readers
-  const labelText = justOpened 
+  const labelText = justOpened
     ? `Link editor opened. ${t.enterLink}`
     : t.enterLink;
 

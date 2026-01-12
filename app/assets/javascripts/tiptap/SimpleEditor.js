@@ -42,8 +42,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
 
-
-
   const updateHiddenInputValue = useCallback(
     (value = "") => {
       if (!inputId) return;
@@ -371,7 +369,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         now - lastEvent.time < 800;
 
       // Only auto-open on transitions caused by recent arrow navigation or clicks
-      if (isOnLink && linkHref !== currentLinkRef.current && recentArrowOrClick) {
+      if (
+        isOnLink &&
+        linkHref !== currentLinkRef.current &&
+        recentArrowOrClick
+      ) {
         openLinkModal();
         currentLinkRef.current = linkHref;
 
@@ -393,7 +395,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     const dom = editor.view.dom;
     const onKeyDown = (e) => {
       if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
-        lastUserEventRef.current = { type: "arrow", key: e.key, time: Date.now() };
+        lastUserEventRef.current = {
+          type: "arrow",
+          key: e.key,
+          time: Date.now(),
+        };
       }
     };
     const onClick = () => {
