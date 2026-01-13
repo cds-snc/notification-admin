@@ -105,15 +105,22 @@
     @apply text-black;
   }
 
-  #proposition-links [aria-current="page"]:not([tabindex]) {
-    @apply border-b-4 border-blue;
+  #proposition-links [aria-current="page"] {
+    @apply border-b-4 !important;
+    @apply border-blue !important;
+  }
+
+  .menu--active,
+  #mobile-menu-content [aria-current="page"] {
+    @apply font-bold;
+  }
+
+  .adminnav--active {
+    @apply bg-gray border-l-4 border-blue font-extrabold;
   }
 
   .nav-menu-item {
-    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-medium no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue;
-  }
-  .nav-menu-item:hover {
-    @apply border-gray-300;
+    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-medium no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue hover:border-gray-300;
   }
   .nav-menu-item:focus {
     @apply border-b-4 bg-yellow border-black outline-none;
@@ -121,7 +128,7 @@
 
   .nav-menu-item[data-module="menu"][aria-expanded="true"],
   .nav-menu-item[data-module="more-menu"][aria-expanded="true"] {
-    @apply border-gray-300;
+    @apply border-gray-700;
   }
 
   .menu-divider {

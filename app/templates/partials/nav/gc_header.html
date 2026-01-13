@@ -1,37 +1,69 @@
 {% from "components/buttons.html" import nav_button %}
 
+{% set lang_switch = 'EN' %}
+{% set long_lang_switch = 'English' %}
+
+{% if session["userlang"] == "en" %}
+  {% set lang_switch = 'FR' %}
+  {% set long_lang_switch = 'Français' %}
+{% endif %}
+
 <div class="container px-gutterHalf">
   <!-- start sub nav -->
-  <div class="pt-5 lg:justify-between flex flex-wrap items-center gap-gutterHalf">
-      <img
+  <div class="pt-5 lg:justify-between grid md:grid-cols-3">
+
+    <div class="pb-4">
+      {% if session["userlang"] == "en" %}
+        <img
           alt="{{ _('Government of Canada') }}"
           width="250"
-          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2 mr-auto"
-          src="{{ asset_s3_url(_('gov-canada-en.svg')) }}"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          src="{{ asset_s3_url('gov-canada-en.svg') }}"
         />
+      {% else %}
+        <img
+          alt="{{ _('Government of Canada') }}"
+          width="250"
+          class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2"
+          src="{{ asset_s3_url('gov-canada-fr.svg') }}"
+        />
+      {% endif %}
+    </div>
+      <div class="flex w-full justify-start md:justify-center md:col-start-2 items-center md:mx-auto" id="skiplink-container">
+          <a href="#main_content" class="skiplink px-2 py-2">{{ _('Skip to main content') }}</a>
+      </div>
+    <!-- start sub nav -->
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
-         class="flex self-justify-end w-full sm:w-max max-sm:border-t-1 border-gray-300">
-      <ul class="flex gap-gutterHalf w-full justify-between">
+         class="xs:hidden smaller:hidden sm:hidden md:flex">
+      <ul class="flex w-full justify-end">
         {% if current_user.is_authenticated %}
           {% include 'partials/nav/account_menu.html' %}
         {% else %}
           <li>
-            <a href="{{ url_for('main.sign_in') }}" class="nav-menu-item" aria-label="{{ _('Sign in to GC Notify') }}">
-              {{_('Sign in')}}
-            </a>
+            {{ nav_button(
+              href=url_for('main.sign_in'),
+              label=_('Sign in'),
+              aria_label=_('Sign in to GC Notify'),
+              id_key='header-sign-in'
+            ) }}
           </li>
         {% endif %}
         {% set set_lang_url = lang_url or request.full_path.rstrip('?') %}
         <li>
-            <a id="header-lang" href="{{ url_for('main.set_lang') ~ '?from=' ~ set_lang_url }}" lang="{{_('fr-CA')}}" class="nav-menu-item">
-              {{_('Français')}}
-            </a>
+          {{ nav_button(
+            href=url_for('main.set_lang', **{'from': set_lang_url}),
+            label=long_lang_switch,
+            aria_label=long_lang_switch,
+            lang="fr-CA" if lang_switch == "FR" else "en-CA",
+            class="mr-0 ml-5",
+            id_key='header-lang'
+          ) }}
         </li>
       </ul>
     </nav>
+    <!-- end sub nav -->
   </div>
   <div class="py-gutterHalf">
-      
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
         <a href="/" id="gc-title" class="text-titlelarge min-h-target hover:underline focus:underline">

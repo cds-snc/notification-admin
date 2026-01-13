@@ -1,6 +1,6 @@
 export const MARKDOWN = {
-    HEADINGS: {
-        before: `# HEADINGS
+        HEADINGS: {
+                before: `# HEADINGS
 # Heading level 1
 ## Heading level 2
 # Heading level 1 with ((variable_display))
@@ -12,7 +12,7 @@ export const MARKDOWN = {
 ## Heading level 2 with ((variable)) next to *italic*
 # Heading level 1 with ((variable_with_underscores_like_this))
 ## Heading level 2 with ((variable)) and trailing punctuation!`,
-        expected: `# HEADINGS
+                expected: `# HEADINGS
 
 # Heading level 1
 
@@ -35,9 +35,9 @@ export const MARKDOWN = {
 # Heading level 1 with ((variable_with_underscores_like_this))
 
 ## Heading level 2 with ((variable)) and trailing punctuation!`,
-    },
-VARIABLES: {
-        before: `> # 2. VARIABLES
+        },
+        VARIABLES: {
+                before: `^ # 2. VARIABLES
 
 ((variable_by_itself))
 
@@ -47,12 +47,12 @@ Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bo
 
 1. in a numbered ((list))
 
-> In a ((blockquote))
+^ In a ((blockquote))
 
 [[en]]in an ((english_block))
 
 [[fr]]in an ((french_block))`,
-        expected: `> # 2. VARIABLES
+                expected: `^ # 2. VARIABLES
 
 ((variable_by_itself))
 
@@ -62,7 +62,7 @@ Inline: ((campaign_name)) is a highlight Nested: Combine with formatting: **((bo
 
 1. in a numbered ((list))
 
-> In a ((blockquote))
+^ In a ((blockquote))
 
 [[en]]
 in an ((english_block))
@@ -71,9 +71,9 @@ in an ((english_block))
 [[fr]]
 in an ((french_block))
 [[/fr]]`,
-},
-    TEXT_STYLES: {
-        before: `> # 3. TEXT STYLES
+        },
+        TEXT_STYLES: {
+                before: `^ # 3. TEXT STYLES
 
 Some **bold** and _italic_ text
 
@@ -81,7 +81,7 @@ Some **bold** and _italic_ text
 
 1. Some **bold** and _italic_ text in a numbered list
 
-> Some **bold** and _italic_ text in a blockquote
+^ Some **bold** and _italic_ text in a blockquote
 
 # Some **bold** and _italic_ text in a heading
 
@@ -90,7 +90,7 @@ Some **bold** and _italic_ text
 [[en]]# Some **bold** and _italic_ text in an english block
 
 [[fr]]# Some **bold** and _italic_ text in a french block`,
-        expected: `> # 3. TEXT STYLES
+                expected: `^ # 3. TEXT STYLES
 
 Some **bold** and *italic* text
 
@@ -98,7 +98,7 @@ Some **bold** and *italic* text
 
 1. Some **bold** and *italic* text in a numbered list
 
-> Some **bold** and *italic* text in a blockquote
+^ Some **bold** and *italic* text in a blockquote
 
 # Some **bold** and *italic* text in a heading
 
@@ -111,9 +111,9 @@ Some **bold** and *italic* text
 [[fr]]
 # Some **bold** and *italic* text in a french block
 [[/fr]]`,
-    },
-    LIST_STYLES: {
-        before: `> 4. LISTS
+        },
+        LIST_STYLES: {
+                before: `^ 4. LISTS
 
 
 - Bullet
@@ -129,17 +129,17 @@ List
 List
 
 
-> - Blockquote
+^ - Blockquote
 Bullet List
 
 
 
-> * Blockquote
+^ * Blockquote
 Bullet List
 
 
 
-> 1. Blockquote
+^ 1. Blockquote
 Numbered List
 
 
@@ -171,7 +171,7 @@ List
 
 [[fr]]1. FR Numbered
 List`,
-        expected: `> 4. LISTS
+                expected: `^ 4. LISTS
 
 - Bullet
 - List
@@ -184,14 +184,14 @@ List`,
 1. Numbered
 2. List
 
-> - Blockquote
-> - Bullet List
+^ - Blockquote
+^ - Bullet List
 
-> - Blockquote
-> - Bullet List
+^ - Blockquote
+^ - Bullet List
 
-> 1. Blockquote
-> 2. Numbered List
+^ 1. Blockquote
+^ 2. Numbered List
 
 [[en]]
 - EN Bullet
@@ -222,9 +222,9 @@ List`,
 1. FR Numbered
 2. List
 [[/fr]]`
-    },
-    LINKS: {
-        before: `> # 5. LINKS
+        },
+        LINKS: {
+                before: `^ # 5. LINKS
 
 [Normal link](https://www.canada.ca)
 
@@ -238,12 +238,12 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
-> [Blockquote link](https://www.canada.ca)
+^ [Blockquote link](https://www.canada.ca)
 
 [[en]][EN link](https://www.canada.ca)
 
 [[fr]][FR link](https://www.canada.ca)`,
-        expected: `> # 5. LINKS
+                expected: `^ # 5. LINKS
 
 [Normal link](https://www.canada.ca)
 
@@ -257,7 +257,7 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
-> [Blockquote link](https://www.canada.ca)
+^ [Blockquote link](https://www.canada.ca)
 
 [[en]]
 [EN link](https://www.canada.ca)
@@ -266,19 +266,19 @@ _[Italic link](https://www.canada.ca)_
 [[fr]]
 [FR link](https://www.canada.ca)
 [[/fr]]`
-    },
-    LANG_BLOCKS: {
-        before: `> # 6. LANGUAGE BLOCKS
+        },
+        LANG_BLOCKS: {
+                before: `^ # 6. LANGUAGE BLOCKS
 
 [[en]]Basic EN Block!
 
 [[fr]]Basic FR Block!
 
-> [[en]]EN block in a quote
+^ [[en]]EN block in a quote
 
 
 
-> [[fr]]FR block in a quote
+^ [[fr]]FR block in a quote
 
 
 [[en]]# HEADING 1 in EN block
@@ -333,7 +333,7 @@ fr block
 [[fr]][link](https://www.google.ca) in FR block
 
 `,
-        expected: `> # 6. LANGUAGE BLOCKS
+                expected: `^ # 6. LANGUAGE BLOCKS
 
 [[en]]
 Basic EN Block!
@@ -343,13 +343,13 @@ Basic EN Block!
 Basic FR Block!
 [[/fr]]
 
-> [[en]]
-> EN block in a quote
-> [[/en]]
+^ [[en]]
+^ EN block in a quote
+^ [[/en]]
 
-> [[fr]]
-> FR block in a quote
-> [[/fr]]
+^ [[fr]]
+^ FR block in a quote
+^ [[/fr]]
 
 [[en]]
 # HEADING 1 in EN block
@@ -414,7 +414,169 @@ Basic FR Block!
 [[fr]]
 [link in FR block](https://www.google.ca)
 [[/fr]]`
-    }
+        },
+        QUOTE_BLOCKS: {
+                before: `^ # 7. QUOTE BLOCKS
+
+
+
+^ This is a single-line blockquote.
+
+
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with carets.
+
+
+
+^ - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+^ 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+                expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with carets.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+
+
+        },
+
+        QUOTE_BLOCKS2: {
+                before: `> # 7. QUOTE BLOCKS
+
+
+> This is a single-line blockquote.
+
+
+> This is a long blockquote that will wrap onto the next line to demonstrate
+how wrapped lines should also be prefixed with greater-than markers.
+
+
+> - A bullet item inside a blockquote
+Another bullet with **bold** text and ((variable))
+
+
+
+> 1. Numbered item inside a blockquote
+Second numbered item
+
+
+
+> A final quoted paragraph with *italicized text* and a [link](https://example.com)`,
+                expected: `^ # 7. QUOTE BLOCKS
+
+^ This is a single-line blockquote.
+
+^ This is a long blockquote that will wrap onto the next line to demonstrate
+^
+^ how wrapped lines should also be prefixed with greater-than markers.
+
+^ - A bullet item inside a blockquote
+^ - Another bullet with **bold** text and ((variable))
+
+^ 1. Numbered item inside a blockquote
+^ 2. Second numbered item
+
+^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
+        },
+        RTL_BLOCKS: {
+                before: `^ # RTL BLOCKS
+
+[[rtl]]single line rtl
+
+regular text
+
+[[rtl]]Multi-paragraph RTL:
+First paragraph in RTL.
+Second paragraph in RTL.
+
+regular text
+
+[[rtl]]Inline formatting in RTL: and ((variable))
+
+regular text
+
+[[rtl]]List inside RTL:
+- hi
+hi
+
+
+[[en]]Adjacent EN block before RTL
+
+[[rtl]]RTL after EN block with **bold** and ((variable))
+
+regular text
+
+
+[[rtl]]Nested: RTL with numbered list
+1. One
+Two`,
+                expected: `^ # RTL BLOCKS
+
+[[rtl]]
+single line rtl
+[[/rtl]]
+
+regular text
+
+[[rtl]]
+Multi-paragraph RTL:
+
+First paragraph in RTL.
+
+Second paragraph in RTL.
+[[/rtl]]
+
+regular text
+
+[[rtl]]
+Inline formatting in RTL: and ((variable))
+[[/rtl]]
+
+regular text
+
+[[rtl]]
+List inside RTL:
+
+- hi
+- hi
+[[/rtl]]
+
+[[en]]
+Adjacent EN block before RTL
+[[/en]]
+
+[[rtl]]
+RTL after EN block with **bold** and ((variable))
+[[/rtl]]
+
+regular text
+
+[[rtl]]
+Nested: RTL with numbered list
+
+1. One
+2. Two
+[[/rtl]]`
+        },
 };
 
 export default MARKDOWN;
