@@ -20,9 +20,11 @@ link:text-blue no-underline text-small">
     hidden>
     {% for key, item in header_navigation.get_user_nav().items() %}
     {# Controller in navigation.py #}
+      {% if item.context or item.context is undefined %}
         <li class="flex-shrink-0">
-            {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
+          {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
         </li>
+      {% endif %}
     {% endfor %}
     {% for key, item in header_navigation.get_account_nav().items() %}
     {# Controller in navigation.py #}

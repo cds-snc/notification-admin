@@ -4,6 +4,8 @@ from flask import request, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 
+from app.models.user import _get_org_id_from_view_args, _get_service_id_from_view_args
+
 
 class Navigation:
     mapping: dict = {}
@@ -100,6 +102,28 @@ class Navigation:
             "choose_account": {"label": _l("Your services"), "view": "choose_account", "id_key": "choose_account"},
         }
 
+    def get_org_nav(self):
+        from app import current_organisation
+
+        return {
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "dashboard": {
+                "label": _l("Dashboard"),
+                "view": "organisation_dashboard",
+                "url": url_for("main.organisation_dashboard", org_id=current_organisation.id),
+            },
+            "settings": {
+                "label": _l("Settings"),
+                "view": "organisation_settings",
+                "url": url_for("main.organisation_settings", org_id=current_organisation.id),
+            },
+            "team-members": {
+                "label": _l("Team members"),
+                "view": "manage_org_users",
+                "url": url_for("main.manage_org_users", org_id=current_organisation.id),
+            },
+        }
+
     def get_contact_nav(self):
         return {
             "contact": {"label": _l("Contact us"), "view": "contact"},
@@ -127,6 +151,11 @@ class Navigation:
     def get_nav(self):
         if current_user.is_authenticated:
             if current_user.has_permissions():
+                # Check if we're in an organization context or service context
+                service_id = _get_service_id_from_view_args()
+                org_id = _get_org_id_from_view_args()
+                if org_id and not service_id:
+                    return self.get_org_nav()
                 return self.get_service_nav()
             return self.get_user_nav()
         return self.get_public_nav()
