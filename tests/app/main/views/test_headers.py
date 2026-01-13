@@ -78,7 +78,7 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
             f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
             "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
-            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com https://forms-formulaires.alpha.canada.ca;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "report-to default;"
@@ -146,7 +146,7 @@ def test_headers_non_ascii_characters_are_replaced(
             f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
             "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
-            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com https://forms-formulaires.alpha.canada.ca;"
             "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "report-to default;"

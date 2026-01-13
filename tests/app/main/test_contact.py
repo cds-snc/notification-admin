@@ -1,5 +1,5 @@
 import pytest
-from flask import url_for
+from flask import current_app, url_for
 from flask_login import current_user
 
 from tests.conftest import normalize_spaces
@@ -277,3 +277,27 @@ def test_contact_lang_url_switches_session_language(client_request):
     )
     with client_request.session_transaction() as session:
         assert session["userlang"] == "fr"
+
+
+@pytest.mark.parametrize("lang_code, config_key", [("en", "A11Y_FEEDBACK_URL_EN"), ("fr", "A11Y_FEEDBACK_URL_FR")])
+def test_a11y_feedback_redirects_to_external_form(client_request, lang_code, config_key):
+    """Test that selecting a11y_feedback redirects to the appropriate language feedback form"""
+    client_request.logout()
+
+    # Set session language to match the lang_code to avoid language sync redirect
+    with client_request.session_transaction() as session:
+        session["userlang"] = lang_code
+
+    expected_url = current_app.config[config_key]
+
+    client_request.post(
+        ".contact_lang",
+        lang_code=lang_code,
+        _expected_status=302,
+        _expected_redirect=expected_url,
+        _data={
+            "name": "John",
+            "email_address": "john@example.com",
+            "support_type": "a11y_feedback",
+        },
+    )
