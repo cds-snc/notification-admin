@@ -105,3 +105,90 @@ class TestNavigationGetNav:
             # Assert
             mock_public_nav.assert_called_once()
             assert result == {"public": "nav"}
+
+    @patch("app.navigation.url_for")
+    @patch("app.navigation._get_service_id_from_view_args")
+    @patch("app.navigation._get_org_id_from_view_args")
+    @patch("app.navigation.current_user")
+    def test_service_nav_excludes_admin_panel_for_non_admin_users(
+        self, mock_current_user, mock_get_org_id, mock_get_service_id, mock_url_for, app_
+    ):
+        """Test that non-admin users do not see the admin panel in service navigation."""
+        # Setup
+        nav = Navigation()
+        mock_current_user.is_authenticated = True
+        mock_current_user.has_permissions.return_value = True
+        mock_current_user.platform_admin = False  # Non-admin user
+        mock_get_service_id.return_value = SERVICE_ONE_ID
+        mock_get_org_id.return_value = None
+        mock_url_for.return_value = "/service/123"
+
+        # Set up Flask globals for current_service
+        from flask import g
+
+        from app.models.service import Service
+
+        mock_service = Mock(spec=Service)
+        mock_service.id = SERVICE_ONE_ID
+        mock_service.has_jobs = True
+        g.current_service = mock_service
+
+        result = nav.get_service_nav()
+
+        # Assert that the platform_admin item is present but with False context
+        assert "platform_admin" in result
+        assert result["platform_admin"]["context"] is False
+
+    @patch("app.navigation._get_service_id_from_view_args")
+    @patch("app.navigation._get_org_id_from_view_args")
+    @patch("app.navigation.current_user")
+    def test_user_nav_excludes_admin_panel_for_non_admin_users(
+        self, mock_current_user, mock_get_org_id, mock_get_service_id, app_
+    ):
+        """Test that non-admin users do not see the admin panel in user navigation."""
+        # Setup
+        nav = Navigation()
+        mock_current_user.is_authenticated = True
+        mock_current_user.has_permissions.return_value = False
+        mock_current_user.platform_admin = False  # Non-admin user
+        mock_get_service_id.return_value = None
+        mock_get_org_id.return_value = None
+
+        result = nav.get_user_nav()
+
+        # Assert that the platform_admin item is present but with False context
+        assert "platform_admin" in result
+        assert result["platform_admin"]["context"] is False
+
+    @patch("app.navigation.url_for")
+    @patch("app.navigation._get_service_id_from_view_args")
+    @patch("app.navigation._get_org_id_from_view_args")
+    @patch("app.navigation.current_user")
+    def test_service_nav_includes_admin_panel_for_admin_users(
+        self, mock_current_user, mock_get_org_id, mock_get_service_id, mock_url_for, app_
+    ):
+        """Test that admin users see the admin panel in service navigation."""
+        # Setup
+        nav = Navigation()
+        mock_current_user.is_authenticated = True
+        mock_current_user.has_permissions.return_value = True
+        mock_current_user.platform_admin = True  # Admin user
+        mock_get_service_id.return_value = SERVICE_ONE_ID
+        mock_get_org_id.return_value = None
+        mock_url_for.return_value = "/service/123"
+
+        # Set up Flask globals for current_service
+        from flask import g
+
+        from app.models.service import Service
+
+        mock_service = Mock(spec=Service)
+        mock_service.id = SERVICE_ONE_ID
+        mock_service.has_jobs = True
+        g.current_service = mock_service
+
+        result = nav.get_service_nav()
+
+        # Assert that the platform_admin item is present with True context
+        assert "platform_admin" in result
+        assert result["platform_admin"]["context"] is True
