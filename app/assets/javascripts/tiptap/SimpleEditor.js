@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
