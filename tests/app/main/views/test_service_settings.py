@@ -534,7 +534,7 @@ def test_show_live_banner(
     request_link = page.select_one('a[href*="request-to-go-live"]')
     assert expected_label in request_link.text.strip()
 
-    live_banner = page.find("div", attrs={"id": "live-banner"})
+    live_banner = page.find(id="live-banner")
     assert live_banner.text.strip() == "Trial"
 
 
