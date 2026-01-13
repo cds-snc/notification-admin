@@ -1,12 +1,11 @@
-{% from "components/nav_menu_item.html" import nav_menu_item with context %}
-
 <!-- Large screen menu dropdown -->
 <li class="md:visible md:flex grid-flow-row relative justify-end inline-block w-full text-left text-blue visited:text-blue
 link:text-blue no-underline text-small">
   <button
     aria-controls="account-menu-options"
     aria-expanded="false"
-    class="nav-menu-item"
+    class="inline-flex items-center line-under shadow-sm text-smaller font-medium text-blue px-4 py-1 border-b-2
+      border-transparent focus:outline-none focus:bg-yellow focus:border-blue hover:bg-gray-50 hover:underline"
     id="account-menu"
     data-module="menu"
     aria-controls="account-menu-options"
@@ -18,18 +17,28 @@ link:text-blue no-underline text-small">
     id="account-menu-options"
     class="menu-overlay absolute flex flex-col content-end divide-y divide-gray right-0 top-full w-auto text-right bg-white shadow hidden z-50"
     hidden>
-    {% for key, item in header_navigation.get_user_nav().items() %}
-    {# Controller in navigation.py #}
-        <li class="flex-shrink-0">
-            {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
-        </li>
-    {% endfor %}
-    {% for key, item in header_navigation.get_account_nav().items() %}
-    {# Controller in navigation.py #}
-        <li class="flex-shrink-0">
-            {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, is_external_link=item.external or False, is_active=main_navigation.is_selected(key)) }}
-        </li>
-    {% endfor %}
+    {% if current_user.platform_admin %}
+      <li>
+        <a id="account-menu-link" href="{{ url_for('main.live_services') }}" class="nav-menu-item {% if main_navigation.is_selected('live_services') %} menu--active {% endif %}">
+          {{ _('Admin panel') }}
+        </a>
+      </li>
+    {% endif %}
+    <li>
+      <a href="{{ url_for('main.choose_account') }}" class="nav-menu-item {% if main_navigation.is_selected('choose_account') %} menu--active {% endif %}">
+        {{ _('Your services') }}
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('main.user_profile') }}" class="nav-menu-item {% if main_navigation.is_selected('user_profile') %} menu--active {% endif %}">
+        {{ _('Your profile') }}
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('main.sign_out') }}" class="nav-menu-item {% if main_navigation.is_selected('sign_out') %} menu--active {% endif %}">
+        {{ _('Sign out') }}
+      </a>
+    </li>
   </ul>
 </li>
 <!-- Large screen dropdown END -->
