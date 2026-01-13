@@ -1,7 +1,10 @@
 import { Fragment } from "@tiptap/pm/model";
 
 // Convert an inline conditional mark (in the current paragraph) into a block conditional node.
-export const convertToBlockConditional = (editor, { markType, condition, splitAtCursor = true }) => {
+export const convertToBlockConditional = (
+  editor,
+  { markType, condition, splitAtCursor = true },
+) => {
   const { state } = editor;
   const { $from } = state.selection;
 
@@ -70,7 +73,11 @@ export const convertToBlockConditional = (editor, { markType, condition, splitAt
   const textAfterMark = state.doc.textBetween(markTo, parentEnd, "\n");
 
   // Get text before and after cursor within the mark
-  const textBeforeCursor = state.doc.textBetween(markFrom, cursorPosInMark, "\n");
+  const textBeforeCursor = state.doc.textBetween(
+    markFrom,
+    cursorPosInMark,
+    "\n",
+  );
   const textAfterCursor = state.doc.textBetween(cursorPosInMark, markTo, "\n");
 
   // Create a transaction to replace the inline mark with a block conditional
@@ -101,7 +108,10 @@ export const convertToBlockConditional = (editor, { markType, condition, splitAt
     paragraphs.push(paragraph);
   }
 
-  const conditionalNode = schema.nodes.conditional.create({ condition }, paragraphs);
+  const conditionalNode = schema.nodes.conditional.create(
+    { condition },
+    paragraphs,
+  );
 
   // Replace the entire containing paragraph with:
   // [paragraph(beforeText)] + [conditional block] + [paragraph(afterText)]
@@ -123,11 +133,16 @@ export const convertToBlockConditional = (editor, { markType, condition, splitAt
     );
   }
 
-  tr.replaceWith(paragraphFrom, paragraphTo, Fragment.fromArray(replacementNodes));
+  tr.replaceWith(
+    paragraphFrom,
+    paragraphTo,
+    Fragment.fromArray(replacementNodes),
+  );
 
   // Position cursor appropriately
   const conditionalStart =
-    paragraphFrom + (textBeforeMark.length > 0 ? replacementNodes[0].nodeSize : 0);
+    paragraphFrom +
+    (textBeforeMark.length > 0 ? replacementNodes[0].nodeSize : 0);
 
   let cursorPos;
   if (splitAtCursor) {

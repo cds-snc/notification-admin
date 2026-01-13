@@ -107,7 +107,10 @@ export const createKeyboardShortcuts = (extension, markType) => {
       }
 
       // Check for list patterns: -, *, +, 1.
-      if (/^[-*+]$/.test(textBefore.trim()) || /^\d+\.$/.test(textBefore.trim())) {
+      if (
+        /^[-*+]$/.test(textBefore.trim()) ||
+        /^\d+\.$/.test(textBefore.trim())
+      ) {
         return convertToBlockConditional(editor, {
           markType,
           condition,
@@ -182,7 +185,9 @@ export const createPlugins = (extension, markType) => {
           return findConditionalMarks(doc, markType);
         },
         apply(tr, oldState) {
-          return tr.docChanged ? findConditionalMarks(tr.doc, markType) : oldState;
+          return tr.docChanged
+            ? findConditionalMarks(tr.doc, markType)
+            : oldState;
         },
       },
       props: {
@@ -230,14 +235,18 @@ export const createPlugins = (extension, markType) => {
       props: {
         handleKeyDown(view, event) {
           if (event.defaultPrevented) return false;
-          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return false;
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight")
+            return false;
 
           const { state } = view;
           if (!state.selection.empty) return false;
 
           const cursorPos = state.selection.from;
-          const storedMark = state.storedMarks?.find?.((m) => m.type === markType) || null;
-          const markAtCursor = state.selection.$from.marks().find((m) => m.type === markType) || null;
+          const storedMark =
+            state.storedMarks?.find?.((m) => m.type === markType) || null;
+          const markAtCursor =
+            state.selection.$from.marks().find((m) => m.type === markType) ||
+            null;
           const markAhead = getMarkAtPos(state.doc, cursorPos + 1, markType);
           const markBehind =
             getMarkAtPos(state.doc, cursorPos - 1, markType) ||
@@ -245,15 +254,22 @@ export const createPlugins = (extension, markType) => {
 
           const interactionState = interactionKey.getState(state);
           const trackedSpaces = interactionState?.insertedSpaces || [];
-          const isTrackedSpaceAt = (pos) => trackedSpaces.includes(pos) && hasSpaceAt(state.doc, pos);
+          const isTrackedSpaceAt = (pos) =>
+            trackedSpaces.includes(pos) && hasSpaceAt(state.doc, pos);
 
           // Resolve the condition to use for range detection.
-          const activeMark = markAtCursor || storedMark || markAhead || markBehind;
+          const activeMark =
+            markAtCursor || storedMark || markAhead || markBehind;
           if (!activeMark) return false;
           const condition = activeMark.attrs?.condition;
           if (!condition) return false;
 
-          const range = findRangeInTextblock(state, markType, condition, cursorPos);
+          const range = findRangeInTextblock(
+            state,
+            markType,
+            condition,
+            cursorPos,
+          );
           if (!range) return false;
 
           // Rule 1: at the mark start boundary (of the content), ArrowLeft selects the edit button.
@@ -300,7 +316,12 @@ export const createPlugins = (extension, markType) => {
 
           // ArrowRight rules
           // Rule 2: from outside-left of a mark, ArrowRight enters mark at boundary without selecting button.
-          if (!markAtCursor && !storedMark && cursorPos === range.from && markAhead) {
+          if (
+            !markAtCursor &&
+            !storedMark &&
+            cursorPos === range.from &&
+            markAhead
+          ) {
             const tr = state.tr;
 
             // If we inserted a helper space to the left of this mark earlier,
@@ -349,7 +370,8 @@ export const createPlugins = (extension, markType) => {
 
           const { state } = editorView;
           const markAtPos =
-            getMarkAtPos(state.doc, pos + 1, markType) || getMarkAtPos(state.doc, pos, markType);
+            getMarkAtPos(state.doc, pos + 1, markType) ||
+            getMarkAtPos(state.doc, pos, markType);
           if (!markAtPos) return;
 
           const condition = markAtPos.attrs?.condition;
@@ -404,7 +426,10 @@ export const createPlugins = (extension, markType) => {
         editorDom.addEventListener("conditionalInlineNavigate", handleNavigate);
         return {
           destroy() {
-            editorDom.removeEventListener("conditionalInlineNavigate", handleNavigate);
+            editorDom.removeEventListener(
+              "conditionalInlineNavigate",
+              handleNavigate,
+            );
           },
         };
       },

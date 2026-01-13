@@ -796,7 +796,7 @@ const MenuBar = ({
                 () => editor.chain().focus().toggleRtlBlock().run(),
                 () => editor.isActive("rtlBlock"),
                 t.rtlBlock,
-                )
+              )
             }
             className={
               "toolbar-button" +
