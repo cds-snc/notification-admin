@@ -208,12 +208,8 @@ const MenuBar = ({
     en: {
       toolbar: "Editor toolbar",
       toggleMd: "View source",
-      shortcutHeading1: "⌘ + Opt + 1",
-      shortcutHeading2: "⌘ + Opt + 2",
-      shortcutBold: "⌘ + B",
-      shortcutItalic: "⌘ + I",
-      shortcutBulletList: "⌘ + Shift + 8",
-      shortcutNumberedList: "⌘ + Shift + 7",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
       linkDialogOpened: "Link dialog opened",
       applied: "applied.",
       removed: "removed.",
@@ -232,16 +228,13 @@ const MenuBar = ({
       blockquote: "Blockquote",
       englishBlock: "English block",
       frenchBlock: "French block",
+      rtlBlock: "Display right-to-left",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
       toggleMd: "Voir la source",
-      shortcutHeading1: "⌘ + Opt + 1",
-      shortcutHeading2: "⌘ + Opt + 2",
-      shortcutBold: "⌘ + B",
-      shortcutItalic: "⌘ + I",
-      shortcutBulletList: "⌘ + Shift + 8",
-      shortcutNumberedList: "⌘ + Shift + 7",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
       linkDialogOpened: "Boîte de dialogue du lien ouverte",
       applied: "appliqué.",
       removed: "supprimé.",
@@ -260,6 +253,7 @@ const MenuBar = ({
       blockquote: "Bloc de citation",
       englishBlock: "Bloc anglais",
       frenchBlock: "Bloc français",
+      rtlBlock: "Afficher de droite à gauche",
     },
   };
 
@@ -289,6 +283,7 @@ const MenuBar = ({
     blockquote: platform === "mac" ? "⌘+Opt+7" : "Ctrl+Alt+7",
     englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
     frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
+    rtlBlock: platform === "mac" ? "⌘+Opt+R" : "Ctrl+Alt+R",
     link: platform === "mac" ? "⌘+K" : "Ctrl+K",
     bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
     italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
@@ -784,6 +779,50 @@ const MenuBar = ({
               {t.frenchBlock}
             </span>
             FR
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.rtlBlock} shortcut={shortcuts.rtlBlock}>
+          <button
+            type="button"
+            data-testid="rte-rtl_block"
+            onClick={() =>
+              announceToggle(
+                () => editor.chain().focus().toggleRtlBlock().run(),
+                () => editor.isActive("rtlBlock"),
+                t.rtlBlock,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("rtlBlock") ? " is-active" : "")
+            }
+            title={t.rtlBlock}
+            aria-pressed={editor.isActive("rtlBlock")}
+          >
+            <span className="sr-only">
+              {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
+              {t.rtlBlock}
+            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="icon icon-tabler icons-tabler-outline icon-tabler-text-direction-rtl"
+              aria-hidden="true"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M16 4h-6.5a3.5 3.5 0 0 0 0 7h.5" />
+              <path d="M14 15v-11" />
+              <path d="M10 15v-11" />
+              <path d="M5 19h14" />
+              <path d="M7 21l-2 -2l2 -2" />
+            </svg>
           </button>
         </TooltipWrapper>
       </div>
