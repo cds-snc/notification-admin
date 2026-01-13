@@ -20,6 +20,7 @@ import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineMark";
 import ConditionalInlineMarkPopover from "./CustomComponents/ConditionalInlineMarkView";
+import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
@@ -105,8 +106,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // }),
       EnglishBlock,
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      MenubarShortcut,
       FrenchBlock,
+      RTLBlock,
+      MenubarShortcut,
 
       // Add Markdown extension with paste handling enabled
       Markdown.configure({
