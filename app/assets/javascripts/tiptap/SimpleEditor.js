@@ -522,6 +522,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         onClose={() => setLinkModalVisible(false)}
         lang={lang}
         justOpened={justOpenedLink}
+        onSavedLink={(href) => {
+          try {
+            currentLinkRef.current = href || null;
+          } catch (e) {}
+        }}
       />
     </div>
   );

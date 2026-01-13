@@ -8,6 +8,7 @@ const LinkModal = ({
   onClose,
   lang = "en",
   justOpened = false,
+  onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
@@ -111,8 +112,18 @@ const LinkModal = ({
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(editor.getAttributes("link").href || null);
+        }
+      } catch (e) {}
     } else {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(null);
+        }
+      } catch (e) {}
     }
     onClose();
   };
@@ -127,6 +138,11 @@ const LinkModal = ({
   // Remove the link mark from the current selection and close the modal.
   const removeLink = () => {
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    try {
+      if (typeof onSavedLink === "function") {
+        onSavedLink(null);
+      }
+    } catch (e) {}
     onClose();
   };
 
