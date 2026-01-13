@@ -367,6 +367,8 @@ const ConditionalInlineMark = Mark.create({
   addProseMirrorPlugins() {
     const markType = this.type;
 
+    const interactionKey = new PluginKey("conditionalInlineInteraction");
+
     const getMarkAtPos = (doc, pos) => {
       try {
         if (pos < 0 || pos > doc.content.size) return null;
@@ -432,6 +434,18 @@ const ConditionalInlineMark = Mark.create({
       }
     };
 
+    const getInteractionMeta = (tr) => {
+      const existing = tr.getMeta(interactionKey);
+      if (existing && typeof existing === "object") return existing;
+      return { addedSpacePositions: [] };
+    };
+
+    const trackInsertedSpace = (tr, pos) => {
+      const meta = getInteractionMeta(tr);
+      meta.addedSpacePositions = [...(meta.addedSpacePositions || []), pos];
+      tr.setMeta(interactionKey, meta);
+    };
+
     return [
       new Plugin({
         key: new PluginKey("conditionalInlineDecorations"),
@@ -454,7 +468,39 @@ const ConditionalInlineMark = Mark.create({
 
       // Single plugin for conditional inline navigation rules.
       new Plugin({
-        key: new PluginKey("conditionalInlineInteraction"),
+        key: interactionKey,
+        state: {
+          init() {
+            return {
+              insertedSpaces: [],
+            };
+          },
+          apply(tr, prev) {
+            const next = { insertedSpaces: [] };
+
+            // Map existing tracked positions through the transaction.
+            for (const pos of prev.insertedSpaces || []) {
+              const mapped = tr.mapping.mapResult(pos, -1);
+              if (!mapped.deleted) next.insertedSpaces.push(mapped.pos);
+            }
+
+            // Add newly inserted spaces from transaction meta.
+            const meta = tr.getMeta(interactionKey);
+            const added = meta?.addedSpacePositions;
+            if (Array.isArray(added)) {
+              for (const pos of added) {
+                // The inserted content starts at `pos` in the new document.
+                const mapped = tr.mapping.mapResult(pos, -1);
+                if (!mapped.deleted) next.insertedSpaces.push(mapped.pos);
+              }
+            }
+
+            next.insertedSpaces = Array.from(new Set(next.insertedSpaces)).sort(
+              (a, b) => a - b,
+            );
+            return next;
+          },
+        },
         props: {
           handleKeyDown(view, event) {
             if (event.defaultPrevented) return false;
@@ -471,9 +517,18 @@ const ConditionalInlineMark = Mark.create({
               state.selection.$from.marks().find((m) => m.type === markType) ||
               null;
             const markAhead = getMarkAtPos(state.doc, cursorPos + 1);
+            const markBehind =
+              getMarkAtPos(state.doc, cursorPos - 1) ||
+              getMarkAtPos(state.doc, cursorPos - 2);
+
+            const interactionState = interactionKey.getState(state);
+            const trackedSpaces = interactionState?.insertedSpaces || [];
+            const isTrackedSpaceAt = (pos) =>
+              trackedSpaces.includes(pos) && hasSpaceAt(state.doc, pos);
 
             // Resolve the condition to use for range detection.
-            const activeMark = markAtCursor || storedMark || markAhead;
+            const activeMark =
+              markAtCursor || storedMark || markAhead || markBehind;
             if (!activeMark) return false;
             const condition = activeMark.attrs?.condition;
             if (!condition) return false;
@@ -483,6 +538,18 @@ const ConditionalInlineMark = Mark.create({
 
             // Rule 1: at the mark start boundary (of the content), ArrowLeft selects the edit button.
             if (event.key === "ArrowLeft") {
+              // If we're currently just to the right of a tracked helper space that was
+              // inserted when exiting to the right, remove it before moving back into the mark.
+              if (isTrackedSpaceAt(cursorPos - 1) && markBehind) {
+                const tr = state.tr;
+                tr.delete(cursorPos - 1, cursorPos);
+                tr.setSelection(TextSelection.create(tr.doc, cursorPos - 1));
+                tr.setStoredMarks([markBehind]);
+                view.dispatch(tr);
+                event.preventDefault();
+                return true;
+              }
+
               // If we're one character into the mark, prevent the browser/PM from
               // skipping the boundary (it can jump outside due to the non-editable widget).
               // Instead, land explicitly on the mark start boundary first.
@@ -520,7 +587,16 @@ const ConditionalInlineMark = Mark.create({
               markAhead
             ) {
               const tr = state.tr;
-              tr.setSelection(TextSelection.create(tr.doc, range.from));
+
+              // If we inserted a helper space to the left of this mark earlier,
+              // remove it now that the user is re-entering from the left.
+              if (isTrackedSpaceAt(range.from - 1)) {
+                tr.delete(range.from - 1, range.from);
+                tr.setSelection(TextSelection.create(tr.doc, range.from - 1));
+              } else {
+                tr.setSelection(TextSelection.create(tr.doc, range.from));
+              }
+
               tr.setStoredMarks([markAhead]);
               view.dispatch(tr);
               event.preventDefault();
@@ -544,6 +620,7 @@ const ConditionalInlineMark = Mark.create({
                 tr.removeMark(range.to, range.to + 1, markType);
                 tr.setSelection(TextSelection.create(tr.doc, range.to + 1));
                 tr.setStoredMarks([]);
+                trackInsertedSpace(tr, range.to);
               }
 
               view.dispatch(tr);
@@ -592,6 +669,7 @@ const ConditionalInlineMark = Mark.create({
                 if (!hasSpaceAt(state.doc, range.from - 1)) {
                   tr.insertText(" ", range.from, range.from);
                   tr.removeMark(range.from, range.from + 1, markType);
+                  trackInsertedSpace(tr, range.from);
                 }
                 tr.setSelection(TextSelection.create(tr.doc, range.from));
                 tr.setStoredMarks([]);
