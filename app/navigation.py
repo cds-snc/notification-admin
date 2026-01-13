@@ -69,7 +69,7 @@ class Navigation:
                 "label": _l("Sent messages"),
                 "view": "view_notifications",
                 "context": not current_user.has_permissions("view_activity"),
-                "url": url_for("main.view_notifications", service_id=current_service.id),
+                "url": url_for("main.view_notifications", service_id=current_service.id, status="sending,delivered,failed"),
             },
             "bulk-sends": {
                 "label": _l("Bulk sends"),
