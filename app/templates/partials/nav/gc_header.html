@@ -9,7 +9,7 @@
           class="focus:bg-yellow focus:outline-yellow focus:border-yellow focus:border-2 mr-auto"
           src="{{ asset_s3_url(_('gov-canada-en.svg')) }}"
         />
-    <div class="flex w-full justify-start md:justify-center md:col-start-2 items-center md:mx-auto" id="skiplink-container">
+    <div class="grow" id="skiplink-container">
       <a href="#main_content" class="skiplink px-2 py-2">{{ _('Skip to main content') }}</a>
     </div>
     <nav aria-label="{{ _('Your account and language') if current_user.is_authenticated else _('Sign-in and language') }}"
