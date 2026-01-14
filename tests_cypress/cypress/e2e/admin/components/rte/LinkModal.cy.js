@@ -82,7 +82,10 @@ describe("Link modal tests", () => {
     RichTextEditor.Components.ViewMarkdownButton().click();
 
     // The markdown textarea should now contain explicit markdown link
-    cy.get('[data-testid="markdown-editor"]').should("contain.value", "[info@example.com](mailto:info@example.com)");
+    cy.get('[data-testid="markdown-editor"]').should(
+      "contain.value",
+      "[info@example.com](mailto:info@example.com)",
+    );
 
     // Switch back to RTE and ensure the link still exists
     RichTextEditor.Components.ViewMarkdownButton().click();
@@ -99,7 +102,9 @@ describe("Link modal tests", () => {
 
     // Enter email without mailto in the URL input
     cy.scrollTo("top");
-    RichTextEditor.Components.LinkModal.URLInput().clear().type("mailto:info@example.com");
+    RichTextEditor.Components.LinkModal.URLInput()
+      .clear()
+      .type("mailto:info@example.com");
     RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
 
     // Link should use mailto: in href (the LinkModal's save logic prepends https if no protocol,
@@ -111,7 +116,10 @@ describe("Link modal tests", () => {
 
     // Switch to markdown view and ensure encoded correctly
     RichTextEditor.Components.ViewMarkdownButton().click();
-    cy.get('[data-testid="markdown-editor"]').should("contain.value", "[contact us](mailto:info@example.com)");
+    cy.get('[data-testid="markdown-editor"]').should(
+      "contain.value",
+      "[contact us](mailto:info@example.com)",
+    );
 
     // Switch back and ensure link persists
     RichTextEditor.Components.ViewMarkdownButton().click();
