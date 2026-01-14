@@ -127,7 +127,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           // record current link so transaction listener won't re-open redundantly
           try {
             currentLinkRef.current = editor.getAttributes("link").href || null;
-          } catch (e) {}
+          } catch (e) {
+            console.error("[SimpleEditor] Error getting link attributes in handleClickOn:", e);
+          }
           return true;
         }
         return false;
@@ -231,7 +233,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            // ignore
+            console.error("[SimpleEditor] Error computing temporary rect in openLinkModal:", err);
           }
         }
 
@@ -307,7 +309,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setModalPosition({ top, left });
       }
     } catch (err) {
-      // ignore errors during recompute
+      console.error("[SimpleEditor] Error computing modal position in computeModalPosition:", err);
     }
   };
 
@@ -525,7 +527,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         onSavedLink={(href) => {
           try {
             currentLinkRef.current = href || null;
-          } catch (e) {}
+          } catch (e) {
+            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
+          }
         }}
       />
     </div>
