@@ -124,7 +124,10 @@ const LinkModal = ({
           onSavedLink(editor.getAttributes("link").href || null);
         }
       } catch (e) {
-        console.error("[LinkModal] Error in onSavedLink callback (link saved):", e);
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link saved):",
+          e,
+        );
       }
     } else {
       console.log("[LinkModal] Empty URL, unsetting link");
@@ -134,7 +137,10 @@ const LinkModal = ({
           onSavedLink(null);
         }
       } catch (e) {
-        console.error("[LinkModal] Error in onSavedLink callback (link unset):", e);
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link unset):",
+          e,
+        );
       }
     }
     onClose();
@@ -157,7 +163,10 @@ const LinkModal = ({
         onSavedLink(null);
       }
     } catch (e) {
-      console.error("[LinkModal] Error in onSavedLink callback (link removed):", e);
+      console.error(
+        "[LinkModal] Error in onSavedLink callback (link removed):",
+        e,
+      );
     }
     onClose();
   };

@@ -128,7 +128,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           try {
             currentLinkRef.current = editor.getAttributes("link").href || null;
           } catch (e) {
-            console.error("[SimpleEditor] Error getting link attributes in handleClickOn:", e);
+            console.error(
+              "[SimpleEditor] Error getting link attributes in handleClickOn:",
+              e,
+            );
           }
           return true;
         }
@@ -233,7 +236,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            console.error("[SimpleEditor] Error computing temporary rect in openLinkModal:", err);
+            console.error(
+              "[SimpleEditor] Error computing temporary rect in openLinkModal:",
+              err,
+            );
           }
         }
 
@@ -309,7 +315,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setModalPosition({ top, left });
       }
     } catch (err) {
-      console.error("[SimpleEditor] Error computing modal position in computeModalPosition:", err);
+      console.error(
+        "[SimpleEditor] Error computing modal position in computeModalPosition:",
+        err,
+      );
     }
   };
 
