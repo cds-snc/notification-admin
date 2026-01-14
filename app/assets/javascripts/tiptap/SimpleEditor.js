@@ -359,6 +359,18 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
           return `((${v}))`;
         });
+        // Convert autolinked mailto forms like <mailto:person@example.com>
+        // into explicit markdown links [person@example.com](mailto:person@example.com)
+        // This prevents downstream storage using angle-bracket autolinks.
+        markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
+          try {
+            // Use the email address as the link text
+            return `[${addr}](mailto:${addr})`;
+          } catch (e) {
+            return m;
+          }
+        });
+
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -403,6 +415,14 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Unescape serializer-escaped variable markers in link destinations
       markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
         return `((${v}))`;
+      // Convert autolinked mailto forms like <mailto:person@example.com>
+      // into explicit markdown links [person@example.com](mailto:person@example.com)
+      markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
+        try {
+          return `[${addr}](mailto:${addr})`;
+        } catch (e) {
+          return m;
+        }
       });
       // Normalize outgoing markdown to use '^' instead of '>'
       markdown = markdown.replace(/^(\s*)>/gm, "$1^");
