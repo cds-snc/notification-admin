@@ -151,7 +151,7 @@ describe("Link modal tests", () => {
         .and("be.visible");
     });
 
-    it("opens when arrowing down into a link", () => {
+    it("opens when arrowing up into a link", () => {
       // put a link on the second line and select the word 'link'
       RichTextEditor.Components.Editor()
         .focus()
