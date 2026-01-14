@@ -67,4 +67,64 @@ describe("Link modal tests", () => {
       .should("exist")
       .and("contain.text", "hello world");
   });
+
+  it("Mailto typed as text serializes to explicit markdown and round-trips", () => {
+    // Type an email as plain text and select it
+    RichTextEditor.Components.Editor().type("mailto:info@example.com ");
+
+    // Ensure the editor contains a link with mailto href
+    RichTextEditor.Components.Editor()
+      .find('a[href="mailto:info@example.com"]')
+      .should("exist")
+      .and("contain.text", "info@example.com");
+
+    // Switch to markdown view
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // The markdown textarea should now contain explicit markdown link
+    cy.get('[data-testid="markdown-editor"]').should(
+      "contain.value",
+      "[info@example.com](mailto:info@example.com)",
+    );
+
+    // Switch back to RTE and ensure the link still exists
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('a[href="mailto:info@example.com"]')
+      .should("exist")
+      .and("contain.text", "info@example.com");
+  });
+
+  it("Link modal when entering mailto serializes to explicit mailto markdown and round-trips", () => {
+    // Enter text and select it
+    RichTextEditor.Components.Editor().type("contact us{selectall}");
+    RichTextEditor.Components.LinkButton().click();
+
+    // Enter email without mailto in the URL input
+    cy.scrollTo("top");
+    RichTextEditor.Components.LinkModal.URLInput()
+      .clear()
+      .type("mailto:info@example.com");
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    // Link should use mailto: in href (the LinkModal's save logic prepends https if no protocol,
+    // but it allows mailto to be used if the user supplies it. Here we expect the editor to
+    // interpret plain email as mailto when converted to markdown by our post-process.)
+    RichTextEditor.Components.Editor()
+      .find('a[href^="mailto:"]')
+      .should("exist");
+
+    // Switch to markdown view and ensure encoded correctly
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    cy.get('[data-testid="markdown-editor"]').should(
+      "contain.value",
+      "[contact us](mailto:info@example.com)",
+    );
+
+    // Switch back and ensure link persists
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('a[href^="mailto:"]')
+      .should("exist");
+  });
 });
