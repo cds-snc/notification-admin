@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -33,6 +33,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [isMarkdownView, setIsMarkdownView] = useState(false);
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
+  const [justOpenedLink, setJustOpenedLink] = useState(false);
+  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
+  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -121,6 +124,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           const { left, bottom } = event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
+          // record current link so transaction listener won't re-open redundantly
+          try {
+            currentLinkRef.current = editor.getAttributes("link").href || null;
+          } catch (e) {
+            console.error(
+              "[SimpleEditor] Error getting link attributes in handleClickOn:",
+              e,
+            );
+          }
           return true;
         }
         return false;
@@ -224,7 +236,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            // ignore
+            console.error(
+              "[SimpleEditor] Error computing temporary rect in openLinkModal:",
+              err,
+            );
           }
         }
 
@@ -300,7 +315,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setModalPosition({ top, left });
       }
     } catch (err) {
-      // ignore errors during recompute
+      console.error(
+        "[SimpleEditor] Error computing modal position in computeModalPosition:",
+        err,
+      );
     }
   };
 
@@ -346,9 +364,75 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
 
+  // Listen to keyboard arrow events and check for link transitions
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const handleTransaction = () => {
+      // This fires after every editor transaction, including arrow key navigation
+      const isOnLink = editor.isActive("link");
+      const linkHref = editor.getAttributes("link").href || null;
+
+      const now = Date.now();
+      const lastEvent = lastUserEventRef.current;
+
+      const recentArrowOrClick =
+        lastEvent &&
+        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
+        now - lastEvent.time < 800;
+
+      // Only auto-open on transitions caused by recent arrow navigation or clicks
+      if (
+        isOnLink &&
+        linkHref !== currentLinkRef.current &&
+        recentArrowOrClick
+      ) {
+        openLinkModal();
+        currentLinkRef.current = linkHref;
+
+        setTimeout(() => {
+          setJustOpenedLink(true);
+          setTimeout(() => setJustOpenedLink(false), 2500);
+        }, 600);
+      } else if (!isOnLink && currentLinkRef.current) {
+        // Left a link - close modal
+        setLinkModalVisible(false);
+        currentLinkRef.current = null;
+        setJustOpenedLink(false);
+      }
+    };
+
+    editor.on("transaction", handleTransaction);
+
+    // listen to DOM keydown/clicks to record recent arrow or click events
+    const dom = editor.view.dom;
+    const onKeyDown = (e) => {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+        lastUserEventRef.current = {
+          type: "arrow",
+          key: e.key,
+          time: Date.now(),
+        };
+      }
+    };
+    const onClick = () => {
+      lastUserEventRef.current = { type: "click", time: Date.now() };
+    };
+
+    dom.addEventListener("keydown", onKeyDown);
+    dom.addEventListener("click", onClick);
+
+    return () => {
+      editor.off("transaction", handleTransaction);
+      dom.removeEventListener("keydown", onKeyDown);
+      dom.removeEventListener("click", onClick);
+    };
+  }, [editor]);
+
   // Update hidden input field when content changes
   React.useEffect(() => {
     if (!editor) return;
+
     const updateHiddenInput = () => {
       try {
         // Get markdown from TipTap and normalize any leading '>' to '^'
@@ -439,7 +523,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   };
 
   return (
-    <div className="editor-wrapper">
+    <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
       <MenuBar
         editor={editor}
         openLinkModal={openLinkModal}
@@ -469,6 +553,14 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         position={modalPosition}
         onClose={() => setLinkModalVisible(false)}
         lang={lang}
+        justOpened={justOpenedLink}
+        onSavedLink={(href) => {
+          try {
+            currentLinkRef.current = href || null;
+          } catch (e) {
+            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
+          }
+        }}
       />
     </div>
   );

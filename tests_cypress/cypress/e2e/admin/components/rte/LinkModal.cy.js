@@ -24,7 +24,8 @@ describe("Link modal tests", () => {
         RichTextEditor.Components.Editor()
           .focus()
           .type("hello world{selectall}");
-        cy.realPress([modKey, "K"]);
+        // use realPress to send modifier+K
+        cy.realPress([modKey, "k"]);
 
         // trigger mouse over
         const button = buttonObj[buttonName]();
