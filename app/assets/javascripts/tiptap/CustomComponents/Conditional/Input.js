@@ -102,7 +102,10 @@ export const createKeyboardShortcuts = (_extension, markType) => {
       }
 
       // Check for list patterns: -, *, +, 1.
-      if (/^[-*+]$/.test(textBefore.trim()) || /^\d+\.$/.test(textBefore.trim())) {
+      if (
+        /^[-*+]$/.test(textBefore.trim()) ||
+        /^\d+\.$/.test(textBefore.trim())
+      ) {
         return convertToBlockConditional(editor, {
           markType,
           condition,

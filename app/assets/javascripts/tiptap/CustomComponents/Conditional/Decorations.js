@@ -205,7 +205,9 @@ export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
                     tr.doc.resolve(markRange.to),
                   ),
                 );
-                tr.setStoredMarks([markType.create({ condition: nextCondition })]);
+                tr.setStoredMarks([
+                  markType.create({ condition: nextCondition }),
+                ]);
               }
 
               view.dispatch(tr);
