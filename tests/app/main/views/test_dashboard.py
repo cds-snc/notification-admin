@@ -201,8 +201,6 @@ def test_task_shortcuts_are_visible_based_on_permissions_with_no_templates(
         assert text not in page.text
 
 
-
-
 def test_sending_link_has_query_param(
     client_request: ClientRequest,
     active_user_with_permissions,
