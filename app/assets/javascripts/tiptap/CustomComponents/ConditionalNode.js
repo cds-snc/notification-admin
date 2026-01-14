@@ -24,8 +24,6 @@ const ConditionalNode = Node.create({
   addOptions() {
     return {
       HTMLAttributes: {},
-      prefix: "IF ((",
-      suffix: ")) is YES",
     };
   },
 
@@ -673,19 +671,19 @@ const ConditionalNode = Node.create({
 
           dispatch(tr);
 
-          // Focus and open the condition popover for quick editing.
+          // Focus the condition input for quick editing.
           setTimeout(() => {
             try {
               const nodeDom =
                 editor.view.nodeDOM(insertedPos) ||
                 editor.view.nodeDOM(editor.state.selection.from);
-              const triggerEl = nodeDom?.querySelector?.(
-                ".conditional-trigger",
+              const inputEl = nodeDom?.querySelector?.(
+                "[data-editor-focusable]",
               );
-              if (!triggerEl) return;
+              if (!inputEl) return;
 
-              triggerEl.focus();
-              triggerEl.click();
+              inputEl.focus();
+              inputEl.select?.();
             } catch (err) {
               // ignore
             }

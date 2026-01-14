@@ -19,7 +19,6 @@ import History from "@tiptap/extension-history";
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineMark";
-import ConditionalInlineMarkPopover from "./CustomComponents/ConditionalInlineMarkView";
 import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
@@ -43,8 +42,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
 
   const conditionalLabels = {
-    en: { prefix: "IF ((", suffix: ")) is YES" },
-    fr: { prefix: "SI ((", suffix: ")) est OUI" },
+    en: { prefix: "IF ", suffix: " is YES" },
+    fr: { prefix: "SI ", suffix: " est OUI" },
   };
   const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
 
@@ -86,7 +85,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
       }),
-
       // Mark extensions that match toolbar features
       Bold,
       Italic,
@@ -465,7 +463,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         onClose={() => setLinkModalVisible(false)}
         lang={lang}
       />
-      {editor && <ConditionalInlineMarkPopover editor={editor} />}
     </div>
   );
 };

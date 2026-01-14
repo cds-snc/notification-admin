@@ -1,16 +1,11 @@
 import { markInputRule, markPasteRule } from "@tiptap/core";
-import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 
-import {
-  findRangeInTextblock,
-  getMarkAtPos,
-  hasSpaceAt,
-  isInsideBlockConditional,
-} from "./Helpers";
+import { isInsideBlockConditional } from "./Helpers";
 import { findConditionalMarks } from "./Decorations";
 import { convertToBlockConditional } from "./Conversion";
 
-export const createInputRules = (extension, markType) => {
+export const createInputRules = (_extension, markType) => {
   return [
     markInputRule({
       // Match ((condition??content)) pattern when typed inline
@@ -36,7 +31,7 @@ export const createInputRules = (extension, markType) => {
   });
 };
 
-export const createPasteRules = (extension, markType) => {
+export const createPasteRules = (_extension, markType) => {
   return [
     markPasteRule({
       // Match single-line ((condition??content)) patterns during paste
@@ -63,7 +58,7 @@ export const createPasteRules = (extension, markType) => {
   });
 };
 
-export const createKeyboardShortcuts = (extension, markType) => {
+export const createKeyboardShortcuts = (_extension, markType) => {
   return {
     Enter: ({ editor }) => {
       const { state } = editor;
@@ -107,10 +102,7 @@ export const createKeyboardShortcuts = (extension, markType) => {
       }
 
       // Check for list patterns: -, *, +, 1.
-      if (
-        /^[-*+]$/.test(textBefore.trim()) ||
-        /^\d+\.$/.test(textBefore.trim())
-      ) {
+      if (/^[-*+]$/.test(textBefore.trim()) || /^\d+\.$/.test(textBefore.trim())) {
         return convertToBlockConditional(editor, {
           markType,
           condition,
@@ -152,286 +144,29 @@ export const createKeyboardShortcuts = (extension, markType) => {
 };
 
 export const createPlugins = (extension, markType) => {
-  const interactionKey = new PluginKey("conditionalInlineInteraction");
+  const decorationsKey = new PluginKey("conditionalInlineDecorations");
 
-  const focusEditButton = (editorDom, { condition, from }) => {
-    const button = editorDom.querySelector(
-      `.conditional-inline-edit-btn[data-pos="${from}"][data-condition="${condition}"]`,
-    );
-    if (button && typeof button.focus === "function") {
-      button.focus();
-      return true;
-    }
-    return false;
-  };
-
-  const getInteractionMeta = (tr) => {
-    const existing = tr.getMeta(interactionKey);
-    if (existing && typeof existing === "object") return existing;
-    return { addedSpacePositions: [] };
-  };
-
-  const trackInsertedSpace = (tr, pos) => {
-    const meta = getInteractionMeta(tr);
-    meta.addedSpacePositions = [...(meta.addedSpacePositions || []), pos];
-    tr.setMeta(interactionKey, meta);
-  };
+  const getDecorationSet = (doc) =>
+    findConditionalMarks(doc, markType, {
+      prefix: extension?.options?.prefix,
+      suffix: extension?.options?.suffix,
+    });
 
   return [
     new Plugin({
-      key: new PluginKey("conditionalInlineDecorations"),
+      key: decorationsKey,
       state: {
         init(_, { doc }) {
-          return findConditionalMarks(doc, markType);
+          return getDecorationSet(doc);
         },
         apply(tr, oldState) {
-          return tr.docChanged
-            ? findConditionalMarks(tr.doc, markType)
-            : oldState;
+          return tr.docChanged ? getDecorationSet(tr.doc) : oldState;
         },
       },
       props: {
         decorations(state) {
           return this.getState(state);
         },
-      },
-    }),
-
-    // Single plugin for conditional inline navigation rules.
-    new Plugin({
-      key: interactionKey,
-      state: {
-        init() {
-          return {
-            insertedSpaces: [],
-          };
-        },
-        apply(tr, prev) {
-          const next = { insertedSpaces: [] };
-
-          // Map existing tracked positions through the transaction.
-          for (const pos of prev.insertedSpaces || []) {
-            const mapped = tr.mapping.mapResult(pos, -1);
-            if (!mapped.deleted) next.insertedSpaces.push(mapped.pos);
-          }
-
-          // Add newly inserted spaces from transaction meta.
-          const meta = tr.getMeta(interactionKey);
-          const added = meta?.addedSpacePositions;
-          if (Array.isArray(added)) {
-            for (const pos of added) {
-              // The inserted content starts at `pos` in the new document.
-              const mapped = tr.mapping.mapResult(pos, -1);
-              if (!mapped.deleted) next.insertedSpaces.push(mapped.pos);
-            }
-          }
-
-          next.insertedSpaces = Array.from(new Set(next.insertedSpaces)).sort(
-            (a, b) => a - b,
-          );
-          return next;
-        },
-      },
-      props: {
-        handleKeyDown(view, event) {
-          if (event.defaultPrevented) return false;
-          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight")
-            return false;
-
-          const { state } = view;
-          if (!state.selection.empty) return false;
-
-          const cursorPos = state.selection.from;
-          const storedMark =
-            state.storedMarks?.find?.((m) => m.type === markType) || null;
-          const markAtCursor =
-            state.selection.$from.marks().find((m) => m.type === markType) ||
-            null;
-          const markAhead = getMarkAtPos(state.doc, cursorPos + 1, markType);
-          const markBehind =
-            getMarkAtPos(state.doc, cursorPos - 1, markType) ||
-            getMarkAtPos(state.doc, cursorPos - 2, markType);
-
-          const interactionState = interactionKey.getState(state);
-          const trackedSpaces = interactionState?.insertedSpaces || [];
-          const isTrackedSpaceAt = (pos) =>
-            trackedSpaces.includes(pos) && hasSpaceAt(state.doc, pos);
-
-          // Resolve the condition to use for range detection.
-          const activeMark =
-            markAtCursor || storedMark || markAhead || markBehind;
-          if (!activeMark) return false;
-          const condition = activeMark.attrs?.condition;
-          if (!condition) return false;
-
-          const range = findRangeInTextblock(
-            state,
-            markType,
-            condition,
-            cursorPos,
-          );
-          if (!range) return false;
-
-          // Rule 1: at the mark start boundary (of the content), ArrowLeft selects the edit button.
-          if (event.key === "ArrowLeft") {
-            // If we're currently just to the right of a tracked helper space that was
-            // inserted when exiting to the right, remove it before moving back into the mark.
-            if (isTrackedSpaceAt(cursorPos - 1) && markBehind) {
-              const tr = state.tr;
-              tr.delete(cursorPos - 1, cursorPos);
-              tr.setSelection(TextSelection.create(tr.doc, cursorPos - 1));
-              tr.setStoredMarks([markBehind]);
-              view.dispatch(tr);
-              event.preventDefault();
-              return true;
-            }
-
-            // If we're one character into the mark, prevent the browser/PM from
-            // skipping the boundary (it can jump outside due to the non-editable widget).
-            // Instead, land explicitly on the mark start boundary first.
-            if (markAtCursor && cursorPos === range.from + 1) {
-              const tr = state.tr;
-              tr.setSelection(TextSelection.create(tr.doc, range.from));
-              tr.setStoredMarks([markAtCursor]);
-              view.dispatch(tr);
-              event.preventDefault();
-              return true;
-            }
-
-            // Important: only do this when the selection is actually *in* the mark context.
-            // If we're outside-left of the mark at the same boundary position, ArrowLeft
-            // should continue moving left rather than snapping back to the edit button.
-            if (cursorPos === range.from && (markAtCursor || storedMark)) {
-              const focused = focusEditButton(view.dom, {
-                condition,
-                from: range.from,
-              });
-              if (focused) {
-                event.preventDefault();
-                return true;
-              }
-            }
-            return false;
-          }
-
-          // ArrowRight rules
-          // Rule 2: from outside-left of a mark, ArrowRight enters mark at boundary without selecting button.
-          if (
-            !markAtCursor &&
-            !storedMark &&
-            cursorPos === range.from &&
-            markAhead
-          ) {
-            const tr = state.tr;
-
-            // If we inserted a helper space to the left of this mark earlier,
-            // remove it now that the user is re-entering from the left.
-            if (isTrackedSpaceAt(range.from - 1)) {
-              tr.delete(range.from - 1, range.from);
-              tr.setSelection(TextSelection.create(tr.doc, range.from - 1));
-            } else {
-              tr.setSelection(TextSelection.create(tr.doc, range.from));
-            }
-
-            tr.setStoredMarks([markAhead]);
-            view.dispatch(tr);
-            event.preventDefault();
-            return true;
-          }
-
-          // Rule 4/6: exiting to the right when mark is the only thing on the line inserts a space and allowing content to be added to the line.
-          if (markAtCursor && cursorPos === range.to && range.onlyThingOnLine) {
-            const tr = state.tr;
-
-            // Avoid repeatedly inserting spaces if one already exists.
-            if (hasSpaceAt(state.doc, range.to)) {
-              tr.setSelection(TextSelection.create(tr.doc, range.to + 1));
-              tr.setStoredMarks([]);
-            } else {
-              tr.insertText(" ", range.to, range.to);
-              tr.removeMark(range.to, range.to + 1, markType);
-              tr.setSelection(TextSelection.create(tr.doc, range.to + 1));
-              tr.setStoredMarks([]);
-              trackInsertedSpace(tr, range.to);
-            }
-
-            view.dispatch(tr);
-            event.preventDefault();
-            return true;
-          }
-
-          return false;
-        },
-      },
-      view(editorView) {
-        const handleNavigate = (event) => {
-          const { action, pos } = event.detail || {};
-          if (!action || typeof pos !== "number") return;
-
-          const { state } = editorView;
-          const markAtPos =
-            getMarkAtPos(state.doc, pos + 1, markType) ||
-            getMarkAtPos(state.doc, pos, markType);
-          if (!markAtPos) return;
-
-          const condition = markAtPos.attrs?.condition;
-          if (!condition) return;
-
-          const range = findRangeInTextblock(state, markType, condition, pos);
-          if (!range) return;
-
-          if (action === "enterFromButton") {
-            editorView.focus();
-            const tr = state.tr;
-            tr.setSelection(TextSelection.create(tr.doc, range.from));
-            tr.setStoredMarks([markAtPos]);
-            editorView.dispatch(tr);
-            return;
-          }
-
-          if (action === "exitLeftFromButton") {
-            editorView.focus();
-            const tr = state.tr;
-
-            // Rule 5: if mark is the only thing on the line, exiting left inserts a space.
-            if (range.onlyThingOnLine) {
-              // Avoid repeatedly inserting spaces if one already exists.
-              // When we insert, the space ends up immediately before the mark start.
-              // After the first insertion, the mark start shifts right by 1, so we must
-              // check `range.from - 1`, not `range.from`.
-              if (!hasSpaceAt(state.doc, range.from - 1)) {
-                tr.insertText(" ", range.from, range.from);
-                tr.removeMark(range.from, range.from + 1, markType);
-                trackInsertedSpace(tr, range.from);
-              }
-              tr.setSelection(TextSelection.create(tr.doc, range.from));
-              tr.setStoredMarks([]);
-              editorView.dispatch(tr);
-              return;
-            }
-
-            // Otherwise, let the caret flow left naturally by selecting near the left.
-            const selection = TextSelection.near(
-              tr.doc.resolve(Math.max(range.from - 1, range.parentStart)),
-              -1,
-            );
-            tr.setSelection(selection);
-            tr.setStoredMarks([]);
-            editorView.dispatch(tr);
-            return;
-          }
-        };
-
-        const editorDom = editorView.dom;
-        editorDom.addEventListener("conditionalInlineNavigate", handleNavigate);
-        return {
-          destroy() {
-            editorDom.removeEventListener(
-              "conditionalInlineNavigate",
-              handleNavigate,
-            );
-          },
-        };
       },
     }),
   ];

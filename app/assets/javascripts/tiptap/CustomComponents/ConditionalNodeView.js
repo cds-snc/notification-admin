@@ -1,14 +1,9 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../tiptap-ui-primitive/popover";
 
 const normalizeCondition = (value) => {
   const trimmed = (value || "").trim();
-  return trimmed;
+  return trimmed || "condition";
 };
 
 const ConditionalNodeView = ({
@@ -18,38 +13,23 @@ const ConditionalNodeView = ({
   getPos,
   extension,
 }) => {
-  const prefix = extension?.options?.prefix || "IF ((";
-  const suffix = extension?.options?.suffix || ")) is YES";
-  const inputId = useId();
+  const prefix = extension?.options?.prefix;
+  const suffix = extension?.options?.suffix;
   const conditionValue = useMemo(
     () => node?.attrs?.condition || "",
     [node?.attrs?.condition],
   );
 
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState(conditionValue);
+  const inputId = useId();
+  const [draft, setDraft] = useState(normalizeCondition(conditionValue));
   const inputRef = useRef(null);
 
   // Keep draft in sync with attrs when not editing.
   useEffect(() => {
-    if (open) return;
-    setDraft(conditionValue);
-  }, [conditionValue, open]);
-
-  useEffect(() => {
-    if (!open) return;
-    // Defer focus until the popover content is mounted.
-    const id = setTimeout(() => {
-      try {
-        inputRef.current?.focus?.();
-        inputRef.current?.select?.();
-      } catch (e) {
-        // ignore
-      }
-    }, 0);
-
-    return () => clearTimeout(id);
-  }, [open]);
+    // Only clobber the draft when the input isn't actively being edited.
+    if (document.activeElement === inputRef.current) return;
+    setDraft(normalizeCondition(conditionValue));
+  }, [conditionValue]);
 
   const commitIfChanged = () => {
     const nextCondition = normalizeCondition(draft);
@@ -59,22 +39,6 @@ const ConditionalNodeView = ({
     updateAttributes({ condition: nextCondition });
   };
 
-  const onOpenChange = (nextOpen) => {
-    // When closing, commit the draft.
-    if (open && !nextOpen) {
-      commitIfChanged();
-    }
-
-    setOpen(nextOpen);
-
-    // When opening, ensure the draft reflects current attrs.
-    if (nextOpen) {
-      setDraft(conditionValue);
-    }
-  };
-
-  const displayText = `${prefix}${normalizeCondition(conditionValue) || "condition"}${suffix}`;
-
   return (
     <NodeViewWrapper
       as="div"
@@ -82,106 +46,61 @@ const ConditionalNodeView = ({
       data-type="conditional"
       data-condition={conditionValue}
     >
-      <Popover open={open} onOpenChange={onOpenChange} modal={false}>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            tabIndex={-1}
-            data-editor-focusable="true"
-            className="conditional-trigger"
-            aria-label="Edit conditional"
-            onKeyDown={(event) => {
-              // Prevent ProseMirror from interpreting delete keys while editing.
-              if (event.key === "Backspace" || event.key === "Delete") {
-                event.stopPropagation();
-              }
-
-              // Arrow keys: return focus to the editor and move cursor
-              if (
-                ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
-                  event.key,
-                )
-              ) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                const pos = getPos();
-                if (typeof pos !== "number") return;
-
-                editor.commands.focus();
-
-                // ArrowUp/ArrowLeft: move cursor before the conditional
-                // ArrowDown/ArrowRight: move cursor into the conditional content
-                if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-                  // Move to just before this node
-                  editor.commands.setTextSelection(pos);
-                } else {
-                  // Move to start of content inside the conditional
-                  // pos + 1 gets us inside the node, then +1 more for inside the first child block
-                  editor.commands.setTextSelection(pos + 2);
-                }
-              }
-            }}
+      <div className="conditional-trigger" contentEditable={false}>
+        <span className="conditional-trigger-text">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+            aria-hidden="true"
+            focusable="false"
+            className="conditional-inline-branch-icon"
           >
-            <span className="conditional-trigger-text" contentEditable="false">
-              {displayText}
-            </span>
-            <i
-              aria-hidden="true"
-              className="fa-solid fa-pen-to-square conditional-trigger-icon"
-            ></i>
-          </button>
-        </PopoverTrigger>
-
-        <PopoverContent
-          side="bottom"
-          align="start"
-          className="conditional-popover"
-        >
-          <div className="conditional-popover-body">
-            <label className="conditional-popover-label" htmlFor={inputId}>
-              Edit Conditional
-            </label>
-            <input
-              id={inputId}
-              ref={inputRef}
-              className="conditional-popover-input"
-              type="text"
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={(event) => {
-                // Don’t let ProseMirror handle keys originating from the popover.
-                event.stopPropagation();
-
-                if (event.key === "Escape") {
-                  event.preventDefault();
-                  setDraft(conditionValue);
-                  setOpen(false);
-                  return;
-                }
-
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  commitIfChanged();
-                  setOpen(false);
-                }
-              }}
+            <path
+              fill="currentColor"
+              d="M384 144c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 36.4 24.3 67.1 57.5 76.8-.6 16.1-4.2 28.5-11 36.9-15.4 19.2-49.3 22.4-85.2 25.7-28.2 2.6-57.4 5.4-81.3 16.9v-144c32.5-10.2 56-40.5 56-76.3 0-44.2-35.8-80-80-80S0 35.8 0 80c0 35.8 23.5 66.1 56 76.3v199.3C23.5 365.9 0 396.2 0 432c0 44.2 35.8 80 80 80s80-35.8 80-80c0-34-21.2-63.1-51.2-74.6 3.1-5.2 7.8-9.8 14.9-13.4 16.2-8.2 40.4-10.4 66.1-12.8 42.2-3.9 90-8.4 118.2-43.4 14-17.4 21.1-39.8 21.6-67.9 31.6-10.8 54.4-40.7 54.4-75.9zM80 64c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16zm0 384c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zm224-320c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16z"
             />
-            <div className="conditional-popover-actions">
-              <button
-                type="button"
-                className="conditional-popover-button"
-                onClick={() => {
-                  commitIfChanged();
-                  setOpen(false);
-                }}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
+          </svg>
+          {prefix}
+        </span>
+        <input
+          id={inputId}
+          ref={inputRef}
+          data-editor-focusable="true"
+          className="conditional-block-condition-input"
+          type="text"
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            // Don’t let ProseMirror handle keys originating from the input.
+            event.stopPropagation();
+
+            if (event.key === "Escape") {
+              event.preventDefault();
+              setDraft(normalizeCondition(conditionValue));
+              editor.commands.focus();
+              return;
+            }
+
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitIfChanged();
+              editor.commands.focus();
+
+              const pos = getPos();
+              if (typeof pos === "number") {
+                // Move into the conditional content after saving.
+                editor.commands.setTextSelection(pos + 2);
+              }
+            }
+          }}
+          onBlur={() => {
+            commitIfChanged();
+          }}
+        />
+        <span className="conditional-trigger-text" aria-hidden="true">
+          {suffix}
+        </span>
+      </div>
 
       <div className="conditional-content">
         <NodeViewContent as="div" />
