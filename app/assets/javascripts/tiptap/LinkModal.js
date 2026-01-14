@@ -93,7 +93,13 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
   // the modal and restore focus handling to the editor.
   const saveLink = () => {
     let formattedUrl = url;
-    if (url && !/^(https?:\/\/|mailto:)/i.test(url)) {
+    // If the URL looks like a variable marker (e.g. contains '((') or
+    // already contains a protocol or mailto, do not prepend a protocol.
+    if (
+      url &&
+      !/^(https?:\/\/|mailto:)/i.test(url) &&
+      !/\(\(/.test(url)
+    ) {
       formattedUrl = `https://${url}`;
     }
 

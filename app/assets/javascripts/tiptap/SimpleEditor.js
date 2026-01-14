@@ -354,6 +354,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        // Unescape serializer-escaped variable markers in link destinations
+        // e.g., ](\\(\\(var\\)\\)) -> ](((var)))
+        markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
+          return `((${v}))`;
+        });
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -395,6 +400,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      // Unescape serializer-escaped variable markers in link destinations
+      markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
+        return `((${v}))`;
+      });
       // Normalize outgoing markdown to use '^' instead of '>'
       markdown = markdown.replace(/^(\s*)>/gm, "$1^");
       setMarkdownValue(markdown);
