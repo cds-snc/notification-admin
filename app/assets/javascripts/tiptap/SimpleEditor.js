@@ -415,6 +415,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Unescape serializer-escaped variable markers in link destinations
       markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
         return `((${v}))`;
+      });
       // Convert autolinked mailto forms like <mailto:person@example.com>
       // into explicit markdown links [person@example.com](mailto:person@example.com)
       markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
