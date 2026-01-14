@@ -438,6 +438,18 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        // Convert autolinked mailto forms like <mailto:person@example.com>
+        // into explicit markdown links [person@example.com](mailto:person@example.com)
+        // This prevents downstream storage using angle-bracket autolinks.
+        markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
+          try {
+            // Use the email address as the link text
+            return `[${addr}](mailto:${addr})`;
+          } catch (e) {
+            return m;
+          }
+        });
+
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -479,6 +491,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      // Convert autolinked mailto forms like <mailto:person@example.com>
+      // into explicit markdown links [person@example.com](mailto:person@example.com)
+      markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
+        try {
+          return `[${addr}](mailto:${addr})`;
+        } catch (e) {
+          return m;
+        }
+      });
       // Normalize outgoing markdown to use '^' instead of '>'
       markdown = markdown.replace(/^(\s*)>/gm, "$1^");
       setMarkdownValue(markdown);
