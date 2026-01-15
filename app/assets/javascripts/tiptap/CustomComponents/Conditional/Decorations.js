@@ -154,6 +154,8 @@ export function findConditionalMarks(
         Decoration.widget(
           range.from,
           (view, getPos) => {
+            const fallbackRange = { from: range.from, to: range.to };
+
             const widget = document.createElement("span");
             widget.className = "conditional-inline-edit-widget";
             widget.setAttribute("contenteditable", "false");
@@ -190,6 +192,7 @@ export function findConditionalMarks(
             input.className = "conditional-inline-condition-input";
             input.type = "text";
             input.value = condition;
+            input.setAttribute("data-editor-focusable", "true");
             input.setAttribute("aria-label", conditionAriaLabel);
             input.setAttribute("autocomplete", "off");
             input.setAttribute("spellcheck", "false");
@@ -198,7 +201,7 @@ export function findConditionalMarks(
             suffixText.className = "conditional-inline-edit-suffix";
             suffixText.textContent = suffix || " is YES";
 
-            const commit = ({ moveCursorToEnd = false } = {}) => {
+            const commit = ({ moveCursorToContentStart = false } = {}) => {
               const nextCondition = normalizeCondition(
                 input.value,
                 defaultCondition,
@@ -214,21 +217,55 @@ export function findConditionalMarks(
                 pos,
                 defaultCondition,
               );
-              if (!markRange) return;
+              const effectiveRange =
+                markRange ||
+                (view.state.doc.rangeHasMark(
+                  fallbackRange.from,
+                  fallbackRange.to,
+                  markType,
+                )
+                  ? fallbackRange
+                  : null);
+
+              if (!effectiveRange) return;
+
+              // If nothing changed, avoid a doc-changing transaction (which can
+              // rebuild decorations and bounce focus). Still allow moving the
+              // caret into the content when requested.
+              if (nextCondition === condition) {
+                if (!moveCursorToContentStart) return;
+
+                const targetPos = Math.min(pos, effectiveRange.to - 1);
+                const tr = view.state.tr;
+                tr.setSelection(
+                  view.state.selection.constructor.near(
+                    tr.doc.resolve(targetPos),
+                  ),
+                );
+                tr.setStoredMarks([markType.create({ condition: nextCondition })]);
+                view.dispatch(tr);
+                return;
+              }
 
               const { tr } = view.state;
-              tr.removeMark(markRange.from, markRange.to, markType);
+              tr.removeMark(effectiveRange.from, effectiveRange.to, markType);
               tr.addMark(
-                markRange.from,
-                markRange.to,
+                effectiveRange.from,
+                effectiveRange.to,
                 markType.create({ condition: nextCondition }),
               );
 
-              // Keep selection as-is (blur) or move it to end (Enter)
-              if (moveCursorToEnd) {
+              // Keep selection as-is (blur) or move it into the mark content (Enter)
+              if (moveCursorToContentStart) {
+                // ProseMirror positions are between characters; `markRange.from`
+                // is the position *before* the first character of the marked content.
+                // We want the caret at the beginning of the content (same as the
+                // block conditional), not after the first character.
+                const targetPos = Math.min(pos, effectiveRange.to - 1);
+
                 tr.setSelection(
                   view.state.selection.constructor.near(
-                    tr.doc.resolve(markRange.to),
+                    tr.doc.resolve(targetPos),
                   ),
                 );
                 tr.setStoredMarks([
@@ -247,19 +284,90 @@ export function findConditionalMarks(
               }
             };
 
-            input.addEventListener("keydown", (event) => {
-              // Don't let ProseMirror handle key events from the input.
-              event.stopPropagation();
+            const requestToolbarFocus = () => {
+              try {
+                const doc = view.dom?.ownerDocument || document;
+                const toolbar = doc.querySelector('[data-testid="rte-toolbar"]');
+                if (!toolbar) return;
 
-              if (event.key === "Enter") {
-                event.preventDefault();
-                commit({ moveCursorToEnd: true });
-                view.focus();
+                // Force focus onto the toolbar container first so focus doesn't
+                // snap back to the editor selection.
+                try {
+                  const prevTabIndex = toolbar.getAttribute("tabindex");
+                  toolbar.tabIndex = -1;
+                  toolbar.focus();
+                  if (prevTabIndex === null) toolbar.removeAttribute("tabindex");
+                  else toolbar.setAttribute("tabindex", prevTabIndex);
+                } catch {
+                  // ignore
+                }
+
+                // Preferred: ask AccessibleToolbar to focus its current item.
+                try {
+                  toolbar.dispatchEvent(
+                    new CustomEvent("rte-request-focus", { bubbles: true }),
+                  );
+                  return;
+                } catch {
+                  // fall through
+                }
+
+                // Fallback: focus the first focusable element in the toolbar.
+                const focusableSelectors = [
+                  "button:not([disabled])",
+                  "[href]:not([disabled])",
+                  "input:not([disabled])",
+                  "select:not([disabled])",
+                  "textarea:not([disabled])",
+                  "[tabindex]:not([tabindex='-1']):not([disabled])",
+                  "[role='button']:not([disabled])",
+                ].join(", ");
+
+                const first = toolbar.querySelector(focusableSelectors);
+                first?.focus?.();
+              } catch (e) {
+                // ignore
               }
-            });
+            };
+
+            input.addEventListener(
+              "keydown",
+              (event) => {
+                // Intercept in capture phase so the browser doesn't move focus
+                // before we can handle Shift+Tab.
+                event.stopPropagation();
+                event.stopImmediatePropagation?.();
+
+                // Shift+Tab from the input should move focus to the toolbar (menu),
+                // not back into the conditional content.
+                if (event.key === "Tab" && event.shiftKey) {
+                  event.preventDefault();
+                  // Focus toolbar immediately, then again on the next tick to
+                  // outlast any editor-selection restoration.
+                  requestToolbarFocus();
+                  setTimeout(() => requestToolbarFocus(), 0);
+                  return;
+                }
+
+                // Tab should move focus into the conditional content (like the block conditional).
+                if (event.key === "Tab" && !event.shiftKey) {
+                  event.preventDefault();
+                  commit({ moveCursorToContentStart: true });
+                  setTimeout(() => view.focus(), 0);
+                  return;
+                }
+
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  commit({ moveCursorToContentStart: true });
+                  setTimeout(() => view.focus(), 0);
+                }
+              },
+              { capture: true },
+            );
 
             input.addEventListener("blur", () => {
-              commit({ moveCursorToEnd: false });
+              commit({ moveCursorToContentStart: false });
             });
 
             // Prevent the editor from moving selection when clicking into the input.

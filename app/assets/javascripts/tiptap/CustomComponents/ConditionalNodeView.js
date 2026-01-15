@@ -101,6 +101,19 @@ const ConditionalNodeView = ({
                 editor.commands.setTextSelection(pos + 2);
               }
             }
+
+            // Tab should move focus into the conditional content.
+            // Leave Shift+Tab to the browser so users can navigate backwards out of the input.
+            if (event.key === "Tab" && !event.shiftKey) {
+              event.preventDefault();
+              commitIfChanged();
+              editor.commands.focus();
+
+              const pos = getPos();
+              if (typeof pos === "number") {
+                editor.commands.setTextSelection(pos + 2);
+              }
+            }
           }}
           onBlur={() => {
             commitIfChanged();

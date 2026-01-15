@@ -217,6 +217,131 @@ const ConditionalNode = Node.create({
           handleKeyDown(view, event) {
             if (event.key !== "Tab") return false;
 
+            // Special case: temporary navigation space before an initial inline
+            // conditional. The browser's default tab order can focus the inline
+            // input without letting the inline plugin delete the space. Handle
+            // Tab/Shift+Tab here deterministically.
+            try {
+              const { doc, selection } = view.state;
+              const conditionalInline = view.state.schema.marks?.conditionalInline;
+
+              if (conditionalInline && selection?.empty) {
+                const pos = selection.from;
+                const hasSpaceHere = doc.textBetween(pos, pos + 1) === " ";
+                const next = doc.resolve(pos + 1).nodeAfter;
+                const nextHasInline =
+                  next?.isText && next.marks?.some((m) => m.type === conditionalInline);
+
+                if (hasSpaceHere && nextHasInline) {
+                  event.preventDefault();
+
+                  if (event.shiftKey) {
+                    // Shift+Tab -> toolbar
+                    const toolbar = view.dom?.ownerDocument?.querySelector?.(
+                      '[data-testid="rte-toolbar"]',
+                    );
+                    toolbar?.dispatchEvent?.(
+                      new CustomEvent("rte-request-focus", { bubbles: true }),
+                    );
+                    return true;
+                  }
+
+                  // Tab -> delete space, then focus the inline input
+                  const tr = view.state.tr;
+                  tr.delete(pos, pos + 1);
+                  tr.setSelection(
+                    view.state.selection.constructor.near(tr.doc.resolve(pos)),
+                  );
+                  view.dispatch(tr);
+
+                  setTimeout(() => {
+                    try {
+                      const input = view.dom?.querySelector?.(
+                        'input.conditional-inline-condition-input[data-editor-focusable]',
+                      );
+                      input?.focus?.();
+                      input?.select?.();
+                    } catch {
+                      // ignore
+                    }
+                  }, 0);
+
+                  return true;
+                }
+              }
+            } catch {
+              // ignore
+            }
+
+            // Inline conditionals manage their own Tab/Shift+Tab behavior.
+            // Avoid the global focus-cycling logic interfering.
+            try {
+              const conditionalInline = view.state.schema.marks?.conditionalInline;
+              if (conditionalInline) {
+                const marksHere =
+                  view.state.selection?.$from?.marks?.() ||
+                  view.state.selection?.$from?.marks() ||
+                  [];
+
+                if (marksHere.some((m) => m.type === conditionalInline)) {
+                  return false;
+                }
+
+                // Also bail out when we're in the temporary leading space
+                // inserted before a first inline conditional.
+                const { doc, selection } = view.state;
+                if (selection?.empty && selection.from <= 2) {
+                  const hasLeadingSpace = doc.textBetween(1, 2) === " ";
+                  const next = doc.resolve(2).nodeAfter;
+                  const nextHasInline =
+                    next?.isText &&
+                    next.marks?.some((m) => m.type === conditionalInline);
+
+                  if (hasLeadingSpace && nextHasInline) {
+                    return false;
+                  }
+                }
+              }
+            } catch {
+              // ignore
+            }
+
+            // When typing inside an inline conditional's content, forward Tab
+            // should not cycle back to its embedded input widget.
+            // Let the browser handle Tab to move focus out of the editor.
+            if (!event.shiftKey) {
+              const conditionalInline = view.state.schema.marks?.conditionalInline;
+              if (
+                conditionalInline &&
+                view.state.selection?.$from
+                  ?.marks()
+                  ?.some((m) => m.type === conditionalInline)
+              ) {
+                return false;
+              }
+
+              // If the user is positioned in the temporary leading space we add
+              // to allow inserting before an initial inline conditional, don't
+              // focus the inline input (that creates a loop between space/input).
+              try {
+                const { doc, selection } = view.state;
+                if (selection?.empty && selection.from <= 2) {
+                  const hasLeadingSpace = doc.textBetween(1, 2) === " ";
+                  const next = doc.resolve(2).nodeAfter;
+                  const nextHasInline =
+                    conditionalInline &&
+                    next?.isText &&
+                    next.marks?.some((m) => m.type === conditionalInline);
+
+                  if (hasLeadingSpace && nextHasInline) {
+                    return false;
+                  }
+                }
+              } catch {
+                // ignore
+              }
+            }
+
             const editorDom = view.dom;
             // Find all focusable controls marked with our data attribute.
             const focusables = Array.from(
@@ -247,7 +372,11 @@ const ConditionalNode = Node.create({
             if (shiftKey) {
               // Shift+Tab: find the last focusable BEFORE cursor
               for (let i = withPos.length - 1; i >= 0; i--) {
-                if (withPos[i].pos < cursorPos) {
+                // If the caret is at the very start of a marked range, the
+                // associated focusable (eg inline conditional input) can map to
+                // the same ProseMirror position as the cursor.
+                // Treat that as "before" for Shift+Tab.
+                if (withPos[i].pos <= cursorPos) {
                   target = withPos[i].el;
                   break;
                 }
