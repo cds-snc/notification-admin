@@ -190,11 +190,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       if (editor?.view && sel) {
         const pos = sel.from;
         const coords = editor.view.coordsAtPos(pos);
-        console.log("openLinkModal: coordsAtPos", { pos, coords });
         if (coords) {
           const left = coords.left || coords.x;
           const top = (coords.bottom || coords.y) + 8;
-          console.log("openLinkModal: using coordsAtPos ->", { left, top });
           setModalPosition({ top, left });
           setLinkModalVisible(true);
           return;
@@ -230,11 +228,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
         const left = rect.left || 0;
         const top = (rect.top || 0) + (rect.height || 0) + 6;
-        console.log("openLinkModal: using range rect ->", {
-          rect: { left: rect.left, top: rect.top, height: rect.height },
-          left,
-          top,
-        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       }
@@ -245,15 +238,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const edRect = editor?.view?.dom?.getBoundingClientRect?.();
         const left = (edRect?.left || 0) + 20;
         const top = (edRect?.top || 0) + 40;
-        console.log("openLinkModal: fallback editor rect ->", {
-          edRect,
-          left,
-          top,
-        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       } catch (e) {
-        console.log("openLinkModal: final fallback");
         setModalPosition({ top: 80, left: 80 });
         setLinkModalVisible(true);
       }
