@@ -5,11 +5,14 @@ export default function convertVariablesToSpans(text) {
   // Extract and temporarily replace markdown link destinations ](...) to
   // prevent variable conversion inside link hrefs.
   const linkPlaceholders = [];
-  let processedText = text.replace(/\]\(([^)]*(?:\([^)]*\))*[^)]*)\)/g, (match) => {
-    const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
-    linkPlaceholders.push(match);
-    return placeholder;
-  });
+  let processedText = text.replace(
+    /\]\(([^)]*(?:\([^)]*\))*[^)]*)\)/g,
+    (match) => {
+      const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
+      linkPlaceholders.push(match);
+      return placeholder;
+    },
+  );
 
   // Now replace variables only outside link destinations
   processedText = processedText.replace(/\(\(([^)]+)\)\)/g, (_match, p1) => {
@@ -26,10 +29,7 @@ export default function convertVariablesToSpans(text) {
 
   // Restore the link placeholders
   linkPlaceholders.forEach((link, idx) => {
-    processedText = processedText.replace(
-      `__LINK_PLACEHOLDER_${idx}__`,
-      link,
-    );
+    processedText = processedText.replace(`__LINK_PLACEHOLDER_${idx}__`, link);
   });
 
   return processedText;

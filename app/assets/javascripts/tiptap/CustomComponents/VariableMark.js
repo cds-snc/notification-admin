@@ -39,7 +39,7 @@ const VariableMark = Mark.create({
 
     return [
       new InputRule({
-        find: /\(\(([A-Za-z0-9]+)\)\)$/, 
+        find: /\(\(([A-Za-z0-9]+)\)\)$/,
         handler: ({ state, range, match }) => {
           // Try to read the matched text from the doc (may fail in some contexts)
           let matchedText = null;
@@ -62,10 +62,21 @@ const VariableMark = Mark.create({
 
           if (varName) {
             // Replace typed ((name)) with the text node marked as variable
-            console.log("[VariableMark] input-rule: applying variable mark", { varName, start, end });
-            tr.replaceWith(start, end, state.schema.text(varName, [markType.create()]));
+            console.log("[VariableMark] input-rule: applying variable mark", {
+              varName,
+              start,
+              end,
+            });
+            tr.replaceWith(
+              start,
+              end,
+              state.schema.text(varName, [markType.create()]),
+            );
           } else {
-            console.log("[VariableMark] input-rule: no varName, skipping replacement", { match });
+            console.log(
+              "[VariableMark] input-rule: no varName, skipping replacement",
+              { match },
+            );
           }
         },
       }),
@@ -152,7 +163,10 @@ const VariableMark = Mark.create({
 
                 // Extract the variable name
                 const content = state.src.slice(start + 2, pos);
-                console.log("[VariableMark] inline parser found variable:", content);
+                console.log(
+                  "[VariableMark] inline parser found variable:",
+                  content,
+                );
 
                 // Create the opening tag token
                 const tokenOpen = state.push("variable_open", "span", 1);
@@ -201,7 +215,10 @@ const VariableMark = Mark.create({
                       child.content.includes("((")
                     ) {
                       let remaining = child.content;
-                      console.log("[VariableMark] core ruler scanning text:", child.content);
+                      console.log(
+                        "[VariableMark] core ruler scanning text:",
+                        child.content,
+                      );
 
                       while (remaining.length > 0) {
                         const openIdx = remaining.indexOf("((");
@@ -228,7 +245,10 @@ const VariableMark = Mark.create({
                         }
 
                         const varName = remaining.slice(openIdx + 2, closeIdx);
-                        console.log("[VariableMark] core ruler extracted var:", varName);
+                        console.log(
+                          "[VariableMark] core ruler extracted var:",
+                          varName,
+                        );
 
                         const tOpen = new Token("variable_open", "span", 1);
                         tOpen.attrs = [["data-type", "variable"]];
