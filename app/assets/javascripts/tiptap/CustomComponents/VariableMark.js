@@ -39,7 +39,7 @@ const VariableMark = Mark.create({
 
     return [
       new InputRule({
-        find: /\(\(([A-Za-z0-9]+)\)\)$/,
+        find: /\(\(([^()]+)\)\)$/,
         handler: ({ state, range, match }) => {
           // Try to read the matched text from the doc (may fail in some contexts)
           let matchedText = null;
@@ -161,8 +161,9 @@ const VariableMark = Mark.create({
                   return true;
                 }
 
-                // Extract the variable name
+                // Extract the variable name and reject if it contains parentheses
                 const content = state.src.slice(start + 2, pos);
+                if (content.includes("(") || content.includes(")")) return false;
                 console.log(
                   "[VariableMark] inline parser found variable:",
                   content,
@@ -245,6 +246,14 @@ const VariableMark = Mark.create({
                         }
 
                         const varName = remaining.slice(openIdx + 2, closeIdx);
+                        if (varName.includes("(") || varName.includes(")")) {
+                          // Treat this as plain text if it contains parentheses
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(0, closeIdx + 2);
+                          newChildren.push(t);
+                          remaining = remaining.slice(closeIdx + 2);
+                          continue;
+                        }
                         console.log(
                           "[VariableMark] core ruler extracted var:",
                           varName,
