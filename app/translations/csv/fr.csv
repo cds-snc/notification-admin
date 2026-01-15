@@ -2386,7 +2386,7 @@
 "Resubscribe","Se réabonner"
 "Report accessibility issues","Signaler un problème d’accessibilité"
 "Share accessibility feedback","Donner votre avis sur l’accessibilité""Remove email from suppression list","Retirer l'adresse courriel de la liste de suppression"
-"If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:","Si une adresse courriel est sur la liste de suppression, Notification GC n'enverra pas de courriels à cette adresse. Cela peut arriver si :"
+"If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:","Si une adresse courriel est sur la liste de suppression, Notification&nbsp;GC n'enverra pas de courriels à cette adresse. Cela peut arriver&nbsp;si&nbsp;:"
 "the email server was down when we tried to send","le serveur de courriel était en panne quand nous avons essayé d'envoyer"
 "the email server gave an incorrect response","le serveur de courriel a donné une réponse incorrecte"
 "an overactive spam filter blocked the email","un filtre anti-pourriel trop actif a bloqué le courriel"
