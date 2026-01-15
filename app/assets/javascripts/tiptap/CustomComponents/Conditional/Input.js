@@ -192,14 +192,20 @@ export const createPlugins = (extension, markType) => {
     try {
       const toolbar = getToolbarEl(view);
       if (!toolbar) return false;
-      toolbar.dispatchEvent(new CustomEvent("rte-request-focus", { bubbles: true }));
+      toolbar.dispatchEvent(
+        new CustomEvent("rte-request-focus", { bubbles: true }),
+      );
       return true;
     } catch (e) {
       return false;
     }
   };
 
-  const focusInlineInputForCursor = (view, cursorPos) => {
+  const focusInlineInputForCursor = (
+    view,
+    cursorPos,
+    { caret = "end" } = {},
+  ) => {
     try {
       const editorDom = view.dom;
       const inputs = Array.from(
@@ -231,7 +237,15 @@ export const createPlugins = (extension, markType) => {
 
       if (!target) return false;
       target.focus();
-      target.select?.();
+
+      if (caret === "start") {
+        target.setSelectionRange?.(0, 0);
+      } else if (caret === "end") {
+        const end = target.value.length;
+        target.setSelectionRange?.(end, end);
+      } else if (caret === "select") {
+        target.select?.();
+      }
       return true;
     } catch {
       return false;
@@ -258,7 +272,9 @@ export const createPlugins = (extension, markType) => {
         if (!node.isText) return;
 
         const hasThisMark = node.marks.some(
-          (m) => m.type === markType && normalizeCondition(m.attrs?.condition) === condition,
+          (m) =>
+            m.type === markType &&
+            normalizeCondition(m.attrs?.condition) === condition,
         );
 
         if (!hasThisMark) {
@@ -300,6 +316,122 @@ export const createPlugins = (extension, markType) => {
   return [
     new Plugin({
       key: decorationsKey,
+      view(view) {
+        const selector =
+          "input.conditional-inline-condition-input[data-editor-focusable]";
+        let startedInInput = false;
+
+        const collapseSelectionInUnfocusedInputs = () => {
+          try {
+            const doc = view.dom?.ownerDocument || document;
+            const active = doc.activeElement;
+
+            const inputs = Array.from(view.dom.querySelectorAll(selector));
+            for (const input of inputs) {
+              if (input === active) continue;
+              try {
+                const end = input.value?.length ?? 0;
+                input.setSelectionRange?.(end, end);
+              } catch {
+                // ignore
+              }
+            }
+          } catch {
+            // ignore
+          }
+        };
+        const isWithinInput = (target) => {
+          try {
+            return (
+              target?.closest?.(selector) ||
+              (target?.nodeType === 3 &&
+                target?.parentElement?.closest?.(selector))
+            );
+          } catch {
+            return false;
+          }
+        };
+
+        const clearInlineInputSelections = () => {
+          try {
+            const inputs = Array.from(view.dom.querySelectorAll(selector));
+            for (const input of inputs) {
+              try {
+                const end = input.value?.length ?? 0;
+                input.setSelectionRange?.(end, end);
+              } catch {
+                // ignore
+              }
+            }
+          } catch {
+            // ignore
+          }
+        };
+
+        const onMouseDown = (event) => {
+          // If the user starts selecting in the editor content (not inside the
+          // condition input), collapse any existing input selection so it can't
+          // appear "highlighted" alongside the editor selection.
+          if (event?.button !== 0) return;
+          startedInInput = !!isWithinInput(event?.target);
+          if (startedInInput) return;
+          clearInlineInputSelections();
+        };
+
+        const onMouseUp = (event) => {
+          // Don't clobber a selection the user was making in the input.
+          // Only clear if the interaction started outside the input.
+          if (startedInInput) {
+            startedInInput = false;
+            return;
+          }
+          startedInInput = false;
+
+          if (isWithinInput(event?.target)) return;
+          clearInlineInputSelections();
+        };
+
+        view.dom.addEventListener("mousedown", onMouseDown, true);
+        view.dom.addEventListener("mouseup", onMouseUp, true);
+
+        return {
+          update(nextView, prevState) {
+            try {
+              if (!prevState) return;
+              if (prevState.selection.eq(nextView.state.selection)) return;
+
+              const doc = nextView.dom?.ownerDocument || document;
+              const active = doc.activeElement;
+
+              // If a condition input is focused and the editor selection changes
+              // (eg mouse drag selecting content), forcibly blur the input.
+              // This prevents the input's own text selection highlight from
+              // visually "bleeding" into the editor selection.
+              if (active?.matches?.(selector)) {
+                try {
+                  const end = active.value?.length ?? 0;
+                  active.setSelectionRange?.(end, end);
+                } catch {
+                  // ignore
+                }
+                active.blur?.();
+              }
+
+              // Even when the input is NOT focused, some browsers can still
+              // render a stale selection highlight in the input from a previous
+              // keyboard navigation step. Collapse selection in all unfocused
+              // condition inputs whenever the editor selection changes.
+              collapseSelectionInUnfocusedInputs();
+            } catch {
+              // ignore
+            }
+          },
+          destroy() {
+            view.dom.removeEventListener("mousedown", onMouseDown, true);
+            view.dom.removeEventListener("mouseup", onMouseUp, true);
+          },
+        };
+      },
       state: {
         init(_, { doc }) {
           return {
@@ -359,18 +491,21 @@ export const createPlugins = (extension, markType) => {
             const navPos = pluginState.navSpacePos;
 
             if (isArrowRight && cursorPos === navPos) {
-              // Remove the space and re-enter content.
-              const nextNode = state.doc.resolve(navPos + 1).nodeAfter;
-              const markAfter = nextNode?.marks?.find((m) => m.type === markType);
-
               event.preventDefault();
 
               const tr = state.tr;
               tr.delete(navPos, navPos + 1);
               tr.setMeta(NAV_SPACE_META, null);
-              tr.setSelection(selection.constructor.near(tr.doc.resolve(navPos)));
-              if (markAfter) tr.setStoredMarks([markType.create(markAfter.attrs)]);
+              tr.setSelection(
+                selection.constructor.near(tr.doc.resolve(navPos)),
+              );
               view.dispatch(tr);
+
+              // Re-enter via the input (not the content) so keyboard flow is:
+              // nav-space -> input -> content.
+              setTimeout(() => {
+                focusInlineInputForCursor(view, navPos, { caret: "start" });
+              }, 0);
               return true;
             }
 
@@ -388,7 +523,9 @@ export const createPlugins = (extension, markType) => {
               const tr = state.tr;
               tr.delete(navPos, navPos + 1);
               tr.setMeta(NAV_SPACE_META, null);
-              tr.setSelection(selection.constructor.near(tr.doc.resolve(navPos)));
+              tr.setSelection(
+                selection.constructor.near(tr.doc.resolve(navPos)),
+              );
               view.dispatch(tr);
 
               // Focus after the view updates.
@@ -432,33 +569,11 @@ export const createPlugins = (extension, markType) => {
           }
 
           // ArrowLeft only: when at the very beginning of the inline content,
-          // move out of the mark. If there's nothing before it in the current
-          // block, insert a space to allow navigation/insertion before.
+          // move into the condition input (caret at end).
           if (cursorPos !== range.from) return false;
 
-          const $from = state.doc.resolve(range.from);
-          const blockStart = $from.start();
-          const hasNothingBeforeInBlock = range.from === blockStart;
-
           event.preventDefault();
-
-          const tr = state.tr;
-
-          if (hasNothingBeforeInBlock) {
-            tr.insertText(" ", range.from, range.from);
-            tr.removeMark(range.from, range.from + 1, markType);
-            tr.setMeta(NAV_SPACE_META, range.from);
-            tr.setStoredMarks([]);
-            tr.setSelection(selection.constructor.near(tr.doc.resolve(range.from)));
-            view.dispatch(tr);
-            return true;
-          }
-
-          // If there is content before, just clear stored marks so typing
-          // inserts outside the conditional.
-          tr.setStoredMarks([]);
-          tr.setSelection(selection.constructor.near(tr.doc.resolve(range.from)));
-          view.dispatch(tr);
+          focusInlineInputForCursor(view, cursorPos, { caret: "end" });
           return true;
         },
       },

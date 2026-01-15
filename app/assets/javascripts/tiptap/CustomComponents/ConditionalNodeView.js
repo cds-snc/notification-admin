@@ -1,5 +1,8 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
+import { TextSelection } from "@tiptap/pm/state";
+
+const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
 
 const normalizeCondition = (value, defaultCondition) => {
   const trimmed = (value || "").trim();
@@ -99,6 +102,72 @@ const ConditionalNodeView = ({
               if (typeof pos === "number") {
                 // Move into the conditional content after saving.
                 editor.commands.setTextSelection(pos + 2);
+              }
+            }
+
+            if (event.key === "ArrowLeft") {
+              const el = event.currentTarget;
+              const atStart =
+                typeof el?.selectionStart === "number" &&
+                typeof el?.selectionEnd === "number" &&
+                el.selectionStart === 0 &&
+                el.selectionEnd === 0;
+
+              if (atStart) {
+                event.preventDefault();
+                commitIfChanged();
+
+                const pos = getPos();
+                if (typeof pos !== "number") {
+                  editor.commands.focus();
+                  return;
+                }
+
+                const { state, view } = editor;
+                const $pos = state.doc.resolve(pos);
+                const nodeBefore = $pos.nodeBefore;
+
+                // If there is no block above this conditional, insert an empty
+                // paragraph so the cursor can exist before the node.
+                if (!nodeBefore) {
+                  const paraType = state.schema.nodes.paragraph;
+                  if (!paraType) {
+                    editor.commands.focus();
+                    return;
+                  }
+
+                  const tr = state.tr.insert(pos, paraType.create());
+                  tr.setMeta(NAV_BLOCK_PARA_META, pos);
+                  tr.setSelection(TextSelection.create(tr.doc, pos + 1));
+                  view.dispatch(tr);
+                  editor.commands.focus();
+                  return;
+                }
+
+                // Otherwise, move the cursor to the end of the previous block.
+                editor.commands.focus();
+                editor.commands.setTextSelection(pos - 1);
+                return;
+              }
+            }
+
+            if (event.key === "ArrowRight") {
+              const el = event.currentTarget;
+              const atEnd =
+                typeof el?.selectionStart === "number" &&
+                typeof el?.selectionEnd === "number" &&
+                el.selectionStart === el.value.length &&
+                el.selectionEnd === el.value.length;
+
+              if (atEnd) {
+                event.preventDefault();
+                commitIfChanged();
+                editor.commands.focus();
+
+                const pos = getPos();
+                if (typeof pos === "number") {
+                  editor.commands.setTextSelection(pos + 2);
+                }
               }
             }
 

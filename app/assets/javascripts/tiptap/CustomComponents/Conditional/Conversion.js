@@ -68,17 +68,45 @@ export const convertToBlockConditional = (
 
   const cursorPosInMark = Math.min(Math.max($from.pos, markFrom), markTo);
 
-  // Text outside the mark, but within the same paragraph.
-  const textBeforeMark = state.doc.textBetween(parentStart, markFrom, "\n");
-  const textAfterMark = state.doc.textBetween(markTo, parentEnd, "\n");
+  const stripConditionalMark = (node) => {
+    if (node.isText) {
+      return node.mark(node.marks.filter((m) => m.type !== markType));
+    }
 
-  // Get text before and after cursor within the mark
-  const textBeforeCursor = state.doc.textBetween(
-    markFrom,
-    cursorPosInMark,
-    "\n",
+    if (node.isLeaf) return node;
+
+    const children = [];
+    node.content.forEach((child) => {
+      children.push(stripConditionalMark(child));
+    });
+    return node.copy(Fragment.fromArray(children));
+  };
+
+  const stripConditionalMarkFromFragment = (fragment) => {
+    const children = [];
+    fragment.forEach((node) => {
+      children.push(stripConditionalMark(node));
+    });
+    return Fragment.fromArray(children);
+  };
+
+  // Content outside the mark, but within the same paragraph.
+  // Use slices so we preserve formatting marks.
+  const beforeFragment = stripConditionalMarkFromFragment(
+    state.doc.slice(parentStart, markFrom).content,
   );
-  const textAfterCursor = state.doc.textBetween(cursorPosInMark, markTo, "\n");
+  const afterFragment = stripConditionalMarkFromFragment(
+    state.doc.slice(markTo, parentEnd).content,
+  );
+
+  // Content inside the mark. Use slices so we preserve bold/italic/etc,
+  // but strip the conditionalInline mark itself since we're converting.
+  const beforeCursorFragment = stripConditionalMarkFromFragment(
+    state.doc.slice(markFrom, cursorPosInMark).content,
+  );
+  const afterCursorFragment = stripConditionalMarkFromFragment(
+    state.doc.slice(cursorPosInMark, markTo).content,
+  );
 
   // Create a transaction to replace the inline mark with a block conditional
   const { tr } = state;
@@ -91,19 +119,25 @@ export const convertToBlockConditional = (
     // Split content at cursor into two paragraphs
     const paragraph1 = schema.nodes.paragraph.create(
       null,
-      textBeforeCursor ? schema.text(textBeforeCursor) : undefined,
+      beforeCursorFragment.size ? beforeCursorFragment : undefined,
     );
     const paragraph2 = schema.nodes.paragraph.create(
       null,
-      textAfterCursor ? schema.text(textAfterCursor) : undefined,
+      afterCursorFragment.size ? afterCursorFragment : undefined,
     );
     paragraphs.push(paragraph1, paragraph2);
   } else {
     // Keep all content in one paragraph
-    const text = textBeforeCursor + textAfterCursor;
+    const text = null;
+    void text;
+
+    const combined = Fragment.fromArray([
+      ...beforeCursorFragment.toArray(),
+      ...afterCursorFragment.toArray(),
+    ]);
     const paragraph = schema.nodes.paragraph.create(
       null,
-      text ? schema.text(text) : undefined,
+      combined.size ? combined : undefined,
     );
     paragraphs.push(paragraph);
   }
@@ -119,19 +153,19 @@ export const convertToBlockConditional = (
   // and prevents pulling adjacent paragraphs into the block.
   const replacementNodes = [];
 
-  if (textBeforeMark.length > 0) {
-    replacementNodes.push(
-      schema.nodes.paragraph.create(null, schema.text(textBeforeMark)),
-    );
-  }
+  const beforeParagraph = beforeFragment.size
+    ? schema.nodes.paragraph.create(null, beforeFragment)
+    : null;
+
+  if (beforeParagraph) replacementNodes.push(beforeParagraph);
 
   replacementNodes.push(conditionalNode);
 
-  if (textAfterMark.length > 0) {
-    replacementNodes.push(
-      schema.nodes.paragraph.create(null, schema.text(textAfterMark)),
-    );
-  }
+  const afterParagraph = afterFragment.size
+    ? schema.nodes.paragraph.create(null, afterFragment)
+    : null;
+
+  if (afterParagraph) replacementNodes.push(afterParagraph);
 
   tr.replaceWith(
     paragraphFrom,
@@ -141,8 +175,7 @@ export const convertToBlockConditional = (
 
   // Position cursor appropriately
   const conditionalStart =
-    paragraphFrom +
-    (textBeforeMark.length > 0 ? replacementNodes[0].nodeSize : 0);
+    paragraphFrom + (beforeParagraph ? beforeParagraph.nodeSize : 0);
 
   let cursorPos;
   if (splitAtCursor) {

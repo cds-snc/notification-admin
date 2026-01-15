@@ -14,6 +14,12 @@ import {
 const ConditionalInlineMark = Mark.create({
   name: "conditionalInline",
 
+  // Ensure this mark wraps other formatting marks (bold/italic/etc).
+  // Without this, adding a mark like `strong` can change mark ordering from
+  // [conditionalInline] to [strong, conditionalInline], which forces ProseMirror
+  // to close/re-open the conditional wrapper and splits the DOM.
+  priority: 1000,
+
   addOptions() {
     return {
       HTMLAttributes: {},
@@ -187,6 +193,12 @@ const ConditionalInlineMark = Mark.create({
                     return false;
                   }
 
+                  // Prevent recursion when we parse the conditional's inner
+                  // content as markdown.
+                  if (state.env?.__notifyDisableConditionalInline === true) {
+                    return false;
+                  }
+
                   // Need at least ((c??x)) = 8 characters
                   if (start + 8 > max) return false;
                   if (state.src.slice(start, start + 2) !== "((") return false;
@@ -253,9 +265,29 @@ const ConditionalInlineMark = Mark.create({
                   ];
                   tokenOpen.markup = `((${condition}??`;
 
-                  // Create the text content token
-                  const tokenText = state.push("text", "", 0);
-                  tokenText.content = content;
+                  // Parse the inner content as markdown so **bold** and _italic_
+                  // render correctly when round-tripping Markdown -> Rich.
+                  // We temporarily disable conditional-inline parsing to avoid
+                  // re-entering this rule.
+                  const innerTokens = [];
+                  const prevDisable =
+                    state.env.__notifyDisableConditionalInline;
+                  state.env.__notifyDisableConditionalInline = true;
+                  state.md.inline.parse(
+                    content,
+                    state.md,
+                    state.env,
+                    innerTokens,
+                  );
+                  if (prevDisable === undefined) {
+                    delete state.env.__notifyDisableConditionalInline;
+                  } else {
+                    state.env.__notifyDisableConditionalInline = prevDisable;
+                  }
+
+                  for (const t of innerTokens) {
+                    state.tokens.push(t);
+                  }
 
                   // Create the closing tag token
                   const tokenClose = state.push(

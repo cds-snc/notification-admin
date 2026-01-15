@@ -1,5 +1,10 @@
 import { Node } from "@tiptap/core";
-import { NodeSelection, Plugin } from "@tiptap/pm/state";
+import {
+  NodeSelection,
+  Plugin,
+  PluginKey,
+  TextSelection,
+} from "@tiptap/pm/state";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ConditionalNodeView from "./ConditionalNodeView";
@@ -92,6 +97,8 @@ const ConditionalNode = Node.create({
      */
     const conditionalType = this.type;
     const AUTO_WRAP_META = "__notifyConditionalAutoWrap";
+    const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
+    const navBlockParaKey = new PluginKey("notifyConditionalBlockNavParagraph");
 
     const isInsideConditional = ($pos) => {
       for (let depth = $pos.depth; depth > 0; depth--) {
@@ -215,6 +222,48 @@ const ConditionalNode = Node.create({
       new Plugin({
         props: {
           handleKeyDown(view, event) {
+            // Block conditional: if you're at the beginning of the content and press ArrowLeft,
+            // move into the condition input (caret at the end).
+            if (
+              event.key === "ArrowLeft" &&
+              !event.shiftKey &&
+              !event.altKey &&
+              !event.metaKey
+            ) {
+              try {
+                const { state } = view;
+                const { selection } = state;
+                if (!selection?.empty) return false;
+
+                const { $from } = selection;
+
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  if ($from.node(depth).type !== conditionalType) continue;
+
+                  const conditionalPos = $from.before(depth);
+                  const contentStart = $from.start(depth);
+
+                  // At the earliest caret position inside the conditional content.
+                  if ($from.pos !== contentStart + 1) return false;
+
+                  const nodeDom = view.nodeDOM(conditionalPos);
+                  const input = nodeDom?.querySelector?.(
+                    "input.conditional-block-condition-input",
+                  );
+
+                  if (!input) return false;
+
+                  event.preventDefault();
+                  input.focus?.();
+                  const end = input.value?.length ?? 0;
+                  input.setSelectionRange?.(end, end);
+                  return true;
+                }
+              } catch {
+                return false;
+              }
+            }
+
             if (event.key !== "Tab") return false;
 
             // Special case: temporary navigation space before an initial inline
@@ -223,14 +272,16 @@ const ConditionalNode = Node.create({
             // Tab/Shift+Tab here deterministically.
             try {
               const { doc, selection } = view.state;
-              const conditionalInline = view.state.schema.marks?.conditionalInline;
+              const conditionalInline =
+                view.state.schema.marks?.conditionalInline;
 
               if (conditionalInline && selection?.empty) {
                 const pos = selection.from;
                 const hasSpaceHere = doc.textBetween(pos, pos + 1) === " ";
                 const next = doc.resolve(pos + 1).nodeAfter;
                 const nextHasInline =
-                  next?.isText && next.marks?.some((m) => m.type === conditionalInline);
+                  next?.isText &&
+                  next.marks?.some((m) => m.type === conditionalInline);
 
                 if (hasSpaceHere && nextHasInline) {
                   event.preventDefault();
@@ -257,10 +308,15 @@ const ConditionalNode = Node.create({
                   setTimeout(() => {
                     try {
                       const input = view.dom?.querySelector?.(
-                        'input.conditional-inline-condition-input[data-editor-focusable]',
+                        "input.conditional-inline-condition-input[data-editor-focusable]",
                       );
                       input?.focus?.();
-                      input?.select?.();
+                      try {
+                        const end = input?.value?.length ?? 0;
+                        input?.setSelectionRange?.(end, end);
+                      } catch {
+                        // ignore
+                      }
                     } catch {
                       // ignore
                     }
@@ -276,7 +332,8 @@ const ConditionalNode = Node.create({
             // Inline conditionals manage their own Tab/Shift+Tab behavior.
             // Avoid the global focus-cycling logic interfering.
             try {
-              const conditionalInline = view.state.schema.marks?.conditionalInline;
+              const conditionalInline =
+                view.state.schema.marks?.conditionalInline;
               if (conditionalInline) {
                 const marksHere =
                   view.state.selection?.$from?.marks?.() ||
@@ -310,7 +367,8 @@ const ConditionalNode = Node.create({
             // should not cycle back to its embedded input widget.
             // Let the browser handle Tab to move focus out of the editor.
             if (!event.shiftKey) {
-              const conditionalInline = view.state.schema.marks?.conditionalInline;
+              const conditionalInline =
+                view.state.schema.marks?.conditionalInline;
               if (
                 conditionalInline &&
                 view.state.selection?.$from
@@ -400,6 +458,114 @@ const ConditionalNode = Node.create({
             // No target found in the desired direction → let browser handle
             // (moves focus out of editor).
             return false;
+          },
+        },
+      }),
+
+      // Plugin: temporary navigation paragraph for block conditional input.
+      // When ArrowLeft at the beginning of the block condition input exits to
+      // the previous line, and there is no previous line, we insert an empty
+      // paragraph before the block. If ArrowRight is then pressed at the end
+      // of that empty paragraph, delete it and re-focus the condition input
+      // with caret at the start.
+      new Plugin({
+        key: navBlockParaKey,
+        state: {
+          init() {
+            return { pos: null };
+          },
+          apply(tr, prev) {
+            let pos = prev?.pos ?? null;
+
+            const meta = tr.getMeta(NAV_BLOCK_PARA_META);
+            if (meta === null) {
+              pos = null;
+            } else if (typeof meta === "number") {
+              pos = meta;
+            }
+
+            if (typeof pos === "number" && tr.docChanged) {
+              pos = tr.mapping.map(pos, -1);
+            }
+
+            // Validate that the tracked paragraph still exists, is empty, and
+            // is immediately followed by a conditional block.
+            if (typeof pos === "number") {
+              const para = tr.doc.nodeAt(pos);
+              if (
+                !para ||
+                para.type.name !== "paragraph" ||
+                para.textContent !== "" ||
+                para.nodeSize !== 2
+              ) {
+                pos = null;
+              } else {
+                const nextPos = pos + para.nodeSize;
+                const nextNode = tr.doc.nodeAt(nextPos);
+                if (!nextNode || nextNode.type !== conditionalType) {
+                  pos = null;
+                }
+              }
+            }
+
+            return { pos };
+          },
+        },
+        props: {
+          handleKeyDown(view, event) {
+            if (
+              event.key !== "ArrowRight" ||
+              event.shiftKey ||
+              event.altKey ||
+              event.metaKey
+            ) {
+              return false;
+            }
+
+            const pluginState = navBlockParaKey.getState(view.state);
+            const navPos = pluginState?.pos;
+            if (typeof navPos !== "number") return false;
+
+            const { state } = view;
+            const { selection } = state;
+            if (!selection?.empty) return false;
+
+            const para = state.doc.nodeAt(navPos);
+            if (!para) return false;
+
+            const paraEnd = navPos + para.nodeSize - 1;
+            if (selection.from !== paraEnd) return false;
+
+            const nextPos = navPos + para.nodeSize;
+            const nextNode = state.doc.nodeAt(nextPos);
+            if (!nextNode || nextNode.type !== conditionalType) return false;
+
+            event.preventDefault();
+
+            const tr = state.tr.delete(navPos, navPos + para.nodeSize);
+            tr.setMeta(NAV_BLOCK_PARA_META, null);
+
+            // Keep a stable editor selection (inside the conditional content)
+            // while focus returns to the input. Avoid NodeSelection here because
+            // other plugins may auto-focus the trigger button.
+            const insideContentPos = Math.min(navPos + 2, tr.doc.content.size);
+            tr.setSelection(TextSelection.create(tr.doc, insideContentPos));
+            view.dispatch(tr);
+
+            setTimeout(() => {
+              try {
+                const nodeDom = view.nodeDOM(navPos);
+                const input = nodeDom?.querySelector?.(
+                  "input.conditional-block-condition-input",
+                );
+                input?.focus?.();
+                input?.setSelectionRange?.(0, 0);
+              } catch {
+                // ignore
+              }
+            }, 0);
+
+            return true;
           },
         },
       }),

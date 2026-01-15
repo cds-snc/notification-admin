@@ -1,3 +1,4 @@
+import { TextSelection } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 
 const normalizeCondition = (value, defaultCondition) => {
@@ -61,6 +62,8 @@ const findMarkRangeInParent = (
     null
   );
 };
+
+const NAV_SPACE_META = "__notifyConditionalInlineNavSpace";
 
 // Helper function to find all conditional inline marks and create widget decorations
 export function findConditionalMarks(
@@ -242,7 +245,9 @@ export function findConditionalMarks(
                     tr.doc.resolve(targetPos),
                   ),
                 );
-                tr.setStoredMarks([markType.create({ condition: nextCondition })]);
+                tr.setStoredMarks([
+                  markType.create({ condition: nextCondition }),
+                ]);
                 view.dispatch(tr);
                 return;
               }
@@ -287,7 +292,9 @@ export function findConditionalMarks(
             const requestToolbarFocus = () => {
               try {
                 const doc = view.dom?.ownerDocument || document;
-                const toolbar = doc.querySelector('[data-testid="rte-toolbar"]');
+                const toolbar = doc.querySelector(
+                  '[data-testid="rte-toolbar"]',
+                );
                 if (!toolbar) return;
 
                 // Force focus onto the toolbar container first so focus doesn't
@@ -296,7 +303,8 @@ export function findConditionalMarks(
                   const prevTabIndex = toolbar.getAttribute("tabindex");
                   toolbar.tabIndex = -1;
                   toolbar.focus();
-                  if (prevTabIndex === null) toolbar.removeAttribute("tabindex");
+                  if (prevTabIndex === null)
+                    toolbar.removeAttribute("tabindex");
                   else toolbar.setAttribute("tabindex", prevTabIndex);
                 } catch {
                   // ignore
@@ -361,6 +369,54 @@ export function findConditionalMarks(
                   event.preventDefault();
                   commit({ moveCursorToContentStart: true });
                   setTimeout(() => view.focus(), 0);
+                }
+
+                if (event.key === "ArrowRight") {
+                  const atEnd =
+                    input.selectionStart === input.value.length &&
+                    input.selectionEnd === input.value.length;
+
+                  if (atEnd) {
+                    event.preventDefault();
+                    commit({ moveCursorToContentStart: true });
+                    setTimeout(() => view.focus(), 0);
+                  }
+                }
+
+                if (event.key === "ArrowLeft") {
+                  const start = input.selectionStart;
+                  const end = input.selectionEnd;
+                  const atStart =
+                    typeof start === "number" &&
+                    typeof end === "number" &&
+                    start === 0 &&
+                    end === 0;
+
+                  if (!atStart) return;
+
+                  // Allow navigating/inserting before the inline conditional.
+                  // We do this by inserting an unmarked space before the mark.
+                  event.preventDefault();
+
+                  try {
+                    const pos = typeof getPos === "function" ? getPos() : null;
+                    if (typeof pos !== "number") return;
+
+                    const tr = view.state.tr;
+                    tr.insertText(" ", pos, pos);
+                    tr.removeMark(pos, pos + 1, markType);
+                    tr.setMeta(NAV_SPACE_META, pos);
+                    tr.setStoredMarks([]);
+                    tr.setSelection(TextSelection.create(tr.doc, pos));
+                    view.dispatch(tr);
+
+                    // Focus after the view updates so focus doesn't snap back.
+                    setTimeout(() => view.focus(), 0);
+                  } catch {
+                    // ignore
+                  }
+
+                  return;
                 }
               },
               { capture: true },

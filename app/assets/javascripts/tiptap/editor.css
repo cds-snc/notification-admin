@@ -402,7 +402,7 @@ span[data-type="conditional-inline"] {
   border: 3px solid #0078d4;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0;
   position: relative;
   vertical-align: middle;
 }
@@ -418,6 +418,7 @@ span[data-type="conditional-inline"]:has(.conditional-inline-edit-widget)
   display: inline-flex;
   user-select: none;
   gap: 0.25rem;
+  margin-right: 0.5rem;
   padding: 0.25rem;
   background-color: #d3e6fd;
 }
@@ -454,4 +455,11 @@ span[data-type="conditional-inline"]:has(.conditional-inline-edit-widget)
 
 .conditional-inline-condition-input:focus {
   outline: 2px solid #ffbf47;
+}
+
+/* If a non-focused input ends up with a stale selection range (browser quirk),
+   don't display it. Keeps drag-selection in content from "highlighting" the input. */
+.conditional-inline-condition-input:not(:focus)::selection {
+  background: transparent;
+  color: inherit;
 }
