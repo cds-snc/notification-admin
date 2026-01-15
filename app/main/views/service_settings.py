@@ -62,6 +62,7 @@ from app.main.forms import (
     SMSAnnualMessageLimit,
     SMSMessageLimit,
     SMSPrefixForm,
+    SuppressionListRemovalForm,
 )
 from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import upload_email_logo
@@ -1471,6 +1472,41 @@ def branding_request(service_id):
         cdn_url=cdn_url,
         upload_filename=upload_filename,
     )
+
+
+@main.route("/services/<uuid:service_id>/service-settings/suppression-list", methods=["GET", "POST"])
+@user_has_permissions("manage_service")
+def service_suppression_list(service_id):
+    """
+    Page to manage suppression list for a service.
+    Allows removing email addresses from the SES suppression list.
+    """
+    form = SuppressionListRemovalForm()
+
+    if form.validate_on_submit():
+        email_address = form.email_address.data
+
+        try:
+            service_api_client.remove_email_from_suppression_list(service_id, email_address)
+
+            flash(_("Successfully removed {} from the suppression list.").format(email_address), "default_with_tick")
+            return redirect(url_for(".service_suppression_list", service_id=service_id))
+
+        except HTTPError as e:
+            if e.status_code == 404:
+                flash(
+                    _(
+                        "This service has not sent any emails to {}. "
+                        "You can only remove email addresses that your service has sent to."
+                    ).format(email_address),
+                    "error",
+                )
+            elif e.status_code == 400:
+                flash(_("Invalid email address. Please check and try again."), "error")
+            else:
+                flash(_("Failed to remove email from suppression list. Please try again or contact support."), "error")
+
+    return render_template("views/service-settings/suppression-list.html", form=form)
 
 
 @main.route("/services/<service_id>/data-retention", methods=["GET"])
