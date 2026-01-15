@@ -2405,6 +2405,7 @@
 "We’ve sent you the most recent newsletter","L’infolettre vous a été envoyée"
 "Resubscribe","Se réabonner"
 "Report accessibility issues","Signaler un problème d’accessibilité"
+<<<<<<< HEAD
 "Share accessibility feedback","Donner votre avis sur l’accessibilité"
 "Sign up to our newsletter","S’abonner à l’infolettre de Notification GC"
 "billable units","FR billable units"
@@ -2497,7 +2498,9 @@
 "To edit attachments, save changes to your template or press back.","Pour modifier les pièces jointes, enregistrez les modifications apportées à votre modèle ou appuyez sur Retour."
 "Attachment","Pièce jointe"
 "files attached","fichiers joints"
-"Files attached to this template","Fichiers joints à ce gabarit"
+"Files attached to this template","Fichiers joints à ce gabarit""If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:","Si une adresse courriel est sur la liste de suppression, Notification&nbsp;GC n'enverra pas de courriels à cette adresse. Cela peut arriver&nbsp;si&nbsp;:"
+"the email server was down when we tried to send","le serveur de courriel était en panne quand nous avons essayé d'envoyer"
+"the email server gave an incorrect response","le serveur de courriel a donné une réponse incorrecte"
 "an overactive spam filter blocked the email","un filtre anti-pourriel trop actif a bloqué le courriel"
 "You can remove an email address from the suppression list if your service has previously sent to it.","Vous pouvez retirer une adresse courriel de la liste de suppression si votre service lui a déjà envoyé des courriels."
 "Only remove email addresses that you know are valid.","Retirez seulement les adresses courriel dont vous savez qu'elles sont valides."
