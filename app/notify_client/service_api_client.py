@@ -594,6 +594,23 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def get_service_data_retention(self, service_id):
         return self.get("/service/{}/data-retention".format(service_id))
 
+    def remove_email_from_suppression_list(self, service_id, email_address):
+        """
+        Remove an email address from the SES suppression list.
+
+        Args:
+            service_id: UUID of the service
+            email_address: Email address to remove from suppression list
+
+        Returns:
+            Response from the API
+
+        Raises:
+            HTTPError: If the API call fails
+        """
+        data = {"email_address": email_address}
+        return self.post(f"/service/{service_id}/remove-from-suppression-list", data)
+
     def has_accepted_tos(self, service_id):
         return redis_client.get(self._tos_key_name(service_id)) is not None
 

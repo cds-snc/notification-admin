@@ -178,6 +178,21 @@
           {{ empty_field() }}
         {% endcall %}
 
+        {% call settings_row(if_has_permission='email') %}
+          {% set txt = _('Suppression list') %}
+          {{ text_field(txt) }}
+          {% set suppression_txt = _('Remove blocked email addresses') %}
+          {{ text_field(suppression_txt) }}
+          {% set manage_txt = _('Manage') %}
+          {{ edit_field(
+              manage_txt,
+              url_for('.service_suppression_list', service_id=current_service.id),
+              permissions=['manage_service'],
+              for=txt
+          )
+          }}
+        {% endcall %}
+
       {% endcall %}
 
       {% set caption = _('Text messages') %}
