@@ -22,6 +22,8 @@ import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
 import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
+import { faCodeBranch } from "@fortawesome/free-solid-svg-icons/faCodeBranch";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -42,6 +44,8 @@ let FontAwesomeIconLoader = () => {
     faXmark,
     faTag,
     faThumbtack,
+    faPenToSquare,
+    faCodeBranch,
   ]);
   dom.watch();
 };

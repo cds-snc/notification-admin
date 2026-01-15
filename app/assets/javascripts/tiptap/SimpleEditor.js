@@ -15,9 +15,10 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
-import TextAlign from "@tiptap/extension-text-align";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import ConditionalNode from "./CustomComponents/ConditionalNode";
+import ConditionalInlineMark from "./CustomComponents/ConditionalInlineMark";
 import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
@@ -39,6 +40,22 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const conditionalLabels = {
+    en: {
+      prefix: "IF ",
+      suffix: " is YES",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
+    },
+    fr: {
+      prefix: "SI ",
+      suffix: " est OUI",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
+    },
+  };
+  const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -74,10 +91,21 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       OrderedList,
       ListItem,
       HorizontalRule,
-
+      ConditionalNode.configure({
+        prefix: conditionalText.prefix,
+        suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
+      }),
       // Mark extensions that match toolbar features
       Bold,
       Italic,
+      ConditionalInlineMark.configure({
+        prefix: conditionalText.prefix,
+        suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
+      }),
       VariableMark,
       MarkdownLink.configure({
         openOnClick: false,

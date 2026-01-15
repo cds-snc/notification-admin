@@ -228,6 +228,8 @@ const MenuBar = ({
       blockquote: "Blockquote",
       englishBlock: "English block",
       frenchBlock: "French block",
+      conditionalBlock: "Conditional block",
+      conditionalInline: "Inline conditional",
       rtlBlock: "Display right-to-left",
     },
     fr: {
@@ -253,6 +255,8 @@ const MenuBar = ({
       blockquote: "Bloc de citation",
       englishBlock: "Bloc anglais",
       frenchBlock: "Bloc français",
+      conditionalBlock: "Bloc conditionnel",
+      conditionalInline: "Conditionnel en ligne",
       rtlBlock: "Afficher de droite à gauche",
     },
   };
@@ -283,6 +287,8 @@ const MenuBar = ({
     blockquote: platform === "mac" ? "⌘+Opt+7" : "Ctrl+Alt+7",
     englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
     frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
+    conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
+    conditionalInline: platform === "mac" ? "⌘+Shift+0" : "Ctrl+Shift+0",
     rtlBlock: platform === "mac" ? "⌘+Opt+R" : "Ctrl+Alt+R",
     link: platform === "mac" ? "⌘+K" : "Ctrl+K",
     bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
@@ -823,6 +829,84 @@ const MenuBar = ({
               <path d="M5 19h14" />
               <path d="M7 21l-2 -2l2 -2" />
             </svg>
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper
+          label={t.conditionalBlock}
+          shortcut={shortcuts.conditionalBlock}
+        >
+          <button
+            type="button"
+            data-testid="rte-conditional_block"
+            onClick={() =>
+              announceToggle(
+                () => {
+                  // If we're inside a conditional, treat this as "remove".
+                  if (editor.isActive("conditional")) {
+                    return editor.chain().focus().unsetConditional().run();
+                  }
+
+                  // Wrap the current selection, or current block/node the cursor is in
+                  const didWrap = editor
+                    .chain()
+                    .focus()
+                    .wrapInConditional()
+                    .run();
+                  if (didWrap) return true;
+
+                  // Fallback: insert an empty conditional block.
+                  return editor
+                    .chain()
+                    .focus()
+                    .insertConditionalPattern()
+                    .run();
+                },
+                () => editor.isActive("conditional"),
+                t.conditionalBlock,
+              )
+            }
+            className={
+              "toolbar-button" +
+              (editor.isActive("conditional") ? " is-active" : "")
+            }
+            title={t.conditionalBlock}
+            aria-pressed={editor.isActive("conditional")}
+          >
+            <span className="sr-only">
+              {editor.isActive("conditional") ? t.removePrefix : t.applyPrefix}
+              {t.conditionalBlock}
+            </span>
+            Conditional
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper
+          label={t.conditionalInline}
+          shortcut={shortcuts.conditionalInline}
+        >
+          <button
+            type="button"
+            data-testid="rte-conditional_inline"
+            onClick={() => {
+              if (editor.isActive("conditionalInline")) {
+                editor.chain().focus().unsetConditionalInline().run();
+              } else {
+                editor.chain().focus().setConditionalInline("condition").run();
+              }
+            }}
+            className={
+              "toolbar-button" +
+              (editor.isActive("conditionalInline") ? " is-active" : "")
+            }
+            title={t.conditionalInline}
+            aria-pressed={editor.isActive("conditionalInline")}
+          >
+            <span className="sr-only">
+              {editor.isActive("conditionalInline")
+                ? t.removePrefix
+                : t.applyPrefix}
+              {t.conditionalInline}
+            </span>
+            ((?))
           </button>
         </TooltipWrapper>
       </div>
