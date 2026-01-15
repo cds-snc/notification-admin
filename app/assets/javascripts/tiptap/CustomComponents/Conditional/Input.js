@@ -6,6 +6,7 @@ import { findConditionalMarks } from "./Decorations";
 import { convertToBlockConditional } from "./Conversion";
 
 export const createInputRules = (_extension, markType) => {
+  const defaultCondition = _extension?.options?.defaultCondition || "condition";
   return [
     markInputRule({
       // Match ((condition??content)) pattern when typed inline
@@ -14,7 +15,7 @@ export const createInputRules = (_extension, markType) => {
       type: markType,
       getAttributes: (match) => {
         return {
-          condition: (match[1] || "condition").trim() || "condition",
+          condition: (match[1] || defaultCondition).trim() || defaultCondition,
         };
       },
     }),
@@ -32,6 +33,7 @@ export const createInputRules = (_extension, markType) => {
 };
 
 export const createPasteRules = (_extension, markType) => {
+  const defaultCondition = _extension?.options?.defaultCondition || "condition";
   return [
     markPasteRule({
       // Match single-line ((condition??content)) patterns during paste
@@ -39,7 +41,7 @@ export const createPasteRules = (_extension, markType) => {
       type: markType,
       getAttributes: (match) => {
         return {
-          condition: (match[1] || "condition").trim() || "condition",
+          condition: (match[1] || defaultCondition).trim() || defaultCondition,
         };
       },
     }),
@@ -59,6 +61,7 @@ export const createPasteRules = (_extension, markType) => {
 };
 
 export const createKeyboardShortcuts = (_extension, markType) => {
+  const defaultCondition = _extension?.options?.defaultCondition || "condition";
   return {
     Enter: ({ editor }) => {
       const { state } = editor;
@@ -67,7 +70,7 @@ export const createKeyboardShortcuts = (_extension, markType) => {
       const mark = $from.marks().find((m) => m.type === markType);
       if (!mark) return false;
 
-      const condition = mark.attrs.condition || "condition";
+      const condition = mark.attrs.condition || defaultCondition;
       return convertToBlockConditional(editor, {
         markType,
         condition,
@@ -90,7 +93,7 @@ export const createKeyboardShortcuts = (_extension, markType) => {
         "\ufffc",
       );
 
-      const condition = mark.attrs.condition || "condition";
+      const condition = mark.attrs.condition || defaultCondition;
 
       // Check for heading patterns: # or ##
       if (/^#{1,6}$/.test(textBefore.trim())) {
@@ -133,7 +136,7 @@ export const createKeyboardShortcuts = (_extension, markType) => {
 
       // Check for horizontal rule pattern: -- (will become --- after this dash)
       if (textBefore === "--") {
-        const condition = mark.attrs.condition || "condition";
+        const condition = mark.attrs.condition || defaultCondition;
         return convertToBlockConditional(editor, {
           markType,
           condition,
@@ -153,6 +156,8 @@ export const createPlugins = (extension, markType) => {
     findConditionalMarks(doc, markType, {
       prefix: extension?.options?.prefix,
       suffix: extension?.options?.suffix,
+      defaultCondition: extension?.options?.defaultCondition,
+      conditionAriaLabel: extension?.options?.conditionAriaLabel,
     });
 
   return [

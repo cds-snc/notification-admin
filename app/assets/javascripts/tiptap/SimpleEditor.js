@@ -42,8 +42,18 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
 
   const conditionalLabels = {
-    en: { prefix: "IF ", suffix: " is YES" },
-    fr: { prefix: "SI ", suffix: " est OUI" },
+    en: {
+      prefix: "IF ",
+      suffix: " is YES",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
+    },
+    fr: {
+      prefix: "SI ",
+      suffix: " est OUI",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
+    },
   };
   const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
 
@@ -84,6 +94,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       // Mark extensions that match toolbar features
       Bold,
@@ -91,6 +103,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
       MarkdownLink.configure({

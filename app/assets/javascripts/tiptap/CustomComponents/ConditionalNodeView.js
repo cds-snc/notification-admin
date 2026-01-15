@@ -1,9 +1,9 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 
-const normalizeCondition = (value) => {
+const normalizeCondition = (value, defaultCondition) => {
   const trimmed = (value || "").trim();
-  return trimmed || "condition";
+  return trimmed || defaultCondition;
 };
 
 const ConditionalNodeView = ({
@@ -15,25 +15,33 @@ const ConditionalNodeView = ({
 }) => {
   const prefix = extension?.options?.prefix;
   const suffix = extension?.options?.suffix;
+  const defaultCondition = extension?.options?.defaultCondition || "condition";
+  const conditionAriaLabel =
+    extension?.options?.conditionAriaLabel || "Condition";
   const conditionValue = useMemo(
     () => node?.attrs?.condition || "",
     [node?.attrs?.condition],
   );
 
   const inputId = useId();
-  const [draft, setDraft] = useState(normalizeCondition(conditionValue));
+  const [draft, setDraft] = useState(
+    normalizeCondition(conditionValue, defaultCondition),
+  );
   const inputRef = useRef(null);
 
   // Keep draft in sync with attrs when not editing.
   useEffect(() => {
     // Only clobber the draft when the input isn't actively being edited.
     if (document.activeElement === inputRef.current) return;
-    setDraft(normalizeCondition(conditionValue));
-  }, [conditionValue]);
+    setDraft(normalizeCondition(conditionValue, defaultCondition));
+  }, [conditionValue, defaultCondition]);
 
   const commitIfChanged = () => {
-    const nextCondition = normalizeCondition(draft);
-    const currentCondition = normalizeCondition(conditionValue);
+    const nextCondition = normalizeCondition(draft, defaultCondition);
+    const currentCondition = normalizeCondition(
+      conditionValue,
+      defaultCondition,
+    );
 
     if (nextCondition === currentCondition) return;
     updateAttributes({ condition: nextCondition });
@@ -69,6 +77,7 @@ const ConditionalNodeView = ({
           className="conditional-block-condition-input"
           type="text"
           value={draft}
+          aria-label={conditionAriaLabel}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
             // Don’t let ProseMirror handle keys originating from the input.
@@ -76,7 +85,7 @@ const ConditionalNodeView = ({
 
             if (event.key === "Escape") {
               event.preventDefault();
-              setDraft(normalizeCondition(conditionValue));
+              setDraft(normalizeCondition(conditionValue, defaultCondition));
               editor.commands.focus();
               return;
             }

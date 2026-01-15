@@ -19,6 +19,8 @@ const ConditionalInlineMark = Mark.create({
       HTMLAttributes: {},
       prefix: "IF ((",
       suffix: ")) is YES",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
     };
   },
 
@@ -33,7 +35,7 @@ const ConditionalInlineMark = Mark.create({
   addAttributes() {
     return {
       condition: {
-        default: "condition",
+        default: this.options.defaultCondition,
         parseHTML: (element) => element.getAttribute("data-condition"),
         renderHTML: (attributes) => {
           return {
@@ -56,7 +58,7 @@ const ConditionalInlineMark = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const condition = HTMLAttributes.condition || "condition";
+    const condition = HTMLAttributes.condition || this.options.defaultCondition;
     // Store the condition value separately so it can be wrapped with localized text
     // The prefix and suffix come from the extension options (configured per language)
     return [
@@ -84,29 +86,32 @@ const ConditionalInlineMark = Mark.create({
   addCommands() {
     return {
       setConditionalInline:
-        (condition = "condition") =>
+        (condition) =>
         ({ commands, editor, state }) => {
           // Do not allow inline conditionals inside block conditionals
           if (isInsideBlockConditional(state)) {
             return false;
           }
 
+          const defaultCondition = this.options.defaultCondition;
+          const nextCondition = (condition || "").trim() || defaultCondition;
+
           // If text is selected, apply the mark
           const { from, to } = editor.state.selection;
           if (from !== to) {
-            return commands.setMark(this.name, { condition });
+            return commands.setMark(this.name, { condition: nextCondition });
           }
 
           // No selection, insert a template conditional
           return commands.insertContent({
             type: "text",
-            marks: [{ type: this.name, attrs: { condition } }],
+            marks: [{ type: this.name, attrs: { condition: nextCondition } }],
             text: "conditional text",
           });
         },
 
       toggleConditionalInline:
-        (condition = "condition") =>
+        (condition) =>
         ({ commands, editor, state }) => {
           if (editor.isActive(this.name)) {
             return commands.unsetMark(this.name);
@@ -117,14 +122,17 @@ const ConditionalInlineMark = Mark.create({
             return false;
           }
 
+          const defaultCondition = this.options.defaultCondition;
+          const nextCondition = (condition || "").trim() || defaultCondition;
+
           const { from, to } = editor.state.selection;
           if (from !== to) {
-            return commands.setMark(this.name, { condition });
+            return commands.setMark(this.name, { condition: nextCondition });
           }
 
           return commands.insertContent({
             type: "text",
-            marks: [{ type: this.name, attrs: { condition } }],
+            marks: [{ type: this.name, attrs: { condition: nextCondition } }],
             text: "conditional text",
           });
         },
@@ -146,11 +154,14 @@ const ConditionalInlineMark = Mark.create({
   },
 
   addStorage() {
+    const defaultCondition = this.options.defaultCondition;
+
     return {
       markdown: {
         serialize: {
           open: (state, mark) => {
-            const condition = mark.attrs.condition || "condition";
+            const condition =
+              mark.attrs.condition || this.options.defaultCondition;
             return `((${condition}??`;
           },
           close: () => "))",
@@ -263,7 +274,7 @@ const ConditionalInlineMark = Mark.create({
               md.renderer.rules.conditional_inline_open = (tokens, idx) => {
                 const token = tokens[idx];
                 const condition =
-                  token.attrGet("data-condition") || "condition";
+                  token.attrGet("data-condition") || defaultCondition;
                 return `<span data-type="conditional-inline" data-condition="${condition}" class="conditional-inline">`;
               };
               md.renderer.rules.conditional_inline_close = () => "</span>";

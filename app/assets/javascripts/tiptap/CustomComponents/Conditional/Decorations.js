@@ -1,11 +1,17 @@
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 
-const normalizeCondition = (value) => {
+const normalizeCondition = (value, defaultCondition) => {
   const trimmed = (value || "").trim();
-  return trimmed || "condition";
+  return trimmed || defaultCondition;
 };
 
-const findMarkRangeInParent = (state, markType, condition, aroundPos) => {
+const findMarkRangeInParent = (
+  state,
+  markType,
+  condition,
+  aroundPos,
+  defaultCondition,
+) => {
   const $around = state.doc.resolve(aroundPos);
   const parentStart = $around.start();
   const parentEnd = $around.end();
@@ -17,7 +23,9 @@ const findMarkRangeInParent = (state, markType, condition, aroundPos) => {
     if (!node.isText) return;
 
     const hasThisMark = node.marks.some(
-      (m) => m.type === markType && m.attrs?.condition === condition,
+      (m) =>
+        m.type === markType &&
+        normalizeCondition(m.attrs?.condition, defaultCondition) === condition,
     );
 
     if (!hasThisMark) {
@@ -55,7 +63,16 @@ const findMarkRangeInParent = (state, markType, condition, aroundPos) => {
 };
 
 // Helper function to find all conditional inline marks and create widget decorations
-export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
+export function findConditionalMarks(
+  doc,
+  markType,
+  {
+    prefix,
+    suffix,
+    defaultCondition = "condition",
+    conditionAriaLabel = "Condition",
+  } = {},
+) {
   const decorations = [];
   const createdAt = new Set();
 
@@ -67,7 +84,14 @@ export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
 
     // For each conditional mark, add a widget at the beginning of that mark range.
     for (const mark of marks) {
-      let condition = normalizeCondition(mark.attrs?.condition);
+      let condition = normalizeCondition(
+        mark.attrs?.condition,
+        defaultCondition,
+      );
+
+      const markMatchesCondition = (m) =>
+        m.type === markType &&
+        normalizeCondition(m.attrs?.condition, defaultCondition) === condition;
 
       // Find the specific mark instance range containing this pos.
       // We intentionally do this instead of relying on mark object identity.
@@ -84,9 +108,7 @@ export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
 
           doc.nodesBetween(parentStart, parentEnd, (n, p) => {
             if (!n.isText) return;
-            const hasThisMark = n.marks.some(
-              (m) => m.type === markType && m.attrs?.condition === condition,
-            );
+            const hasThisMark = n.marks.some(markMatchesCondition);
 
             if (!hasThisMark) {
               if (current) {
@@ -161,23 +183,26 @@ export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
 
             prefixText.append(
               branchIcon,
-              document.createTextNode(`${prefix || "IF"} `),
+              document.createTextNode(prefix || "IF "),
             );
 
             const input = document.createElement("input");
             input.className = "conditional-inline-condition-input";
             input.type = "text";
             input.value = condition;
-            input.setAttribute("aria-label", "Condition");
+            input.setAttribute("aria-label", conditionAriaLabel);
             input.setAttribute("autocomplete", "off");
             input.setAttribute("spellcheck", "false");
 
             const suffixText = document.createElement("span");
             suffixText.className = "conditional-inline-edit-suffix";
-            suffixText.textContent = ` ${suffix || "is YES"}`;
+            suffixText.textContent = suffix || " is YES";
 
             const commit = ({ moveCursorToEnd = false } = {}) => {
-              const nextCondition = normalizeCondition(input.value);
+              const nextCondition = normalizeCondition(
+                input.value,
+                defaultCondition,
+              );
 
               const pos = typeof getPos === "function" ? getPos() : null;
               if (typeof pos !== "number") return;
@@ -187,6 +212,7 @@ export function findConditionalMarks(doc, markType, { prefix, suffix } = {}) {
                 markType,
                 condition,
                 pos,
+                defaultCondition,
               );
               if (!markRange) return;
 

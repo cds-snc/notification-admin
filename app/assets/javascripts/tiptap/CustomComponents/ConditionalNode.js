@@ -24,6 +24,10 @@ const ConditionalNode = Node.create({
   addOptions() {
     return {
       HTMLAttributes: {},
+      prefix: "IF ",
+      suffix: " is YES",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
     };
   },
 
@@ -147,7 +151,9 @@ const ConditionalNode = Node.create({
               startMarker = {
                 pos,
                 nodeSize: node.nodeSize,
-                condition: (match[1] || "condition").trim() || "condition",
+                condition:
+                  (match[1] || this.options.defaultCondition).trim() ||
+                  this.options.defaultCondition,
               };
               return;
             }
@@ -377,10 +383,12 @@ const ConditionalNode = Node.create({
   },
 
   addStorage() {
+    const defaultCondition = this.options.defaultCondition;
+
     return {
       markdown: {
         serialize(state, node) {
-          const condition = node.attrs.condition || "condition";
+          const condition = node.attrs.condition || defaultCondition;
 
           // Serialize in a stable multi-line form so round-tripping through
           // Rich and markdown editors doesn't accidentally concatenate block boundaries.
@@ -556,7 +564,7 @@ const ConditionalNode = Node.create({
               md.renderer.rules.conditional_block_open = (tokens, idx) => {
                 const token = tokens[idx];
                 const condition =
-                  token.attrGet("data-condition") || "condition";
+                  token.attrGet("data-condition") || defaultCondition;
                 return `<div data-type="conditional" data-condition="${condition}" class="conditional-block">`;
               };
               md.renderer.rules.conditional_block_close = () => {
@@ -573,13 +581,16 @@ const ConditionalNode = Node.create({
     return {
       // Command to insert/add a conditional block with a specific condition
       setConditional:
-        (condition = "condition") =>
+        (condition) =>
         ({ commands, editor }) => {
           // Do not allow nested conditionals.
           if (editor.isActive(this.name)) return false;
+
+          const nextCondition =
+            (condition || "").trim() || this.options.defaultCondition;
           return commands.insertContent({
             type: this.name,
-            attrs: { condition },
+            attrs: { condition: nextCondition },
             content: [
               {
                 type: "paragraph",
@@ -590,7 +601,7 @@ const ConditionalNode = Node.create({
 
       // Command to wrap selection in conditional block
       wrapInConditional:
-        (condition = "condition") =>
+        (condition) =>
         ({ commands, editor, state }) => {
           // Do not allow nested conditionals.
           if (editor.isActive(this.name)) return false;
@@ -609,12 +620,15 @@ const ConditionalNode = Node.create({
           );
           if (containsConditional) return false;
 
-          return commands.wrapIn(this.name, { condition });
+          const nextCondition =
+            (condition || "").trim() || this.options.defaultCondition;
+
+          return commands.wrapIn(this.name, { condition: nextCondition });
         },
 
       // Command to toggle the conditional block
       toggleConditional:
-        (condition = "condition") =>
+        (condition) =>
         ({ commands, editor, state }) => {
           const isActive = editor.isActive(this.name);
 
@@ -638,7 +652,9 @@ const ConditionalNode = Node.create({
             );
             if (containsConditional) return false;
             // Not inside a conditional block, so wrap selection in one
-            return commands.wrapIn(this.name, { condition });
+            const nextCondition =
+              (condition || "").trim() || this.options.defaultCondition;
+            return commands.wrapIn(this.name, { condition: nextCondition });
           }
         },
 
@@ -658,7 +674,7 @@ const ConditionalNode = Node.create({
 
           const paragraph = state.schema.nodes.paragraph.create();
           const conditionalNode = this.type.create(
-            { condition: "condition" },
+            { condition: this.options.defaultCondition },
             paragraph,
           );
 
