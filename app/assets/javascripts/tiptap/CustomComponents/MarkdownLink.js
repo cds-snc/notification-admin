@@ -40,26 +40,29 @@ const MarkdownLink = Link.extend({
           try {
             const fullText = state.doc.textBetween(start, end, "", "");
             const firstOpen = fullText.indexOf("(");
-            
+
             // Instead of looking for lastClose in text, use the range.to which is the
             // end of the matched markdown syntax
             if (firstOpen !== -1) {
               // The URL content is between firstOpen+1 and the end of the match
               const urlStart = start + firstOpen + 1;
               const urlEnd = end;
-              
+
               // Get the slice between the parens
               const urlSlice = state.doc.slice(urlStart, urlEnd);
-              
+
               const variableMark = state.schema.marks.variable;
-              
+
               const parts = [];
-              
+
               // Iterate through the nodes in the slice
               urlSlice.content.forEach((node) => {
                 if (node.isText) {
-                  const hasVarMark = variableMark && node.marks && node.marks.some(m => m.type === variableMark);
-                  
+                  const hasVarMark =
+                    variableMark &&
+                    node.marks &&
+                    node.marks.some((m) => m.type === variableMark);
+
                   if (hasVarMark) {
                     parts.push("((" + node.text + "))");
                   } else {
@@ -67,17 +70,17 @@ const MarkdownLink = Link.extend({
                   }
                 }
               });
-              
+
               const reconstructed = parts.join("");
-              
+
               // Only apply the rule if parens are balanced in the reconstructed href
               const urlOpenParens = (reconstructed.match(/\(/g) || []).length;
               const urlCloseParens = (reconstructed.match(/\)/g) || []).length;
-              
+
               if (urlOpenParens !== urlCloseParens) {
                 return;
               }
-              
+
               href = reconstructed;
             }
           } catch (e) {

@@ -147,7 +147,8 @@ const VariableMark = Mark.create({
 
                 // Extract the variable name and reject if it contains parentheses
                 const content = state.src.slice(start + 2, pos);
-                if (content.includes("(") || content.includes(")")) return false;
+                if (content.includes("(") || content.includes(")"))
+                  return false;
 
                 // Create the opening tag token
                 const tokenOpen = state.push("variable_open", "span", 1);
