@@ -64,6 +64,7 @@ def mock_get_service_settings_page_common(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "API rate limit per minute 100 calls No value",
+                "Suppression list Remove blocked email addresses Manage",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
@@ -87,6 +88,7 @@ def mock_get_service_settings_page_common(
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "API rate limit per minute 100 calls No value",
+                "Suppression list Remove blocked email addresses Manage",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
@@ -223,6 +225,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "API rate limit per minute 100 calls No value",
+                "Suppression list Remove blocked email addresses Manage",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
@@ -244,6 +247,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
                 "API rate limit per minute 100 calls No value",
+                "Suppression list Remove blocked email addresses Manage",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
@@ -1422,7 +1426,7 @@ def test_and_more_hint_appears_on_settings_with_more_than_just_a_single_sender(
     def get_row(page, index):
         return normalize_spaces(page.select("tbody tr")[index].text)
 
-    assert get_row(page, 4) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
+    assert get_row(page, 5) == "Reply-to addresses test@example.com …and 2 more Manage Reply-to addresses"
 
 
 @pytest.mark.parametrize(
