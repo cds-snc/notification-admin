@@ -30,8 +30,10 @@ const ConditionalInlineMark = Mark.create({
     };
   },
 
-  // Keep the mark inclusive so typing at the end stays within
-  inclusive: true,
+  // Do not let the conditional mark "grow" into adjacent text when typing at
+  // its boundary. This allows a stable caret position between the conditional
+  // and following characters.
+  inclusive: false,
 
   exitable: true,
 

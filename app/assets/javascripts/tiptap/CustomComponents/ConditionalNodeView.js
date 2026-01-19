@@ -50,6 +50,22 @@ const ConditionalNodeView = ({
     updateAttributes({ condition: nextCondition });
   };
 
+  const moveCursorIntoContentStart = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+
+    try {
+      const { state, view } = editor;
+      const $start = state.doc.resolve(pos + 1);
+      const selection = TextSelection.near($start, 1);
+      const tr = state.tr.setSelection(selection).scrollIntoView();
+      view.dispatch(tr);
+    } catch {
+      // Fall back to the previous behavior.
+      editor.commands.setTextSelection(pos + 2);
+    }
+  };
+
   return (
     <NodeViewWrapper
       as="div"
@@ -98,11 +114,8 @@ const ConditionalNodeView = ({
               commitIfChanged();
               editor.commands.focus();
 
-              const pos = getPos();
-              if (typeof pos === "number") {
-                // Move into the conditional content after saving.
-                editor.commands.setTextSelection(pos + 2);
-              }
+              // Move into the conditional content after saving.
+              moveCursorIntoContentStart();
             }
 
             if (event.key === "ArrowLeft") {
@@ -164,10 +177,7 @@ const ConditionalNodeView = ({
                 commitIfChanged();
                 editor.commands.focus();
 
-                const pos = getPos();
-                if (typeof pos === "number") {
-                  editor.commands.setTextSelection(pos + 2);
-                }
+                moveCursorIntoContentStart();
               }
             }
 
@@ -178,10 +188,7 @@ const ConditionalNodeView = ({
               commitIfChanged();
               editor.commands.focus();
 
-              const pos = getPos();
-              if (typeof pos === "number") {
-                editor.commands.setTextSelection(pos + 2);
-              }
+              moveCursorIntoContentStart();
             }
           }}
           onBlur={() => {

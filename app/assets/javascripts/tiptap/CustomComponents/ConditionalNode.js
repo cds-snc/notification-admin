@@ -555,8 +555,18 @@ const ConditionalNode = Node.create({
                 const input = nodeDom?.querySelector?.(
                   "input.conditional-block-condition-input",
                 );
-                input?.focus?.();
-                input?.setSelectionRange?.(0, 0);
+                      const setCaretStart = () => {
+                        try {
+                          input?.focus?.();
+                          input?.setSelectionRange?.(0, 0);
+                          if (input) input.scrollLeft = 0;
+                        } catch {
+                          // ignore
+                        }
+                      };
+
+                      setCaretStart();
+                      requestAnimationFrame(() => setCaretStart());
               } catch {
                 // ignore
               }

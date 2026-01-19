@@ -238,13 +238,16 @@ export function findConditionalMarks(
               if (nextCondition === condition) {
                 if (!moveCursorToContentStart) return;
 
-                const targetPos = Math.min(pos, effectiveRange.to - 1);
-                const tr = view.state.tr;
-                tr.setSelection(
-                  view.state.selection.constructor.near(
-                    tr.doc.resolve(targetPos),
-                  ),
+                // Place the caret at the start boundary of the marked content
+                // (before the first character). Use `near(..., 1)` to bias the
+                // DOM representation to the inside of the mark when the boundary
+                // is shared with preceding text.
+                const targetPos = Math.max(
+                  0,
+                  Math.min(effectiveRange.from, effectiveRange.to - 1),
                 );
+                const tr = view.state.tr;
+                tr.setSelection(TextSelection.near(tr.doc.resolve(targetPos), 1));
                 tr.setStoredMarks([
                   markType.create({ condition: nextCondition }),
                 ]);
@@ -266,13 +269,12 @@ export function findConditionalMarks(
                 // is the position *before* the first character of the marked content.
                 // We want the caret at the beginning of the content (same as the
                 // block conditional), not after the first character.
-                const targetPos = Math.min(pos, effectiveRange.to - 1);
-
-                tr.setSelection(
-                  view.state.selection.constructor.near(
-                    tr.doc.resolve(targetPos),
-                  ),
+                const targetPos = Math.max(
+                  0,
+                  Math.min(effectiveRange.from, effectiveRange.to - 1),
                 );
+
+                tr.setSelection(TextSelection.near(tr.doc.resolve(targetPos), 1));
                 tr.setStoredMarks([
                   markType.create({ condition: nextCondition }),
                 ]);
@@ -395,12 +397,27 @@ export function findConditionalMarks(
                   if (!atStart) return;
 
                   // Allow navigating/inserting before the inline conditional.
-                  // We do this by inserting an unmarked space before the mark.
+                  // If the conditional is at the start of its parent, we do this
+                  // by inserting an unmarked space before the mark. Otherwise,
+                  // we can just move the editor selection before the mark.
                   event.preventDefault();
 
                   try {
                     const pos = typeof getPos === "function" ? getPos() : null;
                     if (typeof pos !== "number") return;
+
+                    const $pos = view.state.doc.resolve(pos);
+                    const atParentStart = $pos.parentOffset === 0;
+
+                    if (!atParentStart) {
+                      const tr = view.state.tr;
+                      tr.setSelection(TextSelection.create(tr.doc, pos));
+                      view.dispatch(tr);
+
+                      // Focus after the view updates so focus doesn't snap back.
+                      setTimeout(() => view.focus(), 0);
+                      return;
+                    }
 
                     const tr = view.state.tr;
                     tr.insertText(" ", pos, pos);
@@ -437,7 +454,10 @@ export function findConditionalMarks(
           {
             // Keep the label visually inside the mark before the content.
             // Don't let selection/caret rendering treat the widget as a selection target.
-            side: 1,
+            // Render the widget BEFORE the cursor when they're at the same doc
+            // position, so a selection at the start of the marked content
+            // appears between widget and text (not outside the mark).
+            side: -1,
             ignoreSelection: true,
             // Critical: widgets are not wrapped by marks by default.
             // Applying the same mark ensures the widget and the text render

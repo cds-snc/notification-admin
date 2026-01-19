@@ -405,6 +405,7 @@ span[data-type="conditional-inline"] {
   gap: 0;
   position: relative;
   vertical-align: middle;
+  margin-left: 2px;
 }
 
 span[data-type="conditional-inline"]:has(.conditional-inline-edit-widget)
