@@ -100,7 +100,6 @@ const LinkModal = ({
   // editors and reduces user friction. After applying the change we close
   // the modal and restore focus handling to the editor.
   const saveLink = () => {
-    
     let formattedUrl = url;
     // If the URL looks like a variable marker (e.g. contains '((') or
     // already contains a protocol or mailto, do not prepend a protocol.
@@ -115,7 +114,7 @@ const LinkModal = ({
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
-      
+
       try {
         if (typeof onSavedLink === "function") {
           onSavedLink(editor.getAttributes("link").href || null);
