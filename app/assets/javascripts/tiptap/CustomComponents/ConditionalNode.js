@@ -335,10 +335,7 @@ const ConditionalNode = Node.create({
               const conditionalInline =
                 view.state.schema.marks?.conditionalInline;
               if (conditionalInline) {
-                const marksHere =
-                  view.state.selection?.$from?.marks?.() ||
-                  [];
-
+                const marksHere = view.state.selection?.$from?.marks?.() || [];
 
                 if (marksHere.some((m) => m.type === conditionalInline)) {
                   return false;
