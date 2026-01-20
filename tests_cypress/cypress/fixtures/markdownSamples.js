@@ -238,6 +238,8 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
+[link with variable url](((var_url)))
+
 ^ [Blockquote link](https://www.canada.ca)
 
 [[en]][EN link](https://www.canada.ca)
@@ -256,6 +258,8 @@ _[Italic link](https://www.canada.ca)_
 [*Italic link*](https://www.canada.ca)
 
 [((variable_link))](https://www.canada.ca)
+
+[link with variable url](((var_url)))
 
 ^ [Blockquote link](https://www.canada.ca)
 
