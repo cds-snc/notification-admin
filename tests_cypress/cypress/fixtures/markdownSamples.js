@@ -226,6 +226,8 @@ List`,
         LINKS: {
                 before: `^ # 5. LINKS
 
+spacer
+
 [Normal link](https://www.canada.ca)
 
 - [Bullet List link](https://www.canada.ca)
@@ -246,6 +248,8 @@ _[Italic link](https://www.canada.ca)_
 
 [[fr]][FR link](https://www.canada.ca)`,
                 expected: `^ # 5. LINKS
+
+spacer
 
 [Normal link](https://www.canada.ca)
 

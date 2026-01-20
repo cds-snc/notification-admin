@@ -41,14 +41,6 @@ const VariableMark = Mark.create({
       new InputRule({
         find: /\(\(([^()]+)\)\)$/,
         handler: ({ state, range, match }) => {
-          // Try to read the matched text from the doc (may fail in some contexts)
-          let matchedText = null;
-          try {
-            matchedText = state.doc.textBetween(range.from, range.to);
-          } catch (e) {
-            // ignore
-          }
-
           const { tr } = state;
           const start = range.from;
           const end = range.to;

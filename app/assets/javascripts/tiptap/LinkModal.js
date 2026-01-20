@@ -1,7 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import TooltipWrapper from "./TooltipWrapper";
 
-const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
+const LinkModal = ({
+  editor,
+  isVisible,
+  position,
+  onClose,
+  lang = "en",
+  justOpened = false,
+  onSavedLink = () => {},
+}) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
   const inputRef = useRef(null);
@@ -106,8 +114,29 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
+
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(editor.getAttributes("link").href || null);
+        }
+      } catch (e) {
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link saved):",
+          e,
+        );
+      }
     } else {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(null);
+        }
+      } catch (e) {
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link unset):",
+          e,
+        );
+      }
     }
     onClose();
   };
@@ -122,6 +151,16 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
   // Remove the link mark from the current selection and close the modal.
   const removeLink = () => {
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    try {
+      if (typeof onSavedLink === "function") {
+        onSavedLink(null);
+      }
+    } catch (e) {
+      console.error(
+        "[LinkModal] Error in onSavedLink callback (link removed):",
+        e,
+      );
+    }
     onClose();
   };
 
@@ -145,6 +184,11 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
 
   const t = labels[lang] || labels.en;
 
+  // When the modal just opened, include announcement in label for screen readers
+  const labelText = justOpened
+    ? `Link editor opened. ${t.enterLink}`
+    : t.enterLink;
+
   return (
     <div
       ref={modalRef}
@@ -153,7 +197,7 @@ const LinkModal = ({ editor, isVisible, position, onClose, lang = "en" }) => {
       data-testid="link-modal"
     >
       <label htmlFor="link-input" className="sr-only">
-        {t.enterLink}
+        {labelText}
       </label>
       <input
         id="link-input"
