@@ -254,6 +254,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setLinkModalVisible(true);
       }
     } catch (err) {
+      console.error("openLinkModal: failed to compute selection rect", err);
       // If anything goes wrong computing the rect, fall back to opening
       // the modal roughly in the editor area (center top) so it remains usable.
       try {
@@ -268,6 +269,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       } catch (e) {
+        console.error("openLinkModal: fallback failed", e);
         console.log("openLinkModal: final fallback");
         setModalPosition({ top: 80, left: 80 });
         setLinkModalVisible(true);
@@ -306,7 +308,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            // ignore
+            console.error(
+              "computeModalPosition: tempRange.getClientRects failed",
+              err,
+            );
           }
         }
 
@@ -363,6 +368,67 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     editor.commands.setContent(inboundForEditor);
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
+
+  // Intercept Mod-a (Cmd/Ctrl+A) at the DOM capture phase so we can
+  // normalize the selection to block boundaries before TipTap/ProseMirror
+  // applies its default select-all behavior. This ensures keyboard
+  // select-all matches mouse select-all for block toggles.
+  // Hopefully tiptap will fix this upstream one day! (https://github.com/ueberdosis/tiptap/issues/6260)
+  React.useEffect(() => {
+    if (!editor || !editor.view || !editor.view.dom) return;
+    const dom = editor.view.dom;
+
+    const onCaptureKeyDown = (e) => {
+      const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+      const modKey = isMac ? e.metaKey : e.ctrlKey;
+      if (!modKey) return;
+      if (e.key === "a" || e.key === "A") {
+        if (editor.view && editor.view.composing) return;
+        try {
+          e.preventDefault();
+
+          // Record whether selection was collapsed before the selectAll
+          const prevSel = editor.state.selection;
+          const wasCollapsed = prevSel.empty;
+
+          // Let TipTap perform its selectAll, so stored state and behaviours
+          // tied to that command remain consistent.
+          editor.commands.selectAll();
+
+          // Only run our normalization for keyboard-initiated select-all
+          // when the previous selection was collapsed (user hadn't already
+          // selected content with mouse) or when the selection becomes the
+          // whole document. This avoids clobbering explicit mouse selections.
+          const newSel = editor.state.selection;
+          const isWholeDoc =
+            newSel.from === 0 && newSel.to === editor.state.doc.content.size;
+
+          if (wasCollapsed || isWholeDoc) {
+            // Quick nudge hack: shrink selection by one character each side
+            // to emulate a user doing Shift+Left then Shift+Right which
+            // normalizes some command behavior without heavy coord math.
+            try {
+              const docSize = editor.state.doc.content.size;
+              if (docSize > 2) {
+                // shrink to [1, docSize-1]
+                editor.commands.setTextSelection({ from: 1, to: docSize - 1 });
+                // restore to full doc selection
+                editor.commands.setTextSelection({ from: 0, to: docSize });
+              }
+            } catch (err) {
+              console.error("select-all nudge failed", err);
+            }
+          }
+        } catch (err) {
+          console.error("onCaptureKeyDown (Mod-a) failed", err);
+          // Ignore and allow default behavior to proceed
+        }
+      }
+    };
+
+    dom.addEventListener("keydown", onCaptureKeyDown, true);
+    return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
+  }, [editor]);
 
   // Listen to keyboard arrow events and check for link transitions
   React.useEffect(() => {
