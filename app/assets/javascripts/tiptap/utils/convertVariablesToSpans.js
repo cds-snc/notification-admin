@@ -2,8 +2,23 @@
 export default function convertVariablesToSpans(text) {
   if (!text) return text;
 
-  // Basic replacement - captures inside parentheses lazily
-  return text.replace(/\(\(([^)]+)\)\)/g, (_match, p1) => {
+  // Extract and temporarily replace markdown link destinations ](...) to
+  // prevent variable conversion inside link hrefs.
+  const linkPlaceholders = [];
+  let processedText = text.replace(
+    /\]\(([^)]*(?:\([^)]*\))*[^)]*)\)/g,
+    (match) => {
+      const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
+      linkPlaceholders.push(match);
+      return placeholder;
+    },
+  );
+
+  // Now replace variables only outside link destinations
+  // Match only variable contents that do not contain parentheses so nested
+  // parentheses are handled as surrounding text. Example: '(((var)))' ->
+  // '(' + '<span>var</span>' + ')'
+  processedText = processedText.replace(/\(\(([^()]+)\)\)/g, (_match, p1) => {
     // Escape the content to avoid injecting HTML
     const escaped = String(p1)
       .replace(/&/g, "&amp;")
@@ -14,4 +29,11 @@ export default function convertVariablesToSpans(text) {
 
     return `<span data-type="variable">${escaped}</span>`;
   });
+
+  // Restore the link placeholders
+  linkPlaceholders.forEach((link, idx) => {
+    processedText = processedText.replace(`__LINK_PLACEHOLDER_${idx}__`, link);
+  });
+
+  return processedText;
 }
