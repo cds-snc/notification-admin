@@ -129,7 +129,7 @@ describe("Link tests", () => {
       .should("exist");
   });
 
-  context.only("Links with variables", () => {
+  context("Links with variables", () => {
     it("[link](((var))) converts to link and preserves variable in href", () => {
       // Type the markdown link with variable in URL
       RichTextEditor.Components.Editor().type("[link](((var)))");
