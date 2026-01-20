@@ -198,6 +198,7 @@ const MenuBar = ({
   onToggleMarkdownView,
   isMarkdownView,
   toggleLabel,
+  useUnifiedConditionalButton = false,
 }) => {
   if (!editor) {
     return null;
@@ -230,6 +231,7 @@ const MenuBar = ({
       frenchBlock: "French block",
       conditionalBlock: "Conditional block",
       conditionalInline: "Inline conditional",
+      conditional: "Conditional",
       rtlBlock: "Display right-to-left",
     },
     fr: {
@@ -257,6 +259,7 @@ const MenuBar = ({
       frenchBlock: "Bloc français",
       conditionalBlock: "Bloc conditionnel",
       conditionalInline: "Conditionnel en ligne",
+      conditional: "Conditionnel",
       rtlBlock: "Afficher de droite à gauche",
     },
   };
@@ -327,6 +330,60 @@ const MenuBar = ({
     const id = setTimeout(() => setLiveMessage(""), 2500);
     return () => clearTimeout(id);
   }, [liveMessage]);
+
+  const selectionSpansMultipleBlocks = () => {
+    try {
+      const { selection } = editor.state;
+      if (!selection) return false;
+
+      // NodeSelection (selecting a block/node) should use the block conditional.
+      if (selection.node) return true;
+
+      if (selection.empty) return false;
+      const { $from, $to } = selection;
+      return !$from.sameParent($to);
+    } catch {
+      return false;
+    }
+  };
+
+  const runBlockConditionalAction = () => {
+    // Match existing block button behaviour.
+    if (editor.isActive("conditional")) {
+      return editor.chain().focus().unsetConditional().run();
+    }
+
+    const didWrap = editor.chain().focus().wrapInConditional().run();
+    if (didWrap) return true;
+
+    return editor.chain().focus().insertConditionalPattern().run();
+  };
+
+  const runInlineConditionalAction = () => {
+    // Match existing inline button behaviour.
+    if (editor.isActive("conditionalInline")) {
+      return editor.chain().focus().unsetConditionalInline().run();
+    }
+
+    return editor.chain().focus().setConditionalInline("condition").run();
+  };
+
+  const runUnifiedConditionalAction = () => {
+    // If we're inside an existing conditional, treat this as "remove" first.
+    if (editor.isActive("conditional")) {
+      return editor.chain().focus().unsetConditional().run();
+    }
+
+    if (editor.isActive("conditionalInline")) {
+      return editor.chain().focus().unsetConditionalInline().run();
+    }
+
+    if (selectionSpansMultipleBlocks()) {
+      return runBlockConditionalAction();
+    }
+
+    return runInlineConditionalAction();
+  };
 
   // Listen for forwarded open-link events from the toolbar (Mod+K)
   useEffect(() => {
@@ -832,49 +889,59 @@ const MenuBar = ({
           </button>
         </TooltipWrapper>
         <TooltipWrapper
-          label={t.conditionalBlock}
+          label={useUnifiedConditionalButton ? t.conditional : t.conditionalBlock}
           shortcut={shortcuts.conditionalBlock}
         >
           <button
             type="button"
-            data-testid="rte-conditional_block"
-            onClick={() =>
-              announceToggle(
-                () => {
-                  // If we're inside a conditional, treat this as "remove".
-                  if (editor.isActive("conditional")) {
-                    return editor.chain().focus().unsetConditional().run();
-                  }
-
-                  // Wrap the current selection, or current block/node the cursor is in
-                  const didWrap = editor
-                    .chain()
-                    .focus()
-                    .wrapInConditional()
-                    .run();
-                  if (didWrap) return true;
-
-                  // Fallback: insert an empty conditional block.
-                  return editor
-                    .chain()
-                    .focus()
-                    .insertConditionalPattern()
-                    .run();
-                },
-                () => editor.isActive("conditional"),
-                t.conditionalBlock,
-              )
+            data-testid={
+              useUnifiedConditionalButton
+                ? "rte-conditional"
+                : "rte-conditional_block"
             }
+            onClick={() => {
+              if (!useUnifiedConditionalButton) {
+                return announceToggle(
+                  () => runBlockConditionalAction(),
+                  () => editor.isActive("conditional"),
+                  t.conditionalBlock,
+                );
+              }
+
+              return announceToggle(
+                () => runUnifiedConditionalAction(),
+                () =>
+                  editor.isActive("conditional") ||
+                  editor.isActive("conditionalInline"),
+                t.conditional,
+              );
+            }}
             className={
               "toolbar-button" +
-              (editor.isActive("conditional") ? " is-active" : "")
+              ((useUnifiedConditionalButton
+                ? editor.isActive("conditional") ||
+                  editor.isActive("conditionalInline")
+                : editor.isActive("conditional"))
+                ? " is-active"
+                : "")
             }
-            title={t.conditionalBlock}
-            aria-pressed={editor.isActive("conditional")}
+            title={useUnifiedConditionalButton ? t.conditional : t.conditionalBlock}
+            aria-pressed={
+              useUnifiedConditionalButton
+                ? editor.isActive("conditional") ||
+                  editor.isActive("conditionalInline")
+                : editor.isActive("conditional")
+            }
           >
             <span className="sr-only">
-              {editor.isActive("conditional") ? t.removePrefix : t.applyPrefix}
-              {t.conditionalBlock}
+              {useUnifiedConditionalButton
+                ? (editor.isActive("conditional") ||
+                  editor.isActive("conditionalInline")
+                    ? t.removePrefix
+                    : t.applyPrefix) + t.conditional
+                : (editor.isActive("conditional")
+                    ? t.removePrefix
+                    : t.applyPrefix) + t.conditionalBlock}
             </span>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <ellipse cx="3.33333" cy="7.91659" rx="3.33333" ry="4.58333" fill="#FFDA3D"/>
@@ -882,40 +949,37 @@ const MenuBar = ({
             </svg>
           </button>
         </TooltipWrapper>
-        <TooltipWrapper
-          label={t.conditionalInline}
-          shortcut={shortcuts.conditionalInline}
-        >
-          <button
-            type="button"
-            data-testid="rte-conditional_inline"
-            onClick={() => {
-              if (editor.isActive("conditionalInline")) {
-                editor.chain().focus().unsetConditionalInline().run();
-              } else {
-                editor.chain().focus().setConditionalInline("condition").run();
-              }
-            }}
-            className={
-              "toolbar-button" +
-              (editor.isActive("conditionalInline") ? " is-active" : "")
-            }
-            title={t.conditionalInline}
-            aria-pressed={editor.isActive("conditionalInline")}
+
+        {!useUnifiedConditionalButton && (
+          <TooltipWrapper
+            label={t.conditionalInline}
+            shortcut={shortcuts.conditionalInline}
           >
-            <span className="sr-only">
-              {editor.isActive("conditionalInline")
-                ? t.removePrefix
-                : t.applyPrefix}
-              {t.conditionalInline}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <ellipse cx="10" cy="10" rx="6" ry="8" fill="#FFDA3D"/>
-              <path d="M2.63916 9.99991C2.63916 7.33739 3.52846 5.33066 4.4222 3.98998C4.8682 3.32098 5.31579 2.81726 5.65511 2.47794C5.82494 2.3081 5.96829 2.17846 6.07178 2.08975C6.1234 2.04551 6.16524 2.01141 6.19548 1.98721C6.2105 1.9752 6.22296 1.96581 6.2321 1.95873C6.23661 1.95524 6.2405 1.95206 6.24349 1.94978C6.24499 1.94863 6.24756 1.94652 6.24756 1.94652L6.24919 1.94571L6.25 1.9449L6.30941 1.90502C6.61066 1.72361 7.00602 1.79598 7.22168 2.08324C7.45164 2.38986 7.38981 2.82484 7.08333 3.05492L7.08171 3.05574C7.07826 3.0584 7.07218 3.06385 7.06299 3.0712C7.04444 3.08603 7.01448 3.11069 6.9751 3.14444C6.8963 3.21199 6.7791 3.31684 6.63656 3.45938C6.35091 3.74503 5.96509 4.17893 5.5778 4.75984C4.80492 5.91916 4.02751 7.66256 4.02751 9.99991C4.02751 12.3373 4.80492 14.0807 5.5778 15.24C5.96509 15.8209 6.35091 16.2548 6.63656 16.5404C6.7791 16.683 6.8963 16.7878 6.9751 16.8554C7.01448 16.8891 7.04444 16.9138 7.06299 16.9286C7.07218 16.936 7.07826 16.9414 7.08171 16.9441L7.08333 16.9449L7.13786 16.9897C7.3967 17.2281 7.43737 17.629 7.22168 17.9166C7.00602 18.2038 6.61066 18.2762 6.30941 18.0948L6.25 18.0549L6.24919 18.0541L6.24756 18.0533C6.24756 18.0533 6.24499 18.0512 6.24349 18.05C6.2405 18.0478 6.23661 18.0446 6.2321 18.0411C6.22296 18.034 6.2105 18.0246 6.19548 18.0126C6.16524 17.9884 6.1234 17.9543 6.07178 17.9101C5.96829 17.8214 5.82494 17.6917 5.65511 17.5219C5.31579 17.1826 4.8682 16.6788 4.4222 16.0098C3.52846 14.6692 2.63916 12.6624 2.63916 9.99991ZM15.9725 9.99991C15.9725 7.66256 15.1951 5.91916 14.4222 4.75984C14.0349 4.17893 13.6491 3.74503 13.3634 3.45938C13.2209 3.31684 13.1037 3.21199 13.0249 3.14444C12.9855 3.11069 12.9556 3.08603 12.937 3.0712C12.9278 3.06385 12.9217 3.0584 12.9183 3.05574L12.9167 3.05492C12.6102 2.82484 12.5484 2.38986 12.7783 2.08324C12.994 1.79598 13.3893 1.72361 13.6906 1.90502L13.75 1.9449L13.7508 1.94571L13.7524 1.94652C13.7524 1.94652 13.755 1.94863 13.7565 1.94978C13.7595 1.95206 13.7634 1.95524 13.7679 1.95873C13.777 1.96581 13.7895 1.9752 13.8045 1.98721C13.8348 2.01141 13.8766 2.04551 13.9282 2.08975C14.0317 2.17846 14.1751 2.3081 14.3449 2.47794C14.6842 2.81726 15.1318 3.32098 15.5778 3.98998C16.4715 5.33066 17.3608 7.33739 17.3608 9.99991C17.3608 12.6624 16.4715 14.6692 15.5778 16.0098C15.1318 16.6788 14.6842 17.1826 14.3449 17.5219C14.1751 17.6917 14.0317 17.8214 13.9282 17.9101C13.8766 17.9543 13.8348 17.9884 13.8045 18.0126C13.7895 18.0246 13.777 18.034 13.7679 18.0411C13.7634 18.0446 13.7595 18.0478 13.7565 18.05C13.755 18.0512 13.7524 18.0533 13.7524 18.0533L13.7508 18.0541L13.75 18.0549C13.4434 18.2849 13.0084 18.2231 12.7783 17.9166C12.5626 17.629 12.6033 17.2281 12.8621 16.9897L12.9167 16.9449L12.9183 16.9441C12.9217 16.9414 12.9278 16.936 12.937 16.9286C12.9556 16.9138 12.9855 16.8891 13.0249 16.8554C13.1037 16.7878 13.2209 16.683 13.3634 16.5404C13.6491 16.2548 14.0349 15.8209 14.4222 15.24C15.1951 14.0807 15.9725 12.3373 15.9725 9.99991Z" fill="black"/>
-              <path d="M10.0083 13.3336C10.4685 13.3336 10.8416 13.7067 10.8416 14.167C10.8414 14.627 10.4684 15.0003 10.0083 15.0003H10.0001C9.54 15.0003 9.16698 14.627 9.16679 14.167C9.16679 13.7067 9.53989 13.3336 10.0001 13.3336H10.0083ZM8.24476 5.45602C8.9233 5.05729 9.72084 4.91125 10.4965 5.04424C11.2723 5.1773 11.9761 5.58067 12.483 6.18275C12.9898 6.78474 13.2677 7.54675 13.2667 8.33362L13.2561 8.56719C13.1499 9.71269 12.2788 10.4799 11.6456 10.902C11.2828 11.1439 10.9256 11.3214 10.6626 11.4383C10.5299 11.4973 10.4176 11.5419 10.337 11.5726C10.2968 11.5879 10.264 11.5999 10.2402 11.6084C10.2284 11.6126 10.219 11.6164 10.2117 11.6189C10.2082 11.6202 10.2052 11.6214 10.2028 11.6222C10.2017 11.6226 10.2004 11.6227 10.1995 11.623L10.1979 11.6238H10.1971C9.76045 11.7694 9.28792 11.5331 9.14238 11.0965C8.99729 10.6605 9.23258 10.1887 9.66809 10.0426V10.0434L9.66972 10.0426C9.67193 10.0418 9.67608 10.0406 9.68193 10.0385C9.69469 10.034 9.71593 10.0264 9.74378 10.0158C9.79996 9.99435 9.88385 9.96082 9.98548 9.91566C10.1911 9.82425 10.4592 9.68988 10.7212 9.51526C11.2957 9.13226 11.5999 8.72447 11.6001 8.33362V8.332C11.6006 7.93845 11.462 7.55724 11.2086 7.25615C10.9551 6.95504 10.6029 6.75303 10.215 6.68649C9.8271 6.62 9.42795 6.69298 9.08867 6.89238C8.74943 7.09176 8.49177 7.40501 8.36113 7.77617C8.2084 8.21033 7.73246 8.43915 7.2983 8.28642C6.86422 8.13371 6.63626 7.6577 6.78886 7.2236C7.05009 6.48101 7.56609 5.85488 8.24476 5.45602Z" fill="black"/>
-            </svg>
-          </button>
-        </TooltipWrapper>
+            <button
+              type="button"
+              data-testid="rte-conditional_inline"
+              onClick={() => runInlineConditionalAction()}
+              className={
+                "toolbar-button" +
+                (editor.isActive("conditionalInline") ? " is-active" : "")
+              }
+              title={t.conditionalInline}
+              aria-pressed={editor.isActive("conditionalInline")}
+            >
+              <span className="sr-only">
+                {editor.isActive("conditionalInline")
+                  ? t.removePrefix
+                  : t.applyPrefix}
+                {t.conditionalInline}
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <ellipse cx="10" cy="10" rx="6" ry="8" fill="#FFDA3D"/>
+                <path d="M2.63916 9.99991C2.63916 7.33739 3.52846 5.33066 4.4222 3.98998C4.8682 3.32098 5.31579 2.81726 5.65511 2.47794C5.82494 2.3081 5.96829 2.17846 6.07178 2.08975C6.1234 2.04551 6.16524 2.01141 6.19548 1.98721C6.2105 1.9752 6.22296 1.96581 6.2321 1.95873C6.23661 1.95524 6.2405 1.95206 6.24349 1.94978C6.24499 1.94863 6.24756 1.94652 6.24756 1.94652L6.24919 1.94571L6.25 1.9449L6.30941 1.90502C6.61066 1.72361 7.00602 1.79598 7.22168 2.08324C7.45164 2.38986 7.38981 2.82484 7.08333 3.05492L7.08171 3.05574C7.07826 3.0584 7.07218 3.06385 7.06299 3.0712C7.04444 3.08603 7.01448 3.11069 6.9751 3.14444C6.8963 3.21199 6.7791 3.31684 6.63656 3.45938C6.35091 3.74503 5.96509 4.17893 5.5778 4.75984C4.80492 5.91916 4.02751 7.66256 4.02751 9.99991C4.02751 12.3373 4.80492 14.0807 5.5778 15.24C5.96509 15.8209 6.35091 16.2548 6.63656 16.5404C6.7791 16.683 6.8963 16.7878 6.9751 16.8554C7.01448 16.8891 7.04444 16.9138 7.06299 16.9286C7.07218 16.936 7.07826 16.9414 7.08171 16.9441L7.08333 16.9449L7.13786 16.9897C7.3967 17.2281 7.43737 17.629 7.22168 17.9166C7.00602 18.2038 6.61066 18.2762 6.30941 18.0948L6.25 18.0549L6.24919 18.0541L6.24756 18.0533C6.24756 18.0533 6.24499 18.0512 6.24349 18.05C6.2405 18.0478 6.23661 18.0446 6.2321 18.0411C6.22296 18.034 6.2105 18.0246 6.19548 18.0126C6.16524 17.9884 6.1234 17.9543 6.07178 17.9101C5.96829 17.8214 5.82494 17.6917 5.65511 17.5219C5.31579 17.1826 4.8682 16.6788 4.4222 16.0098C3.52846 14.6692 2.63916 12.6624 2.63916 9.99991ZM15.9725 9.99991C15.9725 7.66256 15.1951 5.91916 14.4222 4.75984C14.0349 4.17893 13.6491 3.74503 13.3634 3.45938C13.2209 3.31684 13.1037 3.21199 13.0249 3.14444C12.9855 3.11069 12.9556 3.08603 12.937 3.0712C12.9278 3.06385 12.9217 3.0584 12.9183 3.05574L12.9167 3.05492C12.6102 2.82484 12.5484 2.38986 12.7783 2.08324C12.994 1.79598 13.3893 1.72361 13.6906 1.90502L13.75 1.9449L13.7508 1.94571L13.7524 1.94652C13.7524 1.94652 13.755 1.94863 13.7565 1.94978C13.7595 1.95206 13.7634 1.95524 13.7679 1.95873C13.777 1.96581 13.7895 1.9752 13.8045 1.98721C13.8348 2.01141 13.8766 2.04551 13.9282 2.08975C14.0317 2.17846 14.1751 2.3081 14.3449 2.47794C14.6842 2.81726 15.1318 3.32098 15.5778 3.98998C16.4715 5.33066 17.3608 7.33739 17.3608 9.99991C17.3608 12.6624 16.4715 14.6692 15.5778 16.0098C15.1318 16.6788 14.6842 17.1826 14.3449 17.5219C14.1751 17.6917 14.0317 17.8214 13.9282 17.9101C13.8766 17.9543 13.8348 17.9884 13.8045 18.0126C13.7895 18.0246 13.777 18.034 13.7679 18.0411C13.7634 18.0446 13.7595 18.0478 13.7565 18.05C13.755 18.0512 13.7524 18.0533 13.7524 18.0533L13.7508 18.0541L13.75 18.0549C13.4434 18.2849 13.0084 18.2231 12.7783 17.9166C12.5626 17.629 12.6033 17.2281 12.8621 16.9897L12.9167 16.9449L12.9183 16.9441C12.9217 16.9414 12.9278 16.936 12.937 16.9286C12.9556 16.9138 12.9855 16.8891 13.0249 16.8554C13.1037 16.7878 13.2209 16.683 13.3634 16.5404C13.6491 16.2548 14.0349 15.8209 14.4222 15.24C15.1951 14.0807 15.9725 12.3373 15.9725 9.99991Z" fill="black"/>
+                <path d="M10.0083 13.3336C10.4685 13.3336 10.8416 13.7067 10.8416 14.167C10.8414 14.627 10.4684 15.0003 10.0083 15.0003H10.0001C9.54 15.0003 9.16698 14.627 9.16679 14.167C9.16679 13.7067 9.53989 13.3336 10.0001 13.3336H10.0083ZM8.24476 5.45602C8.9233 5.05729 9.72084 4.91125 10.4965 5.04424C11.2723 5.1773 11.9761 5.58067 12.483 6.18275C12.9898 6.78474 13.2677 7.54675 13.2667 8.33362L13.2561 8.56719C13.1499 9.71269 12.2788 10.4799 11.6456 10.902C11.2828 11.1439 10.9256 11.3214 10.6626 11.4383C10.5299 11.4973 10.4176 11.5419 10.337 11.5726C10.2968 11.5879 10.264 11.5999 10.2402 11.6084C10.2284 11.6126 10.219 11.6164 10.2117 11.6189C10.2082 11.6202 10.2052 11.6214 10.2028 11.6222C10.2017 11.6226 10.2004 11.6227 10.1995 11.623L10.1979 11.6238H10.1971C9.76045 11.7694 9.28792 11.5331 9.14238 11.0965C8.99729 10.6605 9.23258 10.1887 9.66809 10.0426V10.0434L9.66972 10.0426C9.67193 10.0418 9.67608 10.0406 9.68193 10.0385C9.69469 10.034 9.71593 10.0264 9.74378 10.0158C9.79996 9.99435 9.88385 9.96082 9.98548 9.91566C10.1911 9.82425 10.4592 9.68988 10.7212 9.51526C11.2957 9.13226 11.5999 8.72447 11.6001 8.33362V8.332C11.6006 7.93845 11.462 7.55724 11.2086 7.25615C10.9551 6.95504 10.6029 6.75303 10.215 6.68649C9.8271 6.62 9.42795 6.69298 9.08867 6.89238C8.74943 7.09176 8.49177 7.40501 8.36113 7.77617C8.2084 8.21033 7.73246 8.43915 7.2983 8.28642C6.86422 8.13371 6.63626 7.6577 6.78886 7.2236C7.05009 6.48101 7.56609 5.85488 8.24476 5.45602Z" fill="black"/>
+              </svg>
+            </button>
+          </TooltipWrapper>
+        )}
       </div>
       <div className="toolbar-separator"></div>
 

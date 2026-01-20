@@ -550,6 +550,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     }
   };
 
+  // Feature flag: show a single context-aware conditional button in the toolbar.
+  // When false, show separate block/inline conditional buttons.
+  const useUnifiedConditionalButton = true;
   return (
     <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
       <MenuBar
@@ -559,6 +562,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         onToggleMarkdownView={toggleViewMode}
         isMarkdownView={isMarkdownView}
         toggleLabel={toggleLabel}
+        useUnifiedConditionalButton={useUnifiedConditionalButton}
       />
       <div className="editor-content">
         {isMarkdownView ? (
