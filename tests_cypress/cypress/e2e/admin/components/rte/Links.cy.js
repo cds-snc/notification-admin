@@ -278,7 +278,7 @@ describe("Link tests", () => {
     });
   });
 
-  context.only("Links with variables (using modal)", () => {
+  context("Links with variables (using modal)", () => {
     it("[link](((var))) converts to link and preserves variable in href", () => {
       // enter link text and open link modal
       RichTextEditor.Components.Editor().type("link{selectall}");
