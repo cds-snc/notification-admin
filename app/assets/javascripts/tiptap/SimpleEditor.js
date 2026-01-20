@@ -428,6 +428,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
     dom.addEventListener("keydown", onCaptureKeyDown, true);
     return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
+  }, [editor]);
+  
   // Listen to keyboard arrow events and check for link transitions
   React.useEffect(() => {
     if (!editor) return;
