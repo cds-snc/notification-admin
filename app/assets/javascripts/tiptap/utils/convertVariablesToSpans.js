@@ -15,7 +15,10 @@ export default function convertVariablesToSpans(text) {
   );
 
   // Now replace variables only outside link destinations
-  processedText = processedText.replace(/\(\(([^)]+)\)\)/g, (_match, p1) => {
+  // Match only variable contents that do not contain parentheses so nested
+  // parentheses are handled as surrounding text. Example: '(((var)))' ->
+  // '(' + '<span>var</span>' + ')'
+  processedText = processedText.replace(/\(\(([^()]+)\)\)/g, (_match, p1) => {
     // Escape the content to avoid injecting HTML
     const escaped = String(p1)
       .replace(/&/g, "&amp;")

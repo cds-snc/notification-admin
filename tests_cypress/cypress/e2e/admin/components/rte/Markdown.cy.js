@@ -64,11 +64,11 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 9);
   });
 
-  it("Links are correctly rendered coming back from markdown view", () => {
+  it.only("Links are correctly rendered coming back from markdown view", () => {
     RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
 
-    // Editor should have 9 marked up links
-    RichTextEditor.Components.Editor().find("a").should("have.length", 9);
+    // Editor should have 10 marked up links
+    RichTextEditor.Components.Editor().find("a").should("have.length", 10);
 
     // Switch to markdown mode and back
     RichTextEditor.Components.ViewMarkdownButton().click();
@@ -78,8 +78,8 @@ describe("Markdown entering and pasting tests", () => {
     );
     RichTextEditor.Components.ViewMarkdownButton().click();
 
-    // Editor should have 9 marked up links
-    RichTextEditor.Components.Editor().find("a").should("have.length", 9);
+    // Editor should have 10 marked up links
+    RichTextEditor.Components.Editor().find("a").should("have.length", 10);
   });
 
   it("Renders initial markdown samples correctly after converting to markdown", () => {
@@ -104,5 +104,31 @@ describe("Markdown entering and pasting tests", () => {
       "have.text",
       concatenatedExpected,
     );
+  });
+
+  it("Nested parentheses around variable round-trip: (((var)))", () => {
+    // Type the nested parentheses variable into the editor
+    RichTextEditor.Components.Editor().type("(((var)))");
+
+    // Ensure variable span is present and only wraps 'var'
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="variable"]')
+      .should("have.length", 1)
+      .and(($el) => {
+        expect($el.text()).to.equal("var");
+      });
+
+    // Switch to markdown mode and ensure markdown shows the original text
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.text", "(((var)))");
+
+    // Switch back to RTE and ensure variable still renders correctly
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="variable"]')
+      .should("have.length", 1)
+      .and(($el) => {
+        expect($el.text()).to.equal("var");
+      });
   });
 });
