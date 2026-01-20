@@ -129,7 +129,7 @@ describe("Link tests", () => {
       .should("exist");
   });
 
-  context("Links with variables", () => {
+  context("Links with variables (typing)", () => {
     it("[link](((var))) converts to link and preserves variable in href", () => {
       // Type the markdown link with variable in URL
       RichTextEditor.Components.Editor().type("[link](((var)))");
@@ -270,6 +270,176 @@ describe("Link tests", () => {
       );
 
       // Switch back and ensure link persists
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find('a[href="((var2))"]')
+        .should("exist")
+        .and("contain.text", "var");
+    });
+  });
+
+  context.only("Links with variables (using modal)", () => {
+    it("[link](((var))) converts to link and preserves variable in href", () => {
+      // enter link text and open link modal
+      RichTextEditor.Components.Editor().type("link{selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      // enter variable-only URL and save
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput().clear().type("((var))");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // verify link inserted with variable href
+      RichTextEditor.Components.Editor()
+        .find('a[href="((var))"]')
+        .should("exist")
+        .and("contain.text", "link");
+
+      // switch to markdown and verify roundtrip
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get('[data-testid="markdown-editor"]').should(
+        "contain.value",
+        "[link](((var)))",
+      );
+
+      // switch back and ensure link persists
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find('a[href="((var))"]')
+        .should("exist")
+        .and("contain.text", "link");
+    });
+
+    it("[link](https://example.com/((var))) converts to link and preserves variable in URL", () => {
+      // enter link text and open link modal
+      RichTextEditor.Components.Editor().type("link{selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      // enter URL with variable and save
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput()
+        .clear()
+        .type("https://example.com/((var))");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // verify link inserted with correct href
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://example.com/((var))"]')
+        .should("exist")
+        .and("contain.text", "link");
+
+      // switch to markdown and verify roundtrip
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get('[data-testid="markdown-editor"]').should(
+        "contain.value",
+        "[link](https://example.com/((var)))",
+      );
+
+      // switch back and ensure link persists
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://example.com/((var))"]')
+        .should("exist")
+        .and("contain.text", "link");
+    });
+
+    it("[((var))](https://www.example.com) converts to link with variable link text", () => {
+      // enter variable as link text and open modal
+      RichTextEditor.Components.Editor().type("((var)){selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      // enter URL and save
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput()
+        .clear()
+        .type("https://www.example.com");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // verify link inserted with variable text
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://www.example.com"]')
+        .should("exist");
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .should("contain.text", "var");
+
+      // switch to markdown and verify roundtrip
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get('[data-testid="markdown-editor"]').should(
+        "contain.value",
+        "[((var))](https://www.example.com)",
+      );
+
+      // switch back and ensure link persists
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://www.example.com"]')
+        .should("exist");
+    });
+
+    it("[link ((var))](https://www.example.com) converts to link with variable in link text", () => {
+      // enter text with variable and open modal
+      RichTextEditor.Components.Editor().type("link ((var)){selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      // enter URL and save
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput()
+        .clear()
+        .type("https://www.example.com");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // verify link text contains both parts
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://www.example.com"]')
+        .should("exist");
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .should("contain.text", "link")
+        .and("contain.text", "var");
+
+      // switch to markdown and verify roundtrip
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get('[data-testid="markdown-editor"]').should(
+        "contain.value",
+        "[link ((var))](https://www.example.com)",
+      );
+
+      // switch back and ensure link persists
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find('a[href="https://www.example.com"]')
+        .should("exist")
+        .and("contain.text", "link")
+        .and("contain.text", "var");
+    });
+
+    it("[((var))](((var2))) converts to link with variables in both text and URL", () => {
+      // enter variable text and open modal
+      RichTextEditor.Components.Editor().type("((var)){selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      // enter variable URL and save
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput().clear().type("((var2))");
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      // verify link href and text contain variables
+      RichTextEditor.Components.Editor()
+        .find('a[href="((var2))"]')
+        .should("exist");
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .should("contain.text", "var");
+
+      // switch to markdown and verify roundtrip
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get('[data-testid="markdown-editor"]').should(
+        "contain.value",
+        "[((var))](((var2)))",
+      );
+
+      // switch back and ensure link persists
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.Editor()
         .find('a[href="((var2))"]')
