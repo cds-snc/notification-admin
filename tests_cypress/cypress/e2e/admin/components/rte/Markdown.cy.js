@@ -105,4 +105,30 @@ describe("Markdown entering and pasting tests", () => {
       concatenatedExpected,
     );
   });
+
+  it("Nested parentheses around variable round-trip: (((var)))", () => {
+    // Type the nested parentheses variable into the editor
+    RichTextEditor.Components.Editor().type("(((var)))");
+
+    // Ensure variable span is present and only wraps 'var'
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="variable"]')
+      .should("have.length", 1)
+      .and(($el) => {
+        expect($el.text()).to.equal("var");
+      });
+
+    // Switch to markdown mode and ensure markdown shows the original text
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.text", "(((var)))");
+
+    // Switch back to RTE and ensure variable still renders correctly
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="variable"]')
+      .should("have.length", 1)
+      .and(($el) => {
+        expect($el.text()).to.equal("var");
+      });
+  });
 });
