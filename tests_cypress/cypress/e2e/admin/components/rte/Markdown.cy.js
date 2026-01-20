@@ -64,11 +64,11 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 9);
   });
 
-  it("Links are correctly rendered coming back from markdown view", () => {
+  it.only("Links are correctly rendered coming back from markdown view", () => {
     RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
 
-    // Editor should have 9 marked up links
-    RichTextEditor.Components.Editor().find("a").should("have.length", 9);
+    // Editor should have 10 marked up links
+    RichTextEditor.Components.Editor().find("a").should("have.length", 10);
 
     // Switch to markdown mode and back
     RichTextEditor.Components.ViewMarkdownButton().click();
@@ -78,8 +78,8 @@ describe("Markdown entering and pasting tests", () => {
     );
     RichTextEditor.Components.ViewMarkdownButton().click();
 
-    // Editor should have 9 marked up links
-    RichTextEditor.Components.Editor().find("a").should("have.length", 9);
+    // Editor should have 10 marked up links
+    RichTextEditor.Components.Editor().find("a").should("have.length", 10);
   });
 
   it("Renders initial markdown samples correctly after converting to markdown", () => {
