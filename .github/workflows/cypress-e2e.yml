@@ -205,15 +205,50 @@ jobs:
         jq '.ENV = "LOCAL" | .LOCAL.CYPRESS_AUTH_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
         jq '.ENV = "LOCAL" | .CACHE_CLEAR_CLIENT_SECRET = "cds-not-a-real-secret"' tests_cypress/cypress.env.json > temp.json && mv temp.json tests_cypress/cypress.env.json
 
-    - name: Run the cypress tests
-      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
-      with:
-        record: false
-        config: "video=true,screenshotOnRunFailure=true"
-        build: npx cypress info
-        working-directory: tests_cypress
-        spec: |
-          cypress/e2e/admin/ci.cy.js
+    - name: Run the cypress tests in 3 parallel batches
+      working-directory: tests_cypress
+      run: |
+        # Run 3 batch files in parallel
+        echo "Starting batch 1..."
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci/ci_1.cy.js' --config video=true,screenshotOnRunFailure=true 2>&1 | tee /tmp/batch_1.log &
+        PID_1=$!
+        
+        echo "Starting batch 2..."
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci/ci_2.cy.js' --config video=true,screenshotOnRunFailure=true 2>&1 | tee /tmp/batch_2.log &
+        PID_2=$!
+        
+        echo "Starting batch 3..."
+        ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci/ci_3.cy.js' --config video=true,screenshotOnRunFailure=true 2>&1 | tee /tmp/batch_3.log &
+        PID_3=$!
+        
+        echo "Waiting for all batches to complete..."
+        wait $PID_1
+        EXIT_1=$?
+        wait $PID_2
+        EXIT_2=$?
+        wait $PID_3
+        EXIT_3=$?
+        
+        echo ""
+        echo "====== BATCH 1 RESULTS ======"
+        cat /tmp/batch_1.log | tail -20
+        echo ""
+        echo "====== BATCH 2 RESULTS ======"
+        cat /tmp/batch_2.log | tail -20
+        echo ""
+        echo "====== BATCH 3 RESULTS ======"
+        cat /tmp/batch_3.log | tail -20
+        
+        # Exit with error if any batch failed
+        if [ $EXIT_1 -ne 0 ] || [ $EXIT_2 -ne 0 ] || [ $EXIT_3 -ne 0 ]; then
+          echo ""
+          echo "One or more batches failed!"
+          exit 1
+        fi
+        
+        echo ""
+        echo "All batches passed!"
+        exit 0
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
