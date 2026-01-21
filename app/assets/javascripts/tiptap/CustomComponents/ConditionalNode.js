@@ -8,6 +8,7 @@ import {
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ConditionalNodeView from "./ConditionalNodeView";
+import { installConditionalBlockMarkdownIt } from "./Conditional/MarkdownIt";
 
 // A block node that conditionally renders template content.
 // Example: ((under18??Please get your application signed by a parent or guardian.))
@@ -332,29 +333,33 @@ const ConditionalNode = Node.create({
             // Inline conditionals manage their own Tab/Shift+Tab behavior.
             // Avoid the global focus-cycling logic interfering.
             try {
-              const conditionalInline =
+              const conditionalInlineMark =
                 view.state.schema.marks?.conditionalInline;
-              if (conditionalInline) {
-                const marksHere = view.state.selection?.$from?.marks?.() || [];
+              const conditionalInlineNode =
+                view.state.schema.nodes?.conditionalInline;
 
-                if (marksHere.some((m) => m.type === conditionalInline)) {
-                  return false;
+              const { selection } = view.state;
+              const { $from } = selection;
+
+              const isInInlineConditionalNode = (() => {
+                if (!conditionalInlineNode) return false;
+                if (selection?.node?.type === conditionalInlineNode)
+                  return true;
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  if ($from.node(depth).type === conditionalInlineNode)
+                    return true;
                 }
+                return false;
+              })();
 
-                // Also bail out when we're in the temporary leading space
-                // inserted before a first inline conditional.
-                const { doc, selection } = view.state;
-                if (selection?.empty && selection.from <= 2) {
-                  const hasLeadingSpace = doc.textBetween(1, 2) === " ";
-                  const next = doc.resolve(2).nodeAfter;
-                  const nextHasInline =
-                    next?.isText &&
-                    next.marks?.some((m) => m.type === conditionalInline);
+              const isInInlineConditionalMark = (() => {
+                if (!conditionalInlineMark) return false;
+                const marksHere = $from?.marks?.() || [];
+                return marksHere.some((m) => m.type === conditionalInlineMark);
+              })();
 
-                  if (hasLeadingSpace && nextHasInline) {
-                    return false;
-                  }
-                }
+              if (isInInlineConditionalNode || isInInlineConditionalMark) {
+                return false;
               }
             } catch {
               // ignore
@@ -364,14 +369,32 @@ const ConditionalNode = Node.create({
             // should not cycle back to its embedded input widget.
             // Let the browser handle Tab to move focus out of the editor.
             if (!event.shiftKey) {
-              const conditionalInline =
+              const conditionalInlineMark =
                 view.state.schema.marks?.conditionalInline;
-              if (
-                conditionalInline &&
-                view.state.selection?.$from
-                  ?.marks()
-                  ?.some((m) => m.type === conditionalInline)
-              ) {
+              const conditionalInlineNode =
+                view.state.schema.nodes?.conditionalInline;
+
+              const { selection } = view.state;
+              const { $from } = selection;
+
+              const isInInlineConditionalNode = (() => {
+                if (!conditionalInlineNode) return false;
+                if (selection?.node?.type === conditionalInlineNode)
+                  return true;
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  if ($from.node(depth).type === conditionalInlineNode)
+                    return true;
+                }
+                return false;
+              })();
+
+              const isInInlineConditionalMark = (() => {
+                if (!conditionalInlineMark) return false;
+                const marksHere = $from?.marks?.() || [];
+                return marksHere.some((m) => m.type === conditionalInlineMark);
+              })();
+
+              if (isInInlineConditionalNode || isInInlineConditionalMark) {
                 return false;
               }
 
@@ -384,9 +407,9 @@ const ConditionalNode = Node.create({
                   const hasLeadingSpace = doc.textBetween(1, 2) === " ";
                   const next = doc.resolve(2).nodeAfter;
                   const nextHasInline =
-                    conditionalInline &&
+                    conditionalInlineMark &&
                     next?.isText &&
-                    next.marks?.some((m) => m.type === conditionalInline);
+                    next.marks?.some((m) => m.type === conditionalInlineMark);
 
                   if (hasLeadingSpace && nextHasInline) {
                     return false;
@@ -555,18 +578,18 @@ const ConditionalNode = Node.create({
                 const input = nodeDom?.querySelector?.(
                   "input.conditional-block-condition-input",
                 );
-                      const setCaretStart = () => {
-                        try {
-                          input?.focus?.();
-                          input?.setSelectionRange?.(0, 0);
-                          if (input) input.scrollLeft = 0;
-                        } catch {
-                          // ignore
-                        }
-                      };
+                const setCaretStart = () => {
+                  try {
+                    input?.focus?.();
+                    input?.setSelectionRange?.(0, 0);
+                    if (input) input.scrollLeft = 0;
+                  } catch {
+                    // ignore
+                  }
+                };
 
-                      setCaretStart();
-                      requestAnimationFrame(() => setCaretStart());
+                setCaretStart();
+                requestAnimationFrame(() => setCaretStart());
               } catch {
                 // ignore
               }
@@ -713,165 +736,7 @@ const ConditionalNode = Node.create({
               // Custom block rule to parse multi-line block conditionals.
               // Single-line conditionals like ((condition??content)) within text
               // are handled by ConditionalInlineMark instead.
-              md.block.ruler.before(
-                "paragraph",
-                "conditional_block",
-                (state, start, end, silent) => {
-                  // Do not allow nested conditionals: when we're parsing the body
-                  // of an outer conditional, treat any inner "((...??" as text.
-                  if (state.env?.__notifyDisableConditional === true) {
-                    return false;
-                  }
-
-                  const startPattern = /^\(\(([^?]+)\?\?/;
-
-                  let pos = state.bMarks[start] + state.tShift[start];
-                  let max = state.eMarks[start];
-                  let line = state.src.slice(pos, max);
-
-                  // Check if line starts with our pattern
-                  const match = line.match(startPattern);
-                  if (!match) return false;
-
-                  const condition = match[1].trim();
-                  const startMarkerLength = match[0].length;
-
-                  // Find the matching end marker "))".
-                  //
-                  // Inside the conditional body we allow other "((...))" pairs
-                  // (eg variables). Those inner pairs must NOT close the
-                  // conditional, so we balance any inner "((" against " ))".
-                  let innerParentDepth = 0;
-                  let foundEnd = false;
-                  let nextLine = start;
-                  const collected = [];
-
-                  const consumeChunk = (chunk) => {
-                    let i = 0;
-
-                    // Loop through the "content" portion of the conditional: ?? ... ))
-                    while (i < chunk.length) {
-                      const nextOpen = chunk.indexOf("((", i);
-                      const nextClose = chunk.indexOf("))", i);
-                      // Find the next marker, either '((' or '))'
-                      const openIdx =
-                        nextOpen === -1 ? Number.POSITIVE_INFINITY : nextOpen;
-                      const closeIdx =
-                        nextClose === -1 ? Number.POSITIVE_INFINITY : nextClose;
-                      const nextIdx = Math.min(openIdx, closeIdx);
-                      // If no inner open or close markers are found, then we're done the rest of the
-                      // content is either literal text, other nodes, which we want to collect.
-                      if (nextIdx === Number.POSITIVE_INFINITY) {
-                        collected.push(chunk.slice(i));
-                        return;
-                      }
-
-                      if (nextIdx === closeIdx) {
-                        // Push our closing marker
-                        collected.push(chunk.slice(i, closeIdx));
-
-                        // check the depth we're at, if > 0 this closes an inner pair
-                        // that's likely a variable or literal text. Continue until we're
-                        // back to depth 0, which will be the closing of the conditional block.
-                        if (innerParentDepth > 0) {
-                          innerParentDepth -= 1;
-                          collected.push("))");
-                          i = closeIdx + 2;
-                          continue;
-                        }
-
-                        // This closes the conditional block.
-                        foundEnd = true;
-                        return;
-                      }
-
-                      // If we found "((", then we're at an inner pair and adjust the current depth accordingly
-                      collected.push(chunk.slice(i, openIdx));
-                      collected.push("((");
-                      innerParentDepth += 1;
-                      i = openIdx + 2;
-                    }
-                  };
-
-                  consumeChunk(line.slice(startMarkerLength));
-
-                  while (!foundEnd) {
-                    nextLine += 1;
-                    if (nextLine >= end) break;
-
-                    collected.push("\n");
-                    pos = state.bMarks[nextLine] + state.tShift[nextLine];
-                    max = state.eMarks[nextLine];
-                    line = state.src.slice(pos, max);
-                    consumeChunk(line);
-                  }
-
-                  if (!foundEnd) return false;
-
-                  // Reject single-line conditionals - those should be handled by ConditionalInlineMark
-                  // Block conditionals must span multiple lines (nextLine > start)
-                  if (nextLine === start) {
-                    return false;
-                  }
-
-                  if (silent) return true;
-
-                  let token = state.push("conditional_block_open", "div", 1);
-                  token.markup = `((${condition}??`;
-                  token.block = true;
-                  token.info = condition;
-                  token.map = [start, nextLine + 1];
-                  token.attrSet("data-condition", condition);
-
-                  const content = collected.join("");
-                  if (content.trim()) {
-                    // Disable conditional parsing inside the body.
-                    const innerEnv = {
-                      ...(state.env || {}),
-                      __notifyDisableConditional: true,
-                    };
-                    const innerTokens = [];
-
-                    // Parse only block structure here; markdown-it will run its
-                    // core inline parsing pass afterwards to populate children.
-                    // TODO: AI claims this, and I have no idea what it's talking about.
-                    // Need to get a better handle on markdown-it parsing internals.
-                    state.md.block.parse(
-                      content,
-                      state.md,
-                      innerEnv,
-                      innerTokens,
-                    );
-
-                    for (const t of innerTokens) {
-                      if (typeof t.level === "number") t.level += 1;
-                      state.tokens.push(t);
-                    }
-                  } else {
-                    // Ensure the conditional always contains at least one block.
-                    state.push("paragraph_open", "p", 1);
-                    state.push("paragraph_close", "p", -1);
-                  }
-
-                  token = state.push("conditional_block_close", "div", -1);
-                  token.markup = "))";
-                  token.block = true;
-
-                  state.line = nextLine + 1;
-                  return true;
-                },
-              );
-
-              // Add renderer
-              md.renderer.rules.conditional_block_open = (tokens, idx) => {
-                const token = tokens[idx];
-                const condition =
-                  token.attrGet("data-condition") || defaultCondition;
-                return `<div data-type="conditional" data-condition="${condition}" class="conditional-block">`;
-              };
-              md.renderer.rules.conditional_block_close = () => {
-                return "</div>";
-              };
+              installConditionalBlockMarkdownIt(md, { defaultCondition });
             });
           },
         },

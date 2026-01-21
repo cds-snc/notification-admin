@@ -397,31 +397,40 @@
 
 /* Inline conditional styling */
 span[data-type="conditional-inline"] {
-  padding-right: 0.4rem;
+  box-sizing: border-box;
+  padding-right: 0.45rem;
   border-radius: 0.3rem;
   border: 3px solid #0078d4;
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 0.5rem;
   position: relative;
   vertical-align: middle;
   margin-left: 2px;
-}
-
-span[data-type="conditional-inline"]:has(.conditional-inline-edit-widget)
-  + span[data-type="conditional-inline"] {
-  border-left: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
 }
 
 .conditional-inline-edit-widget {
   display: inline-flex;
   user-select: none;
   gap: 0.25rem;
-  margin-right: 0.5rem;
+  vertical-align: middle;
+  margin-right: 0;
   padding: 0.25rem;
   background-color: #d3e6fd;
+}
+
+/* Widget is rendered as a sibling immediately before the marked text. */
+.conditional-inline-edit-widget + span[data-type="conditional-inline"] {
+  margin-left: 0;
+  padding-left: 0.4rem;
+}
+
+/* When two inline conditionals are adjacent, merge the mark with the next widget. */
+span[data-type="conditional-inline"] + .conditional-inline-edit-widget {
+  margin-left: 0;
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .conditional-inline-edit-prefix,

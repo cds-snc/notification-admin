@@ -18,7 +18,7 @@ import History from "@tiptap/extension-history";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
-import ConditionalInlineMark from "./CustomComponents/ConditionalInlineMark";
+import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
@@ -552,7 +552,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
-  const useUnifiedConditionalButton = true;
+  const useUnifiedConditionalButton = false;
   return (
     <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
       <MenuBar

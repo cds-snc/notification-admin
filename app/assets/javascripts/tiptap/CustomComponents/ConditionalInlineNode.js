@@ -1,0 +1,652 @@
+import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
+import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
+
+import {
+  CONDITIONAL_BRANCH_ICON_PATH,
+  isInsideBlockConditional,
+} from "./Conditional/Helpers";
+import { convertToBlockConditional } from "./Conditional/Conversion";
+import { installConditionalInlineMarkdownIt } from "./Conditional/MarkdownIt";
+
+const forceDomSelectionToPos = (view, pos) => {
+  try {
+    const doc = view?.dom?.ownerDocument || document;
+    const selection = doc.getSelection?.();
+    if (!selection) return;
+
+    const { node, offset } = view.domAtPos(pos);
+    const range = doc.createRange();
+    range.setStart(node, offset);
+    range.collapse(true);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } catch {
+    // ignore
+  }
+};
+
+// Inline conditional as an inline node so the cursor has real
+// before/inside/after positions.
+
+const ConditionalInlineNode = Node.create({
+  name: "conditionalInline",
+
+  priority: 1000,
+
+  inline: true,
+  group: "inline",
+  content: "inline*",
+  defining: true,
+
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+      prefix: "IF ",
+      suffix: " is YES",
+      defaultCondition: "condition",
+      conditionAriaLabel: "Condition",
+    };
+  },
+
+  addAttributes() {
+    return {
+      condition: {
+        default: this.options.defaultCondition,
+        parseHTML: (element) => element.getAttribute("data-condition"),
+        renderHTML: (attributes) => ({
+          "data-condition": attributes.condition,
+        }),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'span[data-type="conditional-inline"]',
+        getAttrs: (element) => ({
+          condition: element.getAttribute("data-condition"),
+        }),
+      },
+    ];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    const condition = HTMLAttributes.condition || this.options.defaultCondition;
+    return [
+      "span",
+      mergeAttributes(HTMLAttributes, {
+        "data-type": "conditional-inline",
+        "data-condition": condition,
+        "data-prefix": this.options.prefix,
+        "data-suffix": this.options.suffix,
+        class: "conditional-inline",
+      }),
+      0,
+    ];
+  },
+
+  addInputRules() {
+    const defaultCondition = this.options.defaultCondition;
+    const nodeType = this.type;
+
+    // Match ((condition??content)) when typed inline.
+    // Single-line only (no newlines).
+    return [
+      new InputRule({
+        find: /\(\(([^?)\n]+)\?\?([^\n)]*)\)\)$/,
+        handler: ({ state, range, match }) => {
+          if (isInsideBlockConditional(state, range.from)) {
+            return null;
+          }
+
+          const condition =
+            (match[1] || defaultCondition).trim() || defaultCondition;
+          const text = match[2] || "";
+
+          const content = text ? state.schema.text(text) : undefined;
+          const wrapped = nodeType.create({ condition }, content);
+
+          const tr = state.tr.replaceWith(range.from, range.to, wrapped);
+          tr.setSelection(
+            TextSelection.near(tr.doc.resolve(range.from + 1), 1),
+          );
+          return tr;
+        },
+      }),
+    ];
+  },
+
+  addPasteRules() {
+    const defaultCondition = this.options.defaultCondition;
+    const nodeType = this.type;
+
+    return [
+      new PasteRule({
+        find: /\(\(([^?\n)]+)\?\?([^\n)]*)\)\)/g,
+        handler: ({ state, range, match }) => {
+          if (isInsideBlockConditional(state, range.from)) {
+            return null;
+          }
+
+          const condition =
+            (match[1] || defaultCondition).trim() || defaultCondition;
+          const text = match[2] || "";
+
+          const content = text ? state.schema.text(text) : undefined;
+          const wrapped = nodeType.create({ condition }, content);
+
+          const tr = state.tr;
+          tr.delete(range.from, range.to);
+          tr.insert(range.from, wrapped);
+          tr.scrollIntoView();
+          return tr;
+        },
+      }),
+    ];
+  },
+
+  addNodeView() {
+    const normalizeCondition = (value) => {
+      const trimmed = (value || "").trim();
+      return trimmed || this.options.defaultCondition;
+    };
+
+    const requestToolbarFocus = (view) => {
+      try {
+        const doc = view.dom?.ownerDocument || document;
+        const toolbar = doc.querySelector('[data-testid="rte-toolbar"]');
+        if (!toolbar) return;
+        toolbar.dispatchEvent(
+          new CustomEvent("rte-request-focus", { bubbles: true }),
+        );
+      } catch {
+        // ignore
+      }
+    };
+
+    return ({ node, view, getPos }) => {
+      const dom = document.createElement("span");
+      dom.className = "conditional-inline";
+      dom.setAttribute("data-type", "conditional-inline");
+      dom.setAttribute(
+        "data-condition",
+        node.attrs?.condition || this.options.defaultCondition,
+      );
+      dom.setAttribute("data-prefix", this.options.prefix);
+      dom.setAttribute("data-suffix", this.options.suffix);
+
+      const widget = document.createElement("span");
+      widget.className = "conditional-inline-edit-widget";
+      widget.setAttribute("contenteditable", "false");
+
+      const prefixText = document.createElement("span");
+      prefixText.className = "conditional-inline-edit-prefix";
+
+      const branchIcon = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg",
+      );
+      branchIcon.setAttribute("viewBox", "0 0 384 512");
+      branchIcon.setAttribute("aria-hidden", "true");
+      branchIcon.setAttribute("focusable", "false");
+      branchIcon.classList.add("conditional-inline-branch-icon");
+
+      const branchIconPath = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path",
+      );
+      branchIconPath.setAttribute("d", CONDITIONAL_BRANCH_ICON_PATH);
+      branchIconPath.setAttribute("fill", "currentColor");
+      branchIcon.appendChild(branchIconPath);
+
+      prefixText.append(
+        branchIcon,
+        document.createTextNode(this.options.prefix),
+      );
+
+      const input = document.createElement("input");
+      input.className = "conditional-inline-condition-input";
+      input.type = "text";
+      input.value = node.attrs?.condition || this.options.defaultCondition;
+      input.setAttribute("data-editor-focusable", "true");
+      input.setAttribute("aria-label", this.options.conditionAriaLabel);
+      input.setAttribute("autocomplete", "off");
+      input.setAttribute("spellcheck", "false");
+
+      const suffixText = document.createElement("span");
+      suffixText.className = "conditional-inline-edit-suffix";
+      suffixText.textContent = this.options.suffix;
+
+      const contentDOM = document.createElement("span");
+      contentDOM.className = "conditional-inline-content";
+
+      const commit = () => {
+        try {
+          const pos = typeof getPos === "function" ? getPos() : null;
+          if (typeof pos !== "number") return;
+          const nextCondition = normalizeCondition(input.value);
+          const tr = view.state.tr;
+          tr.setNodeMarkup(pos, undefined, {
+            ...node.attrs,
+            condition: nextCondition,
+          });
+          view.dispatch(tr);
+        } catch {
+          // ignore
+        }
+      };
+
+      const moveCursorToContentStart = () => {
+        try {
+          const pos = typeof getPos === "function" ? getPos() : null;
+          if (typeof pos !== "number") return;
+          const start = pos + 1;
+          const tr = view.state.tr;
+          tr.setSelection(TextSelection.near(tr.doc.resolve(start), 1));
+          view.dispatch(tr);
+          setTimeout(() => view.focus(), 0);
+        } catch {
+          // ignore
+        }
+      };
+
+      input.addEventListener(
+        "keydown",
+        (event) => {
+          event.stopPropagation();
+          event.stopImmediatePropagation?.();
+
+          if (event.key === "Tab" && event.shiftKey) {
+            event.preventDefault();
+            requestToolbarFocus(view);
+            setTimeout(() => requestToolbarFocus(view), 0);
+            return;
+          }
+
+          if (event.key === "Tab" && !event.shiftKey) {
+            event.preventDefault();
+            commit();
+            moveCursorToContentStart();
+            return;
+          }
+
+          if (event.key === "Enter") {
+            event.preventDefault();
+            commit();
+            moveCursorToContentStart();
+            return;
+          }
+
+          if (event.key === "ArrowRight") {
+            const atEnd =
+              input.selectionStart === input.value.length &&
+              input.selectionEnd === input.value.length;
+            if (atEnd) {
+              event.preventDefault();
+              commit();
+              moveCursorToContentStart();
+            }
+            return;
+          }
+
+          if (event.key === "ArrowLeft") {
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const atStart =
+              typeof start === "number" &&
+              typeof end === "number" &&
+              start === 0 &&
+              end === 0;
+            if (!atStart) return;
+
+            event.preventDefault();
+            commit();
+
+            try {
+              const pos = typeof getPos === "function" ? getPos() : null;
+              if (typeof pos !== "number") return;
+
+              const $nodePos = view.state.doc.resolve(pos);
+              const atStartOfTextblock = $nodePos.parentOffset === 0;
+
+              const tr = view.state.tr;
+              tr.setStoredMarks([]);
+
+              // If the conditional is the very first thing in this textblock,
+              // ArrowLeft should behave like normal editing and jump to the end
+              // of the previous block (the previous line), not "stick" before
+              // the inline node.
+              if (atStartOfTextblock && pos > 0) {
+                tr.setSelection(
+                  TextSelection.near(tr.doc.resolve(pos - 1), -1),
+                );
+              } else {
+                tr.setSelection(TextSelection.create(tr.doc, pos));
+              }
+              view.dispatch(tr);
+
+              requestAnimationFrame(() => {
+                forceDomSelectionToPos(view, view.state.selection.from);
+                view.focus();
+              });
+            } catch {
+              // ignore
+            }
+          }
+        },
+        { capture: true },
+      );
+
+      input.addEventListener("blur", () => {
+        commit();
+      });
+
+      input.addEventListener("mousedown", (event) => {
+        event.stopPropagation();
+      });
+
+      widget.append(prefixText, input, suffixText);
+      dom.append(widget, contentDOM);
+
+      return {
+        dom,
+        contentDOM,
+        update: (nextNode) => {
+          if (nextNode.type !== node.type) return false;
+          node = nextNode;
+          const nextCondition =
+            nextNode.attrs?.condition || this.options.defaultCondition;
+          dom.setAttribute("data-condition", nextCondition);
+          if (input.value !== nextCondition) input.value = nextCondition;
+          return true;
+        },
+      };
+    };
+  },
+
+  addCommands() {
+    return {
+      setConditionalInline:
+        (condition) =>
+        ({ editor, state }) => {
+          if (isInsideBlockConditional(state)) return false;
+
+          const defaultCondition = this.options.defaultCondition;
+          const nextCondition = (condition || "").trim() || defaultCondition;
+
+          const { from, to } = state.selection;
+          const nodeType = state.schema.nodes[this.name];
+          if (!nodeType) return false;
+
+          const tr = state.tr;
+
+          if (from !== to) {
+            const slice = state.doc.slice(from, to).content;
+            const wrapped = nodeType.create(
+              { condition: nextCondition },
+              slice,
+            );
+            tr.replaceRangeWith(from, to, wrapped);
+            tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
+            editor.view.dispatch(tr);
+            return true;
+          }
+
+          const wrapped = nodeType.create(
+            { condition: nextCondition },
+            state.schema.text("conditional text"),
+          );
+          tr.insert(from, wrapped);
+          tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
+          editor.view.dispatch(tr);
+          return true;
+        },
+
+      toggleConditionalInline:
+        (condition) =>
+        ({ editor }) => {
+          if (editor.isActive(this.name)) {
+            return editor.commands.unsetConditionalInline();
+          }
+          return editor.commands.setConditionalInline(condition);
+        },
+
+      unsetConditionalInline:
+        () =>
+        ({ editor, state }) => {
+          const nodeType = state.schema.nodes[this.name];
+          if (!nodeType) return false;
+
+          const { selection } = state;
+          const { $from } = selection;
+
+          if (selection.node && selection.node.type === nodeType) {
+            const tr = state.tr;
+            tr.replaceWith(
+              selection.from,
+              selection.to,
+              selection.node.content,
+            );
+            editor.view.dispatch(tr);
+            return true;
+          }
+
+          for (let d = $from.depth; d > 0; d--) {
+            const n = $from.node(d);
+            if (n.type !== nodeType) continue;
+            const pos = $from.before(d);
+            const tr = state.tr;
+            tr.replaceWith(pos, pos + n.nodeSize, n.content);
+            editor.view.dispatch(tr);
+            return true;
+          }
+
+          return false;
+        },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    const defaultCondition = this.options.defaultCondition;
+    return {
+      Enter: ({ editor }) => {
+        const { state } = editor;
+        const { $from } = state.selection;
+        const nodeType = state.schema.nodes[this.name];
+        if (!nodeType) return false;
+
+        let condNode = null;
+        for (let d = $from.depth; d > 0; d--) {
+          const n = $from.node(d);
+          if (n.type === nodeType) {
+            condNode = n;
+            break;
+          }
+        }
+        if (!condNode) return false;
+
+        const condition = condNode.attrs?.condition || defaultCondition;
+        return convertToBlockConditional(editor, {
+          inlineNodeType: nodeType,
+          condition,
+          splitAtCursor: true,
+        });
+      },
+    };
+  },
+
+  addProseMirrorPlugins() {
+    const pluginKey = new PluginKey("conditionalInlineNodeArrowRight");
+    return [
+      new Plugin({
+        key: pluginKey,
+        props: {
+          handleKeyDown: (view, event) => {
+            if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+              return false;
+            }
+            const { state } = view;
+            const { selection } = state;
+            if (!selection.empty) return false;
+
+            const $pos = state.doc.resolve(selection.from);
+            const nodeType = state.schema.nodes[this.name];
+
+            if (event.key === "ArrowRight") {
+              // Continuity: if we're at the end of a textblock and the *next* textblock
+              // starts with a conditionalInline node, ArrowRight should jump straight
+              // into the condition input.
+              try {
+                const atEndOfTextblock =
+                  $pos.parent.isTextblock &&
+                  $pos.parentOffset === $pos.parent.content.size;
+
+                if (atEndOfTextblock) {
+                  const afterTextblockPos = $pos.after();
+                  const nextBlockStart = afterTextblockPos + 1;
+                  if (nextBlockStart <= state.doc.content.size) {
+                    const $nextStart = state.doc.resolve(nextBlockStart);
+                    const nextFirstInline = $nextStart.nodeAfter;
+
+                    if (nextFirstInline?.type === nodeType) {
+                      event.preventDefault();
+
+                      const tr = view.state.tr;
+                      tr.setStoredMarks([]);
+                      tr.setSelection(
+                        TextSelection.create(tr.doc, nextBlockStart),
+                      );
+                      view.dispatch(tr);
+
+                      requestAnimationFrame(() => {
+                        try {
+                          const nodeDom = view.nodeDOM(nextBlockStart);
+                          const input = nodeDom?.querySelector?.(
+                            "input.conditional-inline-condition-input[data-editor-focusable]",
+                          );
+                          if (!input) return;
+                          input.focus?.();
+                          input.setSelectionRange?.(0, 0);
+                        } catch {
+                          // ignore
+                        }
+                      });
+
+                      return true;
+                    }
+                  }
+                }
+              } catch {
+                // ignore
+              }
+
+              const nodeAfter = $pos.nodeAfter;
+              if (!nodeAfter || nodeAfter.type !== nodeType) return false;
+
+              // When the caret is directly before the conditional node,
+              // ArrowRight should focus the condition input (start).
+              event.preventDefault();
+
+              setTimeout(() => {
+                try {
+                  const nodeDom = view.nodeDOM(selection.from);
+                  const input = nodeDom?.querySelector?.(
+                    "input.conditional-inline-condition-input[data-editor-focusable]",
+                  );
+                  if (!input) return;
+                  input.focus?.();
+                  input.setSelectionRange?.(0, 0);
+                } catch {
+                  // ignore
+                }
+              }, 0);
+
+              return true;
+            }
+
+            // ArrowLeft: when at start of the node content, move to the position
+            // into the condition input. Only ArrowLeft from the *start of the input*
+            // should exit the node to the position before it.
+            try {
+              for (let depth = $pos.depth; depth > 0; depth--) {
+                const n = $pos.node(depth);
+                if (n.type !== nodeType) continue;
+
+                const nodePos = $pos.before(depth);
+                const contentStart = $pos.start(depth);
+
+                // First cursor position inside the node's content.
+                if ($pos.pos !== contentStart) return false;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                try {
+                  const nodeDom = view.nodeDOM(nodePos);
+                  const input = nodeDom?.querySelector?.(
+                    "input.conditional-inline-condition-input[data-editor-focusable]",
+                  );
+
+                  if (input) {
+                    requestAnimationFrame(() => {
+                      input.focus?.();
+                      const end = input.value?.length ?? 0;
+                      input.setSelectionRange?.(end, end);
+                    });
+                    return true;
+                  }
+
+                  // Fallback: if we can't find the input DOM for some reason,
+                  // at least allow exiting to before the node.
+                  const tr = view.state.tr;
+                  tr.setStoredMarks([]);
+                  tr.setSelection(TextSelection.create(tr.doc, nodePos));
+                  view.dispatch(tr);
+
+                  requestAnimationFrame(() => {
+                    forceDomSelectionToPos(view, nodePos);
+                    view.focus();
+                  });
+                } catch {
+                  // ignore
+                }
+
+                return true;
+              }
+            } catch {
+              // ignore
+            }
+
+            return false;
+          },
+        },
+      }),
+    ];
+  },
+
+  addStorage() {
+    const defaultCondition = this.options.defaultCondition;
+
+    return {
+      markdown: {
+        serialize(state, node) {
+          const condition = node.attrs.condition || defaultCondition;
+          state.write(`((${condition}??`);
+          state.renderContent(node);
+          state.write(`))`);
+        },
+        parse: {
+          setup(markdownit) {
+            markdownit.use((md) => {
+              installConditionalInlineMarkdownIt(md, { defaultCondition });
+            });
+          },
+        },
+      },
+    };
+  },
+});
+
+export default ConditionalInlineNode;

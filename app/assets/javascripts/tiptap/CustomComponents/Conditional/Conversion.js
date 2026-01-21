@@ -1,112 +1,73 @@
 import { Fragment } from "@tiptap/pm/model";
 
-// Convert an inline conditional mark (in the current paragraph) into a block conditional node.
+// Convert an inline conditional node (in the current paragraph) into a block conditional node.
 export const convertToBlockConditional = (
   editor,
-  { markType, condition, splitAtCursor = true },
+  { inlineNodeType, condition, splitAtCursor = true },
 ) => {
   const { state } = editor;
   const { $from } = state.selection;
 
-  // Inline marks cannot span multiple block nodes. Restrict all range detection
-  // to the current textblock (paragraph).
+  if (!inlineNodeType) return false;
+
+  // Restrict conversion to the current textblock (paragraph).
   const paragraphFrom = $from.before();
   const paragraphTo = $from.after();
   const parentStart = $from.start();
   const parentEnd = $from.end();
 
-  const findMarkRangeInParent = () => {
-    const ranges = [];
-    let current = null;
-
-    state.doc.nodesBetween(parentStart, parentEnd, (node, pos) => {
-      if (!node.isText) return;
-
-      const hasThisMark = node.marks.some(
-        (m) => m.type === markType && m.attrs?.condition === condition,
-      );
-
-      if (!hasThisMark) {
-        if (current) {
-          ranges.push(current);
-          current = null;
-        }
-        return;
-      }
-
-      const nodeFrom = pos;
-      const nodeTo = pos + node.nodeSize;
-
-      if (!current) {
-        current = { from: nodeFrom, to: nodeTo };
-        return;
-      }
-
-      if (nodeFrom <= current.to) {
-        current.to = Math.max(current.to, nodeTo);
-      } else {
-        ranges.push(current);
-        current = { from: nodeFrom, to: nodeTo };
-      }
-    });
-
-    if (current) ranges.push(current);
-
-    const cursor = $from.pos;
-    return (
-      ranges.find((r) => cursor >= r.from && cursor <= r.to) ||
-      ranges.find((r) => cursor - 1 >= r.from && cursor - 1 <= r.to) ||
-      null
-    );
-  };
-
-  const markRange = findMarkRangeInParent();
-  if (!markRange) return false;
-
-  const markFrom = markRange.from;
-  const markTo = markRange.to;
-
-  const cursorPosInMark = Math.min(Math.max($from.pos, markFrom), markTo);
-
-  const stripConditionalMark = (node) => {
-    if (node.isText) {
-      return node.mark(node.marks.filter((m) => m.type !== markType));
+  const findInlineNodeInParent = () => {
+    // Prefer the nearest ancestor inline conditional node.
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const n = $from.node(depth);
+      if (n.type !== inlineNodeType) continue;
+      const pos = $from.before(depth);
+      return { node: n, pos };
     }
 
-    if (node.isLeaf) return node;
+    // Fallback: if cursor is directly before/after the node.
+    const nodeAfter = $from.nodeAfter;
+    if (nodeAfter?.type === inlineNodeType) {
+      return { node: nodeAfter, pos: $from.pos };
+    }
 
-    const children = [];
-    node.content.forEach((child) => {
-      children.push(stripConditionalMark(child));
-    });
-    return node.copy(Fragment.fromArray(children));
+    const nodeBefore = $from.nodeBefore;
+    if (nodeBefore?.type === inlineNodeType) {
+      return { node: nodeBefore, pos: $from.pos - nodeBefore.nodeSize };
+    }
+
+    return null;
   };
 
-  const stripConditionalMarkFromFragment = (fragment) => {
-    const children = [];
-    fragment.forEach((node) => {
-      children.push(stripConditionalMark(node));
-    });
-    return Fragment.fromArray(children);
-  };
+  const inlineNodeFound = findInlineNodeInParent();
+  if (!inlineNodeFound) return false;
 
-  // Content outside the mark, but within the same paragraph.
-  // Use slices so we preserve formatting marks.
-  const beforeFragment = stripConditionalMarkFromFragment(
-    state.doc.slice(parentStart, markFrom).content,
-  );
-  const afterFragment = stripConditionalMarkFromFragment(
-    state.doc.slice(markTo, parentEnd).content,
-  );
+  const inlineNodePos = inlineNodeFound.pos;
+  const inlineNode = inlineNodeFound.node;
 
-  // Content inside the mark. Use slices so we preserve bold/italic/etc,
-  // but strip the conditionalInline mark itself since we're converting.
-  const beforeCursorFragment = stripConditionalMarkFromFragment(
-    state.doc.slice(markFrom, cursorPosInMark).content,
-  );
-  const afterCursorFragment = stripConditionalMarkFromFragment(
-    state.doc.slice(cursorPosInMark, markTo).content,
-  );
+  const cursorPosInInline = (() => {
+    const start = inlineNodePos + 1;
+    const end = inlineNodePos + inlineNode.nodeSize - 1;
+    return Math.min(Math.max($from.pos, start), end);
+  })();
+
+  const nodeFrom = inlineNodePos;
+  const nodeTo = inlineNodePos + inlineNode.nodeSize;
+
+  const nodeContentFrom = nodeFrom + 1;
+  const nodeContentTo = nodeTo - 1;
+
+  const beforeFragment = state.doc.slice(parentStart, nodeFrom).content;
+  const afterFragment = state.doc.slice(nodeTo, parentEnd).content;
+
+  const beforeCursorFragment = state.doc.slice(
+    nodeContentFrom,
+    cursorPosInInline,
+  ).content;
+  const afterCursorFragment = state.doc.slice(
+    cursorPosInInline,
+    nodeContentTo,
+  ).content;
 
   // Create a transaction to replace the inline mark with a block conditional
   const { tr } = state;
