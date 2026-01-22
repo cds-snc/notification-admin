@@ -1,5 +1,10 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
-import { NodeSelection, Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
+import {
+  NodeSelection,
+  Plugin,
+  PluginKey,
+  TextSelection,
+} from "@tiptap/pm/state";
 
 import {
   CONDITIONAL_BRANCH_ICON_PATH,
@@ -25,6 +30,8 @@ const forceDomSelectionToPos = (view, pos) => {
     // ignore
   }
 };
+
+const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
 // Inline conditional as an inline node so the cursor has real
 // before/inside/after positions.
@@ -118,7 +125,9 @@ const ConditionalInlineNode = Node.create({
               TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
             );
           } catch {
-            tr.setSelection(TextSelection.near(tr.doc.resolve(range.from + 1), 1));
+            tr.setSelection(
+              TextSelection.near(tr.doc.resolve(range.from + 1), 1),
+            );
           }
           return tr;
         },
@@ -157,7 +166,9 @@ const ConditionalInlineNode = Node.create({
               TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
             );
           } catch {
-            tr.setSelection(TextSelection.near(tr.doc.resolve(range.from + 1), 1));
+            tr.setSelection(
+              TextSelection.near(tr.doc.resolve(range.from + 1), 1),
+            );
           }
           tr.scrollIntoView();
           return tr;
@@ -271,6 +282,28 @@ const ConditionalInlineNode = Node.create({
         }
       };
 
+      const moveCursorToContentEnd = () => {
+        try {
+          const pos = typeof getPos === "function" ? getPos() : null;
+          if (typeof pos !== "number") return;
+          const inserted = view.state.doc.nodeAt(pos);
+          if (!inserted) {
+            moveCursorToContentStart();
+            return;
+          }
+
+          const endOfContentPos = pos + inserted.nodeSize - 1;
+          const tr = view.state.tr;
+          tr.setSelection(
+            TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
+          );
+          view.dispatch(tr);
+          setTimeout(() => view.focus(), 0);
+        } catch {
+          // ignore
+        }
+      };
+
       input.addEventListener(
         "keydown",
         (event) => {
@@ -279,6 +312,18 @@ const ConditionalInlineNode = Node.create({
 
           if (event.key === "Tab" && event.shiftKey) {
             event.preventDefault();
+            try {
+              const pos = typeof getPos === "function" ? getPos() : null;
+              if (typeof pos === "number") {
+                const tr = view.state.tr.setMeta(RETURN_FOCUS_INPUT_META, {
+                  kind: "inline",
+                  pos,
+                });
+                view.dispatch(tr);
+              }
+            } catch {
+              // ignore
+            }
             requestToolbarFocus(view);
             setTimeout(() => requestToolbarFocus(view), 0);
             return;
@@ -287,7 +332,7 @@ const ConditionalInlineNode = Node.create({
           if (event.key === "Tab" && !event.shiftKey) {
             event.preventDefault();
             commit();
-            moveCursorToContentStart();
+            moveCursorToContentEnd();
             return;
           }
 
@@ -528,6 +573,7 @@ const ConditionalInlineNode = Node.create({
 
   addProseMirrorPlugins() {
     const pluginKey = new PluginKey("conditionalInlineNodeArrowRight");
+    const deleteKey = new PluginKey("conditionalInlineNodeDeleteSelection");
     return [
       new Plugin({
         key: pluginKey,
@@ -669,6 +715,69 @@ const ConditionalInlineNode = Node.create({
             }
 
             return false;
+          },
+        },
+      }),
+
+      // When a selection endpoint lands exactly at the start/end of this node's
+      // content (pos + 1 / pos + nodeSize - 1), ProseMirror will treat it as
+      // "inside" the node, which can cause Backspace/Delete to leave the wrapper
+      // node behind. Expand the deletion to include the full node in that case.
+      new Plugin({
+        key: deleteKey,
+        props: {
+          handleKeyDown(view, event) {
+            if (event.key !== "Backspace" && event.key !== "Delete")
+              return false;
+
+            const { state } = view;
+            const { selection } = state;
+            if (!selection || selection.empty) return false;
+
+            const inlineType = state.schema.nodes.conditionalInline;
+            if (!inlineType) return false;
+
+            const expandEdge = (edgePos, otherPos) => {
+              const $pos = state.doc.resolve(edgePos);
+
+              // Find the nearest ancestor conditionalInline node for this edge.
+              for (let depth = $pos.depth; depth > 0; depth--) {
+                const n = $pos.node(depth);
+                if (n.type !== inlineType) continue;
+
+                const nodePos = $pos.before(depth);
+                const nodeEnd = nodePos + n.nodeSize;
+                const contentStart = $pos.start(depth); // == nodePos + 1
+                const contentEnd = $pos.end(depth); // == nodePos + nodeSize - 1
+
+                const otherOutside = otherPos < nodePos || otherPos > nodeEnd;
+                if (!otherOutside) return edgePos;
+
+                if (edgePos === contentStart) return nodePos;
+                if (edgePos === contentEnd) return nodeEnd;
+                return edgePos;
+              }
+
+              return edgePos;
+            };
+
+            const otherFrom = selection.to;
+            const otherTo = selection.from;
+            const expandedFrom = expandEdge(selection.from, otherFrom);
+            const expandedTo = expandEdge(selection.to, otherTo);
+
+            const from = Math.min(expandedFrom, expandedTo);
+            const to = Math.max(expandedFrom, expandedTo);
+
+            if (from === selection.from && to === selection.to) return false;
+
+            event.preventDefault();
+
+            const tr = state.tr.deleteRange(from, to);
+            tr.setSelection(TextSelection.near(tr.doc.resolve(from), -1));
+            view.dispatch(tr);
+            view.focus();
+            return true;
           },
         },
       }),

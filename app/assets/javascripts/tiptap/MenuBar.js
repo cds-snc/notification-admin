@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from "react";
 import TooltipWrapper from "./TooltipWrapper";
+import { NodeSelection } from "@tiptap/pm/state";
 
 /**
  * AccessibleToolbar component that wraps any toolbar content with proper ARIA accessibility.
@@ -360,7 +361,49 @@ const MenuBar = ({
   };
 
   const runInlineConditionalAction = () => {
+    const getFocusedInlineConditionalPos = () => {
+      try {
+        const doc = editor?.view?.dom?.ownerDocument || document;
+        const active = doc.activeElement;
+        if (!active) return null;
+
+        const isInlineInput =
+          active.classList?.contains("conditional-inline-condition-input") ||
+          active.matches?.(
+            "input.conditional-inline-condition-input[data-editor-focusable]",
+          );
+        if (!isInlineInput) return null;
+
+        const nodeEl = active.closest?.('span[data-type="conditional-inline"]');
+        if (!nodeEl) return null;
+
+        const pos = editor.view.posAtDOM(nodeEl, 0);
+        return typeof pos === "number" ? pos : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const removeFocusedInlineConditional = (pos) => {
+      try {
+        if (typeof pos !== "number") return false;
+        const { state, view } = editor;
+        const tr = state.tr.setSelection(NodeSelection.create(state.doc, pos));
+        view.dispatch(tr);
+        editor.commands.unsetConditionalInline();
+        editor.commands.focus();
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
     // Match existing inline button behaviour.
+    const focusedPos = getFocusedInlineConditionalPos();
+    if (typeof focusedPos === "number") {
+      return removeFocusedInlineConditional(focusedPos);
+    }
+
     if (editor.isActive("conditionalInline")) {
       return editor.chain().focus().unsetConditionalInline().run();
     }
@@ -369,9 +412,51 @@ const MenuBar = ({
   };
 
   const runUnifiedConditionalAction = () => {
+    const getFocusedInlineConditionalPos = () => {
+      try {
+        const doc = editor?.view?.dom?.ownerDocument || document;
+        const active = doc.activeElement;
+        if (!active) return null;
+
+        const isInlineInput =
+          active.classList?.contains("conditional-inline-condition-input") ||
+          active.matches?.(
+            "input.conditional-inline-condition-input[data-editor-focusable]",
+          );
+        if (!isInlineInput) return null;
+
+        const nodeEl = active.closest?.('span[data-type="conditional-inline"]');
+        if (!nodeEl) return null;
+
+        const pos = editor.view.posAtDOM(nodeEl, 0);
+        return typeof pos === "number" ? pos : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const removeFocusedInlineConditional = (pos) => {
+      try {
+        if (typeof pos !== "number") return false;
+        const { state, view } = editor;
+        const tr = state.tr.setSelection(NodeSelection.create(state.doc, pos));
+        view.dispatch(tr);
+        editor.commands.unsetConditionalInline();
+        editor.commands.focus();
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
     // If we're inside an existing conditional, treat this as "remove" first.
     if (editor.isActive("conditional")) {
       return editor.chain().focus().unsetConditional().run();
+    }
+
+    const focusedPos = getFocusedInlineConditionalPos();
+    if (typeof focusedPos === "number") {
+      return removeFocusedInlineConditional(focusedPos);
     }
 
     if (editor.isActive("conditionalInline")) {
@@ -901,6 +986,12 @@ const MenuBar = ({
                 ? "rte-conditional"
                 : "rte-conditional_block"
             }
+            onMouseDown={(e) => {
+              // Keep focus/selection in the editor when clicking the toolbar button,
+              // otherwise the browser will focus the button and ProseMirror selection
+              // may no longer reflect the currently focused conditional input.
+              e.preventDefault();
+            }}
             onClick={() => {
               if (!useUnifiedConditionalButton) {
                 return announceToggle(
@@ -979,6 +1070,10 @@ const MenuBar = ({
             <button
               type="button"
               data-testid="rte-conditional_inline"
+              onMouseDown={(e) => {
+                // Keep focus/selection in the editor for the toggle behavior.
+                e.preventDefault();
+              }}
               onClick={() => runInlineConditionalAction()}
               className={
                 "toolbar-button" +

@@ -5,6 +5,7 @@ import { TextSelection } from "@tiptap/pm/state";
 import { CONDITIONAL_BRANCH_ICON_PATH } from "./Conditional/Helpers";
 
 const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
+const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
 const normalizeCondition = (value, defaultCondition) => {
   const trimmed = (value || "").trim();
@@ -52,6 +53,19 @@ const ConditionalNodeView = ({
     updateAttributes({ condition: nextCondition });
   };
 
+  const requestToolbarFocus = () => {
+    try {
+      const doc = editor?.view?.dom?.ownerDocument || document;
+      const toolbar = doc.querySelector('[data-testid="rte-toolbar"]');
+      if (!toolbar) return;
+      toolbar.dispatchEvent(
+        new CustomEvent("rte-request-focus", { bubbles: true }),
+      );
+    } catch {
+      // ignore
+    }
+  };
+
   const moveCursorIntoContentStart = () => {
     const pos = getPos();
     if (typeof pos !== "number") return;
@@ -65,6 +79,30 @@ const ConditionalNodeView = ({
     } catch {
       // Fall back to the previous behavior.
       editor.commands.setTextSelection(pos + 2);
+    }
+  };
+
+  const moveCursorIntoContentEnd = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+
+    try {
+      const { state, view } = editor;
+      const inserted = state.doc.nodeAt(pos);
+      if (!inserted) {
+        moveCursorIntoContentStart();
+        return;
+      }
+
+      const endOfContentPos = pos + inserted.nodeSize - 1;
+      const selection = TextSelection.near(
+        state.doc.resolve(endOfContentPos),
+        -1,
+      );
+      const tr = state.tr.setSelection(selection).scrollIntoView();
+      view.dispatch(tr);
+    } catch {
+      moveCursorIntoContentStart();
     }
   };
 
@@ -100,6 +138,26 @@ const ConditionalNodeView = ({
           onKeyDown={(event) => {
             // Don’t let ProseMirror handle keys originating from the input.
             event.stopPropagation();
+
+            if (event.key === "Tab" && event.shiftKey) {
+              event.preventDefault();
+              commitIfChanged();
+              try {
+                const pos = getPos();
+                if (typeof pos === "number") {
+                  editor.view.dispatch(
+                    editor.state.tr.setMeta(RETURN_FOCUS_INPUT_META, {
+                      kind: "block",
+                      pos,
+                    }),
+                  );
+                }
+              } catch {
+                // ignore
+              }
+              requestToolbarFocus();
+              return;
+            }
 
             if (event.key === "Escape") {
               event.preventDefault();
@@ -187,7 +245,7 @@ const ConditionalNodeView = ({
               commitIfChanged();
               editor.commands.focus();
 
-              moveCursorIntoContentStart();
+              moveCursorIntoContentEnd();
             }
           }}
           onBlur={() => {

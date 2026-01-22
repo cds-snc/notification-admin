@@ -100,6 +100,10 @@ const ConditionalNode = Node.create({
     const AUTO_WRAP_META = "__notifyConditionalAutoWrap";
     const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
     const navBlockParaKey = new PluginKey("notifyConditionalBlockNavParagraph");
+    const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
+    const returnFocusInputKey = new PluginKey(
+      "notifyConditionalReturnFocusInput",
+    );
 
     const isInsideConditional = ($pos) => {
       for (let depth = $pos.depth; depth > 0; depth--) {
@@ -124,6 +128,82 @@ const ConditionalNode = Node.create({
     };
 
     return [
+      // Plugin: when the user Shift+Tabs from a conditional input to the toolbar,
+      // the browser will Tab back into the editor at the current selection.
+      // This plugin ensures the focus returns to the same conditional input instead
+      // of landing in the conditional content.
+      new Plugin({
+        key: returnFocusInputKey,
+        state: {
+          init() {
+            return { pos: null, kind: null };
+          },
+          apply(tr, prev) {
+            let pos = prev?.pos ?? null;
+            let kind = prev?.kind ?? null;
+
+            const meta = tr.getMeta(RETURN_FOCUS_INPUT_META);
+            if (meta === null) {
+              pos = null;
+              kind = null;
+            } else if (meta && typeof meta.pos === "number") {
+              pos = meta.pos;
+              kind = meta.kind || null;
+            }
+
+            if (typeof pos === "number" && tr.docChanged) {
+              pos = tr.mapping.map(pos, -1);
+            }
+
+            return { pos, kind };
+          },
+        },
+        view(view) {
+          let scheduled = false;
+
+          const focusAndClear = () => {
+            scheduled = false;
+            try {
+              const pluginState = returnFocusInputKey.getState(view.state);
+              const pos = pluginState?.pos;
+              const kind = pluginState?.kind;
+              if (typeof pos !== "number") return;
+              if (!view.hasFocus()) return;
+
+              const nodeDom = view.nodeDOM(pos);
+              const selector =
+                kind === "inline"
+                  ? "input.conditional-inline-condition-input[data-editor-focusable]"
+                  : "input.conditional-block-condition-input";
+              const input = nodeDom?.querySelector?.(selector);
+              if (!input) return;
+
+              input.focus?.();
+              input.select?.();
+
+              // Clear so we don't refocus repeatedly.
+              view.dispatch(
+                view.state.tr.setMeta(RETURN_FOCUS_INPUT_META, null),
+              );
+            } catch {
+              // ignore
+            }
+          };
+
+          return {
+            update(view) {
+              const pluginState = returnFocusInputKey.getState(view.state);
+              if (typeof pluginState?.pos !== "number") return;
+              if (!view.hasFocus()) return;
+              if (scheduled) return;
+
+              scheduled = true;
+              setTimeout(() => focusAndClear(), 0);
+            },
+          };
+        },
+      }),
+
       new Plugin({
         appendTransaction: (transactions, oldState, newState) => {
           if (!transactions.some((tr) => tr.docChanged)) return null;
@@ -180,7 +260,11 @@ const ConditionalNode = Node.create({
             // some text))
             // This is common when typing, and should convert immediately.
             const trimmedEnd = text.trimEnd();
-            if (trimmedEnd.endsWith(")") && trimmedEnd.endsWith("))") && trimmedEnd !== "))") {
+            if (
+              trimmedEnd.endsWith(")") &&
+              trimmedEnd.endsWith("))") &&
+              trimmedEnd !== "))"
+            ) {
               try {
                 const paraEnd = pos + node.nodeSize - 1;
 
@@ -256,7 +340,10 @@ const ConditionalNode = Node.create({
           );
 
           const replaceFrom = tr.mapping.map(startMarker.pos, 1);
-          const replaceTo = tr.mapping.map(endMarker.pos + endMarker.nodeSize, -1);
+          const replaceTo = tr.mapping.map(
+            endMarker.pos + endMarker.nodeSize,
+            -1,
+          );
 
           tr.replaceWith(replaceFrom, replaceTo, conditionalNode);
 
@@ -276,7 +363,9 @@ const ConditionalNode = Node.create({
               );
             }
           } catch {
-            tr.setSelection(TextSelection.near(tr.doc.resolve(replaceFrom + 1), 1));
+            tr.setSelection(
+              TextSelection.near(tr.doc.resolve(replaceFrom + 1), 1),
+            );
           }
           tr.scrollIntoView();
 
@@ -333,6 +422,196 @@ const ConditionalNode = Node.create({
             }
 
             if (event.key !== "Tab") return false;
+
+            // Self-contained conditional Tab behavior:
+            // - Cursor in conditional content + Tab: let browser move focus out of editor
+            // - Cursor in conditional content + Shift+Tab: focus this conditional's input
+            // - Cursor in inline conditional content + Shift+Tab: focus that inline input
+            // This avoids the global focus-cycling logic jumping between unrelated conditionals.
+            try {
+              const { selection } = view.state;
+              const { $from } = selection;
+              const conditionalInlineNode =
+                view.state.schema.nodes?.conditionalInline;
+
+              const focusNextOutsideEditor = () => {
+                try {
+                  const doc = view.dom?.ownerDocument || document;
+                  const editorRoot =
+                    view.dom?.closest?.(".editor-wrapper") ||
+                    view.dom?.closest?.('[data-testid="rte-editor"]') ||
+                    view.dom;
+
+                  const selector =
+                    "a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+                  const candidates = Array.from(
+                    doc.querySelectorAll(selector),
+                  ).filter((el) => {
+                    if (!el) return false;
+                    if (editorRoot && editorRoot.contains(el)) return false;
+                    const style = doc.defaultView?.getComputedStyle?.(el);
+                    if (
+                      style?.display === "none" ||
+                      style?.visibility === "hidden"
+                    )
+                      return false;
+                    return true;
+                  });
+
+                  // Focus the first focusable element after the editor root in DOM order.
+                  // We do this by scanning the full list and remembering the last index
+                  // inside the editor wrapper.
+                  const all = Array.from(doc.querySelectorAll(selector)).filter(
+                    (el) => {
+                      if (!el) return false;
+                      const style = doc.defaultView?.getComputedStyle?.(el);
+                      if (
+                        style?.display === "none" ||
+                        style?.visibility === "hidden"
+                      )
+                        return false;
+                      return true;
+                    },
+                  );
+
+                  let lastInsideIndex = -1;
+                  for (let i = 0; i < all.length; i++) {
+                    if (editorRoot && editorRoot.contains(all[i])) {
+                      lastInsideIndex = i;
+                    }
+                  }
+
+                  const next = all[lastInsideIndex + 1];
+                  if (next) {
+                    next.focus?.();
+                    return next;
+                  }
+
+                  // Fallback: if we couldn't find a "next", focus the first outside candidate.
+                  if (candidates[0]) {
+                    candidates[0].focus?.();
+                    return candidates[0];
+                  }
+                } catch {
+                  // ignore
+                }
+                return null;
+              };
+
+              const bindShiftTabBackToConditionalContent = (nextEl, pos) => {
+                if (!nextEl || typeof pos !== "number") return;
+
+                const handler = (e) => {
+                  if (e.key !== "Tab" || !e.shiftKey) return;
+                  e.preventDefault();
+
+                  try {
+                    nextEl.removeEventListener("keydown", handler, true);
+                  } catch {
+                    // ignore
+                  }
+
+                  try {
+                    const node = view.state.doc.nodeAt(pos);
+                    if (!node) {
+                      view.focus();
+                      return;
+                    }
+
+                    const endOfContentPos = pos + node.nodeSize - 1;
+                    const tr = view.state.tr.setSelection(
+                      TextSelection.near(
+                        view.state.doc.resolve(endOfContentPos),
+                        -1,
+                      ),
+                    );
+                    view.dispatch(tr);
+                    view.focus();
+                  } catch {
+                    view.focus();
+                  }
+                };
+
+                try {
+                  nextEl.addEventListener("keydown", handler, true);
+                } catch {
+                  // ignore
+                }
+              };
+
+              const findAncestorPos = (type) => {
+                if (!type) return null;
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  if ($from.node(depth).type === type) {
+                    return $from.before(depth);
+                  }
+                }
+                return null;
+              };
+
+              const blockConditionalPos = findAncestorPos(conditionalType);
+              const inlineConditionalPos = findAncestorPos(
+                conditionalInlineNode,
+              );
+
+              if (typeof blockConditionalPos === "number") {
+                if (event.shiftKey) {
+                  event.preventDefault();
+                  const nodeDom = view.nodeDOM(blockConditionalPos);
+                  const input = nodeDom?.querySelector?.(
+                    "input.conditional-block-condition-input",
+                  );
+                  input?.focus?.();
+                  try {
+                    const end = input?.value?.length ?? 0;
+                    input?.setSelectionRange?.(end, end);
+                  } catch {
+                    // ignore
+                  }
+                  return true;
+                }
+
+                // Forward Tab from conditional content should exit the editor,
+                // not focus any other conditional inputs.
+                event.preventDefault();
+                const nextEl = focusNextOutsideEditor();
+                bindShiftTabBackToConditionalContent(
+                  nextEl,
+                  blockConditionalPos,
+                );
+                return true;
+              }
+
+              if (typeof inlineConditionalPos === "number") {
+                if (event.shiftKey) {
+                  event.preventDefault();
+                  const nodeDom = view.nodeDOM(inlineConditionalPos);
+                  const input = nodeDom?.querySelector?.(
+                    "input.conditional-inline-condition-input[data-editor-focusable]",
+                  );
+                  input?.focus?.();
+                  try {
+                    const end = input?.value?.length ?? 0;
+                    input?.setSelectionRange?.(end, end);
+                  } catch {
+                    // ignore
+                  }
+                  return true;
+                }
+
+                // Forward Tab from inline conditional content should exit the editor,
+                // not cycle to other inputs.
+                event.preventDefault();
+                const nextEl = focusNextOutsideEditor();
+                bindShiftTabBackToConditionalContent(
+                  nextEl,
+                  inlineConditionalPos,
+                );
+                return true;
+              }
+            } catch {
+              // ignore
+            }
 
             // Special case: temporary navigation space before an initial inline
             // conditional. The browser's default tab order can focus the inline
@@ -670,107 +949,133 @@ const ConditionalNode = Node.create({
       // Plugin: auto-focus the conditional trigger when cursor moves to the node boundary.
       // When the user arrows into a conditional block (selection at node start),
       // we focus the trigger button so they can interact with it via keyboard.
-      new Plugin({
-        view() {
-          let lastFocusedPos = null;
-          let lastCursorPos = null;
+      (() => {
+        let lastInteractionWasMouse = false;
 
-          return {
-            update(view, prevState) {
-              const { state } = view;
-              // Only act when selection changed
-              if (prevState.selection.eq(state.selection)) {
-                return;
-              }
-
-              const { selection } = state;
-              const { $from } = selection;
-              const prevCursorPos = lastCursorPos;
-              const currentCursorPos = $from.pos;
-              lastCursorPos = currentCursorPos;
-
-              // Helper to focus trigger at a given DOM pos
-              const focusTriggerAtDomPos = (domPos) => {
-                const nodeDom = view.nodeDOM(domPos);
-                const trigger = nodeDom?.querySelector?.(
-                  "[data-editor-focusable]",
-                );
-                if (!trigger) return false;
-
-                // If already focused, skip
-                if (document.activeElement === trigger) return true;
-
-                lastFocusedPos = domPos;
-                setTimeout(() => trigger.focus(), 0);
-                return true;
-              };
-
-              // Case A: NodeSelection of the conditional itself
-              if (
-                selection instanceof NodeSelection &&
-                selection.node?.type?.name === "conditional"
-              ) {
-                focusTriggerAtDomPos(selection.from);
-                return;
-              }
-
-              // Case B: Text cursor near the start of a conditional's content
-              for (let depth = $from.depth; depth > 0; depth--) {
-                const node = $from.node(depth);
-                if (node.type.name !== "conditional") continue;
-
-                const conditionalDomPos = $from.before(depth);
-                // Try to compute the trigger's pos via the DOM element
-                const nodeDom = view.nodeDOM(conditionalDomPos);
-                const triggerEl = nodeDom?.querySelector?.(
-                  "[data-editor-focusable]",
-                );
-
-                if (!triggerEl) break;
-
-                // Determine the trigger's document position
-                let triggerPos = null;
+        return new Plugin({
+          props: {
+            handleDOMEvents: {
+              mousedown() {
+                // Mouse interactions should not trigger auto-focus to the input.
+                // Otherwise clicking into an empty conditional's content will
+                // immediately steal focus back to the trigger/input.
                 try {
-                  triggerPos = view.posAtDOM(triggerEl, 0);
-                } catch (e) {
-                  triggerPos = null;
+                  lastInteractionWasMouse = true;
+                } catch {
+                  // ignore
+                }
+                return false;
+              },
+            },
+          },
+          view() {
+            let lastFocusedPos = null;
+            let lastCursorPos = null;
+
+            return {
+              update(view, prevState) {
+                const { state } = view;
+                // Only act when selection changed
+                if (prevState.selection.eq(state.selection)) {
+                  return;
                 }
 
-                const cursorPos = $from.pos;
+                // If the selection change came from a mouse click/drag,
+                // don't steal focus to the trigger.
+                if (lastInteractionWasMouse) {
+                  lastInteractionWasMouse = false;
+                  return;
+                }
 
-                // Determine navigation direction: true if moving forward, false if moving backward
-                const movingForward =
-                  prevCursorPos === null || cursorPos > prevCursorPos;
+                const { selection } = state;
+                const { $from } = selection;
+                const prevCursorPos = lastCursorPos;
+                const currentCursorPos = $from.pos;
+                lastCursorPos = currentCursorPos;
 
-                // Only auto-focus trigger when moving forward into the conditional.
-                // When moving backward (from after the block), let cursor navigate into content first.
-                const shouldFocus =
-                  movingForward &&
-                  ((typeof triggerPos === "number" &&
-                    cursorPos <= triggerPos) ||
-                    cursorPos <= $from.start(depth) + 1);
-
-                if (shouldFocus) {
-                  focusTriggerAtDomPos(conditionalDomPos);
-                } else if (lastFocusedPos === conditionalDomPos) {
-                  // Cursor moved away from this conditional, blur the trigger
-                  const nodeDomNow = view.nodeDOM(conditionalDomPos);
-                  const triggerNow = nodeDomNow?.querySelector?.(
+                // Helper to focus trigger at a given DOM pos
+                const focusTriggerAtDomPos = (domPos) => {
+                  const nodeDom = view.nodeDOM(domPos);
+                  const trigger = nodeDom?.querySelector?.(
                     "[data-editor-focusable]",
                   );
-                  if (triggerNow && document.activeElement === triggerNow) {
-                    // Move focus back to editor so user continues typing
-                    setTimeout(() => view.focus(), 0);
-                  }
-                  lastFocusedPos = null;
+                  if (!trigger) return false;
+
+                  // If already focused, skip
+                  if (document.activeElement === trigger) return true;
+
+                  lastFocusedPos = domPos;
+                  setTimeout(() => trigger.focus(), 0);
+                  return true;
+                };
+
+                // Case A: NodeSelection of the conditional itself
+                if (
+                  selection instanceof NodeSelection &&
+                  selection.node?.type?.name === "conditional"
+                ) {
+                  focusTriggerAtDomPos(selection.from);
+                  return;
                 }
 
-                break;
-              }
-            },
-          };
-        },
-      }),
+                // Case B: Text cursor near the start of a conditional's content
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  const node = $from.node(depth);
+                  if (node.type.name !== "conditional") continue;
+
+                  const conditionalDomPos = $from.before(depth);
+                  // Try to compute the trigger's pos via the DOM element
+                  const nodeDom = view.nodeDOM(conditionalDomPos);
+                  const triggerEl = nodeDom?.querySelector?.(
+                    "[data-editor-focusable]",
+                  );
+
+                  if (!triggerEl) break;
+
+                  // Determine the trigger's document position
+                  let triggerPos = null;
+                  try {
+                    triggerPos = view.posAtDOM(triggerEl, 0);
+                  } catch (e) {
+                    triggerPos = null;
+                  }
+
+                  const cursorPos = $from.pos;
+
+                  // Determine navigation direction: true if moving forward, false if moving backward
+                  const movingForward =
+                    prevCursorPos === null || cursorPos > prevCursorPos;
+
+                  // Only auto-focus trigger when moving forward into the conditional.
+                  // When moving backward (from after the block), let cursor navigate into content first.
+                  const shouldFocus =
+                    movingForward &&
+                    ((typeof triggerPos === "number" &&
+                      cursorPos <= triggerPos) ||
+                      cursorPos <= $from.start(depth) + 1);
+
+                  if (shouldFocus) {
+                    focusTriggerAtDomPos(conditionalDomPos);
+                  } else if (lastFocusedPos === conditionalDomPos) {
+                    // Cursor moved away from this conditional, blur the trigger
+                    const nodeDomNow = view.nodeDOM(conditionalDomPos);
+                    const triggerNow = nodeDomNow?.querySelector?.(
+                      "[data-editor-focusable]",
+                    );
+                    if (triggerNow && document.activeElement === triggerNow) {
+                      // Move focus back to editor so user continues typing
+                      setTimeout(() => view.focus(), 0);
+                    }
+                    lastFocusedPos = null;
+                  }
+
+                  break;
+                }
+              },
+            };
+          },
+        });
+      })(),
     ];
   },
 
@@ -857,7 +1162,9 @@ const ConditionalNode = Node.create({
           const nextCondition =
             (condition || "").trim() || this.options.defaultCondition;
 
-          const didWrap = commands.wrapIn(this.name, { condition: nextCondition });
+          const didWrap = commands.wrapIn(this.name, {
+            condition: nextCondition,
+          });
           if (!didWrap) return false;
 
           // Inserted via menubar/command: focus the condition input (placeholder condition).
@@ -879,7 +1186,9 @@ const ConditionalNode = Node.create({
               if (typeof conditionalPos !== "number") return;
 
               const nodeDom = view.nodeDOM(conditionalPos);
-              const inputEl = nodeDom?.querySelector?.("[data-editor-focusable]");
+              const inputEl = nodeDom?.querySelector?.(
+                "[data-editor-focusable]",
+              );
               if (!inputEl) return;
               inputEl.focus?.();
               inputEl.select?.();

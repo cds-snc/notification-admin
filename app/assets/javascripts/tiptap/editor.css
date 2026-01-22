@@ -359,6 +359,11 @@
   align-items: center;
   gap: 0.25rem;
   font-weight: 600;
+  user-select: none;
+}
+
+.conditional-trigger * {
+  user-select: none;
 }
 
 .conditional-block-condition-input {
@@ -373,6 +378,17 @@
   max-width: 10ch;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+
+/* Keep drag-selection in content from "highlighting" the block condition input.
+   (When the input isn't focused, it should behave like non-editable chrome.) */
+.conditional-block-condition-input:not(:focus) {
+  user-select: none;
+}
+
+.conditional-block-condition-input:not(:focus)::selection {
+  background: transparent;
+  color: inherit;
 }
 
 .conditional-block-condition-input:focus {
