@@ -304,7 +304,7 @@ def test_a11y_feedback_redirects_to_external_form(client_request, lang_code, con
 
 
 def test_newsletter_signup_redirects_to_subscription_page(client_request):
-    """Test that selecting newsletter_signup redirects to the newsletter subscription page"""
+    """Test that selecting newsletter_signup redirects to the newsletter subscription page with email pre-populated"""
     client_request.logout()
 
     # Set session language to avoid language sync redirect
@@ -315,7 +315,7 @@ def test_newsletter_signup_redirects_to_subscription_page(client_request):
         ".contact_lang",
         lang_code="en",
         _expected_status=302,
-        _expected_redirect=url_for("main.newsletter_subscription"),
+        _expected_redirect=url_for("main.newsletter_subscription", email="john@example.com"),
         _data={
             "name": "John",
             "email_address": "john@example.com",
