@@ -1,5 +1,5 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
-import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
+import { NodeSelection, Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 
 import {
   CONDITIONAL_BRANCH_ICON_PATH,
@@ -36,7 +36,7 @@ const ConditionalInlineNode = Node.create({
 
   inline: true,
   group: "inline",
-  content: "inline*",
+  content: "inline+",
   defining: true,
 
   addOptions() {
@@ -88,7 +88,6 @@ const ConditionalInlineNode = Node.create({
   },
 
   addInputRules() {
-    const defaultCondition = this.options.defaultCondition;
     const nodeType = this.type;
 
     // Match ((condition??content)) when typed inline.
@@ -101,17 +100,26 @@ const ConditionalInlineNode = Node.create({
             return null;
           }
 
-          const condition =
-            (match[1] || defaultCondition).trim() || defaultCondition;
+          const condition = (match[1] || "").trim();
           const text = match[2] || "";
 
-          const content = text ? state.schema.text(text) : undefined;
+          // Both sides must be present to create a conditional.
+          if (!condition) return null;
+          if (!text.trim()) return null;
+
+          const content = state.schema.text(text);
           const wrapped = nodeType.create({ condition }, content);
 
           const tr = state.tr.replaceWith(range.from, range.to, wrapped);
-          tr.setSelection(
-            TextSelection.near(tr.doc.resolve(range.from + 1), 1),
-          );
+          // Typed conversion: keep caret in content at the end of the existing text.
+          try {
+            const endOfContentPos = range.from + wrapped.nodeSize - 1;
+            tr.setSelection(
+              TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
+            );
+          } catch {
+            tr.setSelection(TextSelection.near(tr.doc.resolve(range.from + 1), 1));
+          }
           return tr;
         },
       }),
@@ -119,7 +127,6 @@ const ConditionalInlineNode = Node.create({
   },
 
   addPasteRules() {
-    const defaultCondition = this.options.defaultCondition;
     const nodeType = this.type;
 
     return [
@@ -130,16 +137,28 @@ const ConditionalInlineNode = Node.create({
             return null;
           }
 
-          const condition =
-            (match[1] || defaultCondition).trim() || defaultCondition;
+          const condition = (match[1] || "").trim();
           const text = match[2] || "";
 
-          const content = text ? state.schema.text(text) : undefined;
+          // Both sides must be present to create a conditional.
+          if (!condition) return null;
+          if (!text.trim()) return null;
+
+          const content = state.schema.text(text);
           const wrapped = nodeType.create({ condition }, content);
 
           const tr = state.tr;
           tr.delete(range.from, range.to);
           tr.insert(range.from, wrapped);
+          // After paste conversion, keep the caret in the conditional content at the end.
+          try {
+            const endOfContentPos = range.from + wrapped.nodeSize - 1;
+            tr.setSelection(
+              TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
+            );
+          } catch {
+            tr.setSelection(TextSelection.near(tr.doc.resolve(range.from + 1), 1));
+          }
           tr.scrollIntoView();
           return tr;
         },
@@ -389,8 +408,23 @@ const ConditionalInlineNode = Node.create({
               slice,
             );
             tr.replaceRangeWith(from, to, wrapped);
-            tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
+            // Inserted via menubar/command: focus the condition input (placeholder condition).
+            tr.setSelection(NodeSelection.create(tr.doc, from));
             editor.view.dispatch(tr);
+
+            setTimeout(() => {
+              try {
+                const nodeDom = editor.view.nodeDOM(from);
+                const inputEl = nodeDom?.querySelector?.(
+                  "input.conditional-inline-condition-input[data-editor-focusable]",
+                );
+                if (!inputEl) return;
+                inputEl.focus?.();
+                inputEl.select?.();
+              } catch {
+                // ignore
+              }
+            }, 0);
             return true;
           }
 
@@ -399,8 +433,23 @@ const ConditionalInlineNode = Node.create({
             state.schema.text("conditional text"),
           );
           tr.insert(from, wrapped);
-          tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
+          // Inserted via menubar/command: focus the condition input (placeholder condition).
+          tr.setSelection(NodeSelection.create(tr.doc, from));
           editor.view.dispatch(tr);
+
+          setTimeout(() => {
+            try {
+              const nodeDom = editor.view.nodeDOM(from);
+              const inputEl = nodeDom?.querySelector?.(
+                "input.conditional-inline-condition-input[data-editor-focusable]",
+              );
+              if (!inputEl) return;
+              inputEl.focus?.();
+              inputEl.select?.();
+            } catch {
+              // ignore
+            }
+          }, 0);
           return true;
         },
 
@@ -634,7 +683,14 @@ const ConditionalInlineNode = Node.create({
         serialize(state, node) {
           const condition = node.attrs.condition || defaultCondition;
           state.write(`((${condition}??`);
-          state.renderContent(node);
+          // `tiptap-markdown` treats inline vs block rendering differently.
+          // Using `renderInline` (when available) preserves inline marks like
+          // **bold**, _italic_, and custom variable marks inside this node.
+          if (typeof state.renderInline === "function") {
+            state.renderInline(node);
+          } else {
+            state.renderContent(node);
+          }
           state.write(`))`);
         },
         parse: {

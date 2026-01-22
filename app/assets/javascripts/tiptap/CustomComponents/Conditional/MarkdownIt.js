@@ -109,6 +109,14 @@ export const installConditionalInlineMarkdownIt = (
     const content = scanned.content;
 
     if (content.includes("\n")) return false;
+    // Both sides must be present.
+    // Invalid examples:
+    // - ((??content))
+    // - (( ??content))
+    // - ((conditional??))
+    // - ((conditional?? ))
+    if (!condition) return false;
+    if (!content.trim()) return false;
 
     if (silent) {
       state.pos = closeIdx + 2;
@@ -131,7 +139,12 @@ export const installConditionalInlineMarkdownIt = (
       state.env.__notifyDisableConditionalInline = prevDisable;
     }
 
-    for (const t of innerTokens) state.tokens.push(t);
+    // Keep token nesting consistent so downstream consumers (eg tiptap-markdown)
+    // treat the parsed inline tokens as children of the conditional wrapper.
+    for (const t of innerTokens) {
+      if (typeof t.level === "number") t.level += 1;
+      state.tokens.push(t);
+    }
 
     state.push("conditional_inline_close", "span", -1);
     state.pos = closeIdx + 2;

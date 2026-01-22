@@ -170,18 +170,70 @@ const ConditionalNode = Node.create({
               endMarker = {
                 pos,
                 nodeSize: node.nodeSize,
+                kind: "standalone",
               };
+              return;
+            }
+
+            // Also support a close marker at the end of the final paragraph, eg:
+            // ((cond??
+            // some text))
+            // This is common when typing, and should convert immediately.
+            const trimmedEnd = text.trimEnd();
+            if (trimmedEnd.endsWith(")") && trimmedEnd.endsWith("))") && trimmedEnd !== "))") {
+              try {
+                const paraEnd = pos + node.nodeSize - 1;
+
+                // Skip trailing spaces at the very end of the paragraph.
+                let endPos = paraEnd;
+                while (
+                  endPos > pos + 1 &&
+                  newState.doc.textBetween(endPos - 1, endPos) === " "
+                ) {
+                  endPos -= 1;
+                }
+
+                // Ensure the last two non-space characters are literally "))".
+                if (
+                  endPos - 2 >= pos + 1 &&
+                  newState.doc.textBetween(endPos - 2, endPos) === "))"
+                ) {
+                  endMarker = {
+                    pos,
+                    nodeSize: node.nodeSize,
+                    kind: "inline",
+                    closeFrom: endPos - 2,
+                    closeTo: endPos,
+                  };
+                }
+              } catch {
+                // ignore
+              }
             }
           });
 
           if (!startMarker || !endMarker) return null;
           if (endMarker.pos <= startMarker.pos) return null;
 
+          const tr = newState.tr;
+
+          // If the close marker is inline at the end of the paragraph, delete the
+          // literal "))" characters first so they don't end up in the wrapped content.
+          if (endMarker.kind === "inline") {
+            tr.delete(endMarker.closeFrom, endMarker.closeTo);
+          }
+
           const betweenFrom = startMarker.pos + startMarker.nodeSize;
-          const betweenTo = endMarker.pos;
+          const betweenTo =
+            endMarker.kind === "standalone"
+              ? endMarker.pos
+              : endMarker.pos + endMarker.nodeSize;
+
+          const mappedBetweenFrom = tr.mapping.map(betweenFrom, 1);
+          const mappedBetweenTo = tr.mapping.map(betweenTo, -1);
 
           // Extract the block content between markers.
-          const slice = newState.doc.slice(betweenFrom, betweenTo);
+          const slice = tr.doc.slice(mappedBetweenFrom, mappedBetweenTo);
 
           // Prevent nesting: if the wrapped content contains conditionals, do nothing.
           let containsConditional = false;
@@ -203,14 +255,29 @@ const ConditionalNode = Node.create({
             content,
           );
 
-          const tr = newState.tr.replaceWith(
-            startMarker.pos,
-            endMarker.pos + endMarker.nodeSize,
-            conditionalNode,
-          );
+          const replaceFrom = tr.mapping.map(startMarker.pos, 1);
+          const replaceTo = tr.mapping.map(endMarker.pos + endMarker.nodeSize, -1);
+
+          tr.replaceWith(replaceFrom, replaceTo, conditionalNode);
 
           tr.setMeta(AUTO_WRAP_META, true);
-          tr.setSelection(NodeSelection.create(tr.doc, startMarker.pos));
+          // Typed/pasted markers: keep focus in the conditional content, and place the
+          // caret at the end of the existing content.
+          try {
+            const inserted = tr.doc.nodeAt(replaceFrom);
+            if (inserted) {
+              const endOfContentPos = replaceFrom + inserted.nodeSize - 1;
+              tr.setSelection(
+                TextSelection.near(tr.doc.resolve(endOfContentPos), -1),
+              );
+            } else {
+              tr.setSelection(
+                TextSelection.near(tr.doc.resolve(replaceFrom + 1), 1),
+              );
+            }
+          } catch {
+            tr.setSelection(TextSelection.near(tr.doc.resolve(replaceFrom + 1), 1));
+          }
           tr.scrollIntoView();
 
           return tr;
@@ -790,7 +857,38 @@ const ConditionalNode = Node.create({
           const nextCondition =
             (condition || "").trim() || this.options.defaultCondition;
 
-          return commands.wrapIn(this.name, { condition: nextCondition });
+          const didWrap = commands.wrapIn(this.name, { condition: nextCondition });
+          if (!didWrap) return false;
+
+          // Inserted via menubar/command: focus the condition input (placeholder condition).
+          setTimeout(() => {
+            try {
+              const { view } = editor;
+              const { selection } = editor.state;
+              const { $from } = selection;
+
+              let conditionalPos = null;
+              for (let depth = $from.depth; depth > 0; depth--) {
+                const n = $from.node(depth);
+                if (n.type === this.type) {
+                  conditionalPos = $from.before(depth);
+                  break;
+                }
+              }
+
+              if (typeof conditionalPos !== "number") return;
+
+              const nodeDom = view.nodeDOM(conditionalPos);
+              const inputEl = nodeDom?.querySelector?.("[data-editor-focusable]");
+              if (!inputEl) return;
+              inputEl.focus?.();
+              inputEl.select?.();
+            } catch {
+              // ignore
+            }
+          }, 0);
+
+          return true;
         },
 
       // Command to toggle the conditional block
