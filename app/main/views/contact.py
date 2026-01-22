@@ -40,6 +40,10 @@ def contact_lang(lang_code):
             else:
                 return redirect(current_app.config["A11Y_FEEDBACK_URL_EN"])
 
+        # If user selected newsletter_signup, redirect to newsletter subscription page
+        if form.support_type.data == "newsletter_signup":
+            return redirect(url_for("main.newsletter_subscription"))
+
         session[SESSION_FORM_KEY] = form.data
         return redirect(url_for("main.message_lang", lang_code=lang_code))
 

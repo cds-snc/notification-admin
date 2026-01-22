@@ -301,3 +301,24 @@ def test_a11y_feedback_redirects_to_external_form(client_request, lang_code, con
             "support_type": "a11y_feedback",
         },
     )
+
+
+def test_newsletter_signup_redirects_to_subscription_page(client_request):
+    """Test that selecting newsletter_signup redirects to the newsletter subscription page"""
+    client_request.logout()
+
+    # Set session language to avoid language sync redirect
+    with client_request.session_transaction() as session:
+        session["userlang"] = "en"
+
+    client_request.post(
+        ".contact_lang",
+        lang_code="en",
+        _expected_status=302,
+        _expected_redirect=url_for("main.newsletter_subscription"),
+        _data={
+            "name": "John",
+            "email_address": "john@example.com",
+            "support_type": "newsletter_signup",
+        },
+    )
