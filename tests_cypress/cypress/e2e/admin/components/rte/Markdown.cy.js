@@ -155,7 +155,9 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   it("Inline conditionals are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.INLINE_CONDITIONALS.before);
+    RichTextEditor.Components.Editor().type(
+      MARKDOWN.INLINE_CONDITIONALS.before,
+    );
 
     // Editor should have marked up inline conditionals
     RichTextEditor.Components.Editor()
