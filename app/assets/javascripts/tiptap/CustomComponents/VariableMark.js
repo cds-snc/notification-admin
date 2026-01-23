@@ -145,8 +145,7 @@ const VariableMark = Mark.create({
                   return true;
                 }
 
-                // Extract the variable name and reject if it contains parentheses
-                const content = state.src.slice(start + 2, pos);
+                // Check if content contains parentheses and reject if so
                 if (content.includes("(") || content.includes(")"))
                   return false;
 

@@ -1,6 +1,5 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
 import {
-  NodeSelection,
   Plugin,
   PluginKey,
   TextSelection,

@@ -48,13 +48,13 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     en: {
       prefix: "IF ",
       suffix: " is YES",
-      defaultCondition: "condition",
+      defaultCondition: "variable",
       conditionAriaLabel: "Condition",
     },
     fr: {
       prefix: "SI ",
       suffix: " est OUI",
-      defaultCondition: "condition",
+      defaultCondition: "variable",
       conditionAriaLabel: "Condition",
     },
   };
