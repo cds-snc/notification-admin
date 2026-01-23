@@ -48,8 +48,9 @@ export default function convertVariablesToSpans(text) {
     // parentheses are handled as surrounding text. Example: '(((var)))' ->
     // '(' + '<span>var</span>' + ')'
     if (inner.includes("(") || inner.includes(")")) {
-      output += processedText.slice(openIdx, closeIdx + 2);
-      cursor = closeIdx + 2;
+      // Skip just the first paren and continue; the inner ones will be processed next iteration
+      output += processedText[openIdx];
+      cursor = openIdx + 1;
       continue;
     }
 
