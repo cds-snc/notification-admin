@@ -650,3 +650,61 @@ def test_non_safelist_user_cannot_create_service(
         _data={"name": "SERVICE TWO"},
         _expected_status=403,
     )
+
+
+def test_should_return_form_errors_when_service_name_and_email_combined_too_long(
+    client_request,
+    mock_get_organisation_by_domain,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+):
+    """Test that long unicode service names combined with email addresses are rejected"""
+    # This is the test case from the bug report - 179 character service name with accented characters
+    # which when MIME-encoded in the email header becomes much longer
+    long_service_name = "ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé"
+    email_from = "abc-1234-12345-1234567-1234567"
+
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
+    page = client_request.post(
+        "main.add_service",
+        _data={
+            "name": long_service_name,
+            "email_from": email_from,
+        },
+        current_step="choose_service_name",
+        _expected_status=200,
+    )
+
+    # Check that the error message is displayed
+    assert "Your service name and email address combined are too long" in page.text
+
+
+def test_should_allow_service_name_and_email_when_combined_length_is_acceptable(
+    client_request,
+    mock_get_organisation_by_domain,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+    mock_create_service,
+    mock_create_or_update_free_sms_fragment_limit,
+):
+    """Test that reasonable service names with unicode characters are still allowed"""
+    # A shorter service name with unicode characters should pass validation
+    reasonable_service_name = "Service de notification | Notification service"
+    email_from = "notification-service"
+
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
+    # This should succeed and redirect to the dashboard
+    client_request.post(
+        "main.add_service",
+        _data={
+            "name": reasonable_service_name,
+            "email_from": email_from,
+        },
+        current_step="choose_service_name",
+        _expected_status=302,
+        _expected_redirect=url_for("main.service_dashboard", service_id=101),
+    )
