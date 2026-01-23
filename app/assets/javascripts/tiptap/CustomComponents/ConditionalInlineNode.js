@@ -80,7 +80,9 @@ const ConditionalInlineNode = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const condition = HTMLAttributes.condition || this.options.defaultCondition;
+    // Preserve an intentionally empty condition. Only fall back for null/undefined.
+    const condition =
+      HTMLAttributes.condition ?? this.options.defaultCondition;
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
@@ -178,10 +180,7 @@ const ConditionalInlineNode = Node.create({
   },
 
   addNodeView() {
-    const normalizeCondition = (value) => {
-      const trimmed = (value || "").trim();
-      return trimmed || this.options.defaultCondition;
-    };
+    const normalizeCondition = (value) => (value || "").trim();
 
     const requestToolbarFocus = (view) => {
       try {
@@ -202,7 +201,7 @@ const ConditionalInlineNode = Node.create({
       dom.setAttribute("data-type", "conditional-inline");
       dom.setAttribute(
         "data-condition",
-        node.attrs?.condition || this.options.defaultCondition,
+        node.attrs?.condition ?? this.options.defaultCondition,
       );
       dom.setAttribute("data-prefix", this.options.prefix);
       dom.setAttribute("data-suffix", this.options.suffix);
@@ -239,7 +238,8 @@ const ConditionalInlineNode = Node.create({
       const input = document.createElement("input");
       input.className = "conditional-inline-condition-input";
       input.type = "text";
-      input.value = node.attrs?.condition || this.options.defaultCondition;
+      // Preserve empty string; only use default for missing attr.
+      input.value = node.attrs?.condition ?? this.options.defaultCondition;
       input.setAttribute("data-editor-focusable", "true");
       input.setAttribute("aria-label", this.options.conditionAriaLabel);
       input.setAttribute("autocomplete", "off");
@@ -421,7 +421,7 @@ const ConditionalInlineNode = Node.create({
           if (nextNode.type !== node.type) return false;
           node = nextNode;
           const nextCondition =
-            nextNode.attrs?.condition || this.options.defaultCondition;
+            nextNode.attrs?.condition ?? this.options.defaultCondition;
           dom.setAttribute("data-condition", nextCondition);
           if (input.value !== nextCondition) input.value = nextCondition;
           return true;
@@ -446,6 +446,21 @@ const ConditionalInlineNode = Node.create({
 
           const tr = state.tr;
 
+          const focusConditionInput = (pos) => {
+            try {
+              const nodeDom = editor.view.nodeDOM(pos);
+              const inputEl = nodeDom?.querySelector?.(
+                "input.conditional-inline-condition-input[data-editor-focusable]",
+              );
+              if (!inputEl) return false;
+              inputEl.focus?.();
+              inputEl.select?.();
+              return true;
+            } catch {
+              return false;
+            }
+          };
+
           if (from !== to) {
             const slice = state.doc.slice(from, to).content;
             const wrapped = nodeType.create(
@@ -453,23 +468,15 @@ const ConditionalInlineNode = Node.create({
               slice,
             );
             tr.replaceRangeWith(from, to, wrapped);
-            // Inserted via menubar/command: focus the condition input (placeholder condition).
-            tr.setSelection(NodeSelection.create(tr.doc, from));
+            // Inserted via menubar/command: keep a text selection (so fast typing
+            // can't replace/delete the whole node) and then focus the condition input.
+            tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
             editor.view.dispatch(tr);
 
-            setTimeout(() => {
-              try {
-                const nodeDom = editor.view.nodeDOM(from);
-                const inputEl = nodeDom?.querySelector?.(
-                  "input.conditional-inline-condition-input[data-editor-focusable]",
-                );
-                if (!inputEl) return;
-                inputEl.focus?.();
-                inputEl.select?.();
-              } catch {
-                // ignore
-              }
-            }, 0);
+            // Focus immediately if possible (avoids race where typing happens before focus).
+            if (!focusConditionInput(from)) {
+              requestAnimationFrame(() => focusConditionInput(from));
+            }
             return true;
           }
 
@@ -478,23 +485,14 @@ const ConditionalInlineNode = Node.create({
             state.schema.text("conditional text"),
           );
           tr.insert(from, wrapped);
-          // Inserted via menubar/command: focus the condition input (placeholder condition).
-          tr.setSelection(NodeSelection.create(tr.doc, from));
+          // Inserted via menubar/command: keep a text selection (so fast typing
+          // can't replace/delete the whole node) and then focus the condition input.
+          tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
           editor.view.dispatch(tr);
 
-          setTimeout(() => {
-            try {
-              const nodeDom = editor.view.nodeDOM(from);
-              const inputEl = nodeDom?.querySelector?.(
-                "input.conditional-inline-condition-input[data-editor-focusable]",
-              );
-              if (!inputEl) return;
-              inputEl.focus?.();
-              inputEl.select?.();
-            } catch {
-              // ignore
-            }
-          }, 0);
+          if (!focusConditionInput(from)) {
+            requestAnimationFrame(() => focusConditionInput(from));
+          }
           return true;
         },
 

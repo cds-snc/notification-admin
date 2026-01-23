@@ -373,11 +373,12 @@
   border-radius: 0.3rem;
   border: 3px solid #7f8a93;
   background: white;
+  font-family: monospace;
   color: black;
   min-width: 8ch;
-  max-width: 10ch;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  field-sizing: content;
 }
 
 /* Keep drag-selection in content from "highlighting" the block condition input.
@@ -470,13 +471,15 @@ span[data-type="conditional-inline"] + .conditional-inline-edit-widget {
   line-height: 1.5;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  font-family: monospace;
   border-radius: 0.3rem;
   border: 3px solid #7f8a93;
   background: white;
   color: #0b0c0c;
-  min-width: 5ch;
-  max-width: 10ch;
+  min-width: 8ch;
   padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  field-sizing: content;
 }
 
 .conditional-inline-condition-input:focus {

@@ -7,11 +7,6 @@ import { CONDITIONAL_BRANCH_ICON_PATH } from "./Conditional/Helpers";
 const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
 const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
-const normalizeCondition = (value, defaultCondition) => {
-  const trimmed = (value || "").trim();
-  return trimmed || defaultCondition;
-};
-
 const ConditionalNodeView = ({
   node,
   updateAttributes,
@@ -24,30 +19,26 @@ const ConditionalNodeView = ({
   const defaultCondition = extension?.options?.defaultCondition || "condition";
   const conditionAriaLabel =
     extension?.options?.conditionAriaLabel || "Condition";
-  const conditionValue = useMemo(
-    () => node?.attrs?.condition || "",
-    [node?.attrs?.condition],
-  );
+  const conditionValue = useMemo(() => {
+    const raw = node?.attrs?.condition;
+    // Use the default only for legacy/missing attrs (null/undefined).
+    return raw === null || raw === undefined ? defaultCondition : raw;
+  }, [node?.attrs?.condition, defaultCondition]);
 
   const inputId = useId();
-  const [draft, setDraft] = useState(
-    normalizeCondition(conditionValue, defaultCondition),
-  );
+  const [draft, setDraft] = useState(conditionValue);
   const inputRef = useRef(null);
 
   // Keep draft in sync with attrs when not editing.
   useEffect(() => {
     // Only clobber the draft when the input isn't actively being edited.
     if (document.activeElement === inputRef.current) return;
-    setDraft(normalizeCondition(conditionValue, defaultCondition));
-  }, [conditionValue, defaultCondition]);
+    setDraft(conditionValue);
+  }, [conditionValue]);
 
   const commitIfChanged = () => {
-    const nextCondition = normalizeCondition(draft, defaultCondition);
-    const currentCondition = normalizeCondition(
-      conditionValue,
-      defaultCondition,
-    );
+    const nextCondition = (draft || "").trim();
+    const currentCondition = (conditionValue || "").trim();
 
     if (nextCondition === currentCondition) return;
     updateAttributes({ condition: nextCondition });
@@ -161,7 +152,7 @@ const ConditionalNodeView = ({
 
             if (event.key === "Escape") {
               event.preventDefault();
-              setDraft(normalizeCondition(conditionValue, defaultCondition));
+              setDraft(conditionValue);
               editor.commands.focus();
               return;
             }
