@@ -1050,6 +1050,7 @@ class ContactNotify(StripWhitespaceForm):
             ("technical_support", _l("Get technical support")),
             ("give_feedback", _l("Give feedback")),
             ("a11y_feedback", _l("Report accessibility issues")),
+            ("newsletter_signup", _l("Sign up to our newsletter")),
             ("other", _l("Other")),
         ],
     )

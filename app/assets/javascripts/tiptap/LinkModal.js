@@ -21,7 +21,6 @@ const LinkModal = ({
     // the modal is mounted into the DOM.
     if (isVisible) {
       const currentUrl = editor.getAttributes("link").href || "";
-      console.log("[LinkModal] Modal opened with current URL:", currentUrl);
       setUrl(currentUrl);
 
       // Focus on the input field when the modal becomes visible
@@ -101,15 +100,12 @@ const LinkModal = ({
   // editors and reduces user friction. After applying the change we close
   // the modal and restore focus handling to the editor.
   const saveLink = () => {
-    console.log("[LinkModal] saveLink called with URL:", url);
     let formattedUrl = url;
-    if (url && !/^(https?:\/\/|mailto:)/i.test(url)) {
-      console.log("[LinkModal] No protocol detected, prepending https://");
+    // If the URL looks like a variable marker (e.g. contains '((') or
+    // already contains a protocol or mailto, do not prepend a protocol.
+    if (url && !/^(https?:\/\/|mailto:)/i.test(url) && !/\(\(/.test(url)) {
       formattedUrl = `https://${url}`;
-    } else if (url && /\(\(/.test(url)) {
-      console.log("[LinkModal] Variable marker detected, keeping URL as-is");
     }
-    console.log("[LinkModal] Formatted URL:", formattedUrl);
 
     if (formattedUrl) {
       editor
@@ -118,7 +114,7 @@ const LinkModal = ({
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
-      console.log("[LinkModal] Link saved to editor");
+
       try {
         if (typeof onSavedLink === "function") {
           onSavedLink(editor.getAttributes("link").href || null);
@@ -130,7 +126,6 @@ const LinkModal = ({
         );
       }
     } else {
-      console.log("[LinkModal] Empty URL, unsetting link");
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
       try {
         if (typeof onSavedLink === "function") {
@@ -148,7 +143,6 @@ const LinkModal = ({
 
   // Open the current URL in a new tab. Used by the "Go to Link" control.
   const goToLink = () => {
-    console.log("[LinkModal] goToLink called with URL:", url);
     if (url) {
       window.open(url, "_blank");
     }
@@ -156,7 +150,6 @@ const LinkModal = ({
 
   // Remove the link mark from the current selection and close the modal.
   const removeLink = () => {
-    console.log("[LinkModal] removeLink called");
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
     try {
       if (typeof onSavedLink === "function") {
@@ -211,10 +204,7 @@ const LinkModal = ({
         ref={inputRef}
         type="text"
         value={url}
-        onChange={(e) => {
-          console.log("[LinkModal] URL input changed:", e.target.value);
-          setUrl(e.target.value);
-        }}
+        onChange={(e) => setUrl(e.target.value)}
         onKeyDown={handleInputKeyDown} // Scoped Enter key handling
         placeholder={t.placeholder}
         className="w-48 p-1 border border-gray-300 rounded input focus:shadow-outline"
