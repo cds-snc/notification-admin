@@ -1,9 +1,5 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
-import {
-  Plugin,
-  PluginKey,
-  TextSelection,
-} from "@tiptap/pm/state";
+import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 
 import {
   CONDITIONAL_BRANCH_ICON_PATH,
@@ -80,8 +76,7 @@ const ConditionalInlineNode = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     // Preserve an intentionally empty condition. Only fall back for null/undefined.
-    const condition =
-      HTMLAttributes.condition ?? this.options.defaultCondition;
+    const condition = HTMLAttributes.condition ?? this.options.defaultCondition;
     return [
       "span",
       mergeAttributes(HTMLAttributes, {

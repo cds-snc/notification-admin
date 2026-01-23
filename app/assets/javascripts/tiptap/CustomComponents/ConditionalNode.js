@@ -43,7 +43,10 @@ const ConditionalNode = Node.create({
         default: null,
         parseHTML: (element) => element.getAttribute("data-condition"),
         renderHTML: (attributes) => {
-          if (attributes.condition === null || attributes.condition === undefined) {
+          if (
+            attributes.condition === null ||
+            attributes.condition === undefined
+          ) {
             return {};
           }
           return {
