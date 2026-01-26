@@ -1,8 +1,5 @@
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 
-const modKey = Cypress.platform === "darwin" ? "Meta" : "Control";
-const cmdUpKey = Cypress.platform === "darwin" ? "{meta+up}" : "{ctrl+up}";
-
 describe("Conditional inline and block tests", () => {
   beforeEach(() => {
     // Load the editor and ensure toolbar is ready for interactions
