@@ -13,7 +13,8 @@
     "heroku-postbuild": "gulp && make generate-version-file && export ADMIN_BASE_URL=${HEROKU_APP_NAME}.herokuapp.com",
     "tiptap-css": "npx tailwindcss -i ./app/assets/javascripts/tiptap/tooltip.css -o ./app/assets/javascripts/tiptap/tooltip.compiled.css && npx tailwindcss -i ./app/assets/javascripts/tiptap/editor.css -o ./app/assets/javascripts/tiptap/editor.compiled.css",
     "tailwind-main": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/assets/stylesheets/index.css --minify",
-    "tailwind": "npm run tiptap-css && npm run tailwind-main && webpack --config webpack.config.js && gulp"
+    "tailwind": "npm run tiptap-css && npm run tailwind-main && webpack --config webpack.config.js && gulp",
+    "css": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/assets/stylesheets/index.css --minify"
   },
   "repository": {
     "type": "git",

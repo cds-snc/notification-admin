@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -15,9 +15,10 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
-import TextAlign from "@tiptap/extension-text-align";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import ConditionalNode from "./CustomComponents/ConditionalNode";
+import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
@@ -34,12 +35,31 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(false);
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
+  const [justOpenedLink, setJustOpenedLink] = useState(false);
+  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
+  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const conditionalLabels = {
+    en: {
+      prefix: "IF ",
+      suffix: " is YES",
+      defaultCondition: "variable",
+      conditionAriaLabel: "Condition",
+    },
+    fr: {
+      prefix: "SI ",
+      suffix: " est OUI",
+      defaultCondition: "variable",
+      conditionAriaLabel: "Condition",
+    },
+  };
+  const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -108,10 +128,21 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       OrderedList,
       ListItem,
       HorizontalRule,
-
+      ConditionalNode.configure({
+        prefix: conditionalText.prefix,
+        suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
+      }),
       // Mark extensions that match toolbar features
       Bold,
       Italic,
+      ConditionalInlineMark.configure({
+        prefix: conditionalText.prefix,
+        suffix: conditionalText.suffix,
+        defaultCondition: conditionalText.defaultCondition,
+        conditionAriaLabel: conditionalText.conditionAriaLabel,
+      }),
       VariableMark,
       MarkdownLink.configure({
         openOnClick: false,
@@ -155,6 +186,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           const { left, bottom } = event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
+          // record current link so transaction listener won't re-open redundantly
+          try {
+            currentLinkRef.current = editor.getAttributes("link").href || null;
+          } catch (e) {
+            console.error(
+              "[SimpleEditor] Error getting link attributes in handleClickOn:",
+              e,
+            );
+          }
           return true;
         }
         return false;
@@ -228,11 +268,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       if (editor?.view && sel) {
         const pos = sel.from;
         const coords = editor.view.coordsAtPos(pos);
-        console.log("openLinkModal: coordsAtPos", { pos, coords });
         if (coords) {
           const left = coords.left || coords.x;
           const top = (coords.bottom || coords.y) + 8;
-          console.log("openLinkModal: using coordsAtPos ->", { left, top });
           setModalPosition({ top, left });
           setLinkModalVisible(true);
           return;
@@ -262,36 +300,30 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            // ignore
+            console.error(
+              "[SimpleEditor] Error computing temporary rect in openLinkModal:",
+              err,
+            );
           }
         }
 
         const left = rect.left || 0;
         const top = (rect.top || 0) + (rect.height || 0) + 6;
-        console.log("openLinkModal: using range rect ->", {
-          rect: { left: rect.left, top: rect.top, height: rect.height },
-          left,
-          top,
-        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       }
     } catch (err) {
+      console.error("openLinkModal: failed to compute selection rect", err);
       // If anything goes wrong computing the rect, fall back to opening
       // the modal roughly in the editor area (center top) so it remains usable.
       try {
         const edRect = editor?.view?.dom?.getBoundingClientRect?.();
         const left = (edRect?.left || 0) + 20;
         const top = (edRect?.top || 0) + 40;
-        console.log("openLinkModal: fallback editor rect ->", {
-          edRect,
-          left,
-          top,
-        });
         setModalPosition({ top, left });
         setLinkModalVisible(true);
       } catch (e) {
-        console.log("openLinkModal: final fallback");
+        console.error("openLinkModal: fallback failed", e);
         setModalPosition({ top: 80, left: 80 });
         setLinkModalVisible(true);
       }
@@ -329,7 +361,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const tempRects = tempRange.getClientRects();
             rect = tempRects && tempRects.length ? tempRects[0] : rect;
           } catch (err) {
-            // ignore
+            console.error(
+              "computeModalPosition: tempRange.getClientRects failed",
+              err,
+            );
           }
         }
 
@@ -338,7 +373,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         setModalPosition({ top, left });
       }
     } catch (err) {
-      // ignore errors during recompute
+      console.error(
+        "[SimpleEditor] Error computing modal position in computeModalPosition:",
+        err,
+      );
     }
   };
 
@@ -384,14 +422,146 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
 
+  // Intercept Mod-a (Cmd/Ctrl+A) at the DOM capture phase so we can
+  // normalize the selection to block boundaries before TipTap/ProseMirror
+  // applies its default select-all behavior. This ensures keyboard
+  // select-all matches mouse select-all for block toggles.
+  // Hopefully tiptap will fix this upstream one day! (https://github.com/ueberdosis/tiptap/issues/6260)
+  React.useEffect(() => {
+    if (!editor || !editor.view || !editor.view.dom) return;
+    const dom = editor.view.dom;
+
+    const onCaptureKeyDown = (e) => {
+      const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+      const modKey = isMac ? e.metaKey : e.ctrlKey;
+      if (!modKey) return;
+      if (e.key === "a" || e.key === "A") {
+        if (editor.view && editor.view.composing) return;
+        try {
+          e.preventDefault();
+
+          // Record whether selection was collapsed before the selectAll
+          const prevSel = editor.state.selection;
+          const wasCollapsed = prevSel.empty;
+
+          // Let TipTap perform its selectAll, so stored state and behaviours
+          // tied to that command remain consistent.
+          editor.commands.selectAll();
+
+          // Only run our normalization for keyboard-initiated select-all
+          // when the previous selection was collapsed (user hadn't already
+          // selected content with mouse) or when the selection becomes the
+          // whole document. This avoids clobbering explicit mouse selections.
+          const newSel = editor.state.selection;
+          const isWholeDoc =
+            newSel.from === 0 && newSel.to === editor.state.doc.content.size;
+
+          if (wasCollapsed || isWholeDoc) {
+            // Quick nudge hack: shrink selection by one character each side
+            // to emulate a user doing Shift+Left then Shift+Right which
+            // normalizes some command behavior without heavy coord math.
+            try {
+              const docSize = editor.state.doc.content.size;
+              if (docSize > 2) {
+                // shrink to [1, docSize-1]
+                editor.commands.setTextSelection({ from: 1, to: docSize - 1 });
+                // restore to full doc selection
+                editor.commands.setTextSelection({ from: 0, to: docSize });
+              }
+            } catch (err) {
+              console.error("select-all nudge failed", err);
+            }
+          }
+        } catch (err) {
+          console.error("onCaptureKeyDown (Mod-a) failed", err);
+          // Ignore and allow default behavior to proceed
+        }
+      }
+    };
+
+    dom.addEventListener("keydown", onCaptureKeyDown, true);
+    return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
+  }, [editor]);
+
+  // Listen to keyboard arrow events and check for link transitions
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const handleTransaction = () => {
+      // This fires after every editor transaction, including arrow key navigation
+      const isOnLink = editor.isActive("link");
+      const linkHref = editor.getAttributes("link").href || null;
+
+      const now = Date.now();
+      const lastEvent = lastUserEventRef.current;
+
+      const recentArrowOrClick =
+        lastEvent &&
+        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
+        now - lastEvent.time < 800;
+
+      // Only auto-open on transitions caused by recent arrow navigation or clicks
+      if (
+        isOnLink &&
+        linkHref !== currentLinkRef.current &&
+        recentArrowOrClick
+      ) {
+        openLinkModal();
+        currentLinkRef.current = linkHref;
+
+        setTimeout(() => {
+          setJustOpenedLink(true);
+          setTimeout(() => setJustOpenedLink(false), 2500);
+        }, 600);
+      } else if (!isOnLink && currentLinkRef.current) {
+        // Left a link - close modal
+        setLinkModalVisible(false);
+        currentLinkRef.current = null;
+        setJustOpenedLink(false);
+      }
+    };
+
+    editor.on("transaction", handleTransaction);
+
+    // listen to DOM keydown/clicks to record recent arrow or click events
+    const dom = editor.view.dom;
+    const onKeyDown = (e) => {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+        lastUserEventRef.current = {
+          type: "arrow",
+          key: e.key,
+          time: Date.now(),
+        };
+      }
+    };
+    const onClick = () => {
+      lastUserEventRef.current = { type: "click", time: Date.now() };
+    };
+
+    dom.addEventListener("keydown", onKeyDown);
+    dom.addEventListener("click", onClick);
+
+    return () => {
+      editor.off("transaction", handleTransaction);
+      dom.removeEventListener("keydown", onKeyDown);
+      dom.removeEventListener("click", onClick);
+    };
+  }, [editor]);
+
   // Update hidden input field when content changes
   React.useEffect(() => {
     if (!editor) return;
+
     const updateHiddenInput = () => {
       try {
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        // Unescape serializer-escaped variable markers in link destinations
+        // e.g., ](\\(\\(var\\)\\)) -> ](((var)))
+        markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
+          return `((${v}))`;
+        });
         // Convert autolinked mailto forms like <mailto:person@example.com>
         // into explicit markdown links [person@example.com](mailto:person@example.com)
         // This prevents downstream storage using angle-bracket autolinks.
@@ -445,6 +615,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      // Unescape serializer-escaped variable markers in link destinations
+      markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
+        return `((${v}))`;
+      });
       // Convert autolinked mailto forms like <mailto:person@example.com>
       // into explicit markdown links [person@example.com](mailto:person@example.com)
       markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
@@ -476,8 +650,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     }
   };
 
+  // Feature flag: show a single context-aware conditional button in the toolbar.
+  // When false, show separate block/inline conditional buttons.
+  const useUnifiedConditionalButton = false;
   return (
-    <div className="editor-wrapper">
+    <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
       <MenuBar
         editor={editor}
         openLinkModal={openLinkModal}
@@ -485,6 +662,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         onToggleMarkdownView={toggleViewMode}
         isMarkdownView={isMarkdownView}
         toggleLabel={toggleLabel}
+        useUnifiedConditionalButton={useUnifiedConditionalButton}
       />
       <div className="editor-content">
         {isMarkdownView ? (
@@ -511,6 +689,14 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           setSelectionHighlight(null);
         }}
         lang={lang}
+        justOpened={justOpenedLink}
+        onSavedLink={(href) => {
+          try {
+            currentLinkRef.current = href || null;
+          } catch (e) {
+            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
+          }
+        }}
       />
     </div>
   );

@@ -324,3 +324,175 @@
 .link-modal input:focus-visible {
   @apply outline-yellow outline-2 outline-offset-0;
 }
+
+/* Conditional block styling - similar to language blocks */
+.conditional-block {
+  background-color: #f3f4f6;
+  border-left: 4px solid #0078d4; /* Blue accent line */
+  margin: 1.5rem 0;
+  padding: 2.8rem 1rem 0.5rem;
+  position: relative;
+}
+
+.conditional-block::before {
+  content: attr(data-condition);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  padding: 0.25rem 1rem;
+  background-color: #0078d4;
+  white-space: nowrap;
+}
+
+/* When a real label element is present (NodeView), hide the ::before fallback */
+.conditional-block.has-conditional-label::before {
+  content: none;
+}
+
+.conditional-trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #0078d4;
+  padding: 0.25rem 0.6rem;
+  background-color: #d3e6fd;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+.conditional-trigger * {
+  user-select: none;
+}
+
+.conditional-block-condition-input {
+  font-size: 1rem;
+  height: 1.8rem;
+  padding: 0 0.35rem;
+  border-radius: 0.3rem;
+  border: 3px solid #7f8a93;
+  background: white;
+  font-family: monospace;
+  color: black;
+  min-width: 8ch;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  field-sizing: content;
+}
+
+/* Keep drag-selection in content from "highlighting" the block condition input.
+   (When the input isn't focused, it should behave like non-editable chrome.) */
+.conditional-block-condition-input:not(:focus) {
+  user-select: none;
+}
+
+.conditional-block-condition-input:not(:focus)::selection {
+  background: transparent;
+  color: inherit;
+}
+
+.conditional-block-condition-input:focus {
+  outline: 2px solid #ffbf47;
+  outline-offset: 1px;
+}
+
+.conditional-trigger-icon {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.conditional-trigger:focus {
+  outline: 2px solid #1a3152;
+  outline-offset: 0;
+}
+
+.conditional-trigger-text {
+  font-size: 0.7em;
+  white-space: nowrap;
+}
+
+/* Inline conditional styling */
+span[data-type="conditional-inline"] {
+  box-sizing: border-box;
+  padding-right: 0.45rem;
+  border-radius: 0.3rem;
+  border: 3px solid #0078d4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.conditional-inline-edit-widget {
+  display: inline-flex;
+  user-select: none;
+  gap: 0.25rem;
+  vertical-align: middle;
+  margin-right: 0;
+  padding: 0.25rem;
+  background-color: #d3e6fd;
+}
+
+/* Widget is rendered as a sibling immediately before the marked text. */
+.conditional-inline-edit-widget + span[data-type="conditional-inline"] {
+  margin-left: 0;
+  padding-left: 0.4rem;
+}
+
+/* When two inline conditionals are adjacent, merge the mark with the next widget. */
+span[data-type="conditional-inline"] + .conditional-inline-edit-widget {
+  margin-left: 0;
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.conditional-inline-edit-prefix,
+.conditional-inline-edit-suffix {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #0078d4;
+  white-space: nowrap;
+}
+
+.conditional-inline-branch-icon {
+  width: 1.3em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.1em;
+  margin-right: 0.25rem;
+}
+
+.conditional-inline-condition-input {
+  font-size: 0.75em;
+  line-height: 1.5;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-family: monospace;
+  border-radius: 0.3rem;
+  border: 3px solid #7f8a93;
+  background: white;
+  color: #0b0c0c;
+  min-width: 8ch;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  field-sizing: content;
+}
+
+.conditional-inline-condition-input:focus {
+  outline: 2px solid #ffbf47;
+}
+
+/* If a non-focused input ends up with a stale selection range (browser quirk),
+   don't display it. Keeps drag-selection in content from "highlighting" the input. */
+.conditional-inline-condition-input:not(:focus)::selection {
+  background: transparent;
+  color: inherit;
+}

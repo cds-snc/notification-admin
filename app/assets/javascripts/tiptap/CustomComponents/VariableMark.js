@@ -1,4 +1,4 @@
-import { Mark, markInputRule } from "@tiptap/core";
+import { Mark, InputRule } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -35,10 +35,26 @@ const VariableMark = Mark.create({
   },
 
   addInputRules() {
+    const markType = this.type;
+
     return [
-      markInputRule({
-        find: /\(\(([^)]+)\)\)$/,
-        type: this.type,
+      new InputRule({
+        find: /\(\(([^()]+)\)\)$/,
+        handler: ({ state, range, match }) => {
+          const { tr } = state;
+          const start = range.from;
+          const end = range.to;
+          const varName = match && match[1] ? match[1] : null;
+
+          if (varName) {
+            // Replace typed ((name)) with the text node marked as variable
+            tr.replaceWith(
+              start,
+              end,
+              state.schema.text(varName, [markType.create()]),
+            );
+          }
+        },
       }),
     ];
   },
@@ -115,14 +131,23 @@ const VariableMark = Mark.create({
 
                 if (!found) return false;
 
+                // Extract the variable name
+                const content = state.src.slice(start + 2, pos);
+
+                // Skip if this looks like a conditional block (contains ??)
+                if (content.includes("??")) {
+                  return false;
+                }
+
                 // In silent mode, just advance the position
                 if (silent) {
                   state.pos = pos + 2;
                   return true;
                 }
 
-                // Extract the variable name
-                const content = state.src.slice(start + 2, pos);
+                // Check if content contains parentheses and reject if so
+                if (content.includes("(") || content.includes(")"))
+                  return false;
 
                 // Create the opening tag token
                 const tokenOpen = state.push("variable_open", "span", 1);
@@ -197,6 +222,24 @@ const VariableMark = Mark.create({
                         }
 
                         const varName = remaining.slice(openIdx + 2, closeIdx);
+                        if (varName.includes("(") || varName.includes(")")) {
+                          // Treat this as plain text if it contains parentheses
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(0, closeIdx + 2);
+                          newChildren.push(t);
+                          remaining = remaining.slice(closeIdx + 2);
+                          continue;
+                        }
+
+                        // Skip if this looks like a conditional block (contains ??)
+                        if (varName.includes("??")) {
+                          // Push the whole pattern as text - let ConditionalNode handle it
+                          const t = new Token("text", "", 0);
+                          t.content = remaining.slice(openIdx, closeIdx + 2);
+                          newChildren.push(t);
+                          remaining = remaining.slice(closeIdx + 2);
+                          continue;
+                        }
 
                         const tOpen = new Token("variable_open", "span", 1);
                         tOpen.attrs = [["data-type", "variable"]];

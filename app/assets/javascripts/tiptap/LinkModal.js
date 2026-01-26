@@ -9,6 +9,8 @@ const LinkModal = ({
   onClose,
   outline,
   lang = "en",
+  justOpened = false,
+  onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
@@ -101,7 +103,9 @@ const LinkModal = ({
   // the modal and restore focus handling to the editor.
   const saveLink = () => {
     let formattedUrl = url;
-    if (url && !/^(https?:\/\/|mailto:)/i.test(url)) {
+    // If the URL looks like a variable marker (e.g. contains '((') or
+    // already contains a protocol or mailto, do not prepend a protocol.
+    if (url && !/^(https?:\/\/|mailto:)/i.test(url) && !/\(\(/.test(url)) {
       formattedUrl = `https://${url}`;
     }
 
@@ -112,8 +116,29 @@ const LinkModal = ({
         .extendMarkRange("link")
         .setLink({ href: formattedUrl })
         .run();
+
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(editor.getAttributes("link").href || null);
+        }
+      } catch (e) {
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link saved):",
+          e,
+        );
+      }
     } else {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      try {
+        if (typeof onSavedLink === "function") {
+          onSavedLink(null);
+        }
+      } catch (e) {
+        console.error(
+          "[LinkModal] Error in onSavedLink callback (link unset):",
+          e,
+        );
+      }
     }
     onClose();
   };
@@ -128,6 +153,16 @@ const LinkModal = ({
   // Remove the link mark from the current selection and close the modal.
   const removeLink = () => {
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    try {
+      if (typeof onSavedLink === "function") {
+        onSavedLink(null);
+      }
+    } catch (e) {
+      console.error(
+        "[LinkModal] Error in onSavedLink callback (link removed):",
+        e,
+      );
+    }
     onClose();
   };
 
@@ -151,6 +186,11 @@ const LinkModal = ({
 
   const t = labels[lang] || labels.en;
 
+  // When the modal just opened, include announcement in label for screen readers
+  const labelText = justOpened
+    ? `Link editor opened. ${t.enterLink}`
+    : t.enterLink;
+
   return (
     <div
       ref={modalRef}
@@ -171,7 +211,7 @@ const LinkModal = ({
         ></div>
       )}
       <label htmlFor="link-input" className="sr-only">
-        {t.enterLink}
+        {labelText}
       </label>
       <input
         id="link-input"
