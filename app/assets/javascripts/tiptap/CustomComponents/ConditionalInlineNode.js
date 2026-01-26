@@ -46,7 +46,7 @@ const ConditionalInlineNode = Node.create({
       HTMLAttributes: {},
       prefix: "IF ",
       suffix: " is YES",
-      defaultCondition: "condition",
+      defaultCondition: "variable",
       conditionAriaLabel: "Condition",
     };
   },
@@ -789,7 +789,8 @@ const ConditionalInlineNode = Node.create({
     return {
       markdown: {
         serialize(state, node) {
-          const condition = node.attrs.condition || defaultCondition;
+          // Preserve intentionally empty conditions; only fall back for null/undefined.
+          const condition = node.attrs.condition ?? defaultCondition;
           state.write(`((${condition}??`);
           // `tiptap-markdown` treats inline vs block rendering differently.
           // Using `renderInline` (when available) preserves inline marks like

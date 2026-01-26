@@ -1,4 +1,5 @@
-import { Node } from "@tiptap/core";
+import { Node, PasteRule } from "@tiptap/core";
+import { Fragment } from "@tiptap/pm/model";
 import {
   NodeSelection,
   Plugin,
@@ -32,7 +33,7 @@ const ConditionalNode = Node.create({
       HTMLAttributes: {},
       prefix: "IF ",
       suffix: " is YES",
-      defaultCondition: "condition",
+      defaultCondition: "variable",
       conditionAriaLabel: "Condition",
     };
   },

@@ -86,8 +86,10 @@ export const installConditionalInlineMarkdownIt = (
     const start = state.pos;
     const max = state.posMax;
 
-    if (state.env?.__notifyDisableConditional === true) return false;
-    if (state.env?.__notifyDisableConditionalInline === true) return false;
+    const env = state.env || (state.env = {});
+
+    if (env.__notifyDisableConditional === true) return false;
+    if (env.__notifyDisableConditionalInline === true) return false;
 
     if (start + 8 > max) return false;
     if (state.src.slice(start, start + 2) !== OPEN) return false;
@@ -130,13 +132,13 @@ export const installConditionalInlineMarkdownIt = (
     ];
 
     const innerTokens = [];
-    const prevDisable = state.env.__notifyDisableConditionalInline;
-    state.env.__notifyDisableConditionalInline = true;
-    state.md.inline.parse(content, state.md, state.env, innerTokens);
+    const prevDisable = env.__notifyDisableConditionalInline;
+    env.__notifyDisableConditionalInline = true;
+    state.md.inline.parse(content, state.md, env, innerTokens);
     if (prevDisable === undefined) {
-      delete state.env.__notifyDisableConditionalInline;
+      delete env.__notifyDisableConditionalInline;
     } else {
-      state.env.__notifyDisableConditionalInline = prevDisable;
+      env.__notifyDisableConditionalInline = prevDisable;
     }
 
     // Keep token nesting consistent so downstream consumers (eg tiptap-markdown)
@@ -158,6 +160,124 @@ export const installConditionalInlineMarkdownIt = (
     dataType: "conditional-inline",
     className: "conditional-inline",
     defaultCondition,
+  });
+
+  // Fallback: in some markdown-it contexts, custom inline rules may not fire
+  // for patterns embedded in certain token streams. Mirror VariableMark's
+  // approach by post-processing inline text tokens to recognize
+  // ((condition??content)) sequences and convert them into conditional tokens.
+  md.core.ruler.push("conditional_inline_transform", (state) => {
+    const Token = state.Token;
+    const env = state.env || (state.env = {});
+
+    for (let i = 0; i < state.tokens.length; i++) {
+      const blockToken = state.tokens[i];
+      if (blockToken.type !== "inline" || !blockToken.children) continue;
+
+      const newChildren = [];
+
+      for (let j = 0; j < blockToken.children.length; j++) {
+        const child = blockToken.children[j];
+
+        if (
+          child.type !== "text" ||
+          !child.content ||
+          !child.content.includes(OPEN)
+        ) {
+          newChildren.push(child);
+          continue;
+        }
+
+        let remaining = child.content;
+
+        while (remaining.length > 0) {
+          const openIdx = remaining.indexOf(OPEN);
+          if (openIdx === -1) {
+            const t = new Token("text", "", 0);
+            t.content = remaining;
+            newChildren.push(t);
+            break;
+          }
+
+          if (openIdx > 0) {
+            const t = new Token("text", "", 0);
+            t.content = remaining.slice(0, openIdx);
+            newChildren.push(t);
+          }
+
+          const condStart = openIdx + OPEN.length;
+          const condEnd = remaining.indexOf("??", condStart);
+          if (condEnd === -1) {
+            const t = new Token("text", "", 0);
+            t.content = remaining.slice(openIdx);
+            newChildren.push(t);
+            break;
+          }
+
+          const conditionRaw = remaining.slice(condStart, condEnd);
+          const condition = conditionRaw.trim();
+
+          const bodyStart = condEnd + 2;
+          const chunk = remaining.slice(bodyStart);
+          const scanned = scanConditionalBodyForClose(chunk);
+          if (!scanned.foundEnd) {
+            const t = new Token("text", "", 0);
+            t.content = remaining.slice(openIdx);
+            newChildren.push(t);
+            break;
+          }
+
+          const closeIdx = bodyStart + scanned.closeOffset;
+          const consumed = closeIdx + CLOSE.length;
+          const content = scanned.content;
+
+          // Enforce the same validity constraints as the inline rule.
+          const invalid =
+            !condition ||
+            !content.trim() ||
+            conditionRaw.includes("\n") ||
+            content.includes("\n");
+
+          if (invalid) {
+            const t = new Token("text", "", 0);
+            t.content = remaining.slice(openIdx, consumed);
+            newChildren.push(t);
+            remaining = remaining.slice(consumed);
+            continue;
+          }
+
+          const tOpen = new Token("conditional_inline_open", "span", 1);
+          tOpen.attrs = [
+            ["data-type", "conditional-inline"],
+            ["data-condition", condition],
+          ];
+          tOpen.markup = `((`;
+
+          const innerTokens = [];
+          const prevDisable = env.__notifyDisableConditionalInline;
+          env.__notifyDisableConditionalInline = true;
+          state.md.inline.parse(content, state.md, env, innerTokens);
+          if (prevDisable === undefined) {
+            delete env.__notifyDisableConditionalInline;
+          } else {
+            env.__notifyDisableConditionalInline = prevDisable;
+          }
+
+          // Adjust nesting level so the tokens sit within the wrapper span.
+          for (const t of innerTokens) {
+            if (typeof t.level === "number") t.level += 1;
+          }
+
+          const tClose = new Token("conditional_inline_close", "span", -1);
+          tClose.markup = `))`;
+
+          newChildren.push(tOpen, ...innerTokens, tClose);
+          remaining = remaining.slice(consumed);
+        }
+      }
+
+      blockToken.children = newChildren;
+    }
   });
 };
 

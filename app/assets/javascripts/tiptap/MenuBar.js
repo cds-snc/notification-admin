@@ -408,7 +408,8 @@ const MenuBar = ({
       return editor.chain().focus().unsetConditionalInline().run();
     }
 
-    return editor.commands.setConditionalInline("condition");
+    // Let the extension decide the default condition label (configured per language).
+    return editor.chain().focus().setConditionalInline().run();
   };
 
   const runUnifiedConditionalAction = () => {
@@ -1074,13 +1075,7 @@ const MenuBar = ({
                 // Keep focus/selection in the editor for the toggle behavior.
                 e.preventDefault();
               }}
-              onClick={() =>
-                announceToggle(
-                  () => runInlineConditionalAction(),
-                  () => editor.isActive("conditionalInline"),
-                  t.conditionalInline,
-                )
-              }
+              onClick={() => runInlineConditionalAction()}
               className={
                 "toolbar-button" +
                 (editor.isActive("conditionalInline") ? " is-active" : "")
