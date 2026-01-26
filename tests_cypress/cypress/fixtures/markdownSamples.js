@@ -585,6 +585,27 @@ Nested: RTL with numbered list
 2. Two
 [[/rtl]]`
         },
+        INLINE_CONDITIONALS: {
+                before: `((test??Inline conditional))`,
+                expected: `((test??Inline conditional))`
+        },
+        BLOCK_CONDITIONALS: {
+                before: `((test??
+Inline conditional
+))`,
+                expected: `((test??
+Inline conditional
+
+))`
+        },
+        BLOCK_CONDITIONALS2: {
+                before: `((test??
+Inline conditional))`,
+                expected: `((test??
+Inline conditional
+
+))`
+        }
 };
 
 export default MARKDOWN;
