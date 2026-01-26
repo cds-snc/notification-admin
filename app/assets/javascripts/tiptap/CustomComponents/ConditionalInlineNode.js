@@ -428,12 +428,15 @@ const ConditionalInlineNode = Node.create({
     return {
       setConditionalInline:
         (condition) =>
-        ({ editor, state }) => {
+        ({ editor, state, dispatch }) => {
           if (isInsideBlockConditional(state)) return false;
 
           const defaultCondition = this.options.defaultCondition;
           const nextCondition = (condition || "").trim() || defaultCondition;
 
+          // Build the transaction from the `state` provided by the command
+          // invocation and use the passed `dispatch` so the transaction is
+          // applied against the same snapshot it was built for.
           const { from, to } = state.selection;
           const nodeType = state.schema.nodes[this.name];
           if (!nodeType) return false;
@@ -465,7 +468,8 @@ const ConditionalInlineNode = Node.create({
             // Inserted via menubar/command: keep a text selection (so fast typing
             // can't replace/delete the whole node) and then focus the condition input.
             tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
-            editor.view.dispatch(tr);
+            if (typeof dispatch === "function") dispatch(tr);
+            else editor.view.dispatch(tr);
 
             // Focus immediately if possible (avoids race where typing happens before focus).
             if (!focusConditionInput(from)) {
@@ -482,7 +486,8 @@ const ConditionalInlineNode = Node.create({
           // Inserted via menubar/command: keep a text selection (so fast typing
           // can't replace/delete the whole node) and then focus the condition input.
           tr.setSelection(TextSelection.near(tr.doc.resolve(from + 1), 1));
-          editor.view.dispatch(tr);
+          if (typeof dispatch === "function") dispatch(tr);
+          else editor.view.dispatch(tr);
 
           if (!focusConditionInput(from)) {
             requestAnimationFrame(() => focusConditionInput(from));
@@ -501,7 +506,7 @@ const ConditionalInlineNode = Node.create({
 
       unsetConditionalInline:
         () =>
-        ({ editor, state }) => {
+        ({ editor, state, dispatch }) => {
           const nodeType = state.schema.nodes[this.name];
           if (!nodeType) return false;
 
@@ -515,7 +520,8 @@ const ConditionalInlineNode = Node.create({
               selection.to,
               selection.node.content,
             );
-            editor.view.dispatch(tr);
+            if (typeof dispatch === "function") dispatch(tr);
+            else editor.view.dispatch(tr);
             return true;
           }
 
@@ -525,7 +531,8 @@ const ConditionalInlineNode = Node.create({
             const pos = $from.before(d);
             const tr = state.tr;
             tr.replaceWith(pos, pos + n.nodeSize, n.content);
-            editor.view.dispatch(tr);
+            if (typeof dispatch === "function") dispatch(tr);
+            else editor.view.dispatch(tr);
             return true;
           }
 

@@ -408,7 +408,7 @@ const MenuBar = ({
       return editor.chain().focus().unsetConditionalInline().run();
     }
 
-    return editor.chain().focus().setConditionalInline("condition").run();
+    return editor.commands.setConditionalInline("condition");
   };
 
   const runUnifiedConditionalAction = () => {
@@ -1074,7 +1074,13 @@ const MenuBar = ({
                 // Keep focus/selection in the editor for the toggle behavior.
                 e.preventDefault();
               }}
-              onClick={() => runInlineConditionalAction()}
+              onClick={() =>
+                announceToggle(
+                  () => runInlineConditionalAction(),
+                  () => editor.isActive("conditionalInline"),
+                  t.conditionalInline,
+                )
+              }
               className={
                 "toolbar-button" +
                 (editor.isActive("conditionalInline") ? " is-active" : "")
