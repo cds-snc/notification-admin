@@ -64,7 +64,7 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 9);
   });
 
-  it.only("Links are correctly rendered coming back from markdown view", () => {
+  it("Links are correctly rendered coming back from markdown view", () => {
     RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
 
     // Editor should have 10 marked up links
@@ -130,5 +130,101 @@ describe("Markdown entering and pasting tests", () => {
       .and(($el) => {
         expect($el.text()).to.equal("var");
       });
+  });
+
+  it("RTL blocks are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before);
+
+    // Editor should have marked up RTL blocks
+    RichTextEditor.Components.Editor()
+      .find('div[data-type="rtl-block"]')
+      .should("have.length", 6);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "have.text",
+      MARKDOWN.RTL_BLOCKS.expected,
+    );
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should still have marked up RTL blocks
+    RichTextEditor.Components.Editor()
+      .find('div[data-type="rtl-block"]')
+      .should("have.length", 6);
+  });
+
+  it("Inline conditionals are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(
+      MARKDOWN.INLINE_CONDITIONALS.before,
+    );
+
+    // Editor should have marked up inline conditionals
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="conditional-inline"]')
+      .should("have.length", 1);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "have.text",
+      MARKDOWN.INLINE_CONDITIONALS.expected,
+    );
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should still have marked up inline conditionals
+    RichTextEditor.Components.Editor()
+      .find('span[data-type="conditional-inline"]')
+      .should("have.length", 1);
+  });
+
+  it("Block conditionals are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.BLOCK_CONDITIONALS.before);
+
+    // Editor should have marked up block conditionals
+    RichTextEditor.Components.Editor()
+      .find('div[data-type="conditional"]')
+      .should("have.length", 1);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "have.text",
+      MARKDOWN.BLOCK_CONDITIONALS.expected,
+    );
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should still have marked up block conditionals
+    RichTextEditor.Components.Editor()
+      .find('div[data-type="conditional"]')
+      .should("have.length", 1);
+  });
+
+  it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before);
+
+    // Editor should have marked up language blocks
+    RichTextEditor.Components.Editor()
+      .find('div[lang="en-CA"]')
+      .should("have.length", 9);
+    RichTextEditor.Components.Editor()
+      .find('div[lang="fr-CA"]')
+      .should("have.length", 9);
+
+    // Switch to markdown mode and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "have.text",
+      MARKDOWN.LANG_BLOCKS.expected,
+    );
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Editor should still have marked up language blocks
+    RichTextEditor.Components.Editor()
+      .find('div[lang="en-CA"]')
+      .should("have.length", 9);
+    RichTextEditor.Components.Editor()
+      .find('div[lang="fr-CA"]')
+      .should("have.length", 9);
   });
 });
