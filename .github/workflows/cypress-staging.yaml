@@ -56,14 +56,36 @@ jobs:
         if: failure()
         run: |
           set -euo pipefail
-          FILE=tests_cypress/cypress/results/mochawesome.json
-          if [ ! -f "$FILE" ]; then
-            echo "No mochawesome found at $FILE" >&2
-            echo "failures=[]" > /tmp/failures.json
+          RESULTS_DIR=tests_cypress/cypress/results
+          TMP=/tmp/failures.json
+
+          # Find mochawesome JSON files (mochawesome*.json)
+          mapfile -t files < <(find "$RESULTS_DIR" -maxdepth 1 -type f -name 'mochawesome*.json' -print 2>/dev/null || true)
+
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No mochawesome files found in $RESULTS_DIR" >&2
+            echo "failures=[]" > "$TMP"
             exit 0
           fi
 
-          jq -c '[ .results[] | .. | objects
+          # Validate files are mochawesome outputs (have top-level 'results')
+          valid_files=()
+          for f in "${files[@]}"; do
+            if jq -e 'has("results")' "$f" >/dev/null 2>&1; then
+              valid_files+=("$f")
+            else
+              echo "Skipping non-mochawesome JSON: $f" >&2
+            fi
+          done
+
+          if [ "${#valid_files[@]}" -eq 0 ]; then
+            echo "No valid mochawesome JSONs found" >&2
+            echo "failures=[]" > "$TMP"
+            exit 0
+          fi
+
+          # Combine all mochawesome files and extract up to 5 unique failures, keeping first 5 lines
+          jq -s -c '[ .[] | .results[]? | .. | objects
             | select(.state=="failed")
             | { fullTitle: (.fullTitle // .title), message: (.err.message // .err.estack // "No error") }
             ]
@@ -75,9 +97,9 @@ jobs:
                 | .[0:5]
                 | map("> " + .)
                 | join("\n") ) })
-            | .[0:5]' "$FILE" > /tmp/failures.json
+            | .[0:5]' "${valid_files[@]}" > "$TMP" || echo "failures=[]" > "$TMP"
 
-          jq . /tmp/failures.json || true
+          jq . "$TMP" || true
 
       - name: Fetch artifact download URL
         if: failure()

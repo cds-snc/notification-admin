@@ -217,10 +217,14 @@
 
 .editor-content {
   flex: 1 1 auto;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  @apply px-gutter py-gutterAndAHalf;
+}
+
+.editor-content > div {
+  width: 600px;
+  @apply px-gutter py-gutterAndAHalf border-r-1 border-dashed border-gray-300;
 }
 
 /* Toolbar styles */
@@ -231,7 +235,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  @apply bg-gray-300 p-4;
+  @apply bg-gray-300 p-4 gap-y-6;
 }
 
 .toolbar-group {

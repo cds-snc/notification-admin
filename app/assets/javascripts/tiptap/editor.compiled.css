@@ -66,12 +66,10 @@
     border-radius: 0.5rem;
     color: var(--white);
     margin: 1.5rem 0;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem
   }
   pre {
-    font-family:
-      Noto Mono,
-      monospace;
+    font-family: Noto Mono, monospace;
   }
   pre {
     code {
@@ -174,9 +172,7 @@
   }
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
-    font-family:
-      Noto Mono,
-      monospace;
+    font-family: Noto Mono, monospace;
   }
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
@@ -296,8 +292,8 @@
   position: absolute;
   top: -1.4em;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   white-space: nowrap;
 }
 
@@ -322,9 +318,17 @@
 
 .editor-content {
   flex: 1 1 auto;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.editor-content > div {
+  width: 600px;
+  border-right-width: 1px;
+  border-style: dashed;
+  --tw-border-opacity: 1;
+  border-color: rgb(175 185 195 / var(--tw-border-opacity, 1));
   padding-left: 1.875rem;
   padding-right: 1.875rem;
   padding-top: 2.8125rem;
@@ -340,6 +344,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  row-gap: 0.9375rem;
   --tw-bg-opacity: 1;
   background-color: rgb(175 185 195 / var(--tw-bg-opacity, 1));
   padding: 0.625rem;
@@ -379,8 +384,8 @@
   font-weight: 500;
   line-height: 1;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   min-height: 45px;
   min-width: 45px;
   --tw-bg-opacity: 1;
@@ -455,9 +460,7 @@
   background-color: transparent;
   resize: vertical;
   box-sizing: border-box;
-  font-family:
-    Noto Mono,
-    monospace;
+  font-family: Noto Mono, monospace;
 }
 
 /* Link Modal Styles */
