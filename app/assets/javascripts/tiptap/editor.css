@@ -278,7 +278,7 @@
 .toolbar-button.is-active {
   @apply bg-black text-white;
 }
-.toolbar-button.is-active svg * {
+.toolbar-button.is-active svg ellipse {
   fill: none;
 }
 
