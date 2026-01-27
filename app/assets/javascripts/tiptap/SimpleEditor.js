@@ -197,7 +197,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             const body = m[2] || "";
 
             const before = normalizedForStorage.slice(0, m.index).trim();
-            const after = normalizedForStorage.slice(m.index + m[0].length).trim();
+            const after = normalizedForStorage
+              .slice(m.index + m[0].length)
+              .trim();
 
             // Build paragraph nodes for the conditional body
             const bodyParts = body
@@ -214,10 +216,17 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
             }
 
             const conditionalContent = bodyParts.length
-              ? bodyParts.map((p) => ({ type: "paragraph", content: [{ type: "text", text: p }] }))
+              ? bodyParts.map((p) => ({
+                  type: "paragraph",
+                  content: [{ type: "text", text: p }],
+                }))
               : [{ type: "paragraph" }];
 
-            nodes.push({ type: "conditional", attrs: { condition }, content: conditionalContent });
+            nodes.push({
+              type: "conditional",
+              attrs: { condition },
+              content: conditionalContent,
+            });
 
             if (after.length) {
               nodes.push({
