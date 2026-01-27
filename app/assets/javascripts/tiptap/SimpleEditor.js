@@ -169,6 +169,68 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
+          // If the pasted text looks like a multi-line block conditional,
+          // allow the editor's paste rules (node-level PasteRule) to run
+          // instead of intercepting here.
+          const isBlockConditionalPaste =
+            text.includes("((") &&
+            text.includes("??") &&
+            text.includes("))") &&
+            text.includes("\n");
+
+          if (isBlockConditionalPaste) {
+            // Intercept multi-line block conditional pastes and insert as
+            // a proper block conditional node, splitting surrounding text
+            // into separate paragraphs.
+            event.preventDefault();
+
+            const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
+
+            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/;
+            const m = normalizedForStorage.match(re);
+            if (!m) {
+              // fallback to allowing default handling
+              return false;
+            }
+
+            const condition = (m[1] || "").trim();
+            const body = m[2] || "";
+
+            const before = normalizedForStorage.slice(0, m.index).trim();
+            const after = normalizedForStorage.slice(m.index + m[0].length).trim();
+
+            // Build paragraph nodes for the conditional body
+            const bodyParts = body
+              .split(/\n+/)
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0);
+
+            const nodes = [];
+            if (before.length) {
+              nodes.push({
+                type: "paragraph",
+                content: [{ type: "text", text: before }],
+              });
+            }
+
+            const conditionalContent = bodyParts.length
+              ? bodyParts.map((p) => ({ type: "paragraph", content: [{ type: "text", text: p }] }))
+              : [{ type: "paragraph" }];
+
+            nodes.push({ type: "conditional", attrs: { condition }, content: conditionalContent });
+
+            if (after.length) {
+              nodes.push({
+                type: "paragraph",
+                content: [{ type: "text", text: after }],
+              });
+            }
+
+            // Insert the constructed nodes at the current selection
+            editor.commands.insertContent(nodes);
+            return true;
+          }
+
           // Prevent default paste behavior
           event.preventDefault();
 
