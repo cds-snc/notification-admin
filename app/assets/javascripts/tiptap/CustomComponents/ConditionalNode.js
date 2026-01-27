@@ -1,5 +1,4 @@
 import { Node } from "@tiptap/core";
-import { Fragment } from "@tiptap/pm/model";
 import {
   NodeSelection,
   Plugin,
