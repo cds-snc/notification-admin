@@ -299,6 +299,17 @@ const MenuBar = ({
     italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
   };
 
+  // Computed states/labels for conditional buttons so sr-only text follows aria-pressed
+  const conditionalPressed = useUnifiedConditionalButton
+    ? editor.isActive("conditional") || editor.isActive("conditionalInline")
+    : editor.isActive("conditional");
+  const conditionalLabel = useUnifiedConditionalButton
+    ? t.conditional
+    : t.conditionalBlock;
+  const conditionalSrText = (conditionalPressed ? t.removePrefix : t.applyPrefix) + conditionalLabel;
+
+  const inlinePressed = editor.isActive("conditionalInline");
+
   // Helper to run an editor action and announce the resulting state change.
   // To ensure screen readers read the announcement before focus returns to the
   // editor, we optimistically set the message before invoking the action.
@@ -1010,36 +1021,15 @@ const MenuBar = ({
                 t.conditional,
               );
             }}
-            className={
-              "toolbar-button" +
-              ((
-                useUnifiedConditionalButton
-                  ? editor.isActive("conditional") ||
-                    editor.isActive("conditionalInline")
-                  : editor.isActive("conditional")
-              )
-                ? " is-active"
-                : "")
-            }
+            className={"toolbar-button" + (conditionalPressed ? " is-active" : "")}
             title={
               useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
             }
-            aria-pressed={
-              useUnifiedConditionalButton
-                ? editor.isActive("conditional") ||
-                  editor.isActive("conditionalInline")
-                : editor.isActive("conditional")
-            }
+            aria-pressed={conditionalPressed}
           >
             <span className="sr-only">
-              {useUnifiedConditionalButton
-                ? (editor.isActive("conditional") ||
-                  editor.isActive("conditionalInline")
-                    ? t.removePrefix
-                    : t.applyPrefix) + t.conditional
-                : (editor.isActive("conditional")
-                    ? t.removePrefix
-                    : t.applyPrefix) + t.conditionalBlock}
+              {conditionalPressed ? t.removePrefix : t.applyPrefix}
+              {conditionalLabel}
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -1075,18 +1065,19 @@ const MenuBar = ({
                 // Keep focus/selection in the editor for the toggle behavior.
                 e.preventDefault();
               }}
-              onClick={() => runInlineConditionalAction()}
-              className={
-                "toolbar-button" +
-                (editor.isActive("conditionalInline") ? " is-active" : "")
+              onClick={() =>
+                announceToggle(
+                  () => runInlineConditionalAction(),
+                  () => editor.isActive("conditionalInline"),
+                  t.conditionalInline,
+                )
               }
+              className={"toolbar-button" + (inlinePressed ? " is-active" : "")}
               title={t.conditionalInline}
-              aria-pressed={editor.isActive("conditionalInline")}
+              aria-pressed={inlinePressed}
             >
               <span className="sr-only">
-                {editor.isActive("conditionalInline")
-                  ? t.removePrefix
-                  : t.applyPrefix}
+                {inlinePressed ? t.removePrefix : t.applyPrefix}
                 {t.conditionalInline}
               </span>
               <svg
