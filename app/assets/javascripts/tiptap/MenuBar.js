@@ -20,7 +20,7 @@ import {
   infoIcon,
   conditionalBlockIcon,
   conditionalInlineIcon,
-  rightToLeftIcon
+  rightToLeftIcon,
 } from "./icons";
 
 /**
@@ -261,7 +261,7 @@ const MenuBar = ({
       infoPane3: "Conditional content:",
       infoPane4: "Within a paragraph",
       infoPane5: "As a separate section",
-      info: "Help"
+      info: "Help",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -296,7 +296,7 @@ const MenuBar = ({
       infoPane3: "Contenu conditionnel :",
       infoPane4: "À l'intérieur d'un paragraphe",
       infoPane5: "Section entière",
-      info: "Aide"
+      info: "Aide",
     },
   };
 
@@ -818,9 +818,7 @@ const MenuBar = ({
 
         {/* Language blocks group */}
         <div className="toolbar-group">
-          <TooltipWrapper
-            label={t.englishBlock}
-          >
+          <TooltipWrapper label={t.englishBlock}>
             <button
               type="button"
               data-testid="rte-english_block"
@@ -847,9 +845,7 @@ const MenuBar = ({
               <Icon iconNode={englishBlockIcon} />
             </button>
           </TooltipWrapper>
-          <TooltipWrapper
-            label={t.frenchBlock}
-          >
+          <TooltipWrapper label={t.frenchBlock}>
             <button
               type="button"
               data-testid="rte-french_block"
@@ -972,9 +968,7 @@ const MenuBar = ({
           </TooltipWrapper>
 
           {!useUnifiedConditionalButton && (
-            <TooltipWrapper
-              label={t.conditionalInline}
-            >
+            <TooltipWrapper label={t.conditionalInline}>
               <button
                 type="button"
                 data-testid="rte-conditional_inline"

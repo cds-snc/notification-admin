@@ -118,6 +118,19 @@ export const conditionalInlineIcon = (props = {}) => (
 );
 
 export const rightToLeftIcon = (props = {}) => (
-    <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 3V2C6 1.44772 6.44772 1 7 1H12M18 3V2C18 1.44772 17.5523 1 17 1H12M15 11H12M9 11H12M12 11V1M21 15H1M1 15L5 11M1 15L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>);
+  <svg
+    width="22"
+    height="20"
+    viewBox="0 0 22 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 3V2C6 1.44772 6.44772 1 7 1H12M18 3V2C18 1.44772 17.5523 1 17 1H12M15 11H12M9 11H12M12 11V1M21 15H1M1 15L5 11M1 15L5 19"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
