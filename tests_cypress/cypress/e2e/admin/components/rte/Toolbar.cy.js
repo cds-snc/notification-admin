@@ -182,7 +182,7 @@ describe("Toolbar accessibility tests", () => {
 
       RichTextEditor.Components.Editor().focus();
       cy.realPress(["Alt", "F10"]);
-      RichTextEditor.Components.VariableButton().should("have.focus");
+      RichTextEditor.Components.HorizontalRuleButton().should("have.focus");
     });
   });
 
