@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Save, ExternalLink, Unlink } from "lucide-react";
+import {ExternalLink, Unlink, Check } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 
 const LinkModal = ({
@@ -198,7 +198,7 @@ const LinkModal = ({
       style={{ top: position.top, left: position.left }}
       data-testid="link-modal"
     >
-      {outline && (
+      {/* {outline && (
         <div
           className="fixed border-2 border-dashed border-blue-500 pointer-events-none bg-blue-500/10"
           style={{
@@ -209,7 +209,7 @@ const LinkModal = ({
           }}
           aria-hidden="true"
         ></div>
-      )}
+      )} */}
       <label htmlFor="link-input" className="sr-only">
         {labelText}
       </label>
@@ -229,10 +229,10 @@ const LinkModal = ({
           onClick={saveLink}
           title={t.save}
           aria-label={t.save}
-          className="toolbar-button"
+          className="toolbar-button toolbar-green"
           data-testid="link-modal-save-button"
         >
-          <Save />
+          <Check />
         </button>
       </TooltipWrapper>
       <TooltipWrapper label={t.goTo}>
