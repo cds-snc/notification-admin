@@ -20,6 +20,7 @@ import {
   infoIcon,
   conditionalBlockIcon,
   conditionalInlineIcon,
+  rightToLeftIcon
 } from "./icons";
 
 /**
@@ -260,7 +261,7 @@ const MenuBar = ({
       infoPane3: "Conditional content:",
       infoPane4: "Within a paragraph",
       infoPane5: "As a separate section",
-      or: "or",
+      info: "Help"
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -295,7 +296,7 @@ const MenuBar = ({
       infoPane3: "Contenu conditionnel :",
       infoPane4: "À l'intérieur d'un paragraphe",
       infoPane5: "Section entière",
-      or: "ou",
+      info: "Aide"
     },
   };
 
@@ -899,26 +900,7 @@ const MenuBar = ({
                 {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
                 {t.rtlBlock}
               </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-text-direction-rtl"
-                aria-hidden="true"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M16 4h-6.5a3.5 3.5 0 0 0 0 7h.5" />
-                <path d="M14 15v-11" />
-                <path d="M10 15v-11" />
-                <path d="M5 19h14" />
-                <path d="M7 21l-2 -2l2 -2" />
-              </svg>
+              {rightToLeftIcon()}
             </button>
           </TooltipWrapper>
           <TooltipWrapper
@@ -1040,16 +1022,16 @@ const MenuBar = ({
         >
           {/* info button */}
           {!isMarkdownView && (
-            <TooltipWrapper label="Info">
+            <TooltipWrapper label={t.info}>
               <button
                 type="button"
                 data-testid="rte-info"
                 className={"toolbar-button" + (isInfoOpen ? " is-active" : "")}
-                title="Info"
+                title={t.info}
                 onClick={() => setIsInfoOpen(!isInfoOpen)}
                 aria-pressed={isInfoOpen}
               >
-                <span className="sr-only">Info</span>
+                <span className="sr-only">{t.info}</span>
                 <Icon iconNode={infoIcon} />
               </button>
             </TooltipWrapper>
