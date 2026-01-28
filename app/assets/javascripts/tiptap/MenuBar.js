@@ -306,7 +306,8 @@ const MenuBar = ({
   const conditionalLabel = useUnifiedConditionalButton
     ? t.conditional
     : t.conditionalBlock;
-  const conditionalSrText = (conditionalPressed ? t.removePrefix : t.applyPrefix) + conditionalLabel;
+  const conditionalSrText =
+    (conditionalPressed ? t.removePrefix : t.applyPrefix) + conditionalLabel;
 
   const inlinePressed = editor.isActive("conditionalInline");
 
@@ -1021,7 +1022,9 @@ const MenuBar = ({
                 t.conditional,
               );
             }}
-            className={"toolbar-button" + (conditionalPressed ? " is-active" : "")}
+            className={
+              "toolbar-button" + (conditionalPressed ? " is-active" : "")
+            }
             title={
               useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
             }
