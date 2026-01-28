@@ -171,13 +171,25 @@ export const installConditionalInlineMarkdownIt = (
     const env = state.env || (state.env = {});
 
     for (let i = 0; i < state.tokens.length; i++) {
-      const blockToken = state.tokens[i];
-      if (blockToken.type !== "inline" || !blockToken.children) continue;
+    const blockToken = state.tokens[i];
+    // If this whole inline token was produced while parsing inside a
+    // conditional block, skip any inline fallback transform so nested
+    // ((...??...)) sequences remain literal.
+    if (blockToken.__notifyDisableConditional) continue;
+    if (blockToken.type !== "inline" || !blockToken.children) continue;
 
       const newChildren = [];
 
       for (let j = 0; j < blockToken.children.length; j++) {
         const child = blockToken.children[j];
+
+        // If this child token was produced while parsing inside a
+        // conditional block, skip the inline conditional transform so
+        // nested markers remain treated as literal content.
+        if (child.__notifyDisableConditional) {
+          newChildren.push(child);
+          continue;
+        }
 
         if (
           child.type !== "text" ||
@@ -355,6 +367,10 @@ export const installConditionalBlockMarkdownIt = (md, { defaultCondition }) => {
 
         for (const t of innerTokens) {
           if (typeof t.level === "number") t.level += 1;
+          // Mark tokens produced while parsing inside a conditional block so
+          // the inline post-processing transform can skip converting
+          // ((...??...)) sequences inside block conditionals.
+          t.__notifyDisableConditional = true;
           state.tokens.push(t);
         }
       } else {

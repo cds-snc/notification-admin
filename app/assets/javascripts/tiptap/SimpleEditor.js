@@ -637,7 +637,45 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // so behavior matches paste. We centralize conversion in helper.
       // Convert caret markers '^' to '>' so the editor renders blockquotes
       const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
-      const processedForInsert = convertVariablesToSpans(convertedForEditor);
+      // Normalize multi-line conditional markers to ensure they start and end
+      // on their own paragraph when converting from markdown to rich content.
+      const normalizeMarkdownConditionals = (txt) => {
+        if (!txt || typeof txt !== "string") return txt;
+        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
+        let out = "";
+        let lastIndex = 0;
+        let m;
+        while ((m = re.exec(txt)) !== null) {
+          const start = m.index;
+          const end = re.lastIndex;
+          const match = m[0];
+
+          out += txt.slice(lastIndex, start);
+
+          // Ensure a blank line before
+          if (out.length === 0) {
+            // at start, nothing to do
+          } else if (!/\n\s*\n$/.test(out)) {
+            if (out.endsWith("\n")) out += "\n";
+            else out += "\n\n";
+          }
+
+          out += match;
+
+          // Ensure a blank line after (lookahead from original text)
+          const after = txt.slice(end);
+          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+          if (!hasBlankAfter) out += "\n\n";
+
+          lastIndex = end;
+        }
+
+        out += txt.slice(lastIndex);
+        return out;
+      };
+
+      const normalizedForEditor = normalizeMarkdownConditionals(convertedForEditor);
+      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
       editor.commands.setContent(processedForInsert);
 
       // Force editor to re-render by triggering a transaction
