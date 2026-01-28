@@ -53,9 +53,12 @@
       try {
         const originalMessage = contactMessage.value;
         contactMessage.value = sanitizePii(contactMessage.value);
-        
+
         // Track GA event if PII was actually removed on submission
-        if (originalMessage !== contactMessage.value && typeof gtag !== "undefined") {
+        if (
+          originalMessage !== contactMessage.value &&
+          typeof gtag !== "undefined"
+        ) {
           const language = document.documentElement.lang || "en";
           gtag("event", "pii_removed_on_submit", {
             event_category: "Contact Form",
