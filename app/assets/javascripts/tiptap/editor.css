@@ -262,10 +262,9 @@
   @apply min-h-target min-w-target p-0 bg-white text-black text-xs;
 }
 
-.toolbar-button.button-try-new { 
-  background: #2C5E79;
+.toolbar-button.button-try-new {
+  background: #2c5e79;
   @apply text-white px-8;
-
 }
 .toolbar-button.toolbar-green {
   @apply bg-green-500 text-white;
@@ -324,8 +323,8 @@
 
   svg {
     display: inline;
-    width: 1.2em; 
-    height: 1.2em; 
+    width: 1.2em;
+    height: 1.2em;
     vertical-align: middle;
   }
 }

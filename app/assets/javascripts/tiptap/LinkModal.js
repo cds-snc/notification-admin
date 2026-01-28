@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {ExternalLink, Unlink, Check } from "lucide-react";
+import { ExternalLink, Unlink, Check } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 
 const LinkModal = ({
