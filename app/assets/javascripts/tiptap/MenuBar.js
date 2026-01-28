@@ -364,6 +364,13 @@ const MenuBar = ({
     return () => clearTimeout(id);
   }, [liveMessage]);
 
+  // Close info pane when switching to markdown view
+  useEffect(() => {
+    if (isMarkdownView) {
+      setIsInfoOpen(false);
+    }
+  }, [isMarkdownView]);
+
   const selectionSpansMultipleBlocks = () => {
     try {
       const { selection } = editor.state;
