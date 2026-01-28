@@ -253,7 +253,7 @@ const MenuBar = ({
       englishBlock: "English content",
       frenchBlock: "French content",
       conditionalBlock: "Conditional section",
-      conditionalInline: "Inline conditional",
+      conditionalInline: "Conditional text",
       conditional: "Conditional",
       rtlBlock: "Right-to-left text",
       infoPane1: "Focus on a button for its function and shortcut. ",
@@ -287,7 +287,7 @@ const MenuBar = ({
       englishBlock: "Contenu en anglais",
       frenchBlock: "Contenu en français",
       conditionalBlock: "Section conditionnelle",
-      conditionalInline: "Conditionnel en ligne",
+      conditionalInline: "Texte conditionnel",
       conditional: "Conditionnel",
       rtlBlock: "Afficher de droite à gauche",
       infoPane1:
@@ -319,15 +319,15 @@ const MenuBar = ({
   const shortcuts = {
     heading1: platform === "mac" ? "⌘+Opt+1" : "Ctrl+Alt+1",
     heading2: platform === "mac" ? "⌘+Opt+2" : "Ctrl+Alt+2",
-    variable: platform === "mac" ? "⌘+Opt+3" : "Ctrl+Alt+3",
-    bulletList: platform === "mac" ? "⌘+Opt+4" : "Ctrl+Alt+4",
-    numberedList: platform === "mac" ? "⌘+Opt+5" : "Ctrl+Alt+5",
-    horizontalRule: platform === "mac" ? "⌘+Opt+6" : "Ctrl+Alt+6",
-    blockquote: platform === "mac" ? "⌘+Opt+7" : "Ctrl+Alt+7",
-    englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
-    frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
-    conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
-    conditionalInline: platform === "mac" ? "⌘+Shift+0" : "Ctrl+Shift+0",
+    variable: platform === "mac" ? "⌘+Shift+U" : "Ctrl+Shift+U",
+    bulletList: platform === "mac" ? "⌘+Shift+8" : "Ctrl+Shift+8",
+    numberedList: platform === "mac" ? "⌘+Shift+7" : "Ctrl+Shift+7",
+    horizontalRule: platform === "mac" ? "⌘+Enter" : "Ctrl+Enter",
+    blockquote: platform === "mac" ? "⌘+Shift+9" : "Ctrl+Shift+9",
+    // englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
+    // frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
+    // conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
+    // conditionalInline: platform === "mac" ? "⌘+Shift+0" : "Ctrl+Shift+0",
     rtlBlock: platform === "mac" ? "⌘+Opt+R" : "Ctrl+Alt+R",
     link: platform === "mac" ? "⌘+K" : "Ctrl+K",
     bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
@@ -820,7 +820,6 @@ const MenuBar = ({
         <div className="toolbar-group">
           <TooltipWrapper
             label={t.englishBlock}
-            shortcut={shortcuts.englishBlock}
           >
             <button
               type="button"
@@ -850,7 +849,6 @@ const MenuBar = ({
           </TooltipWrapper>
           <TooltipWrapper
             label={t.frenchBlock}
-            shortcut={shortcuts.frenchBlock}
           >
             <button
               type="button"
@@ -907,7 +905,6 @@ const MenuBar = ({
             label={
               useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
             }
-            shortcut={shortcuts.conditionalBlock}
           >
             <button
               type="button"
@@ -977,7 +974,6 @@ const MenuBar = ({
           {!useUnifiedConditionalButton && (
             <TooltipWrapper
               label={t.conditionalInline}
-              shortcut={shortcuts.conditionalInline}
             >
               <button
                 type="button"
