@@ -48,3 +48,7 @@
     {% endif %}
         {{ radios(form.support_type, use_aria_labelledby=False) }}
 {% endblock %}
+
+{% block after_form %}
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/contactGaTracking.min.js') }}"></script>
+{% endblock %}
