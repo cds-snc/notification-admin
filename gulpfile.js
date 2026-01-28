@@ -105,6 +105,7 @@ const javascripts = () => {
 const minifyIndividualJs = () => {
   return src([
     paths.src + "javascripts/branding_request.js",
+    paths.src + "javascripts/contactGaTracking.js",
     paths.src + "javascripts/formValidateRequired.js",
     paths.src + "javascripts/sessionRedirect.js",
     paths.src + "javascripts/touDialog.js",
