@@ -186,54 +186,59 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
             const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
 
-            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/;
-            const m = normalizedForStorage.match(re);
-            if (!m) {
-              // fallback to allowing default handling
-              return false;
-            }
-
-            const condition = (m[1] || "").trim();
-            const body = m[2] || "";
-
-            const before = normalizedForStorage.slice(0, m.index).trim();
-            const after = normalizedForStorage
-              .slice(m.index + m[0].length)
-              .trim();
-
-            // Build paragraph nodes for the conditional body
-            const bodyParts = body
-              .split(/\n+/)
-              .map((s) => s.trim())
-              .filter((s) => s.length > 0);
-
+            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/g;
+            let lastIndex = 0;
+            let m;
             const nodes = [];
-            if (before.length) {
-              nodes.push({
-                type: "paragraph",
-                content: [{ type: "text", text: before }],
-              });
-            }
 
-            const conditionalContent = bodyParts.length
-              ? bodyParts.map((p) => ({
+            const pushTextAsParagraphs = (text) => {
+              if (!text) return;
+              const parts = text.split(/\n+/).map((s) => s.trim());
+              for (const p of parts) {
+                if (!p) continue; // skip empty/blank-only segments
+                nodes.push({
                   type: "paragraph",
                   content: [{ type: "text", text: p }],
-                }))
-              : [{ type: "paragraph" }];
+                });
+              }
+            };
 
-            nodes.push({
-              type: "conditional",
-              attrs: { condition },
-              content: conditionalContent,
-            });
+            while ((m = re.exec(normalizedForStorage)) !== null) {
+              const start = m.index;
+              const end = re.lastIndex;
 
-            if (after.length) {
+              const beforeText = normalizedForStorage.slice(lastIndex, start);
+              pushTextAsParagraphs(beforeText);
+
+              const condition = (m[1] || "").trim();
+              const body = m[2] || "";
+              const bodyParts = body
+                .split(/\n+/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+
+              const conditionalContent = bodyParts.length
+                ? bodyParts.map((p) => ({
+                    type: "paragraph",
+                    content: [{ type: "text", text: p }],
+                  }))
+                : [{ type: "paragraph" }];
+
               nodes.push({
-                type: "paragraph",
-                content: [{ type: "text", text: after }],
+                type: "conditional",
+                attrs: { condition },
+                content: conditionalContent,
               });
+
+              lastIndex = end;
             }
+
+            // Tail text after last match
+            const tail = normalizedForStorage.slice(lastIndex);
+            pushTextAsParagraphs(tail);
+
+            // If no matches found, fall back to default handling
+            if (nodes.length === 0) return false;
 
             // Insert the constructed nodes at the current selection
             editor.commands.insertContent(nodes);
@@ -674,7 +679,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         return out;
       };
 
-      const normalizedForEditor = normalizeMarkdownConditionals(convertedForEditor);
+      const normalizedForEditor =
+        normalizeMarkdownConditionals(convertedForEditor);
       const processedForInsert = convertVariablesToSpans(normalizedForEditor);
       editor.commands.setContent(processedForInsert);
 

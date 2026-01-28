@@ -171,12 +171,12 @@ export const installConditionalInlineMarkdownIt = (
     const env = state.env || (state.env = {});
 
     for (let i = 0; i < state.tokens.length; i++) {
-    const blockToken = state.tokens[i];
-    // If this whole inline token was produced while parsing inside a
-    // conditional block, skip any inline fallback transform so nested
-    // ((...??...)) sequences remain literal.
-    if (blockToken.__notifyDisableConditional) continue;
-    if (blockToken.type !== "inline" || !blockToken.children) continue;
+      const blockToken = state.tokens[i];
+      // If this whole inline token was produced while parsing inside a
+      // conditional block, skip any inline fallback transform so nested
+      // ((...??...)) sequences remain literal.
+      if (blockToken.__notifyDisableConditional) continue;
+      if (blockToken.type !== "inline" || !blockToken.children) continue;
 
       const newChildren = [];
 

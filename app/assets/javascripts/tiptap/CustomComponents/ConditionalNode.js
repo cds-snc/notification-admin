@@ -1099,7 +1099,11 @@ const ConditionalNode = Node.create({
               node.descendants((child, childPos) => {
                 if (child.type === conditionalType) {
                   const absPos = pos + 1 + childPos; // child start inside parent
-                  found.push({ pos: absPos, size: child.nodeSize, content: child.content });
+                  found.push({
+                    pos: absPos,
+                    size: child.nodeSize,
+                    content: child.content,
+                  });
                 }
               });
             }
@@ -1117,7 +1121,6 @@ const ConditionalNode = Node.create({
           return tr;
         },
       }),
-
     ];
   },
 
