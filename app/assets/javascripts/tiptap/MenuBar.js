@@ -255,10 +255,11 @@ const MenuBar = ({
       conditionalInline: "Inline conditional",
       conditional: "Conditional",
       rtlBlock: "Right-to-left text",
-      infoPane1: "Insert variables with",
-      infoPane2: "and conditional content with",
-      infoPane3: "Focus on a button for its function and shortcut.",
-      infoPane4: "Multilevel lists may be easier with markdown.",
+      infoPane1: "Focus on a button for its function and shortcut. ",
+      infoPane2: "Custom content",
+      infoPane3: "Conditional content:",
+      infoPane4: "Within a paragraph",
+      infoPane5: "As a separate section",
       or: "or",
     },
     fr: {
@@ -288,10 +289,12 @@ const MenuBar = ({
       conditionalInline: "Conditionnel en ligne",
       conditional: "Conditionnel",
       rtlBlock: "Afficher de droite à gauche",
-      infoPane1: "[FR] Insert variables with",
-      infoPane2: "[FR] and conditional content with",
-      infoPane3: "[FR] Focus on a button for its function and shortcut.",
-      infoPane4: "[FR] Multilevel lists may be easier with markdown.",
+      infoPane1:
+        "Sélectionnez un bouton pour découvrir sa fonction et son raccourci.",
+      infoPane2: "Contenu personnalisé",
+      infoPane3: "Contenu conditionnel :",
+      infoPane4: "À l'intérieur d'un paragraphe",
+      infoPane5: "Section entière",
       or: "ou",
     },
   };
@@ -1088,7 +1091,8 @@ const MenuBar = ({
       {isInfoOpen && (
         <div className="info-pane">
           <p>
-            {t.infoPane1}{" "}
+            {t.infoPane1} <br />
+            {t.infoPane2}{" "}
             <Icon
               iconNode={variableIcon}
               fill="none"
@@ -1101,14 +1105,24 @@ const MenuBar = ({
                 verticalAlign: "middle",
                 marginX: "0.25em",
               }}
+              aria-label="Variable icon"
             />{" "}
-            {t.infoPane2}{" "}
-            {conditionalInlineIcon({ "aria-label": "inline conditional icon" })}{" "}
-            {t.or}{" "}
-            {conditionalBlockIcon({ "aria-label": "block conditional icon" })}
+            <p>{t.infoPane3}</p>
+            <ul className="list list-bullet ml-10">
+              <li>
+                {t.infoPane4}{" "}
+                {conditionalInlineIcon({
+                  "aria-label": "inline conditional icon",
+                })}
+              </li>
+              <li>
+                {t.infoPane5}{" "}
+                {conditionalBlockIcon({
+                  "aria-label": "block conditional icon",
+                })}
+              </li>
+            </ul>
           </p>
-          <p>{t.infoPane3}</p>
-          <p>{t.infoPane4}</p>
         </div>
       )}
     </>
