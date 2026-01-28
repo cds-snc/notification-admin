@@ -169,18 +169,18 @@ const LinkModal = ({
   if (!isVisible) return null;
   const labels = {
     en: {
-      enterLink: "Enter link address",
-      placeholder: "Enter URL",
-      save: "Save",
-      goTo: "Go to Link",
-      remove: "Remove Link",
+      enterLink: "Enter URL",
+      placeholder: "URL",
+      save: "Apply link",
+      goTo: "Visit link",
+      remove: "Unlink",
     },
     fr: {
-      enterLink: "Entrez l'adresse du lien",
-      placeholder: "Entrez l'URL",
-      save: "Enregistrer",
-      goTo: "Aller au lien",
-      remove: "Supprimer le lien",
+      enterLink: "Entrez l'URL",
+      placeholder: "URL",
+      save: "Appliquer le lien",
+      goTo: "Visiter le lien",
+      remove: "Effacer le lien",
     },
   };
 
