@@ -21,6 +21,7 @@ ALLOWED_ATTRIBUTES = {
     "updated_by",
     "blocked",
     "password_expired",
+    "default_editor_is_rte",
 }
 
 
