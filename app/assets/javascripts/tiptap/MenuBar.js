@@ -10,7 +10,6 @@ import {
   List,
   ListOrdered,
   TextQuote,
-  Eye,
 } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 import { NodeSelection } from "@tiptap/pm/state";
