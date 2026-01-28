@@ -118,7 +118,7 @@
   div[lang="en-CA"]:before,
   div[lang="fr-CA"]:before {
     box-sizing: content-box;
-    @apply -mx-gutterHalf text-black bg-white text-xs font-monospace px-gutterHalf block w-min tracking-wide font-medium;
+    @apply -mx-gutterHalf text-black bg-white text-xs font-monospace px-gutterHalf block w-min tracking-wide font-medium mb-3;
   }
 
   div[lang="en-CA"]:before {
@@ -223,7 +223,7 @@
 }
 
 .editor-content > div {
-  width: 600px;
+  width: 640px;
   @apply px-gutter py-gutterAndAHalf border-r-1 border-dashed border-gray-300;
 }
 
@@ -262,6 +262,20 @@
   @apply min-h-target min-w-target p-0 bg-white text-black text-xs;
 }
 
+.toolbar-button.button-try-new { 
+  background: #2C5E79;
+  @apply text-white px-8;
+
+}
+.toolbar-button.toolbar-green {
+  @apply bg-green-500 text-white;
+}
+.toolbar-button.toolbar-green:hover:not(:disabled),
+.toolbar-button.toolbar-green:active:not(:disabled),
+.toolbar-button.toolbar-green:focus:not(:disabled) {
+  @apply bg-green-700 text-white;
+}
+
 .toolbar-button:hover:not(:disabled) {
   @apply bg-gray-200 text-black;
 }
@@ -297,10 +311,24 @@
   display: none;
 }
 
-.toolbar-switch-group {
+.toolbar-switch-group:not(.markdown-mode) {
   margin-left: auto;
 }
 
+.info-pane {
+  @apply bg-gray-100 p-8;
+
+  p {
+    margin: 0;
+  }
+
+  svg {
+    display: inline;
+    width: 1.2em; 
+    height: 1.2em; 
+    vertical-align: middle;
+  }
+}
 .markdown-view {
   width: 100%;
   min-height: 400px;
@@ -313,7 +341,7 @@
   background-color: transparent;
   resize: vertical;
   box-sizing: border-box;
-  @apply font-monospace;
+  @apply font-monospace px-gutter py-gutterAndAHalf;
 }
 
 /* Link Modal Styles */
@@ -326,12 +354,21 @@
 }
 
 /* Conditional block styling - similar to language blocks */
+
 .conditional-block {
-  background-color: #f3f4f6;
-  border-left: 4px solid #0078d4; /* Blue accent line */
-  margin: 1.5rem 0;
-  padding: 2.8rem 1rem 0.5rem;
+  @apply -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 px-gutterHalf pb-gutterHalf leading-normal;
+  @apply border-l-yellow-100;
+  @apply border-b-1 mb-gutter;
+  border-style: dashed;
+  border-left-style: solid;
+  padding-top: 2.8rem;
   position: relative;
+}
+
+div[lang="en-CA"] .conditional-block,
+div[lang="fr-CA"] .conditional-block {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .conditional-block::before {
@@ -343,7 +380,6 @@
   font-weight: 600;
   color: white;
   padding: 0.25rem 1rem;
-  background-color: #0078d4;
   white-space: nowrap;
 }
 
@@ -356,9 +392,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  color: #0078d4;
   padding: 0.25rem 0.6rem;
-  background-color: #d3e6fd;
+  @apply bg-gray-200;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
