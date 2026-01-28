@@ -306,8 +306,6 @@ const MenuBar = ({
   const conditionalLabel = useUnifiedConditionalButton
     ? t.conditional
     : t.conditionalBlock;
-  const conditionalSrText =
-    (conditionalPressed ? t.removePrefix : t.applyPrefix) + conditionalLabel;
 
   const inlinePressed = editor.isActive("conditionalInline");
 
