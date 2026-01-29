@@ -32,7 +32,7 @@ const ConditionalNode = Node.create({
       HTMLAttributes: {},
       prefix: "IF ",
       suffix: " is YES",
-      defaultCondition: "condition",
+      defaultCondition: "variable",
       conditionAriaLabel: "Condition",
     };
   },
@@ -1079,6 +1079,48 @@ const ConditionalNode = Node.create({
           },
         });
       })(),
+      // Plugin: prevent nested conditional nodes by unwrapping inner ones.
+      // This runs after transactions and replaces any `conditional` nodes
+      // found inside another `conditional` with their content, preventing
+      // nesting regardless of how they were inserted (paste/commands/plugins).
+      new Plugin({
+        key: new PluginKey("preventNestedConditionals"),
+        appendTransaction(transactions, oldState, newState) {
+          if (!transactions.some((tr) => tr.docChanged)) return null;
+
+          const found = [];
+
+          // Collect ranges of conditional children that are nested inside a
+          // parent conditional. We collect absolute positions relative to
+          // `newState.doc` and sort descending before applying replacements so
+          // earlier edits don't shift later positions.
+          newState.doc.descendants((node, pos) => {
+            if (node.type === conditionalType) {
+              node.descendants((child, childPos) => {
+                if (child.type === conditionalType) {
+                  const absPos = pos + 1 + childPos; // child start inside parent
+                  found.push({
+                    pos: absPos,
+                    size: child.nodeSize,
+                    content: child.content,
+                  });
+                }
+              });
+            }
+          });
+
+          if (found.length === 0) return null;
+
+          found.sort((a, b) => b.pos - a.pos);
+
+          const tr = newState.tr;
+          for (const r of found) {
+            tr.replaceWith(r.pos, r.pos + r.size, r.content);
+          }
+
+          return tr;
+        },
+      }),
     ];
   },
 

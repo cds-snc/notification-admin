@@ -334,6 +334,16 @@ const MenuBar = ({
     italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
   };
 
+  // Computed states/labels for conditional buttons so sr-only text follows aria-pressed
+  const conditionalPressed = useUnifiedConditionalButton
+    ? editor.isActive("conditional") || editor.isActive("conditionalInline")
+    : editor.isActive("conditional");
+  const conditionalLabel = useUnifiedConditionalButton
+    ? t.conditional
+    : t.conditionalBlock;
+
+  const inlinePressed = editor.isActive("conditionalInline");
+
   // Helper to run an editor action and announce the resulting state change.
   // To ensure screen readers read the announcement before focus returns to the
   // editor, we optimistically set the message before invoking the action.
@@ -450,7 +460,8 @@ const MenuBar = ({
       return editor.chain().focus().unsetConditionalInline().run();
     }
 
-    return editor.commands.setConditionalInline("condition");
+    // Let the extension decide the default condition label (configured per language).
+    return editor.chain().focus().setConditionalInline().run();
   };
 
   const runUnifiedConditionalAction = () => {
