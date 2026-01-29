@@ -281,17 +281,17 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
               const nodes = paragraphs
                 .map((para) => {
                   // Split each paragraph by single newlines
-                  const lines = para.split('\n');
+                  const lines = para.split("\n");
                   const content = [];
 
                   for (let i = 0; i < lines.length; i++) {
                     // Add hard break before each line except the first
                     if (i > 0) {
-                      content.push({ type: 'hardBreak' });
+                      content.push({ type: "hardBreak" });
                     }
                     // Add the text
                     if (lines[i].trim()) {
-                      content.push({ type: 'text', text: lines[i] });
+                      content.push({ type: "text", text: lines[i] });
                     }
                   }
 
@@ -634,7 +634,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
         // Clean up HardBreak backslash continuations
         markdown = cleanMarkdownSerialization(markdown);
-        
+
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -659,7 +659,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     if (!markdown) return markdown;
     // Remove backslash line continuations that the Markdown extension adds
     // for HardBreak nodes (we want plain newlines in storage)
-    return markdown.replace(/\\\n/g, '\n');
+    return markdown.replace(/\\\n/g, "\n");
   };
 
   const toggleViewMode = () => {
@@ -718,7 +718,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // Convert variables in the markdown to HTML spans so they're properly recognized
       // Use insertContent which can parse the HTML, instead of treating it as text
       const htmlContent = convertVariablesToSpans(normalizedForEditor);
-      
+
       // Clear the editor and insert the processed content
       editor.commands.clearContent();
       editor.commands.insertContent(htmlContent);
