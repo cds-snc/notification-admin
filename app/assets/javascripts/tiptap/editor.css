@@ -311,9 +311,7 @@
   background: transparent;
   display: block;
 }
-.toolbar-switch-group:not(.markdown-mode) {
-  margin-left: auto;
-}
+
 
 .info-pane {
   @apply bg-gray-100 p-8;
