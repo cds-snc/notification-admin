@@ -121,7 +121,6 @@ line4`;
 
     // Verify the structure in the editor
     RichTextEditor.Components.Editor().then(($editor) => {
-
       // Should have proper paragraph and line break structure
       const paragraphs = $editor.find("p");
       expect(paragraphs.length).to.be.greaterThan(0);
