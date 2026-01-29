@@ -132,7 +132,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         tightListClass: "tight", // CSS class for tight lists
         bulletListMarker: "-", // Use - for bullet lists
         linkify: false, // Don't auto-linkify URLs
-        breaks: false, // Don't convert line breaks to <br>
+        breaks: true, // Convert single line breaks to HardBreak nodes (= <br> in email)
         transformPastedText: true, // Transform pasted text to markdown
         transformCopiedText: true, // Transform copied text to markdown
       }),
@@ -197,19 +197,39 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
               // The BlockquoteMarkdown extension will transform '^' to '>' for parsing
               editor.commands.insertContent(normalizedForStorage);
             } else {
-              // Handle plain text by splitting into lines
-              const lines = normalizedForStorage.split("\n");
+              // Handle plain text: split by double newlines for paragraphs,
+              // then within each paragraph, split by single newlines for line breaks.
+              // This preserves both paragraph breaks and single line breaks.
+              const paragraphs = normalizedForStorage.split(/\n\n+/);
 
-              // Create an array of paragraph nodes
-              const nodes = lines.map((line) => {
-                return {
-                  type: "paragraph",
-                  content: line.trim() ? [{ type: "text", text: line }] : [],
-                };
-              });
+              const nodes = paragraphs
+                .map((para) => {
+                  // Split each paragraph by single newlines
+                  const lines = para.split('\n');
+                  const content = [];
+
+                  for (let i = 0; i < lines.length; i++) {
+                    // Add hard break before each line except the first
+                    if (i > 0) {
+                      content.push({ type: 'hardBreak' });
+                    }
+                    // Add the text
+                    if (lines[i].trim()) {
+                      content.push({ type: 'text', text: lines[i] });
+                    }
+                  }
+
+                  return {
+                    type: "paragraph",
+                    content: content.length ? content : [],
+                  };
+                })
+                .filter((para) => para.content.length > 0); // Remove empty paragraphs
 
               // Insert the nodes into the editor
-              editor.commands.insertContent({ type: "doc", content: nodes });
+              if (nodes.length > 0) {
+                editor.commands.insertContent({ type: "doc", content: nodes });
+              }
             }
           }
 
@@ -536,6 +556,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           }
         });
 
+        // Clean up HardBreak backslash continuations
+        markdown = cleanMarkdownSerialization(markdown);
+        
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -555,6 +578,14 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     }
   }, [isMarkdownView, markdownValue, updateHiddenInputValue]);
 
+  // Clean up markdown serialization artifacts (backslash continuations from HardBreak nodes)
+  const cleanMarkdownSerialization = (markdown) => {
+    if (!markdown) return markdown;
+    // Remove backslash line continuations that the Markdown extension adds
+    // for HardBreak nodes (we want plain newlines in storage)
+    return markdown.replace(/\\\n/g, '\n');
+  };
+
   const toggleViewMode = () => {
     if (!editor) return;
 
@@ -568,6 +599,53 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
       const processedForInsert = convertVariablesToSpans(convertedForEditor);
       editor.commands.setContent(processedForInsert);
+      // Normalize multi-line conditional markers to ensure they start and end
+      // on their own paragraph when converting from markdown to rich content.
+      const normalizeMarkdownConditionals = (txt) => {
+        if (!txt || typeof txt !== "string") return txt;
+        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
+        let out = "";
+        let lastIndex = 0;
+        let m;
+        while ((m = re.exec(txt)) !== null) {
+          const start = m.index;
+          const end = re.lastIndex;
+          const match = m[0];
+
+          out += txt.slice(lastIndex, start);
+
+          // Ensure a blank line before
+          if (out.length === 0) {
+            // at start, nothing to do
+          } else if (!/\n\s*\n$/.test(out)) {
+            if (out.endsWith("\n")) out += "\n";
+            else out += "\n\n";
+          }
+
+          out += match;
+
+          // Ensure a blank line after (lookahead from original text)
+          const after = txt.slice(end);
+          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+          if (!hasBlankAfter) out += "\n\n";
+
+          lastIndex = end;
+        }
+
+        out += txt.slice(lastIndex);
+        return out;
+      };
+
+      const normalizedForEditor =
+        normalizeMarkdownConditionals(convertedForEditor);
+
+      // Convert variables in the markdown to HTML spans so they're properly recognized
+      // Use insertContent which can parse the HTML, instead of treating it as text
+      const htmlContent = convertVariablesToSpans(normalizedForEditor);
+      
+      // Clear the editor and insert the processed content
+      editor.commands.clearContent();
+      editor.commands.insertContent(htmlContent);
 
       // Force editor to re-render by triggering a transaction
       // This ensures all marks and nodes are properly applied
@@ -590,6 +668,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           return m;
         }
       });
+      // Clean up HardBreak backslash continuations
+      markdown = cleanMarkdownSerialization(markdown);
       // Normalize outgoing markdown to use '^' instead of '>'
       markdown = markdown.replace(/^(\s*)>/gm, "$1^");
       setMarkdownValue(markdown);
