@@ -169,6 +169,82 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
+          // If the pasted text looks like a multi-line block conditional,
+          // allow the editor's paste rules (node-level PasteRule) to run
+          // instead of intercepting here.
+          const isBlockConditionalPaste =
+            text.includes("((") &&
+            text.includes("??") &&
+            text.includes("))") &&
+            text.includes("\n");
+
+          if (isBlockConditionalPaste) {
+            // Intercept multi-line block conditional pastes and insert as
+            // a proper block conditional node, splitting surrounding text
+            // into separate paragraphs.
+            event.preventDefault();
+
+            const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
+
+            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/g;
+            let lastIndex = 0;
+            let m;
+            const nodes = [];
+
+            const pushTextAsParagraphs = (text) => {
+              if (!text) return;
+              const parts = text.split(/\n+/).map((s) => s.trim());
+              for (const p of parts) {
+                if (!p) continue; // skip empty/blank-only segments
+                nodes.push({
+                  type: "paragraph",
+                  content: [{ type: "text", text: p }],
+                });
+              }
+            };
+
+            while ((m = re.exec(normalizedForStorage)) !== null) {
+              const start = m.index;
+              const end = re.lastIndex;
+
+              const beforeText = normalizedForStorage.slice(lastIndex, start);
+              pushTextAsParagraphs(beforeText);
+
+              const condition = (m[1] || "").trim();
+              const body = m[2] || "";
+              const bodyParts = body
+                .split(/\n+/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+
+              const conditionalContent = bodyParts.length
+                ? bodyParts.map((p) => ({
+                    type: "paragraph",
+                    content: [{ type: "text", text: p }],
+                  }))
+                : [{ type: "paragraph" }];
+
+              nodes.push({
+                type: "conditional",
+                attrs: { condition },
+                content: conditionalContent,
+              });
+
+              lastIndex = end;
+            }
+
+            // Tail text after last match
+            const tail = normalizedForStorage.slice(lastIndex);
+            pushTextAsParagraphs(tail);
+
+            // If no matches found, fall back to default handling
+            if (nodes.length === 0) return false;
+
+            // Insert the constructed nodes at the current selection
+            editor.commands.insertContent(nodes);
+            return true;
+          }
+
           // Prevent default paste behavior
           event.preventDefault();
 
@@ -566,7 +642,46 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // so behavior matches paste. We centralize conversion in helper.
       // Convert caret markers '^' to '>' so the editor renders blockquotes
       const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
-      const processedForInsert = convertVariablesToSpans(convertedForEditor);
+      // Normalize multi-line conditional markers to ensure they start and end
+      // on their own paragraph when converting from markdown to rich content.
+      const normalizeMarkdownConditionals = (txt) => {
+        if (!txt || typeof txt !== "string") return txt;
+        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
+        let out = "";
+        let lastIndex = 0;
+        let m;
+        while ((m = re.exec(txt)) !== null) {
+          const start = m.index;
+          const end = re.lastIndex;
+          const match = m[0];
+
+          out += txt.slice(lastIndex, start);
+
+          // Ensure a blank line before
+          if (out.length === 0) {
+            // at start, nothing to do
+          } else if (!/\n\s*\n$/.test(out)) {
+            if (out.endsWith("\n")) out += "\n";
+            else out += "\n\n";
+          }
+
+          out += match;
+
+          // Ensure a blank line after (lookahead from original text)
+          const after = txt.slice(end);
+          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+          if (!hasBlankAfter) out += "\n\n";
+
+          lastIndex = end;
+        }
+
+        out += txt.slice(lastIndex);
+        return out;
+      };
+
+      const normalizedForEditor =
+        normalizeMarkdownConditionals(convertedForEditor);
+      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
       editor.commands.setContent(processedForInsert);
 
       // Force editor to re-render by triggering a transaction
