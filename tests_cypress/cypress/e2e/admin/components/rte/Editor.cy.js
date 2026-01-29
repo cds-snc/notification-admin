@@ -104,7 +104,7 @@ line4`;
 
     // Click in the editor
     RichTextEditor.Components.Editor().click();
-    
+    RichTextEditor.Components.Editor().type("{selectall}{del}");
     // Paste the plain text
     RichTextEditor.Components.Editor().then(($editor) => {
       cy.wrap($editor).trigger('paste', {
@@ -136,7 +136,8 @@ line3`;
 
     // Click in the editor
     RichTextEditor.Components.Editor().click();
-    
+    RichTextEditor.Components.Editor().type("{selectall}{del}");
+
     // Paste the markdown with variables
     RichTextEditor.Components.Editor().then(($editor) => {
       cy.wrap($editor).trigger('paste', {
@@ -176,7 +177,7 @@ line3`;
     RichTextEditor.Components.ViewMarkdownButton().click();
     
     // Get the hidden input which is what gets copied
-    cy.getByTestId('editor-content-input').then(($input) => {
+    cy.get('#tiptap-editor').then(($input) => {
       const copiedContent = $input.val();
       
       // Should not contain backslashes
