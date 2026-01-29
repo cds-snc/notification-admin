@@ -1550,7 +1550,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.2.12"
+version = "53.2.13"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1586,8 +1586,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.12"
-resolved_reference = "81d4b4577eec2bfea75a29040ebf58394626ea8b"
+reference = "feat/use-billable-units-3"
+resolved_reference = "291afb2c3f41bea56b2cf892d98734d4b12dde96"
 
 [[package]]
 name = "openpyxl"
@@ -2788,4 +2788,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "7ccd8640a0e8c6fb6c528cb7595fd4d160ce8f28b52814827ab1efa7faa9cabc"
+content-hash = "949ddad6ba862e4a3f21a49abd7728a3904bf776ba18568735f8c323b7141f17"
