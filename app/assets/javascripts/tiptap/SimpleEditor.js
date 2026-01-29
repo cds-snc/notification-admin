@@ -25,13 +25,14 @@ import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
-import "./editor.css";
+import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 
 const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(false);
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
@@ -72,6 +73,39 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     },
     [inputId],
   );
+
+  // Helper function to get selection bounds for highlighting relative to modal position
+  const getSelectionBounds = () => {
+    try {
+      const selection = window.getSelection();
+      if (!selection.rangeCount) return null;
+
+      const range = selection.getRangeAt(0);
+
+      // For empty/collapsed selections, create a small highlight at cursor position
+      if (range.collapsed) {
+        const rect = range.getBoundingClientRect();
+        return {
+          top: rect.top,
+          left: Math.max(0, rect.left - 2), // Small margin for visibility
+          width: 4, // Small width for cursor highlight
+          height: rect.height || 20, // Fallback height
+        };
+      }
+
+      // For text selections, get the full bounding rectangle
+      const rect = range.getBoundingClientRect();
+      return {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      };
+    } catch (err) {
+      console.warn("Error getting selection bounds:", err);
+      return null;
+    }
+  };
 
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
@@ -169,6 +203,82 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
+          // If the pasted text looks like a multi-line block conditional,
+          // allow the editor's paste rules (node-level PasteRule) to run
+          // instead of intercepting here.
+          const isBlockConditionalPaste =
+            text.includes("((") &&
+            text.includes("??") &&
+            text.includes("))") &&
+            text.includes("\n");
+
+          if (isBlockConditionalPaste) {
+            // Intercept multi-line block conditional pastes and insert as
+            // a proper block conditional node, splitting surrounding text
+            // into separate paragraphs.
+            event.preventDefault();
+
+            const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
+
+            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/g;
+            let lastIndex = 0;
+            let m;
+            const nodes = [];
+
+            const pushTextAsParagraphs = (text) => {
+              if (!text) return;
+              const parts = text.split(/\n+/).map((s) => s.trim());
+              for (const p of parts) {
+                if (!p) continue; // skip empty/blank-only segments
+                nodes.push({
+                  type: "paragraph",
+                  content: [{ type: "text", text: p }],
+                });
+              }
+            };
+
+            while ((m = re.exec(normalizedForStorage)) !== null) {
+              const start = m.index;
+              const end = re.lastIndex;
+
+              const beforeText = normalizedForStorage.slice(lastIndex, start);
+              pushTextAsParagraphs(beforeText);
+
+              const condition = (m[1] || "").trim();
+              const body = m[2] || "";
+              const bodyParts = body
+                .split(/\n+/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+
+              const conditionalContent = bodyParts.length
+                ? bodyParts.map((p) => ({
+                    type: "paragraph",
+                    content: [{ type: "text", text: p }],
+                  }))
+                : [{ type: "paragraph" }];
+
+              nodes.push({
+                type: "conditional",
+                attrs: { condition },
+                content: conditionalContent,
+              });
+
+              lastIndex = end;
+            }
+
+            // Tail text after last match
+            const tail = normalizedForStorage.slice(lastIndex);
+            pushTextAsParagraphs(tail);
+
+            // If no matches found, fall back to default handling
+            if (nodes.length === 0) return false;
+
+            // Insert the constructed nodes at the current selection
+            editor.commands.insertContent(nodes);
+            return true;
+          }
+
           // Prevent default paste behavior
           event.preventDefault();
 
@@ -223,6 +333,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   });
 
   const openLinkModal = () => {
+    // Capture selection bounds for highlighting
+    const bounds = getSelectionBounds();
+    setSelectionHighlight(bounds);
+
     try {
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
@@ -566,7 +680,46 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // so behavior matches paste. We centralize conversion in helper.
       // Convert caret markers '^' to '>' so the editor renders blockquotes
       const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
-      const processedForInsert = convertVariablesToSpans(convertedForEditor);
+      // Normalize multi-line conditional markers to ensure they start and end
+      // on their own paragraph when converting from markdown to rich content.
+      const normalizeMarkdownConditionals = (txt) => {
+        if (!txt || typeof txt !== "string") return txt;
+        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
+        let out = "";
+        let lastIndex = 0;
+        let m;
+        while ((m = re.exec(txt)) !== null) {
+          const start = m.index;
+          const end = re.lastIndex;
+          const match = m[0];
+
+          out += txt.slice(lastIndex, start);
+
+          // Ensure a blank line before
+          if (out.length === 0) {
+            // at start, nothing to do
+          } else if (!/\n\s*\n$/.test(out)) {
+            if (out.endsWith("\n")) out += "\n";
+            else out += "\n\n";
+          }
+
+          out += match;
+
+          // Ensure a blank line after (lookahead from original text)
+          const after = txt.slice(end);
+          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+          if (!hasBlankAfter) out += "\n\n";
+
+          lastIndex = end;
+        }
+
+        out += txt.slice(lastIndex);
+        return out;
+      };
+
+      const normalizedForEditor =
+        normalizeMarkdownConditionals(convertedForEditor);
+      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
       editor.commands.setContent(processedForInsert);
 
       // Force editor to re-render by triggering a transaction
@@ -645,7 +798,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         editor={editor}
         isVisible={isLinkModalVisible}
         position={modalPosition}
-        onClose={() => setLinkModalVisible(false)}
+        outline={selectionHighlight}
+        onClose={() => {
+          setLinkModalVisible(false);
+          setSelectionHighlight(null);
+        }}
         lang={lang}
         justOpened={justOpenedLink}
         onSavedLink={(href) => {
