@@ -235,16 +235,14 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  @apply bg-gray-300 p-4 gap-y-6;
+  @apply bg-gray-300 p-4 gap-y-5 gap-x-gutter;
 }
 
 .toolbar-group {
-  @apply flex flex-nowrap items-center bg-gray-200 gap-1;
+  @apply flex flex-nowrap items-center bg-gray-200;
+  gap: 2px;
 }
 
-.toolbar-separator {
-  @apply w-gutter;
-}
 .toolbar-button:focus,
 .toolbar-button:focus-visible {
   @apply bg-yellow text-black outline outline-yellow outline-2;
@@ -264,7 +262,7 @@
 
 .toolbar-button.button-try-new {
   background: #2c5e79;
-  @apply text-white px-8;
+  @apply text-white px-5;
 }
 .toolbar-button.toolbar-green {
   @apply bg-green-500 text-white;
@@ -309,7 +307,10 @@
 .toolbar.markdown-mode .toolbar-separator {
   display: none;
 }
-
+.toolbar-switch-group.markdown-mode {
+  background: transparent;
+  display: block;
+}
 .toolbar-switch-group:not(.markdown-mode) {
   margin-left: auto;
 }

@@ -263,7 +263,8 @@ const MenuBar = ({
       infoPane5: "As a separate section",
       info: "Help",
       markdownButton: "Back to the markdown editor",
-      richTextButton: "Switch now"
+      richTextButton: "Switch now",
+      markdownEditorMessage: "Try the new editing experience"
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -300,13 +301,14 @@ const MenuBar = ({
       infoPane5: "Section entière",
       info: "Aide",
       markdownButton: "Retour à l'éditeur de markdown",
-      richTextButton: "Changer maintenant"
+      richTextButton: "Changer maintenant",
+      markdownEditorMessage: "Essayez la nouvelle expérience d'édition"
     },
   };
 
   const t = labels[lang] || labels.en;
   const toggleButtonLabel = toggleLabel || t.toggleMd;
-  const toggleHandler = onToggleMarkdownView || (() => {});
+  const toggleHandler = onToggleMarkdownView || (() => { });
 
   // Platform-aware shortcut labels: use Command on macOS, Ctrl on Windows/Linux
   const getPlatform = () => {
@@ -633,8 +635,6 @@ const MenuBar = ({
           </TooltipWrapper>
         </div>
 
-        <div className="toolbar-separator"></div>
-
         {/* Second group: Bold, Italic, Link */}
         <div className="toolbar-group">
           <TooltipWrapper label={t.bold} shortcut={t.shortcutBold}>
@@ -711,8 +711,6 @@ const MenuBar = ({
             </button>
           </TooltipWrapper>
         </div>
-
-        <div className="toolbar-separator"></div>
 
         {/* Third group: Bullet list, Numbered list, Blockquote */}
         <div className="toolbar-group">
@@ -798,8 +796,6 @@ const MenuBar = ({
           </TooltipWrapper>
         </div>
 
-        <div className="toolbar-separator"></div>
-
         {/* Fourth group: Variable, Conditional block, Conditional inline */}
         <div className="toolbar-group">
           <TooltipWrapper label={t.variable} shortcut={shortcuts.variable}>
@@ -870,7 +866,7 @@ const MenuBar = ({
                 ((
                   useUnifiedConditionalButton
                     ? editor.isActive("conditional") ||
-                      editor.isActive("conditionalInline")
+                    editor.isActive("conditionalInline")
                     : editor.isActive("conditional")
                 )
                   ? " is-active"
@@ -882,7 +878,7 @@ const MenuBar = ({
               aria-pressed={
                 useUnifiedConditionalButton
                   ? editor.isActive("conditional") ||
-                    editor.isActive("conditionalInline")
+                  editor.isActive("conditionalInline")
                   : editor.isActive("conditional")
               }
             >
@@ -890,11 +886,11 @@ const MenuBar = ({
                 {useUnifiedConditionalButton
                   ? (editor.isActive("conditional") ||
                     editor.isActive("conditionalInline")
-                      ? t.removePrefix
-                      : t.applyPrefix) + t.conditional
+                    ? t.removePrefix
+                    : t.applyPrefix) + t.conditional
                   : (editor.isActive("conditional")
-                      ? t.removePrefix
-                      : t.applyPrefix) + t.conditionalBlock}
+                    ? t.removePrefix
+                    : t.applyPrefix) + t.conditionalBlock}
               </span>
               {conditionalBlockIcon()}
             </button>
@@ -933,8 +929,6 @@ const MenuBar = ({
             </TooltipWrapper>
           )}
         </div>
-
-        <div className="toolbar-separator"></div>
 
         {/* Fifth group: English, French, RTL */}
         <div className="toolbar-group">
@@ -1019,8 +1013,6 @@ const MenuBar = ({
           </TooltipWrapper>
         </div>
 
-        <div className="toolbar-separator"></div>
-
         {/* Sixth group: Info button */}
         <div className="toolbar-group">
           {!isMarkdownView && (
@@ -1040,8 +1032,6 @@ const MenuBar = ({
           )}
         </div>
 
-        <div className="toolbar-separator"></div>
-
         {/* Seventh group: Markdown toggle button */}
         <div
           className={
@@ -1049,24 +1039,27 @@ const MenuBar = ({
             (isMarkdownView ? "markdown-mode" : "")
           }
         >
-          
-            <button
-              type="button"
-              data-testid="rte-toggle-markdown"
-              onClick={toggleHandler}
-              className={
-                "toolbar-button button-try-new"
-              }
-              title={toggleButtonLabel}
-              aria-pressed={isMarkdownView}
-            >
-              <span className="sr-only">{toggleButtonLabel}</span>
-              {isMarkdownView ? (
-                <>{t.richTextButton}</>
-              ) : (
-                <>{t.markdownButton}</>
-              )}
-            </button>
+          {isMarkdownView && (
+            <p>
+              <span>{t.markdownEditorMessage}</span></p>
+          )}
+          <button
+            type="button"
+            data-testid="rte-toggle-markdown"
+            onClick={toggleHandler}
+            className={
+              "toolbar-button button-try-new"
+            }
+            title={toggleButtonLabel}
+            aria-pressed={isMarkdownView}
+          >
+            <span className="sr-only">{toggleButtonLabel}</span>
+            {isMarkdownView ? (
+              <>{t.richTextButton}</>
+            ) : (
+              <>{t.markdownButton}</>
+            )}
+          </button>
 
         </div>
       </AccessibleToolbar>
