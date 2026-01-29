@@ -23,6 +23,7 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
+import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
@@ -220,14 +221,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
             const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
 
-            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/g;
-            let lastIndex = 0;
-            let m;
             const nodes = [];
 
-            const pushTextAsParagraphs = (text) => {
-              if (!text) return;
-              const parts = text.split(/\n+/).map((s) => s.trim());
+            const pushTextAsParagraphs = (txt) => {
+              if (!txt) return;
+              const parts = txt.split(/\n+/).map((s) => s.trim());
               for (const p of parts) {
                 if (!p) continue; // skip empty/blank-only segments
                 nodes.push({
@@ -237,16 +235,60 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
               }
             };
 
-            while ((m = re.exec(normalizedForStorage)) !== null) {
-              const start = m.index;
-              const end = re.lastIndex;
+            // Nesting-aware scanner that finds conditional matches using
+            // the same logic as our markdown-it scanner (scanConditionalBodyForClose).
+            const findConditionalMatches = (fullText) => {
+              const matches = [];
+              let idx = 0;
+              while (idx < fullText.length) {
+                const openIdx = fullText.indexOf("((", idx);
+                if (openIdx === -1) break;
+                const condStart = openIdx + 2;
+                const condEnd = fullText.indexOf("??", condStart);
+                if (condEnd === -1) {
+                  idx = condStart;
+                  continue;
+                }
 
-              const beforeText = normalizedForStorage.slice(lastIndex, start);
+                const conditionRaw = fullText.slice(condStart, condEnd);
+                if (conditionRaw.includes("\n")) {
+                  idx = condEnd + 2;
+                  continue;
+                }
+
+                const bodyStart = condEnd + 2;
+                const chunk = fullText.slice(bodyStart);
+                const scanned = scanConditionalBodyForClose(chunk, {
+                  initialDepth: 0,
+                });
+                if (!scanned.foundEnd) {
+                  idx = bodyStart;
+                  continue;
+                }
+
+                const closeIdx = bodyStart + scanned.closeOffset;
+                const matchStart = openIdx;
+                const matchEnd = closeIdx + 2; // include the '))'
+
+                matches.push({
+                  start: matchStart,
+                  end: matchEnd,
+                  condition: (conditionRaw || "").trim(),
+                  body: scanned.content,
+                });
+
+                idx = matchEnd;
+              }
+              return matches;
+            };
+
+            const matches = findConditionalMatches(normalizedForStorage);
+            let lastIndex = 0;
+            for (const m of matches) {
+              const beforeText = normalizedForStorage.slice(lastIndex, m.start);
               pushTextAsParagraphs(beforeText);
 
-              const condition = (m[1] || "").trim();
-              const body = m[2] || "";
-              const bodyParts = body
+              const bodyParts = m.body
                 .split(/\n+/)
                 .map((s) => s.trim())
                 .filter((s) => s.length > 0);
@@ -260,11 +302,13 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
               nodes.push({
                 type: "conditional",
-                attrs: { condition },
+                attrs: {
+                  condition: m.condition || conditionalText.defaultCondition,
+                },
                 content: conditionalContent,
               });
 
-              lastIndex = end;
+              lastIndex = m.end;
             }
 
             // Tail text after last match
@@ -684,7 +728,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       // on their own paragraph when converting from markdown to rich content.
       const normalizeMarkdownConditionals = (txt) => {
         if (!txt || typeof txt !== "string") return txt;
-        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
+        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)(?!\))/g;
         let out = "";
         let lastIndex = 0;
         let m;
