@@ -16,12 +16,19 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+from notifications_utils.clients.redis import (
+    billable_units_sms_daily_count_cache_key,
+)
+from notifications_utils.clients.redis.annual_limit import (
+    TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY,
+)
 from werkzeug.utils import redirect
 
 from app import (
     current_service,
     job_api_client,
     notification_api_client,
+    redis_client,
     service_api_client,
     template_statistics_client,
 )
@@ -392,6 +399,14 @@ def get_dashboard_partials(service_id):
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
     timings["_get_daily_stats"] = (time.time() - start) * 1000
 
+    # TODO FF_USE_BILLABLE_UNITS removal - Override SMS count with billable units when feature flag is enabled
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+    if use_billable_units:
+        # Get billable units count from Redis
+        billable_units_count = int(redis_client.get(billable_units_sms_daily_count_cache_key(service_id)) or "0")
+        # Override the SMS requested count with billable units
+        dashboard_totals_daily["sms"]["requested"] = billable_units_count
+
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
 
     start = time.time()
@@ -419,6 +434,7 @@ def get_dashboard_partials(service_id):
             service_id=service_id,
             statistics=dashboard_totals_daily,
             column_width=column_width,
+            use_billable_units=use_billable_units,
         ),
         "annual_totals": render_template(
             "views/dashboard/_totals_annual.html",
@@ -708,10 +724,18 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
-    if (
-        annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0
-        and annual_data_redis["total_sms_fiscal_year_to_yesterday"] == 0
-    ):
+    # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+    if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+        sms_fiscal_year_key = TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY
+    else:
+        sms_fiscal_year_key = "total_sms_fiscal_year_to_yesterday"
+
+    # Get the SMS fiscal year count, falling back to the standard key if billable units key doesn't exist
+    sms_fiscal_year_count = annual_data_redis.get(
+        sms_fiscal_year_key, annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
+    )
+
+    if annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0 and sms_fiscal_year_count == 0:
         # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
         return get_annual_data_api(service_id, dashboard_totals_daily)
 
@@ -719,7 +743,7 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # way regardless of whether we use api data or redis data
     return {
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
-        "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
+        "sms": dashboard_totals_daily["sms"]["requested"] + sms_fiscal_year_count,
     }
 
 

@@ -13,10 +13,14 @@
       </p>
       <div class="grid-row contain-floats mb-10">
         <div class="{{column_width}}">
-          {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), muted=true) }}
+          {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
         </div>
         <div class="{{column_width}}">
-          {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true) }}
+          {% if use_billable_units %}
+            {{ remaining_messages(header=_('billable units'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=True) }}
+          {% else %}
+            {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
+          {% endif %}
         </div>
       </div>
       {{ show_more(url_for('main.contact'), _('Request a daily limit increase')) }}  
@@ -31,10 +35,14 @@
       </p>
     <div class="grid-row contain-floats">
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage')) }}
+        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), use_billable_units=False) }}
       </div>
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage')) }}
+        {% if use_billable_units %}
+          {{ remaining_messages(header=_('billable units'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), use_billable_units=True) }}
+        {% else %}
+          {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), use_billable_units=False) }}
+        {% endif %}
       </div>
     </div>
   </div>
