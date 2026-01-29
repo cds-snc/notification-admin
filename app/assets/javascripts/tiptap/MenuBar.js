@@ -264,7 +264,7 @@ const MenuBar = ({
       info: "Help",
       markdownButton: "Back to the markdown editor",
       richTextButton: "Switch now",
-      markdownEditorMessage: "Try the new editing experience"
+      markdownEditorMessage: "Try the new editing experience",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -302,13 +302,13 @@ const MenuBar = ({
       info: "Aide",
       markdownButton: "Retour à l'éditeur de markdown",
       richTextButton: "Changer maintenant",
-      markdownEditorMessage: "Essayez la nouvelle expérience d'édition"
+      markdownEditorMessage: "Essayez la nouvelle expérience d'édition",
     },
   };
 
   const t = labels[lang] || labels.en;
   const toggleButtonLabel = toggleLabel || t.toggleMd;
-  const toggleHandler = onToggleMarkdownView || (() => { });
+  const toggleHandler = onToggleMarkdownView || (() => {});
 
   // Platform-aware shortcut labels: use Command on macOS, Ctrl on Windows/Linux
   const getPlatform = () => {
@@ -866,7 +866,7 @@ const MenuBar = ({
                 ((
                   useUnifiedConditionalButton
                     ? editor.isActive("conditional") ||
-                    editor.isActive("conditionalInline")
+                      editor.isActive("conditionalInline")
                     : editor.isActive("conditional")
                 )
                   ? " is-active"
@@ -878,7 +878,7 @@ const MenuBar = ({
               aria-pressed={
                 useUnifiedConditionalButton
                   ? editor.isActive("conditional") ||
-                  editor.isActive("conditionalInline")
+                    editor.isActive("conditionalInline")
                   : editor.isActive("conditional")
               }
             >
@@ -886,11 +886,11 @@ const MenuBar = ({
                 {useUnifiedConditionalButton
                   ? (editor.isActive("conditional") ||
                     editor.isActive("conditionalInline")
-                    ? t.removePrefix
-                    : t.applyPrefix) + t.conditional
+                      ? t.removePrefix
+                      : t.applyPrefix) + t.conditional
                   : (editor.isActive("conditional")
-                    ? t.removePrefix
-                    : t.applyPrefix) + t.conditionalBlock}
+                      ? t.removePrefix
+                      : t.applyPrefix) + t.conditionalBlock}
               </span>
               {conditionalBlockIcon()}
             </button>
@@ -1041,26 +1041,20 @@ const MenuBar = ({
         >
           {isMarkdownView && (
             <p>
-              <span>{t.markdownEditorMessage}</span></p>
+              <span>{t.markdownEditorMessage}</span>
+            </p>
           )}
           <button
             type="button"
             data-testid="rte-toggle-markdown"
             onClick={toggleHandler}
-            className={
-              "toolbar-button button-try-new"
-            }
+            className={"toolbar-button button-try-new"}
             title={toggleButtonLabel}
             aria-pressed={isMarkdownView}
           >
             <span className="sr-only">{toggleButtonLabel}</span>
-            {isMarkdownView ? (
-              <>{t.richTextButton}</>
-            ) : (
-              <>{t.markdownButton}</>
-            )}
+            {isMarkdownView ? <>{t.richTextButton}</> : <>{t.markdownButton}</>}
           </button>
-
         </div>
       </AccessibleToolbar>
       {isInfoOpen && (
