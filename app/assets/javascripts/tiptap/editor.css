@@ -414,76 +414,48 @@
 
 /* Inline conditional styling */
 span[data-type="conditional-inline"] {
-  box-sizing: border-box;
-  padding-right: 0.45rem;
-  border-radius: 0.3rem;
-  border: 3px solid #0078d4;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-  vertical-align: middle;
-  margin-left: 2px;
+  --bg-accent: #D0D9E2; /* BG for the widget bg-gray-200 */
+  --accent: #8B9AA8; /* Content underline color gray-400 */
+  box-shadow: 2px 2px 0 0 var(--accent), 0 2px 0 0 var(--accent);
+  margin-right: 10px;
+  padding-right: 5px;  
+  box-decoration-break: clone;
 }
 
 .conditional-inline-edit-widget {
+  padding: 0 10px;
+  background-color: var(--bg-accent);
+  box-shadow: 0 -2px 0 var(--bg-accent), 0 2px 0 var(--accent);
   display: inline-flex;
-  user-select: none;
-  gap: 0.25rem;
-  vertical-align: middle;
-  margin-right: 0;
-  padding: 0.25rem;
-  background-color: #d3e6fd;
+  gap: 10px; 
 }
 
-/* Widget is rendered as a sibling immediately before the marked text. */
-.conditional-inline-edit-widget + span[data-type="conditional-inline"] {
-  margin-left: 0;
-  padding-left: 0.4rem;
-}
-
-/* When two inline conditionals are adjacent, merge the mark with the next widget. */
-span[data-type="conditional-inline"] + .conditional-inline-edit-widget {
-  margin-left: 0;
-  border-left: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+.conditional-inline-edit-widget,
+.conditional-inline-content {
+  vertical-align: text-bottom;
 }
 
 .conditional-inline-edit-prefix,
 .conditional-inline-edit-suffix {
-  font-size: 0.7em;
-  font-weight: 600;
-  color: #0078d4;
-  white-space: nowrap;
+  font-size: 1rem; /* text-xs */
+  line-height: 1.875; /* ??? in tailwind */ 
+  font-weight: 500;
+  letter-spacing: 0.05em; /* tracking-wide */
 }
 
 .conditional-inline-branch-icon {
-  width: 1.3em;
-  height: 1em;
-  display: inline-block;
-  vertical-align: -0.1em;
-  margin-right: 0.25rem;
+
 }
 
 .conditional-inline-condition-input {
-  font-size: 0.75em;
-  line-height: 1.5;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  font-family: monospace;
-  border-radius: 0.3rem;
-  border: 3px solid #7f8a93;
-  background: white;
-  color: #0b0c0c;
-  min-width: 8ch;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
-  field-sizing: content;
+  padding: 0 5px;
+  border: 2px solid black;
+  border-radius: 0;
+  align-self: stretch;
 }
 
-.conditional-inline-condition-input:focus {
-  outline: 2px solid #ffbf47;
+.conditional-inline-condition-input:focus-visible {
+  outline: 3px solid gold;
 }
 
 /* If a non-focused input ends up with a stale selection range (browser quirk),
