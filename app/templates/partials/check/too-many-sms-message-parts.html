@@ -4,10 +4,6 @@
   {%- if current_service.trial_mode %}
     {{ _("Your service is in trial mode. To send more messages, <a href='{}'>request to go live</a>").format(url_for('main.request_to_go_live', service_id=current_service.id)) }}
   {% else %}
-    {% if use_billable_units %}
-      {{ _("To request a daily limit above {} billable units, {}").format(current_service.sms_daily_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
-    {% else %}
-      {{ _("To request a daily limit above {} text messages, {}").format(current_service.sms_daily_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
-    {% endif %}
+    {{ _("To request a daily limit above {} text messages, {}").format(current_service.sms_daily_limit, content_link(_("contact us"), url_for('main.contact'), is_external_link=true)) }}
   {%- endif -%}
 </p>

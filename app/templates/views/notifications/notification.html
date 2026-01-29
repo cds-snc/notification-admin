@@ -108,7 +108,7 @@
       {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
       {% if config['FF_USE_BILLABLE_UNITS'] and billable_units %}
         <p class="mt-6">
-          <strong>{{ _('Billable units:') }}</strong> {{ billable_units }}
+          Billable units: {{ billable_units }}
         </p>
       {% endif %}
     {% endif %}
