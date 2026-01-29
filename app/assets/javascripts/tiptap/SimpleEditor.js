@@ -25,13 +25,14 @@ import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
-import "./editor.css";
+import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 
 const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(false);
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
@@ -72,6 +73,39 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     },
     [inputId],
   );
+
+  // Helper function to get selection bounds for highlighting relative to modal position
+  const getSelectionBounds = () => {
+    try {
+      const selection = window.getSelection();
+      if (!selection.rangeCount) return null;
+
+      const range = selection.getRangeAt(0);
+
+      // For empty/collapsed selections, create a small highlight at cursor position
+      if (range.collapsed) {
+        const rect = range.getBoundingClientRect();
+        return {
+          top: rect.top,
+          left: Math.max(0, rect.left - 2), // Small margin for visibility
+          width: 4, // Small width for cursor highlight
+          height: rect.height || 20, // Fallback height
+        };
+      }
+
+      // For text selections, get the full bounding rectangle
+      const rect = range.getBoundingClientRect();
+      return {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      };
+    } catch (err) {
+      console.warn("Error getting selection bounds:", err);
+      return null;
+    }
+  };
 
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
@@ -299,6 +333,10 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
   });
 
   const openLinkModal = () => {
+    // Capture selection bounds for highlighting
+    const bounds = getSelectionBounds();
+    setSelectionHighlight(bounds);
+
     try {
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
@@ -760,7 +798,11 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         editor={editor}
         isVisible={isLinkModalVisible}
         position={modalPosition}
-        onClose={() => setLinkModalVisible(false)}
+        outline={selectionHighlight}
+        onClose={() => {
+          setLinkModalVisible(false);
+          setSelectionHighlight(null);
+        }}
         lang={lang}
         justOpened={justOpenedLink}
         onSavedLink={(href) => {

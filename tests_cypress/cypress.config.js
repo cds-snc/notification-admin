@@ -128,7 +128,7 @@ module.exports = defineConfig({
     watchForFileChanges: false,
     blockHosts: ['*google-analytics.com', 'stats.g.doubleclick.net', 'bam.nr-data.net', '*newrelic.com', 'fonts.gstatic.com'],
     viewportWidth: 1280,
-    viewportHeight: 850,
+    viewportHeight: 1250,
     testIsolation: true,
     pageLoadTimeout: 120000, // 2 minutes for slow CI environments
     retries: 2
