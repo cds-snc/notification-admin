@@ -68,6 +68,7 @@ target/
 # Frontend dependencies and compiled assets
 app/assets/stylesheets/govuk_template/.sass-cache/
 app/assets/javascripts/*.LICENSE.txt
+app/assets/javascripts/**/*.compiled.css
 .sass-cache/
 cache/
 node_modules
