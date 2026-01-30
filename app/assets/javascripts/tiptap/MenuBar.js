@@ -1010,7 +1010,7 @@ const MenuBar = ({
         </div>
 
         {/* Sixth group: Info button */}
-        <div className="toolbar-group">
+        <div className="toolbar-group toolbar-switch-group" data-mode={isMarkdownView ? "markdown" : "richtext"}>
           {!isMarkdownView && (
             <TooltipWrapper label={t.info}>
               <button
@@ -1026,17 +1026,9 @@ const MenuBar = ({
               </button>
             </TooltipWrapper>
           )}
-        </div>
 
-        {/* Seventh group: Markdown toggle button */}
-        <div
-          className={
-            "toolbar-group toolbar-switch-group " +
-            (isMarkdownView ? "markdown-mode" : "")
-          }
-        >
           {isMarkdownView && (
-            <p>
+            <p class="m-0 text-xs font-bold">
               <span>{t.markdownEditorMessage}</span>
             </p>
           )}
@@ -1044,7 +1036,11 @@ const MenuBar = ({
             type="button"
             data-testid="rte-toggle-markdown"
             onClick={toggleHandler}
-            className={["toolbar-button", isMarkdownView && " toolbar-switch-group"]}
+            className={
+              isMarkdownView
+                ? "toolbar-button toolbar-button-mode toolbar-switch-group"
+                : "toolbar-button toolbar-button-mode"
+            }
             title={toggleButtonLabel}
             aria-pressed={isMarkdownView}
           >
