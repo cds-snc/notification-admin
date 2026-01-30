@@ -53,7 +53,7 @@ class TestNotificationCounts:
         ],
     )
     def test_get_all_notification_counts_for_today_redis_missing_data(
-        self, mock_redis, mock_template_stats, redis_side_effect, expected_result
+        self, app_, mock_redis, mock_template_stats, redis_side_effect, expected_result
     ):
         # Setup
         mock_redis.get.side_effect = redis_side_effect
