@@ -1,5 +1,3 @@
-import React from "react";
-
 export const variableIcon = [
   [
     "ellipse",
@@ -41,7 +39,7 @@ export const frenchBlockIcon = [
   ],
 ];
 
-export const infoIcon = [
+export const infoIcon = (isActive = false) => [
   [
     "path",
     {
