@@ -30,36 +30,18 @@ export default Extension.create({
         this.editor.chain().focus().toggleHeading({ level: 2 }).run();
         return true;
       },
-      "Mod-Alt-3": () => {
+      "Mod-Shift-U": () => {
         if (this.editor.can().chain().focus().toggleVariable)
           this.editor.chain().focus().toggleVariable().run();
         else this.editor.chain().focus().setMark("variable").run?.();
         return true;
       },
-      "Mod-Alt-4": () => {
-        this.editor.chain().focus().toggleBulletList().run();
-        return true;
-      },
-      "Mod-Alt-5": () => {
-        this.editor.chain().focus().toggleOrderedList().run();
-        return true;
-      },
-      "Mod-Alt-6": () => {
+      "Mod-Enter": () => {
         this.editor.chain().focus().setHorizontalRule().run();
         return true;
       },
-      "Mod-Alt-7": () => {
+      "Mod-Shift-9": () => {
         this.editor.chain().focus().toggleBlockquote().run();
-        return true;
-      },
-      "Mod-Alt-8": () => {
-        if (this.editor.can().chain().focus().toggleEnglishBlock)
-          this.editor.chain().focus().toggleEnglishBlock().run();
-        return true;
-      },
-      "Mod-Alt-9": () => {
-        if (this.editor.can().chain().focus().toggleFrenchBlock)
-          this.editor.chain().focus().toggleFrenchBlock().run();
         return true;
       },
       "Mod-Alt-R": () => {
