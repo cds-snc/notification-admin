@@ -724,16 +724,15 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
+    # Get both SMS fiscal year counts from Redis
+    sms_fiscal_year_standard = annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
+    sms_fiscal_year_billable = annual_data_redis.get(TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY, 0)
+
     # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
     if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-        sms_fiscal_year_key = TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY
+        sms_fiscal_year_count = sms_fiscal_year_billable
     else:
-        sms_fiscal_year_key = "total_sms_fiscal_year_to_yesterday"
-
-    # Get the SMS fiscal year count, falling back to the standard key if billable units key doesn't exist
-    sms_fiscal_year_count = annual_data_redis.get(
-        sms_fiscal_year_key, annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
-    )
+        sms_fiscal_year_count = sms_fiscal_year_standard
 
     if annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0 and sms_fiscal_year_count == 0:
         # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
