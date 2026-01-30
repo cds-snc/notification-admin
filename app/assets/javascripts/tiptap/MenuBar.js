@@ -1010,7 +1010,10 @@ const MenuBar = ({
         </div>
 
         {/* Sixth group: Info button */}
-        <div className="toolbar-group toolbar-switch-group" data-mode={isMarkdownView ? "markdown" : "richtext"}>
+        <div
+          className="toolbar-group toolbar-switch-group"
+          data-mode={isMarkdownView ? "markdown" : "richtext"}
+        >
           {!isMarkdownView && (
             <TooltipWrapper label={t.info}>
               <button
