@@ -235,7 +235,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  @apply bg-gray-300 p-4 gap-y-5 gap-x-gutter;
+  @apply bg-gray-300 p-4 gap-y-5 gap-x-8;
 }
 
 .toolbar-group {
@@ -257,7 +257,9 @@
   font-weight: 500;
   line-height: 1;
   user-select: none;
-  @apply min-h-target min-w-target p-0 bg-white text-black text-xs;
+  min-height: 36px;
+  min-width: 36px;
+  @apply p-0 bg-white text-black text-xs;
 }
 
 .toolbar-button.button-try-new {
@@ -298,8 +300,8 @@
 }
 
 .toolbar-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   stroke-width: 2;
 }
 
