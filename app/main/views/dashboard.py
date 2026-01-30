@@ -442,6 +442,7 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_daily,
             statistics_annual=annual_data,
             column_width=column_width,
+            use_billable_units=use_billable_units,
         ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
@@ -718,8 +719,26 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
         AnnualData: Dictionary containing combined annual notification counts for SMS and email
     """
 
-    if not current_app.config["REDIS_ENABLED"] or not annual_limit_client.was_seeded_today(service_id):
+    if not current_app.config["REDIS_ENABLED"]:
         return get_annual_data_api(service_id, dashboard_totals_daily)
+
+    # TODO FF_USE_BILLABLE_UNITS removal - Trigger Redis seeding when FF is enabled and Redis not seeded
+    # This ensures billable units data is available. Without seeding, the API fallback only returns
+    # message counts which is incorrect when tracking billable units.
+    if not annual_limit_client.was_seeded_today(service_id):
+        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+            # Call the API endpoint that triggers seeding with billable units data
+            try:
+                service_api_client.get_annual_limit_stats(service_id)
+                current_app.logger.info(f"Triggered Redis seeding for service {service_id} with billable units support")
+            except Exception as e:
+                current_app.logger.warning(
+                    f"Failed to seed Redis for service {service_id}: {e}. Falling back to API (will show message counts, not billable units)"
+                )
+                return get_annual_data_api(service_id, dashboard_totals_daily)
+        else:
+            # When FF is disabled, fall back to API (message counts)
+            return get_annual_data_api(service_id, dashboard_totals_daily)
 
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
@@ -747,6 +766,34 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
 
 
 def get_annual_data_api(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
+    """
+    Fallback method to get annual data from the API when Redis is not available.
+
+    WARNING: This fallback has a known limitation - it uses message counts from the monthly stats API,
+    which doesn't distinguish between message count and billable units. When FF_USE_BILLABLE_UNITS
+    is enabled and this fallback is used, it will show incorrect values (e.g., 2 messages instead of
+    6 billable units).
+
+    This fallback should rarely be triggered because:
+    1. The dashboard now automatically seeds Redis when FF_USE_BILLABLE_UNITS is enabled
+    2. Sending any notification triggers seeding
+    3. A nightly job seeds Redis for all active services
+
+    Args:
+        service_id: The ID of the service to get annual data for
+        dashboard_totals_daily: The daily dashboard totals
+
+    Returns:
+        AnnualData: Annual notification counts (message counts, NOT billable units)
+    """
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+
+    if use_billable_units:
+        current_app.logger.warning(
+            f"Service {service_id} - Using API fallback which returns message counts instead of billable units. "
+            f"This should not happen if Redis seeding is working correctly."
+        )
+
     annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
     aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
     return aggregated_annual_data
