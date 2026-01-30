@@ -31,7 +31,7 @@ def mock_get_all_notification_counts_for_today():
 
 
 class TestNotificationCounts:
-    def test_get_all_notification_counts_for_today_redis_has_data(self, mock_redis):
+    def test_get_all_notification_counts_for_today_redis_has_data(self, app_, mock_redis):
         # Setup
         mock_redis.get.side_effect = [5, 10]  # sms, email
         wrapper = NotificationCounts()
