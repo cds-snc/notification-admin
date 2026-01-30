@@ -106,15 +106,6 @@ const ConditionalNodeView = ({
     >
       <div className="conditional-trigger" contentEditable={false}>
         <span className="conditional-trigger-text">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 384 512"
-            aria-hidden="true"
-            focusable="false"
-            className="conditional-inline-branch-icon"
-          >
-            <path fill="currentColor" d={CONDITIONAL_BRANCH_ICON_PATH} />
-          </svg>
           {prefix}
         </span>
         <input

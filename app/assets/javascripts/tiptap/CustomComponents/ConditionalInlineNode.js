@@ -1,10 +1,7 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
 import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 
-import {
-  CONDITIONAL_BRANCH_ICON_PATH,
-  isInsideBlockConditional,
-} from "./Conditional/Helpers";
+import { isInsideBlockConditional } from "./Conditional/Helpers";
 import { convertToBlockConditional } from "./Conditional/Conversion";
 import { installConditionalInlineMarkdownIt } from "./Conditional/MarkdownIt";
 
@@ -207,25 +204,7 @@ const ConditionalInlineNode = Node.create({
       const prefixText = document.createElement("span");
       prefixText.className = "conditional-inline-edit-prefix";
 
-      const branchIcon = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg",
-      );
-      branchIcon.setAttribute("viewBox", "0 0 384 512");
-      branchIcon.setAttribute("aria-hidden", "true");
-      branchIcon.setAttribute("focusable", "false");
-      branchIcon.classList.add("conditional-inline-branch-icon");
-
-      const branchIconPath = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path",
-      );
-      branchIconPath.setAttribute("d", CONDITIONAL_BRANCH_ICON_PATH);
-      branchIconPath.setAttribute("fill", "currentColor");
-      branchIcon.appendChild(branchIconPath);
-
       prefixText.append(
-        branchIcon,
         document.createTextNode(this.options.prefix),
       );
 

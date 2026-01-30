@@ -355,22 +355,23 @@
 /* Conditional block styling - similar to language blocks */
 
 .conditional-block {
-  @apply -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 px-gutterHalf pb-gutterHalf leading-normal;
-  @apply border-l-yellow-100;
-  @apply border-b-1 mb-gutter;
   border-style: dashed;
   border-left-style: solid;
-  padding-top: 2.8rem;
-  position: relative;
+  line-height: 1.5em;
+  @apply relative -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 pb-gutterHalf border-l-yellow-100 border-b-1 mb-gutter;
 }
 
-div[lang="en-CA"] .conditional-block,
-div[lang="fr-CA"] .conditional-block {
-  margin-left: 0;
-  margin-right: 0;
+.conditional-block .conditional-content {
+  @apply px-gutterHalf;
 }
 
-.conditional-block::before {
+/* Remove margin when inside a lang block */
+div[lang] .conditional-block {
+  @apply mx-0;
+}
+
+/* @Will: Do we need this :before stuff? */
+/* .conditional-block::before {
   content: attr(data-condition);
   position: absolute;
   top: 0;
@@ -378,126 +379,94 @@ div[lang="fr-CA"] .conditional-block {
   font-size: 0.75rem;
   font-weight: 600;
   color: white;
-  padding: 0.25rem 1rem;
   white-space: nowrap;
-}
+} */
 
 /* When a real label element is present (NodeView), hide the ::before fallback */
-.conditional-block.has-conditional-label::before {
+/* .conditional-block.has-conditional-label::before {
   content: none;
+} */
+
+
+/* Inline conditional styling */
+span[data-type="conditional-inline"] {
+  --conditional-widget-color-bg: theme("colors.gray.200"); 
+  --conditional-widget-color-accent: theme("colors.gray.200"); 
+  /* box-shadow: 2px 2px 0 0 var(--conditional-widget-color-accent), 0 2px 0 0 var(--conditional-widget-color-accent); */
+  box-decoration-break: clone;
+  @apply mr-4 pr-2 bg-yellow;
 }
 
+.conditional-inline-edit-widget,
 .conditional-trigger {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 0.25rem 0.6rem;
-  @apply bg-gray-200;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-weight: 600;
-  user-select: none;
+  box-shadow: 0 -1px 0 var(--conditional-widget-color-bg), 0 1px 0 var(--conditional-widget-color-accent);
+  @apply bg-gray-200 gap-4 ;
+}
+.conditional-inline-edit-widget {
+  @apply px-2;
+}
+.conditional-trigger {
+  @apply px-gutterHalf;
 }
 
-.conditional-trigger * {
-  user-select: none;
+/* .conditional-inline-edit-widget:focus-within,
+.conditional-trigger:focus-within {
+  @apply bg-yellow text-black;
+} */
+
+.conditional-inline-edit-widget {
+  top: -1px;
+  @apply inline-flex items-center relative;
+}
+.conditional-trigger {
+  @apply flex w-max items-center;
 }
 
+/* .conditional-inline-edit-widget,
+.conditional-inline-content {
+  vertical-align: text-bottom;
+} */
+
+.conditional-inline-edit-prefix,
+.conditional-inline-edit-suffix,
+.conditional-trigger-text {
+  user-select: none;
+  @apply tracking-wide;
+}
+
+.conditional-inline-edit-prefix,
+.conditional-inline-edit-suffix,
+.conditional-trigger-text,
+.conditional-inline-condition-input,
 .conditional-block-condition-input {
-  font-size: 1rem;
-  height: 1.8rem;
-  padding: 0 0.35rem;
-  border-radius: 0.3rem;
-  border: 3px solid #7f8a93;
-  background: white;
-  font-family: monospace;
-  color: black;
+  line-height: 1;
+  font-size: 0.9375em;
+  @apply font-mono text-black;
+}
+
+.conditional-inline-condition-input,
+.conditional-block-condition-input {
+  border: 2px solid black;
+  border-radius: 0;
   min-width: 8ch;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  field-sizing: content;
+  @apply px-2;
 }
 
 /* Keep drag-selection in content from "highlighting" the block condition input.
    (When the input isn't focused, it should behave like non-editable chrome.) */
+.conditional-inline-condition-input:not(:focus),
 .conditional-block-condition-input:not(:focus) {
   user-select: none;
 }
 
-.conditional-block-condition-input:not(:focus)::selection {
-  background: transparent;
-  color: inherit;
-}
-
-.conditional-block-condition-input:focus {
-  outline: 2px solid #ffbf47;
-  outline-offset: 1px;
-}
-
-.conditional-trigger-icon {
-  font-size: 0.75rem;
-  line-height: 1;
-}
-
-.conditional-trigger:focus {
-  outline: 2px solid #1a3152;
-  outline-offset: 0;
-}
-
-.conditional-trigger-text {
-  font-size: 0.7em;
-  white-space: nowrap;
-}
-
-/* Inline conditional styling */
-span[data-type="conditional-inline"] {
-  --bg-accent: #D0D9E2; /* BG for the widget bg-gray-200 */
-  --accent: #8B9AA8; /* Content underline color gray-400 */
-  box-shadow: 2px 2px 0 0 var(--accent), 0 2px 0 0 var(--accent);
-  margin-right: 10px;
-  padding-right: 5px;  
-  box-decoration-break: clone;
-}
-
-.conditional-inline-edit-widget {
-  padding: 0 10px;
-  background-color: var(--bg-accent);
-  box-shadow: 0 -2px 0 var(--bg-accent), 0 2px 0 var(--accent);
-  display: inline-flex;
-  gap: 10px; 
-}
-
-.conditional-inline-edit-widget,
-.conditional-inline-content {
-  vertical-align: text-bottom;
-}
-
-.conditional-inline-edit-prefix,
-.conditional-inline-edit-suffix {
-  font-size: 1rem; /* text-xs */
-  line-height: 1.875; /* ??? in tailwind */ 
-  font-weight: 500;
-  letter-spacing: 0.05em; /* tracking-wide */
-}
-
-.conditional-inline-branch-icon {
-
-}
-
-.conditional-inline-condition-input {
-  padding: 0 5px;
-  border: 2px solid black;
-  border-radius: 0;
-  align-self: stretch;
-}
-
-.conditional-inline-condition-input:focus-visible {
-  outline: 3px solid gold;
+.conditional-inline-condition-input:focus-visible,
+.conditional-block-condition-input:focus-visible {
+  @apply outline-yellow outline-offset-0 outline-[3px] outline;
 }
 
 /* If a non-focused input ends up with a stale selection range (browser quirk),
    don't display it. Keeps drag-selection in content from "highlighting" the input. */
+.conditional-block-condition-input:not(:focus)::selection,
 .conditional-inline-condition-input:not(:focus)::selection {
   background: transparent;
   color: inherit;
