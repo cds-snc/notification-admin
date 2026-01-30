@@ -18,6 +18,7 @@ import {
   englishBlockIcon,
   frenchBlockIcon,
   infoIcon,
+  markdownIcon,
   conditionalBlockIcon,
   conditionalInlineIcon,
   rightToLeftIcon,
@@ -905,7 +906,7 @@ const MenuBar = ({
                 {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
                 {t.rtlBlock}
               </span>
-              {rightToLeftIcon()}
+              <Icon iconNode={rightToLeftIcon} />
             </button>
           </TooltipWrapper>
           <TooltipWrapper
@@ -974,7 +975,7 @@ const MenuBar = ({
                       ? t.removePrefix
                       : t.applyPrefix) + t.conditionalBlock}
               </span>
-              {conditionalBlockIcon()}
+              <Icon iconNode={conditionalBlockIcon} />
             </button>
           </TooltipWrapper>
 
@@ -1007,7 +1008,7 @@ const MenuBar = ({
                     : t.applyPrefix}
                   {t.conditionalInline}
                 </span>
-                {conditionalInlineIcon()}
+                <Icon iconNode={conditionalInlineIcon} />
               </button>
             </TooltipWrapper>
           )}
@@ -1054,18 +1055,7 @@ const MenuBar = ({
               {isMarkdownView ? (
                 <>Try the new editor</>
               ) : (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM7 15.5V11.5L9 13.5L11 11.5V15.5H13V8.5H11L9 10.5L7 8.5H5V15.5H7ZM18 12.5V8.5H16V12.5H14L17 15.5L20 12.5H18Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <Icon iconNode={markdownIcon} />
               )}
             </button>
           </TooltipWrapper>
@@ -1076,33 +1066,22 @@ const MenuBar = ({
           <p>
             {t.infoPane1} <br />
             {t.infoPane2}{" "}
-            <Icon
-              iconNode={variableIcon}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              style={{
-                display: "inline",
-                width: "1.2em",
-                height: "1.2em",
-                verticalAlign: "middle",
-                marginX: "0.25em",
-              }}
-              aria-label="Variable icon"
-            />{" "}
+            <Icon iconNode={variableIcon} aria-label="Variable icon" />{" "}
             <p>{t.infoPane3}</p>
             <ul className="list list-bullet ml-10">
               <li>
                 {t.infoPane4}{" "}
-                {conditionalInlineIcon({
-                  "aria-label": "inline conditional icon",
-                })}
+                <Icon
+                  iconNode={conditionalInlineIcon}
+                  aria-label="inline conditional icon"
+                />
               </li>
               <li>
                 {t.infoPane5}{" "}
-                {conditionalBlockIcon({
-                  "aria-label": "block conditional icon",
-                })}
+                <Icon
+                  iconNode={conditionalBlockIcon}
+                  aria-label="block conditional icon"
+                />
               </li>
             </ul>
           </p>
