@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -29,11 +29,20 @@ import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 
-const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
+const SimpleEditor = ({
+  inputId,
+  labelId,
+  initialContent,
+  lang = "en",
+  modeInputId,
+  initialMode,
+}) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [selectionHighlight, setSelectionHighlight] = useState(null);
-  const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [isMarkdownView, setIsMarkdownView] = useState(
+    initialMode === "rte",
+  );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
@@ -73,6 +82,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     },
     [inputId],
   );
+
+  useEffect(() => {
+    if (modeInputId) {
+      const input = document.getElementById(modeInputId);
+      if (input) {
+        input.value = isMarkdownView ? "markdown" : "rte";
+      }
+    }
+  }, [isMarkdownView, modeInputId]);
 
   // Helper function to get selection bounds for highlighting relative to modal position
   const getSelectionBounds = () => {

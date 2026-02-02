@@ -7,6 +7,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/template-category.html" import template_category %}
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -66,7 +67,13 @@
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), testid="template-name") }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.'), testid="template-content") }}
+        {{ tiptap_editor(
+          editorId='template_content',
+          labelId='template_content-label',
+          initialContent=form.template_content.data,
+          templateType=template_type if template_type else template.template_type,
+          hint=_('Maximum 612 characters. Some messages may be too long due to custom content.')) 
+        }}
 
         <h2 class="heading-medium">{{ _('Template category') }}</h2>
         {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
