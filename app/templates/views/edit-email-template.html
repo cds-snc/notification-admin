@@ -74,7 +74,11 @@
     <div class="md:w-2/3 px-gutterHalf">
       {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
 
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
+<div class="px-gutterHalf">
+      <div class="md:w-2/3">
+        {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
+        {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
+      </div>
       {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_sentence_end=True) %}
       {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
       {{ tiptap_editor(
