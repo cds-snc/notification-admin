@@ -318,7 +318,7 @@
   top: -35%;
   left: 0;
   background-size: auto 175%;
-  background-position: right .75rem bottom 75%;
+  background-position: right 0.75rem bottom 75%;
   z-index: -1;
   @apply bg-tryRte bg-no-repeat;
 }
