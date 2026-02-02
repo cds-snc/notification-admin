@@ -4,6 +4,12 @@
   &:focus {
     outline: none;
   }
+  /* Match Email styles */
+  p { 
+    font-size: 19px;
+    line-height: 25px;
+  }
+  
   p + p {
     margin-top: 0;
   }
