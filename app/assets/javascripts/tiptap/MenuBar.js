@@ -18,6 +18,7 @@ import {
   englishBlockIcon,
   frenchBlockIcon,
   infoIcon,
+  markdownIcon,
   conditionalBlockIcon,
   conditionalInlineIcon,
   rightToLeftIcon,
@@ -821,12 +822,7 @@ const MenuBar = ({
                 {editor.isActive("variable") ? t.removePrefix : t.applyPrefix}
                 {t.variable}
               </span>
-              <Icon
-                iconNode={variableIcon}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              />
+              <Icon iconNode={variableIcon} />
             </button>
           </TooltipWrapper>
           <TooltipWrapper
@@ -892,7 +888,7 @@ const MenuBar = ({
                       ? t.removePrefix
                       : t.applyPrefix) + t.conditionalBlock}
               </span>
-              {conditionalBlockIcon()}
+              <Icon iconNode={conditionalBlockIcon} />
             </button>
           </TooltipWrapper>
 
@@ -924,7 +920,7 @@ const MenuBar = ({
                     : t.applyPrefix}
                   {t.conditionalInline}
                 </span>
-                {conditionalInlineIcon()}
+                <Icon iconNode={conditionalInlineIcon} />
               </button>
             </TooltipWrapper>
           )}
@@ -1008,13 +1004,16 @@ const MenuBar = ({
                 {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
                 {t.rtlBlock}
               </span>
-              {rightToLeftIcon()}
+              <Icon iconNode={rightToLeftIcon} />
             </button>
           </TooltipWrapper>
         </div>
 
         {/* Sixth group: Info button */}
-        <div className="toolbar-group">
+        <div
+          className="toolbar-group toolbar-switch-group"
+          data-mode={isMarkdownView ? "markdown" : "richtext"}
+        >
           {!isMarkdownView && (
             <TooltipWrapper label={t.info}>
               <button
@@ -1030,17 +1029,9 @@ const MenuBar = ({
               </button>
             </TooltipWrapper>
           )}
-        </div>
 
-        {/* Seventh group: Markdown toggle button */}
-        <div
-          className={
-            "toolbar-group toolbar-switch-group " +
-            (isMarkdownView ? "markdown-mode" : "")
-          }
-        >
           {isMarkdownView && (
-            <p>
+            <p class="m-0 text-xs font-bold">
               <span>{t.markdownEditorMessage}</span>
             </p>
           )}
@@ -1048,12 +1039,20 @@ const MenuBar = ({
             type="button"
             data-testid="rte-toggle-markdown"
             onClick={toggleHandler}
-            className={"toolbar-button button-try-new"}
+            className={
+              isMarkdownView
+                ? "toolbar-button toolbar-button-mode toolbar-switch-group"
+                : "toolbar-button toolbar-button-mode"
+            }
             title={toggleButtonLabel}
             aria-pressed={isMarkdownView}
           >
             <span className="sr-only">{toggleButtonLabel}</span>
-            {isMarkdownView ? <>{t.richTextButton}</> : <>{t.markdownButton}</>}
+            {isMarkdownView ? (
+              <>{t.richTextButton}</>
+            ) : (
+              <Icon iconNode={markdownIcon} />
+            )}
           </button>
         </div>
       </AccessibleToolbar>
@@ -1062,33 +1061,22 @@ const MenuBar = ({
           <p>
             {t.infoPane1} <br />
             {t.infoPane2}{" "}
-            <Icon
-              iconNode={variableIcon}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              style={{
-                display: "inline",
-                width: "1.2em",
-                height: "1.2em",
-                verticalAlign: "middle",
-                marginX: "0.25em",
-              }}
-              aria-label="Variable icon"
-            />{" "}
+            <Icon iconNode={variableIcon} aria-label="Variable icon" />{" "}
             <p>{t.infoPane3}</p>
             <ul className="list list-bullet ml-10">
               <li>
                 {t.infoPane4}{" "}
-                {conditionalInlineIcon({
-                  "aria-label": "inline conditional icon",
-                })}
+                <Icon
+                  iconNode={conditionalInlineIcon}
+                  aria-label="inline conditional icon"
+                />
               </li>
               <li>
                 {t.infoPane5}{" "}
-                {conditionalBlockIcon({
-                  "aria-label": "block conditional icon",
-                })}
+                <Icon
+                  iconNode={conditionalBlockIcon}
+                  aria-label="block conditional icon"
+                />
               </li>
             </ul>
           </p>
