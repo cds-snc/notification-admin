@@ -305,13 +305,22 @@
   stroke-width: 2;
 }
 
+.toolbar.markdown-mode {
+  @apply bg-brand-100;
+}
 .toolbar.markdown-mode .toolbar-group:not(.toolbar-switch-group),
 .toolbar.markdown-mode .toolbar-separator {
   display: none;
 }
-.toolbar-switch-group.markdown-mode {
+.toolbar-switch-group[data-mode="markdown"] {
   background: transparent;
-  display: block;
+  @apply gap-4;
+}
+.toolbar-switch-group[data-mode="markdown"] .toolbar-button {
+  @apply bg-brand-700 text-white px-6;
+}
+.toolbar-switch-group[data-mode="richtext"] .toolbar-button-mode {
+  @apply bg-brand-700 text-white;
 }
 
 .info-pane {
