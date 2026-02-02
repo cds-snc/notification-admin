@@ -226,6 +226,7 @@ module.exports = {
         emptyFlower: "url('/static/images/empty-flower.svg')",
         emptyTruck: "url('/static/images/empty-truck.svg')",
         emptyBirdCurious: "url('/static/images/empty-bird-curious.svg')",
+        tryRte: "url('/static/images/try-rte.svg')",
       },
       backgroundSize: {
         19: "19px",
