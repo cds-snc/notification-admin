@@ -235,16 +235,14 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  @apply bg-gray-300 p-4 gap-y-6;
+  @apply bg-gray-300 p-4 gap-y-5 gap-x-8;
 }
 
 .toolbar-group {
-  @apply flex flex-nowrap items-center bg-gray-200 gap-1;
+  @apply flex flex-nowrap items-center bg-gray-200;
+  gap: 2px;
 }
 
-.toolbar-separator {
-  @apply w-gutter;
-}
 .toolbar-button:focus,
 .toolbar-button:focus-visible {
   @apply bg-yellow text-black outline outline-yellow outline-2;
@@ -259,12 +257,14 @@
   font-weight: 500;
   line-height: 1;
   user-select: none;
-  @apply min-h-target min-w-target p-0 bg-white text-black text-xs;
+  min-height: 36px;
+  min-width: 36px;
+  @apply p-0 bg-white text-black text-xs;
 }
 
 .toolbar-button.button-try-new {
   background: #2c5e79;
-  @apply text-white px-8;
+  @apply text-white px-5;
 }
 .toolbar-button.toolbar-green {
   @apply bg-green-500 text-white;
@@ -300,18 +300,27 @@
 }
 
 .toolbar-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   stroke-width: 2;
 }
 
+.toolbar.markdown-mode {
+  @apply bg-brand-100;
+}
 .toolbar.markdown-mode .toolbar-group:not(.toolbar-switch-group),
 .toolbar.markdown-mode .toolbar-separator {
   display: none;
 }
-
-.toolbar-switch-group:not(.markdown-mode) {
-  margin-left: auto;
+.toolbar-switch-group[data-mode="markdown"] {
+  background: transparent;
+  @apply gap-4;
+}
+.toolbar-switch-group[data-mode="markdown"] .toolbar-button {
+  @apply bg-brand-700 text-white px-6;
+}
+.toolbar-switch-group[data-mode="richtext"] .toolbar-button-mode {
+  @apply bg-brand-700 text-white;
 }
 
 .info-pane {
