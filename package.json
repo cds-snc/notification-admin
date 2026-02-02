@@ -11,7 +11,10 @@
     "build": "gulp",
     "watch": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/static/stylesheets/index.css --watch ",
     "heroku-postbuild": "gulp && make generate-version-file && export ADMIN_BASE_URL=${HEROKU_APP_NAME}.herokuapp.com",
-    "tailwind": "npx tailwindcss  -i ./app/assets/stylesheets/tailwind/style.css   -o ./app/assets/stylesheets/index.css  --minify  && webpack --config webpack.config.js && gulp"
+    "tiptap-css": "npx tailwindcss -i ./app/assets/javascripts/tiptap/tooltip.css -o ./app/assets/javascripts/tiptap/tooltip.compiled.css && npx tailwindcss -i ./app/assets/javascripts/tiptap/editor.css -o ./app/assets/javascripts/tiptap/editor.compiled.css",
+    "tailwind-main": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/assets/stylesheets/index.css --minify",
+    "tailwind": "npm run tiptap-css && npm run tailwind-main && webpack --config webpack.config.js && gulp",
+    "css": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/assets/stylesheets/index.css --minify"
   },
   "repository": {
     "type": "git",
@@ -52,6 +55,7 @@
     "hogan": "1.0.2",
     "jquery": "^3.6.0",
     "jquery-migrate": "^3.3.2",
+    "lucide-react": "^0.562.0",
     "moment": "^2.29.4",
     "node-polyglot": "^2.4.2",
     "prosemirror-markdown": "^1.13.2",

@@ -49,7 +49,7 @@
 
   /* Improve menu item touch targets */
   .menu-overlay:not(.hidden) a,
-  button {
+  .menu-overlay:not(.hidden) button {
     @apply py-5 px-4;
     min-height: 44px;
     display: flex;

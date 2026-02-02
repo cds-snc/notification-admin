@@ -12,12 +12,14 @@ export const FORMATTING_OPTIONS = {
     ENGLISH_BLOCK: 'rte-english_block',
     FRENCH_BLOCK: 'rte-french_block',
     RTL: 'rte-rtl_block',
+    CONDITIONAL_INLINE: 'rte-conditional_inline',
+    CONDITIONAL_BLOCK: 'rte-conditional_block',
 };
 
 // Parts of the component a user can interact with
 let Components = {
     Toolbar: () => cy.getByTestId('rte-toolbar'),
-    Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]'),
+    Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]').first(),
     MarkdownEditor: () => cy.getByTestId('markdown-editor'),
     LiveRegion: () => cy.getByTestId('rte-liveregion'),
     // toolbar buttons
@@ -45,6 +47,8 @@ let Components = {
     EnglishBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.ENGLISH_BLOCK),
     FrenchBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.FRENCH_BLOCK),
     RTLButton: () => cy.getByTestId(FORMATTING_OPTIONS.RTL),
+    ConditionalInlineButton: () => cy.getByTestId('rte-conditional_inline'),
+    ConditionalBlockButton: () => cy.getByTestId('rte-conditional_block'),
     ViewMarkdownButton: () => cy.getByTestId('rte-toggle-markdown'),
     //link modal buttons
     LinkModal: {
