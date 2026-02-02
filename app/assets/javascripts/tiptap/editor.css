@@ -9,7 +9,7 @@
     font-size: 19px;
     line-height: 25px;
   }
-  
+
   p + p {
     margin-top: 0;
   }
@@ -229,7 +229,7 @@
 }
 
 .editor-content > div {
-  width: 640px;
+  width: 666px;
   @apply px-gutter py-gutterAndAHalf border-r-1 border-dashed border-gray-300;
 }
 
