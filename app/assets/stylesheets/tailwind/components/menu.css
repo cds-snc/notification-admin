@@ -18,7 +18,7 @@
 
   /* Prevent double-tap to zoom on iOS */
   [data-module="menu"],
-  .menu-overlay a {
+  .menu-overlay:not(.hidden) a {
     touch-action: manipulation;
   }
 
@@ -41,28 +41,41 @@
   }
 
   [data-module="menu"] + .menu-overlay:not(.hidden) {
-    @apply absolute top-full w-max bg-white border-1 border-gray-300 px-0 z-50;
+    @apply absolute top-full left-0 w-max bg-white border-1 border-gray-300 px-0 z-50;
   }
   .menu-overlay:not(.hidden) {
     @apply flex flex-col gap-0 items-stretch flex-shrink-0 divide-y divide-gray-300 px-0 z-50 md:bg-white md:border-gray-300 md:border-1 md:px-4;
   }
 
   /* Improve menu item touch targets */
-  .menu-overlay a,
-  .menu-overlay button {
-    @apply py-3 px-4;
+  .menu-overlay:not(.hidden) a,
+  .menu-overlay:not(.hidden) button {
+    @apply py-5 px-4;
     min-height: 44px;
     display: flex;
     align-items: center;
   }
 
-  .menu-overlay button {
+  .menu-overlay:not(.hidden) button {
     max-height: 44px;
     width: 100%;
   }
 
-  .menu-overlay button:active,
-  .menu-overlay button:focus {
+  .menu-overlay:not(.hidden) button:active,
+  .menu-overlay:not(.hidden) button:focus {
     @apply outline-yellow text-black border-transparent shadow-focusLine2;
+  }
+
+  /* Flip the borders */
+  .menu-overlay:not(.hidden) a,
+  .menu-overlay:not(.hidden) a:hover,
+  .menu-overlay:not(.hidden) a[aria-current="page"],
+  .menu-overlay:not(.hidden) a:focus-visible {
+    @apply border-b-0 border-l-4;
+  }
+
+  /* Align nav menu items with edge of other elements on the document. Just for proposition links*/
+  #proposition-links .nav-menu-item {
+    @apply md:px-0;
   }
 }
