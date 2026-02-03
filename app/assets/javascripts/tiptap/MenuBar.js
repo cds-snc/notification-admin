@@ -264,8 +264,8 @@ const MenuBar = ({
       infoPane5: "As a separate section",
       info: "Help",
       markdownButton: "Back to the markdown editor",
-      richTextButton: "Switch now",
-      markdownEditorMessage: "Try the new editing experience",
+      richTextButton: "Try toolbar formatting",
+      markdownEditorMessage: "New email experience",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -302,8 +302,8 @@ const MenuBar = ({
       infoPane5: "Section entière",
       info: "Aide",
       markdownButton: "Retour à l'éditeur de markdown",
-      richTextButton: "Changer maintenant",
-      markdownEditorMessage: "Essayez la nouvelle expérience d'édition",
+      richTextButton: "Essayez les outils de mise en forme",
+      markdownEditorMessage: "Nouvelle expérience courriel",
     },
   };
 

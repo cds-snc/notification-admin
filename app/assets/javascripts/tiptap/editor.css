@@ -306,7 +306,26 @@
 }
 
 .toolbar.markdown-mode {
-  @apply bg-brand-100;
+  container-type: inline-size;
+  position: relative;
+  @apply bg-gray-100 border border-0 border-b-2 border-brand-900;
+}
+.toolbar.markdown-mode:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: -35%;
+  left: 0;
+  background-size: auto 175%;
+  background-position: right 0.75rem bottom 75%;
+  z-index: -1;
+  @apply bg-tryRte bg-no-repeat;
+}
+@container (width < 680px) {
+  .toolbar.markdown-mode:after {
+    display: none;
+  }
 }
 .toolbar.markdown-mode .toolbar-group:not(.toolbar-switch-group),
 .toolbar.markdown-mode .toolbar-separator {
@@ -378,23 +397,6 @@
 div[lang] .conditional-block {
   @apply mx-0;
 }
-
-/* @Will: Do we need this :before stuff? */
-/* .conditional-block::before {
-  content: attr(data-condition);
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: white;
-  white-space: nowrap;
-} */
-
-/* When a real label element is present (NodeView), hide the ::before fallback */
-/* .conditional-block.has-conditional-label::before {
-  content: none;
-} */
 
 /* Inline conditional styling */
 span[data-type="conditional-inline"] {
