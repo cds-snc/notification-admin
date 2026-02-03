@@ -1,4 +1,4 @@
-{% macro tiptap_editor(editorId, labelId, initialContent, templateType="email", lang=None, hint=False) %}
+{% macro tiptap_editor(editorId, labelId, initialContent, templateType="email", lang=None, hint=False, initialMode="rte") %}
     {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
         {% if not editorId or not labelId %}
             <p class="text-red-300 mt-6 mb-6">
@@ -29,7 +29,7 @@
             <script nonce="{{ request_nonce }}">
                 // Allow multiple editors on the same page
                 // Only load tiptap once
-                var initialMode = '{{ "rte" if current_user.default_editor_is_rte else "markdown" }}';
+                var initialMode = '{{ initialMode }}';
 
                 if (!window.tiptapLoaded) {
                     var script = document.createElement('script');

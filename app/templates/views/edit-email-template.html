@@ -84,7 +84,8 @@
         labelId='template_content-label',
         initialContent=form.template_content.data,
         templateType=template_type if template_type else template.template_type,
-        hint=hint) 
+        hint=hint,
+        initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
       }}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
