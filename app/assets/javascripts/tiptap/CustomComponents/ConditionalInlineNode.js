@@ -204,9 +204,7 @@ const ConditionalInlineNode = Node.create({
       const prefixText = document.createElement("span");
       prefixText.className = "conditional-inline-edit-prefix";
 
-      prefixText.append(
-        document.createTextNode(this.options.prefix),
-      );
+      prefixText.append(document.createTextNode(this.options.prefix));
 
       const input = document.createElement("input");
       input.className = "conditional-inline-condition-input";

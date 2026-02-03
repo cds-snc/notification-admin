@@ -396,50 +396,45 @@ div[lang] .conditional-block {
   content: none;
 } */
 
-
 /* Inline conditional styling */
 span[data-type="conditional-inline"] {
-  --conditional-widget-color-bg: theme("colors.gray.200"); 
-  --conditional-widget-color-accent: theme("colors.gray.200"); 
-  /* box-shadow: 2px 2px 0 0 var(--conditional-widget-color-accent), 0 2px 0 0 var(--conditional-widget-color-accent); */
+  --conditional-widget-color-bg: theme("colors.yellow.100");
+  --conditional-widget-color-accent: theme("colors.gray.500");
+}
+
+.conditional-inline-content {
+  box-shadow:
+    2px 2px 0 0 var(--conditional-widget-color-accent),
+    0 2px 0 0 var(--conditional-widget-color-accent);
   box-decoration-break: clone;
-  @apply mr-4 pr-2 bg-yellow;
+  @apply px-2;
 }
 
 .conditional-inline-edit-widget,
 .conditional-trigger {
-  box-shadow: 0 -1px 0 var(--conditional-widget-color-bg), 0 1px 0 var(--conditional-widget-color-accent);
-  @apply bg-gray-200 gap-4 ;
+  box-shadow: inset 0 -2px 0 var(--conditional-widget-color-accent);
+  @apply bg-gray-200 gap-4;
 }
 .conditional-inline-edit-widget {
-  @apply px-2;
+  @apply px-4;
 }
 .conditional-trigger {
   @apply px-gutterHalf;
 }
 
-/* .conditional-inline-edit-widget:focus-within,
-.conditional-trigger:focus-within {
-  @apply bg-yellow text-black;
-} */
-
 .conditional-inline-edit-widget {
-  top: -1px;
-  @apply inline-flex items-center relative;
+  @apply inline-flex items-center;
 }
 .conditional-trigger {
   @apply flex w-max items-center;
 }
 
-/* .conditional-inline-edit-widget,
-.conditional-inline-content {
-  vertical-align: text-bottom;
-} */
-
 .conditional-inline-edit-prefix,
 .conditional-inline-edit-suffix,
 .conditional-trigger-text {
   user-select: none;
+  font-variant: all-small-caps;
+  font-weight: 600;
   @apply tracking-wide;
 }
 
@@ -450,7 +445,7 @@ span[data-type="conditional-inline"] {
 .conditional-block-condition-input {
   line-height: 1;
   font-size: 0.9375em;
-  @apply font-mono text-black;
+  @apply text-black;
 }
 
 .conditional-inline-condition-input,

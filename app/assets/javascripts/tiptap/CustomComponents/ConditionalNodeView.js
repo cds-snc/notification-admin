@@ -105,9 +105,7 @@ const ConditionalNodeView = ({
       data-condition={conditionValue}
     >
       <div className="conditional-trigger" contentEditable={false}>
-        <span className="conditional-trigger-text">
-          {prefix}
-        </span>
+        <span className="conditional-trigger-text">{prefix}</span>
         <input
           id={inputId}
           ref={inputRef}
