@@ -750,12 +750,27 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
 
       const normalizedForEditor =
         normalizeMarkdownConditionals(convertedForEditor);
-      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
-      editor.commands.setContent(processedForInsert);
+
+      // Auto-fix common heading mistakes where users type `#text` or `##text`
+      // without a space after the hash symbols (e.g., `#heading` → `# heading`)
+      // Only matches when there's NO space already (so `# heading` is left alone)
+      // This only happens during markdown-to-editor conversion, not during typing
+      // TODO: When no more templates contain these typos, we can remove this code
+      let fixedHeadingSpacing = normalizedForEditor;
+      // Process ## first to avoid backtracking issues with single #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^##(?! )(\S)/gm,
+        "## $1",
+      );
+      // Then process single #, but exclude cases where it's followed by another #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^#(?!#)(?! )(\S)/gm,
+        "# $1",
+      );
 
       // Convert variables in the markdown to HTML spans so they're properly recognized
       // Use insertContent which can parse the HTML, instead of treating it as text
-      const htmlContent = convertVariablesToSpans(normalizedForEditor);
+      const htmlContent = convertVariablesToSpans(fixedHeadingSpacing);
 
       // Clear the editor and insert the processed content
       editor.commands.clearContent();
