@@ -79,14 +79,19 @@
       </div>
       {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_sentence_end=True) %}
       {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
-      {{ tiptap_editor(
-        editorId='template_content',
-        labelId='template_content-label',
-        initialContent=form.template_content.data,
-        templateType=template_type if template_type else template.template_type,
-        hint=hint,
-        initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
-      }}
+      <!-- TODO FF_RTE: Remove when live-->
+      {% if config["NOTIFY_ENVIRONMENT"] != "PROD" %}
+        {{ tiptap_editor(
+          editorId='template_content',
+          labelId='template_content-label',
+          initialContent=form.template_content.data,
+          templateType=template_type if template_type else template.template_type,
+          hint=hint,
+          initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
+        }}
+      {% else %}
+        {{ template_content(form.template_content, form.text_direction_rtl, hint=hint, ) }}
+      {% endif %}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
