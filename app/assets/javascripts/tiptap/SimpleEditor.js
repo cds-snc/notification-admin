@@ -40,7 +40,9 @@ const SimpleEditor = ({
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [selectionHighlight, setSelectionHighlight] = useState(null);
-  const [isMarkdownView, setIsMarkdownView] = useState(initialMode === "rte");
+  const [isMarkdownView, setIsMarkdownView] = useState(
+    initialMode === "markdown",
+  );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
