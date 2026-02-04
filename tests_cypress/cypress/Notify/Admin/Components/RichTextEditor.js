@@ -20,7 +20,7 @@ export const FORMATTING_OPTIONS = {
 let Components = {
     Toolbar: () => cy.getByTestId('rte-toolbar'),
     Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]').first(),
-    MarkdownEditor: () => cy.getByTestId('markdown-editor'),
+    MarkdownEditor: () => cy.getByTestId('template-content'),
     LiveRegion: () => cy.getByTestId('rte-liveregion'),
     // toolbar buttons
     ToolbarButtons: () => {
