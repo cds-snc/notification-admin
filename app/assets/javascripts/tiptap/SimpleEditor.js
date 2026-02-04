@@ -891,7 +891,7 @@ const SimpleEditor = ({
             className="markdown-view"
             aria-label={viewLabel.markdown}
             spellCheck="false"
-            data-testid="markdown-editor"
+            data-testid="template-content"
           ></textarea>
         ) : (
           <EditorContent editor={editor} data-testid="rte-editor" />
