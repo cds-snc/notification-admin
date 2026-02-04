@@ -79,7 +79,7 @@
       {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_sentence_end=True) %}
       {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
       <!-- TODO FF_RTE: Remove when live-->
-      {% if config["NOTIFY_ENVIRONMENT"] != "PROD" %}
+      {% if config["NOTIFY_ENVIRONMENT"] != "production" %}
         {{ tiptap_editor(
           editorId='template_content',
           labelId='template_content-label',
