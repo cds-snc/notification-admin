@@ -460,7 +460,7 @@ span[data-type="conditional-inline"] .conditional-inline-content {
   border: 2px solid black;
   border-radius: 0;
   min-width: 8ch;
-  @apply px-2 bg-white;
+  @apply px-2 bg-white break-all;
 }
 
 /* Keep drag-selection in content from "highlighting" the block condition input.
