@@ -43,15 +43,34 @@ export const scanConditionalBodyForClose = (
     }
 
     if (nextIdx === closeIdx) {
-      collected.push(chunk.slice(i, closeIdx));
-
+      // We haven't committed this span yet because we need to decide
+      // whether this '))' is the real closing pair. If it's followed by
+      // another ')' (eg ')))'), prefer the later pair so a single ')' at
+      // the end of user content isn't accidentally consumed as part of the
+      // closing marker. This mirrors the negative-lookahead behavior the
+      // inline/paste regex used previously.
       if (depth > 0) {
+        collected.push(chunk.slice(i, closeIdx));
         depth -= 1;
         collected.push(CLOSE);
         i = closeIdx + CLOSE.length;
         continue;
       }
 
+      // If the two-char close is immediately followed by another ')',
+      // treat the earlier pair as part of a run and advance by one char,
+      // keeping one ')' as content. This allows sequences like ')))' to
+      // resolve to the final '))' as the true closer.
+      const afterChar = chunk.charAt(closeIdx + CLOSE.length);
+      if (afterChar === ")") {
+        // include up through the first ')' so the remaining '))' can be
+        // considered on the next iteration
+        collected.push(chunk.slice(i, closeIdx + 1));
+        i = closeIdx + 1;
+        continue;
+      }
+
+      collected.push(chunk.slice(i, closeIdx));
       return {
         foundEnd: true,
         content: collected.join(""),
