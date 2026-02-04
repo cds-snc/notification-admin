@@ -23,6 +23,63 @@ const forceDomSelectionToPos = (view, pos) => {
   }
 };
 
+const setCaretToPos = (element, pos) => {
+  try {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    element.focus();
+
+    if (!element.childNodes.length) {
+      range.setStart(element, 0);
+    } else {
+      const textNode = element.childNodes[0];
+      const offset = Math.min(pos, textNode.textContent.length);
+      range.setStart(textNode, offset);
+    }
+
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } catch {
+    // ignore
+  }
+};
+
+const selectAllContents = (element) => {
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    element.focus();
+  } catch {
+    // ignore
+  }
+};
+
+const isSelectionAtEnd = (element) => {
+  try {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return false;
+    const range = sel.getRangeAt(0);
+    return range.endOffset === (element.textContent || "").length;
+  } catch {
+    return false;
+  }
+};
+
+const isSelectionAtStart = (element) => {
+  try {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return false;
+    const range = sel.getRangeAt(0);
+    return range.startOffset === 0;
+  } catch {
+    return false;
+  }
+};
+
 const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
 // Inline conditional as an inline node so the cursor has real
@@ -206,14 +263,14 @@ const ConditionalInlineNode = Node.create({
 
       prefixText.append(document.createTextNode(this.options.prefix));
 
-      const input = document.createElement("input");
+      const input = document.createElement("span");
       input.className = "conditional-inline-condition-input";
-      input.type = "text";
+      input.contentEditable = "true";
       // Preserve empty string; only use default for missing attr.
-      input.value = node.attrs?.condition ?? this.options.defaultCondition;
+      input.textContent =
+        node.attrs?.condition ?? this.options.defaultCondition;
       input.setAttribute("data-editor-focusable", "true");
       input.setAttribute("aria-label", this.options.conditionAriaLabel);
-      input.setAttribute("autocomplete", "off");
       input.setAttribute("spellcheck", "false");
 
       const suffixText = document.createElement("span");
@@ -227,7 +284,7 @@ const ConditionalInlineNode = Node.create({
         try {
           const pos = typeof getPos === "function" ? getPos() : null;
           if (typeof pos !== "number") return;
-          const nextCondition = normalizeCondition(input.value);
+          const nextCondition = normalizeCondition(input.textContent);
           const tr = view.state.tr;
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
@@ -315,10 +372,7 @@ const ConditionalInlineNode = Node.create({
           }
 
           if (event.key === "ArrowRight") {
-            const atEnd =
-              input.selectionStart === input.value.length &&
-              input.selectionEnd === input.value.length;
-            if (atEnd) {
+            if (isSelectionAtEnd(input)) {
               event.preventDefault();
               commit();
               moveCursorToContentStart();
@@ -327,14 +381,7 @@ const ConditionalInlineNode = Node.create({
           }
 
           if (event.key === "ArrowLeft") {
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const atStart =
-              typeof start === "number" &&
-              typeof end === "number" &&
-              start === 0 &&
-              end === 0;
-            if (!atStart) return;
+            if (!isSelectionAtStart(input)) return;
 
             event.preventDefault();
             commit();
@@ -378,6 +425,10 @@ const ConditionalInlineNode = Node.create({
         commit();
       });
 
+      input.addEventListener("input", () => {
+        commit();
+      });
+
       input.addEventListener("mousedown", (event) => {
         event.stopPropagation();
       });
@@ -388,13 +439,23 @@ const ConditionalInlineNode = Node.create({
       return {
         dom,
         contentDOM,
+        stopEvent: (event) => {
+          return input.contains(event.target);
+        },
         update: (nextNode) => {
           if (nextNode.type !== node.type) return false;
           node = nextNode;
           const nextCondition =
             nextNode.attrs?.condition ?? this.options.defaultCondition;
           dom.setAttribute("data-condition", nextCondition);
-          if (input.value !== nextCondition) input.value = nextCondition;
+
+          // Avoid overwriting the text while the user is actively typing in it.
+          if (
+            document.activeElement !== input &&
+            input.textContent !== nextCondition
+          ) {
+            input.textContent = nextCondition;
+          }
           return true;
         },
       };
@@ -424,11 +485,11 @@ const ConditionalInlineNode = Node.create({
             try {
               const nodeDom = editor.view.nodeDOM(pos);
               const inputEl = nodeDom?.querySelector?.(
-                "input.conditional-inline-condition-input[data-editor-focusable]",
+                "span.conditional-inline-condition-input[data-editor-focusable]",
               );
               if (!inputEl) return false;
               inputEl.focus?.();
-              inputEl.select?.();
+              selectAllContents(inputEl);
               return true;
             } catch {
               return false;
@@ -595,11 +656,11 @@ const ConditionalInlineNode = Node.create({
                         try {
                           const nodeDom = view.nodeDOM(nextBlockStart);
                           const input = nodeDom?.querySelector?.(
-                            "input.conditional-inline-condition-input[data-editor-focusable]",
+                            "span.conditional-inline-condition-input[data-editor-focusable]",
                           );
                           if (!input) return;
                           input.focus?.();
-                          input.setSelectionRange?.(0, 0);
+                          setCaretToPos(input, 0);
                         } catch {
                           // ignore
                         }
@@ -624,11 +685,11 @@ const ConditionalInlineNode = Node.create({
                 try {
                   const nodeDom = view.nodeDOM(selection.from);
                   const input = nodeDom?.querySelector?.(
-                    "input.conditional-inline-condition-input[data-editor-focusable]",
+                    "span.conditional-inline-condition-input[data-editor-focusable]",
                   );
                   if (!input) return;
                   input.focus?.();
-                  input.setSelectionRange?.(0, 0);
+                  setCaretToPos(input, 0);
                 } catch {
                   // ignore
                 }
@@ -657,14 +718,14 @@ const ConditionalInlineNode = Node.create({
                 try {
                   const nodeDom = view.nodeDOM(nodePos);
                   const input = nodeDom?.querySelector?.(
-                    "input.conditional-inline-condition-input[data-editor-focusable]",
+                    "span.conditional-inline-condition-input[data-editor-focusable]",
                   );
 
                   if (input) {
                     requestAnimationFrame(() => {
                       input.focus?.();
-                      const end = input.value?.length ?? 0;
-                      input.setSelectionRange?.(end, end);
+                      const end = input.textContent?.length ?? 0;
+                      setCaretToPos(input, end);
                     });
                     return true;
                   }

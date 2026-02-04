@@ -149,7 +149,7 @@
       inset -0.4em 0 0 0 #fff,
       inset 0 -0.1em 0 0 #fff,
       inset 0 0.3em 0 0 #fff;
-    @apply inline bg-yellow text-black break-words;
+    @apply inline bg-yellow-100 text-black break-words;
   }
   span[data-type="variable"]:before {
     content: "((";
@@ -402,42 +402,49 @@ div[lang] .conditional-block {
 span[data-type="conditional-inline"] {
   --conditional-widget-color-bg: theme("colors.yellow.100");
   --conditional-widget-color-accent: theme("colors.gray.500");
+  counter-increment: conditional-inline-edit-widget-counter;
+}
+span[data-type="conditional-inline"]:focus-within .conditional-inline-content {
+  /* @apply outline outline-black outline-2; */
+  box-shadow: 2px 2px 0 var(theme("colors.yellow.300"));
+  box-decoration-break: clone;
+  @apply bg-yellow-100/70;
 }
 
-.conditional-inline-content {
-  box-shadow:
-    2px 2px 0 0 var(--conditional-widget-color-accent),
-    0 2px 0 0 var(--conditional-widget-color-accent);
+span[data-type="conditional-inline"]:focus-within::before,
+.conditional-inline-edit-widget::before {
+  text-underline-offset: -0.75lh;
+  text-decoration-thickness: 1lh;
+}
+
+span[data-type="conditional-inline"] .conditional-inline-content {
+  box-shadow: inset -2px -2px 0 0 theme("colors.yellow.300");
   box-decoration-break: clone;
-  @apply px-2;
+  @apply pr-2;
 }
 
 .conditional-inline-edit-widget,
 .conditional-trigger {
-  box-shadow: inset 0 -2px 0 var(--conditional-widget-color-accent);
-  @apply bg-gray-200 gap-4;
+  @apply bg-yellow-100 gap-4;
 }
 .conditional-inline-edit-widget {
-  @apply px-4;
+  @apply px-2 mr-2;
 }
 .conditional-trigger {
   @apply px-gutterHalf;
 }
-
-.conditional-inline-edit-widget {
-  @apply inline-flex items-center;
-}
 .conditional-trigger {
-  @apply flex w-max items-center;
+  @apply flex w-max items-baseline;
 }
 
 .conditional-inline-edit-prefix,
 .conditional-inline-edit-suffix,
 .conditional-trigger-text {
   user-select: none;
-  font-variant: all-small-caps;
+  white-space: nowrap;
+  font-size: 0.75em;
+  line-height: 1.5em;
   font-weight: 600;
-  @apply tracking-wide;
 }
 
 .conditional-inline-edit-prefix,
@@ -445,8 +452,6 @@ span[data-type="conditional-inline"] {
 .conditional-trigger-text,
 .conditional-inline-condition-input,
 .conditional-block-condition-input {
-  line-height: 1;
-  font-size: 0.9375em;
   @apply text-black;
 }
 
@@ -455,7 +460,7 @@ span[data-type="conditional-inline"] {
   border: 2px solid black;
   border-radius: 0;
   min-width: 8ch;
-  @apply px-2;
+  @apply px-2 bg-white;
 }
 
 /* Keep drag-selection in content from "highlighting" the block condition input.
