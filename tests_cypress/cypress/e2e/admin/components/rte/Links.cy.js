@@ -83,7 +83,7 @@ describe("Link tests", () => {
     RichTextEditor.Components.ViewMarkdownButton().click();
 
     // The markdown textarea should now contain explicit markdown link
-    cy.get('[data-testid="markdown-editor"]').should(
+    RichTextEditor.Components.MarkdownEditor().should(
       "contain.value",
       "[info@example.com](mailto:info@example.com)",
     );
@@ -117,7 +117,7 @@ describe("Link tests", () => {
 
     // Switch to markdown view and ensure encoded correctly
     RichTextEditor.Components.ViewMarkdownButton().click();
-    cy.get('[data-testid="markdown-editor"]').should(
+    RichTextEditor.Components.MarkdownEditor().should(
       "contain.value",
       "[contact us](mailto:info@example.com)",
     );
@@ -145,7 +145,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](((var)))",
       );
@@ -175,7 +175,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](https://example.com/((var)))",
       );
@@ -205,7 +205,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](https://www.example.com)",
       );
@@ -235,7 +235,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link ((var))](https://www.example.com)",
       );
@@ -264,7 +264,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](((var2)))",
       );
@@ -297,7 +297,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](((var)))",
       );
@@ -330,7 +330,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](https://example.com/((var)))",
       );
@@ -365,7 +365,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](https://www.example.com)",
       );
@@ -400,7 +400,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link ((var))](https://www.example.com)",
       );
@@ -434,7 +434,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](((var2)))",
       );
