@@ -4,6 +4,12 @@
   &:focus {
     outline: none;
   }
+  /* Match Email styles */
+  p {
+    font-size: 19px;
+    line-height: 25px;
+  }
+
   p + p {
     margin-top: 0;
   }
@@ -223,7 +229,7 @@
 }
 
 .editor-content > div {
-  width: 640px;
+  width: 666px;
   @apply px-gutter py-gutterAndAHalf border-r-1 border-dashed border-gray-300;
 }
 
@@ -234,7 +240,7 @@
   flex-wrap: wrap;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 100;
   @apply bg-gray-300 p-4 gap-y-5 gap-x-8;
 }
 

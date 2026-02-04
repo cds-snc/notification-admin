@@ -151,7 +151,9 @@ const ConditionalInlineNode = Node.create({
     // Single-line only (no newlines).
     return [
       new InputRule({
-        find: /\(\(([^?)\n]+)\?\?([^\n)]*)\)\)$/,
+        // Match closing '))' that is not followed by another ')' so runs like
+        // ')))' match the final pair, avoiding premature termination.
+        find: /\(\(([^?)\n]+)\?\?([^\n]*?)\)\)(?!\))$/,
         handler: ({ state, range, match }) => {
           if (isInsideBlockConditional(state, range.from)) {
             return null;
@@ -190,7 +192,9 @@ const ConditionalInlineNode = Node.create({
 
     return [
       new PasteRule({
-        find: /\(\(([^?\n)]+)\?\?([^\n)]*)\)\)/g,
+        // Prefer a closing '))' that is not followed by another ')' so
+        // sequences like ')))' are treated correctly (use the last pair).
+        find: /\(\(([^?\n)]+)\?\?([^\n]*?)\)\)(?!\))/g,
         handler: ({ state, range, match }) => {
           if (isInsideBlockConditional(state, range.from)) {
             return null;
