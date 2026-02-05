@@ -1,4 +1,4 @@
-import { getTemplateID, getServiceID } from "../../../../support/utils"
+import { getTemplateID, getServiceID } from "../../../../support/utils";
 import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 import { TemplatesPage } from "../../../../Notify/Admin/Pages/all";
 
@@ -199,56 +199,55 @@ line3`;
 const SERVICE_ID = getServiceID("CYPRESS");
 const TEMPLATE_ID = getTemplateID("SMOKE_TEST_EMAIL");
 describe.only("Rich Text Editor Persistence", () => {
-    beforeEach(() => {
-        // Sign in and go directly to a template
-        cy.login("platform@admin.gov.uk", "password");
-        cy.visit(`/services/${SERVICE_ID}/templates/${TEMPLATE_ID}`);
-    });
+  beforeEach(() => {
+    // Sign in and go directly to a template
+    cy.login("platform@admin.gov.uk", "password");
+    cy.visit(`/services/${SERVICE_ID}/templates/${TEMPLATE_ID}`);
+  });
 
   it("Retains editor state (Markdown vs Rich Text) after navigation", () => {
     TemplatesPage.EditCurrentTemplate();
-  
+
     cy.contains("h1", "Edit reusable template").should("be.visible");
     RichTextEditor.Components.ViewMarkdownButton().should("exist");
-    
+
     // Check initial state
-    cy.get('body').then(($body) => {
-        const isRte = $body.find('[data-testid="rte-editor"]').length > 0;
-        
-        if (isRte) {             
-             // 1. Switch to Markdown mode
-             RichTextEditor.Components.ViewMarkdownButton().click();
-             RichTextEditor.Components.MarkdownEditor().should("be.visible");
-             RichTextEditor.Components.Editor().should("not.exist");
+    cy.get("body").then(($body) => {
+      const isRte = $body.find('[data-testid="rte-editor"]').length > 0;
 
-             // 2. Navigate away (Preview)
-             cy.contains("Preview").click();
+      if (isRte) {
+        // 1. Switch to Markdown mode
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.MarkdownEditor().should("be.visible");
+        RichTextEditor.Components.Editor().should("not.exist");
 
-             // 3. Navigate back (Edit)
-             cy.contains("Edit").click();
+        // 2. Navigate away (Preview)
+        cy.contains("Preview").click();
 
-             // 4. Verify persistences (Should still be Markdown)
-             RichTextEditor.Components.ViewMarkdownButton().should("exist");
-             RichTextEditor.Components.MarkdownEditor().should("be.visible");
-             RichTextEditor.Components.Editor().should("not.exist");
+        // 3. Navigate back (Edit)
+        cy.contains("Edit").click();
 
-        } else {
-             // 1. Switch to Rich Text mode
-             RichTextEditor.Components.ViewMarkdownButton().click();
-             RichTextEditor.Components.Editor().should("be.visible");
-             RichTextEditor.Components.MarkdownEditor().should("not.exist");
+        // 4. Verify persistences (Should still be Markdown)
+        RichTextEditor.Components.ViewMarkdownButton().should("exist");
+        RichTextEditor.Components.MarkdownEditor().should("be.visible");
+        RichTextEditor.Components.Editor().should("not.exist");
+      } else {
+        // 1. Switch to Rich Text mode
+        RichTextEditor.Components.ViewMarkdownButton().click();
+        RichTextEditor.Components.Editor().should("be.visible");
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
 
-             // 2. Navigate away (Preview)
-             cy.contains("Preview").click();
+        // 2. Navigate away (Preview)
+        cy.contains("Preview").click();
 
-             // 3. Navigate back (Edit)
-             cy.contains("Edit").click();
+        // 3. Navigate back (Edit)
+        cy.contains("Edit").click();
 
-             // 4. Verify persistences (Should still be Rich Text)
-             RichTextEditor.Components.ViewMarkdownButton().should("exist");
-             RichTextEditor.Components.Editor().should("be.visible");
-             RichTextEditor.Components.MarkdownEditor().should("not.exist");
-        }
+        // 4. Verify persistences (Should still be Rich Text)
+        RichTextEditor.Components.ViewMarkdownButton().should("exist");
+        RichTextEditor.Components.Editor().should("be.visible");
+        RichTextEditor.Components.MarkdownEditor().should("not.exist");
+      }
     });
   });
 });
