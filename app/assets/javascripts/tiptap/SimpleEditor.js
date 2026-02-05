@@ -37,6 +37,8 @@ const SimpleEditor = ({
   lang = "en",
   modeInputId,
   initialMode,
+  preferenceUpdateUrl,
+  csrfToken,
 }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
@@ -851,7 +853,21 @@ const SimpleEditor = ({
       setMarkdownValue(markdown);
     }
 
-    setIsMarkdownView((prev) => !prev);
+    const nextMode = !isMarkdownView;
+    setIsMarkdownView(nextMode);
+
+    if (preferenceUpdateUrl) {
+      fetch(preferenceUpdateUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ mode: nextMode ? "markdown" : "rte" }),
+      }).catch((err) => {
+        console.error("Failed to update editor preference:", err);
+      });
+    }
   };
 
   const onMarkdownKeyDown = (event) => {

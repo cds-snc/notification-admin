@@ -796,3 +796,15 @@ def deactivate_account_authenticate():
         form=form,
         back_link=url_for(".deactivate_account"),
     )
+
+
+@main.route("/user-profile/editor-preferences", methods=["POST"])
+@user_is_logged_in
+def update_editor_preferences():
+    if request.is_json:
+        data = request.get_json()
+        if "mode" in data:
+            is_rte = data["mode"] == "rte"
+            current_user.update(default_editor_is_rte=is_rte)
+            return jsonify(status="ok"), 200
+    return jsonify(status="error", message="Invalid data"), 400
