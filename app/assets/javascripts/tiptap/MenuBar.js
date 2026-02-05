@@ -825,6 +825,38 @@ const MenuBar = ({
               <Icon iconNode={variableIcon} />
             </button>
           </TooltipWrapper>
+          {!useUnifiedConditionalButton && (
+            <TooltipWrapper label={t.conditionalInline}>
+              <button
+                type="button"
+                data-testid="rte-conditional_inline"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                }}
+                onClick={() =>
+                  announceToggle(
+                    () => runInlineConditionalAction(),
+                    () => editor.isActive("conditionalInline"),
+                    t.conditionalInline,
+                  )
+                }
+                className={
+                  "toolbar-button" +
+                  (editor.isActive("conditionalInline") ? " is-active" : "")
+                }
+                title={t.conditionalInline}
+                aria-pressed={editor.isActive("conditionalInline")}
+              >
+                <span className="sr-only">
+                  {editor.isActive("conditionalInline")
+                    ? t.removePrefix
+                    : t.applyPrefix}
+                  {t.conditionalInline}
+                </span>
+                <Icon iconNode={conditionalInlineIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
           <TooltipWrapper
             label={
               useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
@@ -891,39 +923,6 @@ const MenuBar = ({
               <Icon iconNode={conditionalBlockIcon} />
             </button>
           </TooltipWrapper>
-
-          {!useUnifiedConditionalButton && (
-            <TooltipWrapper label={t.conditionalInline}>
-              <button
-                type="button"
-                data-testid="rte-conditional_inline"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                }}
-                onClick={() =>
-                  announceToggle(
-                    () => runInlineConditionalAction(),
-                    () => editor.isActive("conditionalInline"),
-                    t.conditionalInline,
-                  )
-                }
-                className={
-                  "toolbar-button" +
-                  (editor.isActive("conditionalInline") ? " is-active" : "")
-                }
-                title={t.conditionalInline}
-                aria-pressed={editor.isActive("conditionalInline")}
-              >
-                <span className="sr-only">
-                  {editor.isActive("conditionalInline")
-                    ? t.removePrefix
-                    : t.applyPrefix}
-                  {t.conditionalInline}
-                </span>
-                <Icon iconNode={conditionalInlineIcon} />
-              </button>
-            </TooltipWrapper>
-          )}
         </div>
 
         {/* Fifth group: English, French, RTL */}
