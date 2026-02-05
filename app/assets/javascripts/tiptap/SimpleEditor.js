@@ -222,125 +222,6 @@ const SimpleEditor = ({
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
-          // If the pasted text looks like a multi-line block conditional,
-          // allow the editor's paste rules (node-level PasteRule) to run
-          // instead of intercepting here.
-          const isBlockConditionalPaste =
-            text.includes("((") &&
-            text.includes("??") &&
-            text.includes("))") &&
-            text.includes("\n");
-
-          if (isBlockConditionalPaste) {
-            // Intercept multi-line block conditional pastes and insert as
-            // a proper block conditional node, splitting surrounding text
-            // into separate paragraphs.
-            event.preventDefault();
-
-            const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
-
-            const nodes = [];
-
-            const pushTextAsParagraphs = (txt) => {
-              if (!txt) return;
-              const parts = txt.split(/\n+/).map((s) => s.trim());
-              for (const p of parts) {
-                if (!p) continue; // skip empty/blank-only segments
-                nodes.push({
-                  type: "paragraph",
-                  content: [{ type: "text", text: p }],
-                });
-              }
-            };
-
-            // Nesting-aware scanner that finds conditional matches using
-            // the same logic as our markdown-it scanner (scanConditionalBodyForClose).
-            const findConditionalMatches = (fullText) => {
-              const matches = [];
-              let idx = 0;
-              while (idx < fullText.length) {
-                const openIdx = fullText.indexOf("((", idx);
-                if (openIdx === -1) break;
-                const condStart = openIdx + 2;
-                const condEnd = fullText.indexOf("??", condStart);
-                if (condEnd === -1) {
-                  idx = condStart;
-                  continue;
-                }
-
-                const conditionRaw = fullText.slice(condStart, condEnd);
-                if (conditionRaw.includes("\n")) {
-                  idx = condEnd + 2;
-                  continue;
-                }
-
-                const bodyStart = condEnd + 2;
-                const chunk = fullText.slice(bodyStart);
-                const scanned = scanConditionalBodyForClose(chunk, {
-                  initialDepth: 0,
-                });
-                if (!scanned.foundEnd) {
-                  idx = bodyStart;
-                  continue;
-                }
-
-                const closeIdx = bodyStart + scanned.closeOffset;
-                const matchStart = openIdx;
-                const matchEnd = closeIdx + 2; // include the '))'
-
-                matches.push({
-                  start: matchStart,
-                  end: matchEnd,
-                  condition: (conditionRaw || "").trim(),
-                  body: scanned.content,
-                });
-
-                idx = matchEnd;
-              }
-              return matches;
-            };
-
-            const matches = findConditionalMatches(normalizedForStorage);
-            let lastIndex = 0;
-            for (const m of matches) {
-              const beforeText = normalizedForStorage.slice(lastIndex, m.start);
-              pushTextAsParagraphs(beforeText);
-
-              const bodyParts = m.body
-                .split(/\n+/)
-                .map((s) => s.trim())
-                .filter((s) => s.length > 0);
-
-              const conditionalContent = bodyParts.length
-                ? bodyParts.map((p) => ({
-                    type: "paragraph",
-                    content: [{ type: "text", text: p }],
-                  }))
-                : [{ type: "paragraph" }];
-
-              nodes.push({
-                type: "conditional",
-                attrs: {
-                  condition: m.condition || conditionalText.defaultCondition,
-                },
-                content: conditionalContent,
-              });
-
-              lastIndex = m.end;
-            }
-
-            // Tail text after last match
-            const tail = normalizedForStorage.slice(lastIndex);
-            pushTextAsParagraphs(tail);
-
-            // If no matches found, fall back to default handling
-            if (nodes.length === 0) return false;
-
-            // Insert the constructed nodes at the current selection
-            editor.commands.insertContent(nodes);
-            return true;
-          }
-
           // Prevent default paste behavior
           event.preventDefault();
 
@@ -351,7 +232,7 @@ const SimpleEditor = ({
 
           // Use the same markdown conversion logic as the markdown switch handler
           // This ensures pasted markdown is processed consistently
-          convertMarkdownToEditorContent(normalizedForStorage);
+          convertMarkdownToEditorContent(normalizedForStorage, true);
 
           return true;
         }
@@ -712,12 +593,19 @@ const SimpleEditor = ({
 
   // Helper function to convert markdown text to editor content.
   // Used both when pasting markdown and when switching from markdown view.
-  const convertMarkdownToEditorContent = (markdownText) => {
-    if (!markdownText) return;
+  // If `insertMode` is true, insert at cursor; otherwise replace all content.
+  const convertMarkdownToEditorContent = (markdownText, insertMode = false) => {
+    // Handle empty content - need to clear in replace mode
+    if (!markdownText) {
+      if (!insertMode) {
+        editor.commands.clearContent();
+      }
+      return;
+    }
 
     // Convert caret markers '^' to '>' so the editor renders blockquotes
     const convertedForEditor = markdownText.replace(/^(\s*)\^/gm, "$1>");
-    
+
     // Normalize multi-line conditional markers to ensure they start and end
     // on their own paragraph when converting from markdown to rich content.
     const normalizeMarkdownConditionals = (txt) => {
@@ -755,15 +643,40 @@ const SimpleEditor = ({
       return out;
     };
 
-    const normalizedForEditor = normalizeMarkdownConditionals(convertedForEditor);
-    const htmlContent = convertVariablesToSpans(normalizedForEditor);
+    const normalizedForEditor =
+      normalizeMarkdownConditionals(convertedForEditor);
 
-    // Clear the editor and insert the processed content
-    editor.commands.clearContent();
-    editor.commands.insertContent(htmlContent);
+    // For content with conditionals, use insertContent directly with markdown
+    // (don't convert to HTML spans - let the markdown parser handle everything)
+    const hasConditionals = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/.test(
+      normalizedForEditor,
+    );
+
+    if (insertMode) {
+      // For pasting: insert at cursor position
+      if (hasConditionals) {
+        // Use markdown parser for complex content with conditionals
+        editor.commands.insertContent(normalizedForEditor);
+      } else {
+        // For simple content without conditionals, convert variables to spans
+        const htmlContent = convertVariablesToSpans(normalizedForEditor);
+        editor.commands.insertContent(htmlContent);
+      }
+    } else {
+      // For switching from markdown view: replace all content
+      editor.commands.clearContent();
+      if (hasConditionals) {
+        // Use markdown parser
+        editor.commands.insertContent(normalizedForEditor);
+      } else {
+        // Convert to spans for efficiency
+        const htmlContent = convertVariablesToSpans(normalizedForEditor);
+        editor.commands.insertContent(htmlContent);
+      }
+    }
 
     // Force editor to re-render by triggering a transaction
-    // This ensures all marks and nodes are properly applied
+    // This ensures all marks and nodes (including conditionals) are properly applied
     editor.view.dispatch(editor.state.tr);
 
     editor.commands.focus();
