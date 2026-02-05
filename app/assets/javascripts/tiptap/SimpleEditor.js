@@ -349,61 +349,9 @@ const SimpleEditor = ({
           // render normal blockquotes via inbound normalization on parse.
           const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
 
-          // Check if the text contains variables
-          const hasVariables = /\(\([^)]+\)\)/.test(normalizedForStorage);
-
-          if (hasVariables) {
-            // Replace variables with HTML spans (centralized helper)
-            const processedText = convertVariablesToSpans(normalizedForStorage);
-
-            // Insert the processed HTML at the current cursor position
-            editor.commands.insertContent(processedText);
-          } else {
-            // Check if the text contains Markdown syntax
-            const isMarkdown = /[*_`#>\-\^]|\[.*\]\(.*\)/.test(
-              normalizedForStorage,
-            );
-
-            if (isMarkdown) {
-              // Use TipTap's Markdown extension to parse and insert content
-              // The BlockquoteMarkdown extension will transform '^' to '>' for parsing
-              editor.commands.insertContent(normalizedForStorage);
-            } else {
-              // Handle plain text: split by double newlines for paragraphs,
-              // then within each paragraph, split by single newlines for line breaks.
-              // This preserves both paragraph breaks and single line breaks.
-              const paragraphs = normalizedForStorage.split(/\n\n+/);
-
-              const nodes = paragraphs
-                .map((para) => {
-                  // Split each paragraph by single newlines
-                  const lines = para.split("\n");
-                  const content = [];
-
-                  for (let i = 0; i < lines.length; i++) {
-                    // Add hard break before each line except the first
-                    if (i > 0) {
-                      content.push({ type: "hardBreak" });
-                    }
-                    // Add the text
-                    if (lines[i].trim()) {
-                      content.push({ type: "text", text: lines[i] });
-                    }
-                  }
-
-                  return {
-                    type: "paragraph",
-                    content: content.length ? content : [],
-                  };
-                })
-                .filter((para) => para.content.length > 0); // Remove empty paragraphs
-
-              // Insert the nodes into the editor
-              if (nodes.length > 0) {
-                editor.commands.insertContent({ type: "doc", content: nodes });
-              }
-            }
-          }
+          // Use the same markdown conversion logic as the markdown switch handler
+          // This ensures pasted markdown is processed consistently
+          convertMarkdownToEditorContent(normalizedForStorage);
 
           return true;
         }
@@ -762,72 +710,72 @@ const SimpleEditor = ({
     return markdown.replace(/\\\n/g, "\n");
   };
 
+  // Helper function to convert markdown text to editor content.
+  // Used both when pasting markdown and when switching from markdown view.
+  const convertMarkdownToEditorContent = (markdownText) => {
+    if (!markdownText) return;
+
+    // Convert caret markers '^' to '>' so the editor renders blockquotes
+    const convertedForEditor = markdownText.replace(/^(\s*)\^/gm, "$1>");
+    
+    // Normalize multi-line conditional markers to ensure they start and end
+    // on their own paragraph when converting from markdown to rich content.
+    const normalizeMarkdownConditionals = (txt) => {
+      if (!txt || typeof txt !== "string") return txt;
+      const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)(?!\))/g;
+      let out = "";
+      let lastIndex = 0;
+      let m;
+      while ((m = re.exec(txt)) !== null) {
+        const start = m.index;
+        const end = re.lastIndex;
+        const match = m[0];
+
+        out += txt.slice(lastIndex, start);
+
+        // Ensure a blank line before
+        if (out.length === 0) {
+          // at start, nothing to do
+        } else if (!/\n\s*\n$/.test(out)) {
+          if (out.endsWith("\n")) out += "\n";
+          else out += "\n\n";
+        }
+
+        out += match;
+
+        // Ensure a blank line after (lookahead from original text)
+        const after = txt.slice(end);
+        const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+        if (!hasBlankAfter) out += "\n\n";
+
+        lastIndex = end;
+      }
+
+      out += txt.slice(lastIndex);
+      return out;
+    };
+
+    const normalizedForEditor = normalizeMarkdownConditionals(convertedForEditor);
+    const htmlContent = convertVariablesToSpans(normalizedForEditor);
+
+    // Clear the editor and insert the processed content
+    editor.commands.clearContent();
+    editor.commands.insertContent(htmlContent);
+
+    // Force editor to re-render by triggering a transaction
+    // This ensures all marks and nodes are properly applied
+    editor.view.dispatch(editor.state.tr);
+
+    editor.commands.focus();
+  };
+
   const toggleViewMode = () => {
     if (!editor) return;
 
     if (isMarkdownView) {
       // Switching back from markdown to rich text
       const processedMarkdown = markdownValue || "";
-
-      // Set the content from markdown, converting variables to HTML spans
-      // so behavior matches paste. We centralize conversion in helper.
-      // Convert caret markers '^' to '>' so the editor renders blockquotes
-      const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
-      // Normalize multi-line conditional markers to ensure they start and end
-      // on their own paragraph when converting from markdown to rich content.
-      const normalizeMarkdownConditionals = (txt) => {
-        if (!txt || typeof txt !== "string") return txt;
-        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)(?!\))/g;
-        let out = "";
-        let lastIndex = 0;
-        let m;
-        while ((m = re.exec(txt)) !== null) {
-          const start = m.index;
-          const end = re.lastIndex;
-          const match = m[0];
-
-          out += txt.slice(lastIndex, start);
-
-          // Ensure a blank line before
-          if (out.length === 0) {
-            // at start, nothing to do
-          } else if (!/\n\s*\n$/.test(out)) {
-            if (out.endsWith("\n")) out += "\n";
-            else out += "\n\n";
-          }
-
-          out += match;
-
-          // Ensure a blank line after (lookahead from original text)
-          const after = txt.slice(end);
-          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
-          if (!hasBlankAfter) out += "\n\n";
-
-          lastIndex = end;
-        }
-
-        out += txt.slice(lastIndex);
-        return out;
-      };
-
-      const normalizedForEditor =
-        normalizeMarkdownConditionals(convertedForEditor);
-      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
-      editor.commands.setContent(processedForInsert);
-
-      // Convert variables in the markdown to HTML spans so they're properly recognized
-      // Use insertContent which can parse the HTML, instead of treating it as text
-      const htmlContent = convertVariablesToSpans(normalizedForEditor);
-
-      // Clear the editor and insert the processed content
-      editor.commands.clearContent();
-      editor.commands.insertContent(htmlContent);
-
-      // Force editor to re-render by triggering a transaction
-      // This ensures all marks and nodes are properly applied
-      editor.view.dispatch(editor.state.tr);
-
-      editor.commands.focus();
+      convertMarkdownToEditorContent(processedMarkdown);
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
