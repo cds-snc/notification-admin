@@ -2,8 +2,6 @@ import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { TextSelection } from "@tiptap/pm/state";
 
-import { CONDITIONAL_BRANCH_ICON_PATH } from "./Conditional/Helpers";
-
 const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
 const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 

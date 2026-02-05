@@ -22,14 +22,14 @@ describe("Conditional inline and block tests", () => {
     it("Focus exits input to the right when arrowing right inside conditional input", () => {
       // Find the conditional input and focus it
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .first()
         .focus()
         .type("jhasd{end}{rightarrow}");
 
       // Focus should move away from the input
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .first()
         .should("not.have.focus");
     });
@@ -48,7 +48,7 @@ describe("Conditional inline and block tests", () => {
 
       // The conditional input should now have focus
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .should("have.focus");
     });
 
@@ -58,7 +58,7 @@ describe("Conditional inline and block tests", () => {
 
       // Focus the conditional input
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .first()
         .focus();
 
@@ -70,7 +70,7 @@ describe("Conditional inline and block tests", () => {
 
       // Focus should move away from the input
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .first()
         .should("not.have.focus");
     });
@@ -86,7 +86,7 @@ describe("Conditional inline and block tests", () => {
 
       // The conditional input should now have focus
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .should("have.focus");
     });
 
@@ -116,7 +116,7 @@ describe("Conditional inline and block tests", () => {
 
       // The conditional input should now have focus
       RichTextEditor.Components.Editor()
-        .find('span[data-type="conditional-inline"] input')
+        .find('span[data-type="conditional-inline"] .conditional-inline-condition-input')
         .first()
         .should("have.focus");
     });
@@ -290,7 +290,7 @@ describe("Conditional inline and block tests", () => {
 
       // Focus should be on the condition input
       RichTextEditor.Components.Editor()
-        .find('*[data-type="conditional-inline"] input')
+        .find('*[data-type="conditional-inline"] .conditional-inline-condition-input')
         .should("have.focus");
     });
 

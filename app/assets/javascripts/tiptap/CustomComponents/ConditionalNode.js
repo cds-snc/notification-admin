@@ -8,7 +8,11 @@ import {
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ConditionalNodeView from "./ConditionalNodeView";
-import { installConditionalBlockMarkdownIt } from "./Conditional/MarkdownIt";
+import {
+  installConditionalBlockMarkdownIt,
+  isInsideBlockConditional,
+} from "./Conditional/MarkdownIt";
+import { focusConditionalInput } from "./Conditional/Helpers";
 
 // A block node that conditionally renders template content.
 // Example: ((under18??Please get your application signed by a parent or guardian.))
@@ -174,15 +178,7 @@ const ConditionalNode = Node.create({
               if (!view.hasFocus()) return;
 
               const nodeDom = view.nodeDOM(pos);
-              const selector =
-                kind === "inline"
-                  ? "input.conditional-inline-condition-input[data-editor-focusable]"
-                  : "input.conditional-block-condition-input";
-              const input = nodeDom?.querySelector?.(selector);
-              if (!input) return;
-
-              input.focus?.();
-              input.select?.();
+              focusConditionalInput(nodeDom, kind);
 
               // Clear so we don't refocus repeatedly.
               view.dispatch(
@@ -589,16 +585,7 @@ const ConditionalNode = Node.create({
                 if (event.shiftKey) {
                   event.preventDefault();
                   const nodeDom = view.nodeDOM(inlineConditionalPos);
-                  const input = nodeDom?.querySelector?.(
-                    "input.conditional-inline-condition-input[data-editor-focusable]",
-                  );
-                  input?.focus?.();
-                  try {
-                    const end = input?.value?.length ?? 0;
-                    input?.setSelectionRange?.(end, end);
-                  } catch {
-                    // ignore
-                  }
+                  focusConditionalInput(nodeDom, "inline");
                   return true;
                 }
 

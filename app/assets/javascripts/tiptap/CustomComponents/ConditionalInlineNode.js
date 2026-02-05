@@ -1,84 +1,16 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
 import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 
-import { isInsideBlockConditional } from "./Conditional/Helpers";
+import {
+  isInsideBlockConditional,
+  forceDomSelectionToPos,
+  setCaretToPos,
+  selectAllContents,
+  isSelectionAtEnd,
+  isSelectionAtStart,
+} from "./Conditional/Helpers";
 import { convertToBlockConditional } from "./Conditional/Conversion";
 import { installConditionalInlineMarkdownIt } from "./Conditional/MarkdownIt";
-
-const forceDomSelectionToPos = (view, pos) => {
-  try {
-    const doc = view?.dom?.ownerDocument || document;
-    const selection = doc.getSelection?.();
-    if (!selection) return;
-
-    const { node, offset } = view.domAtPos(pos);
-    const range = doc.createRange();
-    range.setStart(node, offset);
-    range.collapse(true);
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-  } catch {
-    // ignore
-  }
-};
-
-const setCaretToPos = (element, pos) => {
-  try {
-    const range = document.createRange();
-    const sel = window.getSelection();
-    element.focus();
-
-    if (!element.childNodes.length) {
-      range.setStart(element, 0);
-    } else {
-      const textNode = element.childNodes[0];
-      const offset = Math.min(pos, textNode.textContent.length);
-      range.setStart(textNode, offset);
-    }
-
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  } catch {
-    // ignore
-  }
-};
-
-const selectAllContents = (element) => {
-  try {
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    element.focus();
-  } catch {
-    // ignore
-  }
-};
-
-const isSelectionAtEnd = (element) => {
-  try {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return false;
-    const range = sel.getRangeAt(0);
-    return range.endOffset === (element.textContent || "").length;
-  } catch {
-    return false;
-  }
-};
-
-const isSelectionAtStart = (element) => {
-  try {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return false;
-    const range = sel.getRangeAt(0);
-    return range.startOffset === 0;
-  } catch {
-    return false;
-  }
-};
 
 const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
@@ -276,6 +208,9 @@ const ConditionalInlineNode = Node.create({
       input.setAttribute("data-editor-focusable", "true");
       input.setAttribute("aria-label", this.options.conditionAriaLabel);
       input.setAttribute("spellcheck", "false");
+      input.setAttribute("role", "textbox");
+      input.setAttribute("tabindex", "0");
+      input.setAttribute("aria-multiline", "false");
 
       const suffixText = document.createElement("span");
       suffixText.className = "conditional-inline-edit-suffix";
