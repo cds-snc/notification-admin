@@ -561,6 +561,18 @@ const SimpleEditor = ({
           }
         });
 
+        // Convert autolinked URL forms like <https://example.com>
+        // into explicit markdown links [https://example.com](https://example.com)
+        // This prevents downstream storage using angle-bracket autolinks.
+        markdown = markdown.replace(/<(https?:\/\/[^>\s]+)>/g, (m, url) => {
+          try {
+            // Use the URL as the link text
+            return `[${url}](${url})`;
+          } catch (e) {
+            return m;
+          }
+        });
+
         // Clean up HardBreak backslash continuations
         markdown = cleanMarkdownSerialization(markdown);
 
@@ -701,6 +713,15 @@ const SimpleEditor = ({
       markdown = markdown.replace(/<mailto:([^>\s]+)>/g, (m, addr) => {
         try {
           return `[${addr}](mailto:${addr})`;
+        } catch (e) {
+          return m;
+        }
+      });
+      // Convert autolinked URL forms like <https://example.com>
+      // into explicit markdown links [https://example.com](https://example.com)
+      markdown = markdown.replace(/<(https?:\/\/[^>\s]+)>/g, (m, url) => {
+        try {
+          return `[${url}](${url})`;
         } catch (e) {
           return m;
         }
