@@ -69,6 +69,42 @@ describe("Link tests", () => {
       .and("contain.text", "hello world");
   });
 
+  it("Link modal with no text selected inserts URL as link text with markdown syntax", () => {
+    // Position cursor in editor without selecting any text
+    // RichTextEditor.Components.Editor().focus().type("start");
+
+    // Open link modal with no selection
+    RichTextEditor.Components.LinkButton().click();
+
+    // Enter URL and save
+    cy.scrollTo("top");
+    RichTextEditor.Components.LinkModal.URLInput().type(
+      "https://www.google.ca",
+    );
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    // Verify link appears in editor with URL as link text
+    cy.scrollTo("top");
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://www.google.ca"]')
+      .should("exist")
+      .and("contain.text", "https://www.google.ca");
+
+    // Switch to markdown view and verify it's stored as proper markdown [url](url)
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "contain.value",
+      "[https://www.google.ca](https://www.google.ca)",
+    );
+
+    // Switch back to RTE and ensure link persists
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://www.google.ca"]')
+      .should("exist")
+      .and("contain.text", "https://www.google.ca");
+  });
+
   it("Mailto typed as text serializes to explicit markdown and round-trips", () => {
     // Type an email as plain text and select it
     RichTextEditor.Components.Editor().type("mailto:info@example.com ");
@@ -83,7 +119,7 @@ describe("Link tests", () => {
     RichTextEditor.Components.ViewMarkdownButton().click();
 
     // The markdown textarea should now contain explicit markdown link
-    cy.get('[data-testid="markdown-editor"]').should(
+    RichTextEditor.Components.MarkdownEditor().should(
       "contain.value",
       "[info@example.com](mailto:info@example.com)",
     );
@@ -117,7 +153,7 @@ describe("Link tests", () => {
 
     // Switch to markdown view and ensure encoded correctly
     RichTextEditor.Components.ViewMarkdownButton().click();
-    cy.get('[data-testid="markdown-editor"]').should(
+    RichTextEditor.Components.MarkdownEditor().should(
       "contain.value",
       "[contact us](mailto:info@example.com)",
     );
@@ -145,7 +181,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](((var)))",
       );
@@ -175,7 +211,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](https://example.com/((var)))",
       );
@@ -205,7 +241,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](https://www.example.com)",
       );
@@ -235,7 +271,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link ((var))](https://www.example.com)",
       );
@@ -264,7 +300,7 @@ describe("Link tests", () => {
 
       // Switch to markdown and verify
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](((var2)))",
       );
@@ -297,7 +333,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](((var)))",
       );
@@ -330,7 +366,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link](https://example.com/((var)))",
       );
@@ -365,7 +401,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](https://www.example.com)",
       );
@@ -400,7 +436,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[link ((var))](https://www.example.com)",
       );
@@ -434,7 +470,7 @@ describe("Link tests", () => {
 
       // switch to markdown and verify roundtrip
       RichTextEditor.Components.ViewMarkdownButton().click();
-      cy.get('[data-testid="markdown-editor"]').should(
+      RichTextEditor.Components.MarkdownEditor().should(
         "contain.value",
         "[((var))](((var2)))",
       );
