@@ -228,7 +228,7 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 9);
   });
 
-  context.only("Pasting markdown content", () => {
+  context("Pasting markdown content", () => {
     it("RTL blocks are correctly rendered when pasted", () => {
       RichTextEditor.Components.Editor()
         .click("topLeft")
@@ -406,6 +406,86 @@ describe("Markdown entering and pasting tests", () => {
           expected,
         );
       });
+    });
+  });
+  describe.only("Heading space auto-fix (markdown conversion)", () => {
+    it("Converts `#heading` to `# heading` when switching from markdown view", () => {
+      // Switch to markdown view and enter heading without space
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().clear().type("#heading");
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should be converted to proper h1 heading
+      RichTextEditor.Components.Editor().find("h1").should("exist");
+      RichTextEditor.Components.Editor()
+        .find("h1")
+        .should("contain.text", "heading");
+    });
+
+    it("Converts `##heading` to `## heading` when switching from markdown view", () => {
+      // Switch to markdown view and enter heading without space
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().clear().type("##heading");
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should be converted to proper h2 heading
+      RichTextEditor.Components.Editor().find("h2").should("exist");
+      RichTextEditor.Components.Editor()
+        .find("h2")
+        .should("contain.text", "heading");
+    });
+
+    it("Leaves `# heading` unchanged when switching from markdown view", () => {
+      // Switch to markdown view and enter correct heading syntax
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().clear().type("# heading");
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should be rendered as h1 heading
+      RichTextEditor.Components.Editor().find("h1").should("exist");
+      RichTextEditor.Components.Editor()
+        .find("h1")
+        .should("contain.text", "heading");
+    });
+
+    it("Leaves `## heading` unchanged when switching from markdown view", () => {
+      // Switch to markdown view and enter correct heading syntax
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().clear().type("## heading");
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should be rendered as h2 heading
+      RichTextEditor.Components.Editor().find("h2").should("exist");
+      RichTextEditor.Components.Editor()
+        .find("h2")
+        .should("contain.text", "heading");
+    });
+
+    it("Preserves other markdown content when fixing heading spacing", () => {
+      // Switch to markdown view and enter mixed content
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor()
+        .clear()
+        .type("#heading\n\nSome **bold** text");
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should have heading and formatted text
+      RichTextEditor.Components.Editor()
+        .find("h1")
+        .should("contain.text", "heading");
+      RichTextEditor.Components.Editor()
+        .find("strong")
+        .should("contain.text", "bold");
     });
   });
 });

@@ -658,20 +658,37 @@ const SimpleEditor = ({
     const normalizedForEditor =
       normalizeMarkdownConditionals(convertedForEditor);
 
+    // Auto-fix common heading mistakes where users type `#text` or `##text`
+    // without a space after the hash symbols (e.g., `#heading` → `# heading`)
+    // Only matches when there's NO space already (so `# heading` is left alone)
+    // This only happens during markdown-to-editor conversion, not during typing
+    // TODO: When no more templates contain these typos, we can remove this code
+    let fixedHeadingSpacing = normalizedForEditor;
+    // Process ## first to avoid backtracking issues with single #
+    fixedHeadingSpacing = fixedHeadingSpacing.replace(
+      /^##(?! )(\S)/gm,
+      "## $1",
+    );
+    // Then process single #, but exclude cases where it's followed by another #
+    fixedHeadingSpacing = fixedHeadingSpacing.replace(
+      /^#(?!#)(?! )(\S)/gm,
+      "# $1",
+    );
+
     // For content with conditionals, use insertContent directly with markdown
     // (don't convert to HTML spans - let the markdown parser handle everything)
     const hasConditionals = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/.test(
-      normalizedForEditor,
+      fixedHeadingSpacing,
     );
 
     if (insertMode) {
       // For pasting: insert at cursor position
       if (hasConditionals) {
         // Use markdown parser for complex content with conditionals
-        editor.commands.insertContent(normalizedForEditor);
+        editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // For simple content without conditionals, convert variables to spans
-        const htmlContent = convertVariablesToSpans(normalizedForEditor);
+        const htmlContent = convertVariablesToSpans(fixedHeadingSpacing);
         editor.commands.insertContent(htmlContent);
       }
     } else {
@@ -679,10 +696,10 @@ const SimpleEditor = ({
       editor.commands.clearContent();
       if (hasConditionals) {
         // Use markdown parser
-        editor.commands.insertContent(normalizedForEditor);
+        editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // Convert to spans for efficiency
-        const htmlContent = convertVariablesToSpans(normalizedForEditor);
+        const htmlContent = convertVariablesToSpans(fixedHeadingSpacing);
         editor.commands.insertContent(htmlContent);
       }
     }
