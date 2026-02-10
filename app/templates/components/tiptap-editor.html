@@ -1,5 +1,5 @@
 {% macro tiptap_editor(editorId, labelId, initialContent, templateType="email", lang=None, hint=False, initialMode="rte") %}
-    {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
+    {% if config["NOTIFY_ENVIRONMENT"].lower() == NotifyEnv.DEVELOPMENT.value %}
         {% if not editorId or not labelId %}
             <p class="text-red-300 mt-6 mb-6">
                 <i aria-hidden="true" class="fa-solid fa-fas fa-triangle-exclamation text-yellow w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i> 
