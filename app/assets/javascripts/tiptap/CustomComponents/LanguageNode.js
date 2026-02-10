@@ -1,6 +1,5 @@
 import { Node, wrappingInputRule } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
-import { Fragment } from "prosemirror-model";
 
 // Factory function to create language-specific nodes
 const createLanguageNode = (language, langCode) => {
