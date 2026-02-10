@@ -203,3 +203,76 @@ class TestNotificationCounts:
             mock_service.id,
             get_current_financial_year(),
         )
+
+
+class TestNotificationCountsWithBillableUnits:
+    """Tests for NotificationCounts with FF_USE_BILLABLE_UNITS feature flag"""
+
+    def test_get_all_notification_counts_for_today_uses_billable_units_when_ff_enabled(self, app_, mocker):
+        """Test that billable units are retrieved from annual_limit_client when FF is enabled"""
+        with app_.app_context():
+            # Mock the feature flag and config
+            mocker.patch.dict(
+                "app.notify_client.notification_counts_client.current_app.config",
+                {"FF_USE_BILLABLE_UNITS": True},
+            )
+
+            # Mock annual_limit_client
+            mock_annual_client = mocker.patch("app.notify_client.notification_counts_client.annual_limit_client")
+            mock_annual_client.get_notification_count.return_value = 150  # 150 billable units
+
+            # Mock redis_client - only one call for email (SMS uses billable units)
+            mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+            mock_redis.get.return_value = "100"  # Email only
+
+            wrapper = NotificationCounts()
+            result = wrapper.get_all_notification_counts_for_today("service-123")
+
+            # Verify billable units were retrieved for SMS
+            mock_annual_client.get_notification_count.assert_called_once()
+            assert result["sms"] == 150  # Uses billable units, not standard count
+            assert result["email"] == 100  # Email still uses standard count
+
+    def test_get_all_notification_counts_for_today_uses_standard_count_when_ff_disabled(self, app_, mocker):
+        """Test that standard SMS counts are used when FF is disabled"""
+        with app_.app_context():
+            # Mock the feature flag as disabled
+            mocker.patch.dict(
+                "app.notify_client.notification_counts_client.current_app.config",
+                {"FF_USE_BILLABLE_UNITS": False},
+            )
+
+            # Mock redis_client
+            mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+            mock_redis.get.side_effect = ["50", "75"]  # SMS, Email
+
+            wrapper = NotificationCounts()
+            result = wrapper.get_all_notification_counts_for_today("service-123")
+
+            # Verify standard counts were used
+            assert result["sms"] == 50  # Uses standard count from Redis
+            assert result["email"] == 75
+
+    def test_get_all_notification_counts_billable_units_different_from_message_count(self, app_, mocker):
+        """Test scenario where billable units differ significantly from message counts (multi-part SMS)"""
+        with app_.app_context():
+            # Mock the feature flag enabled
+            mocker.patch.dict(
+                "app.notify_client.notification_counts_client.current_app.config",
+                {"FF_USE_BILLABLE_UNITS": True},
+            )
+
+            # Mock annual_limit_client - billable units are 3x message count (long SMS messages)
+            mock_annual_client = mocker.patch("app.notify_client.notification_counts_client.annual_limit_client")
+            mock_annual_client.get_notification_count.return_value = 300  # 300 billable units
+
+            # Mock redis_client - only one call for email (SMS uses billable units)
+            mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+            mock_redis.get.return_value = "50"  # Email only
+
+            wrapper = NotificationCounts()
+            result = wrapper.get_all_notification_counts_for_today("service-123")
+
+            # Verify billable units (300) are used instead of standard count (100)
+            assert result["sms"] == 300  # Uses billable units (3 fragments per message)
+            assert result["email"] == 50  # Email unchanged

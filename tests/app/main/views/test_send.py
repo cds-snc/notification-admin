@@ -3825,3 +3825,40 @@ def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff
         assert "from_send_page" not in session
         assert "send_page_service_id" not in session
         assert "send_page_template_id" not in session
+
+
+class TestBillableUnitsInSendViews:
+    """Tests for billable units functionality in send views when FF_USE_BILLABLE_UNITS is enabled"""
+
+    def test_daily_sms_billable_units_count_returns_count_when_ff_enabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns billable units from Redis when FF is enabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            mocker.patch.dict(
+                "app.main.views.send.current_app.config",
+                {"FF_USE_BILLABLE_UNITS": True},
+            )
+            mock_annual_limit_client = mocker.patch("app.main.views.send.annual_limit_client")
+            mock_annual_limit_client.get_notification_count.return_value = 150
+
+            result = daily_sms_billable_units_count("service-123")
+
+            assert result == 150
+            mock_annual_limit_client.get_notification_count.assert_called_once()
+
+    def test_daily_sms_billable_units_count_returns_zero_when_ff_disabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns 0 when FF is disabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            mocker.patch.dict(
+                "app.main.views.send.current_app.config",
+                {"FF_USE_BILLABLE_UNITS": False},
+            )
+            mock_annual_limit_client = mocker.patch("app.main.views.send.annual_limit_client")
+
+            result = daily_sms_billable_units_count("service-123")
+
+            assert result == 0
+            mock_annual_limit_client.get_notification_count.assert_not_called()
