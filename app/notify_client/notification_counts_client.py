@@ -1,11 +1,14 @@
 from flask import current_app
 from notifications_utils.clients.redis import (
-    billable_units_sms_daily_count_cache_key,
     email_daily_count_cache_key,
     sms_daily_count_cache_key,
 )
+from notifications_utils.clients.redis.annual_limit import (
+    SMS_BILLABLE_UNITS_DELIVERED_TODAY,
+)
 
 from app import redis_client, service_api_client, template_statistics_client
+from app.extensions import annual_limit_client
 from app.models.service import Service
 from app.utils import get_current_financial_year
 
@@ -15,10 +18,10 @@ class NotificationCounts:
         # try to get today's stats from redis
         # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
         if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-            todays_sms = redis_client.get(billable_units_sms_daily_count_cache_key(service_id))
+            todays_sms = annual_limit_client.get_notification_count(service_id, SMS_BILLABLE_UNITS_DELIVERED_TODAY)
         else:
-            todays_sms = redis_client.get(sms_daily_count_cache_key(service_id))
-        todays_sms = int(todays_sms) if todays_sms is not None else None
+            todays_sms_val = redis_client.get(sms_daily_count_cache_key(service_id))
+            todays_sms = int(todays_sms_val) if todays_sms_val is not None else None
 
         todays_email = redis_client.get(email_daily_count_cache_key(service_id))
         todays_email = int(todays_email) if todays_email is not None else None

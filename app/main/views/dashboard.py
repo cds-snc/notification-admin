@@ -16,10 +16,8 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
-from notifications_utils.clients.redis import (
-    billable_units_sms_daily_count_cache_key,
-)
 from notifications_utils.clients.redis.annual_limit import (
+    SMS_BILLABLE_UNITS_DELIVERED_TODAY,
     TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY,
 )
 from werkzeug.utils import redirect
@@ -28,7 +26,6 @@ from app import (
     current_service,
     job_api_client,
     notification_api_client,
-    redis_client,
     service_api_client,
     template_statistics_client,
 )
@@ -402,8 +399,8 @@ def get_dashboard_partials(service_id):
     # TODO FF_USE_BILLABLE_UNITS removal - Override SMS count with billable units when feature flag is enabled
     use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
     if use_billable_units:
-        # Get billable units count from Redis
-        billable_units_count = int(redis_client.get(billable_units_sms_daily_count_cache_key(service_id)) or "0")
+        # Get billable units count from annual-limit hash
+        billable_units_count = annual_limit_client.get_notification_count(service_id, SMS_BILLABLE_UNITS_DELIVERED_TODAY)
         # Override the SMS requested count with billable units
         dashboard_totals_daily["sms"]["requested"] = billable_units_count
 

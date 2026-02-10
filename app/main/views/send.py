@@ -19,9 +19,11 @@ from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 from notifications_utils import SMS_CHAR_COUNT_LIMIT
 from notifications_utils.clients.redis import (
-    billable_units_sms_daily_count_cache_key,
     email_daily_count_cache_key,
     sms_daily_count_cache_key,
+)
+from notifications_utils.clients.redis.annual_limit import (
+    SMS_BILLABLE_UNITS_DELIVERED_TODAY,
 )
 from notifications_utils.columns import Columns
 from notifications_utils.recipients import (
@@ -44,6 +46,7 @@ from app import (
     service_api_client,
     template_statistics_client,
 )
+from app.extensions import annual_limit_client
 from app.main import main
 from app.main.forms import (
     ChooseTimeForm,
@@ -84,7 +87,9 @@ def daily_sms_count(service_id):
 
 def daily_sms_billable_units_count(service_id):
     """Get the number of SMS billable units (fragments) sent today for a service."""
-    return int(redis_client.get(billable_units_sms_daily_count_cache_key(service_id)) or "0")
+    if current_app.config.get("FF_USE_BILLABLE_UNITS", False):
+        return annual_limit_client.get_notification_count(service_id, SMS_BILLABLE_UNITS_DELIVERED_TODAY)
+    return 0
 
 
 def daily_email_count(service_id):
