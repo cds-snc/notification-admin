@@ -1586,8 +1586,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "feat/use-billable-units-3"
-resolved_reference = "65a694305d2e754c88976112e3d6fcbe2f5a1b46"
+reference = "53.2.14"
+resolved_reference = "c87186d333b392634c9fdee5c6055ca2e888b722"
 
 [[package]]
 name = "openpyxl"
@@ -2788,4 +2788,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "949ddad6ba862e4a3f21a49abd7728a3904bf776ba18568735f8c323b7141f17"
+content-hash = "c4254271aa03f8230f9a3570eae2d83fd5e373488f8444f7023dbbc8078b1657"
