@@ -1035,25 +1035,34 @@ const MenuBar = ({
               <span>{t.markdownEditorMessage}</span>
             </p>
           )}
-          <button
-            type="button"
-            data-testid="rte-toggle-markdown"
-            onClick={toggleHandler}
-            className={
-              isMarkdownView
-                ? "toolbar-button toolbar-button-mode toolbar-switch-group"
-                : "toolbar-button toolbar-button-mode"
-            }
-            title={toggleButtonLabel}
-            aria-pressed={isMarkdownView}
-          >
-            <span className="sr-only">{toggleButtonLabel}</span>
-            {isMarkdownView ? (
+          {!isMarkdownView && (
+            <TooltipWrapper label={t.markdownButton}>
+              <button
+                type="button"
+                data-testid="rte-toggle-markdown"
+                onClick={toggleHandler}
+                className="toolbar-button toolbar-button-mode"
+                title={toggleButtonLabel}
+                aria-pressed={isMarkdownView}
+              >
+                <span className="sr-only">{toggleButtonLabel}</span>
+                <Icon iconNode={markdownIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
+          {isMarkdownView && (
+            <button
+              type="button"
+              data-testid="rte-toggle-markdown"
+              onClick={toggleHandler}
+              className="toolbar-button toolbar-button-mode toolbar-switch-group"
+              title={toggleButtonLabel}
+              aria-pressed={isMarkdownView}
+            >
+              <span className="sr-only">{toggleButtonLabel}</span>
               <>{t.richTextButton}</>
-            ) : (
-              <Icon iconNode={markdownIcon} />
-            )}
-          </button>
+            </button>
+          )}
         </div>
       </AccessibleToolbar>
       {isInfoOpen && (
