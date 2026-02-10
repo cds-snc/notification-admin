@@ -8,9 +8,7 @@ import {
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ConditionalNodeView from "./ConditionalNodeView";
-import {
-  installConditionalBlockMarkdownIt,
-} from "./Conditional/MarkdownIt";
+import { installConditionalBlockMarkdownIt } from "./Conditional/MarkdownIt";
 import { focusConditionalInput } from "./Conditional/Helpers";
 
 // A block node that conditionally renders template content.

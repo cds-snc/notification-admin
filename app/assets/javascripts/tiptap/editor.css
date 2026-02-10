@@ -426,7 +426,9 @@ span[data-type="conditional-inline"]:focus-within::before,
 span[data-type="conditional-inline"] .conditional-inline-content {
   box-shadow: inset -1px -1px 0 0 theme("colors.yellow.300");
   box-decoration-break: clone;
-  @apply pr-2;
+}
+.conditional-inline-content + .conditional-inline-after {
+  user-select: none;
 }
 
 .conditional-inline-edit-widget,

@@ -566,7 +566,53 @@ const ConditionalInlineNode = Node.create({
             const nodeType = state.schema.nodes[this.name];
 
             if (event.key === "ArrowRight") {
-              // Continuity: if we're at the end of a textblock and the *next* textblock
+              // 1. Break out of node content: when at end of the content, move to after the node.
+              try {
+                for (let d = $pos.depth; d > 0; d--) {
+                  const n = $pos.node(d);
+                  if (n.type !== nodeType) continue;
+
+                  const contentEnd = $pos.end(d);
+                  if ($pos.pos !== contentEnd) break;
+
+                  event.preventDefault();
+                  event.stopPropagation();
+
+                  const afterNodePos = $pos.after(d);
+                  const tr = view.state.tr;
+                  tr.setStoredMarks([]);
+
+                  // If we are at the very end of the line, insert a space to give visual feedback
+                  // and a place for the cursor to land outside the conditional node.
+                  const $after = state.doc.resolve(afterNodePos);
+                  const isAtEndOfBlock =
+                    $after.parentOffset === $after.parent.content.size;
+
+                  if (isAtEndOfBlock) {
+                    tr.insertText(" ", afterNodePos);
+                    tr.setSelection(
+                      TextSelection.create(tr.doc, afterNodePos + 1),
+                    );
+                  } else {
+                    tr.setSelection(TextSelection.create(tr.doc, afterNodePos));
+                  }
+
+                  view.dispatch(tr);
+
+                  requestAnimationFrame(() => {
+                    const nextPos = isAtEndOfBlock
+                      ? afterNodePos + 1
+                      : afterNodePos;
+                    forceDomSelectionToPos(view, nextPos);
+                    view.focus();
+                  });
+                  return true;
+                }
+              } catch {
+                // ignore
+              }
+
+              // 2. Continuity: if we're at the end of a textblock and the *next* textblock
               // starts with a conditionalInline node, ArrowRight should jump straight
               // into the condition input.
               try {
@@ -613,28 +659,30 @@ const ConditionalInlineNode = Node.create({
                 // ignore
               }
 
+              // 3. Before node -> inside input: When the caret is directly before the
+              // conditional node, ArrowRight should focus the condition input (start).
               const nodeAfter = $pos.nodeAfter;
-              if (!nodeAfter || nodeAfter.type !== nodeType) return false;
+              if (nodeAfter && nodeAfter.type === nodeType) {
+                event.preventDefault();
 
-              // When the caret is directly before the conditional node,
-              // ArrowRight should focus the condition input (start).
-              event.preventDefault();
+                setTimeout(() => {
+                  try {
+                    const nodeDom = view.nodeDOM(selection.from);
+                    const input = nodeDom?.querySelector?.(
+                      "span.conditional-inline-condition-input[data-editor-focusable]",
+                    );
+                    if (!input) return;
+                    input.focus?.();
+                    setCaretToPos(input, 0);
+                  } catch {
+                    // ignore
+                  }
+                }, 0);
 
-              setTimeout(() => {
-                try {
-                  const nodeDom = view.nodeDOM(selection.from);
-                  const input = nodeDom?.querySelector?.(
-                    "span.conditional-inline-condition-input[data-editor-focusable]",
-                  );
-                  if (!input) return;
-                  input.focus?.();
-                  setCaretToPos(input, 0);
-                } catch {
-                  // ignore
-                }
-              }, 0);
+                return true;
+              }
 
-              return true;
+              return false;
             }
 
             // ArrowLeft: when at start of the node content, move to the position
