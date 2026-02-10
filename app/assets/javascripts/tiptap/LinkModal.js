@@ -110,16 +110,27 @@ const LinkModal = ({
     }
 
     if (formattedUrl) {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: formattedUrl })
-        .run();
+      const { from, to } = editor.state.selection;
+
+      // When there's no selection (cursor only), insert the URL as text
+      // and create a markdown link [url](url) so MarkdownLink extension
+      // will convert it to a proper link mark.
+      if (from === to) {
+        const markdownLink = `[${formattedUrl}](${formattedUrl})`;
+        editor.chain().focus().insertContent(markdownLink).run();
+      } else {
+        // Selection exists, apply link mark to selected text
+        editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          .setLink({ href: formattedUrl })
+          .run();
+      }
 
       try {
         if (typeof onSavedLink === "function") {
-          onSavedLink(editor.getAttributes("link").href || null);
+          onSavedLink(formattedUrl);
         }
       } catch (e) {
         console.error(

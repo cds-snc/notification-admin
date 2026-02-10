@@ -69,6 +69,42 @@ describe("Link tests", () => {
       .and("contain.text", "hello world");
   });
 
+  it("Link modal with no text selected inserts URL as link text with markdown syntax", () => {
+    // Position cursor in editor without selecting any text
+    // RichTextEditor.Components.Editor().focus().type("start");
+
+    // Open link modal with no selection
+    RichTextEditor.Components.LinkButton().click();
+
+    // Enter URL and save
+    cy.scrollTo("top");
+    RichTextEditor.Components.LinkModal.URLInput().type(
+      "https://www.google.ca",
+    );
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    // Verify link appears in editor with URL as link text
+    cy.scrollTo("top");
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://www.google.ca"]')
+      .should("exist")
+      .and("contain.text", "https://www.google.ca");
+
+    // Switch to markdown view and verify it's stored as proper markdown [url](url)
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "contain.value",
+      "[https://www.google.ca](https://www.google.ca)",
+    );
+
+    // Switch back to RTE and ensure link persists
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://www.google.ca"]')
+      .should("exist")
+      .and("contain.text", "https://www.google.ca");
+  });
+
   it("Mailto typed as text serializes to explicit markdown and round-trips", () => {
     // Type an email as plain text and select it
     RichTextEditor.Components.Editor().type("mailto:info@example.com ");
