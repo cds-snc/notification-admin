@@ -41,7 +41,7 @@ export const frenchBlockIcon = [
   ],
 ];
 
-export const infoIcon = [
+export const infoIcon = (isActive = false) => [
   [
     "circle",
     {
@@ -58,8 +58,8 @@ export const infoIcon = [
     {
       cx: "12",
       cy: "8",
-      r: "1.2",
-      fill: "currentColor",
+      r: "0.8",
+      fill: isActive ? "white" : "currentColor",
       stroke: "none",
     },
   ],
