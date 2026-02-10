@@ -1,12 +1,14 @@
 import { Node, wrappingInputRule } from "@tiptap/core";
+import { Plugin } from "prosemirror-state";
+import { Fragment } from "prosemirror-model";
 
 // Factory function to create language-specific nodes
 const createLanguageNode = (language, langCode) => {
   return Node.create({
     name: `${language.toLowerCase()}Block`,
 
-    // Allow this node to contain other content
-    content: "block+",
+    // Allow any block content, but prevent nesting via a plugin below
+    content: "block*",
 
     // This is a block-level node that can wrap other content
     group: "block",
@@ -174,6 +176,17 @@ const createLanguageNode = (language, langCode) => {
                     if (contentStart < nextLine) {
                       // Tokenize block content normally for following lines inside the block
                       state.md.block.tokenize(state, contentStart, nextLine);
+                    } else {
+                      // Block is empty - create a paragraph so the block is editable
+                      const emptyPara = state.push("paragraph_open", "p", 1);
+                      emptyPara.map = [start, nextLine];
+
+                      const emptyInline = state.push("inline", "", 0);
+                      emptyInline.content = "";
+                      emptyInline.map = [start, nextLine];
+                      emptyInline.children = [];
+
+                      state.push("paragraph_close", "p", -1);
                     }
 
                     token = state.push(`${langPrefix}_block_close`, "div", -1);
@@ -198,6 +211,38 @@ const createLanguageNode = (language, langCode) => {
           },
         },
       };
+    },
+
+    addProseMirrorPlugins() {
+      // Plugin to prevent nested language blocks by unwrapping any language
+      // node found inside another language node of the same type.
+      return [
+        new Plugin({
+          appendTransaction: (transactions, oldState, newState) => {
+            let tr = null;
+
+            // Only unwrap nodes whose direct parent is the same language node.
+            // This avoids touching top-level inserts and only removes truly nested nodes.
+            newState.doc.descendants((node, pos) => {
+              if (node.type.name !== this.name) return true;
+
+              const $pos = newState.doc.resolve(pos);
+              const parent = $pos.node($pos.depth - 1);
+
+              if (parent && parent.type && parent.type.name === this.name) {
+                if (!tr) tr = newState.tr;
+
+                // Unwrap the nested node by replacing it with its content.
+                tr.replaceWith(pos, pos + node.nodeSize, node.content);
+              }
+
+              return true;
+            });
+
+            return tr || undefined;
+          },
+        }),
+      ];
     },
 
     addCommands() {
