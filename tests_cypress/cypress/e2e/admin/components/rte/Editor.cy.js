@@ -201,7 +201,7 @@ const TEMPLATE_ID = getTemplateID("SMOKE_TEST_EMAIL");
 describe.only("Rich Text Editor Persistence", () => {
   beforeEach(() => {
     // Sign in and go directly to a template
-    cy.login("platform@admin.gov.uk", "password");
+    cy.login();
     cy.visit(`/services/${SERVICE_ID}/templates/${TEMPLATE_ID}`);
   });
 
