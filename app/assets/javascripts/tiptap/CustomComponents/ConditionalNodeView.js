@@ -2,8 +2,6 @@ import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { TextSelection } from "@tiptap/pm/state";
 
-import { CONDITIONAL_BRANCH_ICON_PATH } from "./Conditional/Helpers";
-
 const NAV_BLOCK_PARA_META = "__notifyConditionalBlockNavParagraph";
 const RETURN_FOCUS_INPUT_META = "__notifyConditionalReturnFocusInput";
 
@@ -105,18 +103,7 @@ const ConditionalNodeView = ({
       data-condition={conditionValue}
     >
       <div className="conditional-trigger" contentEditable={false}>
-        <span className="conditional-trigger-text">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 384 512"
-            aria-hidden="true"
-            focusable="false"
-            className="conditional-inline-branch-icon"
-          >
-            <path fill="currentColor" d={CONDITIONAL_BRANCH_ICON_PATH} />
-          </svg>
-          {prefix}
-        </span>
+        <span className="conditional-trigger-text">{prefix}</span>
         <input
           id={inputId}
           ref={inputRef}

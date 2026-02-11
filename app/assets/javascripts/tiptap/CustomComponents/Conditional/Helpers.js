@@ -1,8 +1,5 @@
 // Shared utilities/constants for conditional extensions.
 
-export const CONDITIONAL_BRANCH_ICON_PATH =
-  "M384 144c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 36.4 24.3 67.1 57.5 76.8-.6 16.1-4.2 28.5-11 36.9-15.4 19.2-49.3 22.4-85.2 25.7-28.2 2.6-57.4 5.4-81.3 16.9v-144c32.5-10.2 56-40.5 56-76.3 0-44.2-35.8-80-80-80S0 35.8 0 80c0 35.8 23.5 66.1 56 76.3v199.3C23.5 365.9 0 396.2 0 432c0 44.2 35.8 80 80 80s80-35.8 80-80c0-34-21.2-63.1-51.2-74.6 3.1-5.2 7.8-9.8 14.9-13.4 16.2-8.2 40.4-10.4 66.1-12.8 42.2-3.9 90-8.4 118.2-43.4 14-17.4 21.1-39.8 21.6-67.9 31.6-10.8 54.4-40.7 54.4-75.9zM80 64c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16zm0 384c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zm224-320c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16z";
-
 // Helper to check if the current position is inside a block conditional.
 export const isInsideBlockConditional = (state, pos = null) => {
   const $pos = pos !== null ? state.doc.resolve(pos) : state.selection.$from;
@@ -12,4 +9,110 @@ export const isInsideBlockConditional = (state, pos = null) => {
     }
   }
   return false;
+};
+
+export const setCaretToPos = (element, pos) => {
+  try {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    element.focus();
+
+    if (!element.childNodes.length) {
+      range.setStart(element, 0);
+    } else {
+      const textNode = element.childNodes[0];
+      const offset = Math.min(pos, textNode.textContent.length);
+      range.setStart(textNode, offset);
+    }
+
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } catch {
+    // ignore
+  }
+};
+
+export const selectAllContents = (element) => {
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    element.focus();
+  } catch {
+    // ignore
+  }
+};
+
+export const isSelectionAtEnd = (element) => {
+  try {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return false;
+    const range = sel.getRangeAt(0);
+    return range.endOffset === (element.textContent || "").length;
+  } catch {
+    return false;
+  }
+};
+
+export const isSelectionAtStart = (element) => {
+  try {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return false;
+    const range = sel.getRangeAt(0);
+    return range.startOffset === 0;
+  } catch {
+    return false;
+  }
+};
+
+export const forceDomSelectionToPos = (view, pos) => {
+  try {
+    const doc = view?.dom?.ownerDocument || document;
+    const selection = doc.getSelection?.();
+    if (!selection) return;
+
+    const { node, offset } = view.domAtPos(pos);
+    const range = doc.createRange();
+    range.setStart(node, offset);
+    range.collapse(true);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } catch {
+    // ignore
+  }
+};
+
+export const focusConditionalInput = (nodeDom, kind = "block") => {
+  if (!nodeDom) return;
+
+  const selector =
+    kind === "inline"
+      ? ".conditional-inline-condition-input[data-editor-focusable]"
+      : ".conditional-block-condition-input";
+
+  const input = nodeDom.querySelector(selector);
+  if (!input) return;
+
+  input.focus();
+
+  if (input.tagName === "INPUT") {
+    try {
+      const end = input.value?.length ?? 0;
+      input.setSelectionRange?.(end, end);
+    } catch {
+      // ignore
+    }
+  } else {
+    // Handle span (contenteditable)
+    try {
+      const end = input.textContent?.length ?? 0;
+      setCaretToPos(input, end);
+    } catch {
+      // ignore
+    }
+  }
 };
