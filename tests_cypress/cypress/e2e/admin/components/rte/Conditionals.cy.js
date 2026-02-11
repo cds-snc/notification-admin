@@ -454,15 +454,10 @@ describe("Conditional inline and block tests", () => {
       );
 
       // Verify the list exists with 3 items
-      RichTextEditor.Components.Editor()
-        .find("ul li")
-        .should("have.length", 3);
+      RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
 
       // Place the caret on the second list item by clicking on it
-      RichTextEditor.Components.Editor()
-        .find("ul li")
-        .eq(1)
-        .click();
+      RichTextEditor.Components.Editor().find("ul li").eq(1).click();
 
       // Press Tab to indent
       cy.realPress("Tab");
@@ -475,9 +470,7 @@ describe("Conditional inline and block tests", () => {
 
       cy.realPress(["Shift", "Tab"]);
       // The second item should now be back to top-level list
-      RichTextEditor.Components.Editor()
-        .find("ul li")
-        .should("have.length", 3)
+      RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
     });
   });
 });
