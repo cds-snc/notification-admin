@@ -846,9 +846,6 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 )
             )
         try:
-            if request.form.get("user_editor_mode"):
-                is_rte = request.form.get("user_editor_mode") == "rte"
-                current_user.update(default_editor_is_rte=is_rte)
             new_template = service_api_client.create_service_template(
                 form.name.data,
                 template_type,
@@ -1025,9 +1022,6 @@ def edit_service_template(service_id, template_id):
                     )
                 )
             else:
-                if request.form.get("user_editor_mode"):
-                    is_rte = request.form.get("user_editor_mode") == "rte"
-                    current_user.update(default_editor_is_rte=is_rte)
                 try:
                     service_api_client.update_service_template(
                         template_id,

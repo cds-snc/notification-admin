@@ -30,6 +30,8 @@
                 // Allow multiple editors on the same page
                 // Only load tiptap once
                 var initialMode = '{{ initialMode }}';
+                var preferenceUpdateUrl = '{{ url_for("main.update_editor_preferences") }}';
+                var csrfToken = '{{ csrf_token() }}';
 
                 if (!window.tiptapLoaded) {
                     var script = document.createElement('script');
@@ -38,14 +40,14 @@
                     script.onload = function() {
                         window.tiptapLoaded = true;
                         if (window.Tiptap) {
-                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode);
+                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
                         }
                     };
                     document.head.appendChild(script);
                 } else {
                     // TipTap already loaded, initialize immediately
                     if (window.Tiptap) {
-                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode);
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
                     }
                 }
             </script>
