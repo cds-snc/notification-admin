@@ -6,6 +6,7 @@ from environs import Env
 from notifications_utils import logging
 
 from app.articles.routing import GC_ARTICLES_ROUTES
+from app.enums import NotifyEnv
 
 env = Env()
 env.read_env()
@@ -110,7 +111,7 @@ class Config(object):
 
     NOTIFY_APP_NAME = "admin"
     NOTIFY_BAD_FILLER_UUID = "00000000-0000-0000-0000-000000000000"
-    NOTIFY_ENVIRONMENT = "development"
+    NOTIFY_ENVIRONMENT = NotifyEnv.DEVELOPMENT.value
     NOTIFY_LOG_LEVEL = "DEBUG"
     NOTIFY_LOG_PATH = os.getenv("NOTIFY_LOG_PATH", "")
 
@@ -208,7 +209,7 @@ class Test(Development):
     DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
-    NOTIFY_ENVIRONMENT = "test"
+    NOTIFY_ENVIRONMENT = NotifyEnv.TEST.value
     SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
@@ -232,7 +233,7 @@ class ProductionFF(Config):
     DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
-    NOTIFY_ENVIRONMENT = "test"
+    NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value
     SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
@@ -249,35 +250,35 @@ class ProductionFF(Config):
 class Production(Config):
     CHECK_PROXY_HEADER = False
     HTTP_PROTOCOL = "https"
-    NOTIFY_ENVIRONMENT = "production"
+    NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
 
 
 class Staging(Production):
-    NOTIFY_ENVIRONMENT = "staging"
+    NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
 
 class Scratch(Production):
-    NOTIFY_ENVIRONMENT = "scratch"
+    NOTIFY_ENVIRONMENT = NotifyEnv.SCRATCH.value
     NOTIFY_LOG_LEVEL = "INFO"
 
 
 class Dev(Production):
-    NOTIFY_ENVIRONMENT = "dev"
+    NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
 
 
 configs = {
-    "development": Development,
-    "test": Test,
-    "staging": Staging,
-    "production": Production,
-    "production_FF": ProductionFF,
-    "scratch": Scratch,
-    "dev": Dev,
+    NotifyEnv.DEVELOPMENT.value: Development,
+    NotifyEnv.TEST.value: Test,
+    NotifyEnv.STAGING.value: Staging,
+    NotifyEnv.PRODUCTION.value: Production,
+    NotifyEnv.PRODUCTION_FF.value: ProductionFF,
+    NotifyEnv.SCRATCH.value: Scratch,
+    NotifyEnv.DEV.value: Dev,
 }
