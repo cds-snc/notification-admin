@@ -80,7 +80,14 @@ jobs:
 
     - name: Fetch VPN
       run: |
-        curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s staging
+        set -x  # Enable debug output
+        curl -o /tmp/createVPNConfig.sh https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh
+        
+        # Modify script to add error checking on terragrunt init
+        sed -i 's/terragrunt init -reconfigure -upgrade/terragrunt init -reconfigure -upgrade || { echo "Terragrunt init failed with exit code $?"; ls -la .terraform\/providers 2>\/dev\/null || echo "No .terraform\/providers directory"; exit 1; }/' /tmp/createVPNConfig.sh
+        
+        chmod +x /tmp/createVPNConfig.sh
+        /tmp/createVPNConfig.sh staging
 
     - name: Connect to VPN
       uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
