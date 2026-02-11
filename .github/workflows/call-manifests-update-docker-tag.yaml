@@ -2,9 +2,10 @@ name: Call Manifests Update Docker Tag
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    secrets:
+      MANIFESTS_WORKFLOW_TOKEN:
+        required: true
 
 jobs:
   update-docker-tag-in-manifests:
