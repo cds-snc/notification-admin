@@ -402,6 +402,7 @@ def get_dashboard_partials(service_id):
         # Get billable units count from annual-limit hash
         billable_units_count = annual_limit_client.get_notification_count(service_id, SMS_BILLABLE_UNITS_DELIVERED_TODAY)
         # Override the SMS requested count with billable units
+        # TODO: remove this when the api endpoint template-statistics gets updated
         dashboard_totals_daily["sms"]["requested"] = billable_units_count
 
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
