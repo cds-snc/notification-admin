@@ -12,7 +12,7 @@
   {% set notificationType_allowed_values = ['sms', 'email'] %}
   {% if notification_type not in notificationType_allowed_values %}
       {% set notification_type = None %}
-      {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
+      {% if config["NOTIFY_ENVIRONMENT"].lower() == NotifyEnv.DEVELOPMENT.value %}
         <p class="text-red-300 mt-6 mb-6"><i aria-hidden="true" class="fa-solid fa-fas fa-triangle-exclamation text-yellow w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i> Invalid notification type - check your jinja template!</p>
       {% endif %}
   {% else %}
