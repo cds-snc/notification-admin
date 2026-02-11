@@ -21,6 +21,7 @@ ALLOWED_ATTRIBUTES = {
     "updated_by",
     "blocked",
     "password_expired",
+    "default_editor_is_rte",
 }
 
 
@@ -40,6 +41,7 @@ class UserApiClient(NotifyAdminAPIClient):
             "mobile_number": mobile_number,
             "password": password,
             "auth_type": auth_type,
+            "default_editor_is_rte": True,
         }
         user_data = self.post("/user", data)
         return user_data["data"]

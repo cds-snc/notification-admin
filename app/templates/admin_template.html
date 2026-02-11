@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-  <div id="main_content" class="container px-gutterHalf contain-floats flex-grow" tabindex="-1">
+  <div id="main_content" class="container px-gutterHalf contain-floats flex-grow wp-block-cover" tabindex="-1">
       <div class="grid-row contain-floats">
         <main role="main" class="w-full float-left {% block main_content_class %}py-10{% endblock %} px-gutterHalf box-border column-main">
           {% if show_tou_prompt() %}
@@ -23,6 +23,9 @@
           {% else %}
             {% include 'partials/flash_messages.html' %}
             {% block maincolumn_content %}{% endblock %}
+          {% endif %}
+          {% if isHome %}
+            {% include 'partials/newsletter/subscribe_cta.html' %}
           {% endif %}
         </main>
       </div>

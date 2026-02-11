@@ -96,6 +96,7 @@ const javascripts = () => {
       plugins.addSrc.prepend([
         paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
+        paths.src + "javascripts/tiptap.min.js",
       ])
     )
     .pipe(dest(paths.dist + "javascripts/"));
@@ -104,6 +105,7 @@ const javascripts = () => {
 const minifyIndividualJs = () => {
   return src([
     paths.src + "javascripts/branding_request.js",
+    paths.src + "javascripts/contactGaTracking.js",
     paths.src + "javascripts/formValidateRequired.js",
     paths.src + "javascripts/sessionRedirect.js",
     paths.src + "javascripts/touDialog.js",

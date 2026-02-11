@@ -1,0 +1,56 @@
+{% macro tiptap_editor(editorId, labelId, initialContent, templateType="email", lang=None, hint=False, initialMode="rte") %}
+    {% if config["NOTIFY_ENVIRONMENT"].lower() == 'development' %}
+        {% if not editorId or not labelId %}
+            <p class="text-red-300 mt-6 mb-6">
+                <i aria-hidden="true" class="fa-solid fa-fas fa-triangle-exclamation text-yellow w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i> 
+                An <code class="bg-gray px-4">editorId</code> and a <code class="bg-gray px-4">labelId</code> must be passed to <code class="bg-gray px-4">tiptap_editor()</code>
+            </p>
+            {% set error = true %}
+        {% endif %}
+    {% endif %}    
+
+    {% if not error %}
+        <fieldset class="contain-floats w-full">
+            <legend class="mb-4" id="{{ labelId }}" {% if hint %}aria-describedby="{{ editorId }}-hint"{% endif %}>
+                <span>
+                    {% if templateType == "email" %}
+                        {{ _('Email message') }}
+                    {% else %}
+                        {{ _('Text message') }}
+                    {% endif %}
+                </span>
+            </legend>
+            {% if hint %}
+                <span id="{{ editorId }}-hint" class="form-hint pb-4">
+                    {{ hint }}
+                </span>
+            {% endif %}
+            <div id="tiptap-editor-{{ editorId }}"></div>
+            <script nonce="{{ request_nonce }}">
+                // Allow multiple editors on the same page
+                // Only load tiptap once
+                var initialMode = '{{ initialMode }}';
+
+                if (!window.tiptapLoaded) {
+                    var script = document.createElement('script');
+                    script.src = '{{ asset_url("javascripts/tiptap.min.js") }}';
+                    script.nonce = '{{ request_nonce }}';
+                    script.onload = function() {
+                        window.tiptapLoaded = true;
+                        if (window.Tiptap) {
+                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode);
+                        }
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    // TipTap already loaded, initialize immediately
+                    if (window.Tiptap) {
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode);
+                    }
+                }
+            </script>
+            <input type="hidden" id="{{ editorId }}" name="{{ editorId }}" value="{{ initialContent }}">
+            <input type="hidden" id="{{ editorId }}_mode" name="user_editor_mode">
+        </fieldset>
+    {% endif %}
+{% endmacro %}

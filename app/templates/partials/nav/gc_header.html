@@ -48,10 +48,10 @@
             ) }}
           </li>
         {% endif %}
-        {% set set_lang_url = lang_url or request.path %}
+        {% set set_lang_url = lang_url or request.full_path.rstrip('?') %}
         <li>
           {{ nav_button(
-            href=url_for('main.set_lang') + "?from=" + set_lang_url,
+            href=url_for('main.set_lang', **{'from': set_lang_url}),
             label=long_lang_switch,
             aria_label=long_lang_switch,
             lang="fr-CA" if lang_switch == "FR" else "en-CA",
@@ -63,44 +63,31 @@
     </nav>
     <!-- end sub nav -->
   </div>
-  <div class="pt-5 pb-6">
-      <a href="/" class="py-1 min-h-target inline-flex items-center no-underline focus:outline-none focus:border-b-2 focus:border-blue focus:text-blue">
+  <div class="py-gutterHalf">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
-          <span id="gc-title"
-                class="text-titlelarge text-black visited:text-black"
-          >
+        <a href="/" id="gc-title" class="text-titlelarge min-h-target hover:underline focus:underline">
           {{ _("GC Notify") }}
-        </span>
+        </a>
         {% else %}
-          <span id="gc-title"
-                class="text-title text-black visited:text-black"
-          >
+        <a href="/" id="gc-title" class="underline hover:underline text-base">
           {{ _("GC Notify") }}
-        </span>
+        </a>
         {% endif %}
-      </a>
     {% set url_text = current_service.name %}
     {% if platform_admin_view_ind %}
       {% set url_text = _('Admin panel') %}
     {% endif %}
 
     {% if current_user.is_authenticated and current_user.has_permissions() or platform_admin_view_ind %}
-      <div class="flex flex-col items-start md:flex-row md:items-center">
-        <div class="font-bold text-titlelarge text-black inline mr-gutterHalf ">
-          {{ url_text }}
-        </div>
+      <div class="max-md:flex max-md:flex-col flex-wrap gap-gutterHalf text-titlelarge text-black text-balance">
+        {{ url_text }}
         {% if current_user.has_permissions() and not platform_admin_view_ind and current_service.trial_mode %}
         <a
-          class="mt-2 min-h-target inline-flex flex-col items-start sm:flex-row sm:items-center focus:outline-none border-b-2 border-transparent focus:border-blue text-small underline visited:text-blue link:text-blue"
-          href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}"
-          role="button">
-            <div
-              id="live-banner"
-              class="shadow-button2 px-6 py-1 bg-blue-lighter text-black font-bold inline-block">
-              {{ _('Trial') }}
-            </div>
-            <span class="sm:mx-4">
+          class="flex md:inline-flex md:ml-4 gap-2 items-baseline text-xs relative md:top-[-3px] border-0 focus:border-0"
+          href="{{ url_for('main.request_to_go_live', service_id=current_service.id) }}">
+            {{ badge(_('Trial'), variant='blue', id='live-banner') }}
+            <span class="underline">
               {% if current_service.pending_live %}
                 {{ _('Request being reviewed') }}
               {% else %}

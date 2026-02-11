@@ -13,8 +13,8 @@ load_dotenv()
 
 
 if os.environ.get("VCAP_APPLICATION"):
-    # on cloudfoundry, config is a json blob in VCAP_APPLICATION - unpack it, and populate
-    # standard environment variables from it
+    # on cloudfoundry, config is a json blob in VCAP_APPLICATION
+    # unpack it, and populate standard environment variables from it
     from app.cloudfoundry_config import extract_cloudfoundry_config
 
     extract_cloudfoundry_config()
@@ -40,6 +40,12 @@ class Config(object):
     ASSET_PATH = "/static/"
     ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
+    A11Y_FEEDBACK_URL_EN = os.environ.get(
+        "A11Y_FEEDBACK_URL_EN", "https://forms-formulaires.alpha.canada.ca/en/id/cmk4jw8nu00wrx9016kz1gf54"
+    )
+    A11Y_FEEDBACK_URL_FR = os.environ.get(
+        "A11Y_FEEDBACK_URL_FR", "https://forms-formulaires.alpha.canada.ca/fr/id/cmk4jw8nu00wrx9016kz1gf54"
+    )
 
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
@@ -80,6 +86,7 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
+    FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)

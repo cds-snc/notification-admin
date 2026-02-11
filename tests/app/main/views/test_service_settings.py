@@ -63,20 +63,20 @@ def mock_get_service_settings_page_common(
                 "Label Value Action",
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "API rate limit per minute 100 calls",
+                "API rate limit per minute 100 calls No value",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
+                "Daily maximum 1,000 emails No value",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
+                "Daily maximum 1,000 text messages No value",
+                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
             ],
         ),
         (
@@ -86,20 +86,20 @@ def mock_get_service_settings_page_common(
                 "Label Value Action",
                 "Service name Test Service Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "API rate limit per minute 100 calls",
+                "API rate limit per minute 100 calls No value",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
                 "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
+                "Daily maximum 1,000 emails No value",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
+                "Daily maximum 1,000 text messages No value",
+                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
@@ -108,7 +108,7 @@ def mock_get_service_settings_page_common(
                 "Daily text message limit 1,000 Change",
                 "Annual email limit 20,000,000 Change",
                 "Annual text message limit 100,000 Change",
-                "API rate limit per minute 100",
+                "API rate limit per minute 100 No value",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
                 "Free text messages per fiscal year 250,000 Change",
@@ -156,7 +156,7 @@ def test_should_show_overview_inc_sms_daily_limit(
             formatted_row = row.format(sending_domain=sending_domain or app_.config["SENDING_DOMAIN"])
             visible = rows[index]
             sr_only = visible.find("span", "sr-only")
-            if sr_only:
+            if sr_only and not formatted_row.endswith("No value"):
                 sr_only.extract()
                 assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
             assert formatted_row == " ".join(rows[index].text.split())
@@ -222,20 +222,20 @@ def test_organisation_name_links_to_org_dashboard(
             [
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "API rate limit per minute 100 calls",
+                "API rate limit per minute 100 calls No value",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
+                "Daily maximum 1,000 emails No value",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
+                "Daily maximum 1,000 text messages No value",
+                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
             ],
         ),
         (
@@ -243,20 +243,20 @@ def test_organisation_name_links_to_org_dashboard(
             [
                 "Service name service one Change",
                 "Sending email address name test.service@{sending_domain} Change",
-                "API rate limit per minute 100 calls",
+                "API rate limit per minute 100 calls No value",
                 "Label Value Action",
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
                 "Send files by email Off (API-only) Change",
-                "Daily maximum 1,000 emails",
-                "Annual maximum(April 1 to March 31) 20,000,000 emails",
+                "Daily maximum 1,000 emails No value",
+                "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages",
-                "Annual maximum(April 1 to March 31) 100,000 text messages",
+                "Daily maximum 1,000 text messages No value",
+                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
             ],
         ),
     ],
@@ -288,7 +288,7 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
             formatted_row = row.format(sending_domain=os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca"))
             visible = rows[index + 1]
             sr_only = visible.find("span", "sr-only")
-            if sr_only:
+            if sr_only and not formatted_row.endswith("No value"):
                 sr_only.extract()
                 assert " ".join(visible.text.split()).startswith(" ".join(sr_only.text.split()))
             assert formatted_row == " ".join(visible.text.split())
@@ -534,7 +534,7 @@ def test_show_live_banner(
     request_link = page.select_one('a[href*="request-to-go-live"]')
     assert expected_label in request_link.text.strip()
 
-    live_banner = page.find("div", attrs={"id": "live-banner"})
+    live_banner = page.find(id="live-banner")
     assert live_banner.text.strip() == "Trial"
 
 

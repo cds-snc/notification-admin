@@ -15,6 +15,13 @@ module.exports = {
         type: 'window',
       },
     },
+    tiptap: {
+      import: './app/assets/javascripts/tiptap/editor.js',
+      library: {
+        name: 'Tiptap',
+        type: 'window',
+      },
+    },
   },
   watch: false,
   output: {
@@ -24,6 +31,9 @@ module.exports = {
 
   plugins: [
     new webpack.ProgressPlugin(),
+    new webpack.DefinePlugin({
+      __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
+    }),
     new MiniCssExtractPlugin({
       filename: 'stylesheets/index.css',
       path: path.resolve(__dirname, "app/assets/stylesheets")

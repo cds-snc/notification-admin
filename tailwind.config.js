@@ -187,6 +187,7 @@ module.exports = {
         green: "#006435",
         100: "#8CF39C",
         300: "#29A35A",
+        500: "#308741",
         700: "#1E662D",
       },
       black: "#000",
@@ -225,6 +226,7 @@ module.exports = {
         emptyFlower: "url('/static/images/empty-flower.svg')",
         emptyTruck: "url('/static/images/empty-truck.svg')",
         emptyBirdCurious: "url('/static/images/empty-bird-curious.svg')",
+        tryRte: "url('/static/images/try-rte.svg')",
       },
       backgroundSize: {
         19: "19px",
@@ -234,7 +236,7 @@ module.exports = {
         10: "10px",
       },
       fontFamily: {
-        sans: ["lato"],
+        sans: ["Lato", "Arial", "sans-serif"],
         body: ["Noto Sans", "Arial", "sans-serif"],
         monospace: ["Noto Mono", "monospace"],
         arabic: ["Noto Sans Arabic", "Arial", "sans-serif"],
