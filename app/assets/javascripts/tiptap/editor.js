@@ -14,6 +14,8 @@ export const load = function (
   lang = "en",
   modeInputId,
   initialMode,
+  preferenceUpdateUrl,
+  csrfToken,
 ) {
   ReactDOM.render(
     <SimpleEditor
@@ -23,6 +25,8 @@ export const load = function (
       lang={lang}
       modeInputId={modeInputId}
       initialMode={initialMode}
+      preferenceUpdateUrl={preferenceUpdateUrl}
+      csrfToken={csrfToken}
     />,
     element,
   );
