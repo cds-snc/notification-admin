@@ -1050,6 +1050,97 @@ def test_aggregate_notifications_stats():
     }
 
 
+def test_aggregate_template_stats_with_billable_units():
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    stub_template_stats_with_billable_units = [
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "created",
+            "billable_units": 60,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "created",
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "technical-failure",
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "delivered",
+            "billable_units": 40,
+            "is_precompiled_letter": False,
+        },
+    ]
+    expected = aggregate_template_usage(stub_template_stats_with_billable_units)
+    assert len(expected) == 2
+    assert expected[0]["template_name"] == "two"
+    assert expected[0]["count"] == 200  # Sum of billable_units for template_id id-2
+    assert expected[0]["template_id"] == "id-2"
+    assert expected[0]["template_type"] == "email"
+    assert expected[1]["template_name"] == "one"
+    assert expected[1]["count"] == 100  # Sum of billable_units for template_id id-1
+    assert expected[1]["template_id"] == "id-1"
+    assert expected[1]["template_type"] == "sms"
+
+
+def test_aggregate_notifications_stats_with_billable_units():
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    stub_template_stats_with_billable_units = [
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "created",
+            "billable_units": 60,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "created",
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "technical-failure",
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "delivered",
+            "billable_units": 40,
+            "is_precompiled_letter": False,
+        },
+    ]
+    expected = aggregate_notifications_stats(stub_template_stats_with_billable_units)
+    assert expected == {
+        "sms": {"requested": 100, "delivered": 40, "failed": 0},
+        "email": {"requested": 200, "delivered": 0, "failed": 100},
+    }
+
+
 def test_service_dashboard_updates_gets_dashboard_totals(
     mocker,
     client_request,

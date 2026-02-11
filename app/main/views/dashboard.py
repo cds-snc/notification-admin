@@ -16,10 +16,6 @@ from flask import (
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
-from notifications_utils.clients.redis.annual_limit import (
-    SMS_BILLABLE_UNITS_DELIVERED_TODAY,
-    TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY,
-)
 from werkzeug.utils import redirect
 
 from app import (
@@ -329,6 +325,10 @@ def filter_out_cancelled_stats(template_statistics):
 def aggregate_template_usage(template_statistics, sort_key="count"):
     template_statistics = filter_out_cancelled_stats(template_statistics)
     templates = []
+    # TODO FF_USE_BILLABLE_UNITS removal - Support both count and billable_units fields
+    # Determine which field to use based on what's present in the data
+    count_field = "billable_units" if template_statistics and "billable_units" in template_statistics[0] else "count"
+
     for k, v in groupby(
         sorted(template_statistics, key=lambda x: x["template_id"]),
         key=lambda x: x["template_id"],
@@ -341,7 +341,7 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
                 "template_name": template_stats[0]["template_name"],
                 "template_type": template_stats[0]["template_type"],
                 "is_precompiled_letter": template_stats[0]["is_precompiled_letter"],
-                "count": sum(s["count"] for s in template_stats),
+                "count": sum(s[count_field] for s in template_stats),
             }
         )
 
@@ -350,15 +350,19 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
 
 def aggregate_notifications_stats(template_statistics):
     template_statistics = filter_out_cancelled_stats(template_statistics)
+    # TODO FF_USE_BILLABLE_UNITS removal - Support both count and billable_units fields
+    # Determine which field to use based on what's present in the data
+    count_field = "billable_units" if template_statistics and "billable_units" in template_statistics[0] else "count"
+
     notifications = {
         template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
     }
     for stat in template_statistics:
-        notifications[stat["template_type"]]["requested"] += stat["count"]
+        notifications[stat["template_type"]]["requested"] += stat[count_field]
         if stat["status"] in DELIVERED_STATUSES:
-            notifications[stat["template_type"]]["delivered"] += stat["count"]
+            notifications[stat["template_type"]]["delivered"] += stat[count_field]
         elif stat["status"] in FAILURE_STATUSES:
-            notifications[stat["template_type"]]["failed"] += stat["count"]
+            notifications[stat["template_type"]]["failed"] += stat[count_field]
 
     return notifications
 
@@ -396,14 +400,8 @@ def get_dashboard_partials(service_id):
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
     timings["_get_daily_stats"] = (time.time() - start) * 1000
 
-    # TODO FF_USE_BILLABLE_UNITS removal - Override SMS count with billable units when feature flag is enabled
+    # TODO FF_USE_BILLABLE_UNITS removal - Track if using billable units for display purposes
     use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
-    if use_billable_units:
-        # Get billable units count from annual-limit hash
-        billable_units_count = annual_limit_client.get_notification_count(service_id, SMS_BILLABLE_UNITS_DELIVERED_TODAY)
-        # Override the SMS requested count with billable units
-        # TODO: remove this when the api endpoint template-statistics gets updated
-        dashboard_totals_daily["sms"]["requested"] = billable_units_count
 
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
 
@@ -743,7 +741,7 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
 
     # Get both SMS fiscal year counts from Redis
     sms_fiscal_year_standard = annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
-    sms_fiscal_year_billable = annual_data_redis.get(TOTAL_SMS_BILLABLE_UNITS_FISCAL_YEAR_TO_YESTERDAY, 0)
+    sms_fiscal_year_billable = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0)
 
     # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
     if current_app.config.get("FF_USE_BILLABLE_UNITS"):

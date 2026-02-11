@@ -3831,7 +3831,7 @@ class TestBillableUnitsInSendViews:
     """Tests for billable units functionality in send views when FF_USE_BILLABLE_UNITS is enabled"""
 
     def test_daily_sms_billable_units_count_returns_count_when_ff_enabled(self, mocker, app_):
-        """Test that daily_sms_billable_units_count returns billable units from Redis when FF is enabled"""
+        """Test that daily_sms_billable_units_count returns billable units from notification_counts_client when FF is enabled"""
         from app.main.views.send import daily_sms_billable_units_count
 
         with app_.app_context():
@@ -3839,13 +3839,13 @@ class TestBillableUnitsInSendViews:
                 "app.main.views.send.current_app.config",
                 {"FF_USE_BILLABLE_UNITS": True},
             )
-            mock_annual_limit_client = mocker.patch("app.main.views.send.annual_limit_client")
-            mock_annual_limit_client.get_notification_count.return_value = 150
+            mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+            mock_notification_counts.get_all_notification_counts_for_today.return_value = {"sms": 150, "email": 100}
 
             result = daily_sms_billable_units_count("service-123")
 
             assert result == 150
-            mock_annual_limit_client.get_notification_count.assert_called_once()
+            mock_notification_counts.get_all_notification_counts_for_today.assert_called_once_with("service-123")
 
     def test_daily_sms_billable_units_count_returns_zero_when_ff_disabled(self, mocker, app_):
         """Test that daily_sms_billable_units_count returns 0 when FF is disabled"""
@@ -3856,9 +3856,9 @@ class TestBillableUnitsInSendViews:
                 "app.main.views.send.current_app.config",
                 {"FF_USE_BILLABLE_UNITS": False},
             )
-            mock_annual_limit_client = mocker.patch("app.main.views.send.annual_limit_client")
+            mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
 
             result = daily_sms_billable_units_count("service-123")
 
             assert result == 0
-            mock_annual_limit_client.get_notification_count.assert_not_called()
+            mock_notification_counts.get_all_notification_counts_for_today.assert_not_called()
