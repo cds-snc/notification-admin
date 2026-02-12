@@ -127,6 +127,8 @@ class NotificationCounts:
 # TODO: consolidate this function and other functions that transform the results of template_statistics_client calls
 def _aggregate_notifications_stats(template_statistics):
     template_statistics = _filter_out_cancelled_stats(template_statistics)
+    # Always use 'count' for display purposes (number of messages sent)
+    # The API now returns both 'count' and 'billable_units' fields
     notifications = {"sms": 0, "email": 0}
     for stat in template_statistics:
         notifications[stat["template_type"]] += stat["count"]

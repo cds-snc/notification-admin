@@ -35,6 +35,7 @@ stub_template_stats = [
         "template_id": "id-1",
         "status": "created",
         "count": 50,
+        "billable_units": 50,
         "is_precompiled_letter": False,
     },
     {
@@ -43,6 +44,7 @@ stub_template_stats = [
         "template_id": "id-2",
         "status": "created",
         "count": 100,
+        "billable_units": 100,
         "is_precompiled_letter": False,
     },
     {
@@ -51,6 +53,7 @@ stub_template_stats = [
         "template_id": "id-2",
         "status": "technical-failure",
         "count": 100,
+        "billable_units": 100,
         "is_precompiled_letter": False,
     },
     {
@@ -59,6 +62,7 @@ stub_template_stats = [
         "template_id": "id-1",
         "status": "delivered",
         "count": 50,
+        "billable_units": 50,
         "is_precompiled_letter": False,
     },
 ]
@@ -1051,13 +1055,16 @@ def test_aggregate_notifications_stats():
 
 
 def test_aggregate_template_stats_with_billable_units():
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    # When the API returns both count and billable_units, we use count for display
     stub_template_stats_with_billable_units = [
         {
             "template_type": "sms",
             "template_name": "one",
             "template_id": "id-1",
             "status": "created",
-            "billable_units": 60,
+            "count": 20,  # 20 messages
+            "billable_units": 60,  # 60 billable units (3x for long SMS)
             "is_precompiled_letter": False,
         },
         {
@@ -1065,6 +1072,7 @@ def test_aggregate_template_stats_with_billable_units():
             "template_name": "two",
             "template_id": "id-2",
             "status": "created",
+            "count": 100,
             "billable_units": 100,
             "is_precompiled_letter": False,
         },
@@ -1073,6 +1081,7 @@ def test_aggregate_template_stats_with_billable_units():
             "template_name": "two",
             "template_id": "id-2",
             "status": "technical-failure",
+            "count": 100,
             "billable_units": 100,
             "is_precompiled_letter": False,
         },
@@ -1081,31 +1090,36 @@ def test_aggregate_template_stats_with_billable_units():
             "template_name": "one",
             "template_id": "id-1",
             "status": "delivered",
-            "billable_units": 40,
+            "count": 10,  # 10 messages
+            "billable_units": 40,  # 40 billable units
             "is_precompiled_letter": False,
         },
     ]
     expected = aggregate_template_usage(stub_template_stats_with_billable_units)
     assert len(expected) == 2
     assert expected[0]["template_name"] == "two"
-    assert expected[0]["count"] == 200  # Sum of billable_units for template_id id-2
+    assert expected[0]["count"] == 200  # Sum of count (not billable_units) for template_id id-2
     assert expected[0]["template_id"] == "id-2"
     assert expected[0]["template_type"] == "email"
     assert expected[1]["template_name"] == "one"
-    assert expected[1]["count"] == 100  # Sum of billable_units for template_id id-1
+    assert expected[1]["count"] == 30  # Sum of count (20 + 10, not 60 + 40) for template_id id-1
     assert expected[1]["template_id"] == "id-1"
     assert expected[1]["template_type"] == "sms"
 
 
 def test_aggregate_notifications_stats_with_billable_units():
     # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    # When the API returns both count and billable_units:
+    # - use_billable_units=False uses count for display (messages sent)
+    # - use_billable_units=True uses billable_units for limit tracking
     stub_template_stats_with_billable_units = [
         {
             "template_type": "sms",
             "template_name": "one",
             "template_id": "id-1",
             "status": "created",
-            "billable_units": 60,
+            "count": 20,  # 20 messages
+            "billable_units": 60,  # 60 billable units (3x for long SMS)
             "is_precompiled_letter": False,
         },
         {
@@ -1113,6 +1127,7 @@ def test_aggregate_notifications_stats_with_billable_units():
             "template_name": "two",
             "template_id": "id-2",
             "status": "created",
+            "count": 100,
             "billable_units": 100,
             "is_precompiled_letter": False,
         },
@@ -1121,6 +1136,7 @@ def test_aggregate_notifications_stats_with_billable_units():
             "template_name": "two",
             "template_id": "id-2",
             "status": "technical-failure",
+            "count": 100,
             "billable_units": 100,
             "is_precompiled_letter": False,
         },
@@ -1129,13 +1145,22 @@ def test_aggregate_notifications_stats_with_billable_units():
             "template_name": "one",
             "template_id": "id-1",
             "status": "delivered",
-            "billable_units": 40,
+            "count": 10,  # 10 messages
+            "billable_units": 40,  # 40 billable units
             "is_precompiled_letter": False,
         },
     ]
-    expected = aggregate_notifications_stats(stub_template_stats_with_billable_units)
-    assert expected == {
-        "sms": {"requested": 100, "delivered": 40, "failed": 0},
+    # Test with use_billable_units=False (for display)
+    expected_with_count = aggregate_notifications_stats(stub_template_stats_with_billable_units, use_billable_units=False)
+    assert expected_with_count == {
+        "sms": {"requested": 30, "delivered": 10, "failed": 0},  # Uses count (20 + 10)
+        "email": {"requested": 200, "delivered": 0, "failed": 100},
+    }
+
+    # Test with use_billable_units=True (for limits)
+    expected_with_billable = aggregate_notifications_stats(stub_template_stats_with_billable_units, use_billable_units=True)
+    assert expected_with_billable == {
+        "sms": {"requested": 100, "delivered": 40, "failed": 0},  # Uses billable_units (60 + 40)
         "email": {"requested": 200, "delivered": 0, "failed": 100},
     }
 
@@ -1769,8 +1794,10 @@ class TestGetAnnualData:
             mocker.patch.dict("app.main.views.dashboard.current_app.config", {"REDIS_ENABLED": True})
             mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
             mock_annual_limit_client.was_seeded_today.return_value = True
+            # Mock returns both standard and billable units keys when FF_USE_BILLABLE_UNITS is enabled
             mock_annual_limit_client.get_all_notification_counts.return_value = {
                 "total_sms_fiscal_year_to_yesterday": 100,
+                "total_sms_billable_units_fiscal_year_to_yesterday": 100,  # Include billable units
                 "total_email_fiscal_year_to_yesterday": 200,
             }
 

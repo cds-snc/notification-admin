@@ -810,7 +810,8 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     current_lang = get_current_locale(current_app)
     data = _check_messages(service_id, template_id, upload_id, row_index, user_language=current_lang)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     data["time_to_reset"] = get_limit_reset_time_et()
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
@@ -1093,7 +1094,8 @@ def check_notification(service_id, template_id):
 def _check_notification(service_id, template_id, exception=None):
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     email_reply_to = None
     sms_sender = None
     if db_template["template_type"] == "email":

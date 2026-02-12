@@ -325,10 +325,6 @@ def filter_out_cancelled_stats(template_statistics):
 def aggregate_template_usage(template_statistics, sort_key="count"):
     template_statistics = filter_out_cancelled_stats(template_statistics)
     templates = []
-    # TODO FF_USE_BILLABLE_UNITS removal - Support both count and billable_units fields
-    # Determine which field to use based on what's present in the data
-    count_field = "billable_units" if template_statistics and "billable_units" in template_statistics[0] else "count"
-
     for k, v in groupby(
         sorted(template_statistics, key=lambda x: x["template_id"]),
         key=lambda x: x["template_id"],
@@ -341,18 +337,22 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
                 "template_name": template_stats[0]["template_name"],
                 "template_type": template_stats[0]["template_type"],
                 "is_precompiled_letter": template_stats[0]["is_precompiled_letter"],
-                "count": sum(s[count_field] for s in template_stats),
+                "count": sum(s["count"] for s in template_stats),
             }
         )
 
     return sorted(templates, key=lambda x: x[sort_key], reverse=True)
 
 
-def aggregate_notifications_stats(template_statistics):
+def aggregate_notifications_stats(template_statistics, use_billable_units=False):
     template_statistics = filter_out_cancelled_stats(template_statistics)
-    # TODO FF_USE_BILLABLE_UNITS removal - Support both count and billable_units fields
-    # Determine which field to use based on what's present in the data
-    count_field = "billable_units" if template_statistics and "billable_units" in template_statistics[0] else "count"
+    # The API now returns both 'count' and 'billable_units' fields
+    # Use count for display (sent messages), billable_units for limits tracking
+    # Fall back to count if billable_units is not available (for backwards compatibility)
+    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
+        count_field = "billable_units"
+    else:
+        count_field = "count"
 
     notifications = {
         template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
@@ -406,7 +406,8 @@ def get_dashboard_partials(service_id):
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
 
     start = time.time()
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+    # Use count for weekly stats (used for display of messages sent)
+    stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=False)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
@@ -479,7 +480,8 @@ def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> AnnualData:
 def _get_daily_stats(service_id):
     # TODO: get from redis, else fallback to template_statistics_client.get_template_statistics_for_service
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     dashboard_totals_daily = get_dashboard_totals(stats_daily)
 
     highest_notification_count_daily = max(
