@@ -23,6 +23,55 @@ export default Extension.create({
                 }
               },
             );
+
+            // Ensure empty blockquotes contain a paragraph so the resulting
+            // token stream always has block content for ProseMirror.
+            if (!markdownit.__notify_ensure_blockquote_paragraph) {
+              markdownit.__notify_ensure_blockquote_paragraph = true;
+
+              markdownit.core.ruler.push(
+                "notify_ensure_blockquote_paragraph",
+                function (state) {
+                  const Token = state.Token;
+                  const tokens = state.tokens;
+
+                  for (let i = 0; i < tokens.length; i++) {
+                    if (tokens[i].type === "blockquote_open") {
+                      // find matching close
+                      let j = i + 1;
+                      while (
+                        j < tokens.length &&
+                        tokens[j].type !== "blockquote_close"
+                      )
+                        j++;
+
+                      // check for any paragraph_open between open and close
+                      let hasParagraph = false;
+                      for (let k = i + 1; k < j; k++) {
+                        if (tokens[k].type === "paragraph_open") {
+                          hasParagraph = true;
+                          break;
+                        }
+                      }
+
+                      if (!hasParagraph) {
+                        // insert paragraph_open, inline (empty), paragraph_close before the blockquote_close
+                        const pOpen = new Token("paragraph_open", "p", 1);
+                        const inline = new Token("inline", "", 0);
+                        inline.content = "";
+                        inline.children = [];
+                        const pClose = new Token("paragraph_close", "p", -1);
+
+                        tokens.splice(j, 0, pOpen, inline, pClose);
+
+                        // advance i past inserted tokens
+                        i = j + 2;
+                      }
+                    }
+                  }
+                },
+              );
+            }
           },
         },
       },
