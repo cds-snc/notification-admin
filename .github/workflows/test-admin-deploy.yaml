@@ -90,10 +90,10 @@ jobs:
       - name: Create/Update lambda function
         id: create-update-lambda
         run: |
-          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1; then
+          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER ; then
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
+              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER 
 
           else
             aws lambda create-function \
@@ -104,7 +104,7 @@ jobs:
               --memory-size 1024 \
               --code ImageUri=$REGISTRY/$IMAGE:$PR_NUMBER \
               --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" \
-              --vpc-config SubnetIds=${{ secrets.PR_REVIEW_ENV_SUBNET_IDS }},SecurityGroupIds=${{ secrets.PR_REVIEW_ENV_SECURITY_GROUP_IDS }} > /dev/null 2>&1
+              --vpc-config SubnetIds=${{ secrets.PR_REVIEW_ENV_SUBNET_IDS }},SecurityGroupIds=${{ secrets.PR_REVIEW_ENV_SECURITY_GROUP_IDS }} 
 
             aws lambda wait function-active --function-name $FUNCTION_NAME-$PR_NUMBER
             aws lambda add-permission \
@@ -112,12 +112,12 @@ jobs:
               --statement-id AllowPublicInvokeFunctionUrl \
               --action lambda:InvokeFunctionUrl \
               --principal "*" \
-              --function-url-auth-type NONE > /dev/null 2>&1
+              --function-url-auth-type NONE 
             aws lambda add-permission \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
               --statement-id AllowPublicInvokeFunction \
               --action lambda:InvokeFunction \
-              --principal "*" > /dev/null 2>&1
+              --principal "*" 
 
             URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
             echo "URL=$URL" >> $GITHUB_ENV
@@ -133,10 +133,10 @@ jobs:
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL,\
                 AWS_XRAY_SDK_ENABLED=False
-              }" > /dev/null 2>&1
+              }" 
 
-            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1
-            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 > /dev/null 2>&1
+            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER 
+            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 
           fi
 
           aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER
