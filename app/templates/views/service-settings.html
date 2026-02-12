@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import mapping_table, row, settings_row, text_field, optional_text_field, edit_field, field, boolean_field with context %}
+{% from "components/table.html" import mapping_table, row, settings_row, empty_field, text_field, optional_text_field, edit_field, field, boolean_field with context %}
 
 {% block service_page_title %}
   {{ _('Settings') }}
@@ -7,6 +7,7 @@
 
 {% set change_txt = _('Change') %}
 {% set display_email_from = current_service.email_from + '@' + sending_domain %}
+{% set empty_col_label =  _("No value") %}
 
 {% block maincolumn_content %}
 
@@ -80,7 +81,7 @@
           {{ text_field(txt) }}
           {% set minute_limit = _('{} calls').format(current_service.rate_limit | format_number) %}
           {{ text_field(minute_limit) }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -166,7 +167,7 @@
           {{ text_field(txt)}}
           {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
           {{ text_field(message_limit) }}
-          {{ text_field('') }}
+          {{ empty_field() }}
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
@@ -174,7 +175,7 @@
           {{ text_field(txt) }}
           {% set annual_limit = _('{} emails').format((current_service.email_annual_limit) | format_number) %}
           {{ text_field(annual_limit, attributes="data-testid=email-annual-limit") }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -240,7 +241,7 @@
           {{ text_field(txt)}}
           {% set txt_msg_limit = _('{} text messages').format(current_service.sms_daily_limit | format_number) %}
           {{ text_field(txt_msg_limit) }}
-          {{ text_field('') }}
+          {{ empty_field() }}
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
@@ -248,7 +249,7 @@
           {{ text_field(txt) }}
           {% set annual_sms_limit = _('{} text messages').format((current_service.sms_annual_limit) | format_number) %}
           {{ text_field(annual_sms_limit, attributes="data-testid=sms-annual-limit") }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -381,7 +382,7 @@
             {% set txt = _('API rate limit per minute') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.rate_limit | format_number) }}
-            {{ text_field('')}}
+            {{ empty_field() }}
           {% endcall %}
 
           {% call row() %}
@@ -522,7 +523,7 @@
 
     {% endif %}
 
-    {% if current_service.active and (current_service.trial_mode or current_user.platform_admin) %}
+    {% if current_service.active and current_user.has_permissions("manage_service") %}
       <p class="mt-gutterHalf block clear-both contain-floats">
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.archive_service', service_id=current_service.id) }}">
@@ -553,4 +554,3 @@
 
 
 {% endblock %}
-}

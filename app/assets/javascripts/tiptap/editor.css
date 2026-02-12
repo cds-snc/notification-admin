@@ -1,0 +1,493 @@
+/* Basic editor styles */
+.tiptap {
+  min-height: 400px;
+  &:focus {
+    outline: none;
+  }
+  /* Match Email styles */
+  p {
+    font-size: 19px;
+    line-height: 25px;
+  }
+
+  p + p {
+    margin-top: 0;
+  }
+  :first-child {
+    margin-top: 0;
+  }
+
+  /* List styles */
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    list-style-type: disc;
+    li p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0 0 20px 0;
+    padding: 0;
+    font-weight: bold;
+    color: #0b0c0c;
+  }
+
+  h1 {
+    font-size: 27px;
+    line-height: 35px;
+  }
+
+  h2 {
+    line-height: 26px;
+    font-size: 24px;
+  }
+
+  h3 {
+    color: #0b0c0c;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1rem;
+  }
+
+  /* Code and preformatted text styles */
+  code {
+    background-color: var(--purple);
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+
+  pre {
+    background: var(--black);
+    border-radius: 0.5rem;
+    color: var(--white);
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+    @apply font-monospace;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+  }
+
+  blockquote {
+    margin: 0 0 20px 0;
+    border-left: 10px solid #bfc1c3;
+    padding: 15px 0 0.1px 15px;
+    font-size: 19px;
+    line-height: 25px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-2);
+    margin: 2rem 0;
+  }
+
+  /* Language blocks */
+  div[lang="en-CA"],
+  div[lang="fr-CA"] {
+    position: relative;
+    border-style: dashed;
+    border-left-style: solid;
+    @apply -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 px-gutterHalf pb-gutterHalf leading-normal;
+  }
+
+  div[lang]:has(+ :not(div[lang])) {
+    @apply border-b-1 mb-gutter;
+  }
+  div[lang]:last-child {
+    @apply border-b-1;
+  }
+
+  div[lang="en-CA"]:before,
+  div[lang="fr-CA"]:before {
+    box-sizing: content-box;
+    @apply -mx-gutterHalf text-black bg-white text-xs font-monospace px-gutterHalf block w-min tracking-wide font-medium mb-3;
+  }
+
+  div[lang="en-CA"]:before {
+    content: "EN";
+    @apply bg-purple-300/60;
+    /*@apply bg-gradient-to-b from-purple-300/60 to-purple-300/0;*/
+  }
+
+  div[lang="en-CA"] {
+    @apply border-l-purple-300;
+  }
+
+  div[lang="fr-CA"]:before {
+    content: "FR";
+    @apply bg-rose-300/60;
+    /*@apply bg-gradient-to-b from-rose-300/60 to-rose-300/0;*/
+  }
+
+  div[lang="fr-CA"] {
+    @apply border-l-rose-300;
+  }
+
+  span[data-type="variable"] {
+    word-wrap: break-word;
+    border-radius: 13px 13px 8px 8px;
+    box-shadow:
+      inset 0.4em 0 0 0 #fff,
+      inset -0.4em 0 0 0 #fff,
+      inset 0 -0.1em 0 0 #fff,
+      inset 0 0.3em 0 0 #fff;
+    @apply inline bg-yellow-100 text-black break-words;
+  }
+  span[data-type="variable"]:before {
+    content: "((";
+    @apply text-gray-700;
+  }
+  span[data-type="variable"]:after {
+    content: "))";
+    @apply text-gray-700;
+  }
+}
+
+/* Placeholder (at the top) */
+.tiptap p.is-editor-empty:first-child::before {
+  color: var(--gray-4);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Give a remote user a caret */
+.collaboration-cursor__caret {
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  margin-left: -1px;
+  margin-right: -1px;
+  pointer-events: none;
+  position: relative;
+  word-break: normal;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+  border-radius: 3px 3px 3px 0;
+  color: #0d0d0d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  left: -1px;
+  line-height: normal;
+  padding: 0.1rem 0.3rem;
+  position: absolute;
+  top: -1.4em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Basic editor wrapper styles */
+.editor-wrapper {
+  background-color: #fff;
+  border: 2px solid black;
+  color: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  overflow: visible;
+}
+
+.editor-wrapper:focus-within {
+  box-shadow:
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgb(255, 191, 71) 0px 0px 0px 3px;
+}
+
+.editor-content {
+  flex: 1 1 auto;
+  overflow-x: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.editor-content > div {
+  width: 666px;
+  @apply px-gutter py-gutterAndAHalf border-r-1 border-dashed border-gray-300;
+}
+
+/* Toolbar styles */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  @apply bg-gray-300 p-4 gap-y-5 gap-x-8;
+}
+
+.toolbar-group {
+  @apply flex flex-nowrap items-center bg-gray-200;
+  gap: 2px;
+}
+
+.toolbar-button:focus,
+.toolbar-button:focus-visible {
+  @apply bg-yellow text-black outline outline-yellow outline-2;
+}
+.toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  line-height: 1;
+  user-select: none;
+  min-height: 36px;
+  min-width: 36px;
+  @apply p-0 bg-white text-black text-xs;
+}
+
+.toolbar-button.button-try-new {
+  background: #2c5e79;
+  @apply text-white px-5;
+}
+.toolbar-button.toolbar-green {
+  @apply bg-green-500 text-white;
+}
+.toolbar-button.toolbar-green:hover:not(:disabled),
+.toolbar-button.toolbar-green:active:not(:disabled),
+.toolbar-button.toolbar-green:focus:not(:disabled) {
+  @apply bg-green-700 text-white;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  @apply bg-gray-200 text-black;
+}
+
+.toolbar-button:active:not(:disabled) {
+  @apply bg-gray-200 text-black;
+}
+
+.toolbar-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toolbar-button.is-active {
+  @apply bg-black text-white;
+}
+.toolbar-button.is-active svg ellipse {
+  fill: none;
+}
+
+.toolbar-button.is-active:hover {
+  @apply bg-gray-200 text-black;
+}
+
+.toolbar-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 2;
+}
+
+.toolbar.markdown-mode {
+  container-type: inline-size;
+  position: relative;
+  @apply bg-gray-100 border border-0 border-b-2 border-brand-900;
+}
+.toolbar.markdown-mode:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: -35%;
+  left: 0;
+  background-size: auto 175%;
+  background-position: right 0.75rem bottom 75%;
+  z-index: -1;
+  @apply bg-tryRte bg-no-repeat;
+}
+@container (width < 680px) {
+  .toolbar.markdown-mode:after {
+    display: none;
+  }
+}
+.toolbar.markdown-mode .toolbar-group:not(.toolbar-switch-group),
+.toolbar.markdown-mode .toolbar-separator {
+  display: none;
+}
+.toolbar-switch-group[data-mode="markdown"] {
+  background: transparent;
+  @apply gap-4;
+}
+.toolbar-switch-group[data-mode="markdown"] .toolbar-button {
+  @apply bg-brand-700 text-white px-6;
+}
+.toolbar-switch-group[data-mode="richtext"] .toolbar-button-mode {
+  @apply bg-brand-700 text-white;
+}
+
+.info-pane {
+  @apply bg-gray-100 p-8;
+
+  p {
+    margin: 0;
+  }
+
+  svg {
+    display: inline;
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+  }
+}
+.markdown-view {
+  width: 100%;
+  min-height: 400px;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #0d0d0d;
+  background-color: transparent;
+  resize: vertical;
+  box-sizing: border-box;
+  @apply font-monospace px-gutter py-gutterAndAHalf;
+}
+
+/* Link Modal Styles */
+.link-modal {
+  @apply fixed p-2 z-50 flex flex-nowrap items-center gap-2 bg-white border-1 border-gray-300;
+}
+
+.link-modal input:focus-visible {
+  @apply outline-yellow outline-2 outline-offset-0;
+}
+
+/* Conditional block styling - similar to language blocks */
+
+.conditional-block {
+  border-style: dashed;
+  border-left-style: solid;
+  line-height: 1.5em;
+  @apply relative -mx-gutterHalf border-t-1 border-r-1 border-gray-400 border-l-4 pb-gutterHalf border-l-yellow-100 border-b-1 mb-gutter;
+}
+
+.conditional-block .conditional-content {
+  @apply px-gutterHalf;
+}
+
+/* Remove margin when inside a lang block */
+div[lang] .conditional-block {
+  @apply mx-0;
+}
+
+/* Inline conditional styling */
+span[data-type="conditional-inline"] {
+  --conditional-widget-color-bg: theme("colors.yellow.100");
+  --conditional-widget-color-accent: theme("colors.gray.500");
+  counter-increment: conditional-inline-edit-widget-counter;
+}
+span[data-type="conditional-inline"]:focus-within .conditional-inline-content {
+  /* @apply outline outline-black outline-2; */
+  box-shadow: inset -2px -2px 0 theme("colors.yellow.300");
+  box-decoration-break: clone;
+  @apply bg-yellow-100/70;
+}
+
+span[data-type="conditional-inline"]:focus-within::before,
+.conditional-inline-edit-widget::before {
+  text-underline-offset: -0.75lh;
+  text-decoration-thickness: 1lh;
+}
+
+span[data-type="conditional-inline"] .conditional-inline-content {
+  box-shadow: inset -1px -1px 0 0 theme("colors.yellow.300");
+  box-decoration-break: clone;
+}
+.conditional-inline-content + .conditional-inline-after {
+  user-select: none;
+}
+
+.conditional-inline-edit-widget,
+.conditional-trigger {
+  @apply bg-yellow-100 gap-4;
+}
+.conditional-inline-edit-widget {
+  @apply px-2 mr-2;
+}
+.conditional-trigger {
+  @apply px-gutterHalf mb-4;
+}
+.conditional-trigger {
+  @apply flex w-max items-baseline;
+}
+
+.conditional-inline-edit-prefix,
+.conditional-inline-edit-suffix,
+.conditional-trigger-text {
+  user-select: none;
+  white-space: nowrap;
+  font-size: 0.75em;
+  line-height: 1.5em;
+  font-weight: 600;
+}
+
+.conditional-inline-edit-prefix,
+.conditional-inline-edit-suffix,
+.conditional-trigger-text,
+.conditional-inline-condition-input,
+.conditional-block-condition-input {
+  @apply text-black;
+}
+
+.conditional-inline-condition-input,
+.conditional-block-condition-input {
+  border-radius: 0;
+  min-width: 8ch;
+  box-shadow: inset 0 0 0 1px theme("colors.gray.400");
+  @apply px-2 bg-white break-all border-0;
+}
+
+/* Keep drag-selection in content from "highlighting" the block condition input.
+   (When the input isn't focused, it should behave like non-editable chrome.) */
+.conditional-inline-condition-input:not(:focus),
+.conditional-block-condition-input:not(:focus) {
+  user-select: none;
+}
+
+.conditional-inline-condition-input:focus-visible,
+.conditional-block-condition-input:focus-visible {
+  box-shadow: inset 0 0 0 2px black;
+  @apply outline-yellow outline-offset-0 outline-[3px] outline;
+}
+
+/* If a non-focused input ends up with a stale selection range (browser quirk),
+   don't display it. Keeps drag-selection in content from "highlighting" the input. */
+.conditional-block-condition-input:not(:focus)::selection,
+.conditional-inline-condition-input:not(:focus)::selection {
+  background: transparent;
+  color: inherit;
+}

@@ -1,0 +1,1097 @@
+import React, { useRef, useEffect, useCallback, useState } from "react";
+import {
+  Icon,
+  Heading1,
+  Heading2,
+  Minus,
+  Bold,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  TextQuote,
+} from "lucide-react";
+import TooltipWrapper from "./TooltipWrapper";
+import { NodeSelection } from "@tiptap/pm/state";
+import {
+  variableIcon,
+  englishBlockIcon,
+  frenchBlockIcon,
+  infoIcon,
+  markdownIcon,
+  conditionalBlockIcon,
+  conditionalInlineIcon,
+  rightToLeftIcon,
+} from "./icons";
+
+/**
+ * AccessibleToolbar component that wraps any toolbar content with proper ARIA accessibility.
+ * Implements keyboard navigation according to WAI-ARIA toolbar pattern:
+ * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/toolbar_role
+ *
+ * - Arrow keys move focus between toolbar items
+ * - Home/End keys move to first/last items
+ * - Tab key moves focus in/out of toolbar
+ * - Uses roving tabindex for proper focus management
+ */
+const AccessibleToolbar = ({ children, label, editor, className = "" }) => {
+  const toolbarRef = useRef(null);
+  const currentFocusIndexRef = useRef(0);
+
+  // Register the toolbar DOM on the editor instance so TipTap extensions
+  // can access it without DOM traversal.
+  useEffect(() => {
+    if (!editor || !toolbarRef.current) return;
+    editor.rteToolbar = toolbarRef.current;
+    return () => {
+      if (editor.rteToolbar === toolbarRef.current) {
+        editor.rteToolbar = null;
+      }
+    };
+  }, [editor]);
+
+  const getFocusableElements = useCallback(() => {
+    if (!toolbarRef.current) return [];
+
+    const focusableSelectors = [
+      "button:not([disabled])",
+      "[href]:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "[tabindex]:not([tabindex='-1']):not([disabled])",
+      "[role='button']:not([disabled])",
+    ].join(", ");
+
+    return Array.from(toolbarRef.current.querySelectorAll(focusableSelectors));
+  }, []);
+
+  const updateTabIndex = useCallback(
+    (focusIndex = 0) => {
+      const focusableElements = getFocusableElements();
+
+      focusableElements.forEach((element, index) => {
+        element.tabIndex = index === focusIndex ? 0 : -1;
+      });
+
+      currentFocusIndexRef.current = focusIndex;
+    },
+    [getFocusableElements],
+  );
+
+  const moveFocus = useCallback(
+    (newIndex) => {
+      const focusableElements = getFocusableElements();
+
+      if (focusableElements.length === 0) return;
+
+      let targetIndex = newIndex;
+      if (newIndex < 0) {
+        targetIndex = focusableElements.length - 1;
+      } else if (newIndex >= focusableElements.length) {
+        targetIndex = 0;
+      }
+
+      updateTabIndex(targetIndex);
+      focusableElements[targetIndex]?.focus();
+    },
+    [getFocusableElements, updateTabIndex],
+  );
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      const focusableElements = getFocusableElements();
+      const currentIndex = focusableElements.findIndex(
+        (el) => el === event.target,
+      );
+
+      if (currentIndex === -1) return;
+
+      switch (event.key) {
+        case "ArrowRight":
+        case "ArrowDown":
+          event.preventDefault();
+          moveFocus(currentIndex + 1);
+          return;
+        case "ArrowLeft":
+          event.preventDefault();
+          moveFocus(currentIndex - 1);
+          return;
+        case "ArrowUp":
+          event.preventDefault();
+          moveFocus(currentIndex - 1);
+          break;
+        case "Home":
+          event.preventDefault();
+          moveFocus(0);
+          break;
+        case "End":
+          event.preventDefault();
+          moveFocus(focusableElements.length - 1);
+          break;
+        default:
+          break;
+      }
+    },
+    [getFocusableElements, moveFocus],
+  );
+
+  useEffect(() => {
+    const focusableElements = getFocusableElements();
+
+    if (focusableElements.length > 0) {
+      updateTabIndex(0);
+    }
+  }, [getFocusableElements, updateTabIndex]);
+
+  // Listen for the custom 'rte-request-focus' event (dispatched by a TipTap
+  // extension when Alt+F10 is pressed). The toolbar will use its remembered
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+
+    const onRequestFocus = (e) => {
+      if (e?.defaultPrevented) return;
+      e.preventDefault?.();
+
+      const focusableElements = getFocusableElements();
+      if (focusableElements.length === 0) {
+        // Make toolbar itself focusable and focus it as a fallback
+        el.tabIndex = -1;
+        el.focus();
+        return;
+      }
+
+      // Use the remembered focus index (from currentFocusIndexRef). Ensure
+      // it is within bounds; fallback to 0 if out-of-range.
+      let focusIndex = currentFocusIndexRef.current || 0;
+      if (focusIndex < 0 || focusIndex >= focusableElements.length) {
+        focusIndex = 0;
+      }
+
+      updateTabIndex(focusIndex);
+      try {
+        focusableElements[focusIndex].focus();
+      } catch (err) {
+        // ignore focus errors
+      }
+    };
+
+    const onOpenLinkModal = (e) => {
+      e.preventDefault?.();
+      // Bubble an event so the outer MenuBar component (which receives editor prop) can open the modal
+      try {
+        const openEvent = new CustomEvent("rte-open-link-modal-forward", {
+          bubbles: true,
+        });
+        el.dispatchEvent(openEvent);
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    el.addEventListener("rte-request-focus", onRequestFocus);
+    el.addEventListener("rte-open-link-modal", onOpenLinkModal);
+    return () => {
+      el.removeEventListener("rte-request-focus", onRequestFocus);
+      el.removeEventListener("rte-open-link-modal", onOpenLinkModal);
+    };
+  }, [getFocusableElements, updateTabIndex]);
+
+  return (
+    <div
+      className={["toolbar", className].filter(Boolean).join(" ")}
+      ref={toolbarRef}
+      role="toolbar"
+      aria-label={label}
+      aria-keyshortcuts="Alt+F10"
+      aria-orientation="horizontal"
+      onKeyDown={handleKeyDown}
+      data-testid="rte-toolbar"
+    >
+      {children}
+    </div>
+  );
+};
+
+const MenuBar = ({
+  editor,
+  openLinkModal,
+  lang = "en",
+  onToggleMarkdownView,
+  isMarkdownView,
+  toggleLabel,
+  useUnifiedConditionalButton = false,
+}) => {
+  if (!editor) {
+    return null;
+  }
+
+  const [liveMessage, setLiveMessage] = useState("");
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const labels = {
+    en: {
+      toolbar: "Editor toolbar",
+      toggleMd: "View source",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
+      linkDialogOpened: "Link dialog opened",
+      applied: "applied.",
+      removed: "removed.",
+      applyPrefix: "Apply ",
+      removePrefix: "Remove ",
+      heading1: "Heading",
+      heading2: "Subheading",
+      variable: "Variable",
+      bold: "Bold",
+      italic: "Italic",
+      bulletList: "Bulleted List",
+      numberedList: "Numbered List",
+      link: "Link",
+      horizontalRule: "Section break",
+      horizontalRuleInsert: "Insert Section Break",
+      blockquote: "Blockquote",
+      englishBlock: "English content",
+      frenchBlock: "French content",
+      conditionalBlock: "Conditional section",
+      conditionalInline: "Conditional text",
+      conditional: "Conditional",
+      rtlBlock: "Right-to-left text",
+      infoPane1: "Focus on a button for its function and shortcut. ",
+      infoPane2: "Custom content",
+      infoPane3: "Conditional content:",
+      infoPane4: "Within a paragraph",
+      infoPane5: "As a separate section",
+      info: "Help",
+      markdownButton: "Back to the markdown editor",
+      richTextButton: "Try toolbar formatting",
+      markdownEditorMessage: "New email experience",
+    },
+    fr: {
+      toolbar: "Barre d'outils de l'éditeur",
+      toggleMd: "Voir la source",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
+      linkDialogOpened: "Boîte de dialogue du lien ouverte",
+      applied: "appliqué.",
+      removed: "supprimé.",
+      applyPrefix: "Appliquer ",
+      removePrefix: "Supprimer ",
+      heading1: "Titre",
+      heading2: "Sous titre",
+      variable: "Variable",
+      bold: "Gras",
+      italic: "Italique",
+      bulletList: "Liste à puces",
+      numberedList: "Liste numérotée",
+      link: "Lien",
+      horizontalRule: "Saut de section",
+      horizontalRuleInsert: "Insérer un saut de section",
+      blockquote: "Bloc en retrait",
+      englishBlock: "Contenu en anglais",
+      frenchBlock: "Contenu en français",
+      conditionalBlock: "Section conditionnelle",
+      conditionalInline: "Texte conditionnel",
+      conditional: "Conditionnel",
+      rtlBlock: "Afficher de droite à gauche",
+      infoPane1:
+        "Sélectionnez un bouton pour découvrir sa fonction et son raccourci.",
+      infoPane2: "Contenu personnalisé",
+      infoPane3: "Contenu conditionnel :",
+      infoPane4: "À l'intérieur d'un paragraphe",
+      infoPane5: "Section entière",
+      info: "Aide",
+      markdownButton: "Retour à l'éditeur de markdown",
+      richTextButton: "Essayez les outils de mise en forme",
+      markdownEditorMessage: "Nouvelle expérience courriel",
+    },
+  };
+
+  const t = labels[lang] || labels.en;
+  const toggleButtonLabel = toggleLabel || t.toggleMd;
+  const toggleHandler = onToggleMarkdownView || (() => {});
+
+  // Platform-aware shortcut labels: use Command on macOS, Ctrl on Windows/Linux
+  const getPlatform = () => {
+    if (typeof navigator === "undefined" || !navigator.platform) return "other";
+    const p = navigator.platform.toLowerCase();
+    if (p.includes("mac")) return "mac";
+    if (p.includes("win")) return "windows";
+    if (p.includes("linux")) return "linux";
+    return "other";
+  };
+
+  const platform = getPlatform();
+
+  const shortcuts = {
+    heading1: platform === "mac" ? "⌘+Opt+1" : "Ctrl+Alt+1",
+    heading2: platform === "mac" ? "⌘+Opt+2" : "Ctrl+Alt+2",
+    variable: platform === "mac" ? "⌘+Shift+U" : "Ctrl+Shift+U",
+    bulletList: platform === "mac" ? "⌘+Shift+8" : "Ctrl+Shift+8",
+    numberedList: platform === "mac" ? "⌘+Shift+7" : "Ctrl+Shift+7",
+    horizontalRule: platform === "mac" ? "⌘+Enter" : "Ctrl+Enter",
+    blockquote: platform === "mac" ? "⌘+Shift+9" : "Ctrl+Shift+9",
+    // englishBlock: platform === "mac" ? "⌘+Opt+8" : "Ctrl+Alt+8",
+    // frenchBlock: platform === "mac" ? "⌘+Opt+9" : "Ctrl+Alt+9",
+    // conditionalBlock: platform === "mac" ? "⌘+Opt+0" : "Ctrl+Alt+0",
+    // conditionalInline: platform === "mac" ? "⌘+Shift+0" : "Ctrl+Shift+0",
+    rtlBlock: platform === "mac" ? "⌘+Opt+R" : "Ctrl+Alt+R",
+    link: platform === "mac" ? "⌘+K" : "Ctrl+K",
+    bold: platform === "mac" ? "⌘+Opt+B" : "Ctrl+Alt+B",
+    italic: platform === "mac" ? "⌘+Opt+I" : "Ctrl+Alt+I",
+  };
+
+  // Computed states/labels for conditional buttons so sr-only text follows aria-pressed
+  const conditionalPressed = useUnifiedConditionalButton
+    ? editor.isActive("conditional") || editor.isActive("conditionalInline")
+    : editor.isActive("conditional");
+  const conditionalLabel = useUnifiedConditionalButton
+    ? t.conditional
+    : t.conditionalBlock;
+
+  const inlinePressed = editor.isActive("conditionalInline");
+
+  // Helper to run an editor action and announce the resulting state change.
+  // To ensure screen readers read the announcement before focus returns to the
+  // editor, we optimistically set the message before invoking the action.
+  // We still run a deferred check to keep the message accurate if needed.
+  const announceToggle = (actionFn, checkFn, label) => {
+    try {
+      // Optimistically announce the intended change.
+      setLiveMessage(`${label} ${t.applied}`);
+
+      // Delay invoking the action briefly so screen readers have time
+      // to pick up the live region before focus returns to the editor.
+      setTimeout(() => {
+        actionFn();
+
+        // Defer a verification check and correct the message if the action actually removed the state.
+        setTimeout(() => {
+          const active = checkFn();
+          if (!active) {
+            setLiveMessage(`${label} ${t.removed}`);
+          }
+        }, 100);
+      }, 120);
+    } catch (err) {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    if (!liveMessage) return;
+    const id = setTimeout(() => setLiveMessage(""), 2500);
+    return () => clearTimeout(id);
+  }, [liveMessage]);
+
+  // Close info pane when switching to markdown view
+  useEffect(() => {
+    if (isMarkdownView) {
+      setIsInfoOpen(false);
+    }
+  }, [isMarkdownView]);
+
+  const selectionSpansMultipleBlocks = () => {
+    try {
+      const { selection } = editor.state;
+      if (!selection) return false;
+
+      // NodeSelection (selecting a block/node) should use the block conditional.
+      if (selection.node) return true;
+
+      if (selection.empty) return false;
+      const { $from, $to } = selection;
+      return !$from.sameParent($to);
+    } catch {
+      return false;
+    }
+  };
+
+  const runBlockConditionalAction = () => {
+    // Match existing block button behaviour.
+    if (editor.isActive("conditional")) {
+      return editor.chain().focus().unsetConditional().run();
+    }
+
+    const didWrap = editor.chain().focus().wrapInConditional().run();
+    if (didWrap) return true;
+
+    return editor.chain().focus().insertConditionalPattern().run();
+  };
+
+  const runInlineConditionalAction = () => {
+    const getFocusedInlineConditionalPos = () => {
+      try {
+        const doc = editor?.view?.dom?.ownerDocument || document;
+        const active = doc.activeElement;
+        if (!active) return null;
+
+        const isInlineInput =
+          active.classList?.contains("conditional-inline-condition-input") ||
+          active.matches?.(
+            "input.conditional-inline-condition-input[data-editor-focusable]",
+          );
+        if (!isInlineInput) return null;
+
+        const nodeEl = active.closest?.('span[data-type="conditional-inline"]');
+        if (!nodeEl) return null;
+
+        const pos = editor.view.posAtDOM(nodeEl, 0);
+        return typeof pos === "number" ? pos : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const removeFocusedInlineConditional = (pos) => {
+      try {
+        if (typeof pos !== "number") return false;
+        const { state, view } = editor;
+        const tr = state.tr.setSelection(NodeSelection.create(state.doc, pos));
+        view.dispatch(tr);
+        editor.commands.unsetConditionalInline();
+        editor.commands.focus();
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // Match existing inline button behaviour.
+    const focusedPos = getFocusedInlineConditionalPos();
+    if (typeof focusedPos === "number") {
+      return removeFocusedInlineConditional(focusedPos);
+    }
+
+    if (editor.isActive("conditionalInline")) {
+      return editor.chain().focus().unsetConditionalInline().run();
+    }
+
+    // Let the extension decide the default condition label (configured per language).
+    return editor.chain().focus().setConditionalInline().run();
+  };
+
+  const runUnifiedConditionalAction = () => {
+    const getFocusedInlineConditionalPos = () => {
+      try {
+        const doc = editor?.view?.dom?.ownerDocument || document;
+        const active = doc.activeElement;
+        if (!active) return null;
+
+        const isInlineInput =
+          active.classList?.contains("conditional-inline-condition-input") ||
+          active.matches?.(
+            "input.conditional-inline-condition-input[data-editor-focusable]",
+          );
+        if (!isInlineInput) return null;
+
+        const nodeEl = active.closest?.('span[data-type="conditional-inline"]');
+        if (!nodeEl) return null;
+
+        const pos = editor.view.posAtDOM(nodeEl, 0);
+        return typeof pos === "number" ? pos : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const removeFocusedInlineConditional = (pos) => {
+      try {
+        if (typeof pos !== "number") return false;
+        const { state, view } = editor;
+        const tr = state.tr.setSelection(NodeSelection.create(state.doc, pos));
+        view.dispatch(tr);
+        editor.commands.unsetConditionalInline();
+        editor.commands.focus();
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // If we're inside an existing conditional, treat this as "remove" first.
+    if (editor.isActive("conditional")) {
+      return editor.chain().focus().unsetConditional().run();
+    }
+
+    const focusedPos = getFocusedInlineConditionalPos();
+    if (typeof focusedPos === "number") {
+      return removeFocusedInlineConditional(focusedPos);
+    }
+
+    if (editor.isActive("conditionalInline")) {
+      return editor.chain().focus().unsetConditionalInline().run();
+    }
+
+    if (selectionSpansMultipleBlocks()) {
+      return runBlockConditionalAction();
+    }
+
+    return runInlineConditionalAction();
+  };
+
+  // Listen for forwarded open-link events from the toolbar (Mod+K)
+  useEffect(() => {
+    if (!editor || !editor.rteToolbar) return;
+    const el = editor.rteToolbar;
+    const onOpenLink = (e) => {
+      try {
+        openLinkModal();
+        setLiveMessage(t.linkDialogOpened);
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    el.addEventListener("rte-open-link-modal-forward", onOpenLink);
+    return () =>
+      el.removeEventListener("rte-open-link-modal-forward", onOpenLink);
+  }, [editor, openLinkModal, t.linkDialogOpened]);
+
+  return (
+    <>
+      <AccessibleToolbar
+        label={t.toolbar}
+        editor={editor}
+        className={isMarkdownView ? "markdown-mode" : ""}
+      >
+        <div
+          className="sr-only"
+          role="alert"
+          aria-atomic="true"
+          data-testid="rte-liveregion"
+        >
+          {liveMessage}
+        </div>
+
+        {/* First group: Headings */}
+        <div className="toolbar-group">
+          <TooltipWrapper label={t.heading1} shortcut={shortcuts.heading1}>
+            <button
+              type="button"
+              data-testid="rte-heading_1"
+              onClick={() =>
+                announceToggle(
+                  () =>
+                    editor.chain().focus().toggleHeading({ level: 1 }).run(),
+                  () => editor.isActive("heading", { level: 1 }),
+                  t.heading1,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("heading", { level: 1 }) ? " is-active" : "")
+              }
+              aria-pressed={editor.isActive("heading", { level: 1 })}
+            >
+              <span className="sr-only">
+                {editor.isActive("heading", { level: 1 })
+                  ? t.removePrefix
+                  : t.applyPrefix}
+              </span>
+              <Heading1 />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.heading2} shortcut={shortcuts.heading2}>
+            <button
+              type="button"
+              data-testid="rte-heading_2"
+              onClick={() =>
+                announceToggle(
+                  () =>
+                    editor.chain().focus().toggleHeading({ level: 2 }).run(),
+                  () => editor.isActive("heading", { level: 2 }),
+                  t.heading2,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("heading", { level: 2 }) ? " is-active" : "")
+              }
+              title={t.heading2}
+              aria-pressed={editor.isActive("heading", { level: 2 })}
+            >
+              <span className="sr-only">
+                {editor.isActive("heading", { level: 2 })
+                  ? t.removePrefix
+                  : t.applyPrefix}
+              </span>
+              <Heading2 />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper
+            label={t.horizontalRule}
+            shortcut={shortcuts.horizontalRule}
+          >
+            <button
+              type="button"
+              data-testid="rte-horizontal_rule"
+              onClick={() => editor.chain().focus().setHorizontalRule().run()}
+              className="toolbar-button"
+              title={t.horizontalRule}
+            >
+              <span className="sr-only">{t.horizontalRuleInsert}</span>
+              <Minus />
+            </button>
+          </TooltipWrapper>
+        </div>
+
+        {/* Second group: Bold, Italic, Link */}
+        <div className="toolbar-group">
+          <TooltipWrapper label={t.bold} shortcut={t.shortcutBold}>
+            <button
+              type="button"
+              data-testid="rte-bold"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBold().run(),
+                  () => editor.isActive("bold"),
+                  t.bold,
+                )
+              }
+              disabled={!editor.can().chain().focus().toggleBold().run()}
+              className={
+                "toolbar-button" + (editor.isActive("bold") ? " is-active" : "")
+              }
+              title={t.bold}
+              aria-pressed={editor.isActive("bold")}
+            >
+              <span className="sr-only">
+                {editor.isActive("bold") ? t.removePrefix : t.applyPrefix}
+                {t.bold}
+              </span>
+              <Bold />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.italic} shortcut={t.shortcutItalic}>
+            <button
+              type="button"
+              data-testid="rte-italic"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleItalic().run(),
+                  () => editor.isActive("italic"),
+                  t.italic,
+                )
+              }
+              disabled={!editor.can().chain().focus().toggleItalic().run()}
+              className={
+                "toolbar-button" +
+                (editor.isActive("italic") ? " is-active" : "")
+              }
+              title={t.italic}
+              aria-pressed={editor.isActive("italic")}
+            >
+              <span className="sr-only">
+                {editor.isActive("italic") ? t.removePrefix : t.applyPrefix}
+                {t.italic}
+              </span>
+              <Italic />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.link} shortcut={shortcuts.link}>
+            <button
+              type="button"
+              data-testid="rte-link"
+              onClick={() => {
+                openLinkModal();
+                // announce via live region when link modal opens (approx)
+                setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
+              }}
+              className={
+                "toolbar-button" + (editor.isActive("link") ? " is-active" : "")
+              }
+              title={t.link}
+              aria-pressed={editor.isActive("link")}
+            >
+              <span className="sr-only">
+                {editor.isActive("link") ? t.removePrefix : t.applyPrefix}
+                {t.link}
+              </span>
+              <Link />
+            </button>
+          </TooltipWrapper>
+        </div>
+
+        {/* Third group: Bullet list, Numbered list, Blockquote */}
+        <div className="toolbar-group">
+          <TooltipWrapper label={t.bulletList} shortcut={shortcuts.bulletList}>
+            <button
+              type="button"
+              data-testid="rte-bullet_list"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBulletList().run(),
+                  () => editor.isActive("bulletList"),
+                  t.bulletList,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("bulletList") ? " is-active" : "")
+              }
+              title={t.bulletList}
+              aria-pressed={editor.isActive("bulletList")}
+            >
+              <span className="sr-only">
+                {editor.isActive("bulletList") ? t.removePrefix : t.applyPrefix}
+                {t.bulletList}
+              </span>
+              <List />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper
+            label={t.numberedList}
+            shortcut={shortcuts.numberedList}
+          >
+            <button
+              type="button"
+              data-testid="rte-numbered_list"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleOrderedList().run(),
+                  () => editor.isActive("orderedList"),
+                  t.numberedList,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("orderedList") ? " is-active" : "")
+              }
+              title={t.numberedList}
+              aria-pressed={editor.isActive("orderedList")}
+            >
+              <span className="sr-only">
+                {editor.isActive("orderedList")
+                  ? t.removePrefix
+                  : t.applyPrefix}
+                {t.numberedList}
+              </span>
+              <ListOrdered />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.blockquote} shortcut={shortcuts.blockquote}>
+            <button
+              type="button"
+              data-testid="rte-blockquote"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBlockquote().run(),
+                  () => editor.isActive("blockquote"),
+                  t.blockquote,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("blockquote") ? " is-active" : "")
+              }
+              title={t.blockquote}
+              aria-pressed={editor.isActive("blockquote")}
+            >
+              <span className="sr-only">
+                {editor.isActive("blockquote") ? t.removePrefix : t.applyPrefix}
+                {t.blockquote}
+              </span>
+              <TextQuote />
+            </button>
+          </TooltipWrapper>
+        </div>
+
+        {/* Fourth group: Variable, Conditional block, Conditional inline */}
+        <div className="toolbar-group">
+          <TooltipWrapper label={t.variable} shortcut={shortcuts.variable}>
+            <button
+              type="button"
+              data-testid="rte-variable"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleVariable().run(),
+                  () => editor.isActive("variable"),
+                  t.variable,
+                )
+              }
+              disabled={!editor.can().chain().focus().toggleVariable().run()}
+              className={
+                "toolbar-button" +
+                (editor.isActive("variable") ? " is-active" : "")
+              }
+              title={t.variable}
+              aria-pressed={editor.isActive("variable")}
+            >
+              <span className="sr-only">
+                {editor.isActive("variable") ? t.removePrefix : t.applyPrefix}
+                {t.variable}
+              </span>
+              <Icon iconNode={variableIcon} />
+            </button>
+          </TooltipWrapper>
+          {!useUnifiedConditionalButton && (
+            <TooltipWrapper label={t.conditionalInline}>
+              <button
+                type="button"
+                data-testid="rte-conditional_inline"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                }}
+                onClick={() =>
+                  announceToggle(
+                    () => runInlineConditionalAction(),
+                    () => editor.isActive("conditionalInline"),
+                    t.conditionalInline,
+                  )
+                }
+                className={
+                  "toolbar-button" +
+                  (editor.isActive("conditionalInline") ? " is-active" : "")
+                }
+                title={t.conditionalInline}
+                aria-pressed={editor.isActive("conditionalInline")}
+              >
+                <span className="sr-only">
+                  {editor.isActive("conditionalInline")
+                    ? t.removePrefix
+                    : t.applyPrefix}
+                  {t.conditionalInline}
+                </span>
+                <Icon iconNode={conditionalInlineIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
+          <TooltipWrapper
+            label={
+              useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
+            }
+          >
+            <button
+              type="button"
+              data-testid={
+                useUnifiedConditionalButton
+                  ? "rte-conditional"
+                  : "rte-conditional_block"
+              }
+              onMouseDown={(e) => {
+                e.preventDefault();
+              }}
+              onClick={() => {
+                if (!useUnifiedConditionalButton) {
+                  return announceToggle(
+                    () => runBlockConditionalAction(),
+                    () => editor.isActive("conditional"),
+                    t.conditionalBlock,
+                  );
+                }
+
+                return announceToggle(
+                  () => runUnifiedConditionalAction(),
+                  () =>
+                    editor.isActive("conditional") ||
+                    editor.isActive("conditionalInline"),
+                  t.conditional,
+                );
+              }}
+              className={
+                "toolbar-button" +
+                ((
+                  useUnifiedConditionalButton
+                    ? editor.isActive("conditional") ||
+                      editor.isActive("conditionalInline")
+                    : editor.isActive("conditional")
+                )
+                  ? " is-active"
+                  : "")
+              }
+              title={
+                useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
+              }
+              aria-pressed={
+                useUnifiedConditionalButton
+                  ? editor.isActive("conditional") ||
+                    editor.isActive("conditionalInline")
+                  : editor.isActive("conditional")
+              }
+            >
+              <span className="sr-only">
+                {useUnifiedConditionalButton
+                  ? (editor.isActive("conditional") ||
+                    editor.isActive("conditionalInline")
+                      ? t.removePrefix
+                      : t.applyPrefix) + t.conditional
+                  : (editor.isActive("conditional")
+                      ? t.removePrefix
+                      : t.applyPrefix) + t.conditionalBlock}
+              </span>
+              <Icon iconNode={conditionalBlockIcon} />
+            </button>
+          </TooltipWrapper>
+        </div>
+
+        {/* Fifth group: English, French, RTL */}
+        <div className="toolbar-group">
+          <TooltipWrapper label={t.englishBlock}>
+            <button
+              type="button"
+              data-testid="rte-english_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleEnglishBlock().run(),
+                  () => editor.isActive("englishBlock"),
+                  t.englishBlock,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("englishBlock") ? " is-active" : "")
+              }
+              title={t.englishBlock}
+              aria-pressed={editor.isActive("englishBlock")}
+            >
+              <span className="sr-only">
+                {editor.isActive("englishBlock")
+                  ? t.removePrefix
+                  : t.applyPrefix}
+                {t.englishBlock}
+              </span>
+              <Icon iconNode={englishBlockIcon} />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.frenchBlock}>
+            <button
+              type="button"
+              data-testid="rte-french_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleFrenchBlock().run(),
+                  () => editor.isActive("frenchBlock"),
+                  t.frenchBlock,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("frenchBlock") ? " is-active" : "")
+              }
+              title={t.frenchBlock}
+              aria-pressed={editor.isActive("frenchBlock")}
+            >
+              <span className="sr-only">
+                {editor.isActive("frenchBlock")
+                  ? t.removePrefix
+                  : t.applyPrefix}
+                {t.frenchBlock}
+              </span>
+              <Icon iconNode={frenchBlockIcon} />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.rtlBlock} shortcut={shortcuts.rtlBlock}>
+            <button
+              type="button"
+              data-testid="rte-rtl_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleRtlBlock().run(),
+                  () => editor.isActive("rtlBlock"),
+                  t.rtlBlock,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("rtlBlock") ? " is-active" : "")
+              }
+              title={t.rtlBlock}
+              aria-pressed={editor.isActive("rtlBlock")}
+            >
+              <span className="sr-only">
+                {editor.isActive("rtlBlock") ? t.removePrefix : t.applyPrefix}
+                {t.rtlBlock}
+              </span>
+              <Icon iconNode={rightToLeftIcon} />
+            </button>
+          </TooltipWrapper>
+        </div>
+
+        {/* Sixth group: Info button */}
+        <div
+          className="toolbar-group toolbar-switch-group"
+          data-mode={isMarkdownView ? "markdown" : "richtext"}
+        >
+          {!isMarkdownView && (
+            <TooltipWrapper label={t.info}>
+              <button
+                type="button"
+                data-testid="rte-info"
+                className={"toolbar-button" + (isInfoOpen ? " is-active" : "")}
+                title={t.info}
+                onClick={() => setIsInfoOpen(!isInfoOpen)}
+                aria-pressed={isInfoOpen}
+              >
+                <span className="sr-only">{t.info}</span>
+                <Icon iconNode={infoIcon(isInfoOpen)} />
+              </button>
+            </TooltipWrapper>
+          )}
+
+          {isMarkdownView && (
+            <p class="m-0 text-xs font-bold">
+              <span>{t.markdownEditorMessage}</span>
+            </p>
+          )}
+          {!isMarkdownView && (
+            <TooltipWrapper label={t.markdownButton}>
+              <button
+                type="button"
+                data-testid="rte-toggle-markdown"
+                onClick={toggleHandler}
+                className="toolbar-button toolbar-button-mode"
+                title={toggleButtonLabel}
+                aria-pressed={isMarkdownView}
+              >
+                <span className="sr-only">{toggleButtonLabel}</span>
+                <Icon iconNode={markdownIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
+          {isMarkdownView && (
+            <button
+              type="button"
+              data-testid="rte-toggle-markdown"
+              onClick={toggleHandler}
+              className="toolbar-button toolbar-button-mode toolbar-switch-group"
+              title={toggleButtonLabel}
+              aria-pressed={isMarkdownView}
+            >
+              <span className="sr-only">{toggleButtonLabel}</span>
+              <>{t.richTextButton}</>
+            </button>
+          )}
+        </div>
+      </AccessibleToolbar>
+      {isInfoOpen && (
+        <div className="info-pane">
+          <p>
+            {t.infoPane1} <br />
+            {t.infoPane2}{" "}
+            <Icon iconNode={variableIcon} aria-label="Variable icon" />{" "}
+            <p>{t.infoPane3}</p>
+            <ul className="list list-bullet ml-10">
+              <li>
+                {t.infoPane4}{" "}
+                <Icon
+                  iconNode={conditionalInlineIcon}
+                  aria-label="inline conditional icon"
+                />
+              </li>
+              <li>
+                {t.infoPane5}{" "}
+                <Icon
+                  iconNode={conditionalBlockIcon}
+                  aria-label="block conditional icon"
+                />
+              </li>
+            </ul>
+          </p>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default MenuBar;

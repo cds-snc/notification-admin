@@ -34,6 +34,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterSubscriptionForm,
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
@@ -50,7 +51,9 @@ from app.utils import (
 
 @main.route("/")
 def index():
-    if current_user and current_user.is_authenticated:
+    # If user is authenticated and they have not just signed up to the newsletter,
+    # redirect to their choose_account page
+    if current_user and current_user.is_authenticated and not request.args.get("subscribed"):
         return redirect(url_for("main.choose_account"))
 
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
@@ -419,7 +422,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -427,6 +430,9 @@ def _render_articles_page(response):
 
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
+
+    if newsletter_form is None:
+        newsletter_form = NewsletterSubscriptionForm()
 
     return render_template(
         "views/page-content.html",
@@ -437,6 +443,9 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
+        newsletter_form=newsletter_form,
+        newsletter_subscribed=request.args.get("subscribed") == "1",
+        newsletter_subscribed_email=request.args.get("email"),
     )
 
 

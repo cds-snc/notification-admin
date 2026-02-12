@@ -97,6 +97,32 @@ def test_logged_in_user_redirects_to_choose_account(
     )
 
 
+def test_logged_in_user_can_see_newsletter_confirmation(
+    mocker,
+    client,
+    api_user_active,
+    mock_get_user,
+    mock_calls_out_to_GCA,
+):
+    """Test that authenticated users can see the home page with newsletter confirmation"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+
+    client.login(api_user_active)
+
+    response = client.get(url_for("main.index", subscribed="1", email="user@cds-snc.ca"))
+
+    # Should render the home page, not redirect
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    # Verify it's the home page
+    assert page.select_one("#gc-title")
+
+
 def test_robots(client):
     assert url_for("main.robots") == "/robots.txt"
     response = client.get(url_for("main.robots"))
@@ -225,8 +251,8 @@ def test_terms_page_has_correct_content(client_request):
     "css_file_start",
     [
         "http://localhost:6012/static/stylesheets/index.css",
-        "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
-        "https://fonts.googleapis.com/css?",
+        "https://fonts.googleapis.com/css2?family=Lato:wght@700",
+        "https://fonts.googleapis.com/css2?",
     ],
 )
 def test_css_is_served_from_correct_path(client_request, css_file_start):

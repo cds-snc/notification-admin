@@ -1,18 +1,6 @@
 @layer components {
   /*! purgecss start ignore */
 
-  header a:hover,
-  .preview-banner a {
-    @apply underline !important;
-  }
-
-  header a:link,
-  header a:visited,
-  header a:link:focus,
-  header a:focus:visited {
-    @apply no-underline text-blue;
-  }
-
   a:focus #live-banner,
   a:hover #live-banner {
     @apply bg-blue text-white;
@@ -31,7 +19,7 @@
     padding-top: 14px;
     padding-bottom: 11px;
     max-width: 50%;
-    @apply text-smaller leading-tight font-bold px-0 inline-block;
+    @apply text-smaller leading-tight px-0 inline-block;
   }
 
   .navigation-service-switch {
@@ -132,7 +120,7 @@
   }
 
   .nav-menu-item {
-    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-bold no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue hover:border-gray-300;
+    @apply flex flex-shrink-0 items-center gap-2 text-small text-blue py-5 font-medium no-underline self-center border-b-4 border-transparent visited:text-blue link:text-blue hover:border-gray-300;
   }
   .nav-menu-item:focus {
     @apply border-b-4 bg-yellow border-black outline-none;
