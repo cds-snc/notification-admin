@@ -34,15 +34,16 @@ def mock_get_all_notification_counts_for_today():
 class TestNotificationCounts:
     def test_get_all_notification_counts_for_today_redis_has_data(self, app_, mock_redis):
         # Setup
-        mock_redis.get.side_effect = [5, 10]  # sms, email
-        wrapper = NotificationCounts()
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            mock_redis.get.side_effect = [5, 10]  # sms, email
+            wrapper = NotificationCounts()
 
-        # Execute
-        result = wrapper.get_all_notification_counts_for_today("service-123")
+            # Execute
+            result = wrapper.get_all_notification_counts_for_today("service-123")
 
-        # Assert
-        assert result == {"sms": 5, "email": 10}
-        assert mock_redis.get.call_count == 2
+            # Assert
+            assert result == {"sms": 5, "email": 10}
+            assert mock_redis.get.call_count == 2
 
     @pytest.mark.parametrize(
         "redis_side_effect, expected_result",
@@ -56,25 +57,26 @@ class TestNotificationCounts:
     def test_get_all_notification_counts_for_today_redis_missing_data(
         self, app_, mock_redis, mock_template_stats, redis_side_effect, expected_result
     ):
-        # Setup
-        mock_redis.get.side_effect = redis_side_effect
-        mock_template_stats.get_template_statistics_for_service.return_value = [
-            {"template_id": "a1", "template_type": "sms", "count": 3, "status": "delivered"},
-            {"template_id": "a2", "template_type": "email", "count": 7, "status": "temporary-failure"},
-            {"template_id": "a3", "template_type": "email", "count": 3, "status": "delivered"},
-            {"template_id": "a4", "template_type": "sms", "count": 7, "status": "delivered"},
-        ]
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            # Setup
+            mock_redis.get.side_effect = redis_side_effect
+            mock_template_stats.get_template_statistics_for_service.return_value = [
+                {"template_id": "a1", "template_type": "sms", "count": 3, "status": "delivered"},
+                {"template_id": "a2", "template_type": "email", "count": 7, "status": "temporary-failure"},
+                {"template_id": "a3", "template_type": "email", "count": 3, "status": "delivered"},
+                {"template_id": "a4", "template_type": "sms", "count": 7, "status": "delivered"},
+            ]
 
-        wrapper = NotificationCounts()
+            wrapper = NotificationCounts()
 
-        # Execute
-        result = wrapper.get_all_notification_counts_for_today("service-123")
+            # Execute
+            result = wrapper.get_all_notification_counts_for_today("service-123")
 
-        # Assert
-        assert result == expected_result
+            # Assert
+            assert result == expected_result
 
-        if None in redis_side_effect:
-            mock_template_stats.get_template_statistics_for_service.assert_called_once()
+            if None in redis_side_effect:
+                mock_template_stats.get_template_statistics_for_service.assert_called_once()
 
     def test_get_all_notification_counts_for_year(self, mock_service_api):
         # Setup
