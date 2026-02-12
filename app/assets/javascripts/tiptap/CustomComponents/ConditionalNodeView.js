@@ -228,8 +228,7 @@ const ConditionalNodeView = ({
 
               try {
                 const { state, view } = editor;
-                const inputRect =
-                  event.currentTarget.getBoundingClientRect();
+                const inputRect = event.currentTarget.getBoundingClientRect();
                 const lineHeight =
                   parseFloat(getComputedStyle(view.dom).lineHeight) || 20;
 
