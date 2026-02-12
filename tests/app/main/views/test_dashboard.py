@@ -1051,7 +1051,6 @@ def test_aggregate_notifications_stats():
 
 
 def test_aggregate_template_stats_with_billable_units():
-    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
     stub_template_stats_with_billable_units = [
         {
             "template_type": "sms",
