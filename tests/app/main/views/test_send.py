@@ -3462,6 +3462,12 @@ class TestAnnualLimitsSend:
                 }
             }
 
+            # Mock get_all_notification_counts_for_today for billable units
+            mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+                "sms": 900,
+                "email": num_sent_today,
+            }
+
             # mock that we've already sent `emails_sent_today` emails today
             mock_daily_email_count.return_value = num_sent_today
             mock_daily_sms_count.return_value = 900  # not used in test but needs a value
@@ -3562,6 +3568,11 @@ class TestAnnualLimitsSend:
                         "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
                     },
                 }
+            }
+            # Mock get_all_notification_counts_for_today for billable units
+            mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+                "sms": num_sent_today,
+                "email": 900,
             }
             # mock that we've already sent `num_sent_today` emails today
             mock_daily_email_count.return_value = 900  # not used in test but needs a value
