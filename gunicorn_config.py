@@ -5,13 +5,18 @@ import traceback
 
 import gunicorn  # type: ignore
 
+# Check if OpenTelemetry is enabled via feature flag
+enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
 enable_newrelic = os.getenv("ENABLE_NEW_RELIC", "False").lower() == "true"
 
-if enable_newrelic:
+# Only use New Relic when OpenTelemetry is disabled
+if enable_newrelic and not enable_otel:
     import newrelic.agent  # See https://bit.ly/2xBVKBH
 
     environment = os.environ.get("NOTIFY_ENVIRONMENT")
     newrelic.agent.initialize(environment=environment)  # noqa: E402
+else:
+    environment = os.environ.get("NOTIFY_ENVIRONMENT")
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
