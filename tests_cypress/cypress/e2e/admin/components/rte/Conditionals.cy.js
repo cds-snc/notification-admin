@@ -445,4 +445,32 @@ describe("Conditional inline and block tests", () => {
         .should("exist");
     });
   });
+
+  context.only("Tab behavior in lists", () => {
+    it("Pressing Tab on a list item indents it instead of moving focus out of the editor", () => {
+      // Type a block conditional followed by a bullet list
+      RichTextEditor.Components.Editor().type(
+        "((condition??\ncontent\n)){enter}{enter}- item1{enter}item2{enter}item3",
+      );
+
+      // Verify the list exists with 3 items
+      RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
+
+      // Place the caret on the second list item by clicking on it
+      RichTextEditor.Components.Editor().find("ul li").eq(1).click();
+
+      // Press Tab to indent
+      cy.realPress("Tab");
+
+      // The second item should now be nested inside a sub-list (indented)
+      RichTextEditor.Components.Editor()
+        .find("ul ul li")
+        .should("have.length", 1)
+        .and("have.text", "item2");
+
+      cy.realPress(["Shift", "Tab"]);
+      // The second item should now be back to top-level list
+      RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
+    });
+  });
 });
