@@ -32,22 +32,22 @@
   }
 
   .placeholder-conditional {
-      @apply rounded-none;
-      border-top-left-radius: 20px;
-      border-bottom-left-radius: 20px;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-      box-shadow:
-        inset 0.47em 0 0 0 #fff,
-        inset -0.89em 0 0 0 #fff,
-        inset 0 -0.16em 0 0 #fff,
-        inset 0 0.16em 0 0 #fff;
-      display: inline-block;
-      padding-left: 18px;
-      padding-right: 23px;
-      margin-left: -18px;
+    @apply rounded-none;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow:
+      inset 0.47em 0 0 0 #fff,
+      inset -0.89em 0 0 0 #fff,
+      inset 0 -0.16em 0 0 #fff,
+      inset 0 0.16em 0 0 #fff;
+    display: inline-block;
+    padding-left: 18px;
+    padding-right: 23px;
+    margin-left: -18px;
   }
-  
+
   .sms-message-wrapper .placeholder-conditional {
     box-shadow:
       inset 0.47em 0 0 0 #dee0e2,
