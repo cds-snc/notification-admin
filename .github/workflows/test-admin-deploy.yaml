@@ -53,6 +53,7 @@ jobs:
         run: |
           docker build \
             --build-arg GIT_SHA=${{ github.sha }} \
+            --platform linux/amd64 \
             -t ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.PR_NUMBER }} \
             -f ci/Dockerfile.lambda .
           
