@@ -1724,7 +1724,7 @@ class TestGetAnnualData:
             (True, False),  # Redis enabled but not seeded today
         ],
     )
-    def test_get_annual_data_when_redis_not_available(
+    def test_get_annual_data_when_redis_not_available_REMOVE_FF(
         self, mocker, mock_service_id, mock_dashboard_totals_daily, redis_enabled, was_seeded_today, app_
     ):
         """Test getting annual data when Redis is not enabled or not seeded today"""
@@ -1749,17 +1749,18 @@ class TestGetAnnualData:
         mock_aggregate = mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
         mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
 
-        # Call function
-        result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            # Call function
+            result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
 
-        # Check API was called
-        mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
+            # Check API was called
+            mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
 
-        # Check aggregate function was called
-        mock_aggregate.assert_called_once_with(mock_annual_data, mock_dashboard_totals_daily)
+            # Check aggregate function was called
+            mock_aggregate.assert_called_once_with(mock_annual_data, mock_dashboard_totals_daily)
 
-        # Verify result
-        assert result == {"sms": 40, "email": 60}
+            # Verify result
+            assert result == {"sms": 40, "email": 60}
 
     def test_get_annual_data_from_redis(self, mocker, mock_service_id, mock_dashboard_totals_daily, app_):
         """Test getting annual data from Redis when enabled and seeded"""
