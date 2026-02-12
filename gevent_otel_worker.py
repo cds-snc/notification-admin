@@ -2,7 +2,7 @@
 
 import os
 
-from gunicorn.workers.ggevent import GeventWorker
+from gunicorn.workers.ggevent import GeventWorker  # type: ignore
 
 
 class OTelAwareGeventWorker(GeventWorker):
@@ -15,7 +15,7 @@ class OTelAwareGeventWorker(GeventWorker):
 
     def patch(self):
         """Patch gevent with awareness of OpenTelemetry instrumentation."""
-        from gevent import monkey
+        from gevent import monkey  # type: ignore
 
         # Check if OpenTelemetry is enabled via feature flag
         enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
