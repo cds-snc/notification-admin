@@ -419,6 +419,23 @@ const ConditionalNode = Node.create({
 
             if (event.key !== "Tab") return false;
 
+            // When the cursor is inside a list item, let tiptap's built-in
+            // ListItem keyboard shortcuts handle Tab (indent) and Shift+Tab
+            // (dedent) instead of our custom focus-cycling logic.
+            try {
+              const { $from } = view.state.selection;
+              const listItemType = view.state.schema.nodes?.listItem;
+              if (listItemType) {
+                for (let depth = $from.depth; depth > 0; depth--) {
+                  if ($from.node(depth).type === listItemType) {
+                    return false;
+                  }
+                }
+              }
+            } catch {
+              // ignore – fall through to normal Tab handling
+            }
+
             // Self-contained conditional Tab behavior:
             // - Cursor in conditional content + Tab: let browser move focus out of editor
             // - Cursor in conditional content + Shift+Tab: focus this conditional's input
