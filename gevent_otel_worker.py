@@ -22,7 +22,7 @@ class OTelAwareGeventWorker(GeventWorker):
 
         if enable_otel:
             # OpenTelemetry is active - avoid patching SSL which OTel already patched
-            monkey.patch_all(ssl=False, subprocess=False)
+            monkey.patch_all(ssl=False)
         else:
             # No OpenTelemetry - patch everything normally
             monkey.patch_all()
