@@ -10,11 +10,16 @@ enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
 enable_newrelic = os.getenv("ENABLE_NEW_RELIC", "False").lower() == "true"
 environment = os.environ.get("NOTIFY_ENVIRONMENT")
 
+print(f"[GUNICORN CONFIG] FF_ENABLE_OTEL={os.getenv('FF_ENABLE_OTEL')}, enable_otel={enable_otel}")  # noqa: T201
+print(f"[GUNICORN CONFIG] ENABLE_NEW_RELIC={os.getenv('ENABLE_NEW_RELIC')}, enable_newrelic={enable_newrelic}")  # noqa: T201
+print(f"[GUNICORN CONFIG] Will load New Relic: {enable_newrelic and not enable_otel}")  # noqa: T201
+
 # Only use New Relic when OpenTelemetry is disabled
 if enable_newrelic and not enable_otel:
     import newrelic.agent  # See https://bit.ly/2xBVKBH
 
     newrelic.agent.initialize(environment=environment)  # noqa: E402
+    print("[GUNICORN CONFIG] New Relic initialized")  # noqa: T201
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
