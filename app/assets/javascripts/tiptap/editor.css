@@ -464,7 +464,7 @@ span[data-type="conditional-inline"] .conditional-inline-content {
 }
 
 .conditional-inline-condition-input {
-  @apply inline-block
+  @apply inline-block;
 }
 
 .conditional-inline-condition-input,
