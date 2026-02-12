@@ -356,6 +356,94 @@ const ConditionalInlineNode = Node.create({
               // ignore
             }
           }
+
+          // Prevent the browser from collapsing / blurring the
+          // contentEditable span when the last character is deleted.
+          if (event.key === "Backspace" || event.key === "Delete") {
+            const text = input.textContent || "";
+            const sel = window.getSelection();
+
+            let wouldEmpty = false;
+            if (sel && sel.rangeCount > 0) {
+              const range = sel.getRangeAt(0);
+              if (!range.collapsed) {
+                // Selection covers all remaining text
+                wouldEmpty = sel.toString().length >= text.length;
+              } else {
+                wouldEmpty = text.length <= 1;
+              }
+            } else {
+              wouldEmpty = text.length <= 1;
+            }
+
+            if (wouldEmpty) {
+              event.preventDefault();
+              input.textContent = "";
+              commit();
+              // Restore caret inside the now-empty span
+              try {
+                const r = document.createRange();
+                r.selectNodeContents(input);
+                r.collapse(true);
+                const s = window.getSelection();
+                s.removeAllRanges();
+                s.addRange(r);
+              } catch {
+                // ignore
+              }
+            }
+            return;
+          }
+
+          // ArrowUp / ArrowDown: move the editor cursor to the
+          // previous / next line instead of jumping to the
+          // start / end of the input text.
+          if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+            commit();
+
+            try {
+              const pos = typeof getPos === "function" ? getPos() : null;
+              if (typeof pos !== "number") return;
+
+              const inputRect = input.getBoundingClientRect();
+              const lineHeight =
+                parseFloat(getComputedStyle(view.dom).lineHeight) || 20;
+
+              const targetY =
+                event.key === "ArrowUp"
+                  ? inputRect.top - lineHeight
+                  : inputRect.bottom + lineHeight;
+
+              const result = view.posAtCoords({
+                left: inputRect.left,
+                top: targetY,
+              });
+
+              if (result) {
+                const nodeAtPos = view.state.doc.nodeAt(pos);
+                const nodeEnd = nodeAtPos
+                  ? pos + nodeAtPos.nodeSize
+                  : pos + 1;
+
+                const isValid =
+                  event.key === "ArrowUp"
+                    ? result.pos < pos
+                    : result.pos >= nodeEnd;
+
+                if (isValid) {
+                  const tr = view.state.tr.setSelection(
+                    TextSelection.near(view.state.doc.resolve(result.pos)),
+                  );
+                  view.dispatch(tr);
+                  view.focus();
+                }
+              }
+            } catch {
+              // ignore
+            }
+            return;
+          }
         },
         { capture: true },
       );
@@ -380,6 +468,14 @@ const ConditionalInlineNode = Node.create({
         contentDOM,
         stopEvent: (event) => {
           return input.contains(event.target);
+        },
+        // Tell ProseMirror to ignore DOM mutations that happen inside the
+        // condition-input widget (the contentEditable span).  Without this,
+        // ProseMirror's mutation observer sees the text change and tries to
+        // reconcile the DOM, which steals focus / destroys the caret.
+        ignoreMutation: (mutation) => {
+          if (widget.contains(mutation.target)) return true;
+          return false;
         },
         update: (nextNode) => {
           if (nextNode.type !== node.type) return false;
