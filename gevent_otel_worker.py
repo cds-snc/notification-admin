@@ -1,8 +1,10 @@
 """Custom gevent worker that plays nicely with OpenTelemetry auto-instrumentation."""
 
-import os
-
+from environs import Env
 from gunicorn.workers.ggevent import GeventWorker  # type: ignore
+
+env = Env()
+env.read_env()
 
 
 class OTelAwareGeventWorker(GeventWorker):
