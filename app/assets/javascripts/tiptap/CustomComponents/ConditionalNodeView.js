@@ -216,6 +216,52 @@ const ConditionalNodeView = ({
               }
             }
 
+            // ArrowUp / ArrowDown: move the editor cursor to the
+            // previous / next line instead of jumping to the
+            // start / end of the input text.
+            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+              event.preventDefault();
+              commitIfChanged();
+
+              const pos = getPos();
+              if (typeof pos !== "number") return;
+
+              try {
+                const { state, view } = editor;
+                const inputRect = event.currentTarget.getBoundingClientRect();
+                const lineHeight =
+                  parseFloat(getComputedStyle(view.dom).lineHeight) || 20;
+
+                const targetY =
+                  event.key === "ArrowUp"
+                    ? inputRect.top - lineHeight
+                    : inputRect.bottom + lineHeight;
+
+                const result = view.posAtCoords({
+                  left: inputRect.left,
+                  top: targetY,
+                });
+
+                if (result) {
+                  const isValid =
+                    event.key === "ArrowUp"
+                      ? result.pos < pos
+                      : result.pos > pos;
+
+                  if (isValid) {
+                    const tr = state.tr.setSelection(
+                      TextSelection.near(state.doc.resolve(result.pos)),
+                    );
+                    view.dispatch(tr);
+                    editor.commands.focus();
+                  }
+                }
+              } catch {
+                // ignore
+              }
+              return;
+            }
+
             // Tab should move focus into the conditional content.
             // Leave Shift+Tab to the browser so users can navigate backwards out of the input.
             if (event.key === "Tab" && !event.shiftKey) {
