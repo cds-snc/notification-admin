@@ -1,4 +1,4 @@
-{% macro remaining_messages(header, total, used, for, muted=false) %}
+{% macro remaining_messages(header, total, used, for, muted=false, use_billable_units=false) %}
   {% set near_limit = ((used/total) >= 0.8 and used/total < 1) %}
   {% set at_limit = (used/total >= 1) %}
   {% set id_from_header = header.lower().replace(' ', '_') %}
