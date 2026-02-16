@@ -313,7 +313,7 @@ const ConditionalNode = Node.create({
           const mappedBetweenTo = tr.mapping.map(betweenTo, -1);
 
           // Extract the block content between markers.
-          const slice = tr.doc.slice(mappedBetweenFrom, mappedBetweenTo);
+          const slice = tr.docewwwww.slice(mappedBetweenFrom, mappedBetweenTo);
 
           // Prevent nesting: if the wrapped content contains conditionals, do nothing.
           let containsConditional = false;

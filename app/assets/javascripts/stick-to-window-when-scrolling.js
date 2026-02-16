@@ -78,6 +78,33 @@
     // if textarea is focused, we care about checking the caret, not the whole element
     if (nodeName === "textarea") {
       focused = this.getFocusedDetails.forCaret(e);
+    } else if ($focusedElement.attr("contenteditable") === "true") {
+      // For contenteditable elements (e.g. tiptap editor), use the
+      // caret/selection position rather than the full element bounds.
+      // Using the full element height would cause a page jump when the
+      // editor content is taller than the viewport.
+      var sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        var range = sel.getRangeAt(0);
+        var rect = range.getBoundingClientRect();
+        // A collapsed selection at the very start may report zero-size;
+        // fall back to the element's top with a minimal height.
+        if (rect.height === 0 && rect.top === 0) {
+          var elRect = $focusedElement.get(0).getBoundingClientRect();
+          focused = {
+            top: elRect.top + $(window).scrollTop(),
+            height: 20,
+          };
+        } else {
+          focused = {
+            top: rect.top + $(window).scrollTop(),
+            height: rect.height || 20,
+          };
+        }
+        focused.bottom = focused.top + focused.height;
+      } else {
+        return; // no selection — nothing to adjust for
+      }
     } else {
       if (isInSticky()) {
         return;
@@ -946,7 +973,7 @@
     }
     return header.offset().top + header.outerHeight() + this.STOP_PADDING;
   };
-  // position of the bottom edge when in the page flow
+// position of the bottom edge when in the page flow
   stickAtBottom.getInPageEdgePosition = function ($el) {
     return $el.offset().top + $el.outerHeight();
   };
