@@ -25,7 +25,8 @@ if enable_newrelic and not enable_otel:
 gunicorn.SERVER = "Undisclosed"
 
 workers = 5
-worker_class = "gevent"
+# Use custom worker that detects OpenTelemetry to avoid monkey-patching conflicts
+worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 
