@@ -734,7 +734,7 @@ const SimpleEditor = ({
 
     // Track the mode switch in Google Analytics
     if (typeof gtag === "function") {
-      gtag("event", "editor_mode_toggle", { 
+      gtag("event", "editor_mode_toggle", {
         event_category: "Template Editor",
         event_label: isMarkdownView ? "markdown_to_rte" : "rte_to_markdown",
       });
@@ -827,7 +827,10 @@ const SimpleEditor = ({
             value={markdownValue}
             onChange={(event) => {
               setMarkdownValue(event.target.value);
-              if (!hasTrackedEditRef.current.markdown && typeof gtag === "function") {
+              if (
+                !hasTrackedEditRef.current.markdown &&
+                typeof gtag === "function"
+              ) {
                 hasTrackedEditRef.current.markdown = true;
                 gtag("event", "editor_content_changed", {
                   event_category: "Template Editor",
