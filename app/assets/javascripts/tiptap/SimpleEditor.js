@@ -635,20 +635,29 @@ const SimpleEditor = ({
 
         out += txt.slice(lastIndex, start);
 
-        // Ensure a blank line before
-        if (out.length === 0) {
-          // at start, nothing to do
-        } else if (!/\n\s*\n$/.test(out)) {
-          if (out.endsWith("\n")) out += "\n";
-          else out += "\n\n";
+        // Check if this conditional is multi-line (block conditional).
+        // Only add blank lines around block conditionals, not inline ones.
+        const isMultiline = match.includes("\n");
+
+        if (isMultiline) {
+          // Ensure a blank line before
+          if (out.length === 0) {
+            // at start, nothing to do
+          } else if (!/\n\s*\n$/.test(out)) {
+            if (out.endsWith("\n")) out += "\n";
+            else out += "\n\n";
+          }
+
+          out += match;
+
+          // Ensure a blank line after (lookahead from original text)
+          const after = txt.slice(end);
+          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+          if (!hasBlankAfter) out += "\n\n";
+        } else {
+          // Single-line inline conditional - don't force blank lines
+          out += match;
         }
-
-        out += match;
-
-        // Ensure a blank line after (lookahead from original text)
-        const after = txt.slice(end);
-        const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
-        if (!hasBlankAfter) out += "\n\n";
 
         lastIndex = end;
       }
