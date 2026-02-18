@@ -3462,6 +3462,12 @@ class TestAnnualLimitsSend:
                 }
             }
 
+            # Mock get_all_notification_counts_for_today for billable units
+            mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+                "sms": 900,
+                "email": num_sent_today,
+            }
+
             # mock that we've already sent `emails_sent_today` emails today
             mock_daily_email_count.return_value = num_sent_today
             mock_daily_sms_count.return_value = 900  # not used in test but needs a value
@@ -3562,6 +3568,11 @@ class TestAnnualLimitsSend:
                         "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
                     },
                 }
+            }
+            # Mock get_all_notification_counts_for_today for billable units
+            mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+                "sms": num_sent_today,
+                "email": 900,
             }
             # mock that we've already sent `num_sent_today` emails today
             mock_daily_email_count.return_value = 900  # not used in test but needs a value
@@ -3825,3 +3836,34 @@ def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff
         assert "from_send_page" not in session
         assert "send_page_service_id" not in session
         assert "send_page_template_id" not in session
+
+
+class TestBillableUnitsInSendViews:
+    """Tests for billable units functionality in send views when FF_USE_BILLABLE_UNITS is enabled"""
+
+    def test_daily_sms_billable_units_count_returns_count_when_ff_enabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns billable units from notification_counts_client when FF is enabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+                mock_notification_counts.get_all_notification_counts_for_today.return_value = {"sms": 150, "email": 100}
+
+                result = daily_sms_billable_units_count("service-123")
+
+                assert result == 150
+                mock_notification_counts.get_all_notification_counts_for_today.assert_called_once_with("service-123")
+
+    def test_daily_sms_billable_units_count_returns_zero_when_ff_disabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns 0 when FF is disabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+
+                result = daily_sms_billable_units_count("service-123")
+
+                assert result == 0
+                mock_notification_counts.get_all_notification_counts_for_today.assert_not_called()
