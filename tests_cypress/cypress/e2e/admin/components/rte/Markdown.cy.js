@@ -84,9 +84,7 @@ describe("Markdown entering and pasting tests", () => {
 
   it("Renders initial markdown samples correctly after converting to markdown", () => {
     // Visit the Storybook page for the text editor
-    cy.visit(
-      "http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown",
-    );
+    cy.visit("/_storybook?component=text-editor-tiptap-complex-markdown");
 
     // Ensure the editor is loaded
     RichTextEditor.Components.Editor().should("exist");
