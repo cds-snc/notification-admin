@@ -6,6 +6,7 @@ from notifications_utils.clients.redis import (
 )
 
 from app import redis_client, service_api_client, template_statistics_client
+from app.extensions import annual_limit_client
 from app.models.service import Service
 from app.utils import get_current_financial_year
 
@@ -28,8 +29,9 @@ class NotificationCounts:
             return {"sms": todays_sms, "email": todays_email}
         # fallback to the API if the stats are not in redis
         else:
+            use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
             stats = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-            transformed_stats = _aggregate_notifications_stats(stats)
+            transformed_stats = _aggregate_notifications_stats(stats, use_billable_units=use_billable_units)
 
             return transformed_stats
 
@@ -90,16 +92,27 @@ class NotificationCounts:
         """
 
         current_financial_year = get_current_financial_year()
+        use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
         sent_today = self.get_all_notification_counts_for_today(service.id)
-        # We are interested in getting data for the financial year, not the calendar year
-        sent_thisyear = self.get_all_notification_counts_for_year(service.id, current_financial_year)
+
+        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+        if use_billable_units:
+            # Use Redis annual_limit_client for annual stats (same data source as dashboard)
+            annual_data_redis = annual_limit_client.get_all_notification_counts(service.id)
+            sms_annual_sent = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0) + sent_today["sms"]
+            email_annual_sent = annual_data_redis.get("total_email_fiscal_year_to_yesterday", 0) + sent_today["email"]
+        else:
+            # We are interested in getting data for the financial year, not the calendar year
+            sent_thisyear = self.get_all_notification_counts_for_year(service.id, current_financial_year)
+            sms_annual_sent = sent_thisyear["sms"]
+            email_annual_sent = sent_thisyear["email"]
 
         limit_stats = {
             "email": {
                 "annual": {
                     "limit": service.email_annual_limit,
-                    "sent": sent_thisyear["email"],
-                    "remaining": service.email_annual_limit - sent_thisyear["email"],
+                    "sent": email_annual_sent,
+                    "remaining": service.email_annual_limit - email_annual_sent,
                 },
                 "daily": {
                     "limit": service.message_limit,
@@ -110,8 +123,8 @@ class NotificationCounts:
             "sms": {
                 "annual": {
                     "limit": service.sms_annual_limit,
-                    "sent": sent_thisyear["sms"],
-                    "remaining": service.sms_annual_limit - sent_thisyear["sms"],
+                    "sent": sms_annual_sent,
+                    "remaining": service.sms_annual_limit - sms_annual_sent,
                 },
                 "daily": {
                     "limit": service.sms_daily_limit,
@@ -125,13 +138,17 @@ class NotificationCounts:
 
 
 # TODO: consolidate this function and other functions that transform the results of template_statistics_client calls
-def _aggregate_notifications_stats(template_statistics):
+def _aggregate_notifications_stats(template_statistics, use_billable_units=False):
     template_statistics = _filter_out_cancelled_stats(template_statistics)
-    # Always use 'count' for display purposes (number of messages sent)
-    # The API now returns both 'count' and 'billable_units' fields
+    # The API returns both 'count' and 'billable_units' fields.
+    # Use 'billable_units' when tracking against limits (FF_USE_BILLABLE_UNITS), otherwise use 'count'.
+    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
+        count_field = "billable_units"
+    else:
+        count_field = "count"
     notifications = {"sms": 0, "email": 0}
     for stat in template_statistics:
-        notifications[stat["template_type"]] += stat["count"]
+        notifications[stat["template_type"]] += stat[count_field]
 
     return notifications
 
