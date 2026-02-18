@@ -48,6 +48,7 @@ from app.utils import (
     parse_filter_args,
     printing_today_or_tomorrow,
     set_status_filters,
+    unicode_truncate,
     user_has_permissions,
 )
 
@@ -542,12 +543,15 @@ def add_preview_of_content_to_notifications(notifications):
 
         if notification["template"]["template_type"] == "sms":
             yield dict(
-                preview_of_content=str(
-                    Template(
-                        notification["template"],
-                        notification["personalisation"],
-                        redact_missing_personalisation=True,
-                    )
+                preview_of_content=unicode_truncate(
+                    str(
+                        Template(
+                            notification["template"],
+                            notification["personalisation"],
+                            redact_missing_personalisation=True,
+                        )
+                    ),
+                    200,
                 ),
                 **notification,
             )
@@ -555,12 +559,13 @@ def add_preview_of_content_to_notifications(notifications):
             if notification["template"]["is_precompiled_letter"]:
                 notification["template"]["subject"] = "Provided as PDF"
             yield dict(
-                preview_of_content=(
+                preview_of_content=unicode_truncate(
                     WithSubjectTemplate(
                         notification["template"],
                         notification["personalisation"],
                         redact_missing_personalisation=True,
-                    ).subject
+                    ).subject,
+                    200,
                 ),
                 **notification,
             )
