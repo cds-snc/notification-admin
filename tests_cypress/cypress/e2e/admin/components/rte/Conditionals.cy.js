@@ -475,19 +475,19 @@ describe("Conditional inline and block tests", () => {
   });
 
   it("Adjacent inline conditionals round-trip to markdown without added line breaks (regression)", () => {
-      const adjacent = "((a??x)) ((b??y))";
+    const adjacent = "((a??x)) ((b??y))";
 
-      RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.ViewMarkdownButton().click();
 
-      // Enter adjacent inline conditionals in the editor
-      RichTextEditor.Components.MarkdownEditor().clear().type(adjacent);
-      RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
+    // Enter adjacent inline conditionals in the editor
+    RichTextEditor.Components.MarkdownEditor().clear().type(adjacent);
+    RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
 
-      // Switch to visual editor and back
-      RichTextEditor.Components.ViewMarkdownButton().click();
-      RichTextEditor.Components.ViewMarkdownButton().click();
-      
-      // Confirm markdown still contains the exact adjacent conditionals string
-      RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
-    });
+    // Switch to visual editor and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Confirm markdown still contains the exact adjacent conditionals string
+    RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
+  });
 });
