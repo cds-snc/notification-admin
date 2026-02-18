@@ -594,7 +594,8 @@ const SimpleEditor = ({
         hasTrackedEditRef.current.rte = true;
         gtag("event", "editor_content_changed", {
           event_category: "Template Editor",
-          event_label: "rte",
+          event_label: "Content change in RTE mode",
+          editor_mode: "rte",
         });
       }
     };
@@ -738,7 +739,8 @@ const SimpleEditor = ({
     if (typeof gtag === "function") {
       gtag("event", "editor_mode_toggle", {
         event_category: "Template Editor",
-        event_label: isMarkdownView ? "markdown_to_rte" : "rte_to_markdown",
+        event_label: "Editor Mode Toggle",
+        editor_mode: isMarkdownView ? "markdown_to_rte" : "rte_to_markdown",
       });
     }
 
@@ -838,7 +840,8 @@ const SimpleEditor = ({
                 hasTrackedEditRef.current.markdown = true;
                 gtag("event", "editor_content_changed", {
                   event_category: "Template Editor",
-                  event_label: "markdown",
+                  event_label: "Content change in markdown mode",
+                  editor_mode: "markdown",
                 });
               }
             }}
