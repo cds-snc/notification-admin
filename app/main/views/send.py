@@ -81,6 +81,14 @@ def daily_sms_count(service_id):
     return int(redis_client.get(sms_daily_count_cache_key(service_id)) or "0")
 
 
+def daily_sms_billable_units_count(service_id):
+    """Get the number of SMS billable units (fragments) sent today for a service."""
+    if current_app.config.get("FF_USE_BILLABLE_UNITS", False):
+        todays_counts = notification_counts_client.get_all_notification_counts_for_today(service_id)
+        return todays_counts["sms"]
+    return 0
+
+
 def daily_email_count(service_id):
     return int(redis_client.get(email_daily_count_cache_key(service_id)) or "0")
 
@@ -802,12 +810,21 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     current_lang = get_current_locale(current_app)
     data = _check_messages(service_id, template_id, upload_id, row_index, user_language=current_lang)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    data["stats_daily"] = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     data["time_to_reset"] = get_limit_reset_time_et()
 
     data["original_file_name"] = SanitiseASCII.encode(data.get("original_file_name", ""))
     data["sms_parts_requested"] = data["stats_daily"]["sms"]["requested"]
     data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
+
+    # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+    if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+        data["billable_units_requested"] = data["stats_daily"]["sms"]["requested"]
+        data["billable_units_remaining"] = current_service.sms_daily_limit - daily_sms_billable_units_count(service_id)
+        data["use_billable_units"] = True
+    else:
+        data["use_billable_units"] = False
 
     if current_app.config["FF_ANNUAL_LIMIT"]:
         data["send_exceeds_annual_limit"] = False
@@ -822,10 +839,18 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         else:
             # if they arent over their limit, and its sms, check if they are over their daily limit
             if data["template"].template_type == "sms":
-                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
+                # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+                if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+                    data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
+                else:
+                    data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     else:
-        data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
+        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+        if current_app.config.get("FF_USE_BILLABLE_UNITS") and data["template"].template_type == "sms":
+            data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
+        else:
+            data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
@@ -1069,7 +1094,8 @@ def check_notification(service_id, template_id):
 def _check_notification(service_id, template_id, exception=None):
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     email_reply_to = None
     sms_sender = None
     if db_template["template_type"] == "email":
@@ -1114,6 +1140,20 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_requested"] = stats_daily["sms"]["requested"]
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
+
+        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+            sms_parts_data["billable_units_to_send"] = template.fragment_count
+            sms_parts_data["billable_units_requested"] = stats_daily["sms"]["requested"]
+            sms_parts_data["billable_units_remaining"] = current_service.sms_daily_limit - daily_sms_billable_units_count(
+                service_id
+            )
+            sms_parts_data["send_exceeds_daily_limit"] = (
+                sms_parts_data["billable_units_to_send"] > sms_parts_data["billable_units_remaining"]
+            )
+            sms_parts_data["use_billable_units"] = True
+        else:
+            sms_parts_data["use_billable_units"] = False
 
     return dict(
         template=template,

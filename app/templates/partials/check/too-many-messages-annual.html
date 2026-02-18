@@ -3,7 +3,11 @@
 {% if template.template_type == 'email' %}
   {% set units = _('email messages') %}
 {% else %}
-  {% set units = _('text messages') %}
+  {% if use_billable_units %}
+    {% set units = _('billable units') %}
+  {% else %}
+    {% set units = _('text messages') %}
+  {% endif %}
 {% endif %}
 
 <div data-testid="exceeds-annual">

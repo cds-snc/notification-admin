@@ -1,4 +1,4 @@
-{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None) %}
+{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None, use_billable_units=False) %}
   <!-- Validate textOnly param -->
   {% set textOnly_allowed_values = ['text', 'emoji'] %}
   {% if textOnly not in textOnly_allowed_values %}
@@ -17,7 +17,11 @@
       {% endif %}
   {% else %}
     {% if notification_type == 'sms' %}
-      {% set notification_type = _('text messages') %}
+      {% if use_billable_units %}
+        {% set notification_type = _('billable units') %}
+      {% else %}
+        {% set notification_type = _('text messages') %}
+      {% endif %}
     {% elif notification_type == 'email' %}
       {% set notification_type = _('emails') %}
     {% endif %}

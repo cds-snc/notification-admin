@@ -4,6 +4,7 @@ import pytest
 
 from app.notify_client.notification_counts_client import NotificationCounts
 from app.utils import get_current_financial_year
+from tests.conftest import set_config
 
 
 @pytest.fixture
@@ -31,17 +32,18 @@ def mock_get_all_notification_counts_for_today():
 
 
 class TestNotificationCounts:
-    def test_get_all_notification_counts_for_today_redis_has_data(self, mock_redis):
+    def test_get_all_notification_counts_for_today_redis_has_data(self, app_, mock_redis):
         # Setup
-        mock_redis.get.side_effect = [5, 10]  # sms, email
-        wrapper = NotificationCounts()
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            mock_redis.get.side_effect = [5, 10]  # sms, email
+            wrapper = NotificationCounts()
 
-        # Execute
-        result = wrapper.get_all_notification_counts_for_today("service-123")
+            # Execute
+            result = wrapper.get_all_notification_counts_for_today("service-123")
 
-        # Assert
-        assert result == {"sms": 5, "email": 10}
-        assert mock_redis.get.call_count == 2
+            # Assert
+            assert result == {"sms": 5, "email": 10}
+            assert mock_redis.get.call_count == 2
 
     @pytest.mark.parametrize(
         "redis_side_effect, expected_result",
@@ -53,27 +55,28 @@ class TestNotificationCounts:
         ],
     )
     def test_get_all_notification_counts_for_today_redis_missing_data(
-        self, mock_redis, mock_template_stats, redis_side_effect, expected_result
+        self, app_, mock_redis, mock_template_stats, redis_side_effect, expected_result
     ):
-        # Setup
-        mock_redis.get.side_effect = redis_side_effect
-        mock_template_stats.get_template_statistics_for_service.return_value = [
-            {"template_id": "a1", "template_type": "sms", "count": 3, "status": "delivered"},
-            {"template_id": "a2", "template_type": "email", "count": 7, "status": "temporary-failure"},
-            {"template_id": "a3", "template_type": "email", "count": 3, "status": "delivered"},
-            {"template_id": "a4", "template_type": "sms", "count": 7, "status": "delivered"},
-        ]
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            # Setup
+            mock_redis.get.side_effect = redis_side_effect
+            mock_template_stats.get_template_statistics_for_service.return_value = [
+                {"template_id": "a1", "template_type": "sms", "count": 3, "status": "delivered"},
+                {"template_id": "a2", "template_type": "email", "count": 7, "status": "temporary-failure"},
+                {"template_id": "a3", "template_type": "email", "count": 3, "status": "delivered"},
+                {"template_id": "a4", "template_type": "sms", "count": 7, "status": "delivered"},
+            ]
 
-        wrapper = NotificationCounts()
+            wrapper = NotificationCounts()
 
-        # Execute
-        result = wrapper.get_all_notification_counts_for_today("service-123")
+            # Execute
+            result = wrapper.get_all_notification_counts_for_today("service-123")
 
-        # Assert
-        assert result == expected_result
+            # Assert
+            assert result == expected_result
 
-        if None in redis_side_effect:
-            mock_template_stats.get_template_statistics_for_service.assert_called_once()
+            if None in redis_side_effect:
+                mock_template_stats.get_template_statistics_for_service.assert_called_once()
 
     def test_get_all_notification_counts_for_year(self, mock_service_api):
         # Setup
@@ -203,3 +206,56 @@ class TestNotificationCounts:
             mock_service.id,
             get_current_financial_year(),
         )
+
+
+class TestNotificationCountsWithBillableUnits:
+    """Tests for NotificationCounts with FF_USE_BILLABLE_UNITS feature flag"""
+
+    def test_get_all_notification_counts_for_today_uses_billable_units_when_ff_enabled(self, app_, mocker):
+        """Test that billable units are retrieved from Redis billable units cache key when FF is enabled"""
+        with app_.app_context():
+            # Mock the feature flag and config
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                # Mock redis_client to return billable units for SMS and standard count for email
+                mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+                mock_redis.get.side_effect = ["150", "100"]  # billable_units_sms_daily_count, email_daily_count
+
+                wrapper = NotificationCounts()
+                result = wrapper.get_all_notification_counts_for_today("service-123")
+
+                # Verify billable units were retrieved for SMS from the billable units cache key
+                assert mock_redis.get.call_count == 2
+                assert result["sms"] == 150  # Uses billable units, not standard count
+                assert result["email"] == 100  # Email still uses standard count
+
+    def test_get_all_notification_counts_for_today_uses_standard_count_when_ff_disabled(self, app_, mocker):
+        """Test that standard SMS counts are used when FF is disabled"""
+        with app_.app_context():
+            # Mock the feature flag as disabled
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                # Mock redis_client
+                mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+                mock_redis.get.side_effect = ["50", "75"]  # SMS, Email
+
+                wrapper = NotificationCounts()
+                result = wrapper.get_all_notification_counts_for_today("service-123")
+
+                # Verify standard counts were used
+                assert result["sms"] == 50  # Uses standard count from Redis
+                assert result["email"] == 75
+
+    def test_get_all_notification_counts_billable_units_different_from_message_count(self, app_, mocker):
+        """Test scenario where billable units differ significantly from message counts (multi-part SMS)"""
+        with app_.app_context():
+            # Mock the feature flag enabled
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                # Mock redis_client - billable units are 3x message count (long SMS messages)
+                mock_redis = mocker.patch("app.notify_client.notification_counts_client.redis_client")
+                mock_redis.get.side_effect = ["300", "50"]  # billable_units_sms_daily_count (300), email_daily_count (50)
+
+                wrapper = NotificationCounts()
+                result = wrapper.get_all_notification_counts_for_today("service-123")
+
+                # Verify billable units (300) are used instead of standard count (100)
+                assert result["sms"] == 300  # Uses billable units (3 fragments per message)
+                assert result["email"] == 50  # Email unchanged
