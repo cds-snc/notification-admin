@@ -50,15 +50,17 @@ const VariableMark = Mark.create({
             // Check if there's a variable-marked node immediately before this position
             let hasVariableBefore = false;
             let nodeBefore = null;
-            
+
             try {
               if (start > 1) {
                 const $start = tr.doc.resolve(start);
                 nodeBefore = $start.nodeBefore;
-                
+
                 if (nodeBefore) {
                   const marks = nodeBefore.marks || [];
-                  hasVariableBefore = marks.some((m) => m.type.name === "variable");
+                  hasVariableBefore = marks.some(
+                    (m) => m.type.name === "variable",
+                  );
                 }
               }
             } catch (e) {
