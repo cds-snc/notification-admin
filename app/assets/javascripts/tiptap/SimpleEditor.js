@@ -50,6 +50,7 @@ const SimpleEditor = ({
   const [justOpenedLink, setJustOpenedLink] = useState(false);
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
+  const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -585,10 +586,26 @@ const SimpleEditor = ({
       }
     };
 
+    // Track that the user edited content (fire once per mode per page load)
+    const trackContentChange = () => {
+      if (!hasTrackedEditRef.current.rte && typeof gtag === "function") {
+        hasTrackedEditRef.current.rte = true;
+        gtag("event", "editor_content_changed", {
+          event_category: "Template Editor",
+          event_label: "Content change in RTE mode",
+          editor_mode: "rte",
+        });
+      }
+    };
+
     editor.on("update", updateHiddenInput);
+    editor.on("update", trackContentChange);
     updateHiddenInput();
 
-    return () => editor.off("update", updateHiddenInput);
+    return () => {
+      editor.off("update", updateHiddenInput);
+      editor.off("update", trackContentChange);
+    };
   }, [editor, updateHiddenInputValue]);
 
   React.useEffect(() => {
@@ -725,6 +742,15 @@ const SimpleEditor = ({
   const toggleViewMode = () => {
     if (!editor) return;
 
+    // Track the mode switch in Google Analytics
+    if (typeof gtag === "function") {
+      gtag("event", "editor_mode_toggle", {
+        event_category: "Template Editor",
+        event_label: "Editor Mode Toggle",
+        editor_mode: isMarkdownView ? "markdown_to_rte" : "rte_to_markdown",
+      });
+    }
+
     if (isMarkdownView) {
       // Switching back from markdown to rich text
       const processedMarkdown = markdownValue || "";
@@ -810,7 +836,20 @@ const SimpleEditor = ({
         {isMarkdownView ? (
           <textarea
             value={markdownValue}
-            onChange={(event) => setMarkdownValue(event.target.value)}
+            onChange={(event) => {
+              setMarkdownValue(event.target.value);
+              if (
+                !hasTrackedEditRef.current.markdown &&
+                typeof gtag === "function"
+              ) {
+                hasTrackedEditRef.current.markdown = true;
+                gtag("event", "editor_content_changed", {
+                  event_category: "Template Editor",
+                  event_label: "Content change in markdown mode",
+                  editor_mode: "markdown",
+                });
+              }
+            }}
             onKeyDown={onMarkdownKeyDown}
             className="markdown-view"
             aria-label={viewLabel.markdown}
