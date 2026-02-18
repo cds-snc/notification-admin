@@ -446,7 +446,7 @@ describe("Conditional inline and block tests", () => {
     });
   });
 
-  context.only("Tab behavior in lists", () => {
+  context("Tab behavior in lists", () => {
     it("Pressing Tab on a list item indents it instead of moving focus out of the editor", () => {
       // Type a block conditional followed by a bullet list
       RichTextEditor.Components.Editor().type(
@@ -473,4 +473,21 @@ describe("Conditional inline and block tests", () => {
       RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
     });
   });
+
+  it("Adjacent inline conditionals round-trip to markdown without added line breaks (regression)", () => {
+      const adjacent = "((a??x)) ((b??y))";
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Enter adjacent inline conditionals in the editor
+      RichTextEditor.Components.MarkdownEditor().clear().type(adjacent);
+      RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
+
+      // Switch to visual editor and back
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      
+      // Confirm markdown still contains the exact adjacent conditionals string
+      RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
+    });
 });

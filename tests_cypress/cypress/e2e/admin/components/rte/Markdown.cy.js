@@ -408,7 +408,7 @@ describe("Markdown entering and pasting tests", () => {
       });
     });
   });
-  describe.only("Heading space auto-fix (markdown conversion)", () => {
+  describe("Heading space auto-fix (markdown conversion)", () => {
     it("Converts `#heading` to `# heading` when switching from markdown view", () => {
       // Switch to markdown view and enter heading without space
       RichTextEditor.Components.ViewMarkdownButton().click();
