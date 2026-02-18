@@ -407,7 +407,7 @@ def get_dashboard_partials(service_id):
 
     start = time.time()
     # Use count for weekly stats (used for display of messages sent)
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=False)
+    stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=use_billable_units)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
