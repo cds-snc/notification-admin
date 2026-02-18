@@ -93,16 +93,18 @@ class NotificationCounts:
 
         current_financial_year = get_current_financial_year()
         use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+        redis_enabled = current_app.config.get("REDIS_ENABLED", False)
         sent_today = self.get_all_notification_counts_for_today(service.id)
 
         # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
-        if use_billable_units:
+        if use_billable_units and redis_enabled:
             # Use Redis annual_limit_client for annual stats (same data source as dashboard)
             annual_data_redis = annual_limit_client.get_all_notification_counts(service.id)
             sms_annual_sent = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0) + sent_today["sms"]
             email_annual_sent = annual_data_redis.get("total_email_fiscal_year_to_yesterday", 0) + sent_today["email"]
         else:
             # We are interested in getting data for the financial year, not the calendar year
+            # (also used as fallback when Redis is not enabled)
             sent_thisyear = self.get_all_notification_counts_for_year(service.id, current_financial_year)
             sms_annual_sent = sent_thisyear["sms"]
             email_annual_sent = sent_thisyear["email"]

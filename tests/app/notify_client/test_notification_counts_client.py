@@ -279,7 +279,8 @@ class TestNotificationCountsWithBillableUnits:
         }
 
         with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
-            result = mock_notification_client.get_limit_stats(mock_service)
+            with set_config(app_, "REDIS_ENABLED", True):
+                result = mock_notification_client.get_limit_stats(mock_service)
 
         # Annual SMS should use billable units (75) + today (3) = 78, not message count (25)
         assert result["sms"]["annual"]["sent"] == 78
