@@ -16,6 +16,7 @@ from flask import (
 )
 from flask_babel import _
 from flask_login import current_user
+from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.letter_timings import (
     CANCELLABLE_JOB_LETTER_STATUSES,
@@ -53,6 +54,13 @@ from app.utils import (
 )
 
 NOTIFICATION_PREVIEW_MAX_LENGTH = 200
+
+
+def _truncate_text_preserving_markup(text, length):
+    """Truncate text while preserving Markup type if present."""
+    is_markup = isinstance(text, Markup)
+    truncated = unicode_truncate(str(text), length)
+    return Markup(truncated) if is_markup else truncated
 
 
 @main.route("/services/<service_id>/jobs")
@@ -545,7 +553,7 @@ def add_preview_of_content_to_notifications(notifications):
 
         if notification["template"]["template_type"] == "sms":
             yield dict(
-                preview_of_content=unicode_truncate(
+                preview_of_content=_truncate_text_preserving_markup(
                     str(
                         Template(
                             notification["template"],
@@ -561,7 +569,7 @@ def add_preview_of_content_to_notifications(notifications):
             if notification["template"]["is_precompiled_letter"]:
                 notification["template"]["subject"] = "Provided as PDF"
             yield dict(
-                preview_of_content=unicode_truncate(
+                preview_of_content=_truncate_text_preserving_markup(
                     WithSubjectTemplate(
                         notification["template"],
                         notification["personalisation"],
