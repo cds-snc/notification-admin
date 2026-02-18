@@ -52,6 +52,8 @@ from app.utils import (
     user_has_permissions,
 )
 
+NOTIFICATION_PREVIEW_MAX_LENGTH = 200
+
 
 @main.route("/services/<service_id>/jobs")
 @user_has_permissions()
@@ -551,7 +553,7 @@ def add_preview_of_content_to_notifications(notifications):
                             redact_missing_personalisation=True,
                         )
                     ),
-                    200,
+                    NOTIFICATION_PREVIEW_MAX_LENGTH,
                 ),
                 **notification,
             )
@@ -565,7 +567,7 @@ def add_preview_of_content_to_notifications(notifications):
                         notification["personalisation"],
                         redact_missing_personalisation=True,
                     ).subject,
-                    200,
+                    NOTIFICATION_PREVIEW_MAX_LENGTH,
                 ),
                 **notification,
             )
