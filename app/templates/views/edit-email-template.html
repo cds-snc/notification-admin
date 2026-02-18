@@ -143,8 +143,9 @@
       if (typeof gtag !== "undefined") {
         gtag("event", "template_save", {
           event_category: "Template Editor",
+          event_label: "Save template",
           // "rte" or "markdown"
-          event_label: mode,
+          editor_mode: mode,
           // "save" or "preview"
           action_type: action,
           template_action: isEdit ? "edit" : "create"
