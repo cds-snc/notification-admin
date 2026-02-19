@@ -2008,6 +2008,34 @@ class TestGetAnnualDataWithBillableUnits:
                     assert not mock_service_api_client.get_annual_limit_stats.called
                     mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
 
+    def test_get_annual_data_handles_missing_email_key_for_new_service(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Regression test: new service has Redis seeded but no email key yet (KeyError fix)"""
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = True
+                    # New service: Redis seeded but email key is absent
+                    mock_annual_limit_client.get_all_notification_counts.return_value = {
+                        "total_sms_fiscal_year_to_yesterday": 0,
+                        "total_sms_billable_units_fiscal_year_to_yesterday": 0,
+                        # "total_email_fiscal_year_to_yesterday" intentionally missing
+                    }
+
+                    mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+                    mock_service_api_client.get_monthly_notification_stats.return_value = {"data": {}}
+                    mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 10, "email": 20})
+                    mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
+
+                    # Should not raise KeyError
+                    result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # Both counts are 0, so it falls back to the API
+                    mock_service_api_client.get_monthly_notification_stats.assert_called_once()
+                    assert result == {"sms": 10, "email": 20}
+
     def test_get_annual_data_api_fallback_when_seeding_fails_with_ff_enabled(
         self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
     ):

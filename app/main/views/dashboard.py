@@ -744,6 +744,7 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # Get both SMS fiscal year counts from Redis
     sms_fiscal_year_standard = annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
     sms_fiscal_year_billable = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0)
+    email_fiscal_year_count = annual_data_redis.get("total_email_fiscal_year_to_yesterday", 0)
 
     # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
     if current_app.config.get("FF_USE_BILLABLE_UNITS"):
@@ -751,14 +752,14 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     else:
         sms_fiscal_year_count = sms_fiscal_year_standard
 
-    if annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0 and sms_fiscal_year_count == 0:
+    if email_fiscal_year_count == 0 and sms_fiscal_year_count == 0:
         # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
         return get_annual_data_api(service_id, dashboard_totals_daily)
 
     # use the daily requested totals from the api, so that this number is calculated the same
     # way regardless of whether we use api data or redis data
     return {
-        "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
+        "email": dashboard_totals_daily["email"]["requested"] + email_fiscal_year_count,
         "sms": dashboard_totals_daily["sms"]["requested"] + sms_fiscal_year_count,
     }
 
