@@ -10,17 +10,22 @@ describe.only("Markdown entering and pasting tests", () => {
     // Ensure toolbar is ready for interactions
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Ensure editor is mounted and the editable area is present
-    RichTextEditor.Components.Editor()
-      .should("exist")
-      .find("[contenteditable]", { timeout: 20000 })
-      .should("be.visible")
-      .first()
-      .as("editorEditable");
+    // Ensure editor is mounted and alias the editable area (root or child)
+    RichTextEditor.Components.Editor().should("exist");
 
-    // Wait for initial default content inside the editable area, then clear robustly
-    cy.get("@editorEditable")
-      .should("contain.text", "Welcome to the Editor")
+    RichTextEditor.Components.Editor().then(($editor) => {
+      const $el = $editor.first();
+      if ($el.is("[contenteditable]")) {
+        cy.wrap($el).as("editorEditable");
+      } else {
+        cy.wrap($el).find("[contenteditable]").first().as("editorEditable");
+      }
+    });
+
+    // Ensure the editable element is visible and ready, then clear it
+    cy.get("@editorEditable", { timeout: 20000 })
+      .should("be.visible")
+      .and("contain.text", "Welcome to the Editor")
       .click("topLeft")
       .type("{selectall}{del}{del}");
 
