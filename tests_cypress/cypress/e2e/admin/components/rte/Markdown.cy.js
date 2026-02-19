@@ -2,7 +2,7 @@ import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
-describe("Markdown entering and pasting tests", () => {
+describe.only("Markdown entering and pasting tests", () => {
   beforeEach(() => {
     // Load the editor
     cy.visit(RichTextEditor.URL);
@@ -10,17 +10,22 @@ describe("Markdown entering and pasting tests", () => {
     // Ensure toolbar is ready for interactions
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Ensure editor is mounted and ready
-    RichTextEditor.Components.Editor().should("exist");
-
-    // Wait for initial default content, then clear robustly
+    // Ensure editor is mounted and the editable area is present
     RichTextEditor.Components.Editor()
+      .should("exist")
+      .find("[contenteditable]", { timeout: 20000 })
+      .should("be.visible")
+      .first()
+      .as("editorEditable");
+
+    // Wait for initial default content inside the editable area, then clear robustly
+    cy.get("@editorEditable")
       .should("contain.text", "Welcome to the Editor")
       .click("topLeft")
       .type("{selectall}{del}{del}");
 
     // Assert default content is gone and editor is empty
-    RichTextEditor.Components.Editor()
+    cy.get("@editorEditable")
       .should("not.contain.text", "Welcome to the Editor")
       .and("have.text", "");
   });
