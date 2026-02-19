@@ -641,13 +641,58 @@ const SimpleEditor = ({
 
     // Normalize multi-line conditional markers to ensure they start and end
     // on their own paragraph when converting from markdown to rich content.
+    const normalizeMarkdownConditionals = (txt) => {
+      if (!txt || typeof txt !== "string") return txt;
+      const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)(?!\))/g;
+      let out = "";
+      let lastIndex = 0;
+      let m;
+      while ((m = re.exec(txt)) !== null) {
+        const start = m.index;
+        const end = re.lastIndex;
+        const match = m[0];
+
+        // If the conditional is purely inline (no newline), leave it alone
+        if (match.indexOf("\n") === -1) {
+          // copy through unchanged
+          out += txt.slice(lastIndex, end);
+          lastIndex = end;
+          continue;
+        }
+
+        out += txt.slice(lastIndex, start);
+
+        // Ensure a blank line before (only for block conditionals)
+        if (out.length === 0) {
+          // at start, nothing to do
+        } else if (!/\n\s*\n$/.test(out)) {
+          if (out.endsWith("\n")) out += "\n";
+          else out += "\n\n";
+        }
+
+        out += match;
+
+        // Ensure a blank line after (lookahead from original text)
+        const after = txt.slice(end);
+        const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+        if (!hasBlankAfter) out += "\n\n";
+
+        lastIndex = end;
+      }
+
+      out += txt.slice(lastIndex);
+      return out;
+    };
+
+    const normalizedForEditor =
+      normalizeMarkdownConditionals(convertedForEditor);
 
     // Auto-fix common heading mistakes where users type `#text` or `##text`
     // without a space after the hash symbols (e.g., `#heading` → `# heading`)
     // Only matches when there's NO space already (so `# heading` is left alone)
     // This only happens during markdown-to-editor conversion, not during typing
     // TODO: When no more templates contain these typos, we can remove this code
-    let fixedHeadingSpacing = convertedForEditor;
+    let fixedHeadingSpacing = normalizedForEditor;
     // Process ## first to avoid backtracking issues with single #
     fixedHeadingSpacing = fixedHeadingSpacing.replace(
       /^##(?! )(\S)/gm,
