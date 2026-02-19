@@ -221,6 +221,7 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_ANNUAL_LIMIT = True
+    FF_USE_BILLABLE_UNITS = True
 
 
 class ProductionFF(Config):
@@ -245,6 +246,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_ANNUAL_LIMIT = False
+    FF_USE_BILLABLE_UNITS = False
 
 
 class Production(Config):
