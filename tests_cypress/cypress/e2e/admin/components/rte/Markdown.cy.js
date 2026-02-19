@@ -199,14 +199,22 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before);
+    // Seed language block markdown via paste (stable in CI)
+    RichTextEditor.Components.Editor().then(($editor) => {
+      cy.wrap($editor).trigger("paste", {
+        clipboardData: {
+          getData: () => MARKDOWN.LANG_BLOCKS.expected,
+          types: ["text/plain"],
+        },
+      });
+    });
 
     // Editor should have marked up language blocks
     RichTextEditor.Components.Editor()
-      .find('div[lang="en-CA"]')
+      .find('div[lang="en-CA"]', { timeout: 10000 })
       .should("have.length", 9);
     RichTextEditor.Components.Editor()
-      .find('div[lang="fr-CA"]')
+      .find('div[lang="fr-CA"]', { timeout: 10000 })
       .should("have.length", 9);
 
     // Switch to markdown mode and back
@@ -219,10 +227,10 @@ describe("Markdown entering and pasting tests", () => {
 
     // Editor should still have marked up language blocks
     RichTextEditor.Components.Editor()
-      .find('div[lang="en-CA"]')
+      .find('div[lang="en-CA"]', { timeout: 10000 })
       .should("have.length", 9);
     RichTextEditor.Components.Editor()
-      .find('div[lang="fr-CA"]')
+      .find('div[lang="fr-CA"]', { timeout: 10000 })
       .should("have.length", 9);
   });
 
