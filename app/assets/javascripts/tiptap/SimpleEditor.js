@@ -639,9 +639,6 @@ const SimpleEditor = ({
 
     // Normalize multi-line conditional markers to ensure they start and end
     // on their own paragraph when converting from markdown to rich content.
-    
-
-    
 
     // Auto-fix common heading mistakes where users type `#text` or `##text`
     // without a space after the hash symbols (e.g., `#heading` → `# heading`)
