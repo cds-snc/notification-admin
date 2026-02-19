@@ -547,6 +547,8 @@ const SimpleEditor = ({
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        // Filter out zero-width space separators used to prevent adjacent variables/conditionals from merging
+        markdown = markdown.replace(/\u200B/g, "");
         // Unescape serializer-escaped variable markers in link destinations
         // e.g., ](\\(\\(var\\)\\)) -> ](((var)))
         markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
@@ -712,6 +714,8 @@ const SimpleEditor = ({
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      // Filter out zero-width space separators used to prevent adjacent variables/conditionals from merging
+      markdown = markdown.replace(/\u200B/g, "");
       // Unescape serializer-escaped variable markers in link destinations
       markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
         return `((${v}))`;
