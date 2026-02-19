@@ -1768,6 +1768,9 @@ class TestGetAnnualData:
             }
         }
         mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+        # get_annual_limit_stats is now always tried first in get_annual_data_api;
+        # returning None forces the fallback to monthly stats
+        mock_service_api_client.get_annual_limit_stats.return_value = None
         mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
 
         # Mock the aggregate function and current financial year
@@ -1778,7 +1781,10 @@ class TestGetAnnualData:
             # Call function
             result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
 
-            # Check API was called
+            # get_annual_limit_stats is tried first
+            mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
+
+            # Falls back to monthly stats when get_annual_limit_stats returns None
             mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
 
             # Check aggregate function was called
@@ -1952,10 +1958,10 @@ class TestGetAnnualDataWithBillableUnits:
                         "email": 220,  # 20 (daily) + 200 (from Redis)
                     }
 
-    def test_get_annual_data_triggers_seeding_when_ff_enabled_and_not_seeded(
+    def test_get_annual_data_calls_annual_limit_stats_when_not_seeded(
         self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
     ):
-        """Test that Redis seeding is triggered when FF is enabled but Redis not seeded"""
+        """Test that get_annual_limit_stats is called (and its data used) when Redis is not seeded, regardless of FF"""
         with app_.app_context():
             # Configure mocks
             with set_config(app_, "REDIS_ENABLED", True):
@@ -1977,10 +1983,10 @@ class TestGetAnnualDataWithBillableUnits:
                     # Verify seeding was triggered
                     mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
 
-    def test_get_annual_data_falls_back_to_api_when_ff_disabled_and_not_seeded(
+    def test_get_annual_data_falls_back_to_monthly_when_annual_limit_stats_returns_none(
         self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
     ):
-        """Test that API fallback is used when FF is disabled and Redis not seeded"""
+        """Test that monthly stats is used as a last resort when get_annual_limit_stats returns None (FF disabled)"""
         with app_.app_context():
             # Configure mocks
             with set_config(app_, "REDIS_ENABLED", True):
@@ -1997,6 +2003,9 @@ class TestGetAnnualDataWithBillableUnits:
                         }
                     }
                     mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+                    # get_annual_limit_stats is now always tried first (regardless of FF);
+                    # returning None forces fallback to monthly stats
+                    mock_service_api_client.get_annual_limit_stats.return_value = None
                     mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
                     mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
                     mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
@@ -2004,8 +2013,9 @@ class TestGetAnnualDataWithBillableUnits:
                     # Call function
                     get_annual_data(mock_service_id, mock_dashboard_totals_daily)
 
-                    # Verify seeding was NOT triggered (falls back to API instead)
-                    assert not mock_service_api_client.get_annual_limit_stats.called
+                    # get_annual_limit_stats is always tried first (unified path for FF=True and FF=False)
+                    mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
+                    # Falls back to monthly stats when get_annual_limit_stats returns None
                     mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
 
     def test_get_annual_data_api_fallback_when_seeding_fails_with_ff_enabled(
