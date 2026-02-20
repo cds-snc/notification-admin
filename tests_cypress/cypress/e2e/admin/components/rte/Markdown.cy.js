@@ -2,7 +2,7 @@ import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
-describe("Markdown entering and pasting tests", () => {
+describe.only("Markdown entering and pasting tests", () => {
   beforeEach(() => {
     // Load the editor
     cy.visit(RichTextEditor.URL);
@@ -36,8 +36,8 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
-    it(`Correctly renders markdown for ${humanize(key)}`, { defaultCommandTimeout: 30000 }, () => {
-      RichTextEditor.Components.Editor().type(before, { delay: 0 });
+    it(`Correctly renders markdown for ${humanize(key)}`, () => {
+      RichTextEditor.Components.Editor().type(before, { timeout: Math.max(before.length * 15, 10000) });
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
@@ -52,8 +52,8 @@ describe("Markdown entering and pasting tests", () => {
     });
   });
 
-  it("Variables are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.VARIABLES.before, { delay: 0 });
+  it("Variables are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.VARIABLES.before);
 
     // Editor should have 9 marked up variables
     RichTextEditor.Components.Editor()
@@ -74,8 +74,8 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 9);
   });
 
-  it("Links are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before, { delay: 0 });
+  it("Links are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before, { timeout: 15000 });
 
     // Editor should have 10 marked up links
     RichTextEditor.Components.Editor().find("a").should("have.length", 10);
@@ -140,8 +140,8 @@ describe("Markdown entering and pasting tests", () => {
       });
   });
 
-  it("RTL blocks are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before, { delay: 0 });
+  it("RTL blocks are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before, { timeout: 15000 });
 
     // Editor should have marked up RTL blocks
     RichTextEditor.Components.Editor()
@@ -162,9 +162,9 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 6);
   });
 
-  it("Inline conditionals are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
+  it("Inline conditionals are correctly rendered coming back from markdown view", () => {
     RichTextEditor.Components.Editor().type(
-      MARKDOWN.INLINE_CONDITIONALS.before, { delay: 0 },
+      MARKDOWN.INLINE_CONDITIONALS.before,
     );
 
     // Editor should have marked up inline conditionals
@@ -186,8 +186,8 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 1);
   });
 
-  it("Block conditionals are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.BLOCK_CONDITIONALS.before, { delay: 0 });
+  it("Block conditionals are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.BLOCK_CONDITIONALS.before);
 
     // Editor should have marked up block conditionals
     RichTextEditor.Components.Editor()
@@ -208,8 +208,8 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 1);
   });
 
-  it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", { defaultCommandTimeout: 30000 }, () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, { delay: 0 });
+  it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
+    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, { timeout: 30000 });
 
     // Editor should have marked up language blocks
     RichTextEditor.Components.Editor()
