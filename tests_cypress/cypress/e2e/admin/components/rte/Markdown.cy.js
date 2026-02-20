@@ -37,7 +37,9 @@ describe.only("Markdown entering and pasting tests", () => {
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
-      RichTextEditor.Components.Editor().type(before, { timeout: Math.max(before.length * 15, 10000) });
+      RichTextEditor.Components.Editor().type(before, {
+        timeout: Math.max(before.length * 15, 10000),
+      });
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
@@ -75,7 +77,9 @@ describe.only("Markdown entering and pasting tests", () => {
   });
 
   it("Links are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before, { timeout: 15000 });
+    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before, {
+      timeout: 15000,
+    });
 
     // Editor should have 10 marked up links
     RichTextEditor.Components.Editor().find("a").should("have.length", 10);
@@ -141,7 +145,9 @@ describe.only("Markdown entering and pasting tests", () => {
   });
 
   it("RTL blocks are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before, { timeout: 15000 });
+    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before, {
+      timeout: 15000,
+    });
 
     // Editor should have marked up RTL blocks
     RichTextEditor.Components.Editor()
@@ -209,7 +215,9 @@ describe.only("Markdown entering and pasting tests", () => {
   });
 
   it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, { timeout: 30000 });
+    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, {
+      timeout: 30000,
+    });
 
     // Editor should have marked up language blocks
     RichTextEditor.Components.Editor()
