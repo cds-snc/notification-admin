@@ -31,7 +31,8 @@ class NotificationCounts:
         else:
             use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
             stats = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-            transformed_stats = _aggregate_notifications_stats(stats, use_billable_units=use_billable_units)
+            count_field = "billable_units" if use_billable_units else "count"
+            transformed_stats = _aggregate_notifications_stats(stats, count_field=count_field)
 
             return transformed_stats
 
@@ -140,14 +141,10 @@ class NotificationCounts:
 
 
 # TODO: consolidate this function and other functions that transform the results of template_statistics_client calls
-def _aggregate_notifications_stats(template_statistics, use_billable_units=False):
+def _aggregate_notifications_stats(template_statistics, count_field="count"):
     template_statistics = _filter_out_cancelled_stats(template_statistics)
     # The API returns both 'count' and 'billable_units' fields.
     # Use 'billable_units' when tracking against limits (FF_USE_BILLABLE_UNITS), otherwise use 'count'.
-    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
-        count_field = "billable_units"
-    else:
-        count_field = "count"
     notifications = {"sms": 0, "email": 0}
     for stat in template_statistics:
         notifications[stat["template_type"]] += stat[count_field]
