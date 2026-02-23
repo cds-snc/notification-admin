@@ -128,6 +128,32 @@
       }
     });
   };
+  // Track which editor mode the user is in when they save or preview the template in Google Analytics.
+  document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      const modeInput = document.querySelector('input[name="user_editor_mode"]');
+      const mode = modeInput ? modeInput.value : "unknown";
+      const submitBtn = e.submitter;
+      // "save" or "preview"
+      const action = submitBtn ? submitBtn.value : "unknown"; 
+      const isEdit = window.location.pathname.includes("/edit");
+
+      if (typeof gtag !== "undefined") {
+        gtag("event", "template_save", {
+          event_category: "Template Editor",
+          event_label: "Save template",
+          // "rte" or "markdown"
+          editor_mode: mode,
+          // "save" or "preview"
+          action_type: action,
+          template_action: isEdit ? "edit" : "create"
+        });
+      }
+    });
+  }
+});
 </script>
 
 {% endblock %}

@@ -26,8 +26,7 @@
     ) }}
   </div>
 
-  {% if config["FF_ANNUAL_LIMIT"] %}
-    <h2 id="annual-usage-label" class="heading-medium mt-12" aria-describedby="annual-usage-desc">
+  <h2 id="annual-usage-label" class="heading-medium mt-12" aria-describedby="annual-usage-desc">
       {% if selected_year == current_financial_year %}
         {{ _('Annual limit overview') }}
       {% else %}
@@ -64,10 +63,9 @@
         </div>
       {% endif %}
     </div>
-    <h2 class="heading-medium mt-12">
+  <h2 class="heading-medium mt-12">
       {{ _('Month by month totals') }}
     </h2>
-  {% endif %}
 
   {% if months %}
    {% set spend_txt = _('Total spend') %}

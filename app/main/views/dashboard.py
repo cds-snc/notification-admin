@@ -276,33 +276,25 @@ def monthly(service_id):
 
     year, current_financial_year = requested_and_current_financial_year(request)
 
-    # if FF_ANNUAL is on
-    if current_app.config["FF_ANNUAL_LIMIT"]:
-        monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
-        annual_data = aggregate_by_type(monthly_data)
+    monthly_data = service_api_client.get_monthly_notification_stats(service_id, year)
+    annual_data = aggregate_by_type(monthly_data)
 
-        todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
+    todays_data = annual_limit_client.get_all_notification_counts(current_service.id)
 
-        # if redis is empty, query the db
-        if all(value == 0 for value in todays_data.values()):
-            todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
-            annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
+    # if redis is empty, query the db
+    if all(value == 0 for value in todays_data.values()):
+        todays_data = service_api_client.get_service_statistics(service_id, limit_days=1, today_only=False)
+        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "db")
 
-            months = (format_monthly_stats_to_list(monthly_data["data"]),)
-            monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
-        else:
-            # aggregate daily + annual
-            current_app.logger.info("todays data" + str(todays_data))
-            annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "redis")
-
-            months = (format_monthly_stats_to_list(monthly_data["data"]),)
-            monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
+        months = (format_monthly_stats_to_list(monthly_data["data"]),)
+        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
     else:
-        monthly_data_aggregate = (
-            format_monthly_stats_to_list(service_api_client.get_monthly_notification_stats(service_id, year)["data"]),
-        )
-        monthly_data_aggregate = monthly_data_aggregate[0]
-        annual_data_aggregate = None
+        # aggregate daily + annual
+        current_app.logger.info("todays data" + str(todays_data))
+        annual_data_aggregate = combine_daily_to_annual(todays_data, annual_data, "redis")
+
+        months = (format_monthly_stats_to_list(monthly_data["data"]),)
+        monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
 
     return render_template(
         "views/dashboard/monthly.html",
@@ -344,17 +336,25 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
     return sorted(templates, key=lambda x: x[sort_key], reverse=True)
 
 
-def aggregate_notifications_stats(template_statistics):
+def aggregate_notifications_stats(template_statistics, use_billable_units=False):
     template_statistics = filter_out_cancelled_stats(template_statistics)
+    # The API now returns both 'count' and 'billable_units' fields
+    # Use count for display (sent messages), billable_units for limits tracking
+    # Fall back to count if billable_units is not available (for backwards compatibility)
+    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
+        count_field = "billable_units"
+    else:
+        count_field = "count"
+
     notifications = {
         template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
     }
     for stat in template_statistics:
-        notifications[stat["template_type"]]["requested"] += stat["count"]
+        notifications[stat["template_type"]]["requested"] += stat[count_field]
         if stat["status"] in DELIVERED_STATUSES:
-            notifications[stat["template_type"]]["delivered"] += stat["count"]
+            notifications[stat["template_type"]]["delivered"] += stat[count_field]
         elif stat["status"] in FAILURE_STATUSES:
-            notifications[stat["template_type"]]["failed"] += stat["count"]
+            notifications[stat["template_type"]]["failed"] += stat[count_field]
 
     return notifications
 
@@ -392,10 +392,14 @@ def get_dashboard_partials(service_id):
     dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily = _get_daily_stats(service_id)
     timings["_get_daily_stats"] = (time.time() - start) * 1000
 
+    # TODO FF_USE_BILLABLE_UNITS removal - Track if using billable units for display purposes
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+
     column_width, max_notifiction_count = get_column_properties(number_of_columns=2)
 
     start = time.time()
-    stats_weekly = aggregate_notifications_stats(all_statistics_weekly)
+    # Use count for weekly stats (used for display of messages sent)
+    stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=False)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
     timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
@@ -419,6 +423,7 @@ def get_dashboard_partials(service_id):
             service_id=service_id,
             statistics=dashboard_totals_daily,
             column_width=column_width,
+            use_billable_units=use_billable_units,
         ),
         "annual_totals": render_template(
             "views/dashboard/_totals_annual.html",
@@ -426,6 +431,7 @@ def get_dashboard_partials(service_id):
             statistics=dashboard_totals_daily,
             statistics_annual=annual_data,
             column_width=column_width,
+            use_billable_units=use_billable_units,
         ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
@@ -466,7 +472,8 @@ def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> AnnualData:
 def _get_daily_stats(service_id):
     # TODO: get from redis, else fallback to template_statistics_client.get_template_statistics_for_service
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily)
+    # Use billable_units for daily stats (used for limit tracking)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
     dashboard_totals_daily = get_dashboard_totals(stats_daily)
 
     highest_notification_count_daily = max(
@@ -702,16 +709,41 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
         AnnualData: Dictionary containing combined annual notification counts for SMS and email
     """
 
-    if not current_app.config["REDIS_ENABLED"] or not annual_limit_client.was_seeded_today(service_id):
+    if not current_app.config["REDIS_ENABLED"]:
         return get_annual_data_api(service_id, dashboard_totals_daily)
+
+    # TODO FF_USE_BILLABLE_UNITS removal - Trigger Redis seeding when FF is enabled and Redis not seeded
+    # This ensures billable units data is available. Without seeding, the API fallback only returns
+    # message counts which is incorrect when tracking billable units.
+    if not annual_limit_client.was_seeded_today(service_id):
+        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+            # Call the API endpoint that triggers seeding with billable units data
+            try:
+                service_api_client.get_annual_limit_stats(service_id)
+                current_app.logger.info(f"Triggered Redis seeding for service {service_id} with billable units support")
+            except Exception as e:
+                current_app.logger.warning(
+                    f"Failed to seed Redis for service {service_id}: {e}. Falling back to API (will show message counts, not billable units)"
+                )
+                return get_annual_data_api(service_id, dashboard_totals_daily)
+        else:
+            # When FF is disabled, fall back to API (message counts)
+            return get_annual_data_api(service_id, dashboard_totals_daily)
 
     # get annual_data from redis
     annual_data_redis = annual_limit_client.get_all_notification_counts(service_id)
 
-    if (
-        annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0
-        and annual_data_redis["total_sms_fiscal_year_to_yesterday"] == 0
-    ):
+    # Get both SMS fiscal year counts from Redis
+    sms_fiscal_year_standard = annual_data_redis.get("total_sms_fiscal_year_to_yesterday", 0)
+    sms_fiscal_year_billable = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0)
+
+    # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+    if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+        sms_fiscal_year_count = sms_fiscal_year_billable
+    else:
+        sms_fiscal_year_count = sms_fiscal_year_standard
+
+    if annual_data_redis["total_email_fiscal_year_to_yesterday"] == 0 and sms_fiscal_year_count == 0:
         # adding this case for fault tolerance - this is the bug case where the redis keys have been deleted
         return get_annual_data_api(service_id, dashboard_totals_daily)
 
@@ -719,11 +751,39 @@ def get_annual_data(service_id: str, dashboard_totals_daily: DashboardTotals) ->
     # way regardless of whether we use api data or redis data
     return {
         "email": dashboard_totals_daily["email"]["requested"] + annual_data_redis["total_email_fiscal_year_to_yesterday"],
-        "sms": dashboard_totals_daily["sms"]["requested"] + annual_data_redis["total_sms_fiscal_year_to_yesterday"],
+        "sms": dashboard_totals_daily["sms"]["requested"] + sms_fiscal_year_count,
     }
 
 
 def get_annual_data_api(service_id: str, dashboard_totals_daily: DashboardTotals) -> AnnualData:
+    """
+    Fallback method to get annual data from the API when Redis is not available.
+
+    WARNING: This fallback has a known limitation - it uses message counts from the monthly stats API,
+    which doesn't distinguish between message count and billable units. When FF_USE_BILLABLE_UNITS
+    is enabled and this fallback is used, it will show incorrect values (e.g., 2 messages instead of
+    6 billable units).
+
+    This fallback should rarely be triggered because:
+    1. The dashboard now automatically seeds Redis when FF_USE_BILLABLE_UNITS is enabled
+    2. Sending any notification triggers seeding
+    3. A nightly job seeds Redis for all active services
+
+    Args:
+        service_id: The ID of the service to get annual data for
+        dashboard_totals_daily: The daily dashboard totals
+
+    Returns:
+        AnnualData: Annual notification counts (message counts, NOT billable units)
+    """
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+
+    if use_billable_units:
+        current_app.logger.warning(
+            f"Service {service_id} - Using API fallback which returns message counts instead of billable units. "
+            f"This should not happen if Redis seeding is working correctly."
+        )
+
     annual_data = service_api_client.get_monthly_notification_stats(service_id, get_current_financial_year())
     aggregated_annual_data = aggregate_by_type_daily(annual_data, dashboard_totals_daily)
     return aggregated_annual_data

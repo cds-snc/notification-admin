@@ -400,6 +400,19 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             )
         )
 
+    def get_annual_limit_stats(self, service_id: str):
+        """
+        Retrieve annual limit statistics from Redis for a specific service.
+        This endpoint will automatically seed Redis with billable units data if FF_USE_BILLABLE_UNITS is enabled.
+
+        Args:
+            service_id (str): UUID of the service to get statistics for
+
+        Returns:
+            dict: Annual limit statistics including notification counts and billable units (when FF enabled)
+        """
+        return self.get(url=f"/service/{service_id}/annual-limit-stats")
+
     def get_safelist(self, service_id):
         return self.get(url="/service/{}/safelist".format(service_id))
 
