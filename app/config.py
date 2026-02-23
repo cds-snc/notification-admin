@@ -85,7 +85,6 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
-    FF_ANNUAL_LIMIT = env.bool("FF_ANNUAL_LIMIT", False)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
 
@@ -220,7 +219,6 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
-    FF_ANNUAL_LIMIT = True
     FF_USE_BILLABLE_UNITS = True
 
 
@@ -245,7 +243,6 @@ class ProductionFF(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
-    FF_ANNUAL_LIMIT = False
     FF_USE_BILLABLE_UNITS = False
 
 
