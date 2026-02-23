@@ -47,6 +47,7 @@ class User(JSONModel, UserMixin):
         "blocked",
         "password_expired",
         "verified_phonenumber",
+        "default_editor_is_rte",
     }
 
     def __init__(self, _dict):

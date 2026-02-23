@@ -9,6 +9,7 @@
 {% from "components/template-category.html" import template_category %}
 {% from "components/template-content.html" import template_content with context %}
 {% from "components/links.html" import content_link with context %}
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -70,13 +71,26 @@
   ) %}
 
   <div class="grid-row contain-floats">
-    <div class="md:w-2/3 px-gutterHalf">
-      {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
-
-      {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
-      {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_sentence_end=True) %}
+    <div class="px-gutterHalf">
+      <div class="md:w-2/3">
+        {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), rows=10, testid="template-name") }}
+        {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
+      </div>
+      {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_external_link=True, is_sentence_end=True) %}
       {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
-      {{ template_content(form.template_content, form.text_direction_rtl, hint=hint, ) }}
+      <!-- TODO FF_RTE: Remove when live-->
+      {% if config["NOTIFY_ENVIRONMENT"].lower() != NotifyEnv.PRODUCTION.value %}
+        {{ tiptap_editor(
+          editorId='template_content',
+          labelId='template_content-label',
+          initialContent=form.template_content.data,
+          templateType=template_type if template_type else template.template_type,
+          hint=hint,
+          initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
+        }}
+      {% else %}
+        {{ template_content(form.template_content, form.text_direction_rtl, hint=hint, ) }}
+      {% endif %}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
@@ -114,6 +128,32 @@
       }
     });
   };
+  // Track which editor mode the user is in when they save or preview the template in Google Analytics.
+  document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      const modeInput = document.querySelector('input[name="user_editor_mode"]');
+      const mode = modeInput ? modeInput.value : "unknown";
+      const submitBtn = e.submitter;
+      // "save" or "preview"
+      const action = submitBtn ? submitBtn.value : "unknown"; 
+      const isEdit = window.location.pathname.includes("/edit");
+
+      if (typeof gtag !== "undefined") {
+        gtag("event", "template_save", {
+          event_category: "Template Editor",
+          event_label: "Save template",
+          // "rte" or "markdown"
+          editor_mode: mode,
+          // "save" or "preview"
+          action_type: action,
+          template_action: isEdit ? "edit" : "create"
+        });
+      }
+    });
+  }
+});
 </script>
 
 {% endblock %}

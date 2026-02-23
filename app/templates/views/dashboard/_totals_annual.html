@@ -13,10 +13,14 @@
     </p> 
     <div class="grid-row contain-floats mb-10">
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=statistics_annual['email'], for=_('Annual usage'), muted=true) }}
+        {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=statistics_annual['email'], for=_('Annual usage'), muted=true, use_billable_units=False) }}
       </div>
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=statistics_annual['sms'], for=_('Annual usage'), muted=true) }}
+        {% if use_billable_units %}
+          {{ remaining_messages(header=_('billable units'), total=current_service.sms_annual_limit, used=statistics_annual['sms'], for=_('Annual usage'), muted=true, use_billable_units=True) }}
+        {% else %}
+          {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=statistics_annual['sms'], for=_('Annual usage'), muted=true, use_billable_units=False) }}
+        {% endif %}
       </div>
     </div>
     {{ show_more(url_for('.monthly', service_id=current_service.id), _('Visit usage report')) }}

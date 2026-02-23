@@ -47,6 +47,7 @@ from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
+from app.enums import NotifyEnv
 from app.extensions import (
     antivirus_client,
     bounce_rate_client,
@@ -246,6 +247,7 @@ def create_app(application):
 
     # helper functions for templates
     application.jinja_env.globals["random_id"] = random_id
+    application.jinja_env.globals["NotifyEnv"] = NotifyEnv
 
     # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:

@@ -264,8 +264,8 @@ const MenuBar = ({
       infoPane5: "As a separate section",
       info: "Help",
       markdownButton: "Back to the markdown editor",
-      richTextButton: "Switch now",
-      markdownEditorMessage: "Try the new editing experience",
+      richTextButton: "Try toolbar formatting",
+      markdownEditorMessage: "New email experience",
     },
     fr: {
       toolbar: "Barre d'outils de l'éditeur",
@@ -302,8 +302,8 @@ const MenuBar = ({
       infoPane5: "Section entière",
       info: "Aide",
       markdownButton: "Retour à l'éditeur de markdown",
-      richTextButton: "Changer maintenant",
-      markdownEditorMessage: "Essayez la nouvelle expérience d'édition",
+      richTextButton: "Essayez les outils de mise en forme",
+      markdownEditorMessage: "Nouvelle expérience courriel",
     },
   };
 
@@ -825,6 +825,38 @@ const MenuBar = ({
               <Icon iconNode={variableIcon} />
             </button>
           </TooltipWrapper>
+          {!useUnifiedConditionalButton && (
+            <TooltipWrapper label={t.conditionalInline}>
+              <button
+                type="button"
+                data-testid="rte-conditional_inline"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                }}
+                onClick={() =>
+                  announceToggle(
+                    () => runInlineConditionalAction(),
+                    () => editor.isActive("conditionalInline"),
+                    t.conditionalInline,
+                  )
+                }
+                className={
+                  "toolbar-button" +
+                  (editor.isActive("conditionalInline") ? " is-active" : "")
+                }
+                title={t.conditionalInline}
+                aria-pressed={editor.isActive("conditionalInline")}
+              >
+                <span className="sr-only">
+                  {editor.isActive("conditionalInline")
+                    ? t.removePrefix
+                    : t.applyPrefix}
+                  {t.conditionalInline}
+                </span>
+                <Icon iconNode={conditionalInlineIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
           <TooltipWrapper
             label={
               useUnifiedConditionalButton ? t.conditional : t.conditionalBlock
@@ -891,39 +923,6 @@ const MenuBar = ({
               <Icon iconNode={conditionalBlockIcon} />
             </button>
           </TooltipWrapper>
-
-          {!useUnifiedConditionalButton && (
-            <TooltipWrapper label={t.conditionalInline}>
-              <button
-                type="button"
-                data-testid="rte-conditional_inline"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                }}
-                onClick={() =>
-                  announceToggle(
-                    () => runInlineConditionalAction(),
-                    () => editor.isActive("conditionalInline"),
-                    t.conditionalInline,
-                  )
-                }
-                className={
-                  "toolbar-button" +
-                  (editor.isActive("conditionalInline") ? " is-active" : "")
-                }
-                title={t.conditionalInline}
-                aria-pressed={editor.isActive("conditionalInline")}
-              >
-                <span className="sr-only">
-                  {editor.isActive("conditionalInline")
-                    ? t.removePrefix
-                    : t.applyPrefix}
-                  {t.conditionalInline}
-                </span>
-                <Icon iconNode={conditionalInlineIcon} />
-              </button>
-            </TooltipWrapper>
-          )}
         </div>
 
         {/* Fifth group: English, French, RTL */}
@@ -1035,25 +1034,34 @@ const MenuBar = ({
               <span>{t.markdownEditorMessage}</span>
             </p>
           )}
-          <button
-            type="button"
-            data-testid="rte-toggle-markdown"
-            onClick={toggleHandler}
-            className={
-              isMarkdownView
-                ? "toolbar-button toolbar-button-mode toolbar-switch-group"
-                : "toolbar-button toolbar-button-mode"
-            }
-            title={toggleButtonLabel}
-            aria-pressed={isMarkdownView}
-          >
-            <span className="sr-only">{toggleButtonLabel}</span>
-            {isMarkdownView ? (
+          {!isMarkdownView && (
+            <TooltipWrapper label={t.markdownButton}>
+              <button
+                type="button"
+                data-testid="rte-toggle-markdown"
+                onClick={toggleHandler}
+                className="toolbar-button toolbar-button-mode"
+                title={toggleButtonLabel}
+                aria-pressed={isMarkdownView}
+              >
+                <span className="sr-only">{toggleButtonLabel}</span>
+                <Icon iconNode={markdownIcon} />
+              </button>
+            </TooltipWrapper>
+          )}
+          {isMarkdownView && (
+            <button
+              type="button"
+              data-testid="rte-toggle-markdown"
+              onClick={toggleHandler}
+              className="toolbar-button toolbar-button-mode toolbar-switch-group"
+              title={toggleButtonLabel}
+              aria-pressed={isMarkdownView}
+            >
+              <span className="sr-only">{toggleButtonLabel}</span>
               <>{t.richTextButton}</>
-            ) : (
-              <Icon iconNode={markdownIcon} />
-            )}
-          </button>
+            </button>
+          )}
         </div>
       </AccessibleToolbar>
       {isInfoOpen && (

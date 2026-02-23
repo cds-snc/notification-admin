@@ -146,6 +146,7 @@ def view_notification(service_id, notification_id):
         back_link=back_link,
         just_sent=request.args.get("just_sent"),
         attachments=get_attachments(notification, "attach").values(),
+        billable_units=notification.get("billable_units"),
     )
 
 

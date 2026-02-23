@@ -1,8 +1,6 @@
 import os
 
 from apig_wsgi import make_lambda_handler
-from aws_xray_sdk.core import patch_all, xray_recorder
-from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from dotenv import load_dotenv
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -10,14 +8,26 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from app import create_app
 
 load_dotenv()
-# Patch all supported libraries for X-Ray
-# Used to trace requests and responses through the stack
-patch_all()
+
+# Check if OpenTelemetry is enabled via feature flag
+enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "false"
+
+if not enable_otel:
+    # Only use AWS X-Ray when OpenTelemetry is disabled
+    from aws_xray_sdk.core import patch_all, xray_recorder
+    from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+    # Patch all supported libraries for X-Ray
+    # Used to trace requests and responses through the stack
+    patch_all()
 
 application = Flask("app")
 application.wsgi_app = ProxyFix(application.wsgi_app)  # type: ignore
-xray_recorder.configure(service="Notify-Admin")
-XRayMiddleware(application, xray_recorder)
+
+if not enable_otel:
+    xray_recorder.configure(service="Notify-Admin")
+    XRayMiddleware(application, xray_recorder)
+
 create_app(application)
 
 apig_wsgi_handler = make_lambda_handler(application, binary_support=True)

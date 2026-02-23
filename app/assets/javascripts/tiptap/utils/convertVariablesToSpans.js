@@ -16,6 +16,7 @@ export default function convertVariablesToSpans(text) {
 
   let output = "";
   let cursor = 0;
+  let lastWasVariable = false; // Track if the last thing output was a variable span
 
   while (cursor < processedText.length) {
     const openIdx = processedText.indexOf("((", cursor);
@@ -24,7 +25,13 @@ export default function convertVariablesToSpans(text) {
       break;
     }
 
-    output += processedText.slice(cursor, openIdx);
+    const textBetween = processedText.slice(cursor, openIdx);
+    output += textBetween;
+
+    // If we output text between variables, we're no longer adjacent
+    if (textBetween.length > 0) {
+      lastWasVariable = false;
+    }
 
     const closeIdx = processedText.indexOf("))", openIdx + 2);
     if (closeIdx === -1) {
@@ -40,6 +47,7 @@ export default function convertVariablesToSpans(text) {
     if (inner.includes("??")) {
       output += processedText.slice(openIdx, closeIdx + 2);
       cursor = closeIdx + 2;
+      lastWasVariable = false;
       continue;
     }
 
@@ -51,6 +59,7 @@ export default function convertVariablesToSpans(text) {
       // Skip just the first paren and continue; the inner ones will be processed next iteration
       output += processedText[openIdx];
       cursor = openIdx + 1;
+      lastWasVariable = false;
       continue;
     }
 
@@ -62,8 +71,15 @@ export default function convertVariablesToSpans(text) {
       .replace(/\"/g, "&quot;")
       .replace(/'/g, "&#39;");
 
+    // If last output was a variable span, insert a zero-width space separator
+    // to prevent ProseMirror from merging adjacent variables
+    if (lastWasVariable) {
+      output += "\u200B"; // Zero-width space
+    }
+
     output += `<span data-type="variable">${escaped}</span>`;
     cursor = closeIdx + 2;
+    lastWasVariable = true;
   }
 
   // Restore the link placeholders.

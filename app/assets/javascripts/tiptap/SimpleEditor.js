@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import MenuBar from "./MenuBar";
 
@@ -23,21 +23,34 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
+import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 
-const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
+const SimpleEditor = ({
+  inputId,
+  labelId,
+  initialContent,
+  lang = "en",
+  modeInputId,
+  initialMode,
+  preferenceUpdateUrl,
+  csrfToken,
+}) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [selectionHighlight, setSelectionHighlight] = useState(null);
-  const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [isMarkdownView, setIsMarkdownView] = useState(
+    initialMode === "markdown",
+  );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
   const [justOpenedLink, setJustOpenedLink] = useState(false);
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
+  const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -73,6 +86,15 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     },
     [inputId],
   );
+
+  useEffect(() => {
+    if (modeInputId) {
+      const input = document.getElementById(modeInputId);
+      if (input) {
+        input.value = isMarkdownView ? "markdown" : "rte";
+      }
+    }
+  }, [isMarkdownView, modeInputId]);
 
   // Helper function to get selection bounds for highlighting relative to modal position
   const getSelectionBounds = () => {
@@ -166,7 +188,7 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         tightListClass: "tight", // CSS class for tight lists
         bulletListMarker: "-", // Use - for bullet lists
         linkify: false, // Don't auto-linkify URLs
-        breaks: false, // Don't convert line breaks to <br>
+        breaks: true, // Convert single line breaks to HardBreak nodes (= <br> in email)
         transformPastedText: true, // Transform pasted text to markdown
         transformCopiedText: true, // Transform copied text to markdown
       }),
@@ -203,82 +225,6 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         const text = event.clipboardData?.getData("text/plain");
 
         if (text) {
-          // If the pasted text looks like a multi-line block conditional,
-          // allow the editor's paste rules (node-level PasteRule) to run
-          // instead of intercepting here.
-          const isBlockConditionalPaste =
-            text.includes("((") &&
-            text.includes("??") &&
-            text.includes("))") &&
-            text.includes("\n");
-
-          if (isBlockConditionalPaste) {
-            // Intercept multi-line block conditional pastes and insert as
-            // a proper block conditional node, splitting surrounding text
-            // into separate paragraphs.
-            event.preventDefault();
-
-            const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
-
-            const re = /\(\(([^?\n)]+)\?\?([\s\S]*?)\)\)/g;
-            let lastIndex = 0;
-            let m;
-            const nodes = [];
-
-            const pushTextAsParagraphs = (text) => {
-              if (!text) return;
-              const parts = text.split(/\n+/).map((s) => s.trim());
-              for (const p of parts) {
-                if (!p) continue; // skip empty/blank-only segments
-                nodes.push({
-                  type: "paragraph",
-                  content: [{ type: "text", text: p }],
-                });
-              }
-            };
-
-            while ((m = re.exec(normalizedForStorage)) !== null) {
-              const start = m.index;
-              const end = re.lastIndex;
-
-              const beforeText = normalizedForStorage.slice(lastIndex, start);
-              pushTextAsParagraphs(beforeText);
-
-              const condition = (m[1] || "").trim();
-              const body = m[2] || "";
-              const bodyParts = body
-                .split(/\n+/)
-                .map((s) => s.trim())
-                .filter((s) => s.length > 0);
-
-              const conditionalContent = bodyParts.length
-                ? bodyParts.map((p) => ({
-                    type: "paragraph",
-                    content: [{ type: "text", text: p }],
-                  }))
-                : [{ type: "paragraph" }];
-
-              nodes.push({
-                type: "conditional",
-                attrs: { condition },
-                content: conditionalContent,
-              });
-
-              lastIndex = end;
-            }
-
-            // Tail text after last match
-            const tail = normalizedForStorage.slice(lastIndex);
-            pushTextAsParagraphs(tail);
-
-            // If no matches found, fall back to default handling
-            if (nodes.length === 0) return false;
-
-            // Insert the constructed nodes at the current selection
-            editor.commands.insertContent(nodes);
-            return true;
-          }
-
           // Prevent default paste behavior
           event.preventDefault();
 
@@ -287,41 +233,9 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           // render normal blockquotes via inbound normalization on parse.
           const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
 
-          // Check if the text contains variables
-          const hasVariables = /\(\([^)]+\)\)/.test(normalizedForStorage);
-
-          if (hasVariables) {
-            // Replace variables with HTML spans (centralized helper)
-            const processedText = convertVariablesToSpans(normalizedForStorage);
-
-            // Insert the processed HTML at the current cursor position
-            editor.commands.insertContent(processedText);
-          } else {
-            // Check if the text contains Markdown syntax
-            const isMarkdown = /[*_`#>\-\^]|\[.*\]\(.*\)/.test(
-              normalizedForStorage,
-            );
-
-            if (isMarkdown) {
-              // Use TipTap's Markdown extension to parse and insert content
-              // The BlockquoteMarkdown extension will transform '^' to '>' for parsing
-              editor.commands.insertContent(normalizedForStorage);
-            } else {
-              // Handle plain text by splitting into lines
-              const lines = normalizedForStorage.split("\n");
-
-              // Create an array of paragraph nodes
-              const nodes = lines.map((line) => {
-                return {
-                  type: "paragraph",
-                  content: line.trim() ? [{ type: "text", text: line }] : [],
-                };
-              });
-
-              // Insert the nodes into the editor
-              editor.commands.insertContent({ type: "doc", content: nodes });
-            }
-          }
+          // Use the same markdown conversion logic as the markdown switch handler
+          // This ensures pasted markdown is processed consistently
+          convertMarkdownToEditorContent(normalizedForStorage, true);
 
           return true;
         }
@@ -633,6 +547,8 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         // Get markdown from TipTap and normalize any leading '>' to '^'
         // for storage so downstream processes see caret markers.
         let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+        // Filter out zero-width space separators used to prevent adjacent variables/conditionals from merging
+        markdown = markdown.replace(/\u200B/g, "");
         // Unescape serializer-escaped variable markers in link destinations
         // e.g., ](\\(\\(var\\)\\)) -> ](((var)))
         markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
@@ -650,6 +566,21 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           }
         });
 
+        // Convert autolinked URL forms like <https://example.com>
+        // into explicit markdown links [https://example.com](https://example.com)
+        // This prevents downstream storage using angle-bracket autolinks.
+        markdown = markdown.replace(/<(https?:\/\/[^>\s]+)>/g, (m, url) => {
+          try {
+            // Use the URL as the link text
+            return `[${url}](${url})`;
+          } catch (e) {
+            return m;
+          }
+        });
+
+        // Clean up HardBreak backslash continuations
+        markdown = cleanMarkdownSerialization(markdown);
+
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -657,10 +588,26 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
       }
     };
 
+    // Track that the user edited content (fire once per mode per page load)
+    const trackContentChange = () => {
+      if (!hasTrackedEditRef.current.rte && typeof gtag === "function") {
+        hasTrackedEditRef.current.rte = true;
+        gtag("event", "editor_content_changed", {
+          event_category: "Template Editor",
+          event_label: "Content change in RTE mode",
+          editor_mode: "rte",
+        });
+      }
+    };
+
     editor.on("update", updateHiddenInput);
+    editor.on("update", trackContentChange);
     updateHiddenInput();
 
-    return () => editor.off("update", updateHiddenInput);
+    return () => {
+      editor.off("update", updateHiddenInput);
+      editor.off("update", trackContentChange);
+    };
   }, [editor, updateHiddenInputValue]);
 
   React.useEffect(() => {
@@ -669,67 +616,143 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
     }
   }, [isMarkdownView, markdownValue, updateHiddenInputValue]);
 
+  // Clean up markdown serialization artifacts (backslash continuations from HardBreak nodes)
+  const cleanMarkdownSerialization = (markdown) => {
+    if (!markdown) return markdown;
+    // Remove backslash line continuations that the Markdown extension adds
+    // for HardBreak nodes (we want plain newlines in storage)
+    return markdown.replace(/\\\n/g, "\n");
+  };
+
+  // Helper function to convert markdown text to editor content.
+  // Used both when pasting markdown and when switching from markdown view.
+  // If `insertMode` is true, insert at cursor; otherwise replace all content.
+  const convertMarkdownToEditorContent = (markdownText, insertMode = false) => {
+    // Handle empty content - need to clear in replace mode
+    if (!markdownText) {
+      if (!insertMode) {
+        editor.commands.clearContent();
+      }
+      return;
+    }
+
+    // Convert caret markers '^' to '>' so the editor renders blockquotes
+    const convertedForEditor = markdownText.replace(/^(\s*)\^/gm, "$1>");
+
+    // Normalize multi-line conditional markers to ensure they start and end
+    // on their own paragraph when converting from markdown to rich content.
+    const normalizeMarkdownConditionals = (txt) => {
+      if (!txt || typeof txt !== "string") return txt;
+      const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)(?!\))/g;
+      let out = "";
+      let lastIndex = 0;
+      let m;
+      while ((m = re.exec(txt)) !== null) {
+        const start = m.index;
+        const end = re.lastIndex;
+        const match = m[0];
+
+        out += txt.slice(lastIndex, start);
+
+        // Ensure a blank line before
+        if (out.length === 0) {
+          // at start, nothing to do
+        } else if (!/\n\s*\n$/.test(out)) {
+          if (out.endsWith("\n")) out += "\n";
+          else out += "\n\n";
+        }
+
+        out += match;
+
+        // Ensure a blank line after (lookahead from original text)
+        const after = txt.slice(end);
+        const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
+        if (!hasBlankAfter) out += "\n\n";
+
+        lastIndex = end;
+      }
+
+      out += txt.slice(lastIndex);
+      return out;
+    };
+
+    const normalizedForEditor =
+      normalizeMarkdownConditionals(convertedForEditor);
+
+    // Auto-fix common heading mistakes where users type `#text` or `##text`
+    // without a space after the hash symbols (e.g., `#heading` → `# heading`)
+    // Only matches when there's NO space already (so `# heading` is left alone)
+    // This only happens during markdown-to-editor conversion, not during typing
+    // TODO: When no more templates contain these typos, we can remove this code
+    let fixedHeadingSpacing = normalizedForEditor;
+    // Process ## first to avoid backtracking issues with single #
+    fixedHeadingSpacing = fixedHeadingSpacing.replace(
+      /^##(?! )(\S)/gm,
+      "## $1",
+    );
+    // Then process single #, but exclude cases where it's followed by another #
+    fixedHeadingSpacing = fixedHeadingSpacing.replace(
+      /^#(?!#)(?! )(\S)/gm,
+      "# $1",
+    );
+
+    // For content with conditionals, use insertContent directly with markdown
+    // (don't convert to HTML spans - let the markdown parser handle everything)
+    const hasConditionals = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/.test(
+      fixedHeadingSpacing,
+    );
+
+    if (insertMode) {
+      // For pasting: insert at cursor position
+      if (hasConditionals) {
+        // Use markdown parser for complex content with conditionals
+        editor.commands.insertContent(fixedHeadingSpacing);
+      } else {
+        // For simple content without conditionals, convert variables to spans
+        const htmlContent = convertVariablesToSpans(fixedHeadingSpacing);
+        editor.commands.insertContent(htmlContent);
+      }
+    } else {
+      // For switching from markdown view: replace all content
+      editor.commands.clearContent();
+      if (hasConditionals) {
+        // Use markdown parser
+        editor.commands.insertContent(fixedHeadingSpacing);
+      } else {
+        // Convert to spans for efficiency
+        const htmlContent = convertVariablesToSpans(fixedHeadingSpacing);
+        editor.commands.insertContent(htmlContent);
+      }
+    }
+
+    // Force editor to re-render by triggering a transaction
+    // This ensures all marks and nodes (including conditionals) are properly applied
+    editor.view.dispatch(editor.state.tr);
+
+    editor.commands.focus();
+  };
+
   const toggleViewMode = () => {
     if (!editor) return;
+
+    // Track the mode switch in Google Analytics
+    if (typeof gtag === "function") {
+      gtag("event", "editor_mode_toggle", {
+        event_category: "Template Editor",
+        event_label: "Editor Mode Toggle",
+        editor_mode: isMarkdownView ? "markdown_to_rte" : "rte_to_markdown",
+      });
+    }
 
     if (isMarkdownView) {
       // Switching back from markdown to rich text
       const processedMarkdown = markdownValue || "";
-
-      // Set the content from markdown, converting variables to HTML spans
-      // so behavior matches paste. We centralize conversion in helper.
-      // Convert caret markers '^' to '>' so the editor renders blockquotes
-      const convertedForEditor = processedMarkdown.replace(/^(\s*)\^/gm, "$1>");
-      // Normalize multi-line conditional markers to ensure they start and end
-      // on their own paragraph when converting from markdown to rich content.
-      const normalizeMarkdownConditionals = (txt) => {
-        if (!txt || typeof txt !== "string") return txt;
-        const re = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/g;
-        let out = "";
-        let lastIndex = 0;
-        let m;
-        while ((m = re.exec(txt)) !== null) {
-          const start = m.index;
-          const end = re.lastIndex;
-          const match = m[0];
-
-          out += txt.slice(lastIndex, start);
-
-          // Ensure a blank line before
-          if (out.length === 0) {
-            // at start, nothing to do
-          } else if (!/\n\s*\n$/.test(out)) {
-            if (out.endsWith("\n")) out += "\n";
-            else out += "\n\n";
-          }
-
-          out += match;
-
-          // Ensure a blank line after (lookahead from original text)
-          const after = txt.slice(end);
-          const hasBlankAfter = after.length === 0 || /^\s*\n\s*\n/.test(after);
-          if (!hasBlankAfter) out += "\n\n";
-
-          lastIndex = end;
-        }
-
-        out += txt.slice(lastIndex);
-        return out;
-      };
-
-      const normalizedForEditor =
-        normalizeMarkdownConditionals(convertedForEditor);
-      const processedForInsert = convertVariablesToSpans(normalizedForEditor);
-      editor.commands.setContent(processedForInsert);
-
-      // Force editor to re-render by triggering a transaction
-      // This ensures all marks and nodes are properly applied
-      editor.view.dispatch(editor.state.tr);
-
-      editor.commands.focus();
+      convertMarkdownToEditorContent(processedMarkdown);
     } else {
       // Switching from rich text to markdown
       let markdown = editor.storage.markdown?.getMarkdown() ?? "";
+      // Filter out zero-width space separators used to prevent adjacent variables/conditionals from merging
+      markdown = markdown.replace(/\u200B/g, "");
       // Unescape serializer-escaped variable markers in link destinations
       markdown = markdown.replace(/\\\(\\\(([^)]+)\\\)\\\)/g, (m, v) => {
         return `((${v}))`;
@@ -743,12 +766,37 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
           return m;
         }
       });
+      // Convert autolinked URL forms like <https://example.com>
+      // into explicit markdown links [https://example.com](https://example.com)
+      markdown = markdown.replace(/<(https?:\/\/[^>\s]+)>/g, (m, url) => {
+        try {
+          return `[${url}](${url})`;
+        } catch (e) {
+          return m;
+        }
+      });
+      // Clean up HardBreak backslash continuations
+      markdown = cleanMarkdownSerialization(markdown);
       // Normalize outgoing markdown to use '^' instead of '>'
       markdown = markdown.replace(/^(\s*)>/gm, "$1^");
       setMarkdownValue(markdown);
     }
 
-    setIsMarkdownView((prev) => !prev);
+    const nextMode = !isMarkdownView;
+    setIsMarkdownView(nextMode);
+
+    if (preferenceUpdateUrl) {
+      fetch(preferenceUpdateUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ mode: nextMode ? "markdown" : "rte" }),
+      }).catch((err) => {
+        console.error("Failed to update editor preference:", err);
+      });
+    }
   };
 
   const onMarkdownKeyDown = (event) => {
@@ -783,12 +831,25 @@ const SimpleEditor = ({ inputId, labelId, initialContent, lang = "en" }) => {
         {isMarkdownView ? (
           <textarea
             value={markdownValue}
-            onChange={(event) => setMarkdownValue(event.target.value)}
+            onChange={(event) => {
+              setMarkdownValue(event.target.value);
+              if (
+                !hasTrackedEditRef.current.markdown &&
+                typeof gtag === "function"
+              ) {
+                hasTrackedEditRef.current.markdown = true;
+                gtag("event", "editor_content_changed", {
+                  event_category: "Template Editor",
+                  event_label: "Content change in markdown mode",
+                  editor_mode: "markdown",
+                });
+              }
+            }}
             onKeyDown={onMarkdownKeyDown}
             className="markdown-view"
             aria-label={viewLabel.markdown}
             spellCheck="false"
-            data-testid="markdown-editor"
+            data-testid="template-content"
           ></textarea>
         ) : (
           <EditorContent editor={editor} data-testid="rte-editor" />
