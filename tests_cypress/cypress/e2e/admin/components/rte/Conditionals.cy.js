@@ -16,7 +16,7 @@ describe("Conditional inline and block tests", () => {
   context("Inline keyboard navigation", () => {
     beforeEach(() => {
       // Clear editor and insert an inline conditional
-      RichTextEditor.Components.Editor().clear().type("((v??c))");
+      RichTextEditor.Components.Editor().clear().realType("((v??c))");
     });
 
     it("Focus exits input to the right when arrowing right inside conditional input [input] -> (content)", () => {
@@ -26,23 +26,29 @@ describe("Conditional inline and block tests", () => {
           '*[data-type="conditional-inline"] .conditional-inline-condition-input',
         )
         .first()
-        .focus()
-        .type("jhasd{end}{rightarrow}");
+        .as("conditionInput");
+
+      cy.get("@conditionInput").focus();
+      cy.get("@conditionInput").type("jhasd{end}{rightarrow}");
 
       // Focus should move away from the input
-      RichTextEditor.Components.Editor()
-        .find(
-          '*[data-type="conditional-inline"] .conditional-inline-condition-input',
-        )
-        .first()
-        .should("not.have.focus");
+      cy.get("@conditionInput").should("not.have.focus");
     });
 
     it("Focus enters the input on the left when arrowing right from outside conditional -> [input] (content)", () => {
       // Create content before the conditional
-      RichTextEditor.Components.Editor().clear().type("text ((v??c))");
+      RichTextEditor.Components.Editor().clear();
+      RichTextEditor.Components.Editor().realType("text ((v??c))");
+
+      // The conditional input should now have focus
+      RichTextEditor.Components.Editor()
+        .find(
+          '*[data-type="conditional-inline"] .conditional-inline-condition-input',
+        )
+        .as("conditionInput");
 
       // Position cursor before the conditional (after "text "), press cmd+up
+      cy.realPress("ArrowLeft");
       cy.realPress("ArrowLeft");
       cy.realPress("ArrowLeft");
       cy.realPress("ArrowLeft");
@@ -50,12 +56,7 @@ describe("Conditional inline and block tests", () => {
       // Arrow right should enter the conditional input (from the left)
       cy.realPress("ArrowRight");
 
-      // The conditional input should now have focus
-      RichTextEditor.Components.Editor()
-        .find(
-          '*[data-type="conditional-inline"] .conditional-inline-condition-input',
-        )
-        .should("have.focus");
+      cy.get("@conditionInput").should("have.focus");
     });
 
     it("Focus exits input to the left when arrowing left from inside conditional input <- [input] (content)", () => {
@@ -88,18 +89,19 @@ describe("Conditional inline and block tests", () => {
     it("Focus enters the input on the right when arrowing left from outside conditional [input] (content) <-", () => {
       // Create content after the conditional
       RichTextEditor.Components.Editor().clear().type("((cond??x)) y");
+      // The conditional input should now have focus
+      RichTextEditor.Components.Editor()
+        .find(
+          '*[data-type="conditional-inline"] .conditional-inline-condition-input',
+        )
+        .as("conditionInput");
 
       // Arrow left should enter the conditional input (from the right)
       RichTextEditor.Components.Editor().type(
         "{leftarrow}{leftarrow}{leftarrow}{leftarrow}{leftarrow}",
       ); // two left arrows to get into input
 
-      // The conditional input should now have focus
-      RichTextEditor.Components.Editor()
-        .find(
-          '*[data-type="conditional-inline"] .conditional-inline-condition-input',
-        )
-        .should("have.focus");
+      cy.get("@conditionInput").should("have.focus");
     });
 
     it("Focus exits input to the right when arrowing right inside conditional input [input] (content) ->", () => {
@@ -160,51 +162,52 @@ describe("Conditional inline and block tests", () => {
     it("Focus exits input to the left when arrowing left from inside conditional input [input] <- (content)", () => {
       // Create content after the conditional
       RichTextEditor.Components.Editor().clear().type("((cond??x))");
-
-      // Arrow Left should re-enter the conditional input
-      RichTextEditor.Components.Editor().type("{leftarrow}{leftarrow}");
-      // 1. Cursore before x, inside conditional
-      // 2. Cursor should move focus to the input.
-
       // The conditional input should now have focus
       RichTextEditor.Components.Editor()
         .find(
           '*[data-type="conditional-inline"] .conditional-inline-condition-input',
         )
-        .should("have.focus");
+        .as("conditionInput");
+      // Arrow Left should re-enter the conditional input
+      RichTextEditor.Components.Editor().type("{leftarrow}{leftarrow}");
+      // 1. Cursore before x, inside conditional
+      // 2. Cursor should move focus to the input.
+      cy.get("@conditionInput").should("have.focus");
     });
 
     it("When focus is on conditional input, Pressing Tab sets focus on the conditional body", () => {
-      // Focus the conditional input
-      cy.realPress("ArrowLeft");
-      // press Tab
-      cy.realType("Tab");
-
-      // The conditional input should now have focus
       RichTextEditor.Components.Editor()
         .find("span.conditional-inline-content")
         .first()
-        .then(($inner) => {
-          cy.window().then((win) => {
-            const selection = win.getSelection();
-            const range = selection.getRangeAt(0);
-            const isInside = $inner[0].contains(range.commonAncestorContainer);
-            expect(isInside).to.be.true;
-          });
+        .as("conditionalContent");
+      // Focus the conditional input
+      cy.realPress("ArrowLeft");
+      // press Tab
+      cy.realPress("Tab");
+
+      // The conditional input should now have focus
+      cy.get("@conditionalContent").then(($inner) => {
+        cy.window().then((win) => {
+          const selection = win.getSelection();
+          const range = selection.getRangeAt(0);
+          const isInside = $inner[0].contains(range.commonAncestorContainer);
+          expect(isInside).to.be.true;
         });
+      });
     });
 
     it("When focus is on conditional body, Pressing Shift+Tab sets focus on the conditional input", () => {
-      // Focus the conditional body
-      cy.realPress(["Shift", "Tab"]);
-
-      // The conditional input should now have focus
       RichTextEditor.Components.Editor()
         .find(
           'span[data-type="conditional-inline"] .conditional-inline-condition-input',
         )
         .first()
-        .should("have.focus");
+        .as("conditionInput");
+
+      // Focus the conditional body
+      cy.realPress(["Shift", "Tab"]);
+      // The conditional input should now have focus
+      cy.get("@conditionInput").should("have.focus");
     });
 
     it("Pressing enter inside a conditional inline turns it into a conditional block", () => {
@@ -324,7 +327,8 @@ describe("Conditional inline and block tests", () => {
       RichTextEditor.Components.Editor()
         .find('*[data-type="conditional"] input')
         .first()
-        .should("have.focus");
+        .as("conditionInput");
+      cy.get("@conditionInput").should("have.focus");
     });
   });
 
@@ -446,7 +450,7 @@ describe("Conditional inline and block tests", () => {
     });
   });
 
-  context.only("Tab behavior in lists", () => {
+  context("Tab behavior in lists", () => {
     it("Pressing Tab on a list item indents it instead of moving focus out of the editor", () => {
       // Type a block conditional followed by a bullet list
       RichTextEditor.Components.Editor().type(
@@ -472,5 +476,22 @@ describe("Conditional inline and block tests", () => {
       // The second item should now be back to top-level list
       RichTextEditor.Components.Editor().find("ul li").should("have.length", 3);
     });
+  });
+
+  it("Adjacent inline conditionals round-trip to markdown without added line breaks (regression)", () => {
+    const adjacent = "((a??x)) ((b??y))";
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Enter adjacent inline conditionals in the editor
+    RichTextEditor.Components.MarkdownEditor().clear().type(adjacent);
+    RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
+
+    // Switch to visual editor and back
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Confirm markdown still contains the exact adjacent conditionals string
+    RichTextEditor.Components.MarkdownEditor().should("have.text", adjacent);
   });
 });
