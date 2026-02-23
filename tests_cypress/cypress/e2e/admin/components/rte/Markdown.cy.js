@@ -2,7 +2,7 @@ import RichTextEditor from "../../../../Notify/Admin/Components/RichTextEditor";
 import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
-describe.only("Markdown entering and pasting tests", () => {
+describe("Markdown entering and pasting tests", () => {
   beforeEach(() => {
     // Load the editor
     cy.visit(RichTextEditor.URL);
