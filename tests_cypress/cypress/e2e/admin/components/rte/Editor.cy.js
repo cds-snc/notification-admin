@@ -198,7 +198,7 @@ line3`;
 
 const SERVICE_ID = getServiceID("CYPRESS");
 const TEMPLATE_ID = getTemplateID("SMOKE_TEST_EMAIL");
-describe.only("Rich Text Editor Persistence", () => {
+describe("Rich Text Editor Persistence", () => {
   beforeEach(() => {
     // Sign in and go directly to a template
     cy.login();
