@@ -463,6 +463,10 @@ span[data-type="conditional-inline"] .conditional-inline-content {
   @apply text-black;
 }
 
+.conditional-inline-condition-input {
+  @apply inline-block;
+}
+
 .conditional-inline-condition-input,
 .conditional-block-condition-input {
   border-radius: 0;

@@ -356,6 +356,117 @@ const ConditionalInlineNode = Node.create({
               // ignore
             }
           }
+
+          // Prevent the browser from collapsing / blurring the
+          // contentEditable span when the last character is deleted.
+          if (event.key === "Backspace" || event.key === "Delete") {
+            const text = input.textContent || "";
+            const sel = window.getSelection();
+
+            let wouldEmpty = false;
+            if (sel && sel.rangeCount > 0) {
+              const range = sel.getRangeAt(0);
+              if (!range.collapsed) {
+                // Selection covers all remaining text
+                wouldEmpty = sel.toString().length >= text.length;
+              } else {
+                wouldEmpty = text.length <= 1;
+              }
+            } else {
+              wouldEmpty = text.length <= 1;
+            }
+
+            if (wouldEmpty) {
+              event.preventDefault();
+              input.textContent = "";
+              commit();
+              // Restore caret inside the now-empty span
+              try {
+                const r = document.createRange();
+                r.selectNodeContents(input);
+                r.collapse(true);
+                const s = window.getSelection();
+                s.removeAllRanges();
+                s.addRange(r);
+              } catch {
+                // ignore
+              }
+            }
+            return;
+          }
+
+          // ArrowUp / ArrowDown: move the editor cursor to the
+          // previous / next line instead of jumping to the
+          // start / end of the input text.
+          if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+            commit();
+
+            try {
+              const pos = typeof getPos === "function" ? getPos() : null;
+              if (typeof pos !== "number") return;
+
+              // Use the caret's visual position rather than the input
+              // element's bounding rect. The input span can be taller
+              // or positioned differently than the actual cursor, which
+              // caused ArrowUp probes to land inside the same line.
+              let caretLeft = input.getBoundingClientRect().left;
+              let caretTop = input.getBoundingClientRect().top;
+              let caretBottom = input.getBoundingClientRect().bottom;
+              try {
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount > 0) {
+                  const range = sel.getRangeAt(0);
+                  const rects = range.getClientRects();
+                  const rect =
+                    rects && rects.length > 0
+                      ? rects[0]
+                      : range.getBoundingClientRect();
+                  if (rect && rect.height > 0) {
+                    caretLeft = rect.left;
+                    caretTop = rect.top;
+                    caretBottom = rect.bottom;
+                  }
+                }
+              } catch {
+                // fall back to input rect
+              }
+
+              const lineHeight =
+                parseFloat(getComputedStyle(view.dom).lineHeight) || 20;
+
+              const targetY =
+                event.key === "ArrowUp"
+                  ? caretTop - lineHeight
+                  : caretBottom + lineHeight;
+
+              const result = view.posAtCoords({
+                left: caretLeft,
+                top: targetY,
+              });
+
+              if (result) {
+                const nodeAtPos = view.state.doc.nodeAt(pos);
+                const nodeEnd = nodeAtPos ? pos + nodeAtPos.nodeSize : pos + 1;
+
+                const isValid =
+                  event.key === "ArrowUp"
+                    ? result.pos < pos
+                    : result.pos >= nodeEnd;
+
+                if (isValid) {
+                  const tr = view.state.tr.setSelection(
+                    TextSelection.near(view.state.doc.resolve(result.pos)),
+                  );
+                  view.dispatch(tr);
+                  view.focus();
+                }
+              }
+            } catch {
+              // ignore
+            }
+            return;
+          }
         },
         { capture: true },
       );
@@ -380,6 +491,14 @@ const ConditionalInlineNode = Node.create({
         contentDOM,
         stopEvent: (event) => {
           return input.contains(event.target);
+        },
+        // Tell ProseMirror to ignore DOM mutations that happen inside the
+        // condition-input widget (the contentEditable span).  Without this,
+        // ProseMirror's mutation observer sees the text change and tries to
+        // reconcile the DOM, which steals focus / destroys the caret.
+        ignoreMutation: (mutation) => {
+          if (widget.contains(mutation.target)) return true;
+          return false;
         },
         update: (nextNode) => {
           if (nextNode.type !== node.type) return false;
@@ -555,15 +674,81 @@ const ConditionalInlineNode = Node.create({
         key: pluginKey,
         props: {
           handleKeyDown: (view, event) => {
+            const { state } = view;
+            const { selection } = state;
+            const nodeType = state.schema.nodes[this.name];
+
+            // ArrowUp / ArrowDown inside inline conditional content:
+            // ProseMirror's default vertical arrow handling can get
+            // confused by the inline node structure. Manually compute
+            // the target position on the previous / next visual line.
+            if (
+              (event.key === "ArrowUp" || event.key === "ArrowDown") &&
+              selection.empty
+            ) {
+              const $pos = state.doc.resolve(selection.from);
+              let insideInline = false;
+              for (let d = $pos.depth; d > 0; d--) {
+                if ($pos.node(d).type === nodeType) {
+                  insideInline = true;
+                  break;
+                }
+              }
+              if (insideInline) {
+                try {
+                  const coords = view.coordsAtPos(selection.from);
+                  const lineHeight =
+                    parseFloat(getComputedStyle(view.dom).lineHeight) || 20;
+                  const targetY =
+                    event.key === "ArrowUp"
+                      ? coords.top - lineHeight
+                      : coords.bottom + lineHeight;
+
+                  const result = view.posAtCoords({
+                    left: coords.left,
+                    top: targetY,
+                  });
+
+                  if (result) {
+                    // Find the inline node boundaries to validate direction
+                    let inlineNodePos = null;
+                    let inlineNodeEnd = null;
+                    for (let d = $pos.depth; d > 0; d--) {
+                      if ($pos.node(d).type === nodeType) {
+                        inlineNodePos = $pos.before(d);
+                        inlineNodeEnd = inlineNodePos + $pos.node(d).nodeSize;
+                        break;
+                      }
+                    }
+
+                    const isValid =
+                      event.key === "ArrowUp"
+                        ? result.pos < inlineNodePos
+                        : result.pos >= inlineNodeEnd;
+
+                    if (isValid) {
+                      event.preventDefault();
+                      const tr = state.tr.setSelection(
+                        TextSelection.near(state.doc.resolve(result.pos)),
+                      );
+                      view.dispatch(tr);
+                      view.focus();
+                      return true;
+                    }
+                  }
+                } catch {
+                  // ignore — fall through to default
+                }
+              }
+              return false;
+            }
+
             if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
               return false;
             }
-            const { state } = view;
-            const { selection } = state;
             if (!selection.empty) return false;
 
             const $pos = state.doc.resolve(selection.from);
-            const nodeType = state.schema.nodes[this.name];
 
             if (event.key === "ArrowRight") {
               // 1. Break out of node content: when at end of the content, move to after the node.
