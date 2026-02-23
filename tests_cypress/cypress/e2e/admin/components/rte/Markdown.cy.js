@@ -3,6 +3,15 @@ import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
 describe("Markdown entering and pasting tests", () => {
+  // Pre-load the Storybook page so JS bundles are cached before the first test.
+  // Without this, the first test (Headings) bears the cold-start cost, which
+  // causes timeouts in CI when running as part of the full suite.
+  before(() => {
+    cy.visit(RichTextEditor.URL, { timeout: 30000 });
+    RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
+    RichTextEditor.Components.Editor().should("exist").and("be.visible");
+  });
+
   beforeEach(() => {
     // Load the editor
     cy.visit(RichTextEditor.URL);
@@ -23,22 +32,24 @@ describe("Markdown entering and pasting tests", () => {
     });
 
     // Ensure the editable element is visible and ready, then clear it
-    cy.get("@editorEditable", { timeout: 20000 })
+    cy.get("@editorEditable", { timeout: 30000 })
       .should("be.visible")
       .and("contain.text", "Welcome to the Editor")
       .click("topLeft")
       .type("{selectall}{del}{del}");
 
-    // Assert default content is gone and editor is empty
+    // Assert default content is gone and editor is ready for input
     cy.get("@editorEditable")
       .should("not.contain.text", "Welcome to the Editor")
-      .and("have.text", "");
+      .and("have.text", "")
+      .and("have.attr", "contenteditable", "true");
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
       RichTextEditor.Components.Editor().type(before, {
-        timeout: Math.max(before.length * 15, 10000),
+        delay: 15,
+        timeout: Math.max(before.length * 25, 15000),
       });
 
       RichTextEditor.Components.ViewMarkdownButton().click();
