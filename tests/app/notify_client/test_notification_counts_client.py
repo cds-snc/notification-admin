@@ -101,7 +101,7 @@ class TestNotificationCounts:
             assert result["sms"] == 29  # 1 + 22 + 1 + 5
             assert result["email"] == 21  # 1 + 1 + 12 + 1 + 1 + 5
 
-    def test_get_limit_stats(self, mocker):
+    def test_get_limit_stats(self, app_, mocker):
         # Setup
         mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
 
@@ -117,7 +117,8 @@ class TestNotificationCounts:
         )
 
         # Execute
-        result = mock_notification_client.get_limit_stats(mock_service)
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            result = mock_notification_client.get_limit_stats(mock_service)
 
         # Assert
         assert result == {
@@ -167,7 +168,7 @@ class TestNotificationCounts:
             ),
         ],
     )
-    def test_get_limit_stats_remaining_calculations(self, mocker, today_counts, year_counts, expected_remaining):
+    def test_get_limit_stats_remaining_calculations(self, app_, mocker, today_counts, year_counts, expected_remaining):
         # Setup
         mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
 
@@ -177,7 +178,8 @@ class TestNotificationCounts:
         mocker.patch.object(mock_notification_client, "get_all_notification_counts_for_year", return_value=year_counts)
 
         # Execute
-        result = mock_notification_client.get_limit_stats(mock_service)
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            result = mock_notification_client.get_limit_stats(mock_service)
 
         # Assert remaining counts
         assert result["email"]["annual"]["remaining"] == expected_remaining["email"]["annual"]
@@ -185,7 +187,7 @@ class TestNotificationCounts:
         assert result["sms"]["annual"]["remaining"] == expected_remaining["sms"]["annual"]
         assert result["sms"]["daily"]["remaining"] == expected_remaining["sms"]["daily"]
 
-    def test_get_limit_stats_dependencies_called(self, mocker):
+    def test_get_limit_stats_dependencies_called(self, app_, mocker):
         # Setup
         mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
         mock_notification_client = NotificationCounts()
@@ -198,7 +200,8 @@ class TestNotificationCounts:
         )
 
         # Execute
-        mock_notification_client.get_limit_stats(mock_service)
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            mock_notification_client.get_limit_stats(mock_service)
 
         # Assert dependencies called
         mock_today.assert_called_once_with(mock_service.id)
@@ -259,3 +262,53 @@ class TestNotificationCountsWithBillableUnits:
                 # Verify billable units (300) are used instead of standard count (100)
                 assert result["sms"] == 300  # Uses billable units (3 fragments per message)
                 assert result["email"] == 50  # Email unchanged
+
+    def test_get_limit_stats_uses_redis_billable_units_for_annual_sms_when_ff_enabled(self, app_, mocker):
+        """Test that get_limit_stats uses Redis annual_limit_client billable units for annual SMS when FF is enabled"""
+        mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
+        mock_notification_client = NotificationCounts()
+
+        mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_today", return_value={"email": 5, "sms": 3}
+        )
+        mock_annual_limit = mocker.patch("app.notify_client.notification_counts_client.annual_limit_client")
+        mock_annual_limit.get_all_notification_counts.return_value = {
+            "total_sms_billable_units_fiscal_year_to_yesterday": 75,  # billable units (e.g. multi-part SMS)
+            "total_sms_fiscal_year_to_yesterday": 25,  # standard message count (lower)
+            "total_email_fiscal_year_to_yesterday": 20,
+        }
+
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+            with set_config(app_, "REDIS_ENABLED", True):
+                result = mock_notification_client.get_limit_stats(mock_service)
+
+        # Annual SMS should use billable units (75) + today (3) = 78, not message count (25)
+        assert result["sms"]["annual"]["sent"] == 78
+        assert result["sms"]["annual"]["remaining"] == 422  # 500 - 78
+        # Annual email uses standard email count (20) + today (5) = 25
+        assert result["email"]["annual"]["sent"] == 25
+        assert result["email"]["annual"]["remaining"] == 975  # 1000 - 25
+        # Daily still uses today's billable units count
+        assert result["sms"]["daily"]["sent"] == 3
+        assert result["sms"]["daily"]["remaining"] == 47  # 50 - 3
+
+    def test_get_limit_stats_does_not_use_annual_limit_client_when_ff_disabled(self, app_, mocker):
+        """Test that get_limit_stats uses get_all_notification_counts_for_year (not Redis) when FF is disabled"""
+        mock_service = Mock(id="service-1", email_annual_limit=1000, sms_annual_limit=500, message_limit=100, sms_daily_limit=50)
+        mock_notification_client = NotificationCounts()
+
+        mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_today", return_value={"email": 5, "sms": 3}
+        )
+        mocker.patch.object(
+            mock_notification_client, "get_all_notification_counts_for_year", return_value={"email": 20, "sms": 25}
+        )
+        mock_annual_limit = mocker.patch("app.notify_client.notification_counts_client.annual_limit_client")
+
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            result = mock_notification_client.get_limit_stats(mock_service)
+
+        # annual_limit_client should NOT be called when FF is disabled
+        mock_annual_limit.get_all_notification_counts.assert_not_called()
+        # Annual SMS should use standard year counts
+        assert result["sms"]["annual"]["sent"] == 25
