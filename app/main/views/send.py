@@ -826,31 +826,23 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     else:
         data["use_billable_units"] = False
 
-    if current_app.config["FF_ANNUAL_LIMIT"]:
-        data["send_exceeds_annual_limit"] = False
-        data["send_exceeds_daily_limit"] = False
-        # determine the remaining sends for daily + annual
-        limit_stats = notification_counts_client.get_limit_stats(current_service)
-        remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
+    data["send_exceeds_annual_limit"] = False
+    data["send_exceeds_daily_limit"] = False
+    # determine the remaining sends for daily + annual
+    limit_stats = notification_counts_client.get_limit_stats(current_service)
+    remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
 
-        if remaining_annual < data["count_of_recipients"]:
-            data["recipients_remaining_messages"] = remaining_annual
-            data["send_exceeds_annual_limit"] = True
-        else:
-            # if they arent over their limit, and its sms, check if they are over their daily limit
-            if data["template"].template_type == "sms":
-                # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
-                if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-                    data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
-                else:
-                    data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
-
+    if remaining_annual < data["count_of_recipients"]:
+        data["recipients_remaining_messages"] = remaining_annual
+        data["send_exceeds_annual_limit"] = True
     else:
-        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
-        if current_app.config.get("FF_USE_BILLABLE_UNITS") and data["template"].template_type == "sms":
-            data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
-        else:
-            data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
+        # if they arent over their limit, and its sms, check if they are over their daily limit
+        if data["template"].template_type == "sms":
+            # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+            if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
+            else:
+                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
     if (
         data["recipients"].too_many_rows
@@ -871,9 +863,8 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if data["send_exceeds_daily_limit"]:
         return render_template("views/check/column-errors.html", **data)
 
-    if current_app.config["FF_ANNUAL_LIMIT"]:
-        if data["send_exceeds_annual_limit"]:
-            return render_template("views/check/column-errors.html", **data)
+    if data["send_exceeds_annual_limit"]:
+        return render_template("views/check/column-errors.html", **data)
 
     metadata_kwargs = {
         "notification_count": data["count_of_recipients"],
