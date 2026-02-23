@@ -652,9 +652,17 @@ const SimpleEditor = ({
         const end = re.lastIndex;
         const match = m[0];
 
+        // If the conditional is purely inline (no newline), leave it alone
+        if (match.indexOf("\n") === -1) {
+          // copy through unchanged
+          out += txt.slice(lastIndex, end);
+          lastIndex = end;
+          continue;
+        }
+
         out += txt.slice(lastIndex, start);
 
-        // Ensure a blank line before
+        // Ensure a blank line before (only for block conditionals)
         if (out.length === 0) {
           // at start, nothing to do
         } else if (!/\n\s*\n$/.test(out)) {

@@ -3,6 +3,15 @@ import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 
 describe("Markdown entering and pasting tests", () => {
+  // Pre-load the Storybook page so JS bundles are cached before the first test.
+  // Without this, the first test (Headings) bears the cold-start cost, which
+  // causes timeouts in CI when running as part of the full suite.
+  before(() => {
+    cy.visit(RichTextEditor.URL, { timeout: 30000 });
+    RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
+    RichTextEditor.Components.Editor().should("exist").and("be.visible");
+  });
+
   beforeEach(() => {
     // Load the editor
     cy.visit(RichTextEditor.URL);
@@ -10,24 +19,38 @@ describe("Markdown entering and pasting tests", () => {
     // Ensure toolbar is ready for interactions
     RichTextEditor.Components.Toolbar().should("exist").and("be.visible");
 
-    // Ensure editor is mounted and ready
+    // Ensure editor is mounted and alias the editable area (root or child)
     RichTextEditor.Components.Editor().should("exist");
 
-    // Wait for initial default content, then clear robustly
-    RichTextEditor.Components.Editor()
-      .should("contain.text", "Welcome to the Editor")
+    RichTextEditor.Components.Editor().then(($editor) => {
+      const $el = $editor.first();
+      if ($el.is("[contenteditable]")) {
+        cy.wrap($el).as("editorEditable");
+      } else {
+        cy.wrap($el).find("[contenteditable]").first().as("editorEditable");
+      }
+    });
+
+    // Ensure the editable element is visible and ready, then clear it
+    cy.get("@editorEditable", { timeout: 30000 })
+      .should("be.visible")
+      .and("contain.text", "Welcome to the Editor")
       .click("topLeft")
       .type("{selectall}{del}{del}");
 
-    // Assert default content is gone and editor is empty
-    RichTextEditor.Components.Editor()
+    // Assert default content is gone and editor is ready for input
+    cy.get("@editorEditable")
       .should("not.contain.text", "Welcome to the Editor")
-      .and("have.text", "");
+      .and("have.text", "")
+      .and("have.attr", "contenteditable", "true");
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
-      RichTextEditor.Components.Editor().type(before);
+      RichTextEditor.Components.Editor().type(before, {
+        delay: 15,
+        timeout: Math.max(before.length * 25, 15000),
+      });
 
       RichTextEditor.Components.ViewMarkdownButton().click();
       RichTextEditor.Components.MarkdownEditor().should("have.text", expected);
@@ -65,7 +88,9 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   it("Links are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before);
+    RichTextEditor.Components.Editor().type(MARKDOWN.LINKS.before, {
+      timeout: 15000,
+    });
 
     // Editor should have 10 marked up links
     RichTextEditor.Components.Editor().find("a").should("have.length", 10);
@@ -84,9 +109,7 @@ describe("Markdown entering and pasting tests", () => {
 
   it("Renders initial markdown samples correctly after converting to markdown", () => {
     // Visit the Storybook page for the text editor
-    cy.visit(
-      "http://localhost:6012/_storybook?component=text-editor-tiptap-complex-markdown",
-    );
+    cy.visit("/_storybook?component=text-editor-tiptap-complex-markdown");
 
     // Ensure the editor is loaded
     RichTextEditor.Components.Editor().should("exist");
@@ -133,7 +156,9 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   it("RTL blocks are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before);
+    RichTextEditor.Components.Editor().type(MARKDOWN.RTL_BLOCKS.before, {
+      timeout: 15000,
+    });
 
     // Editor should have marked up RTL blocks
     RichTextEditor.Components.Editor()
@@ -201,7 +226,9 @@ describe("Markdown entering and pasting tests", () => {
   });
 
   it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
-    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before);
+    RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, {
+      timeout: 30000,
+    });
 
     // Editor should have marked up language blocks
     RichTextEditor.Components.Editor()
@@ -408,7 +435,7 @@ describe("Markdown entering and pasting tests", () => {
       });
     });
   });
-  describe.only("Heading space auto-fix (markdown conversion)", () => {
+  describe("Heading space auto-fix (markdown conversion)", () => {
     it("Converts `#heading` to `# heading` when switching from markdown view", () => {
       // Switch to markdown view and enter heading without space
       RichTextEditor.Components.ViewMarkdownButton().click();
