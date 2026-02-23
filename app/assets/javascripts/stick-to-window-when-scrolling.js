@@ -68,6 +68,15 @@
   ScrollArea.prototype.focusHandler = function (e) {
     var $focusedElement = $(document.activeElement);
     var nodeName = $focusedElement.get(0).nodeName.toLowerCase();
+    // Ignore focus events originating from the rich text editor toolbar or editor chrome.
+    // Clicking toolbar controls shouldn't trigger sticky scroll adjustments.
+    if (
+      $focusedElement.closest(
+        ".tiptap, .editor-wrapper, .rte-toolbar, .tiptap-menubar, .menu-bar, .menu-bar__button",
+      ).length
+    ) {
+      return;
+    }
     var endOfFurthestEl = focusOverlap.endOfFurthestEl(this._els, this.edge);
     var isInSticky = function () {
       return $focusedElement.closest(this.selector).length > 0;
