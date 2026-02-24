@@ -69,7 +69,7 @@ def a11y_test(slug: str, html):
     return True
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def app_():
     app = Flask("app")
     create_app(app)
