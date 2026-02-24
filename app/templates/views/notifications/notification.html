@@ -108,7 +108,11 @@
       {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
       {% if config['FF_USE_BILLABLE_UNITS'] and billable_units %}
         <p class="mt-6">
-          Billable units: {{ billable_units }}
+          {% if billable_units == 1 %}
+            {{ _("Counted as 1 text message.") }}
+          {% else %}
+            {{ _("Counted as {} text messages.").format(billable_units) }}
+          {% endif %}
         </p>
       {% endif %}
     {% endif %}
