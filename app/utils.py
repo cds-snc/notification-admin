@@ -95,8 +95,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=12 * 60 * 60)
-def get_latest_stats(lang, filter_heartbeats=None):
-    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
+def get_latest_stats(lang):
+    results = service_api_client.get_stats_by_month()["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -122,7 +122,7 @@ def get_latest_stats(lang, filter_heartbeats=None):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
+    live_services = len(service_api_client.get_live_services_data()["data"])
 
     return {
         "monthly_stats": monthly_stats,
