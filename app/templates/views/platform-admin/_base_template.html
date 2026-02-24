@@ -5,8 +5,21 @@
 {% set platform_admin_view_ind = True %}
 {% block maincolumn_content %}
 
-  <div class="flex flex-row">
-    <div class="xs:hidden smaller:hidden sm:hidden md:flex flex-col">
+  <div class="flex flex-col md:flex-row items-stretch gap-gutter">
+    <div class="relative md:border-r-1">
+    <button
+        id="admin-menu"
+        type="button"
+        aria-expanded="false"
+        aria-haspopup="true"
+        class="nav-menu-item md:hidden bg-gray-200"
+        data-module="menu" 
+        data-menu-type="hybrid"
+        aria-controls="admin-menu-links">
+        {{ _("Admin tools") }}
+        <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+      </button>
+    <ul id="admin-menu-links" class="menu-overlay hidden md:flex flex-col gap-2" role="menu">
           {% for link_text, view in [
           ('Your services', 'choose_account'),
           ('Live services', 'live_services'),
@@ -24,20 +37,21 @@
           ('Providers', 'view_providers'),
           ('Clear cache', 'clear_cache'),
         ] %}
-          <div class="pl-10 pr-5 py-2 adminnav--{{ admin_navigation.is_selected(view) }} ">
+        <li class="">
             <a
               aria-label="{{ _(link_text) }}" 
               href="{{ url_for('main.'+view) }}"
-              class="no-underline text-blue visited:text-blue link:text-blue text-smaller"
+              class="nav-menu-item py-2 pl-2 hover:bg-gray-100 w-full focus:border-b-0 border-0 border-l-4 no-underline [&[aria-current]]:bg-gray-100 [&[aria-current]]:border-blue"
               {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
               >
               {{ _(link_text) }}
               
             </a>
-          </div>
+        </li>
         {% endfor %}
+    </ul>
     </div>
-    <div class="border-l-1 p-5 w-full">
+    <div class="w-full">
       {% block platform_admin_content %}{% endblock %}
     </div>
   </div>

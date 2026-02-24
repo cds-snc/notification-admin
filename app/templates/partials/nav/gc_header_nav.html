@@ -1,128 +1,47 @@
 {% from "components/nav_menu_item.html" import nav_menu_item with context %}
 
-{% set lang_switch = 'EN' %}
-{% set long_lang_switch = 'English' %}
-
-{% if session["userlang"] == "en" %}
-  {% set lang_switch = 'FR' %}
-  {% set long_lang_switch = 'Français' %}
-{% endif %}
-
-<hr class="m-0 md:hidden bg-blue border-blue border-0 border-b-2"/>
-<nav class="md:hidden" aria-label="{{ _('Main menu - mobile') }}">
-  <div class="container px-gutterHalf">
-    <!-- Mobile menu and nav bar -->
-    <div class="grid grid-cols-2">
-      <div class="flex">
-          <button
-            aria-expanded="false"
-            aria-haspopup="true"
-            href="#"
-            id="menu"
-            data-module="menu"
-            aria-controls="main-menu-nav"
-            class="mr-5 p-4 bg-blue flex-shrink text-white text-smaller focus:outline-yellow visited:text-white link:text-white no-underline"
-            type="button">
-            {{ _('Menu') }}
-            <img alt="" aria-hidden="true" class="account-menu-arrow ml-2 inline arrow self-center" src="{{ asset_url('images/arrow-white.svg') }}" width="15"/>
-          </button>
-      </div>
-
-      {# This include of mobile popup overlay needs to be here for the HTML natural ordering #}
-      {# to be determined properly for tab navigating and accessibility purposes. #}
-      <!--  start mobile navigation -->
-      {% include 'partials/nav/gc_header_nav_mobile.html' %}
-      <!--  end mobile navigation -->
-      <div class="flex justify-end self-start gap-4">
-        {% if current_user.is_authenticated %}
-          {% include 'partials/nav/account_menu_mobile.html' %}
-        {% else %}
-          <div class="self-center flex-shrink-0">
-            <a
-              id="nav-sign-in-desktop"
-              href="{{ url_for('main.sign_in' ) }}"
-              class="min-h-target px-4 line-under leading-none inline-flex items-center text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline">
-              {{ _('Sign in') }}
-            </a>
-          </div>
-        {% endif %}
-            <a
-              id="nav-lang"
-              class="p-2 min-w-target min-h-target border-2 border-solid border-gray flex items-center justify-center line-under leading-none text-blue visited:text-blue link:text-blue text-smaller underline hover:no-underline focus:outline-yellow focus:border-gray focus:bg-white"
-              href="{{ url_for('main.set_lang', **{'from': lang_url or request.full_path.rstrip('?')}) }}"
-              lang="{{ 'fr-CA' if lang_switch == 'FR' else 'en-CA' }}">
-              <span class="sr-only">{{ long_lang_switch }}</span>
-              <span role="presentation" aria-hidden="true">{{ lang_switch }}</span>
-            </a>
-      </div>
-      <!-- Mobile menu and nav bar END -->
-      <!-- MD-LG menu and nav bar -->
-    </div>
-  </div>
-</nav>
+<hr class="m-0 md:hidden border-gray-300 border-0 border-b-1"/>
 {% if withnav %}
-  <nav class="bg-gray hidden md:visible md:flex" aria-label="{{ _('Main menu') }}">
-    <div class="container px-gutterHalf flex flex-nowrap">
-      <ul id="proposition-links" class="flex flex-nowrap flex-grow items-baseline gap-gutterHalf">
-        {% if not current_user.is_authenticated %}
-          {% if nav_items %}
+  <nav class="md:bg-gray flex" aria-label="{{ _('Main menu') }}">
+    <div class="container p-gutterHalf md:py-0 flex flex-nowrap">
+      <div class="relative w-full flex">
+      <button
+        id="menu"
+        data-testid="main-menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-haspopup="true"
+        class="nav-menu-item md:hidden bg-blue text-white focus:text-black justify-center px-4 w-full"
+        data-module="menu" 
+        data-menu-type="hybrid"
+        aria-controls="proposition-links">
+        {{ _("Menu") }}
+        <i aria-hidden="true" class="fa-solid fa-angle-down"></i>
+      </button>
+      <ul id="proposition-links" data-testid="main-menu-links" class="hidden max-md:min-w-full menu-overlay md:flex flex-nowrap flex-grow items-baseline gap-gutterHalf" role="menu">
+        {% if nav_items %}
             {% for i in nav_items %}
+            {# Menu configured in GC Articles #}
               {% if 'main' in i.description %}
-                {{ nav_menu_item(i.url, i.title, is_external_link=i.target, is_active=i.active) }}
+                <li class="flex-shrink-0">
+                  {{ nav_menu_item(i.url, i.title, is_external_link=i.target, is_active=i.active) }}
+                </li>
               {% endif %}
             {% endfor %}
           {% else %}
-            {{ nav_menu_item(url='/', localised_txt=_('Home'), css_classes='pl-0 ', id_key='nav-head-home', is_active=header_navigation.is_selected('home')) }}
-            {{ nav_menu_item(url=gca_url_for('whynotify'), localised_txt=_('By and for the GC'), id_key='nav-head-why-notify', is_active=header_navigation.is_selected('why-notify')) }}
-            {{ nav_menu_item(url=gca_url_for('features'), localised_txt=_('Features'), id_key='nav-head-features', is_active=header_navigation.is_selected('features')) }}
-            {{ nav_menu_item(url=documentation_url(), localised_txt=_('API documentation'), id_key='nav-head-doc', is_active=header_navigation.is_selected('documentation'), is_external_link=true) }}
-            {{ nav_menu_item(url=gca_url_for('guidance'), localised_txt=_('Guidance'), id_key='nav-head-guidance', is_active=header_navigation.is_selected('guidance')) }}
-            {{ nav_menu_item(url=url_for('main.contact'), localised_txt=_('Contact us'), id_key='nav-head-contact', is_active=header_navigation.is_selected('contact')) }}
-          {% endif %}
-        {% else %}
-          {% if not current_user.platform_admin %}
-            {% if current_user.has_permissions() %}
-              {% if current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item(url=url_for('main.service_dashboard', service_id=current_service.id),localised_txt=_('Dashboard'),css_classes='pl-0', is_active=header_navigation.is_selected('dashboard')) }}
-              {% endif %}
-              {{ nav_menu_item(url= url_for('main.choose_template', service_id=current_service.id),localised_txt=_('Templates'), is_active=header_navigation.is_selected('templates')) }}
-              {% if not current_user.has_permissions('view_activity') %}
-                {{ nav_menu_item(url=url_for('main.view_notifications', service_id=current_service.id, status='sending,delivered,failed'),localised_txt=_('Sent messages'), is_active=header_navigation.is_selected('sent-messages')) }}
-                {% if current_service.has_jobs %}
-                  {{ nav_menu_item(url=url_for('main.view_jobs', service_id=current_service.id),localised_txt=_('Bulk sends'), is_active=header_navigation.is_selected('bulk-sends')) }}
-                {% endif %}
-              {% endif %}
-              {% if current_user.has_permissions('manage_api_keys') %}
-                {{ nav_menu_item(url=url_for('main.api_integration', service_id=current_service.id),localised_txt=_('API integration'), is_active=header_navigation.is_selected('api-integration')) }}
-              {% endif %}
-              {{ nav_menu_item(url=url_for('main.manage_users', service_id=current_service.id),localised_txt=_('Team members'), is_active=header_navigation.is_selected('team-members')) }}
-              {% if current_user.has_permissions('manage_api_keys', 'manage_service') %}
-                {{ nav_menu_item(url=url_for('main.service_settings', service_id=current_service.id),localised_txt=_('Settings'), is_active=header_navigation.is_selected('settings')) }}
-              {% endif %}
-            {% else %} {# not current_user.has_permissions, i.e. services not in context #}
-              {{ nav_menu_item(url=url_for('main.choose_account'),localised_txt=_('Your services'),id_key='choose_account', is_active=header_navigation.is_selected('choose_account')) }}
-              {{ nav_menu_item(url=url_for('main.contact', service_id=current_service.id),localised_txt=_('Contact us'), is_active=header_navigation.is_selected('contact')) }}
+          {% for key, item in header_navigation.get_nav().items() %}
+          {# Controller in navigation.py #}
+            {% if item.context or item.context is undefined %}
+              <li class="flex-shrink-0">
+                {{ nav_menu_item(url=item.url or url_for('main.' + item.view), localised_txt=item.label, id_key=item.id_key, is_external_link=item.external or False, is_active=header_navigation.is_selected(key)) }}
+              </li>
             {% endif %}
-          {% else %} {# current_user.platform_admin #}
-            
-            {% if current_user.has_permissions() %}
-              {{ nav_menu_item(url=url_for('main.live_services', service_id=current_service.id), localised_txt=_('Admin panel'), css_classes='pl-0') }}
-              {{ nav_menu_item(url=url_for('main.service_dashboard', service_id=current_service.id),localised_txt=_('Dashboard'), is_active=header_navigation.is_selected('dashboard')) }}
-              {{ nav_menu_item(url= url_for('main.choose_template', service_id=current_service.id),localised_txt=_('Templates'), is_active=header_navigation.is_selected('templates')) }}
-              {{ nav_menu_item(url=url_for('main.api_integration', service_id=current_service.id),localised_txt=_('API integration'), is_active=header_navigation.is_selected('api-integration')) }}
-              {{ nav_menu_item(url=url_for('main.manage_users', service_id=current_service.id),localised_txt=_('Team members'), is_active=header_navigation.is_selected('team-members')) }}
-              {{ nav_menu_item(url=url_for('main.service_settings', service_id=current_service.id),localised_txt=_('Settings'), is_active=header_navigation.is_selected('settings')) }}
-            {% else %} {# not current_user.has_permissions, i.e. services not in context #}
-              {{ nav_menu_item(url=url_for('main.choose_account'),localised_txt=_('Your services'),css_classes='pl-0',id_key='choose_account', is_active=header_navigation.is_selected('choose_account')) }}
-              {{ nav_menu_item(url=url_for('main.live_services', service_id=current_service.id),localised_txt=_('Admin panel'),id_key='platform_admin',
-              is_active=header_navigation.is_selected('platform_admin')) }}
-            {% endif %}
+          {% endfor %}
           {% endif %}
-        {% endif %}
       </ul>
       <button id="more-menu" type="button"
         aria-expanded="false" aria-haspopup="true"
-        class="nav-menu-item justify-end px-4 w-min"
+        class="nav-menu-item justify-end w-min"
         data-module-menu-container="more-menu-container" data-has-items="false"
         data-module="more-menu" data-module-menu-items="proposition-links">
         {{ _("More") }}
@@ -130,6 +49,7 @@
       </button>
       <div id="more-menu-container" class="relative self-end hidden">
         <ul id="more-menu-items" class="menu-overlay absolute right-0 text-right empty:hidden w-max top-full"></ul>
+      </div>
       </div>
     </div>
   </nav>
