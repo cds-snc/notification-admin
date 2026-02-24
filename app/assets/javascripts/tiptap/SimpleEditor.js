@@ -825,7 +825,7 @@ const SimpleEditor = ({
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
   return (
-    <div className="editor-wrapper" data-timestamp={__BUILD_TIMESTAMP__}>
+    <div className="editor-wrapper">
       <MenuBar
         editor={editor}
         openLinkModal={openLinkModal}

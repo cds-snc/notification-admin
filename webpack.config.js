@@ -31,9 +31,6 @@ module.exports = {
 
   plugins: [
     new webpack.ProgressPlugin(),
-    new webpack.DefinePlugin({
-      __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
-    }),
     new MiniCssExtractPlugin({
       filename: 'stylesheets/index.css',
       path: path.resolve(__dirname, "app/assets/stylesheets")
