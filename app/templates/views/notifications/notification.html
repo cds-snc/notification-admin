@@ -107,7 +107,8 @@
     {% elif template.template_type == 'sms' %}
       {{ ajax_block(partials, updates_url, 'status', finished=finished) }}
       {% if config['FF_USE_BILLABLE_UNITS'] and billable_units %}
-        <p class="text-small text-gray-700">
+        <p class="text-small text-gray-700 flex items-center gap-2 border-b border-b-gray-700 pb-2 max-w-[464px]">
+          <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
           {% if billable_units == 1 %}
             {{ _("Counted as 1 text message.") }}
           {% else %}
