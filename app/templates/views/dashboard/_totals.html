@@ -37,6 +37,7 @@
         smaller=smaller_font_size
       ) }}
     </div>
+    </div>
     {% if config['FF_USE_BILLABLE_UNITS'] %}
         <div class="grid-row contain-floats">
           <div id="problem-email-addresses" class="{{column_width}}">
@@ -53,13 +54,22 @@
             ) }}
           </div>
           <div class="{{column_width}}">
+            {% if sms_billable_units_weekly == 1 and statistics['sms']['requested'] == 1 %}
+              {% set sms_billable_label = _("text message to {} phone number").format(statistics['sms']['requested']) %}
+            {% elif sms_billable_units_weekly == 1 %}
+              {% set sms_billable_label = _("text message to {} phone numbers").format(statistics['sms']['requested']) %}
+            {% elif statistics['sms']['requested'] == 1 %}
+              {% set sms_billable_label = _("text messages to {} phone number").format(statistics['sms']['requested']) %}
+            {% else %}
+              {% set sms_billable_label = _("text messages to {} phone numbers").format(statistics['sms']['requested']) %}
+            {% endif %}
             {{ big_number_simple(
-              number=160,
-              label="abc"
+              number=_("Counted as {}").format(sms_billable_units_weekly),
+              label=sms_billable_label
             ) }}
           </div>
         </div>
-        <div class="grid-row contain-floats">
+        <div class="grid-row contain-floats pb-6">
           <div id="problem-email-guide-link" class="{{column_width}}">
           {{ task_shortcut(
             description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
@@ -67,18 +77,17 @@
             link_text=_("Guide: Keep accurate contact information."),
             icon="arrow-up-right-from-square"
           ) }}
-        </div>
-        <div class="{{column_width}}">
-          {{ task_shortcut(
-            description=_("Phone carriers count some texts as more than one message."),
-            link_url=None,
-            link_text=None,
-            icon="arrow-up-right-from-square"
-          ) }}
-        </div>
+          </div>
+          <div class="{{column_width}}">
+            {{ task_shortcut(
+              description=_("Phone carriers count some texts as more than one message."),
+              link_url=None,
+              link_text=_("Guide: Counting text messages"),
+              icon="arrow-up-right-from-square"
+            ) }}
+          </div>
         </div>
     {% endif %}
-  </div>
   {{ show_more(
     url_for('.monthly', service_id=current_service.id),
     _('See all messages sent')
