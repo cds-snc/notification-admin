@@ -2,6 +2,11 @@
 {% from "components/message-count-label.html" import message_count_label %}
 {% from 'components/remaining-messages.html' import remaining_messages %}
 {% from "components/show-more.html" import show_more %}
+{% if use_billable_units %}
+  {% set email_header = _('emails used') %}
+{% else %}
+  {% set email_header = _('emails') %}
+{% endif %}
 
 <div class="ajax-block-container" data-testid="daily-usage">
     <h2 id="daily-usage-label" class="heading-medium mt-8 mb-0" aria-describedby="daily-usage-desc">
@@ -12,11 +17,11 @@
     </p>
     <div class="grid-row contain-floats mb-10">
       <div class="{{column_width}}">
-        {{ remaining_messages(header=_('emails'), total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
+        {{ remaining_messages(header=email_header, total=current_service.message_limit, used=statistics['email']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
       </div>
       <div class="{{column_width}}">
         {% if use_billable_units %}
-          {{ remaining_messages(header=_('billable units'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=True) }}
+          {{ remaining_messages(header=_('text messages used'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=True) }}
         {% else %}
           {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
         {% endif %}

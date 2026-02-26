@@ -1,4 +1,4 @@
-{% from "components/big-number.html" import big_number_with_status, big_number_review_emails_with_status %}
+{% from "components/big-number.html" import big_number_with_status, big_number_simple, big_number_review_emails_with_status %}
 {% from "components/message-count-label.html" import message_count_label, problem_email_label %}
 {% from "components/show-more.html" import show_more %}
 {% from "components/task-shortcut.html" import task_shortcut %}
@@ -37,11 +37,62 @@
         smaller=smaller_font_size
       ) }}
     </div>
-  </div>
+    </div>
+    {% if config['FF_USE_BILLABLE_UNITS'] %}
+        <div class="grid-row contain-floats">
+          <div id="problem-email-addresses" class="{{column_width}}">
+            {{ big_number_review_emails_with_status(
+              number=bounce_rate["bounce_total"],
+              label=problem_email_label(bounce_rate["bounce_total"]),
+              problem_percentage=bounce_rate["bounce_percentage_display"],
+              bounce_status=bounce_rate["bounce_status"],
+              below_volume_threshold=bounce_rate["below_volume_threshold"],
+              failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
+              link=None,
+              smaller=smaller_font_size,
+              failure_link_label=_("Review email addresses")
+            ) }}
+          </div>
+          <div class="{{column_width}}">
+            {% if sms_billable_units_weekly == 1 and statistics['sms']['requested'] == 1 %}
+              {% set sms_billable_label = _("text message to {} phone number").format(statistics['sms']['requested']) %}
+            {% elif sms_billable_units_weekly == 1 %}
+              {% set sms_billable_label = _("text message to {} phone numbers").format(statistics['sms']['requested']) %}
+            {% elif statistics['sms']['requested'] == 1 %}
+              {% set sms_billable_label = _("text messages to {} phone number").format(statistics['sms']['requested']) %}
+            {% else %}
+              {% set sms_billable_label = _("text messages to {} phone numbers").format(statistics['sms']['requested']) %}
+            {% endif %}
+            {{ big_number_simple(
+              number=_("Counted as {}").format(sms_billable_units_weekly),
+              label=sms_billable_label
+            ) }}
+          </div>
+        </div>
+        <div class="grid-row contain-floats pb-6">
+          <div id="problem-email-guide-link" class="{{column_width}}">
+          {{ task_shortcut(
+            description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
+            link_url=gca_url_for('bounce_guidance'),
+            link_text=_("Guide: Keep accurate contact information."),
+            icon="arrow-up-right-from-square"
+          ) }}
+          </div>
+          <div class="{{column_width}}">
+            {{ task_shortcut(
+              description=_("Phone carriers count some texts as more than one message."),
+              link_url=None,
+              link_text=_("Guide: Counting text messages"),
+              icon="arrow-up-right-from-square"
+            ) }}
+          </div>
+        </div>
+    {% endif %}
   {{ show_more(
     url_for('.monthly', service_id=current_service.id),
     _('See all messages sent')
   ) }}
+  {% if not config['FF_USE_BILLABLE_UNITS'] %}
     <div>
       <h2 class="heading-medium mt-8">
         {{ _('Problem email addresses') }}
@@ -70,5 +121,6 @@
         </div>
       </div>
     </div>
+    {% endif %}
   </div>
 </div>
