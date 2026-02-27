@@ -2759,6 +2759,220 @@ class TestAnnualLimits:
         else:
             assert page.find(attrs={"data-testid": "send-buttons"}) is None
 
+    @pytest.mark.parametrize(
+        "remaining_daily, remaining_annual, buttons_shown",
+        [
+            (3, 100, True),  # Daily remaining >= fragment_count (3), buttons shown
+            (2, 100, False),  # Daily remaining < fragment_count (3), buttons hidden
+            (1, 100, False),  # Daily remaining < fragment_count (3), buttons hidden
+            (0, 100, False),  # Daily remaining = 0, buttons hidden
+            (100, 3, True),  # Annual remaining >= fragment_count (3), buttons shown
+            (100, 2, False),  # Annual remaining < fragment_count (3), buttons hidden
+            (100, 0, False),  # Annual remaining = 0, buttons hidden
+            (2, 2, False),  # Both below fragment_count, buttons hidden
+        ],
+    )
+    def test_should_hide_send_buttons_when_billable_units_enabled_and_remaining_below_fragment_count(
+        self,
+        client_request,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        remaining_daily,
+        remaining_annual,
+        buttons_shown,
+        mocker,
+        app_,
+    ):
+        """When FF_USE_BILLABLE_UNITS is enabled and the template is SMS, the send buttons
+        should be hidden if remaining billable units are less than the template's fragment count."""
+        app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+        # Create a long SMS template that will produce 3 fragments
+        long_content = "A" * 400  # 400 chars → 3 SMS fragments
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="Long SMS",
+                    type_="sms",
+                    content=long_content,
+                )
+            },
+        )
+        mocker.patch(
+            "app.template_category_api_client.get_all_template_categories",
+            return_value=[],
+        )
+
+        current_user.verified_phonenumber = True
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+        }
+
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+        if buttons_shown:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is None
+
+    @pytest.mark.parametrize(
+        "remaining_daily, remaining_annual, buttons_shown",
+        [
+            (2, 100, True),  # Daily remaining = 2 > 0, buttons shown (fragment_count not checked)
+            (1, 1, True),  # Both remaining = 1 > 0, buttons shown
+        ],
+    )
+    def test_should_not_check_fragment_count_when_billable_units_disabled(
+        self,
+        client_request,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        remaining_daily,
+        remaining_annual,
+        buttons_shown,
+        mocker,
+        app_,
+    ):
+        """When FF_USE_BILLABLE_UNITS is disabled, the send buttons should be shown
+        as long as remaining > 0, regardless of fragment count."""
+        app_.config["FF_USE_BILLABLE_UNITS"] = False
+
+        # Create a long SMS template that will produce 3 fragments
+        long_content = "A" * 400
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="Long SMS",
+                    type_="sms",
+                    content=long_content,
+                )
+            },
+        )
+        mocker.patch(
+            "app.template_category_api_client.get_all_template_categories",
+            return_value=[],
+        )
+
+        current_user.verified_phonenumber = True
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+        }
+
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+        if buttons_shown:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "send-buttons"}) is None
+
+    @pytest.mark.parametrize(
+        "remaining_daily, remaining_annual, expected_heading",
+        [
+            # Daily remaining > 0 but < fragment_count → fragment-specific heading
+            (2, 100, "This message is too long to send with your remaining daily limit"),
+            (1, 100, "This message is too long to send with your remaining daily limit"),
+            # Daily remaining = 0 (true zero) → standard paused heading
+            (0, 100, "Sending paused until 7pm ET. You can schedule more messages to send later."),
+            # Annual remaining > 0 but < fragment_count → fragment-specific heading
+            (100, 2, "This message is too long to send with your remaining annual limit"),
+            (100, 1, "This message is too long to send with your remaining annual limit"),
+            # Annual remaining = 0 (true zero) → standard paused heading
+            (100, 0, "Sending paused until annual limit resets"),
+            # Both remaining > 0 but < fragment_count → annual takes precedence
+            (2, 2, "This message is too long to send with your remaining annual limit"),
+            # Daily = 0 (true zero), annual > 0 but < fragment_count → annual fragment-specific heading
+            (0, 2, "This message is too long to send with your remaining annual limit"),
+        ],
+    )
+    def test_heading_text_when_billable_units_enabled_and_remaining_below_fragment_count(
+        self,
+        client_request,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        remaining_daily,
+        remaining_annual,
+        expected_heading,
+        mocker,
+        app_,
+    ):
+        """When FF_USE_BILLABLE_UNITS is enabled and remaining billable units are less than the
+        template's fragment count, the heading should indicate the message is too long rather
+        than saying sending is paused."""
+        app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+        # Create a long SMS template that will produce 3 fragments
+        long_content = "A" * 400
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="Long SMS",
+                    type_="sms",
+                    content=long_content,
+                )
+            },
+        )
+        mocker.patch(
+            "app.template_category_api_client.get_all_template_categories",
+            return_value=[],
+        )
+
+        current_user.verified_phonenumber = True
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
+                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
+            },
+        }
+
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+        heading = page.select_one("h2.heading-medium")
+        assert heading is not None
+        assert normalize_spaces(heading.text) == expected_heading
+
 
 class TestViewSampleLibrary:
     @pytest.fixture
