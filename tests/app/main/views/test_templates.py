@@ -59,6 +59,16 @@ DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
 @pytest.fixture
 def mock_notification_counts_client():
     with patch("app.main.views.templates.notification_counts_client") as mock:
+        mock.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 10, "remaining": 990},
+                "daily": {"limit": 100, "sent": 5, "remaining": 95},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 10, "remaining": 990},
+                "daily": {"limit": 100, "sent": 5, "remaining": 95},
+            },
+        }
         yield mock
 
 
