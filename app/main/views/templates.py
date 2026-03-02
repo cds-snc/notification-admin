@@ -127,27 +127,56 @@ def get_char_limit_error_msg():
     return _("Too many characters")
 
 
-def get_limit_stats(notification_type):
+def get_limit_stats(notification_type, template=None):
     # get the limit stats for the current service
     limit_stats = notification_counts_client.get_limit_stats(current_service)
+
+    daily_remaining = limit_stats[notification_type]["daily"]["remaining"]
+    yearly_remaining = limit_stats[notification_type]["annual"]["remaining"]
+
+    # TODO FF_USE_BILLABLE_UNITS removal
+    # When using billable units for SMS, a single message may consume multiple billable units
+    # (fragments). We need to check whether remaining units can cover a one-off send by comparing
+    # against the template's fragment count, not just checking > 0.
+    daily_exceeded_by_fragments = False
+    yearly_exceeded_by_fragments = False
+    if (
+        current_app.config.get("FF_USE_BILLABLE_UNITS")
+        and notification_type == "sms"
+        and template is not None
+        and hasattr(template, "fragment_count")
+    ):
+        fragment_count = template.fragment_count
+        if 0 < daily_remaining < fragment_count:
+            daily_remaining = 0
+            daily_exceeded_by_fragments = True
+        if 0 < yearly_remaining < fragment_count:
+            yearly_remaining = 0
+            yearly_exceeded_by_fragments = True
 
     # transform the stats into a format that can be used in the template
     limit_stats = {
         "dailyLimit": limit_stats[notification_type]["daily"]["limit"],
         "dailyUsed": limit_stats[notification_type]["daily"]["sent"],
-        "dailyRemaining": limit_stats[notification_type]["daily"]["remaining"],
+        "dailyRemaining": daily_remaining,
         "yearlyLimit": limit_stats[notification_type]["annual"]["limit"],
         "yearlyUsed": limit_stats[notification_type]["annual"]["sent"],
-        "yearlyRemaining": limit_stats[notification_type]["annual"]["remaining"],
+        "yearlyRemaining": yearly_remaining,
         "notification_type": notification_type,
         "heading": _("Ready to send?"),
     }
 
     # determine ready to send heading
     if limit_stats["yearlyRemaining"] == 0:
-        limit_stats["heading"] = _("Sending paused until annual limit resets")
+        if yearly_exceeded_by_fragments:
+            limit_stats["heading"] = _("This message is too long to send with your remaining annual limit")
+        else:
+            limit_stats["heading"] = _("Sending paused until annual limit resets")
     elif limit_stats["dailyRemaining"] == 0:
-        limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
+        if daily_exceeded_by_fragments:
+            limit_stats["heading"] = _("This message is too long to send with your remaining daily limit")
+        else:
+            limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
 
     return limit_stats
 
@@ -164,12 +193,14 @@ def view_template(service_id, template_id):
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
 
+    preview_template = get_email_preview_template(template, template_id, service_id)
+
     return render_template(
         "views/templates/template.html",
-        template=get_email_preview_template(template, template_id, service_id),
+        template=preview_template,
         template_postage=template["postage"],
         user_has_template_permission=user_has_template_permission,
-        **get_limit_stats(template["template_type"]),
+        **get_limit_stats(template["template_type"], preview_template),
     )
 
 
@@ -1136,11 +1167,13 @@ def delete_service_template(service_id, template_id):
         ],
         "delete",
     )
+    preview_template = get_email_preview_template(template, template["id"], service_id)
+
     return render_template(
         "views/templates/template.html",
-        template=get_email_preview_template(template, template["id"], service_id),
+        template=preview_template,
         user_has_template_permission=True,
-        **get_limit_stats(template["template_type"]),
+        **get_limit_stats(template["template_type"], preview_template),
     )
 
 
@@ -1149,12 +1182,14 @@ def delete_service_template(service_id, template_id):
 def confirm_redact_template(service_id, template_id):
     template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    preview_template = get_email_preview_template(template, template["id"], service_id)
+
     return render_template(
         "views/templates/template.html",
-        template=get_email_preview_template(template, template["id"], service_id),
+        template=preview_template,
         user_has_template_permission=True,
         show_redaction_message=True,
-        **get_limit_stats(template["template_type"]),
+        **get_limit_stats(template["template_type"], preview_template),
     )
 
 
