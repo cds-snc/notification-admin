@@ -39,8 +39,9 @@
     </div>
     </div>
     {% if config['FF_USE_BILLABLE_UNITS'] %}
-        <div class="grid-row contain-floats">
-          <div id="problem-email-addresses" class="{{column_width}}">
+        <div class="grid grid-flow-col grid-cols-2 grid-rows-2 -mx-gutterHalf pb-6">
+          {# --- Email column --- #}
+          <div id="problem-email-addresses" class="px-gutterHalf box-border">
             {{ big_number_review_emails_with_status(
               number=bounce_rate["bounce_total"],
               label=problem_email_label(bounce_rate["bounce_total"]),
@@ -53,7 +54,16 @@
               failure_link_label=_("Review email addresses")
             ) }}
           </div>
-          <div class="{{column_width}}">
+          <div id="problem-email-guide-link" class="px-gutterHalf box-border">
+            {{ task_shortcut(
+              description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
+              link_url=gca_url_for('bounce_guidance'),
+              link_text=_("Guide: Keep accurate contact information."),
+              icon="arrow-up-right-from-square"
+            ) }}
+          </div>
+          {# --- SMS column --- #}
+          <div class="px-gutterHalf box-border">
             {% if sms_billable_units_weekly == 1 and statistics['sms']['requested'] == 1 %}
               {% set sms_billable_label = _("text message to {} recipient").format(statistics['sms']['requested']) %}
             {% elif sms_billable_units_weekly == 1 %}
@@ -68,17 +78,7 @@
               label=sms_billable_label
             ) }}
           </div>
-        </div>
-        <div class="grid-row contain-floats pb-6">
-          <div id="problem-email-guide-link" class="{{column_width}}">
-          {{ task_shortcut(
-            description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
-            link_url=gca_url_for('bounce_guidance'),
-            link_text=_("Guide: Keep accurate contact information."),
-            icon="arrow-up-right-from-square"
-          ) }}
-          </div>
-          <div class="{{column_width}}">
+          <div class="px-gutterHalf box-border">
             {{ task_shortcut(
               description=_("Phone carriers count some texts as more than one message."),
               link_url=None,
