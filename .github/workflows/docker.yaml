@@ -78,7 +78,7 @@ jobs:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
     - name: Docker generate SBOM
-      uses: cds-snc/security-tools/.github/actions/generate-sbom@34794baf2af592913bb5b51d8df4f8d0acc49b6f # v3.2.0
+      uses: cds-snc/security-tools/.github/actions/generate-sbom@e91688994f2ee19c5cf3dca7193dffe4bb52ae17 # v4.0.0
       env:
         TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
       with:
