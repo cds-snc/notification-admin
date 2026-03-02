@@ -19,6 +19,7 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
+    billing_api_client,
     current_service,
     job_api_client,
     notification_api_client,
@@ -288,6 +289,9 @@ def monthly(service_id):
 
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
         monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
+        # TODO FF_USE_BILLABLE_UNITS removal - track today's totals for annual override
+        todays_sms_requested = todays_data["sms"]["requested"]
+        todays_email_requested = todays_data["email"]["requested"]
     else:
         # aggregate daily + annual
         current_app.logger.info("todays data" + str(todays_data))
@@ -295,6 +299,35 @@ def monthly(service_id):
 
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
         monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
+        # TODO FF_USE_BILLABLE_UNITS removal - track today's totals for annual override
+        todays_sms_requested = todays_data.get("sms_delivered", 0) + todays_data.get("sms_failed", 0)
+        todays_email_requested = todays_data.get("email_delivered", 0) + todays_data.get("email_failed", 0)
+
+    # TODO FF_USE_BILLABLE_UNITS removal - Fetch and attach SMS billable units per month when FF is enabled
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+    if use_billable_units:
+        billing_units = billing_api_client.get_billable_units(service_id, year)
+        sms_billable_units_by_month = {}
+        for entry in billing_units:
+            if entry.get("notification_type") == "sms":
+                month_name = entry["month"]
+                sms_billable_units_by_month[month_name] = sms_billable_units_by_month.get(month_name, 0) + entry["billing_units"]
+        for month in monthly_data_aggregate:
+            month["sms_billable_units"] = sms_billable_units_by_month.get(month["name"], 0)
+
+        # For the annual overview box, use the same data source as the dashboard
+        # (Redis / annual-limit-stats API) so both pages show a consistent number.
+        # The billing API uses a different data source and may differ from the limit-tracking count.
+        if year == current_financial_year:
+            daily_totals_for_annual = {
+                "sms": {"requested": todays_sms_requested, "delivered": 0, "failed": 0},
+                "email": {"requested": todays_email_requested, "delivered": 0, "failed": 0},
+            }
+            annual_from_limit_source = get_annual_data(service_id, daily_totals_for_annual)
+            annual_data_aggregate["sms"] = annual_from_limit_source["sms"]
+        else:
+            # For past years Redis has no data; billing API total is the best available
+            annual_data_aggregate["sms"] = sum(sms_billable_units_by_month.values())
 
     return render_template(
         "views/dashboard/monthly.html",
@@ -307,6 +340,7 @@ def monthly(service_id):
         annual_data=annual_data_aggregate,
         selected_year=year,
         current_financial_year=current_financial_year,
+        use_billable_units=use_billable_units,
     )
 
 

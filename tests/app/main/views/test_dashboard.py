@@ -328,6 +328,7 @@ def test_anyone_can_see_monthly_breakdown(
     client, api_user_active, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     validate_route_permission_with_client(
         mocker,
         client,
@@ -344,6 +345,7 @@ def test_monthly_shows_letters_in_breakdown(
     client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
@@ -370,6 +372,7 @@ def test_stats_pages_show_last_3_years(
     mock_get_service_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     page = client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,
@@ -384,9 +387,107 @@ def test_monthly_has_equal_length_tables(
     client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     assert page.select_one(".table-field-headings th")["style"] == "width: 33%"
+
+
+@freeze_time("2024-04-30 12:00:00")
+def test_monthly_shows_sms_billable_units_when_ff_enabled(
+    client_request,
+    service_one,
+    mocker,
+    mock_get_service_statistics,
+    app_,
+):
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    mocker.patch(
+        "app.service_api_client.get_monthly_notification_stats",
+        return_value={
+            "data": {
+                "2024-04": {
+                    "email": {"sending": 5, "delivered": 95},
+                    "sms": {"sending": 10, "delivered": 90},
+                    "letter": {},
+                }
+            }
+        },
+    )
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+        return_value={"sms_delivered": 0, "sms_failed": 0, "email_delivered": 0, "email_failed": 0},
+    )
+    mocker.patch(
+        "app.billing_api_client.get_billable_units",
+        return_value=[
+            {"month": "April", "notification_type": "sms", "rate": 0.0165, "billing_units": 150, "postage": "none"},
+            {"month": "April", "notification_type": "sms", "rate": 0.0165, "billing_units": 75, "postage": "none"},
+        ],
+    )
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    columns = page.select(".table-field-left-aligned .big-number-number")
+    labels = page.select(".table-field-left-aligned .big-number-label")
+
+    # Email column should still show requested count (100)
+    assert normalize_spaces(columns[0].text) == "100"
+    assert normalize_spaces(labels[0].text) == "emails"
+
+    # SMS column should show billable units (150 + 75 = 225), not requested count (100)
+    assert normalize_spaces(columns[1].text) == "225"
+    assert normalize_spaces(labels[1].text) == "text messages"
+
+    # Annual overview box for SMS should also show billable units total (225), not notification count (100)
+    sms_annual_box = page.select(".remaining-messages")[1]
+    assert normalize_spaces(sms_annual_box.find(class_="rm-used").text) == "225"
+
+
+@freeze_time("2024-04-30 12:00:00")
+def test_monthly_shows_sms_requested_count_when_ff_disabled(
+    client_request,
+    service_one,
+    mocker,
+    mock_get_service_statistics,
+    app_,
+):
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    mocker.patch(
+        "app.service_api_client.get_monthly_notification_stats",
+        return_value={
+            "data": {
+                "2024-04": {
+                    "email": {"sending": 5, "delivered": 95},
+                    "sms": {"sending": 10, "delivered": 90},
+                    "letter": {},
+                }
+            }
+        },
+    )
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+        return_value={"sms_delivered": 0, "sms_failed": 0, "email_delivered": 0, "email_failed": 0},
+    )
+    mock_billing = mocker.patch("app.billing_api_client.get_billable_units")
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    # billing_api_client.get_billable_units should NOT be called when FF is disabled
+    mock_billing.assert_not_called()
+
+    columns = page.select(".table-field-left-aligned .big-number-number")
+    labels = page.select(".table-field-left-aligned .big-number-label")
+
+    # Email column shows requested count (100)
+    assert normalize_spaces(columns[0].text) == "100"
+    assert normalize_spaces(labels[0].text) == "emails"
+
+    # SMS column shows requested count (100), not billable units
+    assert normalize_spaces(columns[1].text) == "100"
+    assert normalize_spaces(labels[1].text) == "text messages"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -1642,14 +1743,23 @@ class TestAnnualLimits:
             "app.service_api_client.get_monthly_notification_stats",
             return_value=copy.deepcopy(monthly_data),
         )
+        mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
 
         mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
         url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-        logged_in_client.get(url)
+        # Disable FF so the billing units override doesn't affect this aggregation test
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            logged_in_client.get(url)
 
         mock_render_template.assert_called_with(
-            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+            ANY,
+            months=ANY,
+            years=ANY,
+            annual_data=expected_data,
+            selected_year=ANY,
+            current_financial_year=ANY,
+            use_billable_units=ANY,
         )
 
     @freeze_time("2024-11-25 12:12:12")
@@ -1714,14 +1824,23 @@ class TestAnnualLimits:
             "app.service_api_client.get_monthly_notification_stats",
             return_value=copy.deepcopy(monthly_data),
         )
+        mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
 
         mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
         url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
-        logged_in_client.get(url)
+        # Disable FF so the billing units override doesn't affect this aggregation test
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            logged_in_client.get(url)
 
         mock_render_template.assert_called_with(
-            ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
+            ANY,
+            months=ANY,
+            years=ANY,
+            annual_data=expected_data,
+            selected_year=ANY,
+            current_financial_year=ANY,
+            use_billable_units=ANY,
         )
 
 

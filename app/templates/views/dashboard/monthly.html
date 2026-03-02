@@ -95,9 +95,14 @@
             (month.sms_counts, 'sms'),
           ] %}
             {% call field(align='left') %}
+              {% if use_billable_units and template_type == 'sms' %}
+                {% set display_count = month.sms_billable_units %}
+              {% else %}
+                {% set display_count = counts.requested %}
+              {% endif %}
               {{ big_number(
-                counts.requested,
-                message_count_label(counts.requested, template_type, suffix=''),
+                display_count,
+                message_count_label(display_count, template_type, suffix=''),
                 smallest=True,
               ) }}
               {% if counts.failed == 1 %}
