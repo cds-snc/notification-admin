@@ -832,7 +832,15 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     limit_stats = notification_counts_client.get_limit_stats(current_service)
     remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
 
-    if remaining_annual < data["count_of_recipients"]:
+    # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
+    # When FF_USE_BILLABLE_UNITS is enabled, remaining_annual is in billable units (SMS fragments),
+    # so we must compare against sms_parts_to_send (total fragments), not count_of_recipients.
+    if current_app.config.get("FF_USE_BILLABLE_UNITS") and data["template"].template_type == "sms":
+        count_to_check_annual = data["sms_parts_to_send"]
+    else:
+        count_to_check_annual = data["count_of_recipients"]
+
+    if remaining_annual < count_to_check_annual:
         data["recipients_remaining_messages"] = remaining_annual
         data["send_exceeds_annual_limit"] = True
     else:
@@ -840,7 +848,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         if data["template"].template_type == "sms":
             # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
             if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-                data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["billable_units_remaining"]
+                data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["billable_units_remaining"]
             else:
                 data["send_exceeds_daily_limit"] = len(data["recipients"]) > data["sms_parts_remaining"]
 
