@@ -41,7 +41,7 @@
         <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
           {{ remaining_messages(header=_('emails'), total=current_service.email_annual_limit, used=annual_data['email'], for=_('Annual overview')) }}
         </div>
-        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="w-1/2 float-left py-0 px-0 px-gutterHalf box-border" data-testid="annual-sms-overview">
           {{ remaining_messages(header=_('text messages'), total=current_service.sms_annual_limit, used=annual_data['sms'], for=_('Annual overview')) }}
         </div>
       {% else %}
@@ -95,11 +95,18 @@
             (month.sms_counts, 'sms'),
           ] %}
             {% call field(align='left') %}
-              {{ big_number(
-                counts.requested,
-                message_count_label(counts.requested, template_type, suffix=''),
-                smallest=True,
-              ) }}
+              {% if use_billable_units and template_type == 'sms' %}
+                {% set display_count = month.sms_billable_units %}
+              {% else %}
+                {% set display_count = counts.requested %}
+              {% endif %}
+              <span data-testid="monthly-{{ template_type }}-count">
+                {{ big_number(
+                  display_count,
+                  message_count_label(display_count, template_type, suffix=''),
+                  smallest=True,
+                ) }}
+              </span>
               {% if counts.failed == 1 %}
               <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
                 {{ counts.failed | format_number }} {{ _('failure') }}
