@@ -401,6 +401,9 @@ def get_dashboard_partials(service_id):
     # Use count for weekly stats (used for display of messages sent)
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=False)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    # Compute billable units for weekly SMS (fragments, may exceed message count for long messages)
+    stats_weekly_billable = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=True)
+    sms_billable_units_weekly = stats_weekly_billable["sms"]["requested"]
     timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
     start = time.time()
@@ -440,6 +443,7 @@ def get_dashboard_partials(service_id):
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
             bounce_rate=bounce_rate_data,
+            sms_billable_units_weekly=sms_billable_units_weekly,
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",
