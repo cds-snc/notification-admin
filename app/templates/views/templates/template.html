@@ -49,22 +49,22 @@
       <div class="{% if template.template_type == 'email' %}w-1/4{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
           {% if config['FF_USE_BILLABLE_UNITS'] %}
-            <p class="flex items-center gap-2 border-b border-b-gray-700 pb-2 max-w-[464px]">
+            <p class="flex items-center gap-2 border-b border-b-gray-700 pb-2 max-w-[464px] mb-4">
           {% endif %}
           <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
-            {% if config['FF_USE_BILLABLE_UNITS'] %}<i aria-hidden="true" class="fa-solid fa-pen-to-square"></i> {% endif %}{{ _('Edit this template') }}
+            {% if config['FF_USE_BILLABLE_UNITS'] %}<i aria-hidden="true" class="fa-solid fa-pen-to-square pr-4"></i>{% endif %}{{ _('Edit this template') }}
           </a>
           {% if config['FF_USE_BILLABLE_UNITS'] %}
             </p>
           {% endif %}
         {% endif %}
         {% if fragment_count %}
-          <p class="text-small text-gray-700 flex items-center gap-2 border-b border-b-gray-700 pb-2 mt-2 max-w-[464px]" data-testid="fragment-count">
-            <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
+          <p class="text-gray-700 flex items-center gap-2 border-b border-b-gray-700 pt-2 pb-2 mt-2 mb-0 max-w-[464px]" data-testid="fragment-count">
+            <i aria-hidden="true" class="fa-solid fa-comment-dots pr-2"></i>
             {% if fragment_count == 1 %}
-              {{ _("Counted as 1 text message.") }}
+              {{ _("1 text message.") }}
             {% else %}
-              {{ _("Counted as {} text messages.").format(fragment_count) }}
+              {{ _("{} text messages.").format(fragment_count) }}
             {% endif %}
           </p>
         {% endif %}
