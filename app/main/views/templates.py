@@ -140,6 +140,7 @@ def get_limit_stats(notification_type, template=None):
     # against the template's fragment count, not just checking > 0.
     daily_exceeded_by_fragments = False
     yearly_exceeded_by_fragments = False
+    fragment_count = None
     if (
         current_app.config.get("FF_USE_BILLABLE_UNITS")
         and notification_type == "sms"
@@ -164,6 +165,7 @@ def get_limit_stats(notification_type, template=None):
         "yearlyRemaining": yearly_remaining,
         "notification_type": notification_type,
         "heading": _("Ready to send?"),
+        "fragment_count": fragment_count,
     }
 
     # determine ready to send heading
