@@ -289,9 +289,6 @@ def monthly(service_id):
 
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
         monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "db")
-        # TODO FF_USE_BILLABLE_UNITS removal - track today's totals for annual override
-        todays_sms_requested = todays_data["sms"]["requested"]
-        todays_email_requested = todays_data["email"]["requested"]
     else:
         # aggregate daily + annual
         current_app.logger.info("todays data" + str(todays_data))
@@ -299,9 +296,6 @@ def monthly(service_id):
 
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
         monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
-        # TODO FF_USE_BILLABLE_UNITS removal - track today's totals for annual override
-        todays_sms_requested = todays_data.get("sms_delivered", 0) + todays_data.get("sms_failed", 0)
-        todays_email_requested = todays_data.get("email_delivered", 0) + todays_data.get("email_failed", 0)
 
     # TODO FF_USE_BILLABLE_UNITS removal - Fetch and attach SMS billable units per month when FF is enabled
     use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
@@ -319,11 +313,11 @@ def monthly(service_id):
         # (Redis / annual-limit-stats API) so both pages show a consistent number.
         # The billing API uses a different data source and may differ from the limit-tracking count.
         if year == current_financial_year:
-            daily_totals_for_annual = {
-                "sms": {"requested": todays_sms_requested, "delivered": 0, "failed": 0},
-                "email": {"requested": todays_email_requested, "delivered": 0, "failed": 0},
-            }
-            annual_from_limit_source = get_annual_data(service_id, daily_totals_for_annual)
+            # Use the same daily stats function as the dashboard so that today's SMS total
+            # is counted in billable units (fragments), not raw message counts.  This ensures
+            # the annual SMS figure on the usage page is identical to the dashboard total.
+            dashboard_totals_daily, _, _ = _get_daily_stats(service_id)
+            annual_from_limit_source = get_annual_data(service_id, dashboard_totals_daily)
             annual_data_aggregate["sms"] = annual_from_limit_source["sms"]
         else:
             # For past years Redis has no data; billing API total is the best available
