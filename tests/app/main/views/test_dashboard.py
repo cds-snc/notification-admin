@@ -325,7 +325,13 @@ def test_should_show_monthly_breakdown_of_template_usage(
 
 
 def test_anyone_can_see_monthly_breakdown(
-    client, api_user_active, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client,
+    api_user_active,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
@@ -342,7 +348,12 @@ def test_anyone_can_see_monthly_breakdown(
 
 
 def test_monthly_shows_letters_in_breakdown(
-    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
@@ -370,6 +381,7 @@ def test_stats_pages_show_last_3_years(
     mock_get_monthly_notification_stats,
     mock_get_monthly_template_usage,
     mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
@@ -384,7 +396,12 @@ def test_stats_pages_show_last_3_years(
 
 
 def test_monthly_has_equal_length_tables(
-    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
@@ -414,9 +431,27 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
             }
         },
     )
+    # Redis is seeded with fiscal-year-to-yesterday totals (billable units for SMS).
+    # Daily delivered/failed counts are 0 (no new messages in the current period beyond yesterday).
     mocker.patch(
         "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-        return_value={"sms_delivered": 0, "sms_failed": 0, "email_delivered": 0, "email_failed": 0},
+        return_value={
+            "sms_delivered": 0,
+            "sms_failed": 0,
+            "email_delivered": 0,
+            "email_failed": 0,
+            "total_sms_billable_units_fiscal_year_to_yesterday": 225,
+            "total_email_fiscal_year_to_yesterday": 100,
+        },
+    )
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.was_seeded_today",
+        return_value=True,
+    )
+    # _get_daily_stats calls template_statistics_client; return empty list (no new messages today)
+    mocker.patch(
+        "app.template_statistics_client.get_template_statistics_for_service",
+        return_value=[],
     )
     mocker.patch(
         "app.billing_api_client.get_billable_units",
@@ -426,7 +461,7 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
         ],
     )
 
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "REDIS_ENABLED", True):
         page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-number")
@@ -440,7 +475,8 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
     assert normalize_spaces(columns[1].text) == "225"
     assert normalize_spaces(labels[1].text) == "text messages"
 
-    # Annual overview box for SMS should also show billable units total (225), not notification count (100)
+    # Annual overview box for SMS should also show billable units total (225), not notification count (100).
+    # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
     sms_annual_box = page.select(".remaining-messages")[1]
     assert normalize_spaces(sms_annual_box.find(class_="rm-used").text) == "225"
 
