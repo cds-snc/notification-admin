@@ -464,20 +464,20 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
     with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "REDIS_ENABLED", True):
         page = client_request.get("main.monthly", service_id=service_one["id"])
 
-    columns = page.select(".table-field-left-aligned .big-number-number")
-    labels = page.select(".table-field-left-aligned .big-number-label")
+    email_count = page.select_one('[data-testid="monthly-email-count"]')
+    sms_count = page.select_one('[data-testid="monthly-sms-count"]')
 
     # Email column should still show requested count (100)
-    assert normalize_spaces(columns[0].text) == "100"
-    assert normalize_spaces(labels[0].text) == "emails"
+    assert normalize_spaces(email_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(email_count.select_one(".big-number-label").text) == "emails"
 
     # SMS column should show billable units (150 + 75 = 225), not requested count (100)
-    assert normalize_spaces(columns[1].text) == "225"
-    assert normalize_spaces(labels[1].text) == "text messages"
+    assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "225"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
 
     # Annual overview box for SMS should also show billable units total (225), not notification count (100).
     # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
-    sms_annual_box = page.select(".remaining-messages")[1]
+    sms_annual_box = page.select_one('[data-testid="annual-sms-overview"]')
     assert normalize_spaces(sms_annual_box.find(class_="rm-used").text) == "225"
 
 
@@ -514,16 +514,16 @@ def test_monthly_shows_sms_requested_count_when_ff_disabled(
     # billing_api_client.get_billable_units should NOT be called when FF is disabled
     mock_billing.assert_not_called()
 
-    columns = page.select(".table-field-left-aligned .big-number-number")
-    labels = page.select(".table-field-left-aligned .big-number-label")
+    email_count = page.select_one('[data-testid="monthly-email-count"]')
+    sms_count = page.select_one('[data-testid="monthly-sms-count"]')
 
     # Email column shows requested count (100)
-    assert normalize_spaces(columns[0].text) == "100"
-    assert normalize_spaces(labels[0].text) == "emails"
+    assert normalize_spaces(email_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(email_count.select_one(".big-number-label").text) == "emails"
 
     # SMS column shows requested count (100), not billable units
-    assert normalize_spaces(columns[1].text) == "100"
-    assert normalize_spaces(labels[1].text) == "text messages"
+    assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
