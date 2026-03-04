@@ -72,6 +72,41 @@
              data-sms-daily-limit="{{ current_service.sms_daily_limit | format_number }}"
              data-sms-prefix="{{ current_service.name }}"
              data-testid="sms-character-info">
+
+          {# Fragment count section #}
+          <div id="sms-fragment-count" class="mt-6 flex items-start gap-2">
+            <span class="flex-shrink-0" aria-hidden="true">
+              <i class="fa-solid fa-comment text-blue-default"></i>
+            </span>
+            <span>
+              <strong id="sms-fragment-count-text"></strong>
+              <span id="sms-fragment-count-suffix"></span>
+            </span>
+          </div>
+
+          {# Shortening suggestions section #}
+          <div id="sms-shorten-suggestions" class="mt-4 flex items-start gap-2 hidden">
+            <span class="flex-shrink-0" aria-hidden="true">
+              <i class="fa-solid fa-lightbulb text-yellow"></i>
+            </span>
+            <div>
+              <span>{{ _('To shorten, remove:') }}</span>
+              <ul id="sms-shorten-list" class="list list-bullet ml-8 mt-1">
+              </ul>
+            </div>
+          </div>
+
+          {# Daily limit section #}
+          <div id="sms-daily-limit" class="mt-4 flex items-start gap-2">
+            <span class="flex-shrink-0" aria-hidden="true">
+              <i class="fa-solid fa-circle-check text-blue-default"></i>
+            </span>
+            <span>
+              <strong id="sms-daily-limit-value">{{ current_service.sms_daily_limit | format_number }}</strong>
+              {{ _('is your daily text message limit') }}
+            </span>
+          </div>
+
         </div>
 
         <h2 class="heading-medium">{{ _('Template category') }}</h2>

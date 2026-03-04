@@ -6,11 +6,13 @@
  * edit/add pages.
  *
  * This component listens to `input` events on the #template_content textarea and
- * updates three informational sections:
- *   1. Fragment count — "Counts as N text messages, maybe more with custom content."
- *   2. Shortening suggestions — "To shorten, remove:" with non-GSM characters listed
- *   3. Daily limit — "X is your daily text message limit"
+ * updates text content in pre-existing HTML elements:
+ *   1. #sms-fragment-count-text — "Counts as N text messages"
+ *   2. #sms-fragment-count-suffix — ", maybe more with custom content." or "."
+ *   3. #sms-shorten-list — list items for non-GSM characters
+ *   4. #sms-shorten-suggestions — shown/hidden based on non-GSM chars
  *
+ * All markup lives in the Jinja template; this script only updates text and visibility.
  * Localisation follows the window.APP_PHRASES pattern used by other components.
  */
 (function () {
@@ -22,8 +24,16 @@
   var textarea = document.getElementById("template_content");
   if (!textarea) return;
 
+  // ── DOM references ──────────────────────────────────────────────────────
+  var fragmentCountText = document.getElementById("sms-fragment-count-text");
+  var fragmentCountSuffix = document.getElementById("sms-fragment-count-suffix");
+  var shortenSection = document.getElementById("sms-shorten-suggestions");
+  var shortenList = document.getElementById("sms-shorten-list");
+
+  // Bail if the markup is missing
+  if (!fragmentCountText || !fragmentCountSuffix) return;
+
   // ── Configuration from data attributes ──────────────────────────────────
-  var dailyLimit = container.getAttribute("data-sms-daily-limit") || "";
   var smsPrefix = container.getAttribute("data-sms-prefix") || "";
 
   // ── GSM 03.38 Basic Character Set ──────────────────────────────────────
@@ -82,13 +92,6 @@
       }
     }
     return false;
-  }
-
-  /**
-   * Check if a character is in the GSM character set (basic or extension).
-   */
-  function isGsmChar(ch) {
-    return gsmBasicSet.has(ch) || gsmExtensionSet.has(ch);
   }
 
   /**
@@ -178,24 +181,12 @@
     return result;
   }
 
-  // ── DOM rendering ───────────────────────────────────────────────────────
+  // ── DOM updates ─────────────────────────────────────────────────────────
 
   /**
-   * Create or update the fragment count section.
+   * Update the fragment count text and suffix.
    */
   function renderFragmentCount(fragmentCount, hasVars) {
-    var section = container.querySelector("[data-section='fragment-count']");
-    if (!section) {
-      section = document.createElement("div");
-      section.setAttribute("data-section", "fragment-count");
-      section.className = "mt-6 flex items-start gap-2";
-      container.appendChild(section);
-    }
-
-    var maybeMore = hasVars
-      ? ", " + phrase("sms_maybe_more", "maybe more with custom content.")
-      : ".";
-
     var countText;
     if (fragmentCount === 1) {
       countText = phrase("sms_counts_as_one", "Counts as 1 text message");
@@ -206,92 +197,37 @@
       );
     }
 
-    section.innerHTML =
-      '<span class="flex-shrink-0" aria-hidden="true">' +
-      '<i class="fa-solid fa-comment text-blue-default"></i>' +
-      "</span> " +
-      "<span><strong>" +
-      countText +
-      "</strong>" +
-      maybeMore +
-      "</span>";
+    fragmentCountText.textContent = countText;
+    fragmentCountSuffix.textContent = hasVars
+      ? ", " + phrase("sms_maybe_more", "maybe more with custom content.")
+      : ".";
   }
 
   /**
-   * Create or update the shortening suggestions section.
+   * Update the shortening suggestions list. Shows/hides the section.
    */
   function renderShorteningSuggestions(nonGsmChars) {
-    var section = container.querySelector(
-      "[data-section='shorten-suggestions']"
-    );
+    if (!shortenSection || !shortenList) return;
 
     if (nonGsmChars.length === 0) {
-      if (section) section.remove();
+      shortenSection.classList.add("hidden");
       return;
     }
 
-    if (!section) {
-      section = document.createElement("div");
-      section.setAttribute("data-section", "shorten-suggestions");
-      section.className = "mt-4 flex items-start gap-2";
-      container.appendChild(section);
+    shortenSection.classList.remove("hidden");
+
+    // Clear existing list items
+    while (shortenList.firstChild) {
+      shortenList.removeChild(shortenList.firstChild);
     }
 
-    var listItems = "";
+    // Add new list items using DOM methods (no innerHTML)
     for (var i = 0; i < nonGsmChars.length; i++) {
       var entry = nonGsmChars[i];
-      var wordList = entry.words.join(", ");
-      listItems +=
-        "<li>" + escapeHtml(entry.char) + " (" + escapeHtml(wordList) + ")</li>";
+      var li = document.createElement("li");
+      li.textContent = entry.char + " (" + entry.words.join(", ") + ")";
+      shortenList.appendChild(li);
     }
-
-    section.innerHTML =
-      '<span class="flex-shrink-0" aria-hidden="true">' +
-      '<i class="fa-solid fa-lightbulb text-yellow"></i>' +
-      "</span> " +
-      "<div><span>" +
-      phrase("sms_shorten_remove", "To shorten, remove:") +
-      "</span>" +
-      '<ul class="list list-bullet ml-8 mt-1">' +
-      listItems +
-      "</ul></div>";
-  }
-
-  /**
-   * Create or update the daily limit section.
-   */
-  function renderDailyLimit() {
-    if (!dailyLimit) return;
-
-    var section = container.querySelector("[data-section='daily-limit']");
-    if (!section) {
-      section = document.createElement("div");
-      section.setAttribute("data-section", "daily-limit");
-      section.className = "mt-4 flex items-start gap-2";
-      container.appendChild(section);
-    }
-
-    section.innerHTML =
-      '<span class="flex-shrink-0" aria-hidden="true">' +
-      '<i class="fa-solid fa-circle-check text-blue-default"></i>' +
-      "</span> " +
-      "<span><strong>" +
-      escapeHtml(dailyLimit) +
-      "</strong> " +
-      phrase(
-        "sms_daily_limit",
-        "is your daily text message limit"
-      ) +
-      "</span>";
-  }
-
-  /**
-   * Escape HTML special characters to prevent XSS.
-   */
-  function escapeHtml(text) {
-    var div = document.createElement("div");
-    div.appendChild(document.createTextNode(text));
-    return div.innerHTML;
   }
 
   // ── Main update function ────────────────────────────────────────────────
@@ -306,7 +242,6 @@
 
     renderFragmentCount(fragmentCount, hasVars);
     renderShorteningSuggestions(findNonGsmCharacters(content));
-    renderDailyLimit();
   }
 
   // ── Debounce helper ─────────────────────────────────────────────────────
