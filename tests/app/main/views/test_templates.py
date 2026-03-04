@@ -2983,6 +2983,98 @@ class TestAnnualLimits:
         assert heading is not None
         assert normalize_spaces(heading.text) == expected_heading
 
+    def test_fragment_count_shows_plain_text_when_no_placeholders(
+        self,
+        client_request,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        mocker,
+        app_,
+    ):
+        """When FF_USE_BILLABLE_UNITS is enabled and the template has no placeholders,
+        the fragment count should display as plain 'X text messages.'"""
+        app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="Plain SMS",
+                    type_="sms",
+                    content="A" * 400,  # 3 fragments, no placeholders
+                )
+            },
+        )
+        mocker.patch("app.template_category_api_client.get_all_template_categories", return_value=[])
+        current_user.verified_phonenumber = True
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": 1000},
+                "daily": {"limit": 1000, "sent": 0, "remaining": 1000},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": 1000},
+                "daily": {"limit": 1000, "sent": 0, "remaining": 1000},
+            },
+        }
+
+        page = client_request.get(".view_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid, _test_page_title=False)
+
+        fragment_count_el = page.find(attrs={"data-testid": "fragment-count"})
+        assert fragment_count_el is not None
+        text = normalize_spaces(fragment_count_el.text)
+        assert text == "3 text messages."
+        assert "Estimate" not in text
+
+    def test_fragment_count_shows_estimate_text_when_placeholders_present(
+        self,
+        client_request,
+        mock_get_template_folders,
+        mock_notification_counts_client,
+        fake_uuid,
+        mocker,
+        app_,
+    ):
+        """When FF_USE_BILLABLE_UNITS is enabled and the template has personalisation variables,
+        the fragment count should display as 'Estimate: X text messages. Custom content may increase length.'"""
+        app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="Personalised SMS",
+                    type_="sms",
+                    content="Hello ((name)), " + "A" * 390,  # placeholder + length for 3 fragments
+                )
+            },
+        )
+        mocker.patch("app.template_category_api_client.get_all_template_categories", return_value=[])
+        current_user.verified_phonenumber = True
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": 1000},
+                "daily": {"limit": 1000, "sent": 0, "remaining": 1000},
+            },
+            "sms": {
+                "annual": {"limit": 1000, "sent": 0, "remaining": 1000},
+                "daily": {"limit": 1000, "sent": 0, "remaining": 1000},
+            },
+        }
+
+        page = client_request.get(".view_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid, _test_page_title=False)
+
+        fragment_count_el = page.find(attrs={"data-testid": "fragment-count"})
+        assert fragment_count_el is not None
+        text = normalize_spaces(fragment_count_el.text)
+        assert "Estimate:" in text
+        assert "Custom content may increase length." in text
+
 
 class TestViewSampleLibrary:
     @pytest.fixture
