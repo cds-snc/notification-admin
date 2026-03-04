@@ -100,13 +100,13 @@
               {% else %}
                 {% set display_count = counts.requested %}
               {% endif %}
-              <span data-testid="monthly-{{ template_type }}-count">
+              <div data-testid="monthly-{{ template_type }}-count">
                 {{ big_number(
                   display_count,
                   message_count_label(display_count, template_type, suffix=''),
                   smallest=True,
                 ) }}
-              </span>
+                </div>
               {% if counts.failed == 1 %}
               <span class="{{ 'failure-highlight' if counts.show_warning else '' }}">
                 {{ counts.failed | format_number }} {{ _('failure') }}
