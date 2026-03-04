@@ -23,7 +23,9 @@
 
   // ── DOM references ──────────────────────────────────────────────────────
   var fragmentCountText = document.getElementById("sms-fragment-count-text");
-  var fragmentCountSuffix = document.getElementById("sms-fragment-count-suffix");
+  var fragmentCountSuffix = document.getElementById(
+    "sms-fragment-count-suffix",
+  );
   // Shortening suggestions DOM references (commented out — preserved for future use)
   // var shortenSection = document.getElementById("sms-shorten-suggestions");
   // var shortenList = document.getElementById("sms-shorten-list");
@@ -191,13 +193,17 @@
     } else {
       countText = phrase("sms_estimate", "Estimate: {} text messages.").replace(
         "{}",
-        fragmentCount
+        fragmentCount,
       );
     }
 
     fragmentCountText.textContent = countText;
     fragmentCountSuffix.textContent = hasVars
-      ? " " + phrase("sms_variables_warning", "Variables may increase number of messages.")
+      ? " " +
+        phrase(
+          "sms_variables_warning",
+          "Variables may increase number of messages.",
+        )
       : "";
   }
 
