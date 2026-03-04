@@ -2922,14 +2922,14 @@ class TestAnnualLimits:
             # Daily remaining = 0 (true zero) → standard paused heading
             (0, 100, "Sending paused until 7pm ET. You can schedule more messages to send later."),
             # Annual remaining > 0 but < fragment_count → fragment-specific heading
-            (100, 2, "This message exceeds your daily limit."),
-            (100, 1, "This message exceeds your daily limit."),
+            (100, 2, "This message exceeds your annual limit."),
+            (100, 1, "This message exceeds your annual limit."),
             # Annual remaining = 0 (true zero) → standard paused heading
             (100, 0, "Sending paused until annual limit resets"),
             # Both remaining > 0 but < fragment_count → annual takes precedence
-            (2, 2, "This message exceeds your daily limit."),
+            (2, 2, "This message exceeds your annual limit."),
             # Daily = 0 (true zero), annual > 0 but < fragment_count → annual fragment-specific heading
-            (0, 2, "This message exceeds your daily limit."),
+            (0, 2, "This message exceeds your annual limit."),
         ],
     )
     def test_heading_text_when_billable_units_enabled_and_remaining_below_fragment_count(
