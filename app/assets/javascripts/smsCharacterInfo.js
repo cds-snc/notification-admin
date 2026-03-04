@@ -1,16 +1,13 @@
 /**
  * SMS Character Info Component
  *
- * Displays live SMS fragment count, shortening suggestions for non-GSM characters,
- * and the daily SMS limit below the template content textarea on the SMS template
- * edit/add pages.
+ * Displays live SMS fragment count estimate below the template content textarea
+ * on the SMS template edit/add pages.
  *
  * This component listens to `input` events on the #template_content textarea and
  * updates text content in pre-existing HTML elements:
- *   1. #sms-fragment-count-text — "Counts as N text messages"
- *   2. #sms-fragment-count-suffix — ", maybe more with custom content." or "."
- *   3. #sms-shorten-list — list items for non-GSM characters
- *   4. #sms-shorten-suggestions — shown/hidden based on non-GSM chars
+ *   1. #sms-fragment-count-text — "Estimate: N text messages."
+ *   2. #sms-fragment-count-suffix — "Variables may increase number of messages." (if placeholders present)
  *
  * All markup lives in the Jinja template; this script only updates text and visibility.
  * Localisation follows the window.APP_PHRASES pattern used by other components.
@@ -27,8 +24,9 @@
   // ── DOM references ──────────────────────────────────────────────────────
   var fragmentCountText = document.getElementById("sms-fragment-count-text");
   var fragmentCountSuffix = document.getElementById("sms-fragment-count-suffix");
-  var shortenSection = document.getElementById("sms-shorten-suggestions");
-  var shortenList = document.getElementById("sms-shorten-list");
+  // Shortening suggestions DOM references (commented out — preserved for future use)
+  // var shortenSection = document.getElementById("sms-shorten-suggestions");
+  // var shortenList = document.getElementById("sms-shorten-list");
 
   // Bail if the markup is missing
   if (!fragmentCountText || !fragmentCountSuffix) return;
@@ -184,14 +182,14 @@
   // ── DOM updates ─────────────────────────────────────────────────────────
 
   /**
-   * Update the fragment count text and suffix.
+   * Update the fragment count estimate text and suffix.
    */
   function renderFragmentCount(fragmentCount, hasVars) {
     var countText;
     if (fragmentCount === 1) {
-      countText = phrase("sms_counts_as_one", "Counts as 1 text message");
+      countText = phrase("sms_estimate_one", "Estimate: 1 text message.");
     } else {
-      countText = phrase("sms_counts_as", "Counts as {} text messages").replace(
+      countText = phrase("sms_estimate", "Estimate: {} text messages.").replace(
         "{}",
         fragmentCount
       );
@@ -199,13 +197,15 @@
 
     fragmentCountText.textContent = countText;
     fragmentCountSuffix.textContent = hasVars
-      ? ", " + phrase("sms_maybe_more", "maybe more with custom content.")
-      : ".";
+      ? " " + phrase("sms_variables_warning", "Variables may increase number of messages.")
+      : "";
   }
 
   /**
    * Update the shortening suggestions list. Shows/hides the section.
+   * (Commented out — GSM character counting logic preserved for future use)
    */
+  /*
   function renderShorteningSuggestions(nonGsmChars) {
     if (!shortenSection || !shortenList) return;
 
@@ -229,6 +229,7 @@
       shortenList.appendChild(li);
     }
   }
+  */
 
   // ── Main update function ────────────────────────────────────────────────
 
@@ -241,7 +242,7 @@
     var hasVars = hasPlaceholders(content);
 
     renderFragmentCount(fragmentCount, hasVars);
-    renderShorteningSuggestions(findNonGsmCharacters(content));
+    // renderShorteningSuggestions(findNonGsmCharacters(content)); // Commented out — preserved for future use
   }
 
   // ── Debounce helper ─────────────────────────────────────────────────────
