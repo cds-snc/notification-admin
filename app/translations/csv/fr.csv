@@ -2406,3 +2406,8 @@
 "Phone carriers count some texts as more than one message.","FR Phone carriers count some texts as more than one message."
 "This message is too long to send with your remaining daily limit","FR This message is too long to send with your remaining daily limit"
 "This message is too long to send with your remaining annual limit","FR This message is too long to send with your remaining annual limit"
+"Estimate: {} text messages.","FR Estimate: {} text messages."
+"Estimate: 1 text message.","FR Estimate: 1 text message."
+"Variables may increase number of messages.","FR Variables may increase number of messages."
+"For details, visit","FR For details, visit"
+"is your daily text message limit","FR is your daily text message limit"
