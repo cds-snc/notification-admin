@@ -171,12 +171,14 @@ def get_limit_stats(notification_type, template=None):
     # determine ready to send heading
     if limit_stats["yearlyRemaining"] == 0:
         if yearly_exceeded_by_fragments:
-            limit_stats["heading"] = _("This message is too long to send with your remaining annual limit")
+            limit_stats["heading"] = _("This message exceeds your daily limit.")
         else:
             limit_stats["heading"] = _("Sending paused until annual limit resets")
     elif limit_stats["dailyRemaining"] == 0:
         if daily_exceeded_by_fragments:
-            limit_stats["heading"] = _("This message is too long to send with your remaining daily limit")
+            limit_stats["heading"] = _(
+                "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later."
+            )
         else:
             limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
 
