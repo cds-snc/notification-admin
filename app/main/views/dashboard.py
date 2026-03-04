@@ -19,6 +19,7 @@ from flask_login import current_user
 from werkzeug.utils import redirect
 
 from app import (
+    billing_api_client,
     current_service,
     job_api_client,
     notification_api_client,
@@ -296,6 +297,32 @@ def monthly(service_id):
         months = (format_monthly_stats_to_list(monthly_data["data"]),)
         monthly_data_aggregate = combine_daily_to_monthly(todays_data, months[0], "redis")
 
+    # TODO FF_USE_BILLABLE_UNITS removal - Fetch and attach SMS billable units per month when FF is enabled
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+    if use_billable_units:
+        billing_units = billing_api_client.get_billable_units(service_id, year)
+        sms_billable_units_by_month = {}
+        for entry in billing_units:
+            if entry.get("notification_type") == "sms":
+                month_name = entry["month"]
+                sms_billable_units_by_month[month_name] = sms_billable_units_by_month.get(month_name, 0) + entry["billing_units"]
+        for month in monthly_data_aggregate:
+            month["sms_billable_units"] = sms_billable_units_by_month.get(month["name"], 0)
+
+        # For the annual overview box, use the same data source as the dashboard
+        # (Redis / annual-limit-stats API) so both pages show a consistent number.
+        # The billing API uses a different data source and may differ from the limit-tracking count.
+        if year == current_financial_year:
+            # Use the same daily stats function as the dashboard so that today's SMS total
+            # is counted in billable units (fragments), not raw message counts.  This ensures
+            # the annual SMS figure on the usage page is identical to the dashboard total.
+            dashboard_totals_daily, _, _ = _get_daily_stats(service_id)
+            annual_from_limit_source = get_annual_data(service_id, dashboard_totals_daily)
+            annual_data_aggregate["sms"] = annual_from_limit_source["sms"]
+        else:
+            # For past years Redis has no data; billing API total is the best available
+            annual_data_aggregate["sms"] = sum(sms_billable_units_by_month.values())
+
     return render_template(
         "views/dashboard/monthly.html",
         months=monthly_data_aggregate,
@@ -307,6 +334,7 @@ def monthly(service_id):
         annual_data=annual_data_aggregate,
         selected_year=year,
         current_financial_year=current_financial_year,
+        use_billable_units=use_billable_units,
     )
 
 
@@ -401,6 +429,9 @@ def get_dashboard_partials(service_id):
     # Use count for weekly stats (used for display of messages sent)
     stats_weekly = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=False)
     dashboard_totals_weekly = (get_dashboard_totals(stats_weekly),)
+    # Compute billable units for weekly SMS (fragments, may exceed message count for long messages)
+    stats_weekly_billable = aggregate_notifications_stats(all_statistics_weekly, use_billable_units=True)
+    sms_billable_units_weekly = stats_weekly_billable["sms"]["requested"]
     timings["weekly_stats_aggregation"] = (time.time() - start) * 1000
 
     start = time.time()
@@ -440,6 +471,7 @@ def get_dashboard_partials(service_id):
             column_width=column_width,
             smaller_font_size=(highest_notification_count_daily > max_notifiction_count),
             bounce_rate=bounce_rate_data,
+            sms_billable_units_weekly=sms_billable_units_weekly,
         ),
         "template-statistics": render_template(
             "views/dashboard/template-statistics.html",

@@ -7,6 +7,8 @@ module.exports = {
     "phone",
     "bottom-2",
     "bg-red",
+    "bg-gray-200",
+    "neutral-light",
     "list-entry-remove",
     "shim",
     "content-fixed",
