@@ -1,0 +1,129 @@
+name: Deploy K8s PR preview (admin)
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+
+env:
+  AWS_DEFAULT_REGION: ca-central-1
+  IMAGE: notify/admin
+  REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-push:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.set-pr.outputs.pr_number }}
+    steps:
+      - name: Set PR number
+        id: set-pr
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-admin-test-admin-workflows
+          role-session-name: NotifyAdminK8sPRPreviewBuild
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        run: |
+          docker buildx build \
+            --build-arg GIT_SHA=${{ github.sha }} \
+            --platform linux/amd64 \
+            --provenance=false \
+            --output type=image,push=true \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.PR_NUMBER }}-k8s \
+            -f ci/Dockerfile .
+
+  deploy:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    env:
+      PR_NUMBER: ${{ needs.build-and-push.outputs.pr_number }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-admin-test-admin-workflows
+          role-session-name: NotifyAdminK8sPRPreviewDeploy
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Update kubeconfig for staging EKS
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ secrets.STAGING_EKS_CLUSTER_NAME }} \
+            --region ${{ env.AWS_DEFAULT_REGION }} \
+            --alias staging
+
+      - name: Checkout notification-manifests
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: cds-snc/notification-manifests
+          ref: main
+          path: notification-manifests
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Install helm-diff plugin
+        run: helm plugin install https://github.com/databus23/helm-diff
+
+      - name: Install helmfile
+        run: |
+          curl -fsSL https://github.com/helmfile/helmfile/releases/download/v0.163.1/helmfile_0.163.1_linux_amd64.tar.gz \
+            | tar -xz helmfile
+          sudo mv helmfile /usr/local/bin/helmfile
+
+      - name: Deploy PR preview
+        working-directory: notification-manifests/helmfile
+        env:
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          REGISTRY: ${{ env.REGISTRY }}
+          AWS_REGION: ${{ env.AWS_DEFAULT_REGION }}
+          BASE_DOMAIN: staging.notification.cdssandbox.xyz
+          AWS_ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+          MANIFEST_DOCKER_HUB_USERNAME: ${{ secrets.MANIFEST_DOCKER_HUB_USERNAME }}
+          MANIFEST_DOCKER_HUB_PAT: ${{ secrets.MANIFEST_DOCKER_HUB_PAT }}
+        run: helmfile -e staging -f helmfile-pr-preview.yaml apply
+
+      - name: Comment preview URL on PR
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## :kubernetes: K8s review environment\nhttps://pr-${process.env.PR_NUMBER}.staging.notification.cdssandbox.xyz`
+            })

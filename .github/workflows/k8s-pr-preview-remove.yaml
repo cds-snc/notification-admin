@@ -1,0 +1,81 @@
+name: Remove K8s PR preview (admin)
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+env:
+  AWS_DEFAULT_REGION: ca-central-1
+  IMAGE: notify/admin
+  REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  remove:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set PR number
+        run: echo "PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-admin-test-admin-workflows
+          role-session-name: NotifyAdminK8sPRPreviewRemove
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Update kubeconfig for staging EKS
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ secrets.STAGING_EKS_CLUSTER_NAME }} \
+            --region ${{ env.AWS_DEFAULT_REGION }} \
+            --alias staging
+
+      - name: Checkout notification-manifests
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: cds-snc/notification-manifests
+          ref: main
+          path: notification-manifests
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Install helm-diff plugin
+        run: helm plugin install https://github.com/databus23/helm-diff
+
+      - name: Install helmfile
+        run: |
+          curl -fsSL https://github.com/helmfile/helmfile/releases/download/v0.163.1/helmfile_0.163.1_linux_amd64.tar.gz \
+            | tar -xz helmfile
+          sudo mv helmfile /usr/local/bin/helmfile
+
+      - name: Destroy PR preview
+        working-directory: notification-manifests/helmfile
+        env:
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          REGISTRY: ${{ env.REGISTRY }}
+          AWS_REGION: ${{ env.AWS_DEFAULT_REGION }}
+          BASE_DOMAIN: staging.notification.cdssandbox.xyz
+          AWS_ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+          MANIFEST_DOCKER_HUB_USERNAME: ${{ secrets.MANIFEST_DOCKER_HUB_USERNAME }}
+          MANIFEST_DOCKER_HUB_PAT: ${{ secrets.MANIFEST_DOCKER_HUB_PAT }}
+        run: helmfile -e staging -f helmfile-pr-preview.yaml destroy
+
+      - name: Delete ECR image
+        run: |
+          aws ecr batch-delete-image \
+            --repository-name ${{ env.IMAGE }} \
+            --image-ids imageTag=${{ env.PR_NUMBER }}-k8s || true
