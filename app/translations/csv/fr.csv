@@ -2406,7 +2406,6 @@
 "text message to {} recipients","FR text message to {} recipients"
 "text messages to {} recipient","FR text messages to {} recipient"
 "Phone carriers count some texts as more than one message.","FR Phone carriers count some texts as more than one message."
-<<<<<<< HEAD
 "This message is too long to send with your remaining daily limit","FR This message is too long to send with your remaining daily limit"
 "This message is too long to send with your remaining annual limit","FR This message is too long to send with your remaining annual limit"
 "Estimate: {} text messages.","FR Estimate: {} text messages."
@@ -2414,9 +2413,7 @@
 "Variables may increase number of messages.","FR Variables may increase number of messages."
 "For details, visit","FR For details, visit"
 "is your daily text message limit","FR is your daily text message limit"
-=======
 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later.","Ce message dépasse votre limite quotidienne. Vous pouvez raccourcir votre message ou programmer l'envoi de messages supplémentaires pour plus tard."
 "This message exceeds your annual limit.","Ce message dépasse votre limite annuelle."
->>>>>>> main
 "1 text message.","FR 1 text message."
 "{} text messages.","FR {} text messages."
