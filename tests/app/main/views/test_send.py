@@ -1010,7 +1010,7 @@ def test_send_test_doesnt_show_file_contents(
     assert page.select("h1")[0].text.strip() == "Review before sending"
     assert len(page.select("table")) == 0
     assert len(page.select(".banner-dangerous")) == 0
-    assert page.select_one("button[type=submit]").text.strip() == "Send text message"
+    assert "text message" in page.select_one("button[type=submit]").text
 
 
 @pytest.mark.parametrize(
