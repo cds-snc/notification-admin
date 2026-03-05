@@ -3,6 +3,7 @@
 {% from "components/links.html" import content_link %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/page-header.html" import govuk_back_link, page_header %}
+{% from "components/remaining-messages-summary.html" import remaining_messages_summary with context %}
 
 {% block service_page_title %}
   {{ _("Error") if error else _('Review before sending') }}
@@ -89,6 +90,23 @@
   {% endif %}
 
   {% if template %}
+    {% if template.template_type == 'sms' and not error %}
+      <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
+        {% if config['FF_USE_BILLABLE_UNITS'] and sms_parts_to_send %}
+          <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" data-testid="sms-message-count">
+            <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
+            <span>
+              {% if sms_parts_to_send == 1 %}
+                {{ _("Count: 1 text message") }}
+              {% else %}
+                {{ _("Count: {} text messages").format(sms_parts_to_send) }}
+              {% endif %}
+            </span>
+          </div>
+        {% endif %}
+        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False) }}
+      </div>
+    {% endif %}
     {{ template|string|translate_preview_template }}
   {% endif %}
 

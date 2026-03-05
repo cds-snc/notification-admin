@@ -1199,6 +1199,39 @@ def mock_get_limit_stats(mocker):
     return mocker.patch("app.main.views.templates.notification_counts_client.get_limit_stats", side_effect=_get_data)
 
 
+@pytest.fixture(scope="function")
+def mock_get_limit_stats_send(mocker):
+    def _get_data(svc):
+        return {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+        }
+
+    return mocker.patch("app.main.views.send.notification_counts_client.get_limit_stats", side_effect=_get_data)
+
+
 def create_template(
     service_id=SERVICE_ONE_ID,
     template_id=None,

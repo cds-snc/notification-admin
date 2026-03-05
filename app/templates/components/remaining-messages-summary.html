@@ -1,4 +1,4 @@
-{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None, use_billable_units=False) %}
+{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None, use_billable_units=False, show_links=True) %}
   <!-- Validate textOnly param -->
   {% set textOnly_allowed_values = ['text', 'emoji'] %}
   {% if textOnly not in textOnly_allowed_values %}
@@ -80,6 +80,7 @@
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
             }}
           </div>
+          {% if show_links %}
           <a 
             href="{{ section.link_href }}" 
             data-testid="rms-{{ section.type }}-link" 
@@ -88,6 +89,7 @@
           >
             {{section.link_text }}
           </a>
+          {% endif %}
         </div>
       {% else %}
         <p class="m-0 p-0" data-testid="rms-item">
