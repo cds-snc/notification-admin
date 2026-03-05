@@ -90,9 +90,10 @@
   {% endif %}
 
   {% if template %}
-    {% if template.template_type == 'sms' and not error %}
+    {{ template|string|translate_preview_template }}
+    {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' and not error %}
       <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
-        {% if config['FF_USE_BILLABLE_UNITS'] and sms_parts_to_send %}
+        {% if sms_parts_to_send %}
           <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" data-testid="sms-message-count">
             <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
             <span>
@@ -107,7 +108,6 @@
         {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False) }}
       </div>
     {% endif %}
-    {{ template|string|translate_preview_template }}
   {% endif %}
 
   <div class="js-stick-at-bottom-when-scrolling">

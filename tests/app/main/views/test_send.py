@@ -3793,6 +3793,7 @@ class TestAnnualLimitsSend:
         mocker,
         mock_get_service_template_with_placeholders,
         mock_get_template_statistics,
+        mock_get_limit_stats_send,
         notification_type,
         exception_msg_api,
         expected_error_msg_admin,
