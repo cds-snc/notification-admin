@@ -2914,14 +2914,21 @@ def test_check_notification_shows_preview(
 
 
 def test_check_notification_sms_shows_limit_rows_without_links(
-    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
 ):
-    """Daily and yearly remaining rows always appear for SMS, without request-increase links."""
+    """Daily and yearly remaining rows appear for SMS without request-increase links when FF is enabled."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
 
-    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     sms_info = page.select_one("[data-testid='sms-sending-info']")
     assert sms_info is not None, "sms-sending-info block should be present for SMS templates"
@@ -2966,7 +2973,7 @@ def test_check_notification_sms_hides_message_count_when_ff_disabled(
     mock_get_limit_stats_send,
     app_,
 ):
-    """Count chip is hidden when FF_USE_BILLABLE_UNITS is disabled, but limit rows still appear."""
+    """Count chip and limit rows are hidden when FF_USE_BILLABLE_UNITS is disabled."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
@@ -2975,8 +2982,7 @@ def test_check_notification_sms_hides_message_count_when_ff_disabled(
         page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     assert not page.select("[data-testid='sms-message-count']")
-    # Limit rows always present for SMS regardless of FF
-    assert len(page.select("[data-testid='rms-item']")) == 2
+    assert not page.select("[data-testid='sms-sending-info']")
     # Button falls back to old label when FF is off
     assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
 
