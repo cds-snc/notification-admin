@@ -986,6 +986,7 @@ def test_send_test_doesnt_show_file_contents(
     mock_get_service_statistics,
     mock_get_template_statistics,
     mock_has_no_jobs,
+    mock_get_limit_stats_send,
     service_one,
     fake_uuid,
     user,
@@ -1009,7 +1010,7 @@ def test_send_test_doesnt_show_file_contents(
     assert page.select("h1")[0].text.strip() == "Review before sending"
     assert len(page.select("table")) == 0
     assert len(page.select(".banner-dangerous")) == 0
-    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+    assert page.select_one("button[type=submit]").text.strip() == "Send text message"
 
 
 @pytest.mark.parametrize(
@@ -2965,7 +2966,7 @@ def test_check_notification_sms_hides_message_count_when_ff_disabled(
     mock_get_limit_stats_send,
     app_,
 ):
-    """Count chip is hidden when FF_USE_BILLABLE_UNITS is disabled."""
+    """Count chip is hidden when FF_USE_BILLABLE_UNITS is disabled, but limit rows still appear."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
@@ -2974,8 +2975,30 @@ def test_check_notification_sms_hides_message_count_when_ff_disabled(
         page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     assert not page.select("[data-testid='sms-message-count']")
-    # Limit rows still present
+    # Limit rows always present for SMS regardless of FF
     assert len(page.select("[data-testid='rms-item']")) == 2
+    # Button falls back to old label when FF is off
+    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+
+
+def test_check_notification_sms_button_text_with_ff_enabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Button says 'Send text message' (no count) when FF_USE_BILLABLE_UNITS is on."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.select_one("button[type=submit]").text.strip() == "Send text message"
 
 
 def test_check_notification_sms_info_not_shown_on_error(
