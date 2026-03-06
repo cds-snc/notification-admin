@@ -192,18 +192,18 @@
     var countText;
     if (hasVars) {
       if (fragmentCount === 1) {
-        countText = phrase("sms_estimate_one", "Estimate: 1 text message.");
+        countText = phrase("sms_estimate_one", "Estimate: 1 text message. Variables may increase number of messages.");
       } else {
         countText = phrase(
           "sms_estimate",
-          "Estimate: {} text messages.",
+          "Estimate: {} text messages. Variables may increase number ofr messages.",
         ).replace("{}", fragmentCount);
       }
     } else {
       if (fragmentCount === 1) {
-        countText = phrase("sms_one", "1 text message.");
+        countText = phrase("sms_one", "Count: 1 text message.");
       } else {
-        countText = phrase("sms_count", "{} text messages.").replace(
+        countText = phrase("sms_count", "Count: {} text messages.").replace(
           "{}",
           fragmentCount,
         );
