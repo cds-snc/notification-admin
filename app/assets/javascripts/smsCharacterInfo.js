@@ -184,17 +184,30 @@
   // ── DOM updates ─────────────────────────────────────────────────────────
 
   /**
-   * Update the fragment count estimate text and suffix.
+   * Update the fragment count text and suffix.
+   * Only uses "Estimate" wording when personalisation variables are present,
+   * since the actual count may be higher with custom content.
    */
   function renderFragmentCount(fragmentCount, hasVars) {
     var countText;
-    if (fragmentCount === 1) {
-      countText = phrase("sms_estimate_one", "Estimate: 1 text message.");
+    if (hasVars) {
+      if (fragmentCount === 1) {
+        countText = phrase("sms_estimate_one", "Estimate: 1 text message.");
+      } else {
+        countText = phrase(
+          "sms_estimate",
+          "Estimate: {} text messages.",
+        ).replace("{}", fragmentCount);
+      }
     } else {
-      countText = phrase("sms_estimate", "Estimate: {} text messages.").replace(
-        "{}",
-        fragmentCount,
-      );
+      if (fragmentCount === 1) {
+        countText = phrase("sms_one", "1 text message.");
+      } else {
+        countText = phrase("sms_count", "{} text messages.").replace(
+          "{}",
+          fragmentCount,
+        );
+      }
     }
 
     fragmentCountText.textContent = countText;
