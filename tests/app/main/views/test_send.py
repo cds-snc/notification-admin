@@ -3522,18 +3522,26 @@ class TestBulkCheckSmsSendingInfo:
         6502532224, Bob
     """
 
-    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled):
+    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled, app_=None):
         mocker.patch("app.main.views.send.s3download", return_value=self.CSV_CONTENT)
         with client_request.session_transaction() as session:
             session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
-        with set_config(client_request.application, "FF_USE_BILLABLE_UNITS", ff_enabled):
-            return client_request.get(
-                "main.check_messages",
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-                upload_id=fake_uuid,
-                original_file_name="test.csv",
-            )
+        if app_ is not None and not ff_enabled:
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", ff_enabled):
+                return client_request.get(
+                    "main.check_messages",
+                    service_id=SERVICE_ONE_ID,
+                    template_id=fake_uuid,
+                    upload_id=fake_uuid,
+                    original_file_name="test.csv",
+                )
+        return client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="test.csv",
+        )
 
     def test_sms_sending_info_shown_when_ff_enabled(
         self,
@@ -3576,9 +3584,10 @@ class TestBulkCheckSmsSendingInfo:
         mock_get_jobs,
         mock_s3_set_metadata,
         fake_uuid,
+        app_,
         mocker,
     ):
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=False)
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=False, app_=app_)
 
         assert not page.select("[data-testid='sms-sending-info']")
         assert not page.select("[data-testid='sms-message-count']")
