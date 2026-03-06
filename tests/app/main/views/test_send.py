@@ -3513,6 +3513,100 @@ def test_s3_send_shows_available_files(
     assert multiple_choise_options == expected_filenames
 
 
+class TestBulkCheckSmsSendingInfo:
+    """Tests for the SMS sending-info block on the bulk-send review page (ok.html)."""
+
+    CSV_CONTENT = """
+        phone number,name
+        6502532223, Alice
+        6502532224, Bob
+    """
+
+    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled):
+        mocker.patch("app.main.views.send.s3download", return_value=self.CSV_CONTENT)
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+        with set_config(client_request.application, "FF_USE_BILLABLE_UNITS", ff_enabled):
+            return client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="test.csv",
+            )
+
+    def test_sms_sending_info_shown_when_ff_enabled(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        mocker,
+    ):
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True)
+
+        sms_info = page.select_one("[data-testid='sms-sending-info']")
+        assert sms_info is not None, "sms-sending-info block should appear for SMS when FF is on"
+
+        # Count chip present
+        assert sms_info.select_one("[data-testid='sms-message-count']") is not None
+
+        # Daily and yearly rms rows present
+        assert len(page.select("[data-testid='rms-item']")) == 2
+
+        # No request-increase links
+        assert not sms_info.select("[data-testid='rms-daily-link']")
+        assert not sms_info.select("[data-testid='rms-yearly-link']")
+
+    def test_sms_sending_info_hidden_when_ff_disabled(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        mocker,
+    ):
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=False)
+
+        assert not page.select("[data-testid='sms-sending-info']")
+        assert not page.select("[data-testid='sms-message-count']")
+        assert not page.select("[data-testid='rms-item']")
+
+    def test_sms_count_label_says_count_when_exact(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        mocker,
+    ):
+        """≤1000 rows → exact count (no 'Estimated')."""
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True)
+
+        count_el = page.select_one("[data-testid='sms-message-count']")
+        assert count_el is not None
+        assert "Estimated" not in count_el.text
+        assert "text message" in count_el.text
+
+
 class TestAnnualLimitsSend:
     @pytest.mark.parametrize(
         "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
