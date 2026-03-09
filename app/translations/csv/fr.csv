@@ -2422,8 +2422,5 @@
 "Send text message","FR Send text message"
 "Count: 1 text message","FR Count: 1 text message"
 "Count: {} text messages","FR Count: {} text messages"
-<<<<<<< task/add-sms-counter
-=======
 "Estimated count: {} text messages","FR Estimated count: {} text messages"
 "Estimated count: 1 text message","FR Estimated count: 1 text message"
->>>>>>> main
