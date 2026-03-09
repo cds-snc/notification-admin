@@ -199,7 +199,7 @@
       } else {
         countText = phrase(
           "sms_estimate",
-          "Estimate: {} text messages. Variables may increase number ofr messages.",
+          "Estimate: {} text messages. Variables may increase number of messages.",
         ).replace("{}", fragmentCount);
       }
     } else {
