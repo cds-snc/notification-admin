@@ -986,6 +986,7 @@ def test_send_test_doesnt_show_file_contents(
     mock_get_service_statistics,
     mock_get_template_statistics,
     mock_has_no_jobs,
+    mock_get_limit_stats_send,
     service_one,
     fake_uuid,
     user,
@@ -1009,7 +1010,7 @@ def test_send_test_doesnt_show_file_contents(
     assert page.select("h1")[0].text.strip() == "Review before sending"
     assert len(page.select("table")) == 0
     assert len(page.select(".banner-dangerous")) == 0
-    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+    assert "text message" in page.select_one("button[type=submit]").text
 
 
 @pytest.mark.parametrize(
@@ -2407,6 +2408,7 @@ def test_route_permissions_send_check_notifications(
     mock_send_notification,
     mock_get_service_template,
     mock_get_template_statistics,
+    mock_get_limit_stats_send,
     fake_uuid,
     route,
     response_code,
@@ -2888,7 +2890,7 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
 
 
 def test_check_notification_shows_preview(
-    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics
+    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
 ):
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
@@ -2909,6 +2911,126 @@ def test_check_notification_shows_preview(
         template_id=fake_uuid,
         help="0",
     )
+
+
+def test_check_notification_sms_shows_limit_rows_without_links(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Daily and yearly remaining rows appear for SMS without request-increase links when FF is enabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    sms_info = page.select_one("[data-testid='sms-sending-info']")
+    assert sms_info is not None, "sms-sending-info block should be present for SMS templates"
+
+    # Limit rows (daily + yearly) rendered via remaining_messages_summary
+    rms_items = page.select("[data-testid='rms-item']")
+    assert len(rms_items) == 2
+
+    # No links inside the sending-info block
+    assert not sms_info.select("[data-testid='rms-daily-link']")
+    assert not sms_info.select("[data-testid='rms-yearly-link']")
+
+
+def test_check_notification_sms_shows_message_count_when_ff_enabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Count chip only appears when FF_USE_BILLABLE_UNITS is enabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    count_el = page.select_one("[data-testid='sms-message-count']")
+    assert count_el is not None
+    assert "text message" in count_el.text
+
+
+def test_check_notification_sms_hides_message_count_when_ff_disabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Count chip and limit rows are hidden when FF_USE_BILLABLE_UNITS is disabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert not page.select("[data-testid='sms-message-count']")
+    assert not page.select("[data-testid='sms-sending-info']")
+    # Button falls back to old label when FF is off
+    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+
+
+def test_check_notification_sms_button_text_with_ff_enabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Button says 'Send text message' (no count) when FF_USE_BILLABLE_UNITS is on."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.select_one("button[type=submit]").text.strip() == "Send text message"
+
+
+def test_check_notification_sms_info_not_shown_on_error(
+    client_request,
+    service_one,
+    fake_uuid,
+    mocker,
+    mock_get_service_template_with_placeholders,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+):
+    """The SMS sending-info block is hidden when there is a send error."""
+
+    class MockHTTPError(HTTPError):
+        message = "service is in trial mode"
+
+    mocker.patch("app.notification_api_client.send_notification", side_effect=MockHTTPError())
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    page = client_request.post(
+        "main.send_notification", service_id=service_one["id"], template_id=fake_uuid, _expected_status=200
+    )
+
+    assert not page.select("[data-testid='sms-sending-info']")
 
 
 @pytest.mark.parametrize(
@@ -3060,6 +3182,7 @@ def test_send_notification_shows_error_if_400(
     mocker,
     mock_get_service_template_with_placeholders,
     mock_get_template_statistics,
+    mock_get_limit_stats_send,
     exception_msg,
     expected_h1,
     expected_err_details,
@@ -3699,6 +3822,7 @@ class TestAnnualLimitsSend:
         mocker,
         mock_get_service_template_with_placeholders,
         mock_get_template_statistics,
+        mock_get_limit_stats_send,
         notification_type,
         exception_msg_api,
         expected_error_msg_admin,
