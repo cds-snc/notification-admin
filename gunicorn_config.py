@@ -24,9 +24,16 @@ if enable_newrelic and not enable_otel:
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
 
-workers = 5
+workers = int(os.getenv("GUNICORN_WORKER_CONFIG", "5"))
+worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent")
+
 # Use custom worker that detects OpenTelemetry to avoid monkey-patching conflicts
-worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
+# when gevent is configured with OpenTelemetry enabled.
+if enable_otel and worker_class == "gevent":
+    worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
+
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CLASS={os.getenv('GUNICORN_WORKER_CLASS')}, resolved_worker_class={worker_class}")  # noqa: T201
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CONFIG={os.getenv('GUNICORN_WORKER_CONFIG')}, workers={workers}")  # noqa: T201
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 
