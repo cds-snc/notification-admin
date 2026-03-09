@@ -3,6 +3,7 @@
 {% from "components/links.html" import content_link %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/page-header.html" import govuk_back_link, page_header %}
+{% from "components/remaining-messages-summary.html" import remaining_messages_summary with context %}
 
 {% block service_page_title %}
   {{ _("Error") if error else _('Review before sending') }}
@@ -90,6 +91,23 @@
 
   {% if template %}
     {{ template|string|translate_preview_template }}
+    {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' and not error %}
+      <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
+        {% if sms_parts_to_send %}
+          <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" data-testid="sms-message-count">
+            <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
+            <span>
+              {% if sms_parts_to_send == 1 %}
+                {{ _("Count: 1 text message") }}
+              {% else %}
+                {{ _("Count: {} text messages").format(sms_parts_to_send) }}
+              {% endif %}
+            </span>
+          </div>
+        {% endif %}
+        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False) }}
+      </div>
+    {% endif %}
   {% endif %}
 
   <div class="js-stick-at-bottom-when-scrolling">
@@ -101,7 +119,11 @@
       )}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       {% if not error %}
-        <button type="submit" class="button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
+        {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' %}
+          <button type="submit" class="button">{{ _("Send text message") }}</button>
+        {% else %}
+          <button type="submit" class="button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
+        {% endif %}
       {% endif %}
       {% if template.template_type == 'letter' %}
         <a href="{{ url_for('main.check_notification_preview', service_id=current_service.id, template_id=template.id, filetype='pdf') }}" download class="page-footer-right-aligned-link">Download as a PDF</a>
