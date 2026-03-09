@@ -832,6 +832,12 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     limit_stats = notification_counts_client.get_limit_stats(current_service)
     remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
 
+    if data["template"].template_type == "sms":
+        data["sms_daily_limit"] = limit_stats["sms"]["daily"]["limit"]
+        data["sms_daily_used"] = limit_stats["sms"]["daily"]["sent"]
+        data["sms_yearly_limit"] = limit_stats["sms"]["annual"]["limit"]
+        data["sms_yearly_used"] = limit_stats["sms"]["annual"]["sent"]
+
     # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
     # When FF_USE_BILLABLE_UNITS is enabled, remaining_annual is in billable units (SMS fragments),
     # so we must compare against sms_parts_to_send (total fragments), not count_of_recipients.
