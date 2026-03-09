@@ -112,6 +112,8 @@ def pricing():
 
     entries = []
     for cc, country in INTERNATIONAL_BILLING_RATES.items():
+        if not country.get("attributes", {}).get("can_send", False):
+            continue
         display = _country_display_name(country)
         # strip HTML for sorting (e.g. remove <br />)
         sort_key = re.sub(r"<[^>]+>", "", str(display) or "").strip().lower()
