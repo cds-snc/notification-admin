@@ -3522,26 +3522,18 @@ class TestBulkCheckSmsSendingInfo:
         6502532224, Bob
     """
 
-    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled, app_=None):
+    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled, app_):
         mocker.patch("app.main.views.send.s3download", return_value=self.CSV_CONTENT)
         with client_request.session_transaction() as session:
             session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
-        if app_ is not None and not ff_enabled:
-            with set_config(app_, "FF_USE_BILLABLE_UNITS", ff_enabled):
-                return client_request.get(
-                    "main.check_messages",
-                    service_id=SERVICE_ONE_ID,
-                    template_id=fake_uuid,
-                    upload_id=fake_uuid,
-                    original_file_name="test.csv",
-                )
-        return client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="test.csv",
-        )
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", ff_enabled):
+            return client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="test.csv",
+            )
 
     def test_sms_sending_info_shown_when_ff_enabled(
         self,
@@ -3555,9 +3547,10 @@ class TestBulkCheckSmsSendingInfo:
         mock_get_jobs,
         mock_s3_set_metadata,
         fake_uuid,
+        app_,
         mocker,
     ):
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True)
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
 
         sms_info = page.select_one("[data-testid='sms-sending-info']")
         assert sms_info is not None, "sms-sending-info block should appear for SMS when FF is on"
@@ -3605,10 +3598,11 @@ class TestBulkCheckSmsSendingInfo:
         mock_get_jobs,
         mock_s3_set_metadata,
         fake_uuid,
+        app_,
         mocker,
     ):
         """≤1000 rows → exact count (no 'Estimated')."""
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True)
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
 
         count_el = page.select_one("[data-testid='sms-message-count']")
         assert count_el is not None
