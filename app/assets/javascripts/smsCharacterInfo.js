@@ -192,7 +192,10 @@
     var countText;
     if (hasVars) {
       if (fragmentCount === 1) {
-        countText = phrase("sms_estimate_one", "Estimate: 1 text message. Variables may increase number of messages.");
+        countText = phrase(
+          "sms_estimate_one",
+          "Estimate: 1 text message. Variables may increase number of messages.",
+        );
       } else {
         countText = phrase(
           "sms_estimate",
