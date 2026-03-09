@@ -1140,6 +1140,13 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
         sms_parts_data["send_exceeds_daily_limit"] = sms_parts_data["sms_parts_to_send"] > sms_parts_data["sms_parts_remaining"]
 
+        # Limit stats for daily/yearly remaining display on the check/review page
+        _sms_limit_stats = notification_counts_client.get_limit_stats(current_service)["sms"]
+        sms_parts_data["sms_daily_limit"] = _sms_limit_stats["daily"]["limit"]
+        sms_parts_data["sms_daily_used"] = _sms_limit_stats["daily"]["sent"]
+        sms_parts_data["sms_yearly_limit"] = _sms_limit_stats["annual"]["limit"]
+        sms_parts_data["sms_yearly_used"] = _sms_limit_stats["annual"]["sent"]
+
         # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
         if current_app.config.get("FF_USE_BILLABLE_UNITS"):
             sms_parts_data["billable_units_to_send"] = template.fragment_count
