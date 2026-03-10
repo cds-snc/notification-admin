@@ -49,6 +49,7 @@
 @import "./components/tou-dialog.css";
 @import "./components/indicator.css";
 @import "./components/badge.css";
+@import "./components/pricing.css";
 
 /* views */
 @import "./views/dashboard.css";

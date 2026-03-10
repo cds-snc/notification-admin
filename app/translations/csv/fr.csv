@@ -2424,3 +2424,8 @@
 "Count: {} text messages","FR Count: {} text messages"
 "Estimated count: {} text messages","FR Estimated count: {} text messages"
 "Estimated count: 1 text message","FR Estimated count: 1 text message"
+"Country code","Code du pays"
+"Country","Pays"
+"Rate multiplier","Multiplicateur de tarif"
+"International SMS rates","Tarifs des SMS internationaux"
+"Search by country name","Rechercher par nom de pays"

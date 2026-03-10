@@ -1,0 +1,17 @@
+/* Pricing page table layout and column widths */
+#international-rates {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#international-rates col.col-code {
+  width: 25%;
+}
+
+#international-rates col.col-country {
+  width: 50%;
+}
+
+#international-rates col.col-rate {
+  width: 25%;
+}
