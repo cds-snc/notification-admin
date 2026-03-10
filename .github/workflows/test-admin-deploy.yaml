@@ -2,8 +2,6 @@ name: Deploy test admin environment
 
 on:
   pull_request:
-    branches:
-      - main  
     types:
       - labeled
       - opened
