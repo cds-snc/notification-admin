@@ -102,3 +102,4 @@ node_modules/
 tests_cypress/cypress/videos/
 tests_cypress/cypress/screenshots/
 .ruff_cache/
+.github/instructions/
