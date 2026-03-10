@@ -1550,7 +1550,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.2.15"
+version = "53.2.17"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1586,8 +1586,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.15"
-resolved_reference = "459a5b98f4babe375cb0ee5b4436209323a649e6"
+reference = "fix/get_sms_fragment_count-bug"
+resolved_reference = "b86b8379dc59f5f0cc284dcdf928f2c52749c461"
 
 [[package]]
 name = "openpyxl"
@@ -2788,4 +2788,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "59128ea47858488219fa0edd144a53f28374c6116b6b3d2c2998c0040162b688"
+content-hash = "25d796fe26f079ec8c4c25991cb0adbeaeec5823f4470b105db6be0311d390e6"
