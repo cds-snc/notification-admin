@@ -139,6 +139,7 @@ def get_limit_stats(notification_type, template=None):
     # (fragments). We need to check whether remaining units can cover a one-off send by comparing
     # against the template's fragment count, not just checking > 0.
     daily_exceeded_by_fragments = False
+
     yearly_exceeded_by_fragments = False
     fragment_count = None
     if (
