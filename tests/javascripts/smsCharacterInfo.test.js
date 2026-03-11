@@ -1,4 +1,29 @@
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 const helpers = require("./support/helpers.js");
+
+// Locate the CSV via the installed notifications_utils Python package
+const notificationsUtilsDir = execSync(
+  'python3 -c "import notifications_utils, os; print(os.path.dirname(notifications_utils.__file__))"'
+)
+  .toString()
+  .trim();
+
+// Load shared fragment count test cases from notification-utils
+const smsFragmentTestCases = fs
+  .readFileSync(path.join(notificationsUtilsDir, "sms_fragment_count_cases.csv"), "utf8")
+  .trim()
+  .split("\n")
+  .slice(1) // skip header row
+  .map((line) => {
+    // The CSV uses quoted fields; the content field may be long.
+    // Parse manually: last comma-separated token is expected_fragments.
+    const lastComma = line.lastIndexOf(",");
+    const sms_content = line.slice(0, lastComma).replace(/^"|"$/g, "").replace(/""/g, '"');
+    const expected_fragments = parseInt(line.slice(lastComma + 1));
+    return { sms_content, expected_fragments };
+  });
 
 // Minimal DOM structure mirroring the sms-character-info macro
 function buildDOM({ prefix = "", initialContent = "" } = {}) {
@@ -84,117 +109,26 @@ describe("Initial render on page load", () => {
   });
 });
 
-// ── GSM-7 fragment counting ──────────────────────────────────────────────────
+// ── Fragment count (shared CSV test cases) ───────────────────────────────────
 
-describe("GSM-7 fragment counting", () => {
-  let textarea;
+describe("Fragment count (shared CSV test cases)", () => {
+  let hasUnicodeChars, countCharacterUnits, getFragmentCount;
 
-  beforeEach(() => {
-    buildDOM();
-    require("../../app/assets/javascripts/smsCharacterInfo.js");
-    textarea = document.getElementById("template_content");
+  beforeAll(() => {
+    // Load the exported pure functions. The module.exports block is placed
+    // before the DOM guard in smsCharacterInfo.js so this works without a DOM.
+    ({ hasUnicodeChars, countCharacterUnits, getFragmentCount } = require(
+      "../../app/assets/javascripts/smsCharacterInfo.js",
+    ));
   });
 
-  test("160 GSM characters → 1 fragment", () => {
-    typeIntoTextarea(textarea, "a".repeat(160));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
-  });
-
-  test("161 GSM characters → 2 fragments", () => {
-    typeIntoTextarea(textarea, "a".repeat(161));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
-  });
-
-  test("306 GSM characters → 2 fragments (153 × 2 boundary)", () => {
-    typeIntoTextarea(textarea, "a".repeat(306));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
-  });
-
-  test("307 GSM characters → 3 fragments", () => {
-    typeIntoTextarea(textarea, "a".repeat(307));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("3 text messages.");
-  });
-
-  test("GSM extension characters (e.g. €) count as 2 units each", () => {
-    // 80 × '€' = 160 units → still 1 fragment
-    typeIntoTextarea(textarea, "€".repeat(80));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
-
-    // 81 × '€' = 162 units → 2 fragments
-    typeIntoTextarea(textarea, "€".repeat(81));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
-  });
-});
-
-// ── Unicode fragment counting ────────────────────────────────────────────────
-
-describe("Unicode fragment counting", () => {
-  let textarea;
-
-  beforeEach(() => {
-    buildDOM();
-    require("../../app/assets/javascripts/smsCharacterInfo.js");
-    textarea = document.getElementById("template_content");
-  });
-
-  test("Unicode character (ë) switches to Unicode encoding", () => {
-    // 'ë' is a Unicode-forcing character; 1 char = 1 fragment (<= 70)
-    typeIntoTextarea(textarea, "ë");
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
-  });
-
-  test("70 Unicode characters → 1 fragment", () => {
-    typeIntoTextarea(textarea, "ë".repeat(70));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
-  });
-
-  test("71 Unicode characters → 2 fragments", () => {
-    typeIntoTextarea(textarea, "ë".repeat(71));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
-  });
-
-  test("134 Unicode characters → 2 fragments (67 × 2 boundary)", () => {
-    typeIntoTextarea(textarea, "ë".repeat(134));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
-  });
-
-  test("135 Unicode characters → 3 fragments", () => {
-    typeIntoTextarea(textarea, "ë".repeat(135));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("3 text messages.");
-  });
-
-  test("Welsh character (Ŵ) also triggers Unicode encoding", () => {
-    typeIntoTextarea(textarea, "Ŵ".repeat(70));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
-
-    typeIntoTextarea(textarea, "Ŵ".repeat(71));
-    expect(
-      document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
+  smsFragmentTestCases.forEach(({ sms_content, expected_fragments }) => {
+    const label = sms_content.length > 40 ? sms_content.slice(0, 40) + "…" : sms_content;
+    test(`"${label}" → ${expected_fragments} fragment(s)`, () => {
+      const isUnicode = hasUnicodeChars(sms_content);
+      const units = countCharacterUnits(sms_content, isUnicode);
+      expect(getFragmentCount(units, isUnicode)).toBe(expected_fragments);
+    });
   });
 });
 
