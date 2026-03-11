@@ -1586,8 +1586,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "chore/sms-fragment-tests"
-resolved_reference = "d94f50ecb33b13502995226c2331cf2fdf3b6bfa"
+reference = "53.2.18"
+resolved_reference = "e0bb01299dd4610dc2e2c6b66831ea167f1b1756"
 
 [[package]]
 name = "openpyxl"
@@ -2788,4 +2788,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "1b830424f9787a55bb127e41809ae1f2575ffacc3769bcbfadb5e47995fdc807"
+content-hash = "e313f31d65c44870788cca78297e2bbbe2d028726cefd6ca1386c11f439ae153"
