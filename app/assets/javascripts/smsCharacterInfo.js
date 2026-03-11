@@ -15,27 +15,6 @@
 (function () {
   "use strict";
 
-  var container = document.getElementById("sms-character-info");
-  if (!container) return;
-
-  var textarea = document.getElementById("template_content");
-  if (!textarea) return;
-
-  // ── DOM references ──────────────────────────────────────────────────────
-  var fragmentCountText = document.getElementById("sms-fragment-count-text");
-  var fragmentCountSuffix = document.getElementById(
-    "sms-fragment-count-suffix",
-  );
-  // Shortening suggestions DOM references (commented out — preserved for future use)
-  // var shortenSection = document.getElementById("sms-shorten-suggestions");
-  // var shortenList = document.getElementById("sms-shorten-list");
-
-  // Bail if the markup is missing
-  if (!fragmentCountText || !fragmentCountSuffix) return;
-
-  // ── Configuration from data attributes ──────────────────────────────────
-  var smsPrefix = container.getAttribute("data-sms-prefix") || "";
-
   // ── GSM 03.38 Basic Character Set ──────────────────────────────────────
   // Standard GSM-7 characters (each costs 1 unit)
   var GSM_BASIC_CHARS =
@@ -62,24 +41,7 @@
   // Full GSM set (basic + extension)
   var fullGsmSet = new Set(GSM_BASIC_CHARS + GSM_EXTENSION_CHARS);
 
-  // ── i18n strings ────────────────────────────────────────────────────────
-  function phrase(key, fallback) {
-    return (window.APP_PHRASES && window.APP_PHRASES[key]) || fallback;
-  }
-
-  // ── Placeholder pattern ─────────────────────────────────────────────────
-  // Matches ((variable)) or ((variable??fallback)) patterns
-  var placeholderPattern = /\(\(([^)(]+?)(\?\?[^)(]*)?\)\)/g;
-
   // ── Core SMS counting logic ─────────────────────────────────────────────
-
-  /**
-   * Strip personalisation placeholders from content, leaving just the
-   * static text so we can count actual characters.
-   */
-  function stripPlaceholders(text) {
-    return text.replace(placeholderPattern, "");
-  }
 
   /**
    * Check if the content contains any characters that force Unicode encoding.
@@ -124,6 +86,55 @@
       return characterUnits <= 70 ? 1 : Math.ceil(characterUnits / 67);
     }
     return characterUnits <= 160 ? 1 : Math.ceil(characterUnits / 153);
+  }
+
+  // Export pure functions for unit testing in Node/Jest environments
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+      hasUnicodeChars: hasUnicodeChars,
+      countCharacterUnits: countCharacterUnits,
+      getFragmentCount: getFragmentCount,
+    };
+  }
+
+  var container = document.getElementById("sms-character-info");
+  if (!container) return;
+
+  var textarea = document.getElementById("template_content");
+  if (!textarea) return;
+
+  // ── DOM references ──────────────────────────────────────────────────────
+  var fragmentCountText = document.getElementById("sms-fragment-count-text");
+  var fragmentCountSuffix = document.getElementById(
+    "sms-fragment-count-suffix",
+  );
+  // Shortening suggestions DOM references (commented out — preserved for future use)
+  // var shortenSection = document.getElementById("sms-shorten-suggestions");
+  // var shortenList = document.getElementById("sms-shorten-list");
+
+  // Bail if the markup is missing
+  if (!fragmentCountText || !fragmentCountSuffix) return;
+
+  // ── Configuration from data attributes ──────────────────────────────────
+  var smsPrefix = container.getAttribute("data-sms-prefix") || "";
+
+  // ── i18n strings ────────────────────────────────────────────────────────
+  function phrase(key, fallback) {
+    return (window.APP_PHRASES && window.APP_PHRASES[key]) || fallback;
+  }
+
+  // ── Placeholder pattern ─────────────────────────────────────────────────
+  // Matches ((variable)) or ((variable??fallback)) patterns
+  var placeholderPattern = /\(\(([^)(]+?)(\?\?[^)(]*)?\)\)/g;
+
+  // ── Placeholder / text helpers ──────────────────────────────────────────
+
+  /**
+   * Strip personalisation placeholders from content, leaving just the
+   * static text so we can count actual characters.
+   */
+  function stripPlaceholders(text) {
+    return text.replace(placeholderPattern, "");
   }
 
   /**
