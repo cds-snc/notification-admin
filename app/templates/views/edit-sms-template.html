@@ -70,7 +70,7 @@
         {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.'), testid="template-content") }}
 
         {% if config['FF_USE_BILLABLE_UNITS'] %}
-          {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name) }}
+          {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name + ': ' if current_service.prefix_sms else '') }}
         {% endif %}
 
         <h2 class="heading-medium">{{ _('Template category') }}</h2>
