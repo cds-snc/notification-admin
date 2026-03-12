@@ -80,15 +80,23 @@ describe("SMS Character Info component", () => {
       // 150 "a"s + " " + "((name??Placeholder))" = ~170+ if not stripped → 2 fragments
       // But 151 chars = 1 fragment when stripped
       SmsCharacterInfo.typeContent("a".repeat(151) + " ((name??Placeholder))");
-      Components.FragmentCountText().should("have.text", "Estimate: 1 text message.");
+      Components.FragmentCountText().should(
+        "have.text",
+        "Estimate: 1 text message.",
+      );
     });
 
     it("fallback placeholder syntax ((variable??fallback)) is also stripped", () => {
       // Similar logic: content that would be 2+ fragments if placeholders counted, but 1 if stripped
       // "a".repeat(155) + " ((name??there))" + " ((ref??unknown))" = ~185+ if not stripped → 2 fragments (ceil(185/153)=2)
       // But with stripping: 155 + " " + " " = 157 chars → still 1 fragment
-      SmsCharacterInfo.typeContent("a".repeat(155) + " ((name??there)) ((ref??unknown))");
-      Components.FragmentCountText().should("have.text", "Estimate: 1 text message.");
+      SmsCharacterInfo.typeContent(
+        "a".repeat(155) + " ((name??there)) ((ref??unknown))",
+      );
+      Components.FragmentCountText().should(
+        "have.text",
+        "Estimate: 1 text message.",
+      );
       Components.FragmentCountSuffix().should(
         "contain.text",
         "Variables may increase number of messages.",
