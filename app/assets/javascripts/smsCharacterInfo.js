@@ -41,15 +41,23 @@
   // Full GSM set (basic + extension)
   var fullGsmSet = new Set(GSM_BASIC_CHARS + GSM_EXTENSION_CHARS);
 
+  // ── Placeholder pattern ─────────────────────────────────────────────────
+  // Matches ((variable)) or ((variable??fallback)) patterns.
+  // Defined here (before the DOM guard) so stripped is correct when the exported
+  // pure functions are called in unit tests without a real DOM.
+  var placeholderPattern = /\(\(([^)(]+?)(\?\?[^)(]*)?\)\)/g;
+
   // ── Core SMS counting logic ─────────────────────────────────────────────
 
   /**
    * Check if the content contains any characters that force Unicode encoding.
    * Matches the Python `is_unicode` check from notifications_utils.
+   * Placeholders like ((name)) are stripped before checking, matching Python behaviour.
    */
   function hasUnicodeChars(text) {
-    for (var i = 0; i < text.length; i++) {
-      if (nonGsmAllowedSet.has(text[i])) {
+    var stripped = stripPlaceholders(text);
+    for (var i = 0; i < stripped.length; i++) {
+      if (nonGsmAllowedSet.has(stripped[i])) {
         return true;
       }
     }
@@ -60,14 +68,16 @@
    * Count the number of character units in the text.
    * - In GSM mode: basic chars = 1 unit, extension chars = 2 units
    * - In Unicode mode: each character = 1 unit
+   * Placeholders like ((name)) are stripped before counting, matching Python behaviour.
    */
   function countCharacterUnits(text, isUnicode) {
+    var stripped = stripPlaceholders(text);
     if (isUnicode) {
-      return text.length;
+      return stripped.length;
     }
     var count = 0;
-    for (var i = 0; i < text.length; i++) {
-      if (gsmExtensionSet.has(text[i])) {
+    for (var i = 0; i < stripped.length; i++) {
+      if (gsmExtensionSet.has(stripped[i])) {
         count += 2;
       } else {
         count += 1;
@@ -122,10 +132,6 @@
   function phrase(key, fallback) {
     return (window.APP_PHRASES && window.APP_PHRASES[key]) || fallback;
   }
-
-  // ── Placeholder pattern ─────────────────────────────────────────────────
-  // Matches ((variable)) or ((variable??fallback)) patterns
-  var placeholderPattern = /\(\(([^)(]+?)(\?\?[^)(]*)?\)\)/g;
 
   // ── Placeholder / text helpers ──────────────────────────────────────────
 
