@@ -524,15 +524,15 @@ def format_notification_status(status, template_type, provider_response=None, fe
     def _get_sms_status_by_provider_response():
         if provider_response:
             return {
-                "Phone number is opted out": _("No such number"),
-                "Phone is currently unreachable/unavailable": _("No such number"),
-                "Phone carrier is currently unreachable/unavailable": _("Carrier issue"),
-                "Phone carrier has blocked this message": _("Blocked by phone carrier"),
-                "Phone has blocked SMS": _("Blocked"),
-                "Phone is on a blocked list": _("Blocked"),
-                "Invalid phone number": _("No such number"),
-                "Destination is on a blocked list": _("Blocked"),
-                "Blocked as spam by phone carrier": _("Carrier issue"),
+                "Phone number is opted out": _("No such number"),  #  technical-failure
+                "Phone is currently unreachable/unavailable": _("No such number"),  #  permanent-failure
+                "Phone carrier is currently unreachable/unavailable": _("Carrier issue"),  #  temporary-failure
+                "Phone carrier has blocked this message": _("Blocked by phone carrier"),  #  temporary-failure
+                "Phone has blocked SMS": _("Blocked"),  #  temporary-failure
+                "Phone is on a blocked list": _("Blocked"),  #  temporary-failure
+                "Invalid phone number": _("No such number"),  #  permanent-failure
+                "Destination is on a blocked list": _("Blocked"),  #  permanent-failure
+                "Blocked as spam by phone carrier": _("Carrier issue"),  #  permanent-failure
             }.get(provider_response, _("Tech issue"))
         return _("Tech issue")
 
