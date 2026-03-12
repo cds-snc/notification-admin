@@ -521,6 +521,21 @@ def format_notification_status(status, template_type, provider_response=None, fe
         else:
             return _("No such number")
 
+    def _get_sms_status_by_provider_response():
+        if provider_response:
+            return {
+                "Phone number is opted out": _("No such number"),  #  technical-failure
+                "Phone is currently unreachable/unavailable": _("No such number"),  #  permanent-failure
+                "Phone carrier is currently unreachable/unavailable": _("Carrier issue"),  #  temporary-failure
+                "Phone carrier has blocked this message": _("Blocked by phone carrier"),  #  temporary-failure
+                "Phone has blocked SMS": _("Blocked"),  #  temporary-failure
+                "Phone is on a blocked list": _("Blocked"),  #  temporary-failure
+                "Invalid phone number": _("No such number"),  #  permanent-failure
+                "Destination is on a blocked list": _("Blocked"),  #  permanent-failure
+                "Blocked as spam by phone carrier": _("Carrier issue"),  #  permanent-failure
+            }.get(provider_response, _("Tech issue"))
+        return _("Tech issue")
+
     return {
         "email": {
             "failed": _("Failed"),
@@ -538,9 +553,9 @@ def format_notification_status(status, template_type, provider_response=None, fe
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Tech issue"),
-            "temporary-failure": _("Carrier issue"),
-            "permanent-failure": _("No such number"),
+            "technical-failure": _get_sms_status_by_provider_response(),
+            "temporary-failure": _get_sms_status_by_provider_response(),
+            "permanent-failure": _get_sms_status_by_provider_response(),
             "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),

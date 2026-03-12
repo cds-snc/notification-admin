@@ -586,10 +586,10 @@ def test_big_numbers_and_search_show_for_email_sms(
             "sms",
             "temporary-failure",
             None,
-            "Carrier issue 16:31:00",
+            "Tech issue 16:31:00",
             False,
         ),
-        ("sms", "permanent-failure", None, "No such number 16:31:00", False),
+        ("sms", "permanent-failure", None, "Tech issue 16:31:00", False),
         (
             "sms",
             "provider-failure",
