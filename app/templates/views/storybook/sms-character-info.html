@@ -20,3 +20,7 @@
   {{ sms_character_info(sms_daily_limit="1,000", sms_prefix="") }}
 
 </div>
+<p class="mt-8">
+  <a href="{{ url_for('main.storybook', component='sms-character-info-with-prefix') }}"
+     class="text-blue-500 hover:underline">View with service prefix example →</a>
+</p>

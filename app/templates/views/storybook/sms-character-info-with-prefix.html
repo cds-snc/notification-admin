@@ -1,0 +1,23 @@
+{% from "components/sms-character-info.html" import sms_character_info %}
+
+<h2 class="heading-large">SMS Character Info - With Service Prefix</h2>
+<p>Fragment count when a service prefix is prepended to the message. The 7-character "NotifyBC" prefix + ": " separator (9 chars total overhead) is counted toward the SMS fragment limit.</p>
+<p>Try typing 152 characters in the box below to see it cross into 2 fragments (161 total with prefix overhead).</p>
+<hr />
+
+<div class="md:w-2/3">
+
+  <h2 class="heading-medium">Story: SMS character info panel with prefix</h2>
+
+  <label class="form-label" for="template_content">Message content</label>
+  <textarea
+    id="template_content"
+    name="template_content"
+    class="form-control w-full"
+    data-testid="template-content"
+    rows="5"
+  ></textarea>
+
+  {{ sms_character_info(sms_daily_limit="1,000", sms_prefix="NotifyBC") }}
+
+</div>

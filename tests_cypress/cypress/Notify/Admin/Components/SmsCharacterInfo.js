@@ -22,6 +22,7 @@ let Actions = {
 
 let SmsCharacterInfo = {
     URL: '/_storybook?component=sms-character-info',
+    URL_WITH_PREFIX: '/_storybook?component=sms-character-info-with-prefix',
     Components,
     ...Actions,
 };
