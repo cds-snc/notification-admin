@@ -2,7 +2,11 @@
 {% from "components/message-count-label.html" import message_count_label %}
 {% from 'components/remaining-messages.html' import remaining_messages %}
 {% from "components/show-more.html" import show_more %}
-{% set email_header = _('emails') %}
+{% if use_billable_units %}
+  {% set email_header = _('Emails') %}
+{% else %}
+  {% set email_header = _('emails') %}
+{% endif %}
 
 <div class="ajax-block-container" data-testid="annual-usage">
     <h2 id="annual-usage-label" class="heading-medium mt-8" aria-describedby="annual-usage-desc">
