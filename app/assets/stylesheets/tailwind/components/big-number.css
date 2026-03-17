@@ -46,7 +46,8 @@
     @apply no-underline block text-blue-800;
   }
 
-  .big-number-light.big-number-link:is(:hover, :active, :focus) :is(.big-number, .big-number-label, span) {
+  .big-number-light.big-number-link:is(:hover, :active, :focus)
+    :is(.big-number, .big-number-label, span) {
     @apply text-blue-900 no-underline;
   }
 
@@ -60,7 +61,8 @@
     @apply no-underline block text-blue-100;
   }
 
-  .big-number-dark.big-number-link:is(:hover, :active, :focus) :is(.big-number, .big-number-label, span) {
+  .big-number-dark.big-number-link:is(:hover, :active, :focus)
+    :is(.big-number, .big-number-label, span) {
     @apply text-white no-underline;
   }
 
@@ -82,7 +84,9 @@
     @apply outline-yellow outline-4 outline-offset-2 relative z-10;
   }
 
-  div[class*="review-email-status-"]:hover :is(.review-email-label, .review-email-link) span {
+  div[class*="review-email-status-"]:hover
+    :is(.review-email-label, .review-email-link)
+    span {
     @apply no-underline;
   }
 
