@@ -45,7 +45,7 @@
       <div class="pb-4 big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
         {% if failures %}
           {% if failure_link %}
-            <div class="p-6 flex justify-between items-end no-underline" href="{{ failure_link }}">
+            <div class="p-6 flex justify-between items-end no-underline">
               {{ failure_percentage + "%" if session["userlang"] == 'en' else failure_percentage|replace('.', ',')|string + " %"}} {{_('failed') }}
             </div>
             <div class="px-6 flex justify-between items-end ">

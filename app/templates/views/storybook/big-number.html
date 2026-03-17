@@ -26,19 +26,19 @@
   "show_failures:boolean=True",
   "smaller:boolean=False",
   "smallest:boolean=False",
-  "theme:(dark|light)=dark",
 ]) }}
+
 
 <p>Component for displaying a large number with an optional label and link. Can also display a status message below the number.</p>
 <div class="grid grid-cols-2 gap-4" data-testid="big-number-with-status">
-  {{ big_number_with_status(123456, 'item one', link="#") }}
+  {{ big_number_with_status(123456, 'item one', failures=0, failure_percentage="0", link="#") }}
     {{ big_number_with_status(123456, 'item two', failures=1, failure_percentage="0.1", failure_link="#") }}
     {{ big_number_with_status(123456, 'item three', failures=12, failure_percentage="1", danger_zone=True, failure_link="#") }}
     {{ big_number_with_status(123456, 'item four', failures=1234, failure_percentage="10", danger_zone=True, failure_link="#") }}
     {{ big_number_with_status(123456, 'item five', failures=0, failure_percentage="0", failure_link="#") }}
     {{ big_number_with_status(123456, 'item six', failures=0, failure_percentage="0", show_failures=False) }}
-    {{ big_number_with_status(123456, 'item seven', link="#", smaller=True) }}
-    {{ big_number_with_status(123456, 'item eight', link="#", smallest=True) }}
+    {{ big_number_with_status(123456, 'item seven', failures=0, failure_percentage="0", link="#", smaller=True) }}
+    {{ big_number_with_status(123456, 'item eight', failures=0, failure_percentage="0", link="#", smallest=True) }}
 </div>
 
 <h3 class="heading-medium">Big Number for problem emails</h3>
