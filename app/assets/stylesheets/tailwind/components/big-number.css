@@ -36,36 +36,6 @@
     @apply no-underline block border-0 focus:border-0;
   }
 
-  /* Link patterns for Light theme */
-  .big-number-light.big-number-link,
-  .big-number-light.big-number-with-status > .big-number {
-    @apply border-gray-200 bg-gray-200 text-black;
-  }
-
-  .big-number-light .big-number-link-normal {
-    @apply no-underline block text-blue-800;
-  }
-
-  .big-number-light.big-number-link:is(:hover, :active, :focus)
-    :is(.big-number, .big-number-label, span) {
-    @apply text-blue-900 no-underline;
-  }
-
-  /* Link patterns for Dark theme */
-  .big-number-dark.big-number-link,
-  .big-number-dark.big-number-with-status > .big-number {
-    @apply border-blue bg-blue text-white;
-  }
-
-  .big-number-dark .big-number-link-normal {
-    @apply no-underline block text-blue-100;
-  }
-
-  .big-number-dark.big-number-link:is(:hover, :active, :focus)
-    :is(.big-number, .big-number-label, span) {
-    @apply text-white no-underline;
-  }
-
   /* Interactive states */
   .big-number-link:is(:focus-visible) {
     box-shadow: 0 0 0 2px black;
@@ -91,15 +61,15 @@
   }
 
   /* Variants */
-  .normal {
+  .big-number-with-status .normal {
     @apply bg-green-darker border-green-darker text-white;
   }
 
-  .critical {
+  .big-number-with-status .critical {
     @apply bg-red border-red text-white;
   }
 
-  .neutral {
+  .big-number-with-status .neutral {
     @apply bg-gray-300 border-gray-300 text-black;
   }
 }
