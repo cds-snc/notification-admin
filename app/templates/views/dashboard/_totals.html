@@ -109,8 +109,7 @@
             failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
             link=None,
             smaller=smaller_font_size,
-            failure_link_label=_("Review email addresses"),
-            theme="light"
+            failure_link_label=_("Review email addresses")
           ) }}
         </div>
         <div id="problem-email-guide-link" class="{{column_width}}">
