@@ -5,6 +5,9 @@
 <h2 class="heading-large">Big Number</h2>
 
 <h3 class="heading-medium">Big Number Simple</h3>
+{{ macro_prop_table("big_number_simple", [
+  "number:string", "label:string", "theme:(dark|light)=dark",
+]) }}
 <div class="grid grid-cols-2 gap-4" data-testid="big-number-simple">
     {{ big_number_simple(number=60, label=_("text messages")) }}
     {{ big_number_simple(number=_("Counted as {}").format(56184|format_number), label=_("text messages to {} recipients").format(1230|format_number), theme="light") }}
@@ -23,6 +26,7 @@
   "show_failures:boolean=True",
   "smaller:boolean=False",
   "smallest:boolean=False",
+  "theme:(dark|light)=dark",
 ]) }}
 
 <p>Component for displaying a large number with an optional label and link. Can also display a status message below the number.</p>
