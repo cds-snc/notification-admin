@@ -75,7 +75,8 @@
             {% endif %}
             {{ big_number_simple(
               number=_("Counted as {}").format(sms_billable_units_weekly),
-              label=sms_billable_label
+              label=sms_billable_label,
+              theme="light"
             ) }}
           </div>
           <div class="px-gutterHalf box-border">
@@ -108,7 +109,8 @@
             failure_link=url_for('.problem_emails', service_id=service_id) if bounce_rate["bounce_percentage"] > 0 else None,
             link=None,
             smaller=smaller_font_size,
-            failure_link_label=_("Review email addresses")
+            failure_link_label=_("Review email addresses"),
+            theme="light"
           ) }}
         </div>
         <div id="problem-email-guide-link" class="{{column_width}}">

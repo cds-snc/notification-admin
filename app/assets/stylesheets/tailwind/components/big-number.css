@@ -1,5 +1,4 @@
 @layer components {
-  /*! purgecss start ignore */
   .big-number {
     @apply block;
   }
@@ -12,12 +11,16 @@
     @apply block p-gutterHalf text-white bg-blue;
   }
 
+  .big-number-light {
+    @apply block p-gutterHalf text-black bg-gray-200;
+  }
+
   .big-number-label {
     @apply text-smaller inline-block;
   }
 
   .big-number-status {
-    @apply text-smaller block text-white bg-green-darker;
+    @apply text-smaller block text-white bg-green-700;
   }
 
   .big-number-status:hover > div {
@@ -30,77 +33,72 @@
 
   .big-number-link,
   .big-number-with-status > .big-number {
-    @apply no-underline text-white block bg-blue border-2 border-blue border-solid;
+    @apply no-underline block border-0 focus:border-0;
   }
 
-  .big-number-link-normal {
-    @apply no-underline text-white block;
+  /* Link patterns for Light theme */
+  .big-number-light.big-number-link,
+  .big-number-light.big-number-with-status > .big-number {
+    @apply border-gray-200 bg-gray-200 text-black;
   }
 
-  .big-number-link-warning {
-    @apply no-underline text-black block;
+  .big-number-light .big-number-link-normal {
+    @apply no-underline block text-blue-800;
   }
 
-  .big-number-link:hover,
-  .big-number-link:hover .big-number {
-    @apply text-blue-lightblue25;
+  .big-number-light.big-number-link:is(:hover, :active, :focus) :is(.big-number, .big-number-label, span) {
+    @apply text-blue-900 no-underline;
   }
 
-  .big-number-link:active,
-  .big-number-link:focus {
-    @apply outline-yellow bg-blue;
+  /* Link patterns for Dark theme */
+  .big-number-dark.big-number-link,
+  .big-number-dark.big-number-with-status > .big-number {
+    @apply border-blue bg-blue text-white;
   }
 
-  .big-number-link:hover .big-number-label,
-  .big-number-link:active .big-number-label,
-  .big-number-link:focus .big-number-label,
-  .big-number-link:hover span,
-  .big-number-link:active span,
-  .big-number-link:focus span {
-    @apply no-underline;
+  .big-number-dark .big-number-link-normal {
+    @apply no-underline block text-blue-100;
   }
 
-  .big-number-status-link:link,
-  .big-number-status-link:visited,
-  .big-number-status-link:active,
-  .big-number-status-link:hover {
-    @apply text-white;
+  .big-number-dark.big-number-link:is(:hover, :active, :focus) :is(.big-number, .big-number-label, span) {
+    @apply text-white no-underline;
   }
 
-  .big-number-status-link:active,
-  .big-number-status-link:focus {
-    background-color: revert;
-    box-shadow: none;
-    @apply outline-yellow border-0;
+  .big-number-link:is(:focus-visible) {
+    box-shadow: 0 0 0 2px black;
+    background: inherit;
+    color: inherit;
+    @apply outline-yellow outline-4 outline-offset-2 relative z-10;
   }
 
-  /* Covers -normal, -warn, -critical */
-  div[class*="review-email-status-"]:active,
-  div[class*="review-email-status-"]:focus {
-    @apply outline-yellow;
+  .big-number-status-link:is(:link, :visited, :active, :hover) {
+    @apply text-inherit bg-yellow text-black;
   }
 
-  div[class*="review-email-status-"]:hover
-    div[class~="review-email-label"]
-    span,
-  div[class*="review-email-status-"]:hover
-    div[class~="review-email-link"]
-    span {
+  .big-number-status-link:is(:focus-visible) {
+    box-shadow: 0 0 0 2px black;
+    @apply outline-yellow outline-4 outline-offset-2 relative z-10;
+  }
+
+  /* Covers -normal, -warning, -critical */
+  div[class*="review-email-status-"]:is(:focus-visible) {
+    box-shadow: 0 0 0 2px black;
+    @apply outline-yellow outline-4 outline-offset-2 relative z-10;
+  }
+
+  div[class*="review-email-status-"]:hover :is(.review-email-label, .review-email-link) span {
     @apply no-underline;
   }
 
   .normal {
-    @apply bg-green-darker border-green-darker;
+    @apply bg-green-darker border-green-darker text-white;
   }
 
   .critical {
-    @apply bg-red border-red;
+    @apply bg-red border-red text-white;
   }
 
   .neutral {
-    background: #49535d;
-    border-color: #49535d;
+    @apply bg-gray-300 border-gray-300 text-black;
   }
-
-  /*! purgecss end ignore */
 }

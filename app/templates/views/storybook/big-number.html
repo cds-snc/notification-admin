@@ -1,8 +1,15 @@
-{% from "components/big-number.html" import big_number_with_status, big_number_review_emails_with_status %}
+{% from "components/big-number.html" import big_number_with_status, big_number_review_emails_with_status, big_number_simple %}
 {% from "components/message-count-label.html" import problem_email_label %}
 {% from "views/storybook/storybook-components.html" import macro_prop_table %}
 
 <h2 class="heading-large">Big Number</h2>
+
+<h3 class="heading-medium">Big Number Simple</h3>
+<div class="grid grid-cols-2 gap-4" data-testid="big-number-simple">
+    {{ big_number_simple(number=60, label=_("text messages")) }}
+    {{ big_number_simple(number=_("Counted as {}").format(56184|format_number), label=_("text messages to {} recipients").format(1230|format_number), theme="light") }}
+</div>
+
 
 <h3 class="heading-medium">Big Number with Status</h3>
 {{ macro_prop_table("big_number_with_status", [
@@ -15,11 +22,11 @@
   "link:string=None",
   "show_failures:boolean=True",
   "smaller:boolean=False",
-  "smallest:boolean=False"
+  "smallest:boolean=False",
 ]) }}
 
 <p>Component for displaying a large number with an optional label and link. Can also display a status message below the number.</p>
-<div class="grid grid-cols-2 gap-4" data-testid="big-number-simple">
+<div class="grid grid-cols-2 gap-4" data-testid="big-number-with-status">
   {{ big_number_with_status(123456, 'item one', link="#") }}
     {{ big_number_with_status(123456, 'item two', failures=1, failure_percentage="0.1", failure_link="#") }}
     {{ big_number_with_status(123456, 'item three', failures=12, failure_percentage="1", danger_zone=True, failure_link="#") }}
