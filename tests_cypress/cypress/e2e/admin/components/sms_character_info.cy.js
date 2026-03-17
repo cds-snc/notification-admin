@@ -42,14 +42,14 @@ describe("SMS Character Info component", () => {
         .should("be.visible")
         .and(
           "contain.text",
-          "Phone carriers count some texts as more than one message.",
+          "Phone carriers count some messages as multiple text message parts.",
         );
     });
 
     it("shows the guide link that opens in a new tab", () => {
       Components.GuideLink()
         .should("be.visible")
-        .and("contain.text", "Guide: Counting text messages")
+        .and("contain.text", "Guide: Counting text message parts")
         .and("have.attr", "target", "_blank");
     });
 
