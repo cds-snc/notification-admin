@@ -64,6 +64,7 @@
     @apply text-white no-underline;
   }
 
+  /* Interactive states */
   .big-number-link:is(:focus-visible) {
     box-shadow: 0 0 0 2px black;
     background: inherit;
@@ -75,12 +76,7 @@
     @apply text-inherit bg-yellow text-black;
   }
 
-  .big-number-status-link:is(:focus-visible) {
-    box-shadow: 0 0 0 2px black;
-    @apply outline-yellow outline-4 outline-offset-2 relative z-10;
-  }
-
-  /* Covers -normal, -warning, -critical */
+  .big-number-status-link:is(:focus-visible),
   div[class*="review-email-status-"]:is(:focus-visible) {
     box-shadow: 0 0 0 2px black;
     @apply outline-yellow outline-4 outline-offset-2 relative z-10;
@@ -90,6 +86,7 @@
     @apply no-underline;
   }
 
+  /* Variants */
   .normal {
     @apply bg-green-darker border-green-darker text-white;
   }
