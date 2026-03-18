@@ -54,6 +54,19 @@
         <li>{{ _("Use the positive form as much as possible and reserve the negative for when consequences could be grave or fatal. Avoid double negations and exceptions to exceptions, which could confuse readers.") }}</li>
       </div>
     </details>
+  {% elif config['FF_USE_BILLABLE_UNITS'] %}
+    <details>
+      <summary>{{ _("Best practices for text messages") }}</summary>
+      <div class="details-body">
+        <ol class="list list-number">
+          <li>{{ _("Write clear and concise messages. Visit ") }}
+            <a>{{ _("Tips for EN messages") }}</a>
+            <span>{{ _("and") }}</span>
+            <a>{{ _("Tips for FR messages") }}</a><span>.</span>
+          </li>
+          <li>{{ _("Use links to connect recipients to more information.") }}</li>
+        </ol>
+      </div>
     </details>
   {% endif %}
 
