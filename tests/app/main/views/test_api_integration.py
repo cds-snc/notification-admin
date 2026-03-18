@@ -597,7 +597,7 @@ class TestApiCallbacks:
             "button_pressed": "test_response_time",
         }
 
-        response = client_request.post(
+        page = client_request.post(
             endpoint,
             service_id=service_one["id"],
             _data=data,
@@ -605,7 +605,6 @@ class TestApiCallbacks:
         )
 
         expected_banner_msg = f"The service {url.split('https://')[1]} took longer than 1 second to respond."
-        page = BeautifulSoup(response.decode("utf-8"), "html.parser")
         banner_msg = normalize_spaces(page.select(".banner-dangerous")[0].text)
 
         assert banner_msg == expected_banner_msg
