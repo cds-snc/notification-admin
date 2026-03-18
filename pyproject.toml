@@ -12,7 +12,7 @@ requires = ["poetry-core>=1.7.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "~3.14.0"
+python = "~3.12.7"
 apig-wsgi = "2.20.0"
 aws-xray-sdk = "^2.14.0"
 
@@ -41,7 +41,7 @@ gunicorn = "22.0.0"
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 newrelic = "11.0.1"
 notifications-python-client = "6.4.1"
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.19" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.20" }
 pwnedpasswords = "2.0.0"
 pyexcel = "0.7.4"
 pyexcel-io = "0.6.7"
@@ -80,7 +80,7 @@ pytest-env = "0.8.2"
 pytest-mock = "3.15.1"
 pytest-xdist = "2.5.0"
 requests-mock = "1.12.1"
-ruff = "^0.15.0"
+ruff = "^0.8.2"
 types-beautifulsoup4 = "^4.12.0.6"
 
 # stubs libraries to keep mypy happy
