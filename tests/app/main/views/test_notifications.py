@@ -29,12 +29,12 @@ from tests.conftest import (
         (
             None,
             "temporary-failure",
+            "Phone carrier is currently unreachable/unavailable",
             None,
-            None,
-            "Carrier issue",
+            "Phone carrier is currently unreachable/unavailable",
         ),
-        (None, "permanent-failure", None, None, "No such number"),
-        (None, "technical-failure", None, None, "Tech issue"),
+        (None, "permanent-failure", "Phone number is opted out", None, "Phone number is opted out"),
+        (None, "technical-failure", "Unknown sending error", None, "Unknown sending error"),
         (
             None,
             "technical-failure",
@@ -81,7 +81,8 @@ from tests.conftest import (
         ("live", "delivered", None, None, "Delivered"),
         ("test", "sending", None, None, "In transit (test)"),
         ("test", "delivered", None, None, "Delivered (test)"),
-        ("test", "permanent-failure", None, None, "No such number (test)"),
+        ("test", "permanent-failure", "Phone number is opted out", None, "Phone number is opted out (test)"),
+        (None, "temporary-failure", "Phone carrier has blocked this message", None, "Phone carrier has blocked this message"),
     ],
 )
 @pytest.mark.parametrize(

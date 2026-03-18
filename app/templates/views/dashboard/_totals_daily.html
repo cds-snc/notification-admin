@@ -3,7 +3,7 @@
 {% from 'components/remaining-messages.html' import remaining_messages %}
 {% from "components/show-more.html" import show_more %}
 {% if use_billable_units %}
-  {% set email_header = _('emails used') %}
+  {% set email_header = _('Emails') %}
 {% else %}
   {% set email_header = _('emails') %}
 {% endif %}
@@ -21,7 +21,7 @@
       </div>
       <div class="{{column_width}}">
         {% if use_billable_units %}
-          {{ remaining_messages(header=_('text messages used'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=True) }}
+          {{ remaining_messages(header=_('Text message parts'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=True) }}
         {% else %}
           {{ remaining_messages(header=_('text messages'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true, use_billable_units=False) }}
         {% endif %}
