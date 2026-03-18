@@ -67,12 +67,12 @@
               {% else %}
                 {{ _("Estimate: {} text message parts.").format(fragment_count) }}
               {% endif %}
-              {{ _("Variables may increase the number of messages.") }}
+              {{ _("Variables may increase number of messages.") }}
             {% else %}
               {% if fragment_count == 1 %}
-                {{ _("1 text message.") }}
+                {{ _("Total: 1 text message part.") }}
               {% else %}
-                {{ _("{} text messages.").format(fragment_count) }}
+                {{ _("Total: {} text message parts.").format(fragment_count) }}
               {% endif %}
             {% endif %}
           </p>

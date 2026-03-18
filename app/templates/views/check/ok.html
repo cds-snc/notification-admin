@@ -104,9 +104,9 @@
               {% endif %}
             {% else %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Count: 1 text message") }}
+                {{ _("Total: 1 text message part.") }}
               {% else %}
-                {{ _("Count: {} text messages").format(sms_parts_to_send) }}
+                {{ _("Total: {} text message parts.").format(sms_parts_to_send) }}
               {% endif %}
             {% endif %}
           </span>
