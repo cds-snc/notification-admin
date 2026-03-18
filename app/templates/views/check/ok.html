@@ -98,9 +98,9 @@
           <span>
             {% if is_sms_parts_estimated %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Estimated count: 1 text message") }}
+                {{ _("Estimate: 1 text message part.") }}
               {% else %}
-                {{ _("Estimated count: {} text messages").format(sms_parts_to_send) }}
+                {{ _("Estimate: {} text message parts.").format(sms_parts_to_send) }}
               {% endif %}
             {% else %}
               {% if sms_parts_to_send == 1 %}
