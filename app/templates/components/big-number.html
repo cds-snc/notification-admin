@@ -89,7 +89,11 @@
     {% endif %}
   {% endif %}
   <section role="region" aria-label="{{ detailed_label }}" class="big-number-with-status">
-    {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest, theme="light") }}
+    {% if config['FF_USE_BILLABLE_UNITS'] %}
+      {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest, theme="light") }}
+    {% else %}
+      {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
+    {% endif %}
 
     <div class="block {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %}">
       {% if failure_link %}

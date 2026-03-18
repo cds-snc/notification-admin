@@ -69,7 +69,11 @@
     @apply bg-red border-red text-white;
   }
 
-  .big-number-with-status .neutral {
+  .big-number-with-status .big-number-dark + .neutral {
+    @apply bg-gray-700 border-gray-700 text-white;
+  }
+
+  .big-number-with-status .big-number-light + .neutral {
     @apply bg-gray-300 border-gray-300 text-black;
   }
 }
