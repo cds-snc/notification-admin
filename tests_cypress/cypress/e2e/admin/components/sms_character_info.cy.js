@@ -54,6 +54,7 @@ describe("SMS Character Info component", () => {
       SmsCharacterInfo.typeContent(GSM_1_PART);
       Components.FragmentCountText().should("have.text", "1 text message part");
     });
+  });
 
   describe("Text changes when variables are present", () => {
     it("shows 'Estimate:' prefix when content contains a placeholder", () => {
