@@ -14,14 +14,16 @@
   <hr class="my-3 border-gray-300">
 
   {# Carrier info with guide link #}
-  <p class="mb-2" data-testid="sms-carrier-info">
+  <p class="mb-0" data-testid="sms-carrier-info">
     {{ _('Phone carriers count some messages as multiple text message parts.') }}
+  </p>
+  <p class="my-0">
     {{ _('For details, visit') }}
     <a href="{{ gca_url_for('guidance') }}" target="_blank" class="text-blue underline" data-testid="sms-guide-link">{{ _('Guide: Counting text message parts') }}</a>.
   </p>
 
   {# Daily limit section #}
-  <p id="sms-daily-limit" class="mb-0" data-testid="sms-daily-limit">
+  <p id="sms-daily-limit" class="mt-2 mb-0" data-testid="sms-daily-limit">
     <strong id="sms-daily-limit-value" data-testid="sms-daily-limit-value">{{ sms_daily_limit }}</strong>
     {{ _('is your daily limit for text message parts') }}
   </p>
