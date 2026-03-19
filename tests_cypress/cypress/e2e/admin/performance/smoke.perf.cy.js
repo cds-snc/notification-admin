@@ -28,6 +28,35 @@ describe("Admin performance smoke", { retries: 0 }, () => {
         },
       });
 
+      cy.measureVisit(
+        `/services/${CYPRESS_SERVICE_ID}/service-settings`,
+        "service-settings",
+        {
+          ready: () => {
+            cy.contains("h1", "Settings").should("be.visible");
+          },
+        },
+      );
+
+      cy.trackRequestDuration(
+        "templates-page-data",
+        {
+          method: "GET",
+          url: "**/service/*/templates**",
+        },
+        () => {
+          cy.measureVisit(
+            `/services/${CYPRESS_SERVICE_ID}/templates`,
+            "templates-list",
+            {
+              ready: () => {
+                cy.contains("h1", "Templates").should("be.visible");
+              },
+            },
+          );
+        },
+      );
+
       cy.flushPerfArtifact("admin-performance-smoke", {
         iteration,
         warmupRun: iteration === 1,

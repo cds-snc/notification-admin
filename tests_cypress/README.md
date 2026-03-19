@@ -20,7 +20,7 @@ To launch the cypress UI, where you can choose your test suite and visually debu
 ## Performance smoke runs
 Use the performance suite when you want repeatable synthetic timings for a staging or PR environment without mixing those measurements into the main CI smoke tests.
 
-The current PoC is intentionally minimal: it validates the full front-to-back path by logging in and measuring a single authenticated dashboard visit. Additional pages and write-path journeys can be added after this baseline is stable.
+The current PoC is intentionally modest: it validates the full front-to-back path by logging in and measuring a few authenticated read-only pages such as dashboard, settings, and templates. Additional write-path journeys can be added after this baseline is stable.
 
 There is also a manual GitHub Actions workflow at `.github/workflows/cypress-performance.yml`. Trigger it from the Actions tab on your PR branch. If you leave `base_url` empty it targets staging; if you paste a PR review URL it will run against that deployment instead.
 
