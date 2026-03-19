@@ -163,7 +163,7 @@ describe("Service prefix included in character count", () => {
     typeIntoTextarea(ta, "a".repeat(152));
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("Tota: 1 text message part.");
+    ).toBe("Total: 1 text message part.");
   });
 });
 
@@ -276,7 +276,7 @@ describe("i18n via APP_PHRASES", () => {
       sms_estimate: "Estimate: {} text messages.",
       sms_estimate_one: "Estimate: 1 text message.",
       sms_variables_warning: "Variables may increase number of messages.",
-      sms_count: "Tota: {} text message parts.",
+      sms_count: "Total: {} text message parts.",
       sms_one: "Total: 1 text message part.",
     };
   });
@@ -288,11 +288,11 @@ describe("i18n via APP_PHRASES", () => {
 
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 message texte.");
+    ).toBe("Total&nbsp;: 1 partie de message texte.");
   });
 
   test("uses translated string from APP_PHRASES for multiple fragments", () => {
-    window.APP_PHRASES.sms_count = "{} messages texte.";
+    window.APP_PHRASES.sms_count = "Total&nbsp;: {} parties de messages texte.";
     buildDOM();
     require("../../app/assets/javascripts/smsCharacterInfo.js");
     const textarea = document.getElementById("template_content");
