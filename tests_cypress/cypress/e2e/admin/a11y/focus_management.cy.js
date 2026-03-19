@@ -19,8 +19,7 @@ const AutoFocusPage = {
 };
 
 describe("Form autofocus", () => {
-  const baseUrl =
-    "http://localhost:6012/_storybook?component=focus_management/";
+  const baseUrl = "/_storybook?component=focus_management/";
 
   context("Individual component pages", () => {
     it("for textbox", () => {

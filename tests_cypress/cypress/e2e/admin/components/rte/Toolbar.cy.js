@@ -182,70 +182,79 @@ describe("Toolbar accessibility tests", () => {
 
       RichTextEditor.Components.Editor().focus();
       cy.realPress(["Alt", "F10"]);
-      RichTextEditor.Components.VariableButton().should("have.focus");
+      RichTextEditor.Components.HorizontalRuleButton().should("have.focus");
     });
   });
 
   context("Toolbar formatting shortcuts", () => {
     const shortcutSpecs = [
       {
-        label: "Heading 1",
+        label: "Heading",
+        modifiers: [modKey, "Alt"],
         key: "1",
         button: () => RichTextEditor.Components.H1Button(),
       },
       {
-        label: "Heading 2",
+        label: "Subheading",
+        modifiers: [modKey, "Alt"],
         key: "2",
         button: () => RichTextEditor.Components.H2Button(),
       },
       {
         label: "Variable",
-        key: "3",
+        modifiers: [modKey, "Shift"],
+        key: "U",
         button: () => RichTextEditor.Components.VariableButton(),
       },
       {
         label: "Bullet list",
-        key: "4",
+        modifiers: [modKey, "Shift"],
+        key: "8",
         button: () => RichTextEditor.Components.BulletListButton(),
       },
       {
         label: "Numbered list",
-        key: "5",
+        modifiers: [modKey, "Shift"],
+        key: "7",
         button: () => RichTextEditor.Components.NumberedListButton(),
       },
       {
         label: "Blockquote",
-        key: "7",
+        modifiers: [modKey, "Shift"],
+        key: "9",
         button: () => RichTextEditor.Components.BlockquoteButton(),
       },
       {
-        label: "English block",
-        key: "8",
-        button: () => RichTextEditor.Components.EnglishBlockButton(),
-      },
-      {
-        label: "French block",
-        key: "9",
-        button: () => RichTextEditor.Components.FrenchBlockButton(),
-      },
-      {
         label: "RTL block",
+        modifiers: [modKey, "Alt"],
         key: "R",
         button: () => RichTextEditor.Components.RTLButton(),
       },
+      {
+        label: "Bold",
+        modifiers: [modKey],
+        key: "b",
+        button: () => RichTextEditor.Components.BoldButton(),
+      },
+      {
+        label: "Italic",
+        modifiers: [modKey],
+        key: "i",
+        button: () => RichTextEditor.Components.ItalicButton(),
+      },
     ];
 
-    shortcutSpecs.forEach(({ label, key, button }) => {
-      it(`${label} toggles via Mod+Alt+${key}`, () => {
+    shortcutSpecs.forEach(({ label, modifiers, key, button }) => {
+      it(`${label} toggles via shortcut`, () => {
         RichTextEditor.Components.Editor()
           .focus()
           .type("Shortcut test{selectall}");
-        cy.realPress([modKey, "Alt", key]);
+        cy.realPress([...modifiers, key]);
         button().should("have.attr", "aria-pressed", "true");
 
         RichTextEditor.Components.Editor().focus().type("{selectall}");
-        cy.log("pressing:" + [modKey, "Alt", key].toString());
-        cy.realPress([modKey, "Alt", key]);
+        cy.log("pressing:" + [...modifiers, key].toString());
+        cy.realPress([...modifiers, key]);
         button().should("have.attr", "aria-pressed", "false");
       });
     });

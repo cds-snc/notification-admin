@@ -30,6 +30,8 @@
   }
   .file-list-hint {
     max-width: 580px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     @apply text-small leading-tight font-normal block pointer-events-none text-gray-grey1;
   }
 

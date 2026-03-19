@@ -45,12 +45,13 @@
   </div>
 {% endmacro %}
 
-{% macro sticky_page_footer_two_submit_buttons(button1_text="b1", button1_value="b1", button2_text="b2", button2_value="b2") %}
+{% macro sticky_page_footer_two_submit_buttons(button1_text="b1", button1_value="b1", button2_text="b2", button2_value="b2", btn1_data_testid="", btn2_data_testid="") %}
   <div class="js-stick-at-bottom-when-scrolling">
     <div class="page-footer">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <button
         data-button-id="btn1"
+        data-testid="{{ btn1_data_testid }}"
         type="submit"
         class="button text-base outline-none focus:shadow-outline"
         name="button_pressed"
@@ -61,6 +62,7 @@
 
       <button
         data-button-id="btn2"
+        data-testid="{{ btn2data_testid }}"
         type="submit"
         class="button button-secondary text-base outline-none focus:shadow-outline"
         name="button_pressed"

@@ -55,6 +55,7 @@ from app.main.validators import (
     ValidEmail,
     ValidGovEmail,
     ValidTeamMemberDomain,
+    validate_combined_email_header_length,
     validate_email_from,
     validate_service_name,
 )
@@ -667,6 +668,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -675,6 +677,7 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -1049,6 +1052,8 @@ class ContactNotify(StripWhitespaceForm):
             ("ask_question", _l("Ask a question")),
             ("technical_support", _l("Get technical support")),
             ("give_feedback", _l("Give feedback")),
+            ("a11y_feedback", _l("Report accessibility issues")),
+            ("newsletter_signup", _l("Sign up to our newsletter")),
             ("other", _l("Other")),
         ],
     )

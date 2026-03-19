@@ -12,6 +12,10 @@ export const load = function (
   labelId,
   initialContent,
   lang = "en",
+  modeInputId,
+  initialMode,
+  preferenceUpdateUrl,
+  csrfToken,
 ) {
   ReactDOM.render(
     <SimpleEditor
@@ -19,6 +23,10 @@ export const load = function (
       labelId={labelId}
       initialContent={initialContent}
       lang={lang}
+      modeInputId={modeInputId}
+      initialMode={initialMode}
+      preferenceUpdateUrl={preferenceUpdateUrl}
+      csrfToken={csrfToken}
     />,
     element,
   );

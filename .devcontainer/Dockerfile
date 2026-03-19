@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm
 
+RUN rm -f /etc/apt/sources.list.d/yarn.list
+
 ENV POETRY_VERSION="1.7.1"
 
 ARG USERNAME=vscode

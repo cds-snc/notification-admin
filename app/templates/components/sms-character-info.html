@@ -1,0 +1,38 @@
+{% macro sms_character_info(sms_daily_limit, sms_prefix) %}
+<div id="sms-character-info"
+     class="mt-6 bg-gray-100 border-l-4 border-l-gray-300 p-4"
+     data-sms-daily-limit="{{ sms_daily_limit }}"
+     data-sms-prefix="{{ sms_prefix }}"
+     data-testid="sms-character-info">
+
+  {# Fragment count estimate — updated live by smsCharacterInfo.js #}
+  <p id="sms-fragment-count" class="mb-0" data-testid="sms-fragment-count">
+    <span id="sms-fragment-count-text" data-testid="sms-fragment-count-text"></span>
+    <span id="sms-fragment-count-suffix" data-testid="sms-fragment-count-suffix"></span>
+  </p>
+
+  <hr class="my-3 border-gray-300">
+
+  {# Carrier info with guide link #}
+  <p class="mb-2" data-testid="sms-carrier-info">
+    {{ _('Phone carriers count some messages as multiple text message parts.') }}
+    {{ _('For details, visit') }}
+    <a href="{{ gca_url_for('guidance') }}" target="_blank" class="text-blue underline" data-testid="sms-guide-link">{{ _('Guide: Counting text message parts') }}</a>.
+  </p>
+
+  {# Daily limit section #}
+  <p id="sms-daily-limit" class="mb-0" data-testid="sms-daily-limit">
+    <strong id="sms-daily-limit-value" data-testid="sms-daily-limit-value">{{ sms_daily_limit }}</strong>
+    {{ _('is your daily text message limit') }}
+  </p>
+
+  {# Shortening suggestions section (commented out — GSM character counting logic preserved in JS)
+  <div id="sms-shorten-suggestions" class="mt-4 hidden">
+    <span>{{ _('To shorten, remove:') }}</span>
+    <ul id="sms-shorten-list" class="list list-bullet ml-8 mt-1">
+    </ul>
+  </div>
+  #}
+
+</div>
+{% endmacro %}

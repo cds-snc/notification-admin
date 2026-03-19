@@ -142,9 +142,10 @@
 
       // If there are overflow items, run a second pass accounting for the more button width
       if (collectedSet.more && collectedSet.more.length > 0) {
+        let moreButtonWidth = $moreMenuButton.outerWidth(false);
         collectedSet = Object.groupBy(
           $menuItems.children().not("[data-module='more-menu']"),
-          (el) => shouldItemOverflow(el, containerWidth, 0),
+          (el) => shouldItemOverflow(el, containerWidth, moreButtonWidth),
         );
       }
 

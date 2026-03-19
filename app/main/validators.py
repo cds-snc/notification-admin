@@ -1,5 +1,6 @@
 import re
 import time
+from email.utils import formataddr
 
 import pwnedpasswords
 import requests
@@ -243,3 +244,40 @@ def validate_service_name(form, field):
     )
     if not unique_name:
         raise ValidationError(_l("This service name is already in use"))
+
+
+def validate_combined_email_header_length(form, field):
+    """
+    Validate that the combined email header (service name + email address) doesn't exceed 320 characters.
+    When a service name contains unicode characters, it gets MIME-encoded in the email header,
+    which can significantly increase its length.
+    """
+    # Only validate if both name and email_from are present
+    if not hasattr(form, "name") or not hasattr(form, "email_from"):
+        return
+
+    service_name = form.name.data if form.name.data else ""
+    email_from = form.email_from.data if form.email_from.data else ""
+
+    # If either field is empty, skip this validation (let other validators handle it)
+    if not service_name or not email_from:
+        return
+
+    # Construct the full email address: email_from@domain
+    sending_domain = current_app.config["SENDING_DOMAIN"]
+    full_email = f"{email_from}@{sending_domain}"
+
+    # Use formataddr to encode the header as it would be in an actual email
+    # This properly handles unicode characters by MIME-encoding them
+    try:
+        from_header = formataddr((service_name, full_email))
+
+        # Check if the total length exceeds 320 characters
+        if len(from_header) > 320:
+            raise ValidationError(_l("Your service name and email address combined are too long."))
+    except ValidationError:
+        # Re-raise validation errors
+        raise
+    except Exception as e:
+        # If encoding fails for some reason, log it but don't block the user
+        current_app.logger.warning(f"Error validating email header length: {e}")

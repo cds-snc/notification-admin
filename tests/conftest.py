@@ -1199,6 +1199,39 @@ def mock_get_limit_stats(mocker):
     return mocker.patch("app.main.views.templates.notification_counts_client.get_limit_stats", side_effect=_get_data)
 
 
+@pytest.fixture(scope="function")
+def mock_get_limit_stats_send(mocker):
+    def _get_data(svc):
+        return {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+        }
+
+    return mocker.patch("app.main.views.send.notification_counts_client.get_limit_stats", side_effect=_get_data)
+
+
 def create_template(
     service_id=SERVICE_ONE_ID,
     template_id=None,
@@ -1405,6 +1438,7 @@ def api_user_pending(fake_uuid):
         "current_session_id": None,
         "password_changed_at": str(datetime.utcnow()),
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1440,6 +1474,7 @@ def platform_admin_user(fake_uuid):
         "current_session_id": None,
         "logged_in_at": None,
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1466,6 +1501,7 @@ def api_user_active(fake_uuid):
         "logged_in_at": None,
         "security_keys": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1490,6 +1526,7 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
         "current_session_id": None,
         "security_keys": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1527,6 +1564,7 @@ def api_user_active_security_key_auth(fake_uuid):
         ],
         "fido2_key_id": None,
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
 
 
@@ -1559,6 +1597,7 @@ def api_nongov_user_active(fake_uuid):
         "services": [],
         "organisations": [],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1592,6 +1631,7 @@ def active_user_with_permissions(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1625,6 +1665,7 @@ def active_cds_user_with_permissions(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1661,6 +1702,7 @@ def active_user_with_permission_to_two_services(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID, SERVICE_TWO_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -1688,6 +1730,7 @@ def active_caseworking_user(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1722,6 +1765,7 @@ def active_user_with_unverified_mobile(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1755,6 +1799,7 @@ def active_user_no_mobile(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1777,6 +1822,7 @@ def active_user_view_permissions(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1799,6 +1845,7 @@ def active_user_empty_permissions(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1826,6 +1873,7 @@ def active_user_manage_template_permission(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -1853,6 +1901,7 @@ def active_user_no_api_key_permission(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
+        "default_editor_is_rte": False,
     }
 
 
@@ -1880,6 +1929,7 @@ def active_user_no_settings_permission(fake_uuid):
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
         "organisations": [],
+        "default_editor_is_rte": False,
     }
 
 
@@ -1901,6 +1951,7 @@ def api_user_locked(fake_uuid):
         "platform_admin": False,
         "services": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1924,6 +1975,7 @@ def api_user_request_password_reset(fake_uuid):
         "platform_admin": False,
         "services": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -2912,6 +2964,7 @@ def mock_get_users_by_service(mocker):
                 "failed_login_count": 0,
                 "organisations": [],
                 "platform_admin": False,
+                "default_editor_is_rte": False,
             }
         ]
         return [data[0]]
@@ -3099,6 +3152,8 @@ def mock_get_template_categories(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_template_statistics(mocker, service_one, fake_uuid):
+    from flask import current_app
+
     template = template_json(
         service_one["id"],
         fake_uuid,
@@ -3106,16 +3161,19 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
         "sms",
         "Something very interesting",
     )
-    data = {
-        "count": 1,
-        "template_name": template["name"],
-        "template_type": template["template_type"],
-        "template_id": template["id"],
-        "is_precompiled_letter": False,
-        "status": "delivered",
-    }
 
     def _get_stats(service_id, limit_days=None):
+        data = {
+            "count": 1,
+            "template_name": template["name"],
+            "template_type": template["template_type"],
+            "template_id": template["id"],
+            "is_precompiled_letter": False,
+            "status": "delivered",
+        }
+        # Include billable_units if FF_USE_BILLABLE_UNITS is enabled
+        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+            data["billable_units"] = 1
         return [data]
 
     return mocker.patch(
@@ -4580,6 +4638,7 @@ def create_api_user_active(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4599,6 +4658,7 @@ def create_active_user_empty_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -4630,6 +4690,7 @@ def create_active_user_with_permissions(with_unique_id=False):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4649,6 +4710,7 @@ def create_active_user_view_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4674,6 +4736,7 @@ def create_active_caseworking_user(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4699,6 +4762,7 @@ def create_active_user_no_api_key_permission(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
+        "default_editor_is_rte": False,
     }
 
 
@@ -4724,6 +4788,7 @@ def create_active_user_no_settings_permission(with_unique_id=False):
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
         "organisations": [],
+        "default_editor_is_rte": False,
     }
 
 
@@ -4748,6 +4813,7 @@ def create_active_user_manage_template_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4779,6 +4845,7 @@ def create_platform_admin_user(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "default_editor_is_rte": False,
     }
 
 

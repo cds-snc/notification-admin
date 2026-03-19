@@ -9,16 +9,10 @@
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #111827;
-  color: white;
-  padding: 6px 8px;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 700;
   white-space: nowrap;
   z-index: 9999;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  font-weight: 500;
+  @apply flex flex-col justify-center bg-gray-900 text-white py-4 px-6 text-small;
 }
 
 .rte-tooltip-label {
@@ -28,8 +22,7 @@
   margin-bottom: 0;
 }
 .rte-tooltip-shortcut {
-  opacity: 0.85;
-  font-size: 13px;
+  @apply text-xs text-gray-200;
 }
 
 .rte-tooltip-caret {

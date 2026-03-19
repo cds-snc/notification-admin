@@ -17,6 +17,11 @@ def newsletter_subscription():
 
     # Handle GET request - display the form
     if request.method == "GET":
+        # Pre-populate email from query parameter if provided
+        email_param = request.args.get("email")
+        if email_param and not newsletter_form.email.data:
+            newsletter_form.email.data = email_param
+
         return render_template(
             "views/newsletter/subscribe.html",
             newsletter_form=newsletter_form,

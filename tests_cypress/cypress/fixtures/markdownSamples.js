@@ -226,6 +226,8 @@ List`,
         LINKS: {
                 before: `^ # 5. LINKS
 
+spacer
+
 [Normal link](https://www.canada.ca)
 
 - [Bullet List link](https://www.canada.ca)
@@ -238,12 +240,16 @@ _[Italic link](https://www.canada.ca)_
 
 [((variable_link))](https://www.canada.ca)
 
+[link with variable url](((var_url)))
+
 ^ [Blockquote link](https://www.canada.ca)
 
 [[en]][EN link](https://www.canada.ca)
 
 [[fr]][FR link](https://www.canada.ca)`,
                 expected: `^ # 5. LINKS
+
+spacer
 
 [Normal link](https://www.canada.ca)
 
@@ -256,6 +262,8 @@ _[Italic link](https://www.canada.ca)_
 [*Italic link*](https://www.canada.ca)
 
 [((variable_link))](https://www.canada.ca)
+
+[link with variable url](((var_url)))
 
 ^ [Blockquote link](https://www.canada.ca)
 
@@ -577,6 +585,27 @@ Nested: RTL with numbered list
 2. Two
 [[/rtl]]`
         },
+        INLINE_CONDITIONALS: {
+                before: `((test??Inline conditional))`,
+                expected: `((test??Inline conditional))`
+        },
+        BLOCK_CONDITIONALS: {
+                before: `((test??
+Inline conditional
+))`,
+                expected: `((test??
+Inline conditional
+
+))`
+        },
+        BLOCK_CONDITIONALS2: {
+                before: `((test??
+Inline conditional))`,
+                expected: `((test??
+Inline conditional
+
+))`
+        }
 };
 
 export default MARKDOWN;

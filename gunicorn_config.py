@@ -5,19 +5,35 @@ import traceback
 
 import gunicorn  # type: ignore
 
+# Check if OpenTelemetry is enabled via feature flag
+enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
 enable_newrelic = os.getenv("ENABLE_NEW_RELIC", "False").lower() == "true"
 environment = os.environ.get("NOTIFY_ENVIRONMENT")
 
-if enable_newrelic:
+print(f"[GUNICORN CONFIG] FF_ENABLE_OTEL={os.getenv('FF_ENABLE_OTEL')}, enable_otel={enable_otel}")  # noqa: T201
+print(f"[GUNICORN CONFIG] ENABLE_NEW_RELIC={os.getenv('ENABLE_NEW_RELIC')}, enable_newrelic={enable_newrelic}")  # noqa: T201
+print(f"[GUNICORN CONFIG] Will load New Relic: {enable_newrelic and not enable_otel}")  # noqa: T201
+
+# Only use New Relic when OpenTelemetry is disabled
+if enable_newrelic and not enable_otel:
     import newrelic.agent  # See https://bit.ly/2xBVKBH
 
     newrelic.agent.initialize(environment=environment)  # noqa: E402
+    print("[GUNICORN CONFIG] New Relic initialized")  # noqa: T201
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
 
-workers = 5
-worker_class = "gevent"
+workers = int(os.getenv("GUNICORN_WORKER_CONFIG", "5"))
+worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent")
+
+# Use custom worker that detects OpenTelemetry to avoid monkey-patching conflicts
+# when gevent is configured with OpenTelemetry enabled.
+if enable_otel and worker_class == "gevent":
+    worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
+
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CLASS={os.getenv('GUNICORN_WORKER_CLASS')}, resolved_worker_class={worker_class}")  # noqa: T201
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CONFIG={os.getenv('GUNICORN_WORKER_CONFIG')}, workers={workers}")  # noqa: T201
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 

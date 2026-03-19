@@ -7,6 +7,7 @@
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
 {% from "components/template-category.html" import template_category %}
+{% from "components/sms-character-info.html" import sms_character_info %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -67,6 +68,10 @@
       </div>
       <div class="md:w-2/3 px-gutterHalf">
         {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.'), testid="template-content") }}
+
+        {% if config['FF_USE_BILLABLE_UNITS'] %}
+          {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name if current_service.prefix_sms else '') }}
+        {% endif %}
 
         <h2 class="heading-medium">{{ _('Template category') }}</h2>
         {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}

@@ -47,6 +47,7 @@ from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
+from app.enums import NotifyEnv
 from app.extensions import (
     antivirus_client,
     bounce_rate_client,
@@ -246,6 +247,7 @@ def create_app(application):
 
     # helper functions for templates
     application.jinja_env.globals["random_id"] = random_id
+    application.jinja_env.globals["NotifyEnv"] = NotifyEnv
 
     # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:
@@ -519,6 +521,21 @@ def format_notification_status(status, template_type, provider_response=None, fe
         else:
             return _("No such number")
 
+    def _get_sms_status_by_provider_response():
+        if provider_response:
+            return {
+                "Phone number is opted out": _("No such number"),  #  technical-failure
+                "Phone is currently unreachable/unavailable": _("No such number"),  #  permanent-failure
+                "Phone carrier is currently unreachable/unavailable": _("Carrier issue"),  #  temporary-failure
+                "Phone carrier has blocked this message": _("Blocked by phone carrier"),  #  temporary-failure
+                "Phone has blocked SMS": _("Blocked"),  #  temporary-failure
+                "Phone is on a blocked list": _("Blocked"),  #  temporary-failure
+                "Invalid phone number": _("No such number"),  #  permanent-failure
+                "Destination is on a blocked list": _("Blocked"),  #  permanent-failure
+                "Blocked as spam by phone carrier": _("Carrier issue"),  #  permanent-failure
+            }.get(provider_response, _("Tech issue"))
+        return _("Tech issue")
+
     return {
         "email": {
             "failed": _("Failed"),
@@ -536,9 +553,9 @@ def format_notification_status(status, template_type, provider_response=None, fe
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Tech issue"),
-            "temporary-failure": _("Carrier issue"),
-            "permanent-failure": _("No such number"),
+            "technical-failure": _get_sms_status_by_provider_response(),
+            "temporary-failure": _get_sms_status_by_provider_response(),
+            "permanent-failure": _get_sms_status_by_provider_response(),
             "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
@@ -728,17 +745,17 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src-elem 'self' https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
-            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
-            "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+            "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
+            "frame-src 'self' www.googletagmanager.com;"
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "report-to default;"
         ),

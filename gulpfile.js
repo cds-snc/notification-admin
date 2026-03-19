@@ -67,6 +67,7 @@ const javascripts = () => {
     paths.src + "javascripts/main.js",
     paths.src + "javascripts/templateCategories.js",
     paths.src + "javascripts/templateContent.js",
+    paths.src + "javascripts/smsCharacterInfo.js",
     paths.src + "javascripts/reportFooter.js",
   ])
     .pipe(plugins.prettyerror())
@@ -105,6 +106,7 @@ const javascripts = () => {
 const minifyIndividualJs = () => {
   return src([
     paths.src + "javascripts/branding_request.js",
+    paths.src + "javascripts/contactGaTracking.js",
     paths.src + "javascripts/formValidateRequired.js",
     paths.src + "javascripts/sessionRedirect.js",
     paths.src + "javascripts/touDialog.js",

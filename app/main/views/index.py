@@ -13,6 +13,7 @@ from flask import (
 )
 from flask_babel import _
 from flask_login import current_user
+from markupsafe import Markup
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
@@ -99,13 +100,32 @@ def verify_mobile():
 
 @main.route("/pricing")
 def pricing():
+    lang = get_current_locale(current_app)
+
+    def _country_display_name(country):
+        names = country.get("names")
+        if isinstance(names, dict):
+            return names.get(lang) or names.get("en") or next(iter(names.values()))
+        if isinstance(names, (list, tuple)):
+            return Markup("<br />").join(Markup.escape(n) for n in names)
+        return names
+
+    entries = []
+    for cc, country in INTERNATIONAL_BILLING_RATES.items():
+        if not country.get("attributes", {}).get("can_send", False):
+            continue
+        display = _country_display_name(country)
+        # strip HTML for sorting (e.g. remove <br />)
+        sort_key = re.sub(r"<[^>]+>", "", str(display) or "").strip().lower()
+        entries.append((cc, display, country.get("billable_units"), sort_key))
+
+    # sort by country display name
+    international_sms_rates = [(cc, display, units) for cc, display, units, _ in sorted(entries, key=lambda x: x[3])]
+
     return render_template(
         "views/pricing/index.html",
         sms_rate=0.0158,
-        international_sms_rates=sorted(
-            [(cc, country["names"], country["billable_units"]) for cc, country in INTERNATIONAL_BILLING_RATES.items()],
-            key=lambda x: x[0],
-        ),
+        international_sms_rates=international_sms_rates,
         search_form=SearchByNameForm(),
     )
 
