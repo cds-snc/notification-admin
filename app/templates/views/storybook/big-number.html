@@ -9,8 +9,8 @@
   "number:string", "label:string", "theme:(dark|light)=dark",
 ]) }}
 <div class="grid grid-cols-2 gap-4" data-testid="big-number-simple">
-    {{ big_number_simple(number=60, label=_("text messages")) }}
-    {{ big_number_simple(number=_("Counted as {}").format(56184|format_number), label=_("text messages to {} recipients").format(1230|format_number), theme="light") }}
+    {{ big_number_simple(number=60, label="text messages") }}
+    {{ big_number_simple(number="Counted as "~56184|format_number, label="text messages to "~1230|format_number~" recipients", theme="light") }}
 </div>
 
 
