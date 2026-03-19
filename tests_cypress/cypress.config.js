@@ -94,6 +94,9 @@ module.exports = defineConfig({
         getLastEmail(emailAddress) {
           return emailAccount.getLastEmail(emailAddress)
         },
+        getLastEmailPerf(emailAddress) {
+          return emailAccount.getLastEmailPerf(emailAddress)
+        },
         deleteAllEmails() {
           return emailAccount.deleteAllEmails()
         },

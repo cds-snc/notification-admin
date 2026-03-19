@@ -232,7 +232,7 @@ Cypress.Commands.add('login', (agreeToTerms = true) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.regular.email_address, agreeToTerms], () => {
-            if (CONFIG.ENV === 'LOCAL') {
+            if (CONFIG.ENV === 'LOCAL' || CONFIG.ENV === 'STAGING') {
                 LoginPage.LoginLocal(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
             } else {
                 LoginPage.Login(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
@@ -251,10 +251,28 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.admin.email_address, agreeToTerms], () => {
-            if (CONFIG.ENV === 'LOCAL') {
+            if (CONFIG.ENV === 'LOCAL' || CONFIG.ENV === 'STAGING') {
                 LoginPage.LoginLocal(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
             } else {
                 LoginPage.Login(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            }
+        });
+    });
+});
+
+Cypress.Commands.add('loginForPerf', (agreeToTerms = true) => {
+    cy.task('createAccount', {
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
+    }).then((acct) => {
+        Cypress.env('ADMIN_USER_ID', acct.admin.id);
+        Cypress.env('REGULAR_USER_ID', acct.regular.id);
+        cy.session([acct.regular.email_address, agreeToTerms, 'perf'], () => {
+            if (CONFIG.ENV === 'LOCAL') {
+                LoginPage.LoginLocal(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            } else {
+                LoginPage.LoginPerf(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
             }
         });
     });

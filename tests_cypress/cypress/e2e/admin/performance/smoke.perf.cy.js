@@ -9,7 +9,7 @@ const PERF_REPEAT = Number(Cypress.env("PERF_REPEAT") || 5);
 
 describe("Admin performance smoke", () => {
   before(() => {
-    cy.login();
+    cy.loginForPerf();
   });
 
   beforeEach(() => {
