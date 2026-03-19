@@ -3034,7 +3034,7 @@ class TestAnnualLimits:
         fragment_count_el = page.find(attrs={"data-testid": "fragment-count"})
         assert fragment_count_el is not None
         text = normalize_spaces(fragment_count_el.text)
-        assert text == "3 text messages."
+        assert text == "Total: 3 text message parts."
         assert "Estimate" not in text
 
     def test_fragment_count_shows_estimate_text_when_placeholders_present(
@@ -3081,7 +3081,7 @@ class TestAnnualLimits:
         assert fragment_count_el is not None
         text = normalize_spaces(fragment_count_el.text)
         assert "Estimate:" in text
-        assert "Custom content may increase length." in text
+        assert "Variables may increase number of messages" in text
 
 
 class TestViewSampleLibrary:

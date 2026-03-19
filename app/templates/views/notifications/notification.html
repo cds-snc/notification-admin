@@ -110,9 +110,9 @@
         <p class="text-small text-gray-700 flex items-center gap-2 border-b border-b-gray-700 pb-2 max-w-[464px]">
           <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
           {% if billable_units == 1 %}
-            {{ _("Counted as 1 text message.") }}
+            {{ _("Total: 1 text message part.") }}
           {% else %}
-            {{ _("Counted as {} text messages.").format(billable_units) }}
+            {{ _("Total: {} text message parts.").format(billable_units) }}
           {% endif %}
         </p>
 
