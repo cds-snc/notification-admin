@@ -60,9 +60,11 @@
       <div class="details-body">
         <ol class="list list-number">
           <li>{{ _("Write clear and concise messages. Visit ") }}
-            <a>{{ _("Tips for EN messages") }}</a>
-            <span>{{ _("and") }}</span>
-            <a>{{ _("Tips for FR messages") }}</a><span>.</span>
+            <a href="{{ gca_url_for(route='counting_text_messages', anchor_en='Tips-English', anchor_fr='conseils-anglais') }}">
+              {{ _("Tips for EN messages") }}</a>
+              <span>{{ _("and") }}</span>
+            <a href="{{ gca_url_for(route='counting_text_messages', anchor_en='Tips-French', anchor_fr='conseils-francais') }}">
+              {{ _("Tips for FR messages") }}</a><span>.</span>
           </li>
           <li>{{ _("Use links to connect recipients to more information.") }}</li>
         </ol>
