@@ -82,6 +82,7 @@ jobs:
           import glob
           import json
           import os
+          from collections import defaultdict
 
           result_files = sorted(glob.glob('tests_cypress/cypress/results/perf/*.json'))
           summary_lines = [
@@ -92,6 +93,8 @@ jobs:
           if not result_files:
               summary_lines.append('No performance artifacts were generated.')
           else:
+            page_timings = defaultdict(list)
+
               summary_lines.append('| Run | Warm-up | Total duration (ms) | Base URL |')
               summary_lines.append('| --- | --- | ---: | --- |')
 
@@ -103,6 +106,38 @@ jobs:
                   summary_lines.append(
                       f"| {metadata.get('iteration', '?')} | {metadata.get('warmupRun', False)} | {data.get('totalDurationMs', 'n/a')} | {data.get('baseUrl', 'n/a')} |"
                   )
+
+              for timing in data.get('timings', []):
+                if timing.get('type') == 'visit':
+                  page_timings[timing.get('label', 'unknown')].append({
+                    'iteration': metadata.get('iteration', '?'),
+                    'warmup': metadata.get('warmupRun', False),
+                    'duration': timing.get('durationMs'),
+                    'dom_content_loaded': timing.get('domContentLoadedMs'),
+                    'load_event_end': timing.get('loadEventEndMs'),
+                  })
+
+            summary_lines.extend([
+              '',
+              '### Page timings',
+              '',
+              '| Page | Run | Warm-up | Duration (ms) | DOMContentLoaded (ms) | Load end (ms) |',
+              '| --- | --- | --- | ---: | ---: | ---: |',
+            ])
+
+            for label, entries in sorted(page_timings.items()):
+              for entry in entries:
+                summary_lines.append(
+                  f"| {label} | {entry['iteration']} | {entry['warmup']} | {entry['duration']} | {entry['dom_content_loaded']} | {entry['load_event_end']} |"
+                )
+
+            print('Cypress performance summary')
+            print('===========================')
+            for line in summary_lines[3:]:
+              if line:
+                print(line)
+              else:
+                print('')
 
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as handle:
               handle.write('\n'.join(summary_lines) + '\n')
