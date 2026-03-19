@@ -223,10 +223,10 @@
       if (fragmentCount === 1) {
         countText = phrase("sms_one", "Total: 1 text message part.");
       } else {
-        countText = phrase("sms_count", "Total: {} text message parts.").replace(
-          "{}",
-          fragmentCount,
-        );
+        countText = phrase(
+          "sms_count",
+          "Total: {} text message parts.",
+        ).replace("{}", fragmentCount);
       }
     }
 
