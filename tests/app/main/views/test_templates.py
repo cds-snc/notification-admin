@@ -3081,7 +3081,7 @@ class TestAnnualLimits:
         assert fragment_count_el is not None
         text = normalize_spaces(fragment_count_el.text)
         assert "Estimate:" in text
-        assert "Custom content may increase length." in text
+        assert "Variables may increase number of messages" in text
 
 
 class TestViewSampleLibrary:
