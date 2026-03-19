@@ -1,6 +1,12 @@
 name: Cypress performance checks
 
 on:
+  push:
+    branches:
+      - admin-perf-cypress-tests
+    paths:
+      - .github/workflows/cypress-performance.yml
+      - tests_cypress/**
   workflow_dispatch:
     inputs:
       base_url:
@@ -17,6 +23,9 @@ on:
         required: false
         default: cypress/e2e/admin/performance/*.perf.cy.js
         type: string
+
+env:
+  PERF_REPEAT_DEFAULT: "5"
 
 defaults:
   run:
@@ -55,16 +64,16 @@ jobs:
       - name: Run Cypress performance suite
         uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         env:
-          PERF_REPEAT: ${{ inputs.perf_repeat }}
+          PERF_REPEAT: ${{ inputs.perf_repeat || env.PERF_REPEAT_DEFAULT }}
           PERF_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
         with:
           record: false
           browser: chrome
           working-directory: tests_cypress
           build: npm ci
-          spec: ${{ inputs.spec }}
+          spec: ${{ inputs.spec || 'cypress/e2e/admin/performance/*.perf.cy.js' }}
           config: ${{ steps.prep.outputs.config }}
-          env: ENV=STAGING,PERF_REPEAT=${{ inputs.perf_repeat }},PERF_RUN_ID=${{ github.run_id }}-${{ github.run_attempt }}
+          env: ENV=STAGING,PERF_REPEAT=${{ inputs.perf_repeat || env.PERF_REPEAT_DEFAULT }},PERF_RUN_ID=${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Build performance summary
         if: always()
