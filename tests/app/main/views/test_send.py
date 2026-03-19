@@ -535,7 +535,7 @@ def test_upload_csv_file_with_missing_columns_shows_error(
                 +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
                 +16502532222, {'a' * 50}, {'a' * 50}, {'a' * 50}
             """,
-            "Maximum 612 characters. Some messages may be too long due to custom content.",
+            "Maximum 612 characters, including variables.",
             "Added custom content exceeds the 612 character limit in 1 row",
             3,
         ),
@@ -546,7 +546,7 @@ def test_upload_csv_file_with_missing_columns_shows_error(
                 +16502532222, {'a' * 619}, {'a' * 619}, {'a' * 619}
                 +16502532222, {'a' * 700}, {'a' * 700}, {'a' * 700}
             """,
-            "Maximum 612 characters. Some messages may be too long due to custom content.",
+            "Maximum 612 characters, including variables.",
             "Added custom content exceeds the 612 character limit in 3 rows",
             9,
         ),
