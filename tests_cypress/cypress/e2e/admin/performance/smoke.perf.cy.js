@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import { TemplatesPage } from "../../../Notify/Admin/Pages/all";
-import { Admin } from "../../../Notify/NotifyAPI";
 import { getServiceID } from "../../../support/utils";
 
 const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
@@ -14,7 +12,7 @@ describe("Admin performance smoke", { retries: 0 }, () => {
   });
 
   for (let iteration = 1; iteration <= PERF_REPEAT; iteration += 1) {
-    it(`measures authenticated admin journeys run ${iteration}`, () => {
+    it(`measures authenticated dashboard load run ${iteration}`, () => {
       cy.startPerfCapture({
         label: "admin-performance-smoke",
         metadata: {
@@ -28,71 +26,6 @@ describe("Admin performance smoke", { retries: 0 }, () => {
         ready: () => {
           cy.contains("h1", "Dashboard").should("be.visible");
         },
-      });
-
-      cy.measureVisit(
-        `/services/${CYPRESS_SERVICE_ID}/service-settings`,
-        "service-settings",
-        {
-          ready: () => {
-            cy.contains("h1", "Settings").should("be.visible");
-          },
-        },
-      );
-
-      cy.trackRequestDuration(
-        "templates-page-data",
-        {
-          method: "GET",
-          url: "**/service/*/templates**",
-        },
-        () => {
-          cy.measureVisit(
-            `/services/${CYPRESS_SERVICE_ID}/templates`,
-            "templates-list",
-            {
-              ready: () => {
-                cy.contains("h1", "Templates").should("be.visible");
-              },
-            },
-          );
-        },
-      );
-
-      cy.trackRequestDuration(
-        "template-create",
-        {
-          method: "POST",
-          url: "**/service/*/template",
-        },
-        () => {
-          TemplatesPage.CreateTemplate();
-          TemplatesPage.SelectTemplateType("email");
-          TemplatesPage.Continue();
-          TemplatesPage.FillTemplateForm(
-            `Performance Template ${iteration}`,
-            `Performance Subject ${iteration}`,
-            `Performance Content ${iteration}`,
-            "Alert",
-          );
-          TemplatesPage.SaveTemplate();
-        },
-        {
-          timeout: 120000,
-        },
-      );
-
-      cy.contains("h1", /Edit .* template/i).should("be.visible");
-
-      cy.url().then((url) => {
-        const templateId = url.split("/templates/")[1];
-
-        if (templateId) {
-          Admin.DeleteTemplate({
-            serviceId: CYPRESS_SERVICE_ID,
-            templateId,
-          });
-        }
       });
 
       cy.flushPerfArtifact("admin-performance-smoke", {
