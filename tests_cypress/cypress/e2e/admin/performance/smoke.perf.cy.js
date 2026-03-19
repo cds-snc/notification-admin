@@ -38,22 +38,13 @@ describe("Admin performance smoke", { retries: 0 }, () => {
         },
       );
 
-      cy.trackRequestDuration(
-        "templates-page-data",
+      cy.measureVisit(
+        `/services/${CYPRESS_SERVICE_ID}/templates`,
+        "templates-list",
         {
-          method: "GET",
-          url: "**/service/*/templates**",
-        },
-        () => {
-          cy.measureVisit(
-            `/services/${CYPRESS_SERVICE_ID}/templates`,
-            "templates-list",
-            {
-              ready: () => {
-                cy.contains("h1", "Templates").should("be.visible");
-              },
-            },
-          );
+          ready: () => {
+            cy.contains("h1", "Templates").should("be.visible");
+          },
         },
       );
 
