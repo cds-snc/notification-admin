@@ -8,11 +8,8 @@ const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 const PERF_REPEAT = Number(Cypress.env("PERF_REPEAT") || 5);
 
 describe("Admin performance smoke", () => {
-  before(() => {
-    cy.loginForPerf();
-  });
-
   beforeEach(() => {
+    cy.loginForPerf();
     cy.intercept("GET", "**/dashboard.json", {}).as("dashboardPoll");
   });
 
