@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { defineConfig } = require("cypress");
 const EmailAccount = require("./cypress/plugins/email-account");
 const CreateAccount = require("./cypress/plugins/create-account");
@@ -22,6 +23,9 @@ module.exports = defineConfig({
       ADMIN_USERNAME: "notify-admin",
       CYPRESS_AUTH_USER_NAME: "CYPRESS_AUTH_USER",
       CACHE_CLEAR_USER_NAME: "CACHE_CLEAR_USER",
+      PERF_ARTIFACT_DIR: 'cypress/results/perf',
+      PERF_REPEAT: 5,
+      PERF_RUN_ID: null,
       Services: {
         GC_NOTIFY: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553',
         CYPRESS: 'd4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b',
@@ -78,6 +82,13 @@ module.exports = defineConfig({
         log(message) { // for debugging
           console.log(message)
           return null
+        },
+        writePerfArtifact({ artifactDir, fileName, data }) {
+          const outputDir = path.resolve(config.projectRoot, artifactDir || 'cypress/results/perf');
+          fs.mkdirSync(outputDir, { recursive: true });
+          const outputPath = path.join(outputDir, fileName);
+          fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
+          return outputPath;
         },
         // Email Account ///
         getLastEmail(emailAddress) {

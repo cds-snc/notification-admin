@@ -1,0 +1,111 @@
+name: Cypress performance checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Optional base URL override for a PR review environment. Leave empty to use staging.
+        required: false
+        type: string
+      perf_repeat:
+        description: Number of iterations to execute. First iteration is treated as warm-up.
+        required: false
+        default: "5"
+        type: string
+      spec:
+        description: Cypress spec glob to run.
+        required: false
+        default: cypress/e2e/admin/performance/*.perf.cy.js
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  cypress-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Setup Node
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version: 16.x
+          cache: npm
+          cache-dependency-path: tests_cypress/package-lock.json
+
+      - name: Write cypress.env.json
+        run: |
+          echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json
+
+      - name: Prepare Cypress config
+        id: prep
+        run: |
+          config='video=true,screenshotOnRunFailure=true'
+
+          if [ -n '${{ inputs.base_url }}' ]; then
+            config="$config,baseUrl=${{ inputs.base_url }}"
+          fi
+
+          echo "config=$config" >> "$GITHUB_OUTPUT"
+
+      - name: Run Cypress performance suite
+        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+        env:
+          PERF_REPEAT: ${{ inputs.perf_repeat }}
+          PERF_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        with:
+          record: false
+          browser: chrome
+          working-directory: tests_cypress
+          build: npm ci
+          spec: ${{ inputs.spec }}
+          config: ${{ steps.prep.outputs.config }}
+          env: ENV=STAGING,PERF_REPEAT=${{ inputs.perf_repeat }},PERF_RUN_ID=${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Build performance summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+          import os
+
+          result_files = sorted(glob.glob('tests_cypress/cypress/results/perf/*.json'))
+          summary_lines = [
+              '## Cypress performance summary',
+              '',
+          ]
+
+          if not result_files:
+              summary_lines.append('No performance artifacts were generated.')
+          else:
+              summary_lines.append('| Run | Warm-up | Total duration (ms) | Base URL |')
+              summary_lines.append('| --- | --- | ---: | --- |')
+
+              for file_path in result_files:
+                  with open(file_path, 'r', encoding='utf-8') as handle:
+                      data = json.load(handle)
+
+                  metadata = data.get('metadata', {})
+                  summary_lines.append(
+                      f"| {metadata.get('iteration', '?')} | {metadata.get('warmupRun', False)} | {data.get('totalDurationMs', 'n/a')} | {data.get('baseUrl', 'n/a')} |"
+                  )
+
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as handle:
+              handle.write('\n'.join(summary_lines) + '\n')
+          PY
+
+      - name: Upload performance artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-performance-artifacts
+          path: |
+            tests_cypress/cypress/videos
+            tests_cypress/cypress/screenshots
+            tests_cypress/cypress/results
+          retention-days: 14
