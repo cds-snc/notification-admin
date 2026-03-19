@@ -25,12 +25,16 @@ if enable_newrelic and not enable_otel:
 gunicorn.SERVER = "Undisclosed"
 
 workers = int(os.getenv("GUNICORN_WORKER_CONFIG", "5"))
-worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent")
+default_worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent").strip()
 
 # Use custom worker that detects OpenTelemetry to avoid monkey-patching conflicts
 # when gevent is configured with OpenTelemetry enabled.
-if enable_otel and worker_class == "gevent":
+# automatically override to use OTelAwareGeventWorker to prevent boot failures
+if enable_otel and default_worker_class == "gevent":
     worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
+    print(f"[GUNICORN CONFIG] Auto-overriding worker_class from 'gevent' to '{worker_class}' due to FF_ENABLE_OTEL=true")  # noqa: T201
+else:
+    worker_class = default_worker_class
 
 print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CLASS={os.getenv('GUNICORN_WORKER_CLASS')}, resolved_worker_class={worker_class}")  # noqa: T201
 print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CONFIG={os.getenv('GUNICORN_WORKER_CONFIG')}, workers={workers}")  # noqa: T201
