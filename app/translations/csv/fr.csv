@@ -1828,6 +1828,7 @@
 "At limit: ","Vous avez atteint votre limite : "
 "Daily usage","Utilisation quotidienne"
 "Message limits reset each night at 7pm Eastern Time","Les limites d’envoi sont réinitialisées chaque soir à 19 h, heure de l’Est"
+"Maximum 612 characters. Some messages may be too long due to custom content.","612 caractères au maximum. Certains messages peuvent être trop longs en raison de leur contenu personnalisé."
 "Maximum 612 characters, including variables.","612 caractères au maximum, incluant les champs réservés."
 "Too many characters","Limite de caractère atteinte"
 "New features","Nouvelles fonctionnalités"
