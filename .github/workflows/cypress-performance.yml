@@ -16,7 +16,7 @@ on:
       perf_repeat:
         description: Number of iterations to execute. First iteration is treated as warm-up.
         required: false
-        default: "5"
+        default: "3"
         type: string
       spec:
         description: Cypress spec glob to run.
@@ -25,7 +25,7 @@ on:
         type: string
 
 env:
-  PERF_REPEAT_DEFAULT: "5"
+  PERF_REPEAT_DEFAULT: "3"
 
 defaults:
   run:

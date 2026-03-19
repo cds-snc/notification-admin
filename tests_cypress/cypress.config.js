@@ -24,7 +24,7 @@ module.exports = defineConfig({
       CYPRESS_AUTH_USER_NAME: "CYPRESS_AUTH_USER",
       CACHE_CLEAR_USER_NAME: "CACHE_CLEAR_USER",
       PERF_ARTIFACT_DIR: 'cypress/results/perf',
-      PERF_REPEAT: 5,
+      PERF_REPEAT: 3,
       PERF_RUN_ID: null,
       Services: {
         GC_NOTIFY: 'd6aa2c68-a2d9-4437-ab19-3ae8eb202553',

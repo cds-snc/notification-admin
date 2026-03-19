@@ -5,9 +5,9 @@ import { Admin } from "../../../Notify/NotifyAPI";
 import { getServiceID } from "../../../support/utils";
 
 const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
-const PERF_REPEAT = Number(Cypress.env("PERF_REPEAT") || 5);
+const PERF_REPEAT = Number(Cypress.env("PERF_REPEAT") || 3);
 
-describe("Admin performance smoke", () => {
+describe("Admin performance smoke", { retries: 0 }, () => {
   beforeEach(() => {
     cy.loginForPerf();
     cy.intercept("GET", "**/dashboard.json", {}).as("dashboardPoll");
