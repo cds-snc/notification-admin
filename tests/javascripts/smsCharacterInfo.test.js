@@ -50,11 +50,11 @@ beforeAll(() => {
 
   // Mirror the APP_PHRASES values set by Flask in main_template.html
   window.APP_PHRASES = {
-    sms_estimate: "Estimate: {} text messages.",
-    sms_estimate_one: "Estimate: 1 text message.",
+    sms_estimate: "Estimate: {} text message parts.",
+    sms_estimate_one: "Estimate: 1 text message part.",
     sms_variables_warning: "Variables may increase number of messages.",
-    sms_count: "{} text messages.",
-    sms_one: "1 text message.",
+    sms_count: "Total: {} text message parts.",
+    sms_one: "Total: 1 text message part.",
   };
 });
 
@@ -96,13 +96,13 @@ describe("Guard conditions", () => {
 // ── Initial render (page load) ───────────────────────────────────────────────
 
 describe("Initial render on page load", () => {
-  test("shows '1 text message.' for an empty textarea", () => {
+  test("shows '1 text message part.' for an empty textarea", () => {
     buildDOM();
     require("../../app/assets/javascripts/smsCharacterInfo.js");
 
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
+    ).toBe("Total: 1 text message part.");
     expect(
       document.getElementById("sms-fragment-count-suffix").textContent
     ).toBe("");
@@ -149,7 +149,7 @@ describe("Service prefix included in character count", () => {
     typeIntoTextarea(textarea, "a".repeat(152));
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 text messages.");
+    ).toBe("Total: 2 text message parts.");
   });
 
   test("same 152-char content without prefix stays at 1 fragment", () => {
@@ -163,7 +163,7 @@ describe("Service prefix included in character count", () => {
     typeIntoTextarea(ta, "a".repeat(152));
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 text message.");
+    ).toBe("Total: 1 text message part.");
   });
 });
 
@@ -183,14 +183,14 @@ describe("Personalisation variables", () => {
     const text =
       document.getElementById("sms-fragment-count-text").textContent;
     expect(text).not.toContain("Estimate:");
-    expect(text).toBe("1 text message.");
+    expect(text).toBe("Total: 1 text message part.");
   });
 
   test("text with ((variable)) shows 'Estimate:' prefix", () => {
     typeIntoTextarea(textarea, "Hello ((name))");
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("Estimate: 1 text message.");
+    ).toBe("Estimate: 1 text message part.");
   });
 
   test("text with ((variable)) shows variables warning in suffix", () => {
@@ -212,14 +212,14 @@ describe("Personalisation variables", () => {
     typeIntoTextarea(textarea, "Hello ((name))");
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("Estimate: 1 text message.");
+    ).toBe("Estimate: 1 text message part.");
   });
 
   test("fallback placeholder syntax ((variable??fallback)) is also stripped", () => {
     typeIntoTextarea(textarea, "Hi ((name??there)), your ref is ((ref??unknown))");
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("Estimate: 1 text message.");
+    ).toBe("Estimate: 1 text message part.");
     expect(
       document.getElementById("sms-fragment-count-suffix").textContent
     ).toBe(" Variables may increase number of messages.");
@@ -240,30 +240,30 @@ describe("Live updates on input", () => {
   });
 
   test("updates fragment count as content changes", () => {
-    expect(fragmentCountText.textContent).toBe("1 text message.");
+    expect(fragmentCountText.textContent).toBe("Total: 1 text message part.");
 
     typeIntoTextarea(textarea, "a".repeat(161));
-    expect(fragmentCountText.textContent).toBe("2 text messages.");
+    expect(fragmentCountText.textContent).toBe("Total: 2 text message parts.");
 
     typeIntoTextarea(textarea, "a".repeat(307));
-    expect(fragmentCountText.textContent).toBe("3 text messages.");
+    expect(fragmentCountText.textContent).toBe("Total: 3 text message parts.");
 
     typeIntoTextarea(textarea, "a".repeat(10));
-    expect(fragmentCountText.textContent).toBe("1 text message.");
+    expect(fragmentCountText.textContent).toBe("Total: 1 text message part.");
   });
 
   test("count does not change before debounce delay elapses", () => {
     textarea.value = "a".repeat(161);
     helpers.triggerEvent(textarea, "input");
     // Do NOT advance timers — debounce hasn't fired yet
-    expect(fragmentCountText.textContent).toBe("1 text message."); // still initial
+    expect(fragmentCountText.textContent).toBe("Total: 1 text message part."); // still initial
   });
 
   test("count updates after debounce delay elapses", () => {
     textarea.value = "a".repeat(161);
     helpers.triggerEvent(textarea, "input");
     jest.advanceTimersByTime(150);
-    expect(fragmentCountText.textContent).toBe("2 text messages.");
+    expect(fragmentCountText.textContent).toBe("Total: 2 text message parts.");
   });
 });
 
@@ -276,23 +276,23 @@ describe("i18n via APP_PHRASES", () => {
       sms_estimate: "Estimate: {} text messages.",
       sms_estimate_one: "Estimate: 1 text message.",
       sms_variables_warning: "Variables may increase number of messages.",
-      sms_count: "{} text messages.",
-      sms_one: "1 text message.",
+      sms_count: "Total: {} text message parts.",
+      sms_one: "Total: 1 text message part.",
     };
   });
 
   test("uses translated string from APP_PHRASES for single fragment", () => {
-    window.APP_PHRASES.sms_one = "1 message texte.";
+    window.APP_PHRASES.sms_one = "Total&nbsp;: 1 partie de message texte.";
     buildDOM();
     require("../../app/assets/javascripts/smsCharacterInfo.js");
 
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("1 message texte.");
+    ).toBe("Total&nbsp;: 1 partie de message texte.");
   });
 
   test("uses translated string from APP_PHRASES for multiple fragments", () => {
-    window.APP_PHRASES.sms_count = "{} messages texte.";
+    window.APP_PHRASES.sms_count = "Total&nbsp;: {} parties de messages texte.";
     buildDOM();
     require("../../app/assets/javascripts/smsCharacterInfo.js");
     const textarea = document.getElementById("template_content");
@@ -300,7 +300,7 @@ describe("i18n via APP_PHRASES", () => {
 
     expect(
       document.getElementById("sms-fragment-count-text").textContent
-    ).toBe("2 messages texte.");
+    ).toBe("Total&nbsp;: 2 parties de messages texte.");
   });
 
   test("falls back to default string when APP_PHRASES is not set", () => {
