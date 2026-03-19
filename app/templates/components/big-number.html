@@ -78,7 +78,8 @@
   link=None,
   pass_label=_("No problem addresses"),
   smaller=False,
-  smallest=False
+  smallest=False,
+  theme="dark"
 ) %}
   {% set detailed_label = pass_label %}
   {% if number >= 1 %}
@@ -89,11 +90,7 @@
     {% endif %}
   {% endif %}
   <section role="region" aria-label="{{ detailed_label }}" class="big-number-with-status">
-    {% if config['FF_USE_BILLABLE_UNITS'] %}
-      {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest, theme="light") }}
-    {% else %}
-      {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
-    {% endif %}
+    {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest, theme=theme) }}
 
     <div class="block {% if below_volume_threshold %}neutral{% elif bounce_status == "critical" or bounce_status == "warning" %}critical{% else %}normal{% endif %}">
       {% if failure_link %}
