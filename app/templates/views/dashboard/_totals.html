@@ -65,13 +65,13 @@
           {# --- SMS column --- #}
           <div class="px-gutterHalf box-border">
             {% if sms_billable_units_weekly == 1 and statistics['sms']['requested'] == 1 %}
-              {% set sms_billable_label = _("text message to {} recipient").format(statistics['sms']['requested']) %}
+              {% set sms_billable_label = _("text message part to {} recipient").format(statistics['sms']['requested']) %}
             {% elif sms_billable_units_weekly == 1 %}
-              {% set sms_billable_label = _("text message to {} recipients").format(statistics['sms']['requested']) %}
+              {% set sms_billable_label = _("text message part to {} recipients").format(statistics['sms']['requested']) %}
             {% elif statistics['sms']['requested'] == 1 %}
-              {% set sms_billable_label = _("text messages to {} recipient").format(statistics['sms']['requested']) %}
+              {% set sms_billable_label = _("text message parts to {} recipient").format(statistics['sms']['requested']) %}
             {% else %}
-              {% set sms_billable_label = _("text messages to {} recipients").format(statistics['sms']['requested']) %}
+              {% set sms_billable_label = _("text message parts to {} recipients").format(statistics['sms']['requested']) %}
             {% endif %}
             {{ big_number_simple(
               number=_("Counted as {}").format(sms_billable_units_weekly),
@@ -80,9 +80,9 @@
           </div>
           <div class="px-gutterHalf box-border">
             {{ task_shortcut(
-              description=_("Phone carriers count some texts as more than one message."),
+              description=_("Phone carriers count some messages as multiple text message parts."),
               link_url=None,
-              link_text=_("Guide: Counting text messages"),
+              link_text=_("Guide: Counting text message parts"),
               icon="arrow-up-right-from-square"
             ) }}
           </div>
