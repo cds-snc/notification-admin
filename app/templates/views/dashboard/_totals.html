@@ -64,7 +64,7 @@
             ) }}
           </div>
           {# --- SMS column --- #}
-          <div class="px-gutterHalf box-border">
+          <div class="px-gutterHalf box-border flex *:w-full">
             {% if sms_billable_units_weekly == 1 and statistics['sms']['requested'] == 1 %}
               {% set sms_billable_label = _("text message part to {} recipient").format(statistics['sms']['requested']) %}
             {% elif sms_billable_units_weekly == 1 %}

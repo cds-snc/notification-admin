@@ -111,7 +111,7 @@
 
 
 {% macro big_number_simple(number, label, theme="dark") %}
-  <div class="big-number-{{ theme }} mb-12 clear-both contain-floats">
+  <div class="big-number-{{ theme }} mb-8 clear-both contain-floats">
     <div class="big-number-number text-lg">
       {% if number is number %}
         {{ "{:,}".format(number) }}
