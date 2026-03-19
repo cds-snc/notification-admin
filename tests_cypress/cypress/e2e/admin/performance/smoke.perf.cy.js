@@ -33,11 +33,15 @@ describe("Admin performance smoke", () => {
         },
       });
 
-      cy.measureVisit(`/services/${CYPRESS_SERVICE_ID}/service-settings`, "service-settings", {
-        ready: () => {
-          cy.contains("h1", "Settings").should("be.visible");
+      cy.measureVisit(
+        `/services/${CYPRESS_SERVICE_ID}/service-settings`,
+        "service-settings",
+        {
+          ready: () => {
+            cy.contains("h1", "Settings").should("be.visible");
+          },
         },
-      });
+      );
 
       cy.trackRequestDuration(
         "templates-page-data",
@@ -46,11 +50,15 @@ describe("Admin performance smoke", () => {
           url: "**/service/*/templates**",
         },
         () => {
-          cy.measureVisit(`/services/${CYPRESS_SERVICE_ID}/templates`, "templates-list", {
-            ready: () => {
-              cy.contains("h1", "Templates").should("be.visible");
+          cy.measureVisit(
+            `/services/${CYPRESS_SERVICE_ID}/templates`,
+            "templates-list",
+            {
+              ready: () => {
+                cy.contains("h1", "Templates").should("be.visible");
+              },
             },
-          });
+          );
         },
       );
 
