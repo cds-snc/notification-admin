@@ -24,6 +24,7 @@ if enable_newrelic and not enable_otel:
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
 
+preload_app = os.getenv("GUNICORN_PRELOAD_APP", "False").lower() == "true"
 workers = int(os.getenv("GUNICORN_WORKER_CONFIG", "5"))
 default_worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent").strip()
 
