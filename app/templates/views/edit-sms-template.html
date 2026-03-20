@@ -54,6 +54,19 @@
         <li>{{ _("Use the positive form as much as possible and reserve the negative for when consequences could be grave or fatal. Avoid double negations and exceptions to exceptions, which could confuse readers.") }}</li>
       </div>
     </details>
+  {% elif config['FF_USE_BILLABLE_UNITS'] %}
+    <details>
+      <summary>{{ _("Best practices for text messages") }}</summary>
+      <div class="details-body">
+        <ol class="list list-number">
+          <li>{{ _("Write clear and concise messages. Visit ") }}
+            <a>{{ _("Tips for EN messages") }}</a>
+            <span>{{ _("and") }}</span>
+            <a>{{ _("Tips for FR messages") }}</a><span>.</span>
+          </li>
+          <li>{{ _("Use links to connect recipients to more information.") }}</li>
+        </ol>
+      </div>
     </details>
   {% endif %}
 
@@ -67,7 +80,7 @@
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), testid="template-name") }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters. Some messages may be too long due to custom content.'), testid="template-content") }}
+        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('Maximum 612 characters, including variables.'), testid="template-content") }}
 
         {% if config['FF_USE_BILLABLE_UNITS'] %}
           {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name if current_service.prefix_sms else '') }}

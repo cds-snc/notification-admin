@@ -211,22 +211,22 @@
       if (fragmentCount === 1) {
         countText = phrase(
           "sms_estimate_one",
-          "Estimate: 1 text message. Variables may increase number of messages.",
+          "Estimate: 1 text message part. Variables may increase number of messages.",
         );
       } else {
         countText = phrase(
           "sms_estimate",
-          "Estimate: {} text messages. Variables may increase number of messages.",
+          "Estimate: {} text message parts. Variables may increase number of messages.",
         ).replace("{}", fragmentCount);
       }
     } else {
       if (fragmentCount === 1) {
-        countText = phrase("sms_one", "Count: 1 text message.");
+        countText = phrase("sms_one", "Total: 1 text message part.");
       } else {
-        countText = phrase("sms_count", "Count: {} text messages.").replace(
-          "{}",
-          fragmentCount,
-        );
+        countText = phrase(
+          "sms_count",
+          "Total: {} text message parts.",
+        ).replace("{}", fragmentCount);
       }
     }
 
