@@ -121,7 +121,8 @@ def get_current_locale(application):
     if request.args.get("lang") and request.args.get("lang") in ["en", "fr"]:
         lang = request.args.get("lang")
     else:
-        lang = session.get("userlang", requestLang)
+        stored = session.get("userlang", requestLang)
+        lang = stored if stored in application.config["LANGUAGES"] else requestLang
 
     session["userlang"] = lang
     return lang
