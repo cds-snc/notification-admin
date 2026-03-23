@@ -59,17 +59,17 @@
           {% endif %}
         {% endif %}
         {% if template._template.updated_at %}
-        <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %} border-b border-b-gray-700 pt-2 pb-4 mt-2 mb-4 max-w-[464px]">
-          <span class="flex items-center gap-2">
-            <i aria-hidden="true" class="fa-solid fa-clock-rotate-left pr-4"></i>
-            {% set last_edited = _('Last edited') %}
-            {{ last_edited }}
-            {{ template._template.updated_at|format_delta }}
-          </span>
-
-          &emsp;
-          {% set version_txt = _('See previous versions') %}
-          <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
+        <div class="{% if template.template_type == 'email' %}w-3/4 text-right{% endif %} flex items-start gap-2 border-b border-b-gray-700 pt-2 pb-4 mt-2 mb-4 max-w-[464px]">
+          <i aria-hidden="true" class="fa-solid fa-clock-rotate-left pr-4 shrink-0 mt-1"></i>
+          <div class="flex flex-col gap-y-2">
+            <span>
+              {% set last_edited = _('Last edited') %}
+              {{ last_edited }}
+              {{ template._template.updated_at|format_delta }}
+            </span>
+            {% set version_txt = _('See previous versions') %}
+            <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
+          </div>
         </div>
         {% endif %}
         {% if fragment_count %}
