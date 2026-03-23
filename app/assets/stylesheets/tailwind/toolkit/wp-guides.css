@@ -1,0 +1,29 @@
+@layer components {
+  /* Guidance pages specific components */
+
+  /* Character table */
+  .guide-character-table kbd {
+    @apply text-lg font-body;
+  }
+  @supports (-moz-appearance: none) {
+    /* FF has a bug with vertical-aligned tables. This ensures text wont collide with table borders */
+    .guide-character-table td:not(:has(kbd)) {
+      padding-top: 1.75rem;
+    }
+  }
+
+  /* Symbols list */
+  .page-content ul.guide-symbols-list {
+    @apply p-0 flex flex-wrap lg:flex-nowrap items-stretch;
+  }
+  .page-content ul.guide-symbols-list li {
+    box-shadow: 1px 1px 0 0 theme("colors.gray.300");
+    width: 11%; /* 9 symbols total = 1 row when space allows */
+    min-width: 100px; /* prevent from getting too small on mobile */
+    min-height: 150px; /* When flex wraps, keep a consistent height */
+    @apply m-0 text-xs flex flex-col items-center text-center p-gutterHalf border-solid border-t-1 border-l-1 border-gray-300;
+  }
+  ul.guide-symbols-list li kbd {
+    @apply text-lg font-body mb-4;
+  }
+}
