@@ -529,7 +529,7 @@ class TestApiCallbacks:
                 "https://test.ee",
                 "1234567890",
                 {"content": "a", "status_code": 404, "headers": {"a": "a"}},
-                "Check your service is running and not using a proxy we cannot access",
+                "Check your service is running and not using a proxy we cannot access. Received 404 response",
             ),
         ],
     )
