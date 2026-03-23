@@ -1,3 +1,4 @@
+{% from "components/links.html" import content_link %}
 {% macro sms_character_info(sms_daily_limit, sms_prefix) %}
 <div id="sms-character-info"
      class="mt-6 bg-gray-100 border-l-4 border-l-gray-300 p-4"
@@ -19,7 +20,7 @@
   </p>
   <p class="my-0">
     {{ _('For details, visit') }}
-    <a href="{{ gca_url_for('counting_text_messages') }}" target="_blank" class="text-blue underline" data-testid="sms-guide-link">{{ _('Guide: Counting text message parts') }}</a>.
+    {{ content_link(_('Guide: Counting text message parts'), gca_url_for('guidance'), is_external_link=true, is_sentence_end=true, testid='sms-guide-link') }}
   </p>
 
   {# Daily limit section #}
