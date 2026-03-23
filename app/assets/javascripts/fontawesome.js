@@ -25,6 +25,7 @@ import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { faCodeBranch } from "@fortawesome/free-solid-svg-icons/faCodeBranch";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons/faCommentDots";
+import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons/faClockRotateLeft";
 
 let FontAwesomeIconLoader = () => {
   config.autoAddCss = false;
@@ -48,6 +49,7 @@ let FontAwesomeIconLoader = () => {
     faPenToSquare,
     faCodeBranch,
     faCommentDots,
+    faClockRotateLeft,
   ]);
   dom.watch();
 };
