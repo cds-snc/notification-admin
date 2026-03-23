@@ -1,6 +1,7 @@
 @import "./wp-block-cover.css";
 @import "./wp-block-media.css";
 @import "./wp-layout.css";
+@import "./wp-guides.css";
 /* Page specific styles. */
 @import "./wp-page-home.css";
 @import "./wp-page-why.css";
