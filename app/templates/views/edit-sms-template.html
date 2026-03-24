@@ -6,6 +6,7 @@
 {% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/task-shortcut.html" import task_shortcut %}
+{% from "components/links.html" import content_link %}
 {% from "components/template-category.html" import template_category %}
 {% from "components/sms-character-info.html" import sms_character_info %}
 
@@ -60,9 +61,9 @@
       <div class="details-body">
         <ol class="list list-number">
           <li>{{ _("Write clear and concise messages. Visit ") }}
-            <a>{{ _("Tips for EN messages") }}</a>
+            {{ content_link(_("Tips for EN messages"), gca_url_for(route='counting_text_messages', anchor_en='Tips-English', anchor_fr='conseils-anglais'), is_external_link=true) }}
             <span>{{ _("and") }}</span>
-            <a>{{ _("Tips for FR messages") }}</a><span>.</span>
+            {{ content_link(_("Tips for FR messages"), gca_url_for(route='counting_text_messages', anchor_en='Tips-French', anchor_fr='conseils-francais'), is_external_link=true, is_sentence_end=true) }}
           </li>
           <li>{{ _("Use links to connect recipients to more information.") }}</li>
         </ol>
