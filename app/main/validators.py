@@ -205,15 +205,23 @@ def validate_callback_url(service_callback_url, bearer_token):
 
         if response.status_code < 500 and response.status_code >= 400:
             current_app.logger.warning(
-                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
+                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Response Code: {response.status_code}"
             )
-            raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
+            raise ValidationError(
+                _l("Check your service is running and not using a proxy we cannot access. Received {} response").format(
+                    response.status_code
+                )
+            )
 
     except requests.RequestException as e:
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Exception: {e}"
         )
-        raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
+        raise ValidationError(
+            _l("Check your service is running and not using a proxy we cannot access. Received {} response").format(
+                getattr(e.response, "status_code", "unknown")
+            )
+        )
 
 
 def validate_email_from(form, field):
