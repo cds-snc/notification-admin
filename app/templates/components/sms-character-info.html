@@ -1,3 +1,4 @@
+{% from "components/links.html" import content_link %}
 {% macro sms_character_info(sms_daily_limit, sms_prefix) %}
 <div id="sms-character-info"
      class="mt-6 bg-gray-100 border-l-4 border-l-gray-300 p-4"
@@ -14,16 +15,18 @@
   <hr class="my-3 border-gray-300">
 
   {# Carrier info with guide link #}
-  <p class="mb-2" data-testid="sms-carrier-info">
+  <p class="mb-0" data-testid="sms-carrier-info">
     {{ _('Phone carriers count some messages as multiple text message parts.') }}
+  </p>
+  <p class="my-0">
     {{ _('For details, visit') }}
-    <a href="{{ gca_url_for('guidance') }}" target="_blank" class="text-blue underline" data-testid="sms-guide-link">{{ _('Guide: Counting text message parts') }}</a>.
+    {{ content_link(_('Guide: Counting text message parts'), gca_url_for('guidance'), is_external_link=true, is_sentence_end=true, testid='sms-guide-link') }}
   </p>
 
   {# Daily limit section #}
-  <p id="sms-daily-limit" class="mb-0" data-testid="sms-daily-limit">
+  <p id="sms-daily-limit" class="mt-2 mb-0" data-testid="sms-daily-limit">
     <strong id="sms-daily-limit-value" data-testid="sms-daily-limit-value">{{ sms_daily_limit }}</strong>
-    {{ _('is your daily text message limit') }}
+    {{ _('is your daily limit for text message parts') }}
   </p>
 
   {# Shortening suggestions section (commented out — GSM character counting logic preserved in JS)
