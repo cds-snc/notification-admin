@@ -38,5 +38,6 @@ from app.main.views import (  # noqa isort:skip
     two_factor,
     uploads,
     user_profile,
+    unsubscribe_requests,
     verify,
 )

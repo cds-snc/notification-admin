@@ -39,6 +39,7 @@ class Service(JSONModel):
         "prefix_sms",
         "research_mode",
         "service_callback_api",
+        "service_unsubscribe_callback_api",
         "volume_email",
         "volume_sms",
         "volume_letter",

@@ -95,6 +95,17 @@
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
       {% endif %}
+
+      {% if form.has_unsubscribe_link is defined %}
+        <div class="form-group">
+          <div class="multiple-choice">
+            {{ form.has_unsubscribe_link(class="multiple-choice__input") }}
+            <label class="multiple-choice__label" for="{{ form.has_unsubscribe_link.id }}">
+              {{ form.has_unsubscribe_link.label.text }}
+            </label>
+          </div>
+        </div>
+      {% endif %}
       {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>
   </div>

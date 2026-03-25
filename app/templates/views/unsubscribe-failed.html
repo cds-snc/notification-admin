@@ -1,0 +1,23 @@
+{% extends "main_template.html" %}
+
+{% block page_title %}
+  {{ _('Unsubscribe') }} – GC Notify
+{% endblock %}
+
+{% block content %}
+  <div class="container px-gutterHalf contain-floats flex-grow">
+    <main role="main" class="w-full py-10 px-gutterHalf box-border">
+
+      <h1 class="heading-large">
+        {{ _('There is a problem') }}
+      </h1>
+      <p>
+        {{ _('We could not unsubscribe you from these emails.') }}
+      </p>
+      <p>
+        {{ _('If you pasted the web address from an email, check you copied the entire address.') }}
+      </p>
+
+    </main>
+  </div>
+{% endblock %}

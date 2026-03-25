@@ -14,6 +14,7 @@ from app.main.forms import (
     Safelist,
     ServiceDeliveryStatusCallbackForm,
     ServiceReceiveMessagesCallbackForm,
+    ServiceUnsubscribeCallbackForm,
 )
 from app.notify_client.api_key_api_client import (
     KEY_TYPE_NORMAL,
@@ -476,5 +477,92 @@ def delete_received_text_messages_callback(service_id):
         back_link=".api_callbacks" if current_service.has_permission("inbound_sms") else ".delivery_status_callback",
         hint_text=url_hint_txt,
         is_deleting=True,
+        form=form,
+    )
+
+
+def get_unsubscribe_callback_details():
+    if current_service.service_unsubscribe_callback_api:
+        return service_api_client.get_service_unsubscribe_callback_api(
+            current_service.id, current_service.service_unsubscribe_callback_api[0]
+        )
+
+
+@main.route(
+    "/services/<service_id>/api/callbacks/unsubscribe-callback/delete",
+    methods=["GET", "POST"],
+)
+@user_has_permissions("manage_api_keys")
+def delete_unsubscribe_callback(service_id):
+    unsubscribe_callback = get_unsubscribe_callback_details()
+    url_hint_txt = "Must start with https://"
+
+    if request.method == "POST":
+        if unsubscribe_callback:
+            service_api_client.delete_service_unsubscribe_callback_api(
+                service_id,
+                unsubscribe_callback["id"],
+            )
+            flash(_l("Your Callback configuration has been deleted."), "default_with_tick")
+            return redirect(url_for(".api_integration", service_id=service_id))
+
+    flash(["{}".format(_l("Are you sure you want to delete this callback configuration?"))], "delete")
+
+    form = ServiceUnsubscribeCallbackForm(
+        url=unsubscribe_callback.get("url") if unsubscribe_callback else "",
+        bearer_token=dummy_bearer_token if unsubscribe_callback else "",
+    )
+
+    return render_template(
+        "views/api/callbacks/unsubscribe-callback.html",
+        hint_text=url_hint_txt,
+        back_link=".unsubscribe_callback",
+        is_deleting=True,
+        form=form,
+    )
+
+
+@main.route(
+    "/services/<service_id>/api/callbacks/unsubscribe-callback",
+    methods=["GET", "POST"],
+)
+@user_has_permissions("manage_api_keys")
+def unsubscribe_callback(service_id):
+    unsubscribe_callback = get_unsubscribe_callback_details()
+    url_hint_txt = _l("Must start with https://")
+
+    form = ServiceUnsubscribeCallbackForm(
+        url=unsubscribe_callback.get("url") if unsubscribe_callback else "",
+        bearer_token=dummy_bearer_token if unsubscribe_callback else "",
+    )
+
+    if form.validate_on_submit():
+        # Update existing callback
+        if unsubscribe_callback and form.url.data:
+            if unsubscribe_callback.get("url") != form.url.data or form.bearer_token.data != dummy_bearer_token:
+                service_api_client.update_service_unsubscribe_callback_api(
+                    service_id,
+                    url=form.url.data,
+                    bearer_token=check_token_against_dummy_bearer(form.bearer_token.data),
+                    user_id=current_user.id,
+                    callback_api_id=unsubscribe_callback.get("id"),
+                )
+            flash(_l("We've saved your callback configuration."), "default_with_tick")
+            return redirect(url_for(".api_integration", service_id=service_id))
+        # Create a new callback
+        elif form.url.data:
+            service_api_client.create_service_unsubscribe_callback_api(
+                service_id,
+                url=form.url.data,
+                bearer_token=form.bearer_token.data,
+                user_id=current_user.id,
+            )
+            flash(_l("We've set up your callback configuration."), "default_with_tick")
+            return redirect(url_for(".api_integration", service_id=service_id))
+
+    return render_template(
+        "views/api/callbacks/unsubscribe-callback.html",
+        has_callback_config=unsubscribe_callback is not None,
+        hint_text=url_hint_txt,
         form=form,
     )

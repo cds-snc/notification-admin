@@ -1,0 +1,56 @@
+{% extends "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import sticky_page_footer_two_submit_buttons_and_delete_link %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Callbacks for email unsubscribes') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+  <div class="grid-row contain-floats">
+    <div class="md:w-5/6 float-left py-0 px-0 px-gutterHalf box-border">
+      {% set header_txt = _('Callbacks for email unsubscribes') %}
+      {{ page_header(
+        header_txt,
+        back_link=url_for('.api_integration', service_id=current_service.id)
+      ) }}
+
+      <p>
+        {{ _('Receive a callback when a recipient unsubscribes from your email notifications.') }}
+      </p>
+      <h2 class="heading-small">
+        {{ _('Add an endpoint where GC Notify should send POST requests') }}
+      </h2>
+      {% call form_wrapper() %}
+        {{ textbox(
+          form.url,
+          width='w-full',
+          hint=hint_text
+        ) }}
+        <h2 class="heading-small">
+          {{ _('Add a secret value for authentication') }}
+        </h2>
+        {% set hint_txt = _('At least 10 characters') %}
+        {{ textbox(
+          form.bearer_token,
+          width='w-full',
+          hint=hint_txt,
+          autocomplete='new-password'
+        ) }}
+        {% set display_footer = is_deleting if is_deleting else False %}
+        {% set delete_link = url_for('.delete_unsubscribe_callback', service_id=current_service.id) if has_callback_config else None %}
+        {% if not display_footer %}
+          {{ sticky_page_footer_two_submit_buttons_and_delete_link(
+            button1_text=_('Save'),
+            button1_value='save',
+            button2_text=None,
+            button2_value=None,
+            delete_link=delete_link,
+          ) }}
+        {% endif %}
+      {% endcall %}
+    </div>
+  </div>
+{% endblock %}

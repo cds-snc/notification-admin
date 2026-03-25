@@ -1,0 +1,65 @@
+{% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  {{ report.title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    report.title,
+    back_link=url_for('main.unsubscribe_request_reports_summary', service_id=current_service.id)
+  ) }}
+
+  {% if not report.completed %}
+    <p id="report-unsubscribe-requests-count">
+      {{ report.count }} {{ _('new unsubscribe request') if report.count == 1 else _('new unsubscribe requests') }}
+    </p>
+
+    <p class="bottom-gutter">{{ _('You must:') }}</p>
+    <ol class="list list-number">
+      <li>
+        <a href="{{ url_for('main.download_unsubscribe_request_report', service_id=current_service.id, batch_id=report.batch_id) }}">
+          {{ _('Download the report') }}
+        </a>
+      </li>
+      <li>{{ _('Remove the email addresses from your mailing list before you send any further emails') }}</li>
+    </ol>
+  {% else %}
+    <p id="report-unsubscribe-requests-count">
+      {{ report.count }} {{ _('unsubscribe request') if report.count == 1 else _('unsubscribe requests') }}
+    </p>
+    <p class="bottom-gutter">
+      <a download href="{{ url_for('main.download_unsubscribe_request_report', service_id=current_service.id, batch_id=report.batch_id) }}">
+        {{ _('Download the report') }}
+      </a>
+    </p>
+  {% endif %}
+
+  {% if report.is_a_batched_report %}
+    {% call form_wrapper() %}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="report_has_been_processed">
+        <input type="checkbox" id="report_has_been_processed" name="report_has_been_processed" value="y"
+          {% if report.completed %}checked{% endif %}>
+        {{ _('I have removed the email addresses from my mailing list') }}
+      </label>
+      {{ page_footer(_('Update')) }}
+    {% endcall %}
+  {% endif %}
+
+  <div id="unsubscribe_report_availability">
+    {% if report.is_a_batched_report %}
+      {% if report.will_be_archived_at %}
+        {{ _('This report will be deleted on %(date)s.', date=report.will_be_archived_at.strftime('%-d %B %Y')) }}
+      {% endif %}
+    {% else %}
+      <p>{{ _('Once downloaded, reports are available for 7 days.') }}</p>
+      <p>{{ _('Requests which have not been downloaded will be deleted after 90 days.') }}</p>
+    {% endif %}
+  </div>
+
+{% endblock %}
