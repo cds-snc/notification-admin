@@ -10,6 +10,7 @@ import {
   List,
   ListOrdered,
   TextQuote,
+  Table2,
 } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 import { NodeSelection } from "@tiptap/pm/state";
@@ -254,6 +255,7 @@ const MenuBar = ({
       englishBlock: "English content",
       frenchBlock: "French content",
       calloutBlock: "Callout",
+      table: "Table",
       conditionalBlock: "Conditional section",
       conditionalInline: "Conditional text",
       conditional: "Conditional",
@@ -292,6 +294,7 @@ const MenuBar = ({
       englishBlock: "Contenu en anglais",
       frenchBlock: "Contenu en français",
       calloutBlock: "Encadré",
+      table: "Tableau",
       conditionalBlock: "Section conditionnelle",
       conditionalInline: "Texte conditionnel",
       conditional: "Conditionnel",
@@ -1009,6 +1012,7 @@ const MenuBar = ({
             </button>
           </TooltipWrapper>
         </div>
+
         {/* Sixth group: Callout and Table */}
         <div className="toolbar-group">
            <TooltipWrapper label={t.calloutBlock}>
@@ -1036,6 +1040,29 @@ const MenuBar = ({
                 {t.calloutBlock}
               </span>
               <TextQuote size={16} />
+            </button>
+          </TooltipWrapper>
+          <TooltipWrapper label={t.table}>
+            <button
+              type="button"
+              data-testid="rte-table"
+              onClick={() => {
+                if (editor.isActive("table")) {
+                  return;
+                }
+
+                editor
+                  .chain()
+                  .focus()
+                  .insertTable({ rows: 2, cols: 2, withHeaderRow: true })
+                  .run();
+              }}
+              className={"toolbar-button" + (editor.isActive("table") ? " is-active" : "")}
+              title={t.table}
+              aria-pressed={editor.isActive("table")}
+            >
+              <span className="sr-only">{t.table}</span>
+              <Table2 size={16} />
             </button>
           </TooltipWrapper>
         </div>

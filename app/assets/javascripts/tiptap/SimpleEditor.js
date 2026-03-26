@@ -18,6 +18,12 @@ import History from "@tiptap/extension-history";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import { CalloutBlock } from "./CustomComponents/CalloutBlock";
+import {
+  TableNode,
+  TableRowNode,
+  TableCellNode,
+  TableHeaderNode,
+} from "./CustomComponents/TableNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
@@ -151,6 +157,10 @@ const SimpleEditor = ({
       OrderedList,
       ListItem,
       HorizontalRule,
+      TableNode,
+      TableRowNode,
+      TableHeaderNode,
+      TableCellNode,
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
