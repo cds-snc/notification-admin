@@ -612,3 +612,15 @@ class Service(JSONModel):
     @property
     def organisation_notes(self):
         return self._dict["organisation_notes"]
+
+    @cached_property
+    def unsubscribe_requests_statistics(self):
+        return service_api_client.get_unsubscribe_request_statistics(self.id)
+
+    @property
+    def unsubscribe_requests_count(self):
+        return self.unsubscribe_requests_statistics.get("unsubscribe_requests_count", 0)
+
+    @property
+    def datetime_of_latest_unsubscribe_request(self):
+        return self.unsubscribe_requests_statistics.get("datetime_of_latest_unsubscribe_request")
