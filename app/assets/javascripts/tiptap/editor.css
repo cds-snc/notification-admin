@@ -506,6 +506,73 @@
   @apply inline-flex items-center gap-2 px-1;
 }
 
+.emoji-suggestion-popup {
+  position: fixed;
+  z-index: 120;
+  min-width: 240px;
+  max-width: 320px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #d2d6db;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 8px 22px #00000022,
+    0 2px 8px #00000014;
+  padding: 6px;
+}
+
+.emoji-suggestion-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emoji-suggestion-item {
+  margin: 0;
+  padding: 0;
+}
+
+.emoji-suggestion-button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.emoji-suggestion-button:hover,
+.emoji-suggestion-button.is-active {
+  background: #f2f4f7;
+}
+
+.emoji-suggestion-button:focus-visible {
+  outline: 2px solid #ffbf47;
+  outline-offset: 0;
+}
+
+.emoji-suggestion-glyph {
+  min-width: 1.25rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.emoji-suggestion-text {
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.emoji-suggestion-empty {
+  padding: 8px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
 /* Conditional block styling - similar to language blocks */
 
 .conditional-block {

@@ -15,6 +15,7 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
+import EmojiPicker from "./Extensions/EmojiPicker";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
 import { CalloutBlock } from "./CustomComponents/CalloutBlock";
@@ -170,6 +171,7 @@ const SimpleEditor = ({
       // Mark extensions that match toolbar features
       Bold,
       Italic,
+      EmojiPicker,
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
