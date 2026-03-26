@@ -109,6 +109,22 @@
       0 1px 2px #0000001a;
     border: 1px solid #dcd6d6;
   }
+
+  a[data-cta="true"] {
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background: #ffbf47;
+    padding: 0.55em 1em 0.45em;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    color: #393939;
+    font-weight: 700;
+  }
+
+  a[data-cta="true"]:focus-visible {
+    @apply outline-yellow outline-2 outline-offset-0;
+  }
   hr {
     border: none;
     border-top: 1px solid var(--gray-2);
@@ -389,11 +405,24 @@
 
 /* Link Modal Styles */
 .link-modal {
-  @apply fixed p-2 z-50 flex flex-nowrap items-center gap-2 bg-white border-1 border-gray-300;
+  @apply fixed p-2 z-50 flex flex-col items-stretch gap-2 bg-white border-1 border-gray-300;
 }
 
 .link-modal input:focus-visible {
   @apply outline-yellow outline-2 outline-offset-0;
+}
+
+.link-modal-row {
+  @apply flex items-center gap-2;
+}
+
+.link-modal-input {
+  min-width: 16rem;
+  flex: 1 1 auto;
+}
+
+.link-modal-checkbox {
+  @apply inline-flex items-center gap-2 px-1;
 }
 
 /* Conditional block styling - similar to language blocks */
