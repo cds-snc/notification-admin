@@ -99,6 +99,16 @@
     line-height: 25px;
   }
 
+  div[data-type="callout-block"] {
+    margin-bottom: 20px;
+    background: #fffdf5;
+    padding: 15px 15px 0 15px;
+    border-radius: 10px;
+    box-shadow:
+      0 1px 3px #0000000d,
+      0 1px 2px #0000001a;
+    border: 1px solid #dcd6d6;
+  }
   hr {
     border: none;
     border-top: 1px solid var(--gray-2);

@@ -253,6 +253,7 @@ const MenuBar = ({
       blockquote: "Blockquote",
       englishBlock: "English content",
       frenchBlock: "French content",
+      calloutBlock: "Callout",
       conditionalBlock: "Conditional section",
       conditionalInline: "Conditional text",
       conditional: "Conditional",
@@ -290,6 +291,7 @@ const MenuBar = ({
       blockquote: "Bloc en retrait",
       englishBlock: "Contenu en anglais",
       frenchBlock: "Contenu en français",
+      calloutBlock: "Encadré",
       conditionalBlock: "Section conditionnelle",
       conditionalInline: "Texte conditionnel",
       conditional: "Conditionnel",
@@ -1004,6 +1006,36 @@ const MenuBar = ({
                 {t.rtlBlock}
               </span>
               <Icon iconNode={rightToLeftIcon} />
+            </button>
+          </TooltipWrapper>
+        </div>
+        {/* Sixth group: Callout and Table */}
+        <div className="toolbar-group">
+           <TooltipWrapper label={t.calloutBlock}>
+            <button
+              type="button"
+              data-testid="rte-callout_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleCalloutBlock().run(),
+                  () => editor.isActive("calloutBlock"),
+                  t.calloutBlock,
+                )
+              }
+              className={
+                "toolbar-button" +
+                (editor.isActive("calloutBlock") ? " is-active" : "")
+              }
+              title={t.calloutBlock}
+              aria-pressed={editor.isActive("calloutBlock")}
+            >
+              <span className="sr-only">
+                {editor.isActive("calloutBlock")
+                  ? t.removePrefix
+                  : t.applyPrefix}
+                {t.calloutBlock}
+              </span>
+              <TextQuote size={16} />
             </button>
           </TooltipWrapper>
         </div>

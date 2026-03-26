@@ -17,6 +17,7 @@ import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import { CalloutBlock } from "./CustomComponents/CalloutBlock";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
@@ -176,6 +177,7 @@ const SimpleEditor = ({
       //   types: ["heading", "paragraph"],
       // }),
       EnglishBlock,
+      CalloutBlock,
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       FrenchBlock,
       RTLBlock,
