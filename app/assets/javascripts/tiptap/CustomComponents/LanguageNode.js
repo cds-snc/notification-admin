@@ -282,8 +282,13 @@ const createLanguageNode = (language, langCode) => {
               // Check if we're already inside ANY language block
               const isInsideEnglishBlock = editor.isActive("englishBlock");
               const isInsideFrenchBlock = editor.isActive("frenchBlock");
+              const isInsideCalloutBlock = editor.isActive("calloutBlock");
 
-              if (isInsideEnglishBlock || isInsideFrenchBlock) {
+              if (
+                isInsideEnglishBlock ||
+                isInsideFrenchBlock ||
+                isInsideCalloutBlock
+              ) {
                 // Don't allow nesting language blocks - return false to indicate command failed
                 return false;
               }
