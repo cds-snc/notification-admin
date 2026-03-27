@@ -76,6 +76,19 @@ const MarkdownWidthTable = TiptapTable.extend({
           updateDOM: (element) => {
             parentParse.updateDOM?.call(this, element);
 
+            // Ensure every cell has at least one block child so that the
+            // tableHeader / tableCell schema (content: "block+") is satisfied
+            // even when cells are empty after a markdown roundtrip.
+            element.querySelectorAll("th, td").forEach((cell) => {
+              if (cell.childElementCount === 0) {
+                const p = document.createElement("p");
+                while (cell.firstChild) {
+                  p.appendChild(cell.firstChild);
+                }
+                cell.appendChild(p);
+              }
+            });
+
             const markerParagraphs = Array.from(element.querySelectorAll("p"));
 
             markerParagraphs.forEach((paragraph) => {
