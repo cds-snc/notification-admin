@@ -29,7 +29,7 @@ dummy_bearer_token = "bearer_token_set"
 @main.route("/services/<service_id>/api")
 @user_has_permissions("manage_api_keys")
 def api_integration(service_id):
-    callbacks_link = ".api_callbacks" if current_service.has_permission("inbound_sms") else ".delivery_status_callback"
+    callbacks_link = ".api_callbacks"
     return render_template(
         "views/api/index.html",
         callbacks_link=callbacks_link,
@@ -155,15 +155,14 @@ def check_token_against_dummy_bearer(token):
 @main.route("/services/<service_id>/api/callbacks", methods=["GET"])
 @user_has_permissions("manage_api_keys")
 def api_callbacks(service_id):
-    if not current_service.has_permission("inbound_sms"):
-        return redirect(url_for(".delivery_status_callback", service_id=service_id))
-
     delivery_status_callback, received_text_messages_callback = get_apis()
+    unsubscribe_callback = get_unsubscribe_callback_details()
 
     return render_template(
         "views/api/callbacks.html",
         received_text_messages_callback=received_text_messages_callback["url"] if received_text_messages_callback else None,
         delivery_status_callback=delivery_status_callback["url"] if delivery_status_callback else None,
+        unsubscribe_callback=unsubscribe_callback["url"] if unsubscribe_callback else None,
     )
 
 
