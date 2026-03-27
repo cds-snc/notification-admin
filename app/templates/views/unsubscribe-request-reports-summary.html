@@ -1,0 +1,51 @@
+{% extends "admin_template.html" %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Email unsubscribe requests') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Email unsubscribe requests'),
+    back_link=url_for('main.service_dashboard', service_id=current_service.id)
+  ) }}
+
+  <div class="dashboard-table">
+    {% if reports %}
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{{ _('Report') }}</th>
+            <th scope="col" class="text-right">{{ _('Status') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in reports %}
+          <tr>
+            <td>
+              <a class="govuk-link file-list-filename"
+                 href="{{ url_for('main.unsubscribe_request_report', service_id=current_service.id, batch_id=item.batch_id) }}">
+                {{ item.title }}
+              </a>
+              <p class="file-list-hint">
+                {{ item.count }} {{ _('unsubscribe request') if item.count == 1 else _('unsubscribe requests') }}
+              </p>
+            </td>
+            <td class="text-right">
+              <span class="align-with-message-body">
+                {{ item.status }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>{{ _('If you have any email unsubscribe requests they will be listed here.') }}</p>
+    {% endif %}
+  </div>
+
+{% endblock %}

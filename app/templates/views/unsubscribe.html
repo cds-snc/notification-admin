@@ -1,0 +1,56 @@
+{% extends "main_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block page_title %}
+  {% if confirmed %}
+    {{ _('We have your request to unsubscribe') }} – GC Notify
+  {% else %}
+    {{ _('Are you sure you want to unsubscribe?') }} – GC Notify
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="container px-gutterHalf contain-floats flex-grow">
+    <main role="main" class="w-full py-10 px-gutterHalf box-border">
+
+      {% if confirmed %}
+        <h1 class="heading-large">
+          {{ _('We have your request to unsubscribe') }}
+        </h1>
+        <p>
+          {{ _('It can take a few days to unsubscribe you from these emails.') }}
+        </p>
+      {% else %}
+        <h1 class="heading-large">
+          {{ _('Are you sure you want to unsubscribe?') }}
+        </h1>
+        <p>
+          {{ _('If you want to unsubscribe you will no longer receive these emails.') }}
+        </p>
+        {% if not example %}
+          <form method="post" action="{{ request.url }}" id="confirm-unsubscription">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            {{ page_footer(_('Confirm')) }}
+          </form>
+        {% else %}
+          <form method="post" action="{{ request.url }}" id="confirm-unsubscription">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            {{ page_footer(_('Confirm')) }}
+          </form>
+        {% endif %}
+        <p>
+          {{ _('This can take a few days.') }}
+        </p>
+      {% endif %}
+
+      {% if example %}
+        <footer class="py-4">
+          <p>
+            {{ _('This is an example page only with no further action needed.') }}
+          </p>
+        </footer>
+      {% endif %}
+
+    </main>
+  </div>
+{% endblock %}

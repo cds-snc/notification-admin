@@ -261,6 +261,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["template_category_id"],
                         template["text_direction_rtl"],
+                        has_unsubscribe_link=template.get("has_unsubscribe_link"),
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -272,6 +273,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["folder"],
                         template["template_category_id"],
+                        has_unsubscribe_link=template.get("has_unsubscribe_link"),
                     )
                     template_id = new_template["data"]["id"]
 
@@ -872,6 +874,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 "template_category_id": form.template_category_id.data,
                 "text_direction_rtl": form.text_direction_rtl.data,
                 "from_page": request.form.get("from_page"),
+                "has_unsubscribe_link": form.has_unsubscribe_link.data if hasattr(form, "has_unsubscribe_link") else None,
             }
             set_preview_data(preview_template_data, service_id)
             return redirect(
@@ -890,6 +893,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                has_unsubscribe_link=form.has_unsubscribe_link.data if hasattr(form, "has_unsubscribe_link") else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
@@ -1028,6 +1032,7 @@ def edit_service_template(service_id, template_id):
             "folder": template["folder"],
             "template_category_id": form.template_category_id.data,
             "text_direction_rtl": form.text_direction_rtl.data,
+            "has_unsubscribe_link": form.has_unsubscribe_link.data if hasattr(form, "has_unsubscribe_link") else None,
         }
         set_preview_data(new_template_data, service_id, template_id)
 
@@ -1068,6 +1073,7 @@ def edit_service_template(service_id, template_id):
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data,
                         form.text_direction_rtl.data,
+                        has_unsubscribe_link=form.has_unsubscribe_link.data if hasattr(form, "has_unsubscribe_link") else None,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
@@ -1656,6 +1662,7 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                has_unsubscribe_link=form.has_unsubscribe_link.data if hasattr(form, "has_unsubscribe_link") else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:

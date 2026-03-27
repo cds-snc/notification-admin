@@ -1679,8 +1679,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.20"
-resolved_reference = "89d159189a55c778a70127b168f2b1d645496377"
+reference = "feat/unsubscribe"
+resolved_reference = "60919660e73aa9d1294c01472db43d5ab42a5651"
 
 [[package]]
 name = "openpyxl"
@@ -2945,4 +2945,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "a947e492587ba040beb87d3eea19bd69fe7f4f26a373f4c8ac0b6531e7748caa"
+content-hash = "df8ea2a772be40e7e088348d04cdea3f490784dc1cb7a95dfe0075d348ad0099"

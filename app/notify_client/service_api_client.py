@@ -219,6 +219,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         parent_folder_id=None,
         template_category_id=None,
         text_direction_rtl=False,
+        has_unsubscribe_link=None,
     ):
         """
         Create a service template.
@@ -237,6 +238,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             data.update({"subject": subject})
         if parent_folder_id:
             data.update({"parent_folder_id": parent_folder_id})
+        if has_unsubscribe_link is not None:
+            data.update({"has_unsubscribe_link": has_unsubscribe_link})
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template".format(service_id)
         return self.post(endpoint, data)
@@ -255,6 +258,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         process_type=None,
         template_category_id=None,
         text_direction_rtl=False,
+        has_unsubscribe_link=None,
     ):
         """
         Update a service template.
@@ -272,6 +276,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
         if subject:
             data.update({"subject": subject})
+        if has_unsubscribe_link is not None:
+            data.update({"has_unsubscribe_link": has_unsubscribe_link})
 
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)
@@ -588,6 +594,44 @@ class ServiceAPIClient(NotifyAdminAPIClient):
     def create_service_callback_api(self, service_id, url, bearer_token, user_id):
         data = {"url": url, "bearer_token": bearer_token, "updated_by_id": user_id}
         return self.post("/service/{}/delivery-receipt-api".format(service_id), data)
+
+    # ---- Unsubscribe callback API methods ----
+
+    def get_service_unsubscribe_callback_api(self, service_id, callback_api_id):
+        return self.get("/service/{}/unsubscribe-api/{}".format(service_id, callback_api_id))["data"]
+
+    @cache.delete("service-{service_id}")
+    def create_service_unsubscribe_callback_api(self, service_id, url, bearer_token, user_id):
+        data = {"url": url, "bearer_token": bearer_token, "updated_by_id": user_id}
+        return self.post("/service/{}/unsubscribe-api".format(service_id), data)
+
+    @cache.delete("service-{service_id}")
+    def update_service_unsubscribe_callback_api(self, service_id, url, bearer_token, user_id, callback_api_id):
+        data = {"url": url, "updated_by_id": user_id}
+        if bearer_token:
+            data["bearer_token"] = bearer_token
+        return self.post("/service/{}/unsubscribe-api/{}".format(service_id, callback_api_id), data)
+
+    @cache.delete("service-{service_id}")
+    def delete_service_unsubscribe_callback_api(self, service_id, callback_api_id):
+        return self.delete("/service/{}/unsubscribe-api/{}".format(service_id, callback_api_id))
+
+    # ---- Unsubscribe report methods ----
+
+    def get_unsubscribe_reports_summary(self, service_id):
+        return self.get("/service/{}/unsubscribe-request-reports-summary".format(service_id))
+
+    def get_unsubscribe_request_statistics(self, service_id):
+        return self.get("/service/{}/unsubscribe-request-statistics".format(service_id))
+
+    def get_unsubscribe_request_report(self, service_id, batch_id):
+        return self.get("/service/{}/unsubscribe-request-report/{}".format(service_id, batch_id))
+
+    def create_unsubscribe_request_report(self, service_id, data):
+        return self.post("/service/{}/create-unsubscribe-request-report".format(service_id), data)
+
+    def process_unsubscribe_request_report(self, service_id, batch_id, data):
+        return self.post("/service/{}/process-unsubscribe-request-report/{}".format(service_id, batch_id), data)
 
     @cache.delete("service-{service_id}-data-retention")
     def create_service_data_retention(self, service_id, notification_type, days_of_retention):
