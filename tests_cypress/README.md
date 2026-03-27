@@ -11,10 +11,31 @@ There are 3 helper scripts in `package.json` to run 2 of the test suites.  Run t
 - `npm run cypress`:  this will open Cypress with its UI and you can choose any test suite to run
 - `npm run a11y`: this will run the accessibility tests in headless mode using the electron browser
 - `npm run ci`: this will run the headless CI tests in headless mode using the electron browser
+- `npm run perf:staging`: this will run the dedicated performance smoke suite in headless Chrome against staging
 
 ### Outside of your devcontainer
 To launch the cypress UI, where you can choose your test suite and visually debug and inspect tests, run (from the `tests_cypress/` folder):
 - `npm run cypress`: this will open the cypress UI where you can choose which tests to run and in which browser
+
+## Performance smoke runs
+Use the performance suite when you want repeatable synthetic timings for a staging or PR environment without mixing those measurements into the main CI smoke tests.
+
+The current PoC is intentionally modest: it validates the full front-to-back path by logging in and measuring a few authenticated read-only pages such as dashboard, settings, and templates. Additional write-path journeys can be added after this baseline is stable.
+
+There is also a manual GitHub Actions workflow at `.github/workflows/cypress-performance.yml`. Trigger it from the Actions tab on your PR branch. If you leave `base_url` empty it targets staging; if you paste a PR review URL it will run against that deployment instead.
+
+Optional environment variables:
+- `PERF_REPEAT`: number of iterations to execute. Defaults to `5`.
+- `PERF_RUN_ID`: optional identifier to reuse across all artifacts from one run.
+- `PERF_ARTIFACT_DIR`: output folder for JSON artifacts. Defaults to `cypress/results/perf`.
+
+The generated JSON artifacts include:
+- total journey duration
+- per-page visit timings
+- captured request durations
+- browser and environment metadata
+
+Treat the first run as a warm-up and use the remaining runs for comparison. These checks are intended for comparative measurements, not for concurrency or capacity claims.
 
 ### Local installation
 To install cypress locally, use the following command, from the `tests_cypress/` folder:
