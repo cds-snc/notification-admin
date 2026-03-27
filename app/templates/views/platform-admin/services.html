@@ -39,7 +39,9 @@ hidden_field_heading, text_field %}
     hidden_field_heading(_('Type')),
     right_aligned_field_heading(_('Sending')),
     right_aligned_field_heading(_('Delivered')),
-    right_aligned_field_heading(_('Failed'))
+    right_aligned_field_heading(_('Failed')),
+    right_aligned_field_heading(_('SMS fragments')),
+    right_aligned_field_heading(_('SMS cost'))
     ],
     field_headings_visible=True
   ) %}
@@ -62,12 +64,28 @@ hidden_field_heading, text_field %}
           {% endcall %}
 
           {{ stats_fields('email', service['stats']) }}
+
+          {% call field(align='right', border=False) %}
+            <span class="text-small" data-testid="sms-fragments">{{ "{:,}".format(service['sms_cost']['fragment_count']) }}</span>
+          {% endcall %}
+
+          {% call field(align='right', border=False) %}
+            <span class="text-small" data-testid="sms-cost">${{ "%.2f"|format(service['sms_cost']['total_cost']) }}</span>
+          {% endcall %}
+
         {% endcall %}
 
         {% call row() %}
           
 
           {{ stats_fields('sms', service['stats']) }}
+
+          {% call field(border=False) %}
+          {% endcall %}
+
+          {% call field(border=False) %}
+          {% endcall %}
+
         {% endcall %}
 
         <tr class="table-row" style="display:none;">
@@ -76,6 +94,13 @@ hidden_field_heading, text_field %}
 
           {% endcall %}
             {{ stats_fields('letter', service['stats']) }}
+
+          {% call field(border=False) %}
+          {% endcall %}
+
+          {% call field(border=False) %}
+          {% endcall %}
+
         </tr>
 
       {% endcall %}
