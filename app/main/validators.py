@@ -77,7 +77,7 @@ class ValidTeamMemberDomain:
             safelist_domains_to_display = ["canada.ca", "*.gc.ca"]
             safelist_domains_to_display.extend(g.team_member_email_domains)
             message = _("{} is not a government or team email address</br>Use one of the following domains:</br>{}").format(
-                email_domain, "<br>".join([f"@{domain}" for domain in safelist_domains_to_display])
+                email_domain.replace("%", "%%"), "<br>".join([f"@{domain}" for domain in safelist_domains_to_display])
             )
 
             raise ValidationError(message)
@@ -99,7 +99,7 @@ class ValidGovEmail:
 
         contact_text = _("contact us")
         message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
-            domain, contact_text
+            domain.replace("%", "%%"), contact_text
         )
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
