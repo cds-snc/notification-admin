@@ -39,6 +39,10 @@ babel:
 search-csv:
 	python scripts/search_csv.py
 
+.PHONY: cleanup-translations
+cleanup-translations: ## Find unused translations in fr.csv
+	poetry run python scripts/cleanup_translations.py
+
 .PHONY: freeze-requirements
 freeze-requirements:
 	poetry lock --no-update
