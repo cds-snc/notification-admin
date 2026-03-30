@@ -11,6 +11,8 @@ export const FORMATTING_OPTIONS = {
     BLOCKQUOTE: 'rte-blockquote',
     ENGLISH_BLOCK: 'rte-english_block',
     FRENCH_BLOCK: 'rte-french_block',
+    CALLOUT_BLOCK: 'rte-callout_block',
+    TABLE: 'rte-table',
     RTL: 'rte-rtl_block',
     CONDITIONAL_INLINE: 'rte-conditional_inline',
     CONDITIONAL_BLOCK: 'rte-conditional_block',
@@ -46,6 +48,8 @@ let Components = {
     BlockquoteButton: () => cy.getByTestId(FORMATTING_OPTIONS.BLOCKQUOTE),
     EnglishBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.ENGLISH_BLOCK),
     FrenchBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.FRENCH_BLOCK),
+    CalloutBlockButton: () => cy.getByTestId(FORMATTING_OPTIONS.CALLOUT_BLOCK),
+    TableButton: () => cy.getByTestId(FORMATTING_OPTIONS.TABLE),
     RTLButton: () => cy.getByTestId(FORMATTING_OPTIONS.RTL),
     ConditionalInlineButton: () => cy.getByTestId('rte-conditional_inline'),
     ConditionalBlockButton: () => cy.getByTestId('rte-conditional_block'),
@@ -59,6 +63,7 @@ let Components = {
             { RemoveButton: () => cy.getByTestId('link-modal-remove-button') },
         ],
         URLInput: () => cy.getByTestId('link-modal-input'),
+        CTACheckbox: () => cy.getByTestId('link-modal-cta-checkbox'),
     },
 
 
