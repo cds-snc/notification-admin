@@ -10,6 +10,7 @@ const LinkModal = ({
   outline,
   lang = "en",
   justOpened = false,
+  showCta = true,
   onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
@@ -26,7 +27,7 @@ const LinkModal = ({
       const linkAttrs = editor.getAttributes("link") || {};
       const currentUrl = linkAttrs.href || "";
       setUrl(currentUrl);
-      setIsCta(Boolean(linkAttrs.cta));
+      setIsCta(showCta && Boolean(linkAttrs.cta));
 
       // Focus on the input field when the modal becomes visible
       setTimeout(() => {
@@ -279,6 +280,7 @@ const LinkModal = ({
           </button>
         </TooltipWrapper>
       </div>
+      {showCta && (
       <label className="link-modal-checkbox" htmlFor="link-cta-checkbox">
         <input
           id="link-cta-checkbox"
@@ -289,6 +291,7 @@ const LinkModal = ({
         />
         <span>{t.cta}</span>
       </label>
+      )}
     </div>
   );
 };

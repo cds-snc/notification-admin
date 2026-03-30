@@ -223,6 +223,8 @@ const MenuBar = ({
   isMarkdownView,
   toggleLabel,
   useUnifiedConditionalButton = false,
+  featureTables = true,
+  featureCallouts = true,
 }) => {
   if (!editor) {
     return null;
@@ -1014,8 +1016,9 @@ const MenuBar = ({
         </div>
 
         {/* Sixth group: Callout and Table */}
+        {(featureCallouts || featureTables) && (
         <div className="toolbar-group">
-           <TooltipWrapper label={t.calloutBlock}>
+           {featureCallouts && <TooltipWrapper label={t.calloutBlock}>
             <button
               type="button"
               data-testid="rte-callout_block"
@@ -1041,8 +1044,8 @@ const MenuBar = ({
               </span>
               <TextQuote size={16} />
             </button>
-          </TooltipWrapper>
-          <TooltipWrapper label={t.table}>
+          </TooltipWrapper>}
+          {featureTables && <TooltipWrapper label={t.table}>
             <button
               type="button"
               data-testid="rte-table"
@@ -1064,8 +1067,9 @@ const MenuBar = ({
               <span className="sr-only">{t.table}</span>
               <Table2 size={16} />
             </button>
-          </TooltipWrapper>
+          </TooltipWrapper>}
         </div>
+        )}
 
         {/* Sixth group: Info button */}
         <div

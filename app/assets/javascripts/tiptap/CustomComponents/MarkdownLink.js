@@ -7,6 +7,13 @@ import { defaultMarkdownSerializer } from "prosemirror-markdown";
  * Converts [text](url) to a proper link as you type
  */
 const MarkdownLink = Link.extend({
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      enableCta: true,
+    };
+  },
+
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -33,6 +40,7 @@ const MarkdownLink = Link.extend({
 
   addStorage() {
     const linkSerializer = defaultMarkdownSerializer.marks.link;
+    const enableCta = this.options.enableCta;
 
     return {
       markdown: {
@@ -44,7 +52,7 @@ const MarkdownLink = Link.extend({
                 ? linkSerializer.open(state, mark, parent, index)
                 : linkSerializer.open;
 
-            if (mark.attrs?.cta) {
+            if (enableCta && mark.attrs?.cta) {
               return `[[cta]]${defaultOpen}`;
             }
 
@@ -56,7 +64,7 @@ const MarkdownLink = Link.extend({
                 ? linkSerializer.close(state, mark, parent, index)
                 : linkSerializer.close;
 
-            if (mark.attrs?.cta) {
+            if (enableCta && mark.attrs?.cta) {
               return `${defaultClose}[[/cta]]`;
             }
 
@@ -65,6 +73,7 @@ const MarkdownLink = Link.extend({
         },
         parse: {
           setup(markdownit) {
+            if (!enableCta) return;
             markdownit.use((md) => {
               md.core.ruler.push("cta_link_wrappers", (state) => {
                 const hasOnlyWhitespace = (value = "") => /^\s*$/.test(value);

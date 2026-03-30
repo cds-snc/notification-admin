@@ -47,6 +47,7 @@ const SimpleEditor = ({
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  features = {},
 }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
@@ -81,6 +82,11 @@ const SimpleEditor = ({
     },
   };
   const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
+
+  // Derive individual feature flags; default all to enabled if not supplied
+  const featureTables = features.tables !== false;
+  const featureCta = features.cta !== false;
+  const featureCallouts = features.callouts !== false;
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -158,10 +164,9 @@ const SimpleEditor = ({
       OrderedList,
       ListItem,
       HorizontalRule,
-      TableNode,
-      TableRowNode,
-      TableHeaderNode,
-      TableCellNode,
+      ...(featureTables
+        ? [TableNode, TableRowNode, TableHeaderNode, TableCellNode]
+        : []),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -184,12 +189,13 @@ const SimpleEditor = ({
         HTMLAttributes: {
           class: "link",
         },
+        enableCta: featureCta,
       }),
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
       EnglishBlock,
-      CalloutBlock,
+      ...(featureCallouts ? [CalloutBlock] : []),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       FrenchBlock,
       RTLBlock,
@@ -848,6 +854,8 @@ const SimpleEditor = ({
         isMarkdownView={isMarkdownView}
         toggleLabel={toggleLabel}
         useUnifiedConditionalButton={useUnifiedConditionalButton}
+        featureTables={featureTables}
+        featureCallouts={featureCallouts}
       />
       <div className="editor-content">
         {isMarkdownView ? (
@@ -888,6 +896,7 @@ const SimpleEditor = ({
         }}
         lang={lang}
         justOpened={justOpenedLink}
+        showCta={featureCta}
         onSavedLink={(href) => {
           try {
             currentLinkRef.current = href || null;

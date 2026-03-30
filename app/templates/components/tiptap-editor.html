@@ -32,6 +32,7 @@
                 var initialMode = '{{ initialMode }}';
                 var preferenceUpdateUrl = '{{ url_for("main.update_editor_preferences") }}';
                 var csrfToken = '{{ csrf_token() }}';
+                var tiptapFeatures = {{ {'tables': config['FF_EMAIL_TABLES'], 'cta': config['FF_EMAIL_CTA'], 'callouts': config['FF_EMAIL_CALLOUTS']} | tojson }};
 
                 if (!window.tiptapLoaded) {
                     var script = document.createElement('script');
@@ -40,14 +41,14 @@
                     script.onload = function() {
                         window.tiptapLoaded = true;
                         if (window.Tiptap) {
-                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
+                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken, tiptapFeatures);
                         }
                     };
                     document.head.appendChild(script);
                 } else {
                     // TipTap already loaded, initialize immediately
                     if (window.Tiptap) {
-                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken, tiptapFeatures);
                     }
                 }
             </script>
