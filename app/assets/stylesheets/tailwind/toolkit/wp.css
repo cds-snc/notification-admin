@@ -12,7 +12,7 @@
   /*! purgecss start ignore */
 
   a.wp-element-button.button-link:focus-visible {
-    @apply bg-yellow text-black border-black;
+    @apply focus-ring;
   }
 
   /* Columns */
@@ -66,7 +66,7 @@
     @apply h-12;
   }
 
-  @screen lg {
+  @variant lg {
     /* Columns plural */
     .wp-block-columns {
       display: flex;
@@ -134,7 +134,7 @@
 
   /* Semantic styling for content pages */
   .page-content ul {
-    @apply list list-bullet pl-8;
+    @apply list-disc pl-8;
   }
 
   .page-content ul ul {
@@ -151,7 +151,7 @@
   }
 
   .page-content ol {
-    @apply list list-number pl-8;
+    @apply list-decimal pl-8;
   }
 
   .page-content blockquote {

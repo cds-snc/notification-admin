@@ -26,9 +26,6 @@
   .fullscreen-right-shadow.visible.with-transition {
     transition: box-shadow 0.6s ease-out;
   }
-  .fullscreen-right-shadow.visible {
-    @apply shadow-inset1 shadow-inset3;
-  }
 
   .fullscreen-scrollable-table {
     @apply overflow-y-hidden overflow-x-auto;
@@ -83,7 +80,6 @@
   .fullscreen-scrolled-table .table-field-heading-first,
   .fullscreen-scrolled-table .table-field-index {
     transition: box-shadow 0.3s ease-in-out;
-    @apply shadow-outset1 shadow-outset3;
   }
 
   .fullscreen-shim {
@@ -100,17 +96,17 @@
   svg.table-overflow rect {
     fill: url(#cut);
   }
-  @screen sm {
+  @variant sm {
     svg.table-overflow rect {
       fill: url(#cut-sm);
     }
   }
-  @screen md {
+  @variant md {
     svg.table-overflow rect {
       fill: url(#cut-md);
     }
   }
-  @screen lg {
+  @variant lg {
     svg.table-overflow rect {
       fill: url(#cut-lg);
     }

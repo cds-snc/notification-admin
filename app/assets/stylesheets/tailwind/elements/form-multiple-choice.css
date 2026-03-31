@@ -4,7 +4,7 @@
     @apply block float-none clear-left relative p-0 mb-4;
     padding-left: 38px;
   }
-  @screen sm {
+  @variant sm {
     .multiple-choice {
       @apply float-left;
     }
@@ -26,7 +26,7 @@
     touch-action: manipulation;
   }
 
-  @screen sm {
+  @variant sm {
     .mutiple-choice label {
       @apply float-left;
       padding-top: 7px;
@@ -68,10 +68,10 @@
 
   /* Focus state */
   .multiple-choice [type="radio"]:focus + label:before {
-    @apply shadow-outline4;
+    @apply focus-ring;
   }
   .multiple-choice [type="checkbox"]:focus + label:before {
-    @apply shadow-outline;
+    @apply focus-ring;
   }
 
   /* Selected state */
@@ -95,7 +95,7 @@
   .inline .multiple-choice {
     @apply clear-none;
   }
-  @screen sm {
+  @variant sm {
     .inline .multiple-choice {
       @apply mb-0 mr-gutter;
     }
@@ -107,7 +107,7 @@
   fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
     @apply grid gap-gutterHalf;
   }
-  @screen md {
+  @variant md {
     fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
       @apply grid-cols-2;
     }
@@ -146,7 +146,7 @@
   }
   .multiple-choice:has(img):focus-within {
     box-shadow: 0 2px 0 0 black;
-    @apply bg-yellow border-yellow;
+    @apply focus-bg;
   }
   .multiple-choice:has(img):has(input:checked) {
     box-shadow: none;

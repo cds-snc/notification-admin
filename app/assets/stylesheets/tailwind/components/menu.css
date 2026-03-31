@@ -36,7 +36,7 @@
     @apply transform rotate-180;
   }
 
-  :has > [data-module="menu"] {
+  :has(> [data-module="menu"]) {
     @apply relative;
   }
 
@@ -63,7 +63,7 @@
 
   .menu-overlay:not(.hidden) button:active,
   .menu-overlay:not(.hidden) button:focus {
-    @apply outline-yellow text-black border-transparent shadow-focusLine2;
+    @apply focus-ring text-black border-transparent;
   }
 
   /* Flip the borders */

@@ -13,7 +13,7 @@
   p + p {
     margin-top: 2.25em;
   }
-  @screen sm {
+  @variant sm {
     p {
       margin-top: 0.0658em;
       margin-bottom: 1.0526em;
@@ -26,7 +26,7 @@
   }
 
   a:focus-visible {
-    @apply bg-yellow text-black border-b-2 border-blue no-underline outline outline-offset-0 outline-2 outline-yellow;
+    @apply focus-bg;
   }
 
   a[target="_blank"]::after {
@@ -54,7 +54,7 @@
     margin-bottom: 1.0526em;
     @apply font-sans text-smaller leading-tight font-bold block;
   }
-  @screen md {
+  @variant md {
     .page-content h3,
     .heading-small {
       margin-top: 2.3684em;
@@ -68,7 +68,7 @@
     margin-bottom: 0.5em;
     @apply font-sans text-base leading-tight font-bold mt-gutter block;
   }
-  @screen sm {
+  @variant sm {
     .page-content h2,
     .heading-medium {
       margin-top: 1.875em;
@@ -90,7 +90,7 @@
     padding-bottom: 6px;
     @apply block text-gray-grey1 text-title leading-tight;
   }
-  @screen md {
+  @variant md {
     .page-content h1,
     .page-content.home h2,
     .heading-large {
@@ -129,7 +129,7 @@
     font-weight: bold;
   }
 
-  .w-max-content {
+  .w-max {
     width: max-content;
   }
 

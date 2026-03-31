@@ -7,7 +7,7 @@
   .browse-list .browse-sub-list {
     @apply mt-gutterHalf ml-gutter;
   }
-  @screen md {
+  @variant md {
     .browse-list .browse-sub-list {
       margin-left: 60px;
     }

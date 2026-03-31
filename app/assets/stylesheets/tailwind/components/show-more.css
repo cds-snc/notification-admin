@@ -10,7 +10,7 @@
   }
   .show-more:focus span,
   .show-more-empty:focus span {
-    @apply bg-yellow outline-none border-b-1 border-blue;
+    @apply focus-bg border-b-1 border-blue;
   }
   .show-more span,
   .show-more-empty span {

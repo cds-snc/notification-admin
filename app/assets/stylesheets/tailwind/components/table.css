@@ -106,7 +106,7 @@
   }
   .table-field-index a:focus:before {
     z-index: -1;
-    @apply bg-yellow;
+    @apply focus-bg;
   }
   .table-field p {
     @apply m-0 mb-2;
@@ -167,7 +167,7 @@
   .table-field-status-no {
     text-indent: -999em;
     background-position: 50% 50%;
-    @apply block bg-no-repeat bg-19;
+    @apply block bg-no-repeat bg-size-[1em];
   }
   .table-field-status-yes {
     @apply bg-tick;
@@ -275,7 +275,7 @@
     table-layout: inherit !important;
   }
   .scrollable-table:focus {
-    @apply outline-yellow;
+    @apply focus-ring;
   }
 
   .scrollable-table table {

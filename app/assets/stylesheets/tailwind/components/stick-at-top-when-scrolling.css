@@ -75,7 +75,7 @@
   }
 
   .js-stick-at-top-when-scrolling.content-fixed__top {
-    @apply border-0 border-b-1 border-solid border-gray-grey2 shadow-outset2;
+    @apply border-0 border-b-1 border-solid border-gray-grey2;
   }
 
   .js-stick-at-top-when-scrolling.content-fixed {
@@ -90,11 +90,11 @@
   }
 
   .js-stick-at-bottom-when-scrolling.content-fixed__bottom {
-    @apply border-0 border-t-1 border-solid border-gray-grey2 shadow-outset2neg;
+    @apply border-0 border-t-1 border-solid border-gray-grey2;
   }
 
   .js-stick-at-bottom-when-scrolling.content-fixed {
-    @apply transition-background duration-300 ease-in-out;
+    @apply transition-[background] duration-300 ease-in-out;
   }
   .js-stick-at-bottom-when-scrolling-loaded.content-fixed-onload {
     @apply transition-none;
@@ -121,7 +121,7 @@
   }
   .js-cancel:focus,
   .js-cancel:active {
-    @apply bg-yellow outline-none text-blue;
+    @apply focus-bg;
   }
 
   /* New CSS only version of this. Whenever we can remove an instance of this javascript */

@@ -10,7 +10,7 @@
     
     {{ textbox(form.message, width='md:w-2/3',label=message_label, hint=hint_message|safe, rows=10) }}
     
-    <div id="sanitize-pii" class="focus:outline-yellow mb-gutter" style="display: none" tabindex="0" >
+    <div id="sanitize-pii" class="focus:focus-ring mb-gutter" style="display: none" tabindex="0" >
         {% call confirmation_preview() %}
             <p class="m-0">{{_("Some message content may be protected information. You can edit your message or we'll remove the following before sending:")}}</p>
             <ul class="list-disc pl-gutterHalf"></ul>

@@ -6,12 +6,11 @@
   }
 
   .dialog-content:focus {
-    box-shadow: inset 0 0 0 3px theme("colors.yellow.DEFAULT");
+    @apply focus-ring;
   }
 
   .dialog-sticky-footer {
-    bottom: theme("spacing.gutterHalf");
-    @apply font-bold mx-gutter p-4 border-4 border-blue-700 bg-white text-blue-700 sticky;
+    @apply font-bold mx-gutter p-4 border-4 border-blue-700 bg-white text-blue-700 sticky bottom-gutterHalf;
   }
 
   #tou-dialog:not([open]) {
@@ -27,14 +26,14 @@
     margin: 0;
     max-height: 100vh;
 
-    @screen lg {
+    @variant lg {
       margin: auto;
       max-height: calc(100vh - 6rem);
     }
   }
 
   button#tou-dialog-trigger:focus-visible {
-    @apply bg-yellow text-black border-b-2 border-blue no-underline outline outline-offset-0 outline-2 outline-yellow;
+    @apply focus-bg border-b-2 border-blue;
     width: 100%;
   }
   /*! purgecss end ignore */

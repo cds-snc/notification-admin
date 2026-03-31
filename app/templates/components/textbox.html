@@ -66,7 +66,7 @@
       ' form-control-error' if field.errors else ''
     ) %}
 
-    {% set field_class = field_class + " input focus:shadow-outline" %}
+    {% set field_class = field_class + " input focus:focus-ring focus-visible:focus-ring" %}
 
     {{ field(
       class=field_class,
@@ -133,7 +133,7 @@
 
     {% set field_class = '{}'.format(width) %}
 
-    {% set field_class = 'form-control input focus:shadow-outline min-h-target ' + field_class + (
+    {% set field_class = 'form-control input focus:focus-ring focus-visible:focus-ring min-h-target ' + field_class + (
         ' form-control-error' if field.errors else ''
     ) %}
     <div class="w-full flex gap-x-2">

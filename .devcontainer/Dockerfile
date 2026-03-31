@@ -29,8 +29,6 @@ RUN apt-get update \
     man-db \
     manpages \
     net-tools \
-    nodejs \
-    npm \
     openssh-client \
     procps \
     sudo \

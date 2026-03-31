@@ -25,9 +25,7 @@
 
   .button:focus,
   a.button:focus {
-    outline: 3px solid theme("colors.yellow.DEFAULT");
-    outline-offset: 0;
-    @apply border-transparent shadow-outline;
+    @apply border-transparent focus-ring;
   }
 
   .button-blue-lighter,
@@ -45,7 +43,7 @@
   .button-blue-lighter:focus,
   a.button-blue-lighter:focus {
     box-shadow: 0px;
-    @apply bg-yellow outline-none border-transparent outline-none;
+    @apply border-transparent focus-bg;
   }
 
   .button-red,
@@ -76,8 +74,7 @@
 
   .button-secondary:focus,
   a.button-secondary:focus {
-    outline: 1px solid theme("colors.yellow.DEFAULT");
-    @apply border-transparent shadow-outline;
+    @apply border-transparent focus-ring;
   }
 
   .button.disabled,
@@ -103,7 +100,7 @@
   }
   .button-link:focus,
   a.button-link:focus {
-    @apply bg-yellow text-blue outline-none border-white no-underline;
+    @apply focus-bg;
   }
 
   /*! purgecss end ignore */

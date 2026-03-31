@@ -31,7 +31,7 @@
     @apply underline text-blue-lightblue;
   }
   .navigation-service-switch:focus {
-    @apply outline-none border-b-1 border-solid border-yellow text-black;
+    @apply focus-ring text-black;
     border-left-width: 10px;
     border-right-width: 3px;
     right: -3px;
@@ -72,7 +72,7 @@
   }
 
   /* https://github.com/alphagov/product-page-example/blob/master/source/stylesheets/modules/_sub-navigation.scss */
-  @screen md {
+  @variant md {
     .sub-navigation {
       margin-top: 45px;
     }
@@ -116,7 +116,7 @@
     @apply border-gray-300;
   }
   .nav-menu-item:focus {
-    @apply border-b-4 bg-yellow border-black outline-none;
+    @apply border-b-4 focus-bg;
   }
 
   .nav-menu-item[data-module="menu"][aria-expanded="true"],
