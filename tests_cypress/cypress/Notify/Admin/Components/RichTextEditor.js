@@ -12,7 +12,7 @@ export const FORMATTING_OPTIONS = {
     ENGLISH_BLOCK: 'rte-english_block',
     FRENCH_BLOCK: 'rte-french_block',
     CALLOUT_BLOCK: 'rte-callout_block',
-    TABLE: 'rte-table',
+    // TABLE: 'rte-table',
     RTL: 'rte-rtl_block',
     CONDITIONAL_INLINE: 'rte-conditional_inline',
     CONDITIONAL_BLOCK: 'rte-conditional_block',
