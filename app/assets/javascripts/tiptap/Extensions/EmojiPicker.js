@@ -182,7 +182,9 @@ const EmojiList = forwardRef((props, ref) => {
                 onClick={() => selectItem(index)}
                 tabIndex={-1}
               >
-                <span className="emoji-suggestion-glyph">{item.emoji || "🙂"}</span>
+                <span className="emoji-suggestion-glyph">
+                  {item.emoji || "🙂"}
+                </span>
                 <span className="emoji-suggestion-text">:{item.name}:</span>
               </button>
             </li>
@@ -202,8 +204,9 @@ const suggestion = {
         const normalizedQuery = query.toLowerCase();
 
         return (
-          shortcodes.find((shortcode) => shortcode.startsWith(normalizedQuery)) ||
-          tags.find((tag) => tag.startsWith(normalizedQuery))
+          shortcodes.find((shortcode) =>
+            shortcode.startsWith(normalizedQuery),
+          ) || tags.find((tag) => tag.startsWith(normalizedQuery))
         );
       })
       .slice(0, MAX_EMOJI_RESULTS);

@@ -88,5 +88,4 @@ describe("Language block nesting behavior", () => {
       .find('div[lang="fr-CA"]')
       .should("have.length", 0);
   });
-
 });

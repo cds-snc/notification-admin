@@ -197,15 +197,13 @@
     pointer-events: none;
   }
 
+  .resize-cursor {
+    cursor: col-resize !important;
+  }
 
-
-.resize-cursor {
-  cursor: col-resize !important;
-}
-
-.resize-cursor .column-resize-handle {
-  background-color: #ffbf47;
-}
+  .resize-cursor .column-resize-handle {
+    background-color: #ffbf47;
+  }
   hr {
     border: none;
     border-top: 1px solid var(--gray-2);

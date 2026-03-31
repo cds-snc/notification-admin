@@ -281,16 +281,16 @@ const LinkModal = ({
         </TooltipWrapper>
       </div>
       {showCta && (
-      <label className="link-modal-checkbox" htmlFor="link-cta-checkbox">
-        <input
-          id="link-cta-checkbox"
-          type="checkbox"
-          checked={isCta}
-          onChange={(e) => setIsCta(e.target.checked)}
-          data-testid="link-modal-cta-checkbox"
-        />
-        <span>{t.cta}</span>
-      </label>
+        <label className="link-modal-checkbox" htmlFor="link-cta-checkbox">
+          <input
+            id="link-cta-checkbox"
+            type="checkbox"
+            checked={isCta}
+            onChange={(e) => setIsCta(e.target.checked)}
+            data-testid="link-modal-cta-checkbox"
+          />
+          <span>{t.cta}</span>
+        </label>
       )}
     </div>
   );

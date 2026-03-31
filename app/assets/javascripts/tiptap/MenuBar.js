@@ -1017,58 +1017,65 @@ const MenuBar = ({
 
         {/* Sixth group: Callout and Table */}
         {(featureCallouts || featureTables) && (
-        <div className="toolbar-group">
-           {featureCallouts && <TooltipWrapper label={t.calloutBlock}>
-            <button
-              type="button"
-              data-testid="rte-callout_block"
-              onClick={() =>
-                announceToggle(
-                  () => editor.chain().focus().toggleCalloutBlock().run(),
-                  () => editor.isActive("calloutBlock"),
-                  t.calloutBlock,
-                )
-              }
-              className={
-                "toolbar-button" +
-                (editor.isActive("calloutBlock") ? " is-active" : "")
-              }
-              title={t.calloutBlock}
-              aria-pressed={editor.isActive("calloutBlock")}
-            >
-              <span className="sr-only">
-                {editor.isActive("calloutBlock")
-                  ? t.removePrefix
-                  : t.applyPrefix}
-                {t.calloutBlock}
-              </span>
-              <TextQuote size={16} />
-            </button>
-          </TooltipWrapper>}
-          {featureTables && <TooltipWrapper label={t.table}>
-            <button
-              type="button"
-              data-testid="rte-table"
-              onClick={() => {
-                if (editor.isActive("table")) {
-                  return;
-                }
+          <div className="toolbar-group">
+            {featureCallouts && (
+              <TooltipWrapper label={t.calloutBlock}>
+                <button
+                  type="button"
+                  data-testid="rte-callout_block"
+                  onClick={() =>
+                    announceToggle(
+                      () => editor.chain().focus().toggleCalloutBlock().run(),
+                      () => editor.isActive("calloutBlock"),
+                      t.calloutBlock,
+                    )
+                  }
+                  className={
+                    "toolbar-button" +
+                    (editor.isActive("calloutBlock") ? " is-active" : "")
+                  }
+                  title={t.calloutBlock}
+                  aria-pressed={editor.isActive("calloutBlock")}
+                >
+                  <span className="sr-only">
+                    {editor.isActive("calloutBlock")
+                      ? t.removePrefix
+                      : t.applyPrefix}
+                    {t.calloutBlock}
+                  </span>
+                  <TextQuote size={16} />
+                </button>
+              </TooltipWrapper>
+            )}
+            {featureTables && (
+              <TooltipWrapper label={t.table}>
+                <button
+                  type="button"
+                  data-testid="rte-table"
+                  onClick={() => {
+                    if (editor.isActive("table")) {
+                      return;
+                    }
 
-                editor
-                  .chain()
-                  .focus()
-                  .insertTable({ rows: 2, cols: 2, withHeaderRow: true })
-                  .run();
-              }}
-              className={"toolbar-button" + (editor.isActive("table") ? " is-active" : "")}
-              title={t.table}
-              aria-pressed={editor.isActive("table")}
-            >
-              <span className="sr-only">{t.table}</span>
-              <Table2 size={16} />
-            </button>
-          </TooltipWrapper>}
-        </div>
+                    editor
+                      .chain()
+                      .focus()
+                      .insertTable({ rows: 2, cols: 2, withHeaderRow: true })
+                      .run();
+                  }}
+                  className={
+                    "toolbar-button" +
+                    (editor.isActive("table") ? " is-active" : "")
+                  }
+                  title={t.table}
+                  aria-pressed={editor.isActive("table")}
+                >
+                  <span className="sr-only">{t.table}</span>
+                  <Table2 size={16} />
+                </button>
+              </TooltipWrapper>
+            )}
+          </div>
         )}
 
         {/* Sixth group: Info button */}

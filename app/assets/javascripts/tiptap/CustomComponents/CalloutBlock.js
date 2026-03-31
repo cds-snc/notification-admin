@@ -66,7 +66,8 @@ export const CalloutBlock = Node.create({
 
                   if (pos + startMarker.length > max) return false;
                   if (
-                    state.src.slice(pos, pos + startMarker.length) !== startMarker
+                    state.src.slice(pos, pos + startMarker.length) !==
+                    startMarker
                   ) {
                     return false;
                   }

@@ -107,7 +107,9 @@ const MarkdownWidthTable = TiptapTable.extend({
 
               if (!table || table.tagName !== "TABLE") return;
 
-              const rawWidths = match[1].split(",").map((value) => value.trim());
+              const rawWidths = match[1]
+                .split(",")
+                .map((value) => value.trim());
               const widths = rawWidths.map((value) => {
                 const width = Number(value);
                 return Number.isFinite(width) && width > 0 ? width : null;

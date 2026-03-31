@@ -20,9 +20,7 @@ describe("Table behavior", () => {
   it("inserts a 2×2 table with a header row", () => {
     RichTextEditor.Components.TableButton().click();
 
-    RichTextEditor.Components.Editor()
-      .find("table")
-      .should("have.length", 1);
+    RichTextEditor.Components.Editor().find("table").should("have.length", 1);
 
     RichTextEditor.Components.Editor()
       .find("table th")
@@ -36,17 +34,13 @@ describe("Table behavior", () => {
   it("prevents inserting a table inside an existing table", () => {
     RichTextEditor.Components.TableButton().click();
 
-    RichTextEditor.Components.Editor()
-      .find("table")
-      .should("have.length", 1);
+    RichTextEditor.Components.Editor().find("table").should("have.length", 1);
 
     // Attempt a second table insertion while cursor is inside the table
     RichTextEditor.Components.TableButton().click();
 
     // Only one table should exist — no nested table
-    RichTextEditor.Components.Editor()
-      .find("table")
-      .should("have.length", 1);
+    RichTextEditor.Components.Editor().find("table").should("have.length", 1);
 
     RichTextEditor.Components.Editor()
       .find("table table")
@@ -81,9 +75,7 @@ describe("Table behavior", () => {
     // Switch back to visual editor — table should still be present
     RichTextEditor.Components.ViewMarkdownButton().click();
 
-    RichTextEditor.Components.Editor()
-      .find("table")
-      .should("have.length", 1);
+    RichTextEditor.Components.Editor().find("table").should("have.length", 1);
 
     RichTextEditor.Components.Editor()
       .find("table th")
@@ -110,14 +102,12 @@ describe("Table behavior", () => {
     // Switch to visual editor — width marker paragraph should not appear as text
     RichTextEditor.Components.ViewMarkdownButton().click();
 
-    RichTextEditor.Components.Editor()
-      .find("table")
-      .should("have.length", 1);
+    RichTextEditor.Components.Editor().find("table").should("have.length", 1);
 
     // The marker paragraph must have been consumed — no visible [[table-widths:...]] text
     RichTextEditor.Components.Editor().should(
       "not.contain.text",
-      "[[table-widths:"
+      "[[table-widths:",
     );
 
     // Switch back to markdown — the width marker should be re-emitted
