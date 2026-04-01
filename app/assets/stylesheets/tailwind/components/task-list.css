@@ -9,6 +9,7 @@
   .task-list-item a,
   .task-list-item button {
     padding-right: 20%;
+    border: none;
     @apply block py-gutterHalf px-0 relative;
   }
   .task-list-item a:hover {
@@ -31,9 +32,10 @@
   .task-list-indicator-not-completed {
     z-index: 2;
     min-width: 20%;
-    margin-top: -15px;
+    margin-top: 0;
     padding: 0px 8px 1px 0px;
-    top: 28px; /* gutter - 2px */
+    top: 50%;
+    transform: translateY(-50%);
     @apply text-small leading-tight font-bold inline-block right-0 pointer-events-none text-right static md:absolute;
   }
 
