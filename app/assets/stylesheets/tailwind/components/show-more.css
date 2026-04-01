@@ -6,11 +6,7 @@
   }
   .show-more:focus,
   .show-more-empty:focus {
-    @apply outline-none bg-transparent mb-gutter border-gray-grey2 border-b-0;
-  }
-  .show-more:focus span,
-  .show-more-empty:focus span {
-    @apply focus-bg border-b-1 border-blue;
+    @apply focus-bg mb-gutter border-gray-grey2 border-b-0;
   }
   .show-more span,
   .show-more-empty span {

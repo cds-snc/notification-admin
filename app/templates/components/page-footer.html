@@ -17,7 +17,7 @@
       <button
         data-button-id={{button_id}}
         type="submit"
-        class="button text-base outline-none {% if destructive %}button-red{% endif %}"
+        class="button text-base {% if destructive %}button-red{% endif %}"
         {% if button_name %}name="{{ button_name }}"{% endif %}
         {% if button_value %}value="{{ button_value }}"{% endif %}
         {% if testid %}data-testid="{{ testid }}"{% endif %}
@@ -34,7 +34,7 @@
       <a class="page-footer-secondary-link" href="{{ secondary_link }}">{{ secondary_link_text }}</a>
     {% endif %}
     {% if cancel_button_link %}
-      <a href="{{ cancel_button_link }}" class="button button-secondary text-base outline-none">{{ _('Cancel') }}</a>
+      <a href="{{ cancel_button_link }}" class="button button-secondary text-base">{{ _('Cancel') }}</a>
     {% endif %}
   </div>
 {% endmacro %}
@@ -53,7 +53,7 @@
         data-button-id="btn1"
         data-testid="{{ btn1_data_testid }}"
         type="submit"
-        class="button text-base outline-none"
+        class="button text-base"
         name="button_pressed"
         value="{{ button1_value }}"
       >
@@ -64,7 +64,7 @@
         data-button-id="btn2"
         data-testid="{{ btn2data_testid }}"
         type="submit"
-        class="button button-secondary text-base outline-none"
+        class="button button-secondary text-base"
         name="button_pressed"
         value="{{ button2_value }}"
       >
@@ -82,7 +82,7 @@
         data-testid="{{ button1_data_testid }}"
         data-button-id="btn1"
         type="submit"
-        class="button text-base outline-none"
+        class="button text-base"
         name="button_pressed"
         value="{{ button1_value }}"
       >
@@ -90,7 +90,7 @@
       </button>
 
       {% if link %}
-          <a {{link_attributes}} href="{{ link }}" class="button button-secondary text-base outline-none">{{ link_text }}</a>
+          <a {{link_attributes}} href="{{ link }}" class="button button-secondary text-base">{{ link_text }}</a>
       {% endif %}
     </div>
   </div>
@@ -109,7 +109,7 @@
       <button
         data-button-id="btn1"
         type="submit"
-        class="button text-base outline-none"
+        class="button text-base"
         name="button_pressed"
         value="{{ button1_value }}"
       >
@@ -120,7 +120,7 @@
         <button
           data-button-id="btn2"
           type="submit"
-          class="button button-secondary text-base outline-none"
+          class="button button-secondary text-base"
           name="button_pressed"
           value="{{ button2_value }}"
         >

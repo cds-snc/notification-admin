@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@source inline("sm:bg-{emptyBird,emptyBirdHole,emptyFlower,emptyTruck,emptyBirdCurious,tryRte}");
+
 @theme {
   /* Screens */
   --breakpoint-*: initial;
@@ -136,7 +138,7 @@
   /* Fonts */
   --font-sans: "Lato", "Arial", "sans-serif";
   --font-body: "Noto Sans", "Arial", "sans-serif";
-  --font-monospace: "Noto Mono", "monospace";
+  --font-monospace: "Noto Sans Mono", "monospace";
   --font-arabic: "Noto Sans Arabic", "Arial", "sans-serif";
   --font-aboriginal: "Noto Sans Canadian Aboriginal", "Arial", "sans-serif";
 
@@ -262,6 +264,10 @@
 @import "../../../../node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css";
 
 /* Styles from style.css */
+body {
+  @apply font-body;
+}
+
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
   margin-right: 2px;

@@ -41,7 +41,7 @@
             <a
               aria-label="{{ _(link_text) }}" 
               href="{{ url_for('main.'+view) }}"
-              class="nav-menu-item py-2 pl-2 hover:bg-gray-100 w-full focus:border-b-0 border-0 border-l-4 no-underline [&[aria-current]]:bg-gray-100 [&[aria-current]]:border-blue"
+              class="nav-menu-item py-2 pl-2 hover:bg-gray-100 w-full focus:border-b-0 border-0 border-l-4 no-underline [&[aria-current]]:not-focus-visible:bg-gray-100 [&[aria-current]]:border-blue"
               {% if admin_navigation.is_selected(view) %}aria-current="page"{% endif %}
               >
               {{ _(link_text) }}

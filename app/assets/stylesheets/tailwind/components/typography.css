@@ -21,7 +21,7 @@
   }
 
   a {
-    @apply underline border-b-2 border-transparent;
+    @apply text-blue-500 underline border-b-2 border-transparent;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
   }
 
@@ -45,7 +45,7 @@
   }
 
   [class*="delete-link"] a:focus {
-    @apply border-red-mellow text-blue;
+    @apply focus-bg;
   }
 
   .page-content h3,

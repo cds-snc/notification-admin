@@ -5,11 +5,7 @@
     @apply text-small leading-tight font-normal text-black inline-block relative mt-gutterHalf mb-4 no-underline border-b-1 border-solid border-black;
   }
   .back-link:focus {
-    @apply border-b-1;
-  }
-  .back-link:link,
-  .back-link:visited {
-    @apply text-black;
+    @apply focus-bg border-b-1;
   }
   .back-link:before,
   .back-link:after {
@@ -23,7 +19,7 @@
     border-right-color: inherit;
     top: -1px;
     bottom: 1px;
-    @apply block w-0 h-0 left-0 m-auto;
+    @apply block w-0 h-0 left-0 m-auto border-[currentColor];
   }
   .back-link:after {
     content: "";

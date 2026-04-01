@@ -32,10 +32,6 @@
   .tick-cross-list-edit-link a:hover {
     @apply text-blue-lightblue;
   }
-  .tick-cross-list-edit-link a:active,
-  .tick-cross-list-edit-link a:focus {
-    @apply text-black;
-  }
   .tick-cross-list-hint {
     @apply text-gray-grey1 pt-2;
   }

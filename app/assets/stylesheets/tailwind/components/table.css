@@ -185,15 +185,11 @@
   .table-field-right-aligned a:hover {
     @apply text-blue-lightblue;
   }
-  .table-field-right-aligned a:active,
-  .table-field-right-aligned a:focus {
-    @apply text-black;
-  }
   .table-field-right-aligned a:active:before,
   .table-field-right-aligned a:focus:before {
     right: -3px;
     border-width: 15px 3px 15px 15px;
-    @apply border-solid border-yellow;
+    @apply border-solid border-transparent;
   }
 
   .table-empty-message,

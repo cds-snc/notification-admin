@@ -36,11 +36,11 @@
   <div class="py-gutterHalf">
         {% if not current_user.is_authenticated or current_user.is_authenticated and not current_user.has_permissions()
         and not platform_admin_view_ind %}
-        <a href="/" id="gc-title" class="text-titlelarge min-h-target hover:underline focus:underline">
+        <a href="/" id="gc-title" class="text-black text-titlelarge min-h-target hover:underline focus:underline">
           {{ _("GC Notify") }}
         </a>
         {% else %}
-        <a href="/" id="gc-title" class="underline hover:underline text-base">
+        <a href="/" id="gc-title" class="text-black underline hover:underline text-base">
           {{ _("GC Notify") }}
         </a>
         {% endif %}

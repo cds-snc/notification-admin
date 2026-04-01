@@ -39,10 +39,6 @@
     @apply text-red-mellow;
   }
 
-  .page-footer-delete-link a:focus {
-    @apply border-2 border-red-mellow text-blue;
-  }
-
   .page-footer-delete-link-without-button {
     @apply ml-0 inline-block leading-tight text-smaller;
   }

@@ -6,7 +6,6 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    outDir: 'app/static/stylesheets',
     emptyOutDir: false,
     rollupOptions: {
       input: {
@@ -15,7 +14,13 @@ export default defineConfig({
         editor: './app/assets/javascripts/tiptap/editor.css',
       },
       output: {
-        assetFileNames: '[name].[ext]',
+        dir: '.',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') return 'app/static/stylesheets/index.css';
+          if (assetInfo.name === 'tooltip.css') return 'app/assets/javascripts/tiptap/tooltip.compiled.css';
+          if (assetInfo.name === 'editor.css') return 'app/assets/javascripts/tiptap/editor.compiled.css';
+          return 'app/static/stylesheets/[name].[ext]';
+        },
       },
     },
     minify: true,

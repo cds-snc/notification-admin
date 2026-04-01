@@ -27,13 +27,14 @@
 
 {% macro task_list_item_complete(label, testid=None) %}
   <strong class="task-list-indicator-completed" id="{{ label|id_safe }}" aria-live="polite"{%if testid %} data-testid="{{ testid }}"{% endif %}>
-    <img aria-hidden="true" src="{{ asset_url('images/tick.svg') }}" class="w-6 h-6 inline-block mr-2 -mt-1" alt="">
+    <i class="fa-solid fa-check" aria-hidden="true"></i>
     {{ _('Completed') }}
   </strong>
 {% endmacro %}
 
 {% macro task_list_item_not_complete(label, testid=None) %}
   <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}" aria-live="polite"{%if testid %} data-testid="{{ testid }}"{% endif %}>
+    <i class="fa-solid fa-times" aria-hidden="true"></i>
     {{ _('Not completed') }}
   </strong>
 {% endmacro %}

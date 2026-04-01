@@ -18,6 +18,10 @@
     margin-top: 0;
   }
 
+  a {
+    @apply text-blue-500 underline;
+  }
+
   /* List styles */
   ul,
   ol {
@@ -216,10 +220,7 @@
 }
 
 .editor-wrapper:focus-within {
-  box-shadow:
-    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-    rgb(255, 191, 71) 0px 0px 0px 3px;
+  @apply focus-ring;
 }
 
 .editor-content {
@@ -252,7 +253,7 @@
 
 .toolbar-button:focus,
 .toolbar-button:focus-visible {
-  @apply bg-yellow text-black ring;
+  @apply focus-bg focus-ring;
 }
 .toolbar-button {
   display: inline-flex;
@@ -298,7 +299,9 @@
 .toolbar-button.is-active {
   @apply bg-black text-white;
 }
-.toolbar-button.is-active svg ellipse {
+.toolbar-button.is-active svg ellipse,
+.toolbar-button:focus svg ellipse,
+.toolbar-button:focus-visible svg ellipse {
   fill: none;
 }
 
@@ -384,7 +387,7 @@
 }
 
 .link-modal input:focus-visible {
-  @apply ring;
+  @apply focus-ring;
 }
 
 /* Conditional block styling - similar to language blocks */
@@ -486,7 +489,7 @@ span[data-type="conditional-inline"] .conditional-inline-content {
 .conditional-inline-condition-input:focus-visible,
 .conditional-block-condition-input:focus-visible {
   box-shadow: inset 0 0 0 2px black;
-  @apply ring;
+  @apply focus-ring;
 }
 
 /* If a non-focused input ends up with a stale selection range (browser quirk),
