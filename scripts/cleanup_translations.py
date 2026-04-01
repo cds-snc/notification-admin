@@ -3,11 +3,10 @@ import os
 import subprocess
 import sys
 import tempfile
+from typing import TYPE_CHECKING
 
-try:
+if TYPE_CHECKING:
     from scripts.test_translations import extra_keys_in_app
-except ImportError:
-    from test_translations import extra_keys_in_app
 
 
 def get_translation_keys(csv_path):
@@ -141,7 +140,7 @@ if __name__ == "__main__":
     try:
         unused = find_unused_translations(keys, search_dirs)
     except Exception:
-        print("\nAborting: Could not extract translations reliably. No changes were made.")
+        print("\nExit: Could not extract translations reliably. No changes were made.")
         sys.exit(1)
 
     if not unused:
