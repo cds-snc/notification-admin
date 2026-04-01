@@ -167,7 +167,7 @@
   .table-field-status-no {
     text-indent: -999em;
     background-position: 50% 50%;
-    @apply block bg-no-repeat bg-19;
+    @apply block bg-no-repeat bg-[1em];
   }
   .table-field-status-yes {
     @apply bg-tick;

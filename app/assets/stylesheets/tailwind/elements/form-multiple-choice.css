@@ -4,7 +4,7 @@
     @apply block float-none clear-left relative p-0 mb-4;
     padding-left: 38px;
   }
-  @screen sm {
+  @variant sm {
     .multiple-choice {
       @apply float-left;
     }
@@ -26,7 +26,7 @@
     touch-action: manipulation;
   }
 
-  @screen sm {
+  @variant sm {
     .mutiple-choice label {
       @apply float-left;
       padding-top: 7px;
@@ -95,7 +95,7 @@
   .inline .multiple-choice {
     @apply clear-none;
   }
-  @screen sm {
+  @variant sm {
     .inline .multiple-choice {
       @apply mb-0 mr-gutter;
     }
@@ -107,7 +107,7 @@
   fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
     @apply grid gap-gutterHalf;
   }
-  @screen md {
+  @variant md {
     fieldset:has(img):has(.multiple-choice:nth-of-type(5)) {
       @apply grid-cols-2;
     }

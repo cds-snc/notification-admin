@@ -100,17 +100,17 @@
   svg.table-overflow rect {
     fill: url(#cut);
   }
-  @screen sm {
+  @variant sm {
     svg.table-overflow rect {
       fill: url(#cut-sm);
     }
   }
-  @screen md {
+  @variant md {
     svg.table-overflow rect {
       fill: url(#cut-md);
     }
   }
-  @screen lg {
+  @variant lg {
     svg.table-overflow rect {
       fill: url(#cut-lg);
     }

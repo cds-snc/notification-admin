@@ -25,7 +25,6 @@
   summary::-moz-details-marker,
   summary::-ms-details-marker,
   summary::-o-details-marker,
-  summary::details-marker,
   summary::-webkit-details-marker {
     @apply hidden;
   }

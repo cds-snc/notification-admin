@@ -5,10 +5,10 @@
     @apply bg-no-repeat bg-contain;
     background-origin: content-box;
     background-size: contain;
-    @screen sm {
+    @variant sm {
       background-size: auto 75%;
     }
-    @screen lg {
+    @variant lg {
       background-size: contain;
     }
   }

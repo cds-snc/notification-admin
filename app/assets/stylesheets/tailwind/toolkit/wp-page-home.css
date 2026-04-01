@@ -23,7 +23,7 @@
     @apply flex-col;
   }
 
-  @screen sm {
+  @variant sm {
     #quick-links-links {
       box-shadow:
         20vw 0 0 theme("colors.brand.900"),

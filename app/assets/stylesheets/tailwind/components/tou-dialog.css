@@ -27,7 +27,7 @@
     margin: 0;
     max-height: 100vh;
 
-    @screen lg {
+    @variant lg {
       margin: auto;
       max-height: calc(100vh - 6rem);
     }
