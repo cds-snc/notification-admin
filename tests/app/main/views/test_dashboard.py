@@ -596,7 +596,7 @@ def test_daily_usage_section_shown(
                 "email": {"requested": 1000000000, "delivered": 0, "failed": 0},
                 "sms": {"requested": 1000000, "delivered": 0, "failed": 0},
             },
-            ".big-number-dark",
+            ".big-number",
             3,
         ),
     ],

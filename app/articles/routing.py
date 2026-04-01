@@ -28,10 +28,11 @@ GC_ARTICLES_ROUTES = {
     "new_features": {"en": "/new-features", "fr": "/nouvelles-fonctionnalites"},
     "register_for_demo": {"en": "/register-for-a-demo", "fr": "/sinscrire-a-une-demo"},
     "getting_started": {"en": "/getting-started", "fr": "/decouvrir-notification-gc"},
+    "counting_text_messages": {"en": "/counting-text-messages", "fr": "/compter-les-messages-texte"},
 }
 
 
-def gca_url_for(route: str, _external: bool = False):
+def gca_url_for(route: str, _external: bool = False, anchor_en: str | None = None, anchor_fr: str | None = None):
     """
     Returns a URL based on route name
 
@@ -41,6 +42,12 @@ def gca_url_for(route: str, _external: bool = False):
     _external: bool
         If true, an absolute URL will be returned
         If false (default), a relative URL will be returned
+
+    anchor_en: str | None
+        Optional English element ID to append as a URL fragment when the locale is English.
+
+    anchor_fr: str | None
+        Optional French element ID to append as a URL fragment when the locale is French.
 
     Return:
         -------
@@ -55,4 +62,11 @@ def gca_url_for(route: str, _external: bool = False):
         # build an absolute URL
         prefix = url_for("main.index", _external=True).rstrip("/")
 
-    return prefix + GC_ARTICLES_ROUTES[route][get_current_locale(current_app)]
+    locale = get_current_locale(current_app)
+    url = prefix + GC_ARTICLES_ROUTES[route][locale]
+
+    anchor = anchor_en if locale == "en" else anchor_fr
+    if anchor is not None:
+        url += f"#{anchor}"
+
+    return url
