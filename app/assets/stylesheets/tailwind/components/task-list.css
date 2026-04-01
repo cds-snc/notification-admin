@@ -15,8 +15,7 @@
   .task-list-item a:hover {
     @apply text-blue-lightblue;
   }
-  .task-list-item a:focus,
-  .task-list-item button:focus {
+  .task-list-item a:focus {
     top: -1px;
     margin-bottom: -2px;
     padding-top: 16px;
@@ -24,8 +23,8 @@
     @apply outline-yellow text-black border-transparent shadow-focusLine2;
   }
 
-  .task-list-item:focus-within .task-list-indicator-completed {
-    @apply text-black;
+  .task-list-item button:focus-visible {
+    outline: none;
   }
 
   .task-list-indicator-completed,
