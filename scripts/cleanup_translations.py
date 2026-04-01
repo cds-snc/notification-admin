@@ -2,10 +2,16 @@ import csv
 import os
 import subprocess
 import sys
+import tempfile
+
+try:
+    from scripts.test_translations import extra_keys_in_app
+except ImportError:
+    from test_translations import extra_keys_in_app
 
 
 def get_translation_keys(csv_path):
-    keys = []
+    keys = set()
     if not os.path.exists(csv_path):
         return keys
 
@@ -15,77 +21,65 @@ def get_translation_keys(csv_path):
             if row["source"]:
                 if row["source"].startswith("!/!/"):
                     continue
-                keys.append(row["source"])
+                keys.add(row["source"])
     return keys
 
 
 def get_keys_from_babel():
     """Extract keys using the project's Babel configuration."""
     print("Extracting strings via Babel (this matches how 'make test-translations' works)...")
+    messages_po = None
+    messages_csv = None
     try:
+        # Create unique temp files
+        with tempfile.NamedTemporaryFile(suffix=".po", delete=False) as po_file:
+            messages_po = po_file.name
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as csv_file:
+            messages_csv = csv_file.name
+
         # 1. Run pybabel extract
         subprocess.run(
-            ["poetry", "run", "pybabel", "extract", "-F", "babel.cfg", "-k", "_l", "-o", "/tmp/cleanup_messages.po", "."],
+            ["poetry", "run", "pybabel", "extract", "-F", "babel.cfg", "-k", "_l", "-o", messages_po, "."],
             check=True,
             capture_output=True,
         )
 
         # 2. Run po2csv
-        subprocess.run(
-            ["poetry", "run", "po2csv", "/tmp/cleanup_messages.po", "/tmp/cleanup_messages.csv"], check=True, capture_output=True
-        )
+        subprocess.run(["poetry", "run", "po2csv", messages_po, messages_csv], check=True, capture_output=True)
 
         # 3. Read extracted keys
         extracted_keys = set()
-        with open("/tmp/cleanup_messages.csv", newline="") as csvfile:
+        with open(messages_csv, newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 extracted_keys.add(row["source"])
 
-        # Cleanup
-        os.remove("/tmp/cleanup_messages.po")
-        os.remove("/tmp/cleanup_messages.csv")
-
         return extracted_keys
     except Exception as e:
         print(f"Error extracting via Babel: {e}")
-        return set()
+        raise
+    finally:
+        # Resource cleanup in finally block to prevent file leaks
+        for temp_file in [messages_po, messages_csv]:
+            if temp_file and os.path.exists(temp_file):
+                try:
+                    os.remove(temp_file)
+                except Exception:
+                    pass
 
 
 def find_unused_translations(keys, search_dirs):
     # First, get keys that are used in code via Babel (covers Python/HTML)
     babel_keys = get_keys_from_babel()
 
-    # Also need to consider hardcoded constant keys used in test-translations.py
-    extra_keys = set(
-        [
-            "English Government of Canada signature",
-            "French Government of Canada signature",
-            "Empty",
-            "1 template",
-            "Number must have 10 digits",
-            "bad invitation link",
-            "invitation expired",
-            "password",
-            "Your service already uses ",
-            "Try again. Something’s wrong with this code",
-            "Code already sent, wait 10 seconds",
-            "You cannot delete a default email reply to address if other reply to addresses exist",
-            "Code has expired",
-            "Code already sent",
-            "Code has already been used",
-            "Code not found",
-            "as an email reply-to address.",
-            "You cannot remove the only user for a service",
-            "Cannot send to international mobile numbers",
-        ]
-    )
+    # Also need to consider hardcoded constant keys used in test_translations.py
+    extra_keys = extra_keys_in_app
 
     # We also need to search for JS and CSS keys which Babel might miss
     # if they aren't marked with _().
     unused = set(keys) - babel_keys - extra_keys
 
-    # Second pass: search remaining unused keys in JS and CSS files
+    # Second pass: search remaining unused keys in JS and CSS files efficiently
     for directory in search_dirs:
         for root, dirs, files in os.walk(directory):
             for file in files:
@@ -97,12 +91,12 @@ def find_unused_translations(keys, search_dirs):
                         with open(file_path, "r", encoding="utf-8") as f:
                             content = f.read()
 
-                            to_remove = set()
-                            for key in unused:
+                            # Optimization: only check keys that are still in 'unused'
+                            # Use list(unused) to avoid "Set size changed during iteration"
+                            for key in list(unused):
                                 if key in content:
-                                    to_remove.add(key)
+                                    unused.remove(key)
 
-                            unused -= to_remove
                             if not unused:
                                 return unused
                     except Exception:
@@ -133,12 +127,22 @@ if __name__ == "__main__":
     csv_path = "app/translations/csv/fr.csv"
     search_dirs = ["app", "scripts"]
 
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ["--help", "-h"]:
+            print(f"Usage: python {sys.argv[0]} [path_to_csv]")
+            sys.exit(0)
+        csv_path = sys.argv[1]
+
     print(f"Loading translations from {csv_path}...")
     keys = get_translation_keys(csv_path)
     print(f"Found {len(keys)} unique translation source strings.")
 
     print("Searching for unused translations (this may take a while)...")
-    unused = find_unused_translations(keys, search_dirs)
+    try:
+        unused = find_unused_translations(keys, search_dirs)
+    except Exception:
+        print("\nAborting: Could not extract translations reliably. No changes were made.")
+        sys.exit(1)
 
     if not unused:
         print("\nAll translations seem to be in use!")
