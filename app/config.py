@@ -87,7 +87,9 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
-
+    FF_EMAIL_TABLES = env.bool("FF_EMAIL_TABLES", False)
+    FF_EMAIL_CTA = env.bool("FF_EMAIL_CTA", False)
+    FF_EMAIL_CALLOUTS = env.bool("FF_EMAIL_CALLOUTS", False)
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
@@ -196,6 +198,9 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_EMAIL_TABLES = True
+    FF_EMAIL_CTA = True
+    FF_EMAIL_CALLOUTS = True
 
 
 class Test(Development):
@@ -219,7 +224,7 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
-    FF_USE_BILLABLE_UNITS = True
+    FF_USE_BILLABLE_UNITS = False
 
 
 class ProductionFF(Config):

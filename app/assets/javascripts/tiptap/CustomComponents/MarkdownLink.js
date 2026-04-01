@@ -1,11 +1,180 @@
 import Link from "@tiptap/extension-link";
 import { InputRule } from "@tiptap/core";
+import { defaultMarkdownSerializer } from "prosemirror-markdown";
 
 /**
  * Extended Link that supports markdown syntax input
  * Converts [text](url) to a proper link as you type
  */
 const MarkdownLink = Link.extend({
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      enableCta: true,
+    };
+  },
+
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      cta: {
+        default: false,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute("data-cta") === "true" ||
+            element.classList?.contains("cta-link")
+          );
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.cta) {
+            return {};
+          }
+
+          return {
+            "data-cta": "true",
+          };
+        },
+      },
+    };
+  },
+
+  addStorage() {
+    const linkSerializer = defaultMarkdownSerializer.marks.link;
+    const enableCta = this.options.enableCta;
+
+    return {
+      markdown: {
+        serialize: {
+          ...linkSerializer,
+          open: (state, mark, parent, index) => {
+            const defaultOpen =
+              typeof linkSerializer.open === "function"
+                ? linkSerializer.open(state, mark, parent, index)
+                : linkSerializer.open;
+
+            if (enableCta && mark.attrs?.cta) {
+              return `[[cta]]${defaultOpen}`;
+            }
+
+            return defaultOpen;
+          },
+          close: (state, mark, parent, index) => {
+            const defaultClose =
+              typeof linkSerializer.close === "function"
+                ? linkSerializer.close(state, mark, parent, index)
+                : linkSerializer.close;
+
+            if (enableCta && mark.attrs?.cta) {
+              return `${defaultClose}[[/cta]]`;
+            }
+
+            return defaultClose;
+          },
+        },
+        parse: {
+          setup(markdownit) {
+            if (!enableCta) return;
+            markdownit.use((md) => {
+              md.core.ruler.push("cta_link_wrappers", (state) => {
+                const hasOnlyWhitespace = (value = "") => /^\s*$/.test(value);
+
+                const removeMarkerFromTextToken = (token, marker) => {
+                  if (!token || token.type !== "text") return false;
+                  if (!token.content.includes(marker)) return false;
+                  token.content = token.content.replace(marker, "");
+                  return true;
+                };
+
+                for (const token of state.tokens) {
+                  if (token.type !== "inline" || !token.children?.length) {
+                    continue;
+                  }
+
+                  const children = token.children;
+
+                  for (let index = 0; index < children.length; index++) {
+                    const current = children[index];
+                    if (current.type !== "text") continue;
+                    if (!current.content.includes("[[cta]]")) continue;
+
+                    let linkOpenIndex = -1;
+                    for (
+                      let cursor = index + 1;
+                      cursor < children.length;
+                      cursor++
+                    ) {
+                      const candidate = children[cursor];
+
+                      if (candidate.type === "text") {
+                        if (hasOnlyWhitespace(candidate.content)) continue;
+                        if (candidate.content.includes("[[cta]]")) continue;
+                      }
+
+                      if (candidate.type === "link_open") {
+                        linkOpenIndex = cursor;
+                      }
+                      break;
+                    }
+
+                    if (linkOpenIndex === -1) continue;
+
+                    let linkCloseIndex = -1;
+                    for (
+                      let cursor = linkOpenIndex + 1;
+                      cursor < children.length;
+                      cursor++
+                    ) {
+                      if (children[cursor].type === "link_close") {
+                        linkCloseIndex = cursor;
+                        break;
+                      }
+                    }
+
+                    if (linkCloseIndex === -1) continue;
+
+                    let closeMarkerIndex = -1;
+                    for (
+                      let cursor = linkCloseIndex + 1;
+                      cursor < children.length;
+                      cursor++
+                    ) {
+                      const candidate = children[cursor];
+
+                      if (candidate.type !== "text") break;
+
+                      if (candidate.content.includes("[[/cta]]")) {
+                        closeMarkerIndex = cursor;
+                        break;
+                      }
+
+                      if (!hasOnlyWhitespace(candidate.content)) break;
+                    }
+
+                    if (closeMarkerIndex === -1) continue;
+
+                    const linkOpen = children[linkOpenIndex];
+                    linkOpen.attrSet("data-cta", "true");
+
+                    removeMarkerFromTextToken(current, "[[cta]]");
+                    removeMarkerFromTextToken(
+                      children[closeMarkerIndex],
+                      "[[/cta]]",
+                    );
+                  }
+
+                  token.children = children.filter((child) => {
+                    if (child.type !== "text") return true;
+                    return child.content.length > 0;
+                  });
+                }
+              });
+            });
+          },
+        },
+      },
+    };
+  },
+
   addInputRules() {
     return [
       new InputRule({

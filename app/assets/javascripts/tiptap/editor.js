@@ -16,6 +16,7 @@ export const load = function (
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  features,
 ) {
   ReactDOM.render(
     <SimpleEditor
@@ -27,6 +28,7 @@ export const load = function (
       initialMode={initialMode}
       preferenceUpdateUrl={preferenceUpdateUrl}
       csrfToken={csrfToken}
+      features={features}
     />,
     element,
   );

@@ -15,8 +15,16 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
+import EmojiPicker from "./Extensions/EmojiPicker";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import { CalloutBlock } from "./CustomComponents/CalloutBlock";
+import {
+  TableNode,
+  TableRowNode,
+  TableCellNode,
+  TableHeaderNode,
+} from "./CustomComponents/TableNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
@@ -39,6 +47,7 @@ const SimpleEditor = ({
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  features = {},
 }) => {
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
@@ -73,6 +82,11 @@ const SimpleEditor = ({
     },
   };
   const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
+
+  // Derive individual feature flags; default all to enabled if not supplied
+  const featureTables = features.tables !== false;
+  const featureCta = features.cta !== false;
+  const featureCallouts = features.callouts !== false;
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -150,6 +164,9 @@ const SimpleEditor = ({
       OrderedList,
       ListItem,
       HorizontalRule,
+      ...(featureTables
+        ? [TableNode, TableRowNode, TableHeaderNode, TableCellNode]
+        : []),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -159,6 +176,7 @@ const SimpleEditor = ({
       // Mark extensions that match toolbar features
       Bold,
       Italic,
+      EmojiPicker,
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -171,11 +189,13 @@ const SimpleEditor = ({
         HTMLAttributes: {
           class: "link",
         },
+        enableCta: featureCta,
       }),
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
       EnglishBlock,
+      ...(featureCallouts ? [CalloutBlock] : []),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       FrenchBlock,
       RTLBlock,
@@ -834,6 +854,8 @@ const SimpleEditor = ({
         isMarkdownView={isMarkdownView}
         toggleLabel={toggleLabel}
         useUnifiedConditionalButton={useUnifiedConditionalButton}
+        featureTables={featureTables}
+        featureCallouts={featureCallouts}
       />
       <div className="editor-content">
         {isMarkdownView ? (
@@ -874,6 +896,7 @@ const SimpleEditor = ({
         }}
         lang={lang}
         justOpened={justOpenedLink}
+        showCta={featureCta}
         onSavedLink={(href) => {
           try {
             currentLinkRef.current = href || null;
