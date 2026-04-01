@@ -161,7 +161,7 @@ help = "Compiles app translations from fr.csv"
 shell = """
     pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
-	python scripts/test-translations.py /tmp/messages.csv
+	python scripts/test_translations.py /tmp/messages.csv
 	rm /tmp/messages.csv
 """
 
