@@ -138,12 +138,17 @@
   --shadow-outline2: 0 0 0 2px var(--color-blue);
   --shadow-outline4: 0 0 0 4px var(--color-yellow);
   --shadow-inset1: inset -1px 0 0 0 var(--color-gray-300);
-  --shadow-inset3: inset -3px 0 0 0 color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-inset3: inset -3px 0 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
   --shadow-outset1: 1px 0 0 0 var(--color-gray-300);
-  --shadow-outset2: 0 2px 0 0 color-mix(in oklab, var(--color-gray-300), 20%, transparent);
-  --shadow-outset2neg: 0 -2px 0 0 color-mix(in oklab, var(--color-gray-300), 20%, transparent);
-  --shadow-outset3: 3px 0 0 0 color-mix(in oklab, var(--color-gray-300), 20%, transparent);
-  --shadow-yellow3:-3px 0 0 0 var(--color-yellow), 3px 0 0 0 var(--color-yellow);
+  --shadow-outset2: 0 2px 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-outset2neg: 0 -2px 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-outset3: 3px 0 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-yellow3:
+    -3px 0 0 0 var(--color-yellow), 3px 0 0 0 var(--color-yellow);
   --shadow-focusLine2: 0 2px 0 3px var(--color-blue);
   --shadow-insetLine2: inset 0 -2px 0 0 var(--color-blue);
   --shadow-button2: 0 2px 0 var(--color-blue);
