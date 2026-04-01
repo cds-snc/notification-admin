@@ -6,14 +6,16 @@
   .task-list-item {
     @apply relative border-b-1 border-solid border-gray-grey2 pb-3 md:pb-0;
   }
-  .task-list-item a {
+  .task-list-item a,
+  .task-list-item button {
     padding-right: 20%;
     @apply block py-gutterHalf px-0 relative;
   }
   .task-list-item a:hover {
     @apply text-blue-lightblue;
   }
-  .task-list-item a:focus {
+  .task-list-item a:focus,
+  .task-list-item button:focus {
     top: -1px;
     margin-bottom: -2px;
     padding-top: 16px;
