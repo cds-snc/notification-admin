@@ -105,7 +105,7 @@
             </span>
           </div>
         {% endif %}
-        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False) }}
+        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True) }}
       </div>
     {% endif %}
   {% endif %}
