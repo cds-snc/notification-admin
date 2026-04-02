@@ -118,9 +118,7 @@
   var fragmentCountSuffix = document.getElementById(
     "sms-fragment-count-suffix",
   );
-      var characterCountText = document.getElementById(
-      "sms-character-count-text",
-    );
+  var characterCountText = document.getElementById("sms-character-count-text");
   // Shortening suggestions DOM references (commented out — preserved for future use)
   // var shortenSection = document.getElementById("sms-shorten-suggestions");
   // var shortenList = document.getElementById("sms-shorten-list");
@@ -312,8 +310,8 @@
     var fragmentCount = getFragmentCount(characterUnits, isUnicode);
     var hasVars = hasPlaceholders(content);
 
-    // #BUG - The form validator on submit does not add the service name prefix. 
-    // To avoid confusion, we do the same here. 
+    // #BUG - The form validator on submit does not add the service name prefix.
+    // To avoid confusion, we do the same here.
     // If we fix this bug, we'd use `characterUnits` instead of `content.length`
     renderFragmentCount(fragmentCount, content.length, hasVars);
     // renderShorteningSuggestions(findNonGsmCharacters(content)); // Commented out — preserved for future use
