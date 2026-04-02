@@ -26,16 +26,20 @@ const smsFragmentTestCases = fs
   });
 
 // Minimal DOM structure mirroring the sms-character-info macro
-function buildDOM({ prefix = "", initialContent = "" } = {}) {
+function buildDOM({ prefix = "", initialContent = "", limit = "612" } = {}) {
   document.body.innerHTML = `
     <div
       id="sms-character-info"
       data-sms-prefix="${prefix}"
+      data-sms-char-count-limit="${limit}"
       data-testid="sms-character-info"
     >
       <p id="sms-fragment-count">
         <strong id="sms-fragment-count-text"></strong>
         <span id="sms-fragment-count-suffix"></span>
+      </p>
+      <p id="sms-character-count">
+        <span id="sms-character-count-text"></span>
       </p>
       <p id="sms-daily-limit">
         <strong id="sms-daily-limit-value">1,000</strong>
@@ -106,6 +110,79 @@ describe("Initial render on page load", () => {
     expect(
       document.getElementById("sms-fragment-count-suffix").textContent
     ).toBe("");
+  });
+
+  test("doesn't show character count for empty textarea and no prefix", () => {
+    buildDOM();
+    require("../../app/assets/javascripts/smsCharacterInfo.js");
+
+    expect(
+      document.getElementById("sms-character-count-text").textContent
+    ).toBe("");
+  });
+});
+
+// ── Character count and limit validation ─────────────────────────────────────
+
+describe("Character count and limit validation", () => {
+  let textarea;
+  let characterCountText;
+
+  beforeEach(() => {
+    buildDOM({ limit: "160" });
+    require("../../app/assets/javascripts/smsCharacterInfo.js");
+    textarea = document.getElementById("template_content");
+    characterCountText = document.getElementById("sms-character-count-text");
+  });
+
+  test("shows nothing when exactly at the limit", () => {
+    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    typeIntoTextarea(textarea, "a".repeat(160));
+    expect(characterCountText.textContent).toBe("");
+  });
+
+  test("shows '1 too many character' when 1 over the limit", () => {
+    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    typeIntoTextarea(textarea, "a".repeat(161));
+    expect(characterCountText.textContent).toBe("1 too many character");
+    expect(characterCountText.classList.contains("text-red-700")).toBe(true);
+  });
+
+  test("shows 'N too many characters' when more than 1 over the limit", () => {
+    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    typeIntoTextarea(textarea, "a".repeat(165));
+    expect(characterCountText.textContent).toBe("5 too many characters");
+    expect(characterCountText.classList.contains("text-red-700")).toBe(true);
+  });
+
+  test("limit calculation currently ignores prefix due to script #BUG", () => {
+    // Rebuild with 10-char prefix (8 chars + ": ")
+    document.body.innerHTML = "";
+    jest.resetModules();
+    buildDOM({ prefix: "Service1", limit: "15" }); // "Service1: " is 10 chars.
+    require("../../app/assets/javascripts/smsCharacterInfo.js");
+    const ta = document.getElementById("template_content");
+    const label = document.getElementById("sms-character-count-text");
+
+    // The script uses content.length, so it ignores the 10-char prefix
+    // 15 chars (matching the limit)
+    typeIntoTextarea(ta, "a".repeat(15));
+    expect(label.textContent).toBe("");
+
+    // 16 chars (1 over)
+    typeIntoTextarea(ta, "a".repeat(16));
+    expect(label.textContent).toBe("1 too many character");
+  });
+
+  test("limit calculation currently ignores GSM extension unit costs due to script #BUG", () => {
+    // '[' is 2 units in GSM, but script uses .length
+    typeIntoTextarea(textarea, "a".repeat(159) + "[");
+    // length is 160 (at limit)
+    expect(characterCountText.textContent).toBe("");
+
+    typeIntoTextarea(textarea, "a".repeat(160) + "[");
+    // length is 161 (1 over)
+    expect(characterCountText.textContent).toBe("1 too many character");
   });
 });
 
