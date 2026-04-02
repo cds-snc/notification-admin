@@ -362,7 +362,7 @@ def test_monthly_shows_letters_in_breakdown(
     columns = page.select(".table-field-left-aligned .big-number-label")
 
     assert normalize_spaces(columns[2].text) == "emails"
-    assert normalize_spaces(columns[3].text) == "text messages"
+    assert normalize_spaces(columns[3].text) == "text message parts"
 
 
 @pytest.mark.parametrize(
@@ -473,7 +473,7 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
 
     # SMS column should show billable units (150 + 75 = 225), not requested count (100)
     assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "225"
-    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text message parts"
 
     # Annual overview box for SMS should also show billable units total (225), not notification count (100).
     # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
