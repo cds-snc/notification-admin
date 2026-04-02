@@ -19,7 +19,10 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
-from notifications_utils import TEMPLATE_NAME_CHAR_COUNT_LIMIT
+from notifications_utils import (
+    SMS_CHAR_COUNT_LIMIT,
+    TEMPLATE_NAME_CHAR_COUNT_LIMIT,
+)
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
@@ -958,6 +961,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand",
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
         )
 
 
@@ -1128,6 +1132,7 @@ def edit_service_template(service_id, template_id):
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand" if request.method == "POST" else None,
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
         )
 
 
