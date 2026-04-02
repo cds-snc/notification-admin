@@ -1,4 +1,4 @@
-{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None, use_billable_units=False, show_links=True) %}
+{% macro remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, headingMode=False, textOnly=None, use_billable_units=False, show_links=True, verbose=False) %}
   <!-- Validate textOnly param -->
   {% set textOnly_allowed_values = ['text', 'emoji'] %}
   {% if textOnly not in textOnly_allowed_values %}
@@ -20,7 +20,7 @@
       {% if use_billable_units %}
         {% set notification_type = _('billable units') %}
       {% else %}
-        {% set notification_type = _('text messages') %}
+        {% set notification_type = _('text message parts') %}
       {% endif %}
     {% elif notification_type == 'email' %}
       {% set notification_type = _('emails') %}
@@ -77,8 +77,12 @@
           {% if show_links %}<span data-testid="rms-icon-{{ icon_type }}"></span>{% endif %}
           <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" aria-label="{{ icon_label }}" id="{{ unique_id ~ "_icon" }}" {% if not show_links %}data-testid="rms-icon-{{ icon_type }}"{% endif %}></i>
           <div class="flex flex-wrap items-baseline gap-x-2" id="{{ unique_id }}">
-            <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> {{ section.text
-            }}
+            <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> 
+            {% if verbose %}
+              {{ notification_type~" "~section.text }}
+            {% else %}
+              {{ section.text }}
+            {% endif %}
           </div>
           {% if show_links %}
           <a 
