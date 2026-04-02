@@ -2432,3 +2432,7 @@
 "Write clear and concise messages. Visit ","Rédigez des messages clairs et concis. Consultez les sections "
 "Archive inactive user","Archiver l'utilisateur inactif"
 "No actions available for archived users","Aucune action disponible pour les utilisateurs archivés"
+"{} text message parts.","{} parties de messages texte."
+"Daily text message parts limit","Limite quotidienne de parties de messages texte"
+Limite quotidienne de message texte
+"Annual text message parts limit","Limite maximale de parties de messages texte par exercice financier"
