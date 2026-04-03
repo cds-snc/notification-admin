@@ -2,7 +2,8 @@
   "scripts": {
     "cypress": "ETHEREAL_CACHE=false npx cypress open",
     "a11y": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/a11y/*'",
-    "ci": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci.cy.js'"
+    "ci": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci.cy.js'",
+    "perf:staging": "ETHEREAL_CACHE=false npx cypress run --browser chrome --env ENV=STAGING --spec 'cypress/e2e/admin/performance/*.perf.cy.js'"
   },
   "dependencies": {
     "cypress-recurse": "^1.23.0",

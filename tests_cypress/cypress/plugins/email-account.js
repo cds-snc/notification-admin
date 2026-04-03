@@ -125,6 +125,54 @@ const emailAccount = async () => {
                 }
             }
         },
+        async getLastEmailPerf(emailAddress) {
+            let connection;
+            try {
+                connection = await imaps.connect(emailConfig);
+
+                await connection.openBox('INBOX');
+                const searchCriteria = [
+                    'UNSEEN',
+                    ['HEADER', 'TO', emailAddress],
+                    ['HEADER', 'SUBJECT', 'Sign in | Connectez-vous'],
+                ];
+                const fetchOptions = {
+                    bodies: [''],
+                    struct: true,
+                };
+                const messages = await connection.search(searchCriteria, fetchOptions);
+
+                if (!messages.length) {
+                    return null;
+                }
+
+                const latestMessage = messages[messages.length - 1];
+                const mail = await simpleParser(latestMessage.parts[0].body);
+                const uidsToDelete = messages.map((message) => message.attributes.uid);
+
+                try {
+                    if (uidsToDelete.length > 0) {
+                        await connection.deleteMessage(uidsToDelete);
+                        await connection.imap.expunge();
+                    }
+                } catch (e) {
+                    console.error('delete error', uidsToDelete, e);
+                }
+
+                return {
+                    subject: mail.subject,
+                    text: mail.text,
+                    html: mail.html,
+                };
+            } catch (e) {
+                console.error(e);
+                return null;
+            } finally {
+                if (connection) {
+                    connection.end();
+                }
+            }
+        },
         async fetchEmail(acct) {
             const _config = {
                 imap: {
