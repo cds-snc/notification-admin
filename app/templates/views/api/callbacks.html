@@ -27,10 +27,18 @@
 	      {{ edit_field('Change', url_for('.delivery_status_callback', service_id=current_service.id)) }}
 	    {% endcall %}
 
+	    {%- if current_service.has_permission("inbound_sms") %}
+            {% call row() %}
+              {{ text_field('Received text messages') }}
+              {{ optional_text_field(received_text_messages_callback, truncate=false) }}
+              {{ edit_field('Change', url_for('.received_text_messages_callback', service_id=current_service.id)) }}
+            {% endcall %}
+            {%- endif %}
+
 	    {% call row() %}
-	      {{ text_field('Received text messages') }}
-          {{ optional_text_field(received_text_messages_callback, truncate=false) }}
-	   	  {{ edit_field('Change', url_for('.received_text_messages_callback', service_id=current_service.id)) }}
+	      {{ text_field('Email unsubscribe requests') }}
+	      {{ optional_text_field(unsubscribe_callback, truncate=false) }}
+	      {{ edit_field('Change', url_for('.unsubscribe_callback', service_id=current_service.id)) }}
 	    {% endcall %}
 	  {% endcall %}
 	</div>

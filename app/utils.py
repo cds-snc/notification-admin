@@ -941,3 +941,10 @@ def get_verified_ses_domains():
     ]
 
     return domains
+
+
+def to_utc_string(dt):
+    """Convert a datetime object to an ISO 8601 UTC string."""
+    if dt is None:
+        return None
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")

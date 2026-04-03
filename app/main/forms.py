@@ -912,6 +912,8 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
         ],
     )
 
+    has_unsubscribe_link = BooleanField(_l("Add an unsubscribe link"))
+
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
@@ -1490,6 +1492,24 @@ class ServiceDeliveryStatusCallbackForm(CallbackForm):
         ],
     )
     test_response_time = SubmitField()
+
+
+class ServiceUnsubscribeCallbackForm(CallbackForm):
+    url = StringField(
+        "URL",
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            Regexp(regex="^https.*", message=_l("Enter a URL that starts with https://")),
+            ValidCallbackUrl(),
+        ],
+    )
+    bearer_token = PasswordFieldShowHasContent(
+        _l("Bearer token"),
+        validators=[
+            DataRequired(message=_l("This cannot be empty")),
+            Length(min=10, message=_l("Must be at least 10 characters")),
+        ],
+    )
 
 
 class InternationalSMSForm(StripWhitespaceForm):

@@ -48,6 +48,17 @@
       ) }}
     {% endif %}
 
+    {% if current_service.unsubscribe_requests_count %}
+      <hr />
+      <h2 class="heading-medium mt-8">{{ _("Email unsubscribe requests") }}</h2>
+      <p>
+        <a href="{{ url_for('.unsubscribe_request_reports_summary', service_id=current_service.id) }}">
+          {{ current_service.unsubscribe_requests_count }}
+          {{ _('new unsubscribe request') if current_service.unsubscribe_requests_count == 1 else _('new unsubscribe requests') }}
+        </a>
+      </p>
+    {% endif %}
+
   </div>
 
 {% endblock %}
