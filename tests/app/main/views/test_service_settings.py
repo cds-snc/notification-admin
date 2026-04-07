@@ -145,7 +145,8 @@ def test_should_show_overview_inc_sms_daily_limit(
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     client.login(user, mocker, service_one)
-    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.find("h1").text == "Settings"
@@ -277,7 +278,8 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     client.login(active_user_with_permissions, mocker, service_one)
     service_one["permissions"] = permissions
     service_one["email_branding"] = uuid4()
-    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     rows = page.find_all("tr")
     for index, row in enumerate(expected_rows):
