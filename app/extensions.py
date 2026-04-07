@@ -13,4 +13,4 @@ redis_client = RedisClient()
 bounce_rate_client = RedisBounceRate(redis_client)
 annual_limit_client = RedisAnnualLimit(redis_client)
 
-cache = Cache(config={"CACHE_TYPE": "simple"})  # TODO: pull config out to config.py later
+cache = Cache()
