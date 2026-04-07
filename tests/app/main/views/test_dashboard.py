@@ -347,6 +347,13 @@ def test_anyone_can_see_monthly_breakdown(
     )
 
 
+@pytest.mark.parametrize(
+    "use_billable_units, expected_sms_label",
+    [
+        (True, "text message parts"),
+        (False, "text messages"),
+    ],
+)
 def test_monthly_shows_letters_in_breakdown(
     client_request,
     service_one,
@@ -354,15 +361,20 @@ def test_monthly_shows_letters_in_breakdown(
     mock_get_monthly_notification_stats,
     mock_get_service_statistics,
     mock_get_template_statistics,
+    app_,
+    use_billable_units,
+    expected_sms_label,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
-    page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", use_billable_units):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
 
     assert normalize_spaces(columns[2].text) == "emails"
-    assert normalize_spaces(columns[3].text) == "text messages"
+    assert normalize_spaces(columns[3].text) == expected_sms_label
 
 
 @pytest.mark.parametrize(
@@ -473,7 +485,7 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
 
     # SMS column should show billable units (150 + 75 = 225), not requested count (100)
     assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "225"
-    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text message parts"
 
     # Annual overview box for SMS should also show billable units total (225), not notification count (100).
     # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
