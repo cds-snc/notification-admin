@@ -136,26 +136,26 @@ describe("Character count and limit validation", () => {
   });
 
   test("shows nothing when exactly at the limit", () => {
-    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(160));
     expect(characterCountText.textContent).toBe("");
   });
 
   test("shows '1 too many character' when 1 over the limit", () => {
-    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(161));
     expect(characterCountText.textContent).toBe("1 too many character");
     expect(characterCountText.classList.contains("text-red-700")).toBe(true);
   });
 
   test("shows 'N too many characters' when more than 1 over the limit", () => {
-    // Due to #BUG in script, it uses content.length instead of characterUnits for limit check
+    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(165));
     expect(characterCountText.textContent).toBe("5 too many characters");
     expect(characterCountText.classList.contains("text-red-700")).toBe(true);
   });
 
-  test("limit calculation currently ignores prefix due to script #BUG", () => {
+  test("character limit calculation ignores prefix", () => {
     // Rebuild with 10-char prefix (8 chars + ": ")
     document.body.innerHTML = "";
     jest.resetModules();
@@ -174,7 +174,7 @@ describe("Character count and limit validation", () => {
     expect(label.textContent).toBe("1 too many character");
   });
 
-  test("limit calculation currently ignores GSM extension unit costs due to script #BUG", () => {
+  test("character limit calculation ignores GSM extension unit costs", () => {
     // '[' is 2 units in GSM, but script uses .length
     typeIntoTextarea(textarea, "a".repeat(159) + "[");
     // length is 160 (at limit)

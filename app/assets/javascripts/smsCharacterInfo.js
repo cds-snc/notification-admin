@@ -310,9 +310,8 @@
     var fragmentCount = getFragmentCount(characterUnits, isUnicode);
     var hasVars = hasPlaceholders(content);
 
-    // #BUG - The form validator on submit does not add the service name prefix.
-    // To avoid confusion, we do the same here.
-    // If we fix this bug, we'd use `characterUnits` instead of `content.length`
+    // The form validator on submit does not add the service name prefix.
+    // To avoid confusion, we do the same here and use content.length instead of characterUnits for the limit check, since that's what the server does.
     renderFragmentCount(fragmentCount, content.length, hasVars);
     // renderShorteningSuggestions(findNonGsmCharacters(content)); // Commented out — preserved for future use
   }
