@@ -303,6 +303,8 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
+        from app.utils import get_limit_reset_time_et
+
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
         return {
@@ -313,6 +315,7 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
+            "limit_reset_time_et": get_limit_reset_time_et(),
             "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }

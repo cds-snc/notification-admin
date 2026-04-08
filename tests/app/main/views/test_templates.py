@@ -2905,6 +2905,7 @@ class TestAnnualLimits:
         else:
             assert page.find(attrs={"data-testid": "send-buttons"}) is None
 
+    @freeze_time("2024-01-15 12:00:00")  # EST: UTC midnight = 7PM ET
     @pytest.mark.parametrize(
         "remaining_daily, remaining_annual, expected_heading",
         [
@@ -2919,8 +2920,8 @@ class TestAnnualLimits:
                 100,
                 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later.",
             ),
-            # Daily remaining = 0 (true zero) → standard paused heading
-            (0, 100, "Sending paused until 7pm ET. You can schedule more messages to send later."),
+            # Daily remaining = 0 (true zero) → standard paused heading (EST: 7PM)
+            (0, 100, "Sending paused until 7PM ET. You can schedule more messages to send later."),
             # Annual remaining > 0 but < fragment_count → fragment-specific heading
             (100, 2, "This message exceeds your annual limit."),
             (100, 1, "This message exceeds your annual limit."),
@@ -2990,6 +2991,60 @@ class TestAnnualLimits:
         heading = page.select_one("h2.heading-medium")
         assert heading is not None
         assert normalize_spaces(heading.text) == expected_heading
+
+
+@freeze_time("2024-07-15 12:00:00")  # EDT: UTC midnight = 8PM ET
+def test_heading_text_daily_limit_paused_during_edt(
+    client_request,
+    mock_get_template_folders,
+    mock_notification_counts_client,
+    fake_uuid,
+    mocker,
+    app_,
+):
+    """When in EDT (summer), the daily limit reset time should show 8PM instead of 7PM."""
+    app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+    long_content = "A" * 400
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={
+            "data": template_json(
+                SERVICE_ONE_ID,
+                fake_uuid,
+                name="Long SMS",
+                type_="sms",
+                content=long_content,
+            )
+        },
+    )
+    mocker.patch(
+        "app.template_category_api_client.get_all_template_categories",
+        return_value=[],
+    )
+
+    current_user.verified_phonenumber = True
+    mock_notification_counts_client.get_limit_stats.return_value = {
+        "email": {
+            "annual": {"limit": 1000, "sent": 0, "remaining": 100},
+            "daily": {"limit": 1000, "sent": 0, "remaining": 0},
+        },
+        "sms": {
+            "annual": {"limit": 1000, "sent": 0, "remaining": 100},
+            "daily": {"limit": 1000, "sent": 0, "remaining": 0},
+        },
+    }
+
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    heading = page.select_one("h2.heading-medium")
+    assert heading is not None
+    assert normalize_spaces(heading.text) == "Sending paused until 8PM ET. You can schedule more messages to send later."
 
     def test_fragment_count_shows_plain_text_when_no_placeholders(
         self,

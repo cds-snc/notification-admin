@@ -39,7 +39,7 @@
       'type': 'daily',
       'used': dailyUsed,
       'limit': dailyLimit,
-      'text': _('can be sent before') ~ ' ' ~ ('7 pm ET'),
+      'text': _('can be sent before {} ET').format(limit_reset_time_et[current_lang]),
       'link_text': _('Request a daily limit increase'),
       'link_href': url_for('main.contact'),
       'remaining': "{:,}".format(dailyLimit - dailyUsed) if session['userlang'] == 'en' else "{:,}".format(dailyLimit - dailyUsed).replace(',', ' '),
@@ -115,7 +115,7 @@
     </p>
   {% elif not headingMode and sections[0].remaining == "0" %}
     <p class="mt-4 pl-10 py-4 border-l-4 border-gray-300" data-testid="daily-sending-paused">
-      {{ _('Sending paused until 7pm ET. You can schedule more messages to send later.') }}      
+      {{ _('Sending paused until {} ET. You can schedule more messages to send later.').format(limit_reset_time_et[current_lang]) }}      
     </p>
   {% endif %}
   
