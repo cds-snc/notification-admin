@@ -39,3 +39,20 @@ def test_post_free_sms_fragment_limit_for_year_endpoint(mocker, api_user_active)
         url="/service/{}/billing/free-sms-fragment-limit".format(service_id),
         data=sms_limit_data,
     )
+
+
+def test_get_sms_cost_for_service(mocker, api_user_active):
+    service_id = uuid.uuid4()
+    expected_url = "/service/{}/billing/sms-cost".format(service_id)
+    client = BillingAPIClient()
+
+    mock_get = mocker.patch("app.notify_client.billing_api_client.BillingAPIClient.get")
+
+    client.get_sms_cost_for_service(service_id, start_date="2025-01-01", end_date="2025-03-31")
+    mock_get.assert_called_once_with(
+        url=expected_url,
+        params={
+            "start_date": "2025-01-01",
+            "end_date": "2025-03-31",
+        },
+    )
