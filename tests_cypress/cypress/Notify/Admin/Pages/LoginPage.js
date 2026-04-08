@@ -59,6 +59,43 @@ let Actions = {
             TouPrompt.AgreeToTerms();
         }
     },
+    LoginPerf: (email, password, agreeToTerms = true) => {
+        cy.log("---- Logging in via email code for perf ----");
+        cy.clearCookie(ADMIN_COOKIE);
+
+        cy.visit(LoginPage.URL);
+        Components.EmailAddress().type(email);
+        Components.Password().type(password);
+        Components.SubmitButton().click();
+
+        recurse(
+            () => cy.task('getLastEmailPerf', email, { timeout: 180000 }),
+            Cypress._.isObject,
+            {
+                log: true,
+                limit: 250,
+                timeout: 180000,
+                delay: 500,
+            },
+        )
+            .its('html')
+            .then((html) => {
+                cy.document({ log: false }).invoke({ log: false }, 'write', html)
+            });
+
+        cy.get('blockquote').should('be.visible');
+        cy.get('blockquote p').invoke('text').as('MFACode');
+        cy.get('@MFACode').then((text) => {
+            let code = text;
+            cy.visit('/two-factor-email-sent');
+            Actions.EnterCode(code);
+        });
+
+        TouPrompt.Components.Heading().should('be.visible');
+        if (agreeToTerms) {
+            TouPrompt.AgreeToTerms();
+        }
+    },
     LoginLocal: (email, password, agreeToTerms = true) => {
         cy.log("---- Logging in locally ----");
         cy.clearCookie(ADMIN_COOKIE); // clear auth cookie

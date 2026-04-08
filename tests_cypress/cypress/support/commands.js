@@ -5,6 +5,7 @@ import { getHostname, getConfig } from "./utils";
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
 const CONFIG = getConfig();
+const PERF_TIMINGS_KEY = "__notifyPerfTimings";
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
@@ -16,6 +17,10 @@ afterEach(function () {
         links_checked = [];
         svgs_checked = [];
     }
+});
+
+beforeEach(() => {
+    Cypress.env(PERF_TIMINGS_KEY, []);
 });
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
@@ -108,6 +113,115 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
     return cy.get(`[data-testid=${selector}]`, ...args)
 });
 
+const appendPerfTiming = (entry) => {
+    const timings = Cypress.env(PERF_TIMINGS_KEY) || [];
+    timings.push(entry);
+    Cypress.env(PERF_TIMINGS_KEY, timings);
+};
+
+const createPerfFileName = (label, runId) => {
+    const safeLabel = label.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase();
+    return `${safeLabel || 'perf'}-${runId}-${Date.now()}.json`;
+};
+
+Cypress.Commands.add('startPerfCapture', (options = {}) => {
+    const runId = options.runId || Cypress.env('PERF_RUN_ID') || `${Date.now()}`;
+    const startedAt = Date.now();
+
+    Cypress.env('PERF_RUN_ID', runId);
+    Cypress.env(PERF_TIMINGS_KEY, []);
+    Cypress.env('__notifyPerfContext', {
+        runId,
+        startedAt,
+        label: options.label || null,
+        metadata: options.metadata || {},
+    });
+
+    return cy.wrap({ runId, startedAt }, { log: false });
+});
+
+Cypress.Commands.add('measureVisit', (url, label, options = {}) => {
+    const startedAt = Date.now();
+
+    cy.visit(url, options.visitOptions || {});
+
+    if (options.ready) {
+        options.ready();
+    } else {
+        cy.get('main', { timeout: options.timeout || Cypress.config('pageLoadTimeout') }).should('be.visible');
+    }
+
+    cy.window({ log: false }).then((win) => {
+        const finishedAt = Date.now();
+        const navigationEntry = win.performance.getEntriesByType('navigation')[0];
+
+        appendPerfTiming({
+            type: 'visit',
+            label,
+            url,
+            startedAt,
+            finishedAt,
+            durationMs: finishedAt - startedAt,
+            domContentLoadedMs: navigationEntry ? Math.round(navigationEntry.domContentLoadedEventEnd) : null,
+            loadEventEndMs: navigationEntry ? Math.round(navigationEntry.loadEventEnd) : null,
+        });
+    });
+});
+
+Cypress.Commands.add('trackRequestDuration', (label, routeMatcher, action, options = {}) => {
+    const alias = options.alias || `perf_${label.replace(/[^a-z0-9]+/gi, '_').toLowerCase()}`;
+
+    cy.intercept(routeMatcher, (req) => {
+        req.continue((res) => {
+            appendPerfTiming({
+                type: 'request',
+                label,
+                method: req.method,
+                url: req.url,
+                statusCode: res.statusCode,
+                durationMs: res.duration,
+            });
+        });
+    }).as(alias);
+
+    action();
+
+    cy.wait(`@${alias}`, { timeout: options.timeout || Cypress.config('pageLoadTimeout') });
+});
+
+Cypress.Commands.add('flushPerfArtifact', (label, metadata = {}) => {
+    const context = Cypress.env('__notifyPerfContext') || {};
+    const runId = context.runId || Cypress.env('PERF_RUN_ID') || `${Date.now()}`;
+    const finishedAt = Date.now();
+    const timings = Cypress.env(PERF_TIMINGS_KEY) || [];
+    const artifact = {
+        label,
+        runId,
+        environment: Cypress.env('ENV') || 'LOCAL',
+        baseUrl: Cypress.config('baseUrl'),
+        browser: Cypress.browser ? {
+            name: Cypress.browser.name,
+            channel: Cypress.browser.channel || null,
+            version: Cypress.browser.version,
+            isHeaded: Cypress.browser.isHeaded,
+        } : null,
+        startedAt: context.startedAt || null,
+        finishedAt,
+        totalDurationMs: context.startedAt ? finishedAt - context.startedAt : null,
+        metadata: {
+            ...context.metadata,
+            ...metadata,
+        },
+        timings,
+    };
+
+    return cy.task('writePerfArtifact', {
+        artifactDir: Cypress.env('PERF_ARTIFACT_DIR'),
+        fileName: createPerfFileName(label, runId),
+        data: artifact,
+    }, { log: false });
+});
+
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
     cy.task('createAccount', {
@@ -141,6 +255,24 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
                 LoginPage.LoginLocal(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
             } else {
                 LoginPage.Login(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            }
+        });
+    });
+});
+
+Cypress.Commands.add('loginForPerf', (agreeToTerms = true) => {
+    cy.task('createAccount', {
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
+    }).then((acct) => {
+        Cypress.env('ADMIN_USER_ID', acct.admin.id);
+        Cypress.env('REGULAR_USER_ID', acct.regular.id);
+        cy.session([acct.regular.email_address, agreeToTerms, 'perf'], () => {
+            if (CONFIG.ENV === 'LOCAL') {
+                LoginPage.LoginLocal(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            } else {
+                LoginPage.LoginPerf(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
             }
         });
     });
