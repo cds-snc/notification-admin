@@ -140,9 +140,9 @@ describe("Character count and limit validation", () => {
     expect(characterCountText.textContent).toBe("");
   });
 
-  test("shows '1 too many character' when 1 over the limit", () => {
+  test("shows '1 too many characters' when 1 over the limit", () => {
     typeIntoTextarea(textarea, "a".repeat(161));
-    expect(characterCountText.textContent).toBe("1 too many character");
+    expect(characterCountText.textContent).toBe("1 too many characters");
     expect(characterCountText.classList.contains("text-red-700")).toBe(true);
   });
 
@@ -168,7 +168,7 @@ describe("Character count and limit validation", () => {
 
     // 16 chars (1 over)
     typeIntoTextarea(ta, "a".repeat(16));
-    expect(label.textContent).toBe("1 too many character");
+    expect(label.textContent).toBe("1 too many characters");
   });
 
   test("GSM extension characters count as 2 units towards the limit", () => {
@@ -179,7 +179,7 @@ describe("Character count and limit validation", () => {
 
     // 159 a's (159 units) + '[' (2 units) = 161 units → 1 over
     typeIntoTextarea(textarea, "a".repeat(159) + "[");
-    expect(characterCountText.textContent).toBe("1 too many character");
+    expect(characterCountText.textContent).toBe("1 too many characters");
   });
 });
 
@@ -451,7 +451,7 @@ describe("Newline handling in character limit display", () => {
   test("newline in the middle of a message counts as 1 character unit", () => {
     // 80 a's + "\n" + 80 a's = 161 units (newline costs 1) → 1 over the limit of 160
     typeIntoTextarea(textarea, "a".repeat(80) + "\n" + "a".repeat(80));
-    expect(characterCountText.textContent).toBe("1 too many character");
+    expect(characterCountText.textContent).toBe("1 too many characters");
   });
 
   test("multiple newlines within message each count as 1 character", () => {

@@ -260,7 +260,7 @@
         // Singular
         characterCountText.textContent = phrase(
           "sms_one_character_count_over_limit",
-          "1 too many character",
+          "1 too many characters",
         );
         characterCountText.classList.add("text-red-700", "font-bold");
       } else {
