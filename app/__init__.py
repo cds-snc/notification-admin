@@ -303,6 +303,8 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
+        from app.utils import get_limit_reset_time_et
+
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
         return {
@@ -313,6 +315,7 @@ def init_app(application):
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
+            "limit_reset_time_et": get_limit_reset_time_et(),
             "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
         }
@@ -746,9 +749,9 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' https://js-agent.newrelic.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net;"
+            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src-elem 'self' 'nonce-{nonce}' 'unsafe-eval' data:;"
+            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"

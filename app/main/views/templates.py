@@ -65,6 +65,7 @@ from app.sample_template_utils import create_temporary_sample_template, get_samp
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
+    get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
     user_has_permissions,
@@ -183,7 +184,11 @@ def get_limit_stats(notification_type, template=None):
                 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later."
             )
         else:
-            limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
+            limit_reset_time = get_limit_reset_time_et()
+            current_lang = get_current_locale(current_app)
+            limit_stats["heading"] = _("Sending paused until {} ET. You can schedule more messages to send later.").format(
+                limit_reset_time[current_lang]
+            )
 
     return limit_stats
 

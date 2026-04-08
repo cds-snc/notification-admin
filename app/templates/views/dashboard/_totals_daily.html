@@ -13,7 +13,7 @@
       {{ _('Daily usage') }}         
     </h2>
     <p id="daily-usage-desc" class="text-gray-600 text-small font-normal mt-4">
-      {{ _('resets at 7pm Eastern Time') }}
+      {{ _('resets at {} Eastern Time').format(limit_reset_time_et[current_lang]) }}
     </p>
     <div class="grid-row contain-floats mb-10">
       <div class="{{column_width}}">
