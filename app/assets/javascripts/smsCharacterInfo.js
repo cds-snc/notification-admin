@@ -310,9 +310,12 @@
     var fragmentCount = getFragmentCount(characterUnits, isUnicode);
     var hasVars = hasPlaceholders(content);
 
-    // The form validator on submit does not add the service name prefix.
-    // To avoid confusion, we do the same here and use content.length instead of characterUnits for the limit check, since that's what the server does.
-    renderFragmentCount(fragmentCount, content.length, hasVars);
+    // For the character limit check, count GSM character units of the content only
+    // (no service-name prefix), matching the server-side check in notification-api which
+    // calls count_sms_character_units on the template content without a prefix.
+    var contentOnly = stripPlaceholders(content).trim();
+    var contentUnits = countCharacterUnits(contentOnly, isUnicode);
+    renderFragmentCount(fragmentCount, contentUnits, hasVars);
     // renderShorteningSuggestions(findNonGsmCharacters(content)); // Commented out — preserved for future use
   }
 

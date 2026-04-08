@@ -136,20 +136,17 @@ describe("Character count and limit validation", () => {
   });
 
   test("shows nothing when exactly at the limit", () => {
-    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(160));
     expect(characterCountText.textContent).toBe("");
   });
 
   test("shows '1 too many character' when 1 over the limit", () => {
-    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(161));
     expect(characterCountText.textContent).toBe("1 too many character");
     expect(characterCountText.classList.contains("text-red-700")).toBe(true);
   });
 
   test("shows 'N too many characters' when more than 1 over the limit", () => {
-    // Uses content.length instead of characterUnits to match server validation
     typeIntoTextarea(textarea, "a".repeat(165));
     expect(characterCountText.textContent).toBe("5 too many characters");
     expect(characterCountText.classList.contains("text-red-700")).toBe(true);
@@ -164,7 +161,7 @@ describe("Character count and limit validation", () => {
     const ta = document.getElementById("template_content");
     const label = document.getElementById("sms-character-count-text");
 
-    // The script uses content.length, so it ignores the 10-char prefix
+    // The limit check uses content character units only, not including the prefix
     // 15 chars (matching the limit)
     typeIntoTextarea(ta, "a".repeat(15));
     expect(label.textContent).toBe("");
@@ -174,14 +171,14 @@ describe("Character count and limit validation", () => {
     expect(label.textContent).toBe("1 too many character");
   });
 
-  test("character limit calculation ignores GSM extension unit costs", () => {
-    // '[' is 2 units in GSM, but script uses .length
-    typeIntoTextarea(textarea, "a".repeat(159) + "[");
-    // length is 160 (at limit)
+  test("GSM extension characters count as 2 units towards the limit", () => {
+    // '[' costs 2 GSM units, matching server-side count_sms_character_units
+    // 158 a's (158 units) + '[' (2 units) = 160 units → at limit, no error
+    typeIntoTextarea(textarea, "a".repeat(158) + "[");
     expect(characterCountText.textContent).toBe("");
 
-    typeIntoTextarea(textarea, "a".repeat(160) + "[");
-    // length is 161 (1 over)
+    // 159 a's (159 units) + '[' (2 units) = 161 units → 1 over
+    typeIntoTextarea(textarea, "a".repeat(159) + "[");
     expect(characterCountText.textContent).toBe("1 too many character");
   });
 });
@@ -391,5 +388,76 @@ describe("i18n via APP_PHRASES", () => {
     ).toBeTruthy();
 
     window.APP_PHRASES = {}; // restore to empty for cleanup
+  });
+});
+
+// ── Newline character counting ────────────────────────────────────────────────
+//
+// Browsers normalise textarea content to LF-only (\n) in the DOM, but send
+// CRLF (\r\n) on form submission.  The server-side count_sms_character_units
+// now normalises \r\n → \n before counting so each line break costs 1 unit.
+// These tests verify that the JS countCharacterUnits function agrees:
+// \n = 1 GSM unit, matching what the server will count after normalisation.
+
+describe("Newline character counting (pure functions)", () => {
+  let countCharacterUnits;
+
+  beforeAll(() => {
+    ({ countCharacterUnits } = require(
+      "../../app/assets/javascripts/smsCharacterInfo.js",
+    ));
+  });
+
+  test("a single newline (\\n) counts as 1 GSM character unit", () => {
+    // "Hello\nWorld" → 11 chars, each costs 1 unit in GSM mode
+    expect(countCharacterUnits("Hello\nWorld", false)).toBe(11);
+  });
+
+  test("multiple newlines each count as 1 GSM character unit", () => {
+    // "Line1\nLine2\nLine3" → 17 chars
+    expect(countCharacterUnits("Line1\nLine2\nLine3", false)).toBe(17);
+  });
+
+  test("a newline in unicode mode counts as 1 unit", () => {
+    // In unicode mode every char is 1 unit regardless
+    expect(countCharacterUnits("Hello\nWorld", true)).toBe(11);
+  });
+});
+
+describe("Newline handling in character limit display", () => {
+  let textarea;
+  let characterCountText;
+
+  beforeEach(() => {
+    buildDOM({ limit: "160" });
+    require("../../app/assets/javascripts/smsCharacterInfo.js");
+    textarea = document.getElementById("template_content");
+    characterCountText = document.getElementById("sms-character-count-text");
+  });
+
+  test("message exactly at limit with a trailing newline shows no warning", () => {
+    // 159 regular chars + 1 newline = 160 total — at the limit, no error
+    typeIntoTextarea(textarea, "a".repeat(159) + "\n");
+    expect(characterCountText.textContent).toBe("");
+  });
+
+  test("trailing newline is trimmed before counting, so it does not push over the limit", () => {
+    // The server calls .strip() on content before counting (matching Python's _encoded_content).
+    // A trailing newline is removed, so 160 a's + "\n" → 160 units → at limit → no warning.
+    typeIntoTextarea(textarea, "a".repeat(160) + "\n");
+    expect(characterCountText.textContent).toBe("");
+  });
+
+  test("newline in the middle of a message counts as 1 character unit", () => {
+    // 80 a's + "\n" + 80 a's = 161 units (newline costs 1) → 1 over the limit of 160
+    typeIntoTextarea(textarea, "a".repeat(80) + "\n" + "a".repeat(80));
+    expect(characterCountText.textContent).toBe("1 too many character");
+  });
+
+  test("multiple newlines within message each count as 1 character", () => {
+    // 3 lines of 50 chars separated by 2 newlines = 152 chars — under the 160 limit
+    const content = "a".repeat(50) + "\n" + "a".repeat(50) + "\n" + "a".repeat(50);
+    typeIntoTextarea(textarea, content);
+    expect(characterCountText.textContent).toBe("");
   });
 });
