@@ -2435,6 +2435,8 @@
 "Archive inactive user","Archiver l'utilisateur inactif"
 "No actions available for archived users","Aucune action disponible pour les utilisateurs archivés"
 "text message parts","parties de messages texte"
+"{} too many characters","{} caractères au-dessus de la limite"
+"1 too many characters","1 caractère au-dessus de la limite"
 "{} text message parts.","{} parties de messages texte."
 "Daily text message parts limit","Limite quotidienne de parties de messages texte"
 "Annual text message parts limit","Limite maximale de parties de messages texte par exercice financier"
