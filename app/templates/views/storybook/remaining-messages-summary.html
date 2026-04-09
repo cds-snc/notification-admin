@@ -14,6 +14,9 @@
         <div class="mb-6 bg-white p-4">
         {{ remaining_messages_summary(1000, 0, 1000, 0, "email") }}
         </div>
+        <div class="mb-6 bg-white p-4">
+        {{ remaining_messages_summary(1000, 0, 1000, 0, "sms", verbose=True) }}
+        </div>
     </div>
 
     <h3 class="heading-medium">Warning</h3>
