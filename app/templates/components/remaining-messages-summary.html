@@ -45,7 +45,7 @@
       'type': 'daily',
       'used': dailyUsed,
       'limit': dailyLimit,
-      'text': _('can be sent before {} ET').format(limit_reset_time_et[current_lang]),
+      'text': _('can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]),
       'link_text': _('Request a daily limit increase'),
       'link_href': url_for('main.contact'),
       'remaining': "{:,}".format(dailyLimit - dailyUsed) if session['userlang'] == 'en' else "{:,}".format(dailyLimit - dailyUsed).replace(',', ' '),
