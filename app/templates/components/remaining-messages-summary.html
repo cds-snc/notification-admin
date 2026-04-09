@@ -82,7 +82,7 @@
           {% set unique_id = random_id(12) %}
           {% if show_links %}<span data-testid="rms-icon-{{ icon_type }}"></span>{% endif %}
           <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" aria-label="{{ icon_label }}" id="{{ unique_id ~ "_icon" }}" {% if not show_links %}data-testid="rms-icon-{{ icon_type }}"{% endif %}></i>
-          <div class="items-baseline gap-x-2" id="{{ unique_id }}">
+          <div class="flex flex-wrap items-baseline gap-x-2" id="{{ unique_id }}">
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> 
             {% if verbose %}
               {% if section.remaining == "1" %}
