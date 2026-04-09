@@ -18,15 +18,18 @@
   {% else %}
     {% if notification_type == 'sms' %}
       {% if use_billable_units %}
-        {% set notification_type = _('billable units') %}
-        {% set verbose_text = _('billable units can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
-      {% else %}
         {% set notification_type = _('text message parts') %}
-        {% set verbose_text = _('text message parts can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text = _('text message parts can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text_singular = _('text message part can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+      {% else %}
+        {% set notification_type = _('text messages') %}
+        {% set verbose_text = _('text messages can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text_singular = _('text message can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
       {% endif %}
     {% elif notification_type == 'email' %}
       {% set notification_type = _('emails') %}
-      {% set verbose_text = _('emails can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
+      {% set verbose_text = _('emails can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+      {% set verbose_text_singular = _('email can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
     {% endif %}
   {% endif %}
 
@@ -42,7 +45,7 @@
       'type': 'daily',
       'used': dailyUsed,
       'limit': dailyLimit,
-      'text': _('can be sent before {} ET').format(limit_reset_time_et[current_lang]),
+      'text': _('can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]),
       'link_text': _('Request a daily limit increase'),
       'link_href': url_for('main.contact'),
       'remaining': "{:,}".format(dailyLimit - dailyUsed) if session['userlang'] == 'en' else "{:,}".format(dailyLimit - dailyUsed).replace(',', ' '),
@@ -79,10 +82,14 @@
           {% set unique_id = random_id(12) %}
           {% if show_links %}<span data-testid="rms-icon-{{ icon_type }}"></span>{% endif %}
           <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" aria-label="{{ icon_label }}" id="{{ unique_id ~ "_icon" }}" {% if not show_links %}data-testid="rms-icon-{{ icon_type }}"{% endif %}></i>
-          <div class="flex flex-wrap items-baseline gap-x-2" id="{{ unique_id }}">
+          <div class="flex flex-wrap items-baseline gap-x-2 basis-2/3" id="{{ unique_id }}">
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> 
             {% if verbose %}
-              {{ verbose_text }}
+              {% if section.remaining == "1" %}
+                {{ verbose_text_singular }}
+              {% else %}
+                {{ verbose_text }}
+              {% endif %}
             {% else %}
               {{ section.text }}
             {% endif %}
@@ -91,7 +98,7 @@
           <a 
             href="{{ section.link_href }}" 
             data-testid="rms-{{ section.type }}-link" 
-            class="ml-auto text-blue-500"
+            class="ml-auto text-blue-500 basis-1/3"
             aria-describedby="{{ unique_id ~ "_icon" ~ " " ~ unique_id }}"
           >
             {{section.link_text }}
