@@ -18,15 +18,15 @@
   {% else %}
     {% if notification_type == 'sms' %}
       {% if use_billable_units %}
-        {% set notification_type = _('billable units') %}
-        {% set verbose_text = _('billable units can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
-      {% else %}
         {% set notification_type = _('text message parts') %}
-        {% set verbose_text = _('text message parts can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text = _('text message parts can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+      {% else %}
+        {% set notification_type = _('text messages') %}
+        {% set verbose_text = _('text messages can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
       {% endif %}
     {% elif notification_type == 'email' %}
       {% set notification_type = _('emails') %}
-      {% set verbose_text = _('emails can be sent before {} ET').format(limit_reset_time_et[current_lang]) %}
+      {% set verbose_text = _('emails can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
     {% endif %}
   {% endif %}
 
@@ -79,7 +79,7 @@
           {% set unique_id = random_id(12) %}
           {% if show_links %}<span data-testid="rms-icon-{{ icon_type }}"></span>{% endif %}
           <i aria-hidden="true" class="fa-solid fa-fas {{ icon_class }}" aria-label="{{ icon_label }}" id="{{ unique_id ~ "_icon" }}" {% if not show_links %}data-testid="rms-icon-{{ icon_type }}"{% endif %}></i>
-          <div class="flex flex-wrap items-baseline gap-x-2" id="{{ unique_id }}">
+          <div class="items-baseline gap-x-2" id="{{ unique_id }}">
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> 
             {% if verbose %}
               {{ verbose_text }}
