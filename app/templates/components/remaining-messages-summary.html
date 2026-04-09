@@ -20,13 +20,16 @@
       {% if use_billable_units %}
         {% set notification_type = _('text message parts') %}
         {% set verbose_text = _('text message parts can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text_singular = _('text message part can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
       {% else %}
         {% set notification_type = _('text messages') %}
         {% set verbose_text = _('text messages can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+        {% set verbose_text_singular = _('text message can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
       {% endif %}
     {% elif notification_type == 'email' %}
       {% set notification_type = _('emails') %}
       {% set verbose_text = _('emails can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
+      {% set verbose_text_singular = _('email can be sent before {}&nbsp;ET').format(limit_reset_time_et[current_lang]) %}
     {% endif %}
   {% endif %}
 
@@ -82,7 +85,11 @@
           <div class="items-baseline gap-x-2" id="{{ unique_id }}">
             <span class="font-bold" data-testid="rms-{{ section.type }}-remaining">{{ section.remaining }}</span> 
             {% if verbose %}
-              {{ verbose_text }}
+              {% if section.remaining == "1" %}
+                {{ verbose_text_singular }}
+              {% else %}
+                {{ verbose_text }}
+              {% endif %}
             {% else %}
               {{ section.text }}
             {% endif %}
