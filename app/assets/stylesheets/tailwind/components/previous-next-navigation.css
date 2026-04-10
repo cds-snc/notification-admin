@@ -40,7 +40,7 @@
     @apply hidden;
   }
 
-  @screen sm {
+  @variant sm {
     .previous-and-next-navigation .next-page {
       @apply ml-auto;
     }

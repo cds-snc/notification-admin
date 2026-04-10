@@ -48,7 +48,7 @@
   }
 
   .page-footer-secondary-link {
-    @apply block mt-gutter w-max-content;
+    @apply block mt-gutter w-max;
   }
 
   .page-footer-right-aligned-link {

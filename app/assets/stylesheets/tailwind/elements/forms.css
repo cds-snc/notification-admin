@@ -3,7 +3,7 @@
   fieldset.after-error-summary {
     margin-top: -15px;
   }
-  @screen sm {
+  @variant sm {
     fieldset.after-error-summary {
       margin-top: -30px;
     }
@@ -53,7 +53,7 @@
     padding: 5px 4px 4px;
     @apply box-border text-smaller leading-tight font-normal font-body w-full border-2 border-solid border-black;
   }
-  @screen md {
+  @variant md {
     .form-control {
       @apply w-1/2;
     }
@@ -65,7 +65,7 @@
   .form-control-5em {
     @apply w-full;
   }
-  @screen md {
+  @variant md {
     .form-control-5em {
       width: 5em;
     }

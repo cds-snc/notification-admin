@@ -9,7 +9,7 @@
   .localized-field:has(.form-group-error) {
     @apply mr-4 pl-4 border-l-4 border-red;
   }
-  @screen md {
+  @variant md {
     .form-group-error,
     .localized-field:has(.form-group-error) {
       border-left-width: 5px;

@@ -11,6 +11,6 @@
   }
 
   #why-notify p {
-    @apply text-balance max-w-80ch;
+    @apply text-balance max-w-[80ch];
   }
 }
