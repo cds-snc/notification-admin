@@ -366,23 +366,23 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
 
 def aggregate_notifications_stats(template_statistics, use_billable_units=False):
     template_statistics = filter_out_cancelled_stats(template_statistics)
-    # The API now returns both 'count' and 'billable_units' fields
-    # Use count for display (sent messages), billable_units for limits tracking
-    # Fall back to count if billable_units is not available (for backwards compatibility)
-    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
-        count_field = "billable_units"
-    else:
-        count_field = "count"
+    # The API returns both 'count' and 'billable_units' fields when FF_USE_BILLABLE_UNITS is enabled.
+    # Email notifications never have billable units (always 0), so always use 'count' for email.
+    # Only use 'billable_units' for SMS when use_billable_units is True.
 
     notifications = {
         template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
     }
     for stat in template_statistics:
-        notifications[stat["template_type"]]["requested"] += stat[count_field]
+        if use_billable_units and stat["template_type"] == "sms" and "billable_units" in stat:
+            count_value = stat["billable_units"]
+        else:
+            count_value = stat["count"]
+        notifications[stat["template_type"]]["requested"] += count_value
         if stat["status"] in DELIVERED_STATUSES:
-            notifications[stat["template_type"]]["delivered"] += stat[count_field]
+            notifications[stat["template_type"]]["delivered"] += count_value
         elif stat["status"] in FAILURE_STATUSES:
-            notifications[stat["template_type"]]["failed"] += stat[count_field]
+            notifications[stat["template_type"]]["failed"] += count_value
 
     return notifications
 

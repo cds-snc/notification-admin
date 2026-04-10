@@ -80,7 +80,7 @@ CSV_COLUMN_HEADER_MAPPINGS = [
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
-    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
+    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains if not line.strip().startswith("#")]
 
 
 user_is_logged_in = login_required
@@ -122,7 +122,7 @@ def get_latest_stats(lang, filter_heartbeats=None):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
+    live_services = get_live_services_count()
 
     return {
         "monthly_stats": monthly_stats,
@@ -131,6 +131,11 @@ def get_latest_stats(lang, filter_heartbeats=None):
         "notifications_total": sms_total + emails_total,
         "live_services": live_services,
     }
+
+
+@cache.memoize(timeout=24 * 60 * 60)
+def get_live_services_count():
+    return len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
 
 
 def user_has_permissions(*permissions, **permission_kwargs):

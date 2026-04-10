@@ -119,6 +119,8 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = 8 * 60 * 60  # 8 hours
     REDIS_ENABLED = env.bool("REDIS_ENABLED", False)
     REDIS_URL = os.environ.get("REDIS_URL")
+    CACHE_TYPE = "RedisCache" if REDIS_ENABLED else "SimpleCache"
+    CACHE_REDIS_URL = os.environ.get("REDIS_URL")
     REPORTS_BUCKET_NAME = os.getenv("REPORTS_BUCKET_NAME", "notification-canada-ca-production-reports")
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
@@ -191,6 +193,7 @@ class Development(Config):
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "notify.tools-mou"
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
