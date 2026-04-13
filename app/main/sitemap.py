@@ -46,6 +46,11 @@ def get_sitemap():
                     {"href": gca_url_for("personalisation_guide"), "link_text": _("Sending custom content")},
                     {"href": gca_url_for("message_delivery_status"), "link_text": _("Understanding delivery and failure")},
                     {"href": gca_url_for("bounce_guidance"), "link_text": _("Updating contact information")},
+                    {
+                        "href": gca_url_for("counting_text_messages"),
+                        "link_text": _("Counting text messages"),
+                        "show": current_app.config.get("FF_USE_BILLABLE_UNITS", False),
+                    },
                 ],
             },
             {
