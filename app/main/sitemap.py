@@ -48,7 +48,7 @@ def get_sitemap():
                     {"href": gca_url_for("bounce_guidance"), "link_text": _("Updating contact information")},
                     {
                         "href": gca_url_for("counting_text_messages"),
-                        "link_text": _("Counting text messages"),
+                        "link_text": _("Counting text message parts"),
                         "show": current_app.config.get("FF_USE_BILLABLE_UNITS", False),
                     },
                 ],

@@ -2405,6 +2405,7 @@
 "billable units","FR billable units"
 "Text message parts","Parties de messages texte"
 "Guide: Counting text message parts","Guide&nbsp;: Compter les parties de messages texte"
+"Counting text message parts","Compter les parties de messages texte"
 "Counted as {}","Comptés comme {}"
 "text message parts to {} recipients","parties de messages texte envoyées à {} destinataires"
 "text message part to {} recipient","partie de message texte envoyée à {} destinataire"
