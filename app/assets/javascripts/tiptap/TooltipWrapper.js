@@ -37,7 +37,7 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
           role="tooltip"
           aria-hidden="true"
         >
-           <div
+          <div
             className={
               shortcut ? "rte-tooltip-label" : "rte-tooltip-label no-shortcut"
             }
@@ -45,8 +45,10 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
             {label}
           </div>
           {shortcut && <div className="rte-tooltip-shortcut">{shortcut}</div>}
-          {!shortcut && <div className="sr-only">{getNoShortcutLabel(lang)}</div>}
-        <div aria-hidden="true" className="rte-tooltip-caret" />
+          {!shortcut && (
+            <div className="sr-only">{getNoShortcutLabel(lang)}</div>
+          )}
+          <div aria-hidden="true" className="rte-tooltip-caret" />
         </div>
       )}
     </span>

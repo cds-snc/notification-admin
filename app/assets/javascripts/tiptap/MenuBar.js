@@ -272,7 +272,9 @@ const MenuBar = ({
   const announceToggle = (actionFn, checkFn, labels) => {
     try {
       const isCurrentlyActive = checkFn();
-      const actionLabel = isCurrentlyActive ? labels.removed || t.removed : labels.applied || t.applied;
+      const actionLabel = isCurrentlyActive
+        ? labels.removed || t.removed
+        : labels.applied || t.applied;
 
       // Optimistically announce the intended change.
       setLiveMessage(`${labels.label} ${actionLabel}`);
@@ -287,7 +289,9 @@ const MenuBar = ({
           const active = checkFn();
           if (active === isCurrentlyActive) {
             // The state didn't change as expected.
-            const finalLabel = active ? labels.removed || t.removed : labels.applied || t.applied;
+            const finalLabel = active
+              ? labels.removed || t.removed
+              : labels.applied || t.applied;
             setLiveMessage(`${labels.label} ${finalLabel}`);
           }
         }, 100);
@@ -519,11 +523,11 @@ const MenuBar = ({
 
           <ToolbarButton
             testId="rte-horizontal_rule"
-            onClick={() => 
+            onClick={() =>
               announceToggle(
-                () => editor.chain().focus().setHorizontalRule().run(), 
-                () => editor.isActive("horizontalRule"), 
-                t.horizontalRule
+                () => editor.chain().focus().setHorizontalRule().run(),
+                () => editor.isActive("horizontalRule"),
+                t.horizontalRule,
               )
             }
             isActive={editor.isActive("horizontalRule")}
@@ -776,7 +780,7 @@ const MenuBar = ({
               <button
                 type="button"
                 data-testid="rte-toggle-markdown"
-                onClick={() => onToggleMarkdownView()}
+                onClick={onToggleMarkdownView}
                 className="toolbar-button toolbar-button-mode"
                 title={toggleButtonLabel}
                 aria-pressed={isMarkdownView}
@@ -790,7 +794,7 @@ const MenuBar = ({
             <button
               type="button"
               data-testid="rte-toggle-markdown"
-              onClick={() => onToggleMarkdownView()}
+              onClick={onToggleMarkdownView}
               className="toolbar-button toolbar-button-mode toolbar-switch-group"
               title={toggleButtonLabel}
               aria-pressed={isMarkdownView}

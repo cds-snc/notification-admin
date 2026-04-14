@@ -852,7 +852,7 @@ const SimpleEditor = ({
                     event_category: "Template Editor",
                     event_label: "Content change in markdown mode",
                     editor_mode: "markdown",
-                    });
+                  });
                 }
               }}
               onKeyDown={onMarkdownKeyDown}
