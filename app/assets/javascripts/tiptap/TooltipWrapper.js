@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useEditorContext } from "./EditorContext";
 import { getNoShortcutLabel } from "./localization";
 import "./tooltip.compiled.css";

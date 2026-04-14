@@ -5,6 +5,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import MenuBar from '../../app/assets/javascripts/tiptap/MenuBar';
+import { EditorProvider } from "../../app/assets/javascripts/tiptap/EditorContext";
 import '@testing-library/jest-dom';
 
 // Mock Tiptap editor
@@ -43,7 +44,11 @@ jest.mock('../../app/assets/javascripts/tiptap/TooltipWrapper', () => ({ childre
 
 describe('MenuBar', () => {
   test('renders all toolbar buttons with correct English labels', () => {
-    render(<MenuBar editor={mockEditor} lang="en" />);
+    render(
+      <EditorProvider lang="en">
+        <MenuBar editor={mockEditor} />
+      </EditorProvider>
+    );
 
     // Check for some key buttons by their test-id or label
     expect(screen.getByTestId('rte-heading_1')).toBeInTheDocument();
@@ -60,7 +65,11 @@ describe('MenuBar', () => {
   });
 
   test('renders all toolbar buttons with correct French labels', () => {
-    render(<MenuBar editor={mockEditor} lang="fr" />);
+    render(
+      <EditorProvider lang="fr">
+        <MenuBar editor={mockEditor} />
+      </EditorProvider>
+    );
 
     // Heading 1 (Titre) should have "Appliquer Titre" when not active
     expect(screen.getByTestId('rte-heading_1')).toHaveTextContent('Appliquer Titre');
@@ -70,7 +79,11 @@ describe('MenuBar', () => {
   });
 
   test('debug log button state (for manual inspection in test output)', () => {
-    const { container } = render(<MenuBar editor={mockEditor} lang="en" />);
+    const { container } = render(
+      <EditorProvider lang="en">
+        <MenuBar editor={mockEditor} />
+      </EditorProvider>
+    );
     const buttons = container.querySelectorAll('button');
     
     console.log('--- Toolbar Buttons Debug ---');
