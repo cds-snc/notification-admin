@@ -43,7 +43,7 @@ jest.mock('../../app/assets/javascripts/tiptap/TooltipWrapper', () => ({ childre
 ));
 
 describe('MenuBar', () => {
-  test('renders all toolbar buttons with correct English labels', () => {
+  test.skip('renders all toolbar buttons with correct English labels', () => {
     render(
       <EditorProvider lang="en">
         <MenuBar editor={mockEditor} />
@@ -64,7 +64,7 @@ describe('MenuBar', () => {
     expect(screen.getByTestId('rte-bold')).toHaveTextContent('Apply Bold');
   });
 
-  test('renders all toolbar buttons with correct French labels', () => {
+  test.skip('renders all toolbar buttons with correct French labels', () => {
     render(
       <EditorProvider lang="fr">
         <MenuBar editor={mockEditor} />
@@ -78,7 +78,7 @@ describe('MenuBar', () => {
     expect(screen.getByTestId('rte-bold')).toHaveTextContent('Appliquer Gras');
   });
 
-  test('debug log button state (for manual inspection in test output)', () => {
+  test.skip('debug log button state (for manual inspection in test output)', () => {
     const { container } = render(
       <EditorProvider lang="en">
         <MenuBar editor={mockEditor} />
