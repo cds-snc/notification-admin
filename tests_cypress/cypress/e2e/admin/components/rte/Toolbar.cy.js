@@ -21,6 +21,23 @@ describe("Toolbar accessibility tests", () => {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
+  const normalizeWhitespace = (value) => value.replace(/\s+/g, " ").trim();
+
+  const assertButtonActionLabel = ({ button, action, key, option }) => {
+    const expectedLabels = [
+      `${action} ${option.labelEn}`,
+      `${action} ${option.labelFr}`,
+    ];
+
+    button.should(($b) => {
+      const text = normalizeWhitespace($b.text());
+      expect(
+        expectedLabels,
+        `Label for ${humanize(key)} should be one of: ${expectedLabels.join(", ")}`,
+      ).to.include(text);
+    });
+  };
+
   /**
    * Toolbar button accessibility and label tests
    *
@@ -32,18 +49,13 @@ describe("Toolbar accessibility tests", () => {
    *  - label reverts to "Apply" after removal and live region contains "removed"
    */
   context("Toolbar buttons update text, labels, aria-live when invoked", () => {
-    Object.entries(FORMATTING_OPTIONS).forEach(([key, testId]) => {
+    Object.entries(FORMATTING_OPTIONS).forEach(([key, option]) => {
       it(humanize(key), () => {
+        const { testId } = option;
         const button = cy.getByTestId(testId);
 
         // 1) check initial label and aria state
-        button.should(($b) => {
-          const text = $b.text().trim();
-          expect(
-            text,
-            `Label for ${humanize(key)} should contain "apply"`,
-          ).to.match(/Apply/i);
-        });
+        assertButtonActionLabel({ button, action: "Apply", key, option });
         button.should("have.attr", "aria-pressed", "false");
 
         // 2) type content and select it to make formatting apply-able
@@ -57,13 +69,7 @@ describe("Toolbar accessibility tests", () => {
         button.click();
 
         // label should update and aria-pressed should be true
-        button.should(($b) => {
-          const text = $b.text().trim();
-          expect(
-            text,
-            `Label for ${humanize(key)} should contain "remove"`,
-          ).to.match(/Remove/i);
-        });
+        assertButtonActionLabel({ button, action: "Remove", key, option });
         button.should("have.attr", "aria-pressed", "true");
 
         // live region should announce the applied state; log its text for debugging
@@ -76,13 +82,7 @@ describe("Toolbar accessibility tests", () => {
         RichTextEditor.Components.Editor().focus().type("{selectall}");
         button.click();
 
-        button.should(($b) => {
-          const text = $b.text().trim();
-          expect(
-            text,
-            `Label for ${humanize(key)} should contain "apply"`,
-          ).to.match(/Apply/i);
-        });
+        assertButtonActionLabel({ button, action: "Apply", key, option });
         button.should("have.attr", "aria-pressed", "false");
         RichTextEditor.Components.LiveRegion().should(
           "contain.text",
@@ -93,9 +93,9 @@ describe("Toolbar accessibility tests", () => {
   });
 
   context("Toolbar buttons have tooltips", () => {
-    Object.entries(FORMATTING_OPTIONS).forEach(([key, testId]) => {
+    Object.entries(FORMATTING_OPTIONS).forEach(([key, option]) => {
       it(humanize(key), () => {
-        const button = cy.getByTestId(testId);
+        const button = cy.getByTestId(option.testId);
         button.trigger("mouseover");
         cy.get(".rte-tooltip-box").should("exist");
         cy.get(".rte-tooltip-label").should("not.be.empty");
@@ -141,7 +141,7 @@ describe("Toolbar accessibility tests", () => {
       cy.realPress(["Alt", "F10"]);
 
       // Forward navigation: ensure pressing Right Arrow moves focus to next button
-      Object.entries(FORMATTING_OPTIONS).forEach(([key, testId], index) => {
+      Object.entries(FORMATTING_OPTIONS).forEach(([key, option], index) => {
         // get the next button by position (index + 1)
         RichTextEditor.Components.Toolbar()
           .find("button")
