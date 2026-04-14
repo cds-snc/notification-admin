@@ -225,7 +225,7 @@ const ToolbarButton = ({
   children,
 }) => {
   const { t } = useEditorContext();
-  const label = labels.label || labels
+  const label = labels.label || labels;
   const shortcut = labels.shortcut;
 
   // Choose verb prefix for the sr-only action text.
@@ -234,9 +234,11 @@ const ToolbarButton = ({
   const applyVerb = (t.verbs && t.verbs[verbKey]) || t.verbs.apply;
   const removeVerb = t.verbs.remove;
 
-  const description = labels.label ? isActive
-    ? `${removeVerb} ${labels.label}`
-    : `${applyVerb} ${labels.label}`: labels;
+  const description = labels.label
+    ? isActive
+      ? `${removeVerb} ${labels.label}`
+      : `${applyVerb} ${labels.label}`
+    : labels;
 
   return (
     <TooltipWrapper label={label} shortcut={shortcut}>

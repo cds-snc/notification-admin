@@ -37,9 +37,7 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
             {label}
           </div>
           {shortcut && <div className="rte-tooltip-shortcut">{shortcut}</div>}
-          {!shortcut && (
-            <div className="sr-only">{t.noShortcut}</div>
-          )}
+          {!shortcut && <div className="sr-only">{t.noShortcut}</div>}
           <div aria-hidden="true" className="rte-tooltip-caret" />
         </div>
       )}
