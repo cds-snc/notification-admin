@@ -30,8 +30,20 @@
   // French non-GSM characters that force Unicode encoding
   var FRENCH_NON_GSM = "ÀÂËÎÏÔÙÛâçêëîïôûŒœ";
 
+  // Inuktitut syllabics that force Unicode encoding
+  var INUKTITUT_NON_GSM =
+    "ᐁᐃᐄᐅᐊᐯᐱᐲᐳᐸᑉᑊᑌᑎᑏᑐᑕᑦᑫᑭᑮᑯᑲᒃᒉᒋᒌᒍᒐᒡᒣᒥᒦᒧᒪᒻᓀᓂᓃᓄᓇᓐᓓᓕᓖᓗᓚᓪᓭᓯᓰᓱᓴᔅᔦᔨᔩᔪᔭᔾᕂᕆᕇᕈᕋᕐᕓᕕᕖᕗᕙᕝᕴᕵᕶᕷᕹᕻᕼᕿᖀᖁᖃᖅᖏᖐᖑᖓᖕᖖᖠᖡᖢᖤᖦᖨᖩᖪᖬᖮᖯᙯᙰᙱᙲᙳᙵ𑪰𑪱𑪲𑪴𑪶𑪷𑪸𑪺";
+
+  // Cree syllabics that force Unicode encoding
+  var CREE_NON_GSM =
+    "ᐁᐃᐅᐊᐯᐱᐳᐸᑌᑎᑐᑕᑫᑭᑯᑲᒉᒋᒍᒐᒣᒥᒧᒪᓀᓂᓄᓇᓭᓯᓱᓴᔦᔨᔪᔭ";
+
+  // Ojibwe syllabics that force Unicode encoding
+  var OJIBWE_NON_GSM =
+    "ᐁᐃᐄᐅᐆᐊᐋᐞᐤᐦᐧᐯᐱᐲᐳᐴᐸᐹᑉᑌᑎᑏᑐᑑᑕᑖᑦᑫᑭᑮᑯᑰᑲᑳᒃᒉᒋᒌᒍᒎᒐᒑᒡᒣᒥᒦᒧᒨᒪᒫᒻᓀᓂᓃᓄᓅᓇᓈᓐᓭᓯᓰᓱᓲᓴᓵᔅᔐᔑᔒᔓᔔᔕᔖᔥᔦᔨᔩᔪᔫᔭᔮᔾᣔᣕᣖᣗᣘᣙᣚᣛᣜ";
+
   // All non-GSM characters that are allowed but force Unicode encoding
-  var ALL_NON_GSM_ALLOWED = WELSH_NON_GSM + FRENCH_NON_GSM;
+  var ALL_NON_GSM_ALLOWED = WELSH_NON_GSM + FRENCH_NON_GSM + INUKTITUT_NON_GSM + CREE_NON_GSM + OJIBWE_NON_GSM;
 
   // Build sets for fast lookup
   var gsmBasicSet = new Set(GSM_BASIC_CHARS);
@@ -56,8 +68,11 @@
    */
   function hasUnicodeChars(text) {
     var stripped = stripPlaceholders(text);
-    for (var i = 0; i < stripped.length; i++) {
-      if (nonGsmAllowedSet.has(stripped[i])) {
+    // Use spread to iterate over Unicode code points, not UTF-16 units.
+    // This correctly handles supplementary characters (e.g. Inuktitut 𑪶).
+    var chars = [...stripped];
+    for (var i = 0; i < chars.length; i++) {
+      if (nonGsmAllowedSet.has(chars[i])) {
         return true;
       }
     }
@@ -73,7 +88,9 @@
   function countCharacterUnits(text, isUnicode) {
     var stripped = stripPlaceholders(text);
     if (isUnicode) {
-      return stripped.length;
+      // Use spread to count Unicode code points, not UTF-16 units.
+      // This matches Python's len() which counts code points.
+      return [...stripped].length;
     }
     var count = 0;
     for (var i = 0; i < stripped.length; i++) {
@@ -181,8 +198,9 @@
 
     for (var w = 0; w < words.length; w++) {
       var word = words[w];
-      for (var c = 0; c < word.length; c++) {
-        var ch = word[c];
+      var wordChars = [...word];
+      for (var c = 0; c < wordChars.length; c++) {
+        var ch = wordChars[c];
         if (nonGsmAllowedSet.has(ch) && !fullGsmSet.has(ch)) {
           if (!charMap[ch]) {
             charMap[ch] = new Set();
