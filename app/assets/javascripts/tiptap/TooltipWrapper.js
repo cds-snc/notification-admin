@@ -1,40 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useEditorContext } from "./EditorContext";
+import { getNoShortcutLabel } from "./localization";
 import "./tooltip.compiled.css";
 
 const TooltipWrapper = ({ children, label, shortcut }) => {
-  const [visible, setVisible] = useState(false);
-  const ref = React.useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const { lang } = useEditorContext();
+  const tooltipRef = useRef(null);
+  const targetRef = useRef(null);
 
-  const show = () => setVisible(true);
-  const hide = () => setVisible(false);
+  const showTooltip = () => setIsVisible(true);
+  const hideTooltip = () => setIsVisible(false);
 
-  const child = React.Children.only(children);
-  const cloned = React.cloneElement(child, {
-    onMouseEnter: (e) => {
-      show();
-      if (child.props.onMouseEnter) child.props.onMouseEnter(e);
-    },
-    onMouseLeave: (e) => {
-      hide();
-      if (child.props.onMouseLeave) child.props.onMouseLeave(e);
-    },
-    onFocus: (e) => {
-      show();
-      if (child.props.onFocus) child.props.onFocus(e);
-    },
-    onBlur: (e) => {
-      hide();
-      if (child.props.onBlur) child.props.onBlur(e);
-    },
-    ref,
-  });
+  // When focusing or hovering the target, prepare it with a screen-reader
+  // announcement that combines the button's label and its keyboard shortcut.
+  // This ensures accessibility parity with visual users who see the shortcut
+  // in the tooltip. Use " (No shortcut)" for accessible clarity when none is set.
+  const fullLabel = shortcut
+    ? `${label} (${shortcut})`
+    : `${label} (${getNoShortcutLabel(lang)})`;
 
   return (
-    <span className="rte-tooltip-wrapper">
-      {cloned}
-      {visible && (
-        <div role="tooltip" className="rte-tooltip-box">
-          <div
+    <span
+      className="rte-tooltip-wrapper"
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onFocus={showTooltip}
+      onBlur={hideTooltip}
+      ref={targetRef}
+    >
+      {React.cloneElement(children, { "aria-label": fullLabel })}
+      {isVisible && (
+        <div
+          ref={tooltipRef}
+          className="rte-tooltip-box"
+          role="tooltip"
+          aria-hidden="true"
+        >
+           <div
             className={
               shortcut ? "rte-tooltip-label" : "rte-tooltip-label no-shortcut"
             }
@@ -42,7 +45,8 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
             {label}
           </div>
           {shortcut && <div className="rte-tooltip-shortcut">{shortcut}</div>}
-          <div aria-hidden="true" className="rte-tooltip-caret" />
+          {!shortcut && <div className="sr-only">{getNoShortcutLabel(lang)}</div>}
+        <div aria-hidden="true" className="rte-tooltip-caret" />
         </div>
       )}
     </span>
