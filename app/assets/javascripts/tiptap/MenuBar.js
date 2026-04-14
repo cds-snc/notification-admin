@@ -224,9 +224,19 @@ const ToolbarButton = ({
   labels,
   children,
 }) => {
-  const label = labels.label || labels;
+  const { t } = useEditorContext();
+  const label = labels.label || labels
   const shortcut = labels.shortcut;
-  const description = labels.label ? (isActive ? labels.remove : labels.apply) : labels;
+
+  // Choose verb prefix for the sr-only action text.
+  // Most buttons use the shared `apply` verb; some can set `verb: "insert"`.
+  const verbKey = labels.verb || "apply";
+  const applyVerb = (t.verbs && t.verbs[verbKey]) || t.verbs.apply;
+  const removeVerb = t.verbs.remove;
+
+  const description = labels.label ? isActive
+    ? `${removeVerb} ${labels.label}`
+    : `${applyVerb} ${labels.label}`: labels;
 
   return (
     <TooltipWrapper label={label} shortcut={shortcut}>
@@ -240,9 +250,7 @@ const ToolbarButton = ({
         title={label}
         aria-pressed={isActive}
       >
-        <span className="sr-only">
-          {description}
-        </span>
+        <span className="sr-only">{description}</span>
         {children}
       </button>
     </TooltipWrapper>
