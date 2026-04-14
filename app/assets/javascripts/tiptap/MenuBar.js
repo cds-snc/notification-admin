@@ -224,9 +224,9 @@ const ToolbarButton = ({
   labels,
   children,
 }) => {
-  const isStringLabel = typeof labels === "string";
-  const label = isStringLabel ? labels : labels.label;
-  const shortcut = isStringLabel ? undefined : labels.shortcut;
+  const label = labels.label || labels;
+  const shortcut = labels.shortcut;
+  const description = labels.label ? (isActive ? labels.remove : labels.apply) : labels;
 
   return (
     <TooltipWrapper label={label} shortcut={shortcut}>
@@ -238,10 +238,10 @@ const ToolbarButton = ({
         disabled={isDisabled}
         className={"toolbar-button" + (isActive ? " is-active" : "")}
         title={label}
-        aria-pressed={testId === "rte-horizontal_rule" ? undefined : isActive}
+        aria-pressed={isActive}
       >
         <span className="sr-only">
-          {isStringLabel ? label : isActive ? labels.remove : labels.apply}
+          {description}
         </span>
         {children}
       </button>
