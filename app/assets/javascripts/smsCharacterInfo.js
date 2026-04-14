@@ -35,15 +35,19 @@
     "ᐁᐃᐄᐅᐊᐯᐱᐲᐳᐸᑉᑊᑌᑎᑏᑐᑕᑦᑫᑭᑮᑯᑲᒃᒉᒋᒌᒍᒐᒡᒣᒥᒦᒧᒪᒻᓀᓂᓃᓄᓇᓐᓓᓕᓖᓗᓚᓪᓭᓯᓰᓱᓴᔅᔦᔨᔩᔪᔭᔾᕂᕆᕇᕈᕋᕐᕓᕕᕖᕗᕙᕝᕴᕵᕶᕷᕹᕻᕼᕿᖀᖁᖃᖅᖏᖐᖑᖓᖕᖖᖠᖡᖢᖤᖦᖨᖩᖪᖬᖮᖯᙯᙰᙱᙲᙳᙵ𑪰𑪱𑪲𑪴𑪶𑪷𑪸𑪺";
 
   // Cree syllabics that force Unicode encoding
-  var CREE_NON_GSM =
-    "ᐁᐃᐅᐊᐯᐱᐳᐸᑌᑎᑐᑕᑫᑭᑯᑲᒉᒋᒍᒐᒣᒥᒧᒪᓀᓂᓄᓇᓭᓯᓱᓴᔦᔨᔪᔭ";
+  var CREE_NON_GSM = "ᐁᐃᐅᐊᐯᐱᐳᐸᑌᑎᑐᑕᑫᑭᑯᑲᒉᒋᒍᒐᒣᒥᒧᒪᓀᓂᓄᓇᓭᓯᓱᓴᔦᔨᔪᔭ";
 
   // Ojibwe syllabics that force Unicode encoding
   var OJIBWE_NON_GSM =
     "ᐁᐃᐄᐅᐆᐊᐋᐞᐤᐦᐧᐯᐱᐲᐳᐴᐸᐹᑉᑌᑎᑏᑐᑑᑕᑖᑦᑫᑭᑮᑯᑰᑲᑳᒃᒉᒋᒌᒍᒎᒐᒑᒡᒣᒥᒦᒧᒨᒪᒫᒻᓀᓂᓃᓄᓅᓇᓈᓐᓭᓯᓰᓱᓲᓴᓵᔅᔐᔑᔒᔓᔔᔕᔖᔥᔦᔨᔩᔪᔫᔭᔮᔾᣔᣕᣖᣗᣘᣙᣚᣛᣜ";
 
   // All non-GSM characters that are allowed but force Unicode encoding
-  var ALL_NON_GSM_ALLOWED = WELSH_NON_GSM + FRENCH_NON_GSM + INUKTITUT_NON_GSM + CREE_NON_GSM + OJIBWE_NON_GSM;
+  var ALL_NON_GSM_ALLOWED =
+    WELSH_NON_GSM +
+    FRENCH_NON_GSM +
+    INUKTITUT_NON_GSM +
+    CREE_NON_GSM +
+    OJIBWE_NON_GSM;
 
   // Build sets for fast lookup
   var gsmBasicSet = new Set(GSM_BASIC_CHARS);
