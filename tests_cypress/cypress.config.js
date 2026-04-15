@@ -1,8 +1,11 @@
 const fs = require("fs");
 const { defineConfig } = require("cypress");
-const EmailAccount = require("./cypress/plugins/email-account");
-const CreateAccount = require("./cypress/plugins/create-account");
 const htmlvalidate = require("cypress-html-validate/plugin");
+
+// Lazily load e2e-only plugins so they don't fail when cypress.env.json is absent
+// (component tests don't need these and the file isn't committed to the repo)
+const getEmailAccount = () => require("./cypress/plugins/email-account");
+const getCreateAccount = () => require("./cypress/plugins/create-account");
 
 // determine whether Cypress is running in a Docker container
 const isDocker = fs.existsSync("/.dockerenv");
@@ -83,7 +86,7 @@ module.exports = defineConfig({
         },
       });
 
-      const emailAccount = await EmailAccount();
+      const emailAccount = await getEmailAccount()();
 
       on("task", {
         log(message) {
@@ -109,7 +112,7 @@ module.exports = defineConfig({
           if (global.acct) {
             return global.acct;
           } else {
-            let acct = CreateAccount(baseUrl, username, secret);
+            let acct = getCreateAccount()(baseUrl, username, secret);
             global.acct = acct;
             return acct;
           }
