@@ -186,7 +186,7 @@ def platform_admin_services():
         trial_mode_services=request.endpoint == "main.trial_services",
     )
 
-    start_date = api_args.get("start_date", datetime.utcnow().date().replace(month=1, day=1))
+    start_date = api_args.get("start_date", datetime.utcnow().date())
     end_date = api_args.get("end_date", datetime.utcnow().date())
 
     sms_cost_by_service = {}
