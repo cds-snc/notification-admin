@@ -19,7 +19,10 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
-from notifications_utils import TEMPLATE_NAME_CHAR_COUNT_LIMIT
+from notifications_utils import (
+    SMS_CHAR_COUNT_LIMIT,
+    TEMPLATE_NAME_CHAR_COUNT_LIMIT,
+)
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
@@ -62,6 +65,7 @@ from app.sample_template_utils import create_temporary_sample_template, get_samp
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
+    get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
     user_has_permissions,
@@ -180,7 +184,11 @@ def get_limit_stats(notification_type, template=None):
                 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later."
             )
         else:
-            limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
+            limit_reset_time = get_limit_reset_time_et()
+            current_lang = get_current_locale(current_app)
+            limit_stats["heading"] = _("Sending paused until {} ET. You can schedule more messages to send later.").format(
+                limit_reset_time[current_lang]
+            )
 
     return limit_stats
 
@@ -958,6 +966,7 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand",
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
         )
 
 
@@ -1128,6 +1137,7 @@ def edit_service_template(service_id, template_id):
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand" if request.method == "POST" else None,
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
         )
 
 

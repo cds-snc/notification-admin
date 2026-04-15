@@ -30,8 +30,24 @@
   // French non-GSM characters that force Unicode encoding
   var FRENCH_NON_GSM = "ÀÂËÎÏÔÙÛâçêëîïôûŒœ";
 
+  // Inuktitut syllabics that force Unicode encoding
+  var INUKTITUT_NON_GSM =
+    "ᐁᐃᐄᐅᐊᐯᐱᐲᐳᐸᑉᑊᑌᑎᑏᑐᑕᑦᑫᑭᑮᑯᑲᒃᒉᒋᒌᒍᒐᒡᒣᒥᒦᒧᒪᒻᓀᓂᓃᓄᓇᓐᓓᓕᓖᓗᓚᓪᓭᓯᓰᓱᓴᔅᔦᔨᔩᔪᔭᔾᕂᕆᕇᕈᕋᕐᕓᕕᕖᕗᕙᕝᕴᕵᕶᕷᕹᕻᕼᕿᖀᖁᖃᖅᖏᖐᖑᖓᖕᖖᖠᖡᖢᖤᖦᖨᖩᖪᖬᖮᖯᙯᙰᙱᙲᙳᙵ𑪰𑪱𑪲𑪴𑪶𑪷𑪸𑪺";
+
+  // Cree syllabics that force Unicode encoding
+  var CREE_NON_GSM = "ᐁᐃᐅᐊᐯᐱᐳᐸᑌᑎᑐᑕᑫᑭᑯᑲᒉᒋᒍᒐᒣᒥᒧᒪᓀᓂᓄᓇᓭᓯᓱᓴᔦᔨᔪᔭ";
+
+  // Ojibwe syllabics that force Unicode encoding
+  var OJIBWE_NON_GSM =
+    "ᐁᐃᐄᐅᐆᐊᐋᐞᐤᐦᐧᐯᐱᐲᐳᐴᐸᐹᑉᑌᑎᑏᑐᑑᑕᑖᑦᑫᑭᑮᑯᑰᑲᑳᒃᒉᒋᒌᒍᒎᒐᒑᒡᒣᒥᒦᒧᒨᒪᒫᒻᓀᓂᓃᓄᓅᓇᓈᓐᓭᓯᓰᓱᓲᓴᓵᔅᔐᔑᔒᔓᔔᔕᔖᔥᔦᔨᔩᔪᔫᔭᔮᔾᣔᣕᣖᣗᣘᣙᣚᣛᣜ";
+
   // All non-GSM characters that are allowed but force Unicode encoding
-  var ALL_NON_GSM_ALLOWED = WELSH_NON_GSM + FRENCH_NON_GSM;
+  var ALL_NON_GSM_ALLOWED =
+    WELSH_NON_GSM +
+    FRENCH_NON_GSM +
+    INUKTITUT_NON_GSM +
+    CREE_NON_GSM +
+    OJIBWE_NON_GSM;
 
   // Build sets for fast lookup
   var gsmBasicSet = new Set(GSM_BASIC_CHARS);
@@ -56,8 +72,11 @@
    */
   function hasUnicodeChars(text) {
     var stripped = stripPlaceholders(text);
-    for (var i = 0; i < stripped.length; i++) {
-      if (nonGsmAllowedSet.has(stripped[i])) {
+    // Use spread to iterate over Unicode code points, not UTF-16 units.
+    // This correctly handles supplementary characters (e.g. Inuktitut 𑪶).
+    var chars = [...stripped];
+    for (var i = 0; i < chars.length; i++) {
+      if (nonGsmAllowedSet.has(chars[i])) {
         return true;
       }
     }
@@ -73,7 +92,9 @@
   function countCharacterUnits(text, isUnicode) {
     var stripped = stripPlaceholders(text);
     if (isUnicode) {
-      return stripped.length;
+      // Use spread to count Unicode code points, not UTF-16 units.
+      // This matches Python's len() which counts code points.
+      return [...stripped].length;
     }
     var count = 0;
     for (var i = 0; i < stripped.length; i++) {
@@ -118,6 +139,7 @@
   var fragmentCountSuffix = document.getElementById(
     "sms-fragment-count-suffix",
   );
+  var characterCountText = document.getElementById("sms-character-count-text");
   // Shortening suggestions DOM references (commented out — preserved for future use)
   // var shortenSection = document.getElementById("sms-shorten-suggestions");
   // var shortenList = document.getElementById("sms-shorten-list");
@@ -127,6 +149,10 @@
 
   // ── Configuration from data attributes ──────────────────────────────────
   var smsPrefix = container.getAttribute("data-sms-prefix") || "";
+  var smsCharCountLimit = parseInt(
+    container.getAttribute("data-sms-char-count-limit") || "612",
+    10,
+  );
 
   // ── i18n strings ────────────────────────────────────────────────────────
   function phrase(key, fallback) {
@@ -176,8 +202,9 @@
 
     for (var w = 0; w < words.length; w++) {
       var word = words[w];
-      for (var c = 0; c < word.length; c++) {
-        var ch = word[c];
+      var wordChars = [...word];
+      for (var c = 0; c < wordChars.length; c++) {
+        var ch = wordChars[c];
         if (nonGsmAllowedSet.has(ch) && !fullGsmSet.has(ch)) {
           if (!charMap[ch]) {
             charMap[ch] = new Set();
@@ -205,7 +232,7 @@
    * Only uses "Estimate" wording when personalisation variables are present,
    * since the actual count may be higher with custom content.
    */
-  function renderFragmentCount(fragmentCount, hasVars) {
+  function renderFragmentCount(fragmentCount, characterUnits, hasVars) {
     var countText;
     if (hasVars) {
       if (fragmentCount === 1) {
@@ -238,6 +265,31 @@
           "Variables may increase number of messages.",
         )
       : "";
+
+    // -- Character count and limit validation ──────────────────────────────
+    if (characterCountText) {
+      var limit = smsCharCountLimit;
+      var remaining = limit - characterUnits;
+
+      if (characterUnits > limit + 1) {
+        // Plural
+        characterCountText.textContent = phrase(
+          "sms_character_count_over_limit",
+          "{} too many characters",
+        ).replace("{}", Math.abs(remaining));
+        characterCountText.classList.add("text-red-700", "font-bold");
+      } else if (characterUnits > limit) {
+        // Singular
+        characterCountText.textContent = phrase(
+          "sms_one_character_count_over_limit",
+          "1 too many characters",
+        );
+        characterCountText.classList.add("text-red-700", "font-bold");
+      } else {
+        characterCountText.textContent = "";
+        characterCountText.classList.remove("text-red-700", "font-bold");
+      }
+    }
   }
 
   /**
@@ -280,7 +332,12 @@
     var fragmentCount = getFragmentCount(characterUnits, isUnicode);
     var hasVars = hasPlaceholders(content);
 
-    renderFragmentCount(fragmentCount, hasVars);
+    // For the character limit check, count GSM character units of the content only
+    // (no service-name prefix), matching the server-side check in notification-api which
+    // calls count_sms_character_units on the template content without a prefix.
+    var contentOnly = stripPlaceholders(content).trim();
+    var contentUnits = countCharacterUnits(contentOnly, isUnicode);
+    renderFragmentCount(fragmentCount, contentUnits, hasVars);
     // renderShorteningSuggestions(findNonGsmCharacters(content)); // Commented out — preserved for future use
   }
 
