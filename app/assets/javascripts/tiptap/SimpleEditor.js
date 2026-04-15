@@ -29,6 +29,7 @@ import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
+import { EditorProvider } from "./EditorContext";
 
 const SimpleEditor = ({
   inputId,
@@ -824,65 +825,66 @@ const SimpleEditor = ({
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
+
   return (
-    <div className="editor-wrapper">
-      <MenuBar
-        editor={editor}
-        openLinkModal={openLinkModal}
-        lang={lang}
-        onToggleMarkdownView={toggleViewMode}
-        isMarkdownView={isMarkdownView}
-        toggleLabel={toggleLabel}
-        useUnifiedConditionalButton={useUnifiedConditionalButton}
-      />
-      <div className="editor-content">
-        {isMarkdownView ? (
-          <textarea
-            value={markdownValue}
-            onChange={(event) => {
-              setMarkdownValue(event.target.value);
-              if (
-                !hasTrackedEditRef.current.markdown &&
-                typeof gtag === "function"
-              ) {
-                hasTrackedEditRef.current.markdown = true;
-                gtag("event", "editor_content_changed", {
-                  event_category: "Template Editor",
-                  event_label: "Content change in markdown mode",
-                  editor_mode: "markdown",
-                });
-              }
-            }}
-            onKeyDown={onMarkdownKeyDown}
-            className="markdown-view"
-            aria-label={viewLabel.markdown}
-            spellCheck="false"
-            data-testid="template-content"
-          ></textarea>
-        ) : (
-          <EditorContent editor={editor} data-testid="rte-editor" />
-        )}
+    <EditorProvider lang={lang}>
+      <div className="editor-wrapper">
+        <MenuBar
+          editor={editor}
+          openLinkModal={openLinkModal}
+          onToggleMarkdownView={toggleViewMode}
+          isMarkdownView={isMarkdownView}
+          toggleLabel={toggleLabel}
+          useUnifiedConditionalButton={useUnifiedConditionalButton}
+        />
+        <div className="editor-content">
+          {isMarkdownView ? (
+            <textarea
+              value={markdownValue}
+              onChange={(event) => {
+                setMarkdownValue(event.target.value);
+                if (
+                  !hasTrackedEditRef.current.markdown &&
+                  typeof gtag === "function"
+                ) {
+                  hasTrackedEditRef.current.markdown = true;
+                  gtag("event", "editor_content_changed", {
+                    event_category: "Template Editor",
+                    event_label: "Content change in markdown mode",
+                    editor_mode: "markdown",
+                  });
+                }
+              }}
+              onKeyDown={onMarkdownKeyDown}
+              className="markdown-view"
+              aria-label={viewLabel.markdown}
+              spellCheck="false"
+              data-testid="template-content"
+            ></textarea>
+          ) : (
+            <EditorContent editor={editor} data-testid="rte-editor" />
+          )}
+        </div>
+        <LinkModal
+          editor={editor}
+          isVisible={isLinkModalVisible}
+          position={modalPosition}
+          outline={selectionHighlight}
+          onClose={() => {
+            setLinkModalVisible(false);
+            setSelectionHighlight(null);
+          }}
+          justOpened={justOpenedLink}
+          onSavedLink={(href) => {
+            try {
+              currentLinkRef.current = href || null;
+            } catch (e) {
+              console.error("[SimpleEditor] Error in onSavedLink callback:", e);
+            }
+          }}
+        />
       </div>
-      <LinkModal
-        editor={editor}
-        isVisible={isLinkModalVisible}
-        position={modalPosition}
-        outline={selectionHighlight}
-        onClose={() => {
-          setLinkModalVisible(false);
-          setSelectionHighlight(null);
-        }}
-        lang={lang}
-        justOpened={justOpenedLink}
-        onSavedLink={(href) => {
-          try {
-            currentLinkRef.current = href || null;
-          } catch (e) {
-            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
-          }
-        }}
-      />
-    </div>
+    </EditorProvider>
   );
 };
 

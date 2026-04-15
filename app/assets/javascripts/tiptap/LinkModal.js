@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ExternalLink, Unlink, Check } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
+import { useEditorContext } from "./EditorContext";
 
 const LinkModal = ({
   editor,
@@ -8,13 +9,13 @@ const LinkModal = ({
   position,
   onClose,
   outline,
-  lang = "en",
   justOpened = false,
   onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
   const modalRef = useRef(null);
   const inputRef = useRef(null);
+  const { t } = useEditorContext();
 
   useEffect(() => {
     // When the modal becomes visible, populate the input with the current
@@ -178,24 +179,6 @@ const LinkModal = ({
   };
 
   if (!isVisible) return null;
-  const labels = {
-    en: {
-      enterLink: "Enter URL",
-      placeholder: "URL",
-      save: "Apply link",
-      goTo: "Visit link",
-      remove: "Unlink",
-    },
-    fr: {
-      enterLink: "Entrez l'URL",
-      placeholder: "URL",
-      save: "Appliquer le lien",
-      goTo: "Visiter le lien",
-      remove: "Effacer le lien",
-    },
-  };
-
-  const t = labels[lang] || labels.en;
 
   // When the modal just opened, include announcement in label for screen readers
   const labelText = justOpened
@@ -209,18 +192,6 @@ const LinkModal = ({
       style={{ top: position.top, left: position.left }}
       data-testid="link-modal"
     >
-      {/* {outline && (
-        <div
-          className="fixed border-2 border-dashed border-blue-500 pointer-events-none bg-blue-500/10"
-          style={{
-            width: outline.width + 4,
-            height: outline.height,
-            left: outline.left - 2,
-            top: position.top - outline.height - 8,
-          }}
-          aria-hidden="true"
-        ></div>
-      )} */}
       <label htmlFor="link-input" className="sr-only">
         {labelText}
       </label>
