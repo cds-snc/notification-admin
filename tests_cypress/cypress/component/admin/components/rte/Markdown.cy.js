@@ -211,6 +211,7 @@ describe("Markdown entering and pasting tests", () => {
 
       RichTextEditor.Components.Editor().then(($editor) => {
         cy.wrap($editor).trigger("paste", {
+          force: true,
           clipboardData: {
             getData: () => MARKDOWN.RTL_BLOCKS.expected,
             types: ["text/plain"],
@@ -231,6 +232,7 @@ describe("Markdown entering and pasting tests", () => {
 
       RichTextEditor.Components.Editor().then(($editor) => {
         cy.wrap($editor).trigger("paste", {
+          force: true,
           clipboardData: {
             getData: () => MARKDOWN.INLINE_CONDITIONALS.expected,
             types: ["text/plain"],
@@ -253,6 +255,7 @@ describe("Markdown entering and pasting tests", () => {
 
       RichTextEditor.Components.Editor().then(($editor) => {
         cy.wrap($editor).trigger("paste", {
+          force: true,
           clipboardData: {
             getData: () => MARKDOWN.BLOCK_CONDITIONALS.expected,
             types: ["text/plain"],
@@ -273,6 +276,7 @@ describe("Markdown entering and pasting tests", () => {
 
       RichTextEditor.Components.Editor().then(($editor) => {
         cy.wrap($editor).trigger("paste", {
+          force: true,
           clipboardData: {
             getData: () => MARKDOWN.LANG_BLOCKS.expected,
             types: ["text/plain"],
@@ -295,6 +299,7 @@ describe("Markdown entering and pasting tests", () => {
 
         RichTextEditor.Components.Editor().then(($editor) => {
           cy.wrap($editor).trigger("paste", {
+            force: true,
             clipboardData: {
               getData: () => expected,
               types: ["text/plain"],

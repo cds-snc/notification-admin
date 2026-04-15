@@ -156,6 +156,12 @@ module.exports = defineConfig({
     devServer: {
       framework: "react",
       bundler: "webpack",
+      webpackConfig: require("./webpack.component.config.js"),
     },
+    specPattern: "**/component/**/*.cy.js",
+    supportFile: "cypress/support/component.js",
+    indexHtmlFile: "cypress/support/component-index.html",
+    viewportWidth: 1280,
+    viewportHeight: 1250,
   },
 });

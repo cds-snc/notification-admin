@@ -4,7 +4,7 @@ import { getHostname, getConfig } from "./utils";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
-const CONFIG = getConfig();
+const CONFIG = Cypress.testingType === 'component' ? {} : getConfig();
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
