@@ -44,7 +44,6 @@ const javascripts = () => {
     paths.src + "javascripts/webpackLoader.js",
     paths.src + "javascripts/stick-to-window-when-scrolling.js",
     paths.src + "javascripts/apiKey.js",
-    paths.src + "javascripts/cbor.js",
     paths.src + "javascripts/fido2.js",
     paths.src + "javascripts/autocomplete.js",
     paths.src + "javascripts/contactSanitizePii.js",

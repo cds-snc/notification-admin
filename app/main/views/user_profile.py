@@ -1,4 +1,3 @@
-import base64
 import json
 
 from flask import (
@@ -416,7 +415,7 @@ def user_profile_add_security_keys():
             result = user_api_client.register_security_key(current_user.id)
             # flash(_("Added a security key"), "default_with_tick")
 
-            return base64.b64decode(result["data"])
+            return jsonify(result["data"])
 
     if from_send_page == "user_profile_2fa":
         # If we are coming from the 2FA page, we need to redirect back there after adding the key
@@ -469,9 +468,8 @@ def user_profile_complete_security_keys():
     # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
     if not from_send_page == "user_profile_2fa":
         session.pop(HAS_AUTHENTICATED, None)
-    data = request.get_data()
-    payload = base64.b64encode(data).decode("utf-8")
-    resp = user_api_client.add_security_key_user(current_user.id, payload)
+    data = request.get_json()
+    resp = user_api_client.add_security_key_user(current_user.id, data["name"], data["credential"])
     return jsonify(
         {
             "id": resp["id"],
@@ -487,20 +485,19 @@ def user_profile_authenticate_security_keys():
     else:
         user_id = current_user.id
     result = user_api_client.authenticate_security_keys(user_id)
-    return base64.b64decode(result["data"])
+    return jsonify(result["data"])
 
 
 @main.route("/user-profile/security_keys/validate", methods=["POST"])
 def user_profile_validate_security_keys():
-    data = request.get_data()
-    payload = base64.b64encode(data).decode("utf-8")
+    data = request.get_json()
 
     if session.get("user_details"):
         user_id = session["user_details"]["id"]
     else:
         user_id = current_user.id
 
-    resp = user_api_client.validate_security_keys(user_id, payload)
+    resp = user_api_client.validate_security_keys(user_id, data["credential"])
     user = User.from_id(user_id)
 
     if "password" in session.get("user_details", {}):
