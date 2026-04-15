@@ -263,6 +263,9 @@ jobs:
     - name: Install root dependencies (tiptap, react, babel, webpack)
       run: npm ci
 
+    - name: Build tiptap compiled CSS
+      run: npm run tiptap-css
+
     - name: Install Cypress dependencies
       working-directory: tests_cypress
       run: npm ci
@@ -280,7 +283,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: cypress-component-artifacts
+        name: cypress-component-artifacts 
         path: |
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
