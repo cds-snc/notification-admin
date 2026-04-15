@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useEditorContext } from "./EditorContext";
-import { getNoShortcutLabel } from "./localization";
 import "./tooltip.compiled.css";
 
 const TooltipWrapper = ({ children, label, shortcut }) => {
