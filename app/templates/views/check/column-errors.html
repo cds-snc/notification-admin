@@ -182,7 +182,7 @@
       {% endif %}
   </div>
 
-  {% if not send_exceeds_daily_limit %}
+  {% if not send_exceeds_daily_limit and not send_exceeds_annual_limit and not recipients.more_rows_than_can_send %}
     <div class="form-group contain-floats box-border">
       {% set button_txt = _('Re-upload your file') %}
       {% if not request.args.from_test %}
@@ -197,8 +197,6 @@
 
   {% if not request.args.from_test %}
     <section class="clear-both contain-floats">
-      {% set column_headers = recipients._raw_column_headers if recipients.duplicate_recipient_column_headers else recipients.column_headers %}
-
       <h2 class="heading-medium" id="{{ file_contents_header_id }}">{{ _('Current spreadsheet') }}</h2>
       {% if recipients.too_many_rows %}
         <p class="table-show-more-link">
@@ -218,14 +216,14 @@
         </p>
       {% endif %}
 
-      <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}" data-module="fullscreen-table">
+      <div class="fullscreen-content{{ ' table-truncated' if count_of_displayed_recipients < count_of_recipients }}">
         {% call(item, row_number) list_table(
           recipients.displayed_rows,
           caption=original_file_name,
           caption_visible=False,
           field_headings=[
             '<span class="visually-hidden">Row in file</span><span aria-hidden="true">1</span>'|safe
-          ] + column_headers
+          ] + recipients.column_headers
         ) %}
           {% call index_field() %}
             <span>
@@ -241,7 +239,7 @@
               {% endif %}
             </span>
           {% endcall %}
-          {% for column in column_headers %}
+          {% for column in recipients.column_headers %}
             {% if item[column].error and not recipients.missing_column_headers %}
               {% call field() %}
                 <span>
@@ -261,12 +259,12 @@
             {% endfor %}
           {% endif %}
         {% endcall %}
+      </div>
+      {% if count_of_displayed_recipients < count_of_recipients %}
+        {% include "views/check/table-overflow.html" %}
       {% endif %}
-    </div>
-    {% if count_of_displayed_recipients < count_of_recipients %}
-      {% include "views/check/table-overflow.html" %}
-    {% endif %}
-  </section>
+    </section>
+  {% endif %}
   <section>
     <h2 class="heading-medium">{{ _('Preview of') }} {{ template.name }}</h2>
     {{ template|string|translate_preview_template }}
