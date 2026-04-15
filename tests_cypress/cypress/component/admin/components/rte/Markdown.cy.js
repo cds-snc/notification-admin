@@ -186,7 +186,7 @@ describe("Markdown entering and pasting tests", () => {
       .should("have.length", 1);
   });
 
-  it.skip("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
+  it("Language blocks (EN and FR) are correctly rendered coming back from markdown view", () => {
     RichTextEditor.Components.Editor().type(MARKDOWN.LANG_BLOCKS.before, {
       timeout: 30000,
     });
