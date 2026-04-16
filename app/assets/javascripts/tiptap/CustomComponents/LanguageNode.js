@@ -305,8 +305,8 @@ const createLanguageNode = (language, langCode) => {
 };
 
 // Create the specific language node extensions
-export const EnglishBlock = createLanguageNode("English", "en-CA");
-export const FrenchBlock = createLanguageNode("French", "fr-CA");
+export const EnglishBlock = createLanguageNode("English", "en");
+export const FrenchBlock = createLanguageNode("French", "fr");
 
 // For backward compatibility, export English as default
 export default EnglishBlock;
