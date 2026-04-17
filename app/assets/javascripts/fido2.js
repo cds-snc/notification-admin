@@ -14,8 +14,12 @@
   function bufferToBase64url(buffer) {
     var bytes = new Uint8Array(buffer);
     var binary = "";
-    for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    for (var i = 0; i < bytes.length; i++)
+      binary += String.fromCharCode(bytes[i]);
+    return btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
   }
 
   // Convert server JSON to PublicKeyCredentialRequestOptions for navigator.credentials.get()
@@ -55,7 +59,9 @@
       id: bufferToBase64url(assertion.rawId),
       rawId: bufferToBase64url(assertion.rawId),
       response: {
-        authenticatorData: bufferToBase64url(assertion.response.authenticatorData),
+        authenticatorData: bufferToBase64url(
+          assertion.response.authenticatorData,
+        ),
         clientDataJSON: bufferToBase64url(assertion.response.clientDataJSON),
         signature: bufferToBase64url(assertion.response.signature),
       },
@@ -69,7 +75,9 @@
       id: bufferToBase64url(attestation.rawId),
       rawId: bufferToBase64url(attestation.rawId),
       response: {
-        attestationObject: bufferToBase64url(attestation.response.attestationObject),
+        attestationObject: bufferToBase64url(
+          attestation.response.attestationObject,
+        ),
         clientDataJSON: bufferToBase64url(attestation.response.clientDataJSON),
       },
       type: attestation.type,
