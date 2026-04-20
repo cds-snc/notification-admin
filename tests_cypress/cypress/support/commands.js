@@ -19,6 +19,9 @@ afterEach(function () {
 });
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("a11yScan is not supported in component tests. Run this check in an e2e test instead.");
+    }
     const current_hostname = getHostname('Admin');
     const ignoreLinks = ['documentation.staging.notification.cdssandbox.xyz', 'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/']
 
@@ -110,6 +113,9 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("login is not supported in component tests. Use e2e tests for authenticating against the backend.");
+    }
     cy.task('createAccount', {
         baseUrl: CONFIG.Hostnames.API,
         username: CONFIG.CYPRESS_AUTH_USER_NAME,
@@ -129,6 +135,9 @@ Cypress.Commands.add('login', (agreeToTerms = true) => {
 
 
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("loginAsPlatformAdmin is not supported in component tests. Use e2e tests for authenticating against the backend.");
+    }
     cy.task('createAccount', {
         baseUrl: CONFIG.Hostnames.API,
         username: CONFIG.CYPRESS_AUTH_USER_NAME,
@@ -148,6 +157,9 @@ Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
 
 // this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("visit is not supported in component tests. Component tests mount isolated components and cannot perform full navigation.");
+    }
     // Get full URL by combining baseUrl with path
     const fullUrl = url.startsWith('http')
         ? url
