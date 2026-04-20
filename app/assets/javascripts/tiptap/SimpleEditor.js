@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { mergeAttributes } from "@tiptap/core";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -29,6 +30,7 @@ import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
+import { translations } from "./localization";
 import { EditorProvider } from "./EditorContext";
 
 const SimpleEditor = ({
@@ -41,6 +43,7 @@ const SimpleEditor = ({
   preferenceUpdateUrl,
   csrfToken,
 }) => {
+  const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [selectionHighlight, setSelectionHighlight] = useState(null);
@@ -143,30 +146,82 @@ const SimpleEditor = ({
       // Node extensions that match toolbar features
       Heading.configure({
         levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
+      }).extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            "aria-description": {
+              default: null,
+              renderHTML: (attributes) => {
+                const level = attributes.level;
+                const description = t.ariaDescriptions[`heading${level}`];
+                return description ? { "aria-description": description } : {};
+              },
+            },
+          };
+        },
       }),
       Blockquote.configure({
         content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.blockquote,
+        },
       }),
-      BulletList,
-      OrderedList,
+      BulletList.configure({
+        HTMLAttributes: {
+          role: "list",
+          "aria-description": t.ariaDescriptions.bulletList,
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          role: "list",
+          "aria-description": t.ariaDescriptions.numberedList,
+        },
+      }),
       ListItem,
-      HorizontalRule,
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          role: "separator",
+          "aria-description": t.ariaDescriptions.horizontalRule,
+        },
+      }),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.conditionalBlock,
+        },
       }),
       // Mark extensions that match toolbar features
-      Bold,
-      Italic,
+      Bold.configure({
+        HTMLAttributes: {
+          role: "status",
+          "aria-description": t.ariaDescriptions.bold,
+        },
+      }),
+      Italic.configure({
+        HTMLAttributes: {
+          role: "status",
+          "aria-description": t.ariaDescriptions.italic,
+        },
+      }),
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.conditionalInline,
+        },
       }),
-      VariableMark,
+      VariableMark.configure({
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.variable,
+        },
+      }),
       MarkdownLink.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -176,9 +231,17 @@ const SimpleEditor = ({
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
-      EnglishBlock,
+      EnglishBlock.configure({
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.englishBlock,
+        },
+      }),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock,
+      FrenchBlock.configure({
+        HTMLAttributes: {
+          "aria-description": t.ariaDescriptions.frenchBlock,
+        },
+      }),
       RTLBlock,
       MenubarShortcut,
 

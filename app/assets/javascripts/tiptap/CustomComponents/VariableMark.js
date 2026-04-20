@@ -1,4 +1,4 @@
-import { Mark, InputRule } from "@tiptap/core";
+import { Mark, InputRule, mergeAttributes } from "@tiptap/core";
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -26,10 +26,10 @@ const VariableMark = Mark.create({
   renderHTML({ HTMLAttributes }) {
     return [
       "span",
-      {
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": "variable",
-        ...HTMLAttributes,
-      },
+        role: "status",
+      }),
       0,
     ];
   },

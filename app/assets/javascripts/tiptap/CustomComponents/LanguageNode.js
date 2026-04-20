@@ -1,5 +1,7 @@
 import { Node, wrappingInputRule } from "@tiptap/core";
+import { mergeAttributes } from "@tiptap/core";
 import { Plugin } from "prosemirror-state";
+import {translations as t} from "../localization";
 
 // Factory function to create language-specific nodes
 const createLanguageNode = (language, langCode) => {
@@ -47,12 +49,12 @@ const createLanguageNode = (language, langCode) => {
     renderHTML({ HTMLAttributes }) {
       return [
         "div",
-        {
+        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
           lang: langCode,
           "data-lang": language.toLowerCase(),
           "data-type": `${language.toLowerCase()}-block`,
-          ...HTMLAttributes,
-        },
+          role: "region",
+        }),
         0,
       ];
     },
