@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
-import { mergeAttributes } from "@tiptap/core";
+import { Extension, mergeAttributes } from "@tiptap/core";
+import { Plugin } from "@tiptap/pm/state";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -32,6 +33,7 @@ import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 import { translations } from "./localization";
 import { EditorProvider } from "./EditorContext";
+import { AnnouncerPlugin } from "./AnnouncerPlugin";
 
 const SimpleEditor = ({
   inputId,
@@ -143,54 +145,30 @@ const SimpleEditor = ({
       HardBreak,
       History,
 
+      // Universal announcer for all nodes and marks
+      AnnouncerPlugin(t),
+
       // Node extensions that match toolbar features
       Heading.configure({
         levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
-      }).extend({
-        addAttributes() {
-          return {
-            ...this.parent?.(),
-            "aria-description": {
-              default: null,
-              renderHTML: (attributes) => {
-                const level = attributes.level;
-                const description = t.ariaDescriptions[`heading${level}`];
-                return description ? { "aria-description": description } : {};
-              },
-            },
-          };
-        },
       }),
       Blockquote.configure({
-        content: "block+",
-      }).extend({
-        renderHTML({ HTMLAttributes }) {
-          return [
-            "blockquote",
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-              "aria-description": t.ariaDescriptions.blockquote,
-            }),
-            0,
-          ];
-        },
+        content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
       }),
       BulletList.configure({
         HTMLAttributes: {
           role: "list",
-          "aria-description": t.ariaDescriptions.bulletList,
         },
       }),
       OrderedList.configure({
         HTMLAttributes: {
           role: "list",
-          "aria-description": t.ariaDescriptions.numberedList,
         },
       }),
       ListItem,
       HorizontalRule.configure({
         HTMLAttributes: {
           role: "separator",
-          "aria-description": t.ariaDescriptions.horizontalRule,
         },
       }),
       ConditionalNode.configure({
@@ -198,21 +176,16 @@ const SimpleEditor = ({
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.conditionalBlock,
-        },
       }),
       // Mark extensions that match toolbar features
       Bold.configure({
         HTMLAttributes: {
           role: "status",
-          "aria-description": t.ariaDescriptions.bold,
         },
       }),
       Italic.configure({
         HTMLAttributes: {
           role: "status",
-          "aria-description": t.ariaDescriptions.italic,
         },
       }),
       ConditionalInlineMark.configure({
@@ -220,14 +193,9 @@ const SimpleEditor = ({
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.conditionalInline,
-        },
       }),
-      VariableMark.configure({
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.variable,
-        },
+      VariableMark,
+      MarkdownLink.configure({
       }),
       MarkdownLink.configure({
         openOnClick: false,
@@ -898,6 +866,12 @@ const SimpleEditor = ({
 
   return (
     <EditorProvider lang={lang}>
+      <div
+        id="editor-announcer"
+        className="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
       <div className="editor-wrapper">
         <MenuBar
           editor={editor}
