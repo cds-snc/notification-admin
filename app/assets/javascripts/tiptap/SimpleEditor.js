@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { mergeAttributes } from "@tiptap/core";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -161,9 +162,16 @@ const SimpleEditor = ({
         },
       }),
       Blockquote.configure({
-        content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.blockquote,
+        content: "block+",
+      }).extend({
+        renderHTML({ HTMLAttributes }) {
+          return [
+            "blockquote",
+            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+              "aria-description": t.ariaDescriptions.blockquote,
+            }),
+            0,
+          ];
         },
       }),
       BulletList.configure({
