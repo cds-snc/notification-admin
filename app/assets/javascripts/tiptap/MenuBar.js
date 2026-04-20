@@ -23,6 +23,7 @@ import {
   conditionalInlineIcon,
   rightToLeftIcon,
 } from "./icons";
+import { shortcuts } from "./localization";
 import { useEditorContext } from "./EditorContext";
 
 /**
@@ -205,7 +206,7 @@ const AccessibleToolbar = ({ children, label, editor, className = "" }) => {
       ref={toolbarRef}
       role="toolbar"
       aria-label={label}
-      aria-keyshortcuts="Alt+F10"
+      aria-keyshortcuts={shortcuts.toolbarFocusAria}
       aria-orientation="horizontal"
       onKeyDown={handleKeyDown}
       data-testid="rte-toolbar"
