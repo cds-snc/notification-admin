@@ -1033,7 +1033,17 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
 
 @pytest.fixture(scope="function")
 def mock_create_service_template(mocker, fake_uuid):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         template = template_json(
             service_id=service,
             id_=fake_uuid,
@@ -1067,6 +1077,7 @@ def mock_update_service_template(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
@@ -1076,7 +1087,18 @@ def mock_update_service_template(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_400_name_too_long(mocker):
-    def _update(id_, name, type_, content, service, subject=None, process_type=None, postage=None, template_category_id=None):
+    def _update(
+        id_,
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        postage=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"name": ["Template name must be less than 256 characters"]},
@@ -1103,6 +1125,7 @@ def mock_update_service_template_400_name_too_long(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
@@ -1119,7 +1142,17 @@ def mock_update_service_template_400_name_too_long(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_content_too_big(mocker):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"content": ["Content has a character count greater than the limit of 459"]},
@@ -1149,6 +1182,7 @@ def mock_update_service_template_400_content_too_big(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
