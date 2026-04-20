@@ -970,7 +970,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             other_category=other_category,
             template_category_mode="expand",
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
-            one_click_unsub_enabled=str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 
@@ -1145,7 +1146,8 @@ def edit_service_template(service_id, template_id):
             other_category=other_category,
             template_category_mode="expand" if request.method == "POST" else None,
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
-            one_click_unsub_enabled=str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 

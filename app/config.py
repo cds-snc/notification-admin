@@ -27,8 +27,10 @@ class Config(object):
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
-    # List of service IDs allowed to use the one-click unsubscribe header feature.
+    # List of service IDs allowed to use the one-click unsubscribe header feature (applies in production only).
     ONE_CLICK_UNSUB_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ONE_CLICK_UNSUB_SERVICE_IDS", "").split(",")]
+    # When True, all services can use the one-click unsubscribe feature (non-prod envs).
+    ONE_CLICK_UNSUB_ALL_SERVICES: bool = False
     ADMIN_BASE_URL = (
         "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
         if os.environ.get("HEROKU_APP_NAME", "") != ""
@@ -194,6 +196,7 @@ class Development(Config):
     DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "notify.tools-mou"
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
@@ -238,6 +241,7 @@ class ProductionFF(Config):
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
     SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
