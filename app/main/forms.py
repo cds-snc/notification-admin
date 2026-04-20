@@ -912,6 +912,10 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
         ],
     )
 
+    use_custom_unsubscribe_url = BooleanField(
+        _l("Use ((unsubscribe_url)) personalisation variable as the one-click unsubscribe header")
+    )
+
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])

@@ -27,6 +27,8 @@ class Config(object):
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
+    # List of service IDs allowed to use the one-click unsubscribe header feature.
+    ONE_CLICK_UNSUB_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ONE_CLICK_UNSUB_SERVICE_IDS", "").split(",")]
     ADMIN_BASE_URL = (
         "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
         if os.environ.get("HEROKU_APP_NAME", "") != ""
