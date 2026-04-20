@@ -249,7 +249,6 @@ const ToolbarButton = ({
         onMouseDown={onMouseDown}
         disabled={isDisabled}
         className={"toolbar-button" + (isActive ? " is-active" : "")}
-        title={label}
         aria-pressed={isActive}
       >
         <span className="sr-only">{description}</span>
@@ -792,7 +791,6 @@ const MenuBar = ({
                 data-testid="rte-toggle-markdown"
                 onClick={onToggleMarkdownView}
                 className="toolbar-button toolbar-button-mode"
-                title={toggleButtonLabel}
                 aria-pressed={isMarkdownView}
               >
                 <span className="sr-only">{toggleButtonLabel}</span>
@@ -806,7 +804,6 @@ const MenuBar = ({
               data-testid="rte-toggle-markdown"
               onClick={onToggleMarkdownView}
               className="toolbar-button toolbar-button-mode toolbar-switch-group"
-              title={toggleButtonLabel}
               aria-pressed={isMarkdownView}
             >
               <span className="sr-only">{toggleButtonLabel}</span>
