@@ -2,7 +2,7 @@ import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Extension } from "@tiptap/core";
 
 /**
- * A TipTap extension that provides a ProseMirror plugin to track the active node/mark stack 
+ * A TipTap extension that provides a ProseMirror plugin to track the active node/mark stack
  * and announce it to screen readers via an ARIA live region.
  */
 export const AnnouncerPlugin = (t) => {

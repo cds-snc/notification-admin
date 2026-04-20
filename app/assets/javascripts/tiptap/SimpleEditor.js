@@ -195,8 +195,7 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
-      MarkdownLink.configure({
-      }),
+      MarkdownLink.configure({}),
       MarkdownLink.configure({
         openOnClick: false,
         HTMLAttributes: {
