@@ -1,17 +1,4 @@
-import "./a11y/app_pages.cy";
-import "./sign_out/sign_out.cy";
-import "./menu/disclosure_menu.cy";
-import "./sitemap/sitemap.cy";
-import "./branding/all.cy";
-import "./tou_dialog.cy";
-import "./template-filters.cy";
-import "./template-categories.cy";
-import "./template/create-template.cy";
-import "./template/edit-template.cy";
-import "./components/remaining_messages_summary.cy";
-import "./go-live-form.cy";
-import "./components/notice.cy";
-import "./your_profile.cy";
-import "./components/a11y.cy";
-import "./components/flash_messages.cy";
-import "./components/rte/all.cy";
+// Import the three CI shards so the runner can include them from a single entrypoint
+import "./ci-shard-1.cy";
+import "./ci-shard-2.cy";
+import "./ci-shard-3.cy";

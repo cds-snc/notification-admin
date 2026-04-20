@@ -2,7 +2,11 @@
   "scripts": {
     "cypress": "ETHEREAL_CACHE=false npx cypress open",
     "a11y": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/a11y/*'",
-    "ci": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci.cy.js'"
+    "ci": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci.cy.js'",
+    "ci:shard:1": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci-shard-1.cy.js'",
+    "ci:shard:2": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci-shard-2.cy.js'",
+    "ci:shard:3": "ETHEREAL_CACHE=false npx cypress run --spec 'cypress/e2e/admin/ci-shard-3.cy.js'",
+    "component": "npx cypress run --component"
   },
   "dependencies": {
     "cypress-recurse": "^1.23.0",
