@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
-import { mergeAttributes } from "@tiptap/core";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
