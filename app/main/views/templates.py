@@ -900,7 +900,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
-                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data if hasattr(form, "use_custom_unsubscribe_url") else None,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
@@ -1084,7 +1086,9 @@ def edit_service_template(service_id, template_id):
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data,
                         form.text_direction_rtl.data,
-                        use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data if hasattr(form, "use_custom_unsubscribe_url") else None,
+                        use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                        if hasattr(form, "use_custom_unsubscribe_url")
+                        else None,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
@@ -1676,7 +1680,9 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
-                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data if hasattr(form, "use_custom_unsubscribe_url") else None,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
