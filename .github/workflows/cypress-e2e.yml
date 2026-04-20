@@ -15,6 +15,16 @@ permissions:
 jobs:
   cypress-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+        - name: shard-1
+          spec: cypress/e2e/admin/ci-shard-1.cy.js
+        - name: shard-2
+          spec: cypress/e2e/admin/ci-shard-2.cy.js
+        - name: shard-3
+          spec: cypress/e2e/admin/ci-shard-3.cy.js
     services:
       postgres:
         image: postgres:11.17-bullseye
@@ -217,14 +227,13 @@ jobs:
         config: "video=true,screenshotOnRunFailure=true"
         build: npx cypress info
         working-directory: tests_cypress
-        spec: |
-          cypress/e2e/admin/ci.cy.js
+        spec: ${{ matrix.shard.spec }}
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: cypress-artifacts
+        name: cypress-artifacts-${{ matrix.shard.name }}
         path: |
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
