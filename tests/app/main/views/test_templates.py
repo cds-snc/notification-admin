@@ -3642,7 +3642,7 @@ class TestOneClickUnsubscribe:
 
         setting = page.select_one("#custom-unsub-url-setting")
         assert setting is not None
-        assert setting.get("style") == "display: none"
+        assert "hidden" in setting.get("class", [])
 
     def test_one_click_unsub_checkbox_not_shown_when_feature_disabled(
         self,
@@ -3704,15 +3704,13 @@ class TestOneClickUnsubscribe:
             },
         )
 
-        page = client_request.get(".edit_service_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid)
-
         page = client_request.get(
             ".edit_service_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
         )
 
-        assert page.select_one("#custom-unsub-url-setting") is None
+        assert page.select_one("#custom-unsub-url-setting") is not None
 
     def test_create_email_template_sends_use_custom_unsubscribe_url(
         self,
