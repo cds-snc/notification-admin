@@ -241,7 +241,6 @@ class ProductionFF(Config):
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value
-    ONE_CLICK_UNSUB_ALL_SERVICES = True
     SECRET_KEY = ["dev-notify-secret-key"]
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
