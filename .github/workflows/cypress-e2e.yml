@@ -248,3 +248,43 @@ jobs:
       run: |
         echo "==== FRONTEND LOGS ===="
         cat frontend.log || echo "No frontend logs available"
+
+  cypress-component-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install root dependencies (tiptap, react, babel, webpack)
+      run: npm ci
+
+    - name: Build tiptap compiled CSS
+      run: npm run tiptap-css
+
+    - name: Install Cypress dependencies
+      working-directory: tests_cypress
+      run: npm ci
+
+    - name: Run Cypress component tests
+      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+      with:
+        record: false
+        config: "video=true,screenshotOnRunFailure=true"
+        build: npx cypress info
+        working-directory: tests_cypress
+        component: true
+
+    - name: Upload component test artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: cypress-component-artifacts 
+        path: |
+          tests_cypress/cypress/videos
+          tests_cypress/cypress/screenshots
+        retention-days: 7
