@@ -30,6 +30,7 @@ import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
+import { shortcuts } from "./localization";
 
 const SimpleEditor = ({
   inputId,
@@ -52,6 +53,13 @@ const SimpleEditor = ({
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
+  const shortcutHintId = "rte-shortcut-hint";
+  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay.toUpperCase();
+  const shortcutHintText =
+    lang === "fr"
+      ? `Raccourci barre d'outils : ${toolbarShortcutDisplay}`
+      : `Toolbar shortcut: ${toolbarShortcutDisplay}`;
+  const editorLabelledBy = [labelId, shortcutHintId].filter(Boolean).join(" ");
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -201,7 +209,7 @@ const SimpleEditor = ({
         class: "tiptap",
         lang: lang,
         role: "textbox",
-        "aria-labelledby": labelId,
+        "aria-labelledby": editorLabelledBy,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -829,6 +837,9 @@ const SimpleEditor = ({
   return (
     <EditorProvider lang={lang}>
       <div className="editor-wrapper">
+        <span id={shortcutHintId} className="sr-only">
+          {shortcutHintText}
+        </span>
         <MenuBar
           editor={editor}
           openLinkModal={openLinkModal}
@@ -857,7 +868,12 @@ const SimpleEditor = ({
               }}
               onKeyDown={onMarkdownKeyDown}
               className="markdown-view"
-              aria-label={viewLabel.markdown}
+              aria-labelledby={editorLabelledBy || undefined}
+              aria-label={
+                editorLabelledBy
+                  ? undefined
+                  : `${viewLabel.markdown}. ${shortcutHintText}`
+              }
               spellCheck="false"
               data-testid="template-content"
             ></textarea>
