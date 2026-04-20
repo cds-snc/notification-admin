@@ -111,8 +111,8 @@ module.exports = defineConfig({
         if (browser.family === 'chromium' && browser.name !== 'electron') {
           launchOptions.extensions = [];
 
-          // Disable WebAuthn/FIDO2 features to prevent real hardware access
-          launchOptions.args.push('--disable-features=WebAuthentication');
+          // Note: WebAuthentication is NOT disabled - tests use virtual authenticators via CDP
+          // Only disable Bluetooth and Cable transports to prevent real hardware prompts
           launchOptions.args.push('--disable-features=WebAuthenticationBluetooth');
           launchOptions.args.push('--disable-features=WebAuthenticationCable');
           launchOptions.args.push('--disable-backgrounding-occluded-windows');
