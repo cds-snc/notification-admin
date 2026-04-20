@@ -3576,42 +3576,104 @@ class TestCreateFromSampleTemplate:
 class TestOneClickUnsubscribe:
     """Tests for the one-click unsubscribe header feature."""
 
-    def test_one_click_unsub_checkbox_shown_for_email_template_when_all_services_enabled(
+    def test_one_click_unsub_checkbox_shown_when_placeholder_in_content(
         self,
         client_request,
-        mock_get_service_template_when_no_template_exists,
         mock_get_template_categories,
-        mock_get_template_folders,
         mock_get_limit_stats,
+        mocker,
+        fake_uuid,
         app_,
     ):
         app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
 
         page = client_request.get(
-            ".add_service_template",
+            ".edit_service_template",
             service_id=SERVICE_ONE_ID,
-            template_type="email",
+            template_id=fake_uuid,
         )
 
         assert page.select_one("#custom-unsub-url-setting") is not None
-        assert page.select_one("input[name=use_custom_unsubscribe_url]") is not None
 
-    def test_one_click_unsub_checkbox_not_shown_when_disabled(
+    def test_one_click_unsub_checkbox_not_shown_without_placeholder_in_content(
         self,
         client_request,
-        mock_get_service_template_when_no_template_exists,
         mock_get_template_categories,
-        mock_get_template_folders,
         mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="No placeholder here",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        setting = page.select_one("#custom-unsub-url-setting")
+        assert setting is not None
+        assert setting.get("style") == "display: none"
+
+    def test_one_click_unsub_checkbox_not_shown_when_feature_disabled(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
         app_,
     ):
         app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
         app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = []
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
 
         page = client_request.get(
-            ".add_service_template",
+            ".edit_service_template",
             service_id=SERVICE_ONE_ID,
-            template_type="email",
+            template_id=fake_uuid,
         )
 
         assert page.select_one("#custom-unsub-url-setting") is None
@@ -3619,22 +3681,38 @@ class TestOneClickUnsubscribe:
     def test_one_click_unsub_checkbox_shown_when_service_in_allowlist(
         self,
         client_request,
-        mock_get_service_template_when_no_template_exists,
         mock_get_template_categories,
-        mock_get_template_folders,
         mock_get_limit_stats,
+        mocker,
+        fake_uuid,
         app_,
     ):
         app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
         app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = [SERVICE_ONE_ID]
+        current_user.verified_phonenumber = True
 
-        page = client_request.get(
-            ".add_service_template",
-            service_id=SERVICE_ONE_ID,
-            template_type="email",
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
         )
 
-        assert page.select_one("#custom-unsub-url-setting") is not None
+        page = client_request.get(".edit_service_template", service_id=SERVICE_ONE_ID, template_id=fake_uuid)
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is None
 
     def test_create_email_template_sends_use_custom_unsubscribe_url(
         self,
