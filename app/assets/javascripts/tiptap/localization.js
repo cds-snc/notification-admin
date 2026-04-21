@@ -122,7 +122,7 @@ export const translations = {
 
     // MenuBar
     toolbar: "Barre d'outils de l'éditeur",
-    toolbarShortcutHintTemplate: "Raccourci barre d'outils : {shortcut}",
+    toolbarShortcutHintTemplate: "Raccourci pour atteindre la barre d'outil : {shortcut}",
     toggleMd: "Voir la source",
     linkDialogOpened: "Boîte de dialogue du lien ouverte",
     applied: "appliqué.",
