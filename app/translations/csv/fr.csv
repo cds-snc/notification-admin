@@ -2450,4 +2450,4 @@
 "Daily text message parts limit","Limite quotidienne de parties de messages texte"
 "Annual text message parts limit","Limite maximale de parties de messages texte par exercice financier"
 "text message part","partie de message texte"
-"Use ((unsubscribe_url)) personalisation variable as the one-click unsubscribe header","FR Use ((unsubscribe_url)) personalisation variable as the one-click unsubscribe header"
+"Use ((unsubscribe_url)) for one-click unsubscribe","Utilisez ((unsubscribe_url)) pour le désabonnement en un clic"
