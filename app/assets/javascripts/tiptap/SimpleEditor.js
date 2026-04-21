@@ -69,7 +69,6 @@ const SimpleEditor = ({
     lang === "fr"
       ? `Raccourci barre d'outils : ${toolbarShortcutDisplay}`
       : `Toolbar shortcut: ${toolbarShortcutDisplay}`;
-  const editorLabelledBy = labelId || undefined;
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -219,7 +218,7 @@ const SimpleEditor = ({
         class: "tiptap",
         lang: lang,
         role: "textbox",
-        "aria-labelledby": editorLabelledBy,
+        "aria-labelledby": labelId,
         "aria-describedby": shortcutHintId,
         "aria-multiline": "true",
       },
