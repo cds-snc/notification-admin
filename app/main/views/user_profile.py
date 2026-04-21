@@ -1,4 +1,3 @@
-import base64
 import json
 
 from flask import (
@@ -414,11 +413,7 @@ def user_profile_add_security_keys():
             form.validate_on_submit()
         elif request.method == "POST":
             result = user_api_client.register_security_key(current_user.id)
-
-            data = result["data"]
-            if isinstance(data, str):
-                data = json.loads(base64.b64decode(data))
-            return jsonify(data)
+            return jsonify(result["data"])
 
     if from_send_page == "user_profile_2fa":
         # If we are coming from the 2FA page, we need to redirect back there after adding the key
@@ -488,10 +483,7 @@ def user_profile_authenticate_security_keys():
     else:
         user_id = current_user.id
     result = user_api_client.authenticate_security_keys(user_id)
-    data = result["data"]
-    if isinstance(data, str):
-        data = json.loads(base64.b64decode(data))
-    return jsonify(data)
+    return jsonify(result["data"])
 
 
 @main.route("/user-profile/security_keys/validate", methods=["POST"])
