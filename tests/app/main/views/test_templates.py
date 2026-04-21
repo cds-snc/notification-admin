@@ -3609,39 +3609,6 @@ class TestOneClickUnsubscribe:
 
         assert page.select_one("#custom-unsub-url-setting") is not None
 
-    def test_one_click_unsub_checkbox_shown_when_unsub_link_placeholder_in_content(
-        self,
-        client_request,
-        mock_get_template_categories,
-        mock_get_limit_stats,
-        mocker,
-        fake_uuid,
-        app_,
-    ):
-        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
-        current_user.verified_phonenumber = True
-
-        mocker.patch(
-            "app.service_api_client.get_service_template",
-            return_value={
-                "data": template_json(
-                    SERVICE_ONE_ID,
-                    fake_uuid,
-                    type_="email",
-                    content="Hello ((unsub_link))",
-                    subject="Subject",
-                )
-            },
-        )
-
-        page = client_request.get(
-            ".edit_service_template",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-        )
-
-        assert page.select_one("#custom-unsub-url-setting") is not None
-
     def test_one_click_unsub_checkbox_not_shown_without_placeholder_in_content(
         self,
         client_request,

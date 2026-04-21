@@ -97,8 +97,7 @@
       {% endif %}
 
       {% if one_click_unsub_enabled and form.use_custom_unsubscribe_url is defined %}
-        {% set _content = form.template_content.data or '' %}
-        <div id="custom-unsub-url-setting" class="form-group mb-8 {{ 'hidden' if '((unsubscribe_url))' not in _content and '((unsub_link))' not in _content else '' }}">
+        <div id="custom-unsub-url-setting" class="form-group mb-8 {{ 'hidden' if '((unsubscribe_url))' not in (form.template_content.data or '') else '' }}">
           <div class="multiple-choice float-none">
             {{ form.use_custom_unsubscribe_url(class="multiple-choice__input") }}
             <label class="multiple-choice__label" for="{{ form.use_custom_unsubscribe_url.id }}">
@@ -142,8 +141,7 @@
     var contentInput = document.getElementById('template_content');
     if (!contentInput) return;
     contentInput.addEventListener('change', function () {
-      var val = contentInput.value;
-      setting.classList.toggle('hidden', !val.includes('((unsubscribe_url))') && !val.includes('((unsub_link))'));
+      setting.classList.toggle('hidden', !contentInput.value.includes('((unsubscribe_url))'));
     });
   })();
 
