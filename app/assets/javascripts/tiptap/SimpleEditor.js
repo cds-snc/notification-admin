@@ -32,8 +32,6 @@ import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
 import { shortcuts, translations } from "./localization";
 
-let editorInstanceCounter = 0;
-
 const SimpleEditor = ({
   inputId,
   labelId,
@@ -55,16 +53,8 @@ const SimpleEditor = ({
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
-  const instanceNumberRef = useRef(null);
-  if (instanceNumberRef.current === null) {
-    editorInstanceCounter += 1;
-    instanceNumberRef.current = editorInstanceCounter;
-  }
-  const instanceBaseId = (inputId || labelId || "rte-editor")
-    .toString()
-    .replace(/[^A-Za-z0-9_-]/g, "-");
-  const shortcutHintId = `${instanceBaseId}-shortcut-hint-${instanceNumberRef.current}`;
-  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay.toUpperCase();
+  const shortcutHintId = labelId ? `${labelId}-shortcut-hint` : "rte-shortcut-hint";
+  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay;
   const localized = translations[lang] || translations.en;
   const shortcutHintTemplate =
     localized.toolbarShortcutHintTemplate ||
