@@ -30,7 +30,7 @@ import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
-import { shortcuts } from "./localization";
+import { shortcuts, translations } from "./localization";
 
 let editorInstanceCounter = 0;
 
@@ -65,10 +65,14 @@ const SimpleEditor = ({
     .replace(/[^A-Za-z0-9_-]/g, "-");
   const shortcutHintId = `${instanceBaseId}-shortcut-hint-${instanceNumberRef.current}`;
   const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay.toUpperCase();
-  const shortcutHintText =
-    lang === "fr"
-      ? `Raccourci barre d'outils : ${toolbarShortcutDisplay}`
-      : `Toolbar shortcut: ${toolbarShortcutDisplay}`;
+  const localized = translations[lang] || translations.en;
+  const shortcutHintTemplate =
+    localized.toolbarShortcutHintTemplate ||
+    translations.en.toolbarShortcutHintTemplate;
+  const shortcutHintText = shortcutHintTemplate.replace(
+    "{shortcut}",
+    toolbarShortcutDisplay,
+  );
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },

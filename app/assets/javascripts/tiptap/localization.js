@@ -32,6 +32,7 @@ export const translations = {
 
     // MenuBar
     toolbar: "Editor toolbar",
+    toolbarShortcutHintTemplate: "Toolbar shortcut: {shortcut}",
     toggleMd: "View source",
     linkDialogOpened: "Link dialog opened",
     applied: "applied.",
@@ -121,6 +122,7 @@ export const translations = {
 
     // MenuBar
     toolbar: "Barre d'outils de l'éditeur",
+    toolbarShortcutHintTemplate: "Raccourci barre d'outils : {shortcut}",
     toggleMd: "Voir la source",
     linkDialogOpened: "Boîte de dialogue du lien ouverte",
     applied: "appliqué.",
