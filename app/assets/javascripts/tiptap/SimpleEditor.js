@@ -882,9 +882,8 @@ const SimpleEditor = ({
               }}
               onKeyDown={onMarkdownKeyDown}
               className="markdown-view"
-              aria-labelledby={editorLabelledBy}
               aria-describedby={shortcutHintId}
-              aria-label={editorLabelledBy ? undefined : viewLabel.markdown}
+              aria-label={viewLabel.markdown}
               spellCheck="false"
               data-testid="template-content"
             ></textarea>
