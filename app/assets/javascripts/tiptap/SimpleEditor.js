@@ -32,6 +32,8 @@ import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
 import { shortcuts } from "./localization";
 
+let editorInstanceCounter = 0;
+
 const SimpleEditor = ({
   inputId,
   labelId,
@@ -53,13 +55,21 @@ const SimpleEditor = ({
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
-  const shortcutHintId = "rte-shortcut-hint";
+  const instanceNumberRef = useRef(null);
+  if (instanceNumberRef.current === null) {
+    editorInstanceCounter += 1;
+    instanceNumberRef.current = editorInstanceCounter;
+  }
+  const instanceBaseId = (inputId || labelId || "rte-editor")
+    .toString()
+    .replace(/[^A-Za-z0-9_-]/g, "-");
+  const shortcutHintId = `${instanceBaseId}-shortcut-hint-${instanceNumberRef.current}`;
   const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay.toUpperCase();
   const shortcutHintText =
     lang === "fr"
       ? `Raccourci barre d'outils : ${toolbarShortcutDisplay}`
       : `Toolbar shortcut: ${toolbarShortcutDisplay}`;
-  const editorLabelledBy = [labelId, shortcutHintId].filter(Boolean).join(" ");
+  const editorLabelledBy = labelId || undefined;
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -210,6 +220,7 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": editorLabelledBy,
+        "aria-describedby": shortcutHintId,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -868,12 +879,9 @@ const SimpleEditor = ({
               }}
               onKeyDown={onMarkdownKeyDown}
               className="markdown-view"
-              aria-labelledby={editorLabelledBy || undefined}
-              aria-label={
-                editorLabelledBy
-                  ? undefined
-                  : `${viewLabel.markdown}. ${shortcutHintText}`
-              }
+              aria-labelledby={editorLabelledBy}
+              aria-describedby={shortcutHintId}
+              aria-label={editorLabelledBy ? undefined : viewLabel.markdown}
               spellCheck="false"
               data-testid="template-content"
             ></textarea>
