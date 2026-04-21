@@ -53,7 +53,9 @@ const SimpleEditor = ({
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
-  const shortcutHintId = labelId ? `${labelId}-shortcut-hint` : "rte-shortcut-hint";
+  const shortcutHintId = labelId
+    ? `${labelId}-shortcut-hint`
+    : "rte-shortcut-hint";
   const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay;
   const localized = translations[lang] || translations.en;
   const shortcutHintTemplate =
