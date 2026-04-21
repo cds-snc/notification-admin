@@ -1,3 +1,4 @@
+import base64
 import json
 import uuid
 from unittest.mock import Mock
@@ -297,7 +298,7 @@ def test_deleting_security_key(
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
     register_mock = mocker.patch(
         "app.user_api_client.register_security_key",
-        return_value={"data": {"publicKey": {"challenge": "abc"}}},
+        return_value={"data": base64.b64encode(json.dumps({"challenge": "abc"}).encode()).decode()},
     )
 
     with client_request.session_transaction() as session:
@@ -334,7 +335,7 @@ def test_complete_adding_security_key(client_request, api_nongov_user_active, mo
 
 
 def test_authenticate_security_key(client_request, api_nongov_user_active, mocker):
-    auth_data = {"publicKey": {"challenge": "abc", "allowCredentials": []}}
+    auth_data = {"challenge": "abc"}
     mock = mocker.patch(
         "app.user_api_client.authenticate_security_keys",
         return_value={"data": auth_data},
@@ -343,7 +344,7 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
         url_for("main.user_profile_authenticate_security_keys"),
     )
     assert resp.status_code == 200
-    assert resp.json == auth_data
+    assert resp.get_json() == auth_data
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 

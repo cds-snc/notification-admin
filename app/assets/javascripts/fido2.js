@@ -24,7 +24,7 @@
 
   // Convert server JSON to PublicKeyCredentialRequestOptions for navigator.credentials.get()
   function prepareGetOptions(serverData) {
-    var publicKey = serverData.publicKey;
+    var publicKey = serverData.publicKey || serverData;
     var opts = Object.assign({}, publicKey);
     if (opts.challenge) opts.challenge = base64urlToBuffer(opts.challenge);
     if (opts.allowCredentials) {
@@ -37,7 +37,7 @@
 
   // Convert server JSON to PublicKeyCredentialCreationOptions for navigator.credentials.create()
   function prepareCreateOptions(serverData) {
-    var publicKey = serverData.publicKey;
+    var publicKey = serverData.publicKey || serverData;
     var opts = Object.assign({}, publicKey);
     if (opts.challenge) opts.challenge = base64urlToBuffer(opts.challenge);
     if (opts.user) {
