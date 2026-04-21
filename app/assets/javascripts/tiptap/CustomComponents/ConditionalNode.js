@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Node } from "@tiptap/core";
 import {
   NodeSelection,
   Plugin,
@@ -72,12 +72,13 @@ const ConditionalNode = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       "div",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      {
         "data-type": "conditional",
         "data-condition": HTMLAttributes.condition || "",
         class: "conditional-block",
         role: "group",
-      }),
+        ...HTMLAttributes,
+      },
       0,
     ];
   },

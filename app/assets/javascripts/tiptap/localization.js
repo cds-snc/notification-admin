@@ -96,8 +96,8 @@ export const translations = {
       shortcut: shortcuts.rtlBlock,
     },
     ariaDescriptions: {
-      heading1: "Heading level 1",
-      heading2: "Heading level 2",
+      heading1: "Heading",
+      heading2: "Subheading",
       bulletList: "Bulleted list",
       numberedList: "Numbered list",
       bold: "Bold",
@@ -110,6 +110,7 @@ export const translations = {
       frenchBlock: "French content",
       conditionalBlock: "Conditional section",
       conditionalInline: "Conditional text",
+      rtlText: "Right-to-left text",
     },
     infoPane1: "Focus on a button for its function and shortcut. ",
     infoPane2: "Custom content",
@@ -201,8 +202,8 @@ export const translations = {
       shortcut: shortcuts.rtlBlock,
     },
     ariaDescriptions: {
-      heading1: "Titre de niveau 1",
-      heading2: "Titre de niveau 2",
+      heading1: "Titre",
+      heading2: "Sous titre",
       bulletList: "Liste à puces",
       numberedList: "Liste numérotée",
       bold: "Gras",
@@ -215,6 +216,7 @@ export const translations = {
       frenchBlock: "Contenu en français",
       conditionalBlock: "Section conditionnelle",
       conditionalInline: "Texte conditionnel",
+      rtlText: "Texte de droite à gauche",
     },
     infoPane1:
       "Sélectionnez un bouton pour découvrir sa fonction et son raccourci.",

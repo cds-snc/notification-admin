@@ -65,7 +65,7 @@ const ConditionalInlineNode = Node.create({
     const condition = HTMLAttributes.condition ?? this.options.defaultCondition;
     return [
       "span",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      mergeAttributes(HTMLAttributes, {
         "data-type": "conditional-inline",
         "data-condition": condition,
         "data-prefix": this.options.prefix,
@@ -189,12 +189,6 @@ const ConditionalInlineNode = Node.create({
       );
       dom.setAttribute("data-prefix", this.options.prefix);
       dom.setAttribute("data-suffix", this.options.suffix);
-      dom.setAttribute("role", "status");
-
-      const description = this.options.HTMLAttributes?.["aria-description"];
-      if (description) {
-        dom.setAttribute("aria-description", description);
-      }
 
       const widget = document.createElement("span");
       widget.className = "conditional-inline-edit-widget";

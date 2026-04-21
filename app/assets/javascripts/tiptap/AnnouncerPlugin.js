@@ -52,6 +52,11 @@ export const AnnouncerPlugin = (t) => {
                 label = t.ariaDescriptions[`heading${node.attrs.level}`];
               }
 
+              // Special handling for RTL based on attributes
+              if (node.attrs && node.attrs.dir === "rtl") {
+                label = t.ariaDescriptions.rtlText;
+              }
+
               if (label && !stack.includes(label)) {
                 // Add to stack if not already present (avoid duplicates)
                 stack.push(label);

@@ -1,7 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
-import { Extension, mergeAttributes } from "@tiptap/core";
-import { Plugin } from "@tiptap/pm/state";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -205,17 +203,9 @@ const SimpleEditor = ({
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
-      EnglishBlock.configure({
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.englishBlock,
-        },
-      }),
+      EnglishBlock.configure({}),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock.configure({
-        HTMLAttributes: {
-          "aria-description": t.ariaDescriptions.frenchBlock,
-        },
-      }),
+      FrenchBlock.configure({}),
       RTLBlock,
       MenubarShortcut,
 
