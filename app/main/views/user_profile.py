@@ -416,8 +416,8 @@ def user_profile_add_security_keys():
             result = user_api_client.register_security_key(current_user.id)
 
             data = result["data"]
-            # if isinstance(data, str):
-            #     data = json.loads(base64.b64decode(data))
+            if isinstance(data, str):
+                data = json.loads(base64.b64decode(data))
             return jsonify(data)
 
     if from_send_page == "user_profile_2fa":
