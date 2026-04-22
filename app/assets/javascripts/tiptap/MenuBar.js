@@ -281,14 +281,14 @@ const MenuBar = ({
     try {
       // Perform the action immediately (this pulls focus to editor)
       actionFn();
-      
+
       // Check the resulting state and determine the appropriate label to announce.
       const active = checkFn();
-        const actionLabel = active
-          ? labels.applied || t.applied
-          : labels.removed || t.removed;
+      const actionLabel = active
+        ? labels.applied || t.applied
+        : labels.removed || t.removed;
 
-        setLiveMessage(`${labels.label} ${actionLabel}`);
+      setLiveMessage(`${labels.label} ${actionLabel}`);
     } catch (err) {
       // ignore
     }
