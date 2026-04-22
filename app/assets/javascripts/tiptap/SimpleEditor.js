@@ -229,6 +229,7 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
+        "aria-describedby": "toolbar-liveregion",
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -855,12 +856,6 @@ const SimpleEditor = ({
 
   return (
     <EditorProvider lang={lang}>
-      <div
-        id="editor-announcer"
-        className="sr-only"
-        aria-live="polite"
-        aria-atomic="true"
-      ></div>
       <div className="editor-wrapper">
         <MenuBar
           editor={editor}
@@ -871,6 +866,12 @@ const SimpleEditor = ({
           useUnifiedConditionalButton={useUnifiedConditionalButton}
         />
         <div className="editor-content">
+          <div
+            id="editor-announcer"
+            className="sr-only"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
           {isMarkdownView ? (
             <textarea
               value={markdownValue}

@@ -275,46 +275,24 @@ const MenuBar = ({
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   // Helper to run an editor action and announce the resulting state change.
-  // To ensure screen readers read the announcement before focus returns to the
-  // editor, we optimistically set the message before invoking the action.
-  // We still run a deferred check to keep the message accurate if needed.
+  // We perform the action (which usually pulls focus to the editor) immediately,
+  // then set the live message
   const announceToggle = (actionFn, checkFn, labels) => {
     try {
-      const isCurrentlyActive = checkFn();
-      const actionLabel = isCurrentlyActive
-        ? labels.removed || t.removed
-        : labels.applied || t.applied;
+      // Perform the action immediately (this pulls focus to editor)
+      actionFn();
+      
+      // Check the resulting state and determine the appropriate label to announce.
+      const active = checkFn();
+        const actionLabel = active
+          ? labels.applied || t.applied
+          : labels.removed || t.removed;
 
-      // Optimistically announce the intended change.
-      setLiveMessage(`${labels.label} ${actionLabel}`);
-
-      // Delay invoking the action briefly so screen readers have time
-      // to pick up the live region before focus returns to the editor.
-      setTimeout(() => {
-        actionFn();
-
-        // Defer a verification check and correct the message if the action actually removed or added the state unexpectedly.
-        setTimeout(() => {
-          const active = checkFn();
-          if (active === isCurrentlyActive) {
-            // The state didn't change as expected.
-            const finalLabel = active
-              ? labels.removed || t.removed
-              : labels.applied || t.applied;
-            setLiveMessage(`${labels.label} ${finalLabel}`);
-          }
-        }, 100);
-      }, 120);
+        setLiveMessage(`${labels.label} ${actionLabel}`);
     } catch (err) {
       // ignore
     }
   };
-
-  useEffect(() => {
-    if (!liveMessage) return;
-    const id = setTimeout(() => setLiveMessage(""), 2500);
-    return () => clearTimeout(id);
-  }, [liveMessage]);
 
   // Close info pane when switching to markdown view
   useEffect(() => {
@@ -322,6 +300,19 @@ const MenuBar = ({
       setIsInfoOpen(false);
     }
   }, [isMarkdownView]);
+
+  // Once the liveMessage is set, clear it after 2 seconds. This ensures
+  // the live region is ready for the next announcement and doesn't
+  // repeat stale information on a future focus event.
+  useEffect(() => {
+    if (!liveMessage) return;
+
+    const timeout = setTimeout(() => {
+      setLiveMessage("");
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [liveMessage]);
 
   const selectionSpansMultipleBlocks = () => {
     try {
@@ -491,9 +482,11 @@ const MenuBar = ({
       >
         <div
           className="sr-only"
-          role="alert"
+          role="status"
+          aria-live="polite"
           aria-atomic="true"
           data-testid="rte-liveregion"
+          id="toolbar-liveregion"
         >
           {liveMessage}
         </div>
