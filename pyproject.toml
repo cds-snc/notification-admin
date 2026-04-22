@@ -40,7 +40,7 @@ gunicorn = "22.0.0"
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 notifications-python-client = "6.4.1"
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.22" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.23" }
 pwnedpasswords = "2.0.0"
 pyexcel = "0.7.4"
 pyexcel-io = "0.6.7"
