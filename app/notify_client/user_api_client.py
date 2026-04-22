@@ -262,9 +262,9 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = "/user/{}/fido2_keys/register".format(user_id)
         return self.post(endpoint, {})
 
-    def add_security_key_user(self, user_id, payload):
+    def add_security_key_user(self, user_id, name, credential):
         endpoint = "/user/{}/fido2_keys".format(user_id)
-        data = {"payload": payload}
+        data = {"name": name, "credential": credential}
         return self.post(endpoint, data)
 
     def delete_security_key_user(self, user_id, key):
@@ -276,9 +276,9 @@ class UserApiClient(NotifyAdminAPIClient):
         return self.post(endpoint, {})
 
     @cache.delete("user-{user_id}")
-    def validate_security_keys(self, user_id, payload):
+    def validate_security_keys(self, user_id, credential):
         endpoint = "/user/{}/fido2_keys/validate".format(user_id)
-        data = {"payload": payload}
+        data = {"credential": credential}
         return self.post(endpoint, data)
 
     def get_login_events_for_user(self, user_id):
