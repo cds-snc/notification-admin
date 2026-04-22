@@ -95,6 +95,17 @@
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
       {% endif %}
+
+      {% if one_click_unsub_enabled and form.use_custom_unsubscribe_url is defined %}
+        <div id="custom-unsub-url-setting" class="form-group mb-8 {{ 'hidden' if '((unsubscribe_url))' not in (form.template_content.data or '') else '' }}">
+          <div class="multiple-choice float-none">
+            {{ form.use_custom_unsubscribe_url(class="multiple-choice__input") }}
+            <label class="multiple-choice__label" for="{{ form.use_custom_unsubscribe_url.id }}">
+              {{ form.use_custom_unsubscribe_url.label.text }}
+            </label>
+          </div>
+        </div>
+      {% endif %}
       {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>
   </div>
