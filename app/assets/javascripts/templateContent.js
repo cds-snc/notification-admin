@@ -22,11 +22,14 @@
 
 // Show/hide the one-click unsubscribe checkbox based on whether ((unsubscribe_url)) is in the content.
 (function () {
-  var setting = document.getElementById('custom-unsub-url-setting');
+  var setting = document.getElementById("custom-unsub-url-setting");
   if (!setting) return;
-  var contentInput = document.getElementById('template_content');
+  var contentInput = document.getElementById("template_content");
   if (!contentInput) return;
-  contentInput.addEventListener('change', function () {
-    setting.classList.toggle('hidden', !contentInput.value.includes('((unsubscribe_url))'));
+  contentInput.addEventListener("change", function () {
+    setting.classList.toggle(
+      "hidden",
+      !contentInput.value.includes("((unsubscribe_url))"),
+    );
   });
 })();
