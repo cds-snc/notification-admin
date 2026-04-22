@@ -195,7 +195,16 @@ class TestSendOtherCategoryInfo:
         )
 
         mock_update_service_template.assert_called_with(
-            fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
+            fake_uuid,
+            name,
+            "sms",
+            content,
+            SERVICE_ONE_ID,
+            None,
+            None,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
+            False,
+            use_custom_unsubscribe_url=None,
         )
         assert mock_send_other_category_to_freshdesk.called is True
         mock_send_other_category_to_freshdesk.assert_called_once_with(
@@ -1332,7 +1341,16 @@ def test_should_redirect_when_saving_a_template(
     assert flash_banner == f"‘{name}’ template saved"
     # self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
     mock_update_service_template.assert_called_with(
-        fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
+        fake_uuid,
+        name,
+        "sms",
+        content,
+        SERVICE_ONE_ID,
+        None,
+        None,
+        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1373,6 +1391,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         process_type,
         TESTING_TEMPLATE_CATEGORY,
         False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1731,6 +1750,7 @@ def test_should_redirect_when_saving_a_template_email(
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
         False,
+        use_custom_unsubscribe_url=False,
     )
 
 
@@ -1954,6 +1974,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
         False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1994,6 +2015,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         DEFAULT_PROCESS_TYPE,
         None,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -2446,6 +2468,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
         ANY,  # process_type
         ANY,  # parent_folder_id
         ANY,  # template_category_id
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -3548,3 +3571,284 @@ class TestCreateFromSampleTemplate:
             template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
             _expected_status=404,
         )
+
+
+class TestOneClickUnsubscribe:
+    """Tests for the one-click unsubscribe header feature."""
+
+    def test_one_click_unsub_checkbox_shown_when_placeholder_in_content(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is not None
+
+    def test_one_click_unsub_checkbox_not_shown_without_placeholder_in_content(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="No placeholder here",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        setting = page.select_one("#custom-unsub-url-setting")
+        assert setting is not None
+        assert "hidden" in setting.get("class", [])
+
+    def test_one_click_unsub_checkbox_not_shown_when_feature_disabled(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
+        app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = []
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is None
+
+    def test_one_click_unsub_checkbox_shown_when_service_in_allowlist(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
+        app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = [SERVICE_ONE_ID]
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is not None
+
+    def test_create_email_template_sends_use_custom_unsubscribe_url(
+        self,
+        client_request,
+        mock_create_service_template,
+        mock_get_template_categories,
+        mock_get_template_folders,
+        mock_get_service_template_when_no_template_exists,
+        mock_get_limit_stats,
+        app_,
+        fake_uuid,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+
+        client_request.post(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            _data={
+                "name": "My email template",
+                "subject": "Hello",
+                "template_content": "Body with ((unsubscribe_url))",
+                "template_type": "email",
+                "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                "service": SERVICE_ONE_ID,
+                "process_type": None,
+                "button_pressed": "save",
+                "use_custom_unsubscribe_url": "y",
+            },
+            _follow_redirects=True,
+        )
+
+        mock_create_service_template.assert_called_once_with(
+            "My email template",
+            "email",
+            "Body with ((unsubscribe_url))",
+            SERVICE_ONE_ID,
+            "Hello",
+            None,
+            None,
+            TESTING_TEMPLATE_CATEGORY,
+            use_custom_unsubscribe_url=True,
+        )
+
+    def test_edit_email_template_with_use_custom_unsubscribe_url_checked(
+        self,
+        client_request,
+        mock_update_service_template,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="My email template",
+                    type_="email",
+                    content="Body with ((unsubscribe_url))",
+                    subject="Hello",
+                )
+            },
+        )
+
+        client_request.post(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _data={
+                "id": fake_uuid,
+                "name": "My email template",
+                "subject": "Hello",
+                "template_content": "Body with ((unsubscribe_url))",
+                "template_type": "email",
+                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                "service": SERVICE_ONE_ID,
+                "process_type": DEFAULT_PROCESS_TYPE,
+                "button_pressed": "save",
+                "use_custom_unsubscribe_url": "y",  # checkbox checked
+            },
+            _expected_status=302,
+        )
+
+        mock_update_service_template.assert_called_with(
+            fake_uuid,
+            "My email template",
+            "email",
+            "Body with ((unsubscribe_url))",
+            SERVICE_ONE_ID,
+            "Hello",
+            DEFAULT_PROCESS_TYPE,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
+            False,
+            use_custom_unsubscribe_url=True,
+        )
+
+    def test_use_custom_unsubscribe_url_preserved_when_loading_edit_form(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": {
+                    **template_json(
+                        SERVICE_ONE_ID,
+                        fake_uuid,
+                        name="My email template",
+                        type_="email",
+                        content="Body with ((unsubscribe_url))",
+                        subject="Hello",
+                    ),
+                    "use_custom_unsubscribe_url": True,
+                }
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        checkbox = page.select_one("input[name=use_custom_unsubscribe_url]")
+        assert checkbox is not None
+        assert checkbox.has_attr("checked")

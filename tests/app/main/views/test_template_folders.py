@@ -401,6 +401,7 @@ def test_can_create_email_template_with_parent_folder(
         None,
         data["parent_folder_id"],
         data["template_category_id"],
+        use_custom_unsubscribe_url=False,
     )
 
 
