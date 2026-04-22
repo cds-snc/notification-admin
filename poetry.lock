@@ -1681,8 +1681,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "renovate/pypi-cryptography-vulnerability"
-resolved_reference = "fa8736f8f35d9f52beee0d8aef9acf78eeba8d8e"
+reference = "53.2.23"
+resolved_reference = "63f6d2a9681773ec66616d1492c8a2913ecad8f5"
 
 [[package]]
 name = "openpyxl"
@@ -2947,4 +2947,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "2e81801722b205c3769628da5e86dd8d2caac32b554c2f317fa2751ef1810137"
+content-hash = "ff5d3016f12412a0643b2a3ffeafab1f76d51c6e871fc59445c0bb9a66f78e40"
