@@ -3,7 +3,7 @@ import re
 from collections import OrderedDict
 from datetime import datetime
 
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_babel import lazy_gettext as _l
 from notifications_python_client.errors import HTTPError
 from requests import RequestException
@@ -186,11 +186,27 @@ def platform_admin_services():
         trial_mode_services=request.endpoint == "main.trial_services",
     )
 
+    start_date = api_args.get("start_date", datetime.utcnow().date())
+    end_date = api_args.get("end_date", datetime.utcnow().date())
+
+    # Fetch SMS cost and fragment data for ALL services in a single bulk call
+    sms_cost_by_service = {}
+    try:
+        response = billing_api_client.get_sms_cost_for_all_services(start_date=start_date, end_date=end_date)
+        for item in response.get("services", []):
+            sms_cost_by_service[str(item["service_id"])] = {
+                "fragment_count": item["fragment_count"],
+                "total_cost": item["total_cost"],
+            }
+    except Exception:
+        # If bulk fetch fails, services will have default zero values
+        current_app.logger.exception("Failed to fetch bulk SMS cost data for platform-admin services view")
+
     return render_template(
         "views/platform-admin/services.html",
         include_from_test_key=form.include_from_test_key.data,
         form=form,
-        services=list(format_stats_by_service(services)),
+        services=list(format_stats_by_service(services, sms_cost_by_service)),
         page_title="{} services".format("Trial mode" if request.endpoint == "main.trial_services" else "Live"),
         global_stats=create_global_stats(services),
     )
@@ -689,8 +705,12 @@ def create_global_stats(services):
     return stats
 
 
-def format_stats_by_service(services):
+def format_stats_by_service(services, sms_cost_by_service=None):
+    if sms_cost_by_service is None:
+        sms_cost_by_service = {}
     for service in services:
+        # Service IDs can be UUID objects or strings depending on deserialization path.
+        cost_data = sms_cost_by_service.get(str(service["id"]), sms_cost_by_service.get(service["id"], {}))
         yield {
             "id": service["id"],
             "name": service["name"],
@@ -701,6 +721,10 @@ def format_stats_by_service(services):
                     "failed": stats["failed"],
                 }
                 for msg_type, stats in service["statistics"].items()
+            },
+            "sms_cost": {
+                "fragment_count": cost_data.get("fragment_count", 0),
+                "total_cost": cost_data.get("total_cost", 0),
             },
             "restricted": service["restricted"],
             "research_mode": service["research_mode"],

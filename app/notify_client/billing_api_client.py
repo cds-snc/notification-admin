@@ -33,6 +33,40 @@ class BillingAPIClient(NotifyAdminAPIClient):
             data=data,
         )
 
+    def get_sms_cost_for_service(self, service_id, start_date, end_date):
+        return self.get(
+            url="/service/{}/billing/sms-cost".format(service_id),
+            params={
+                "start_date": str(start_date),
+                "end_date": str(end_date),
+            },
+        )
+
+    def get_sms_cost_for_all_services(self, start_date, end_date):
+        """Fetch SMS cost and fragment count for ALL services in a single bulk call.
+
+        Returns:
+            {
+                "start_date": "YYYY-MM-DD",
+                "end_date": "YYYY-MM-DD",
+                "services": [
+                    {
+                        "service_id": "uuid",
+                        "fragment_count": integer,
+                        "total_cost": float
+                    },
+                    ...
+                ]
+            }
+        """
+        return self.get(
+            url="/platform-stats/sms-cost-for-all-services",
+            params={
+                "start_date": str(start_date),
+                "end_date": str(end_date),
+            },
+        )
+
     def get_usage_for_all_services(self, start_date, end_date):
         return self.get(
             url="/platform-stats/usage-for-all-services",

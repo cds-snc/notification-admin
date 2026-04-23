@@ -460,6 +460,54 @@ def test_should_show_email_and_sms_stats_for_all_service_types(
     assert sms_failed == 11
 
 
+def test_should_show_sms_cost_columns_in_services_table(
+    platform_admin_client,
+    mock_get_detailed_services,
+    fake_uuid,
+    mocker,
+):
+    services = [
+        service_json(
+            fake_uuid,
+            "My Service",
+            [],
+            restricted=False,
+            research_mode=False,
+        )
+    ]
+    services[0]["statistics"] = create_stats(
+        sms_requested=50,
+        sms_delivered=40,
+        sms_failed=10,
+    )
+    mock_get_detailed_services.return_value = {"data": services}
+
+    mocker.patch(
+        "app.billing_api_client.get_sms_cost_for_all_services",
+        return_value={
+            "start_date": "2025-01-01",
+            "end_date": "2025-03-31",
+            "services": [
+                {
+                    "service_id": str(fake_uuid),
+                    "fragment_count": 123,
+                    "total_cost": 3.69,
+                }
+            ],
+        },
+    )
+
+    response = platform_admin_client.get(url_for("main.live_services"))
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    fragments = page.find("span", {"data-testid": "sms-fragments"})
+    cost = page.find("span", {"data-testid": "sms-cost"})
+
+    assert fragments.text.strip() == "123"
+    assert cost.text.strip() == "$3.69"
+
+
 @pytest.mark.parametrize(
     "endpoint, restricted",
     [("main.live_services", False), ("main.trial_services", True)],
