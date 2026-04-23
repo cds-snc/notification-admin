@@ -62,6 +62,8 @@ const SimpleEditor = ({
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
 
+  const announcerRef = useRef(null);
+
   const conditionalLabels = {
     en: {
       prefix: "IF ",
@@ -144,7 +146,7 @@ const SimpleEditor = ({
       History,
 
       // Universal announcer for all nodes and marks
-      AnnouncerPlugin(t),
+      AnnouncerPlugin(t, announcerRef),
 
       // Node extensions that match toolbar features
       Heading.configure({
@@ -867,7 +869,8 @@ const SimpleEditor = ({
         />
         <div className="editor-content">
           <div
-            id="editor-announcer"
+            ref={announcerRef}
+            data-testid={`${labelId}-cursor-announcer`}
             className="sr-only"
             aria-live="polite"
             aria-atomic="true"

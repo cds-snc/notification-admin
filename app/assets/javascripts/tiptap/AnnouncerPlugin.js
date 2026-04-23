@@ -5,8 +5,22 @@ import { Extension } from "@tiptap/core";
  * A TipTap extension that provides a ProseMirror plugin to track the active node/mark stack
  * and announce it to screen readers via an ARIA live region.
  */
-export const AnnouncerPlugin = (t) => {
+export const AnnouncerPlugin = (t, announcerRef) => {
   let lastAnnouncement = "";
+
+  const updateAnnouncer = (text) => {
+    const announcer = announcerRef.current;
+    if (!announcer) return;
+
+    // We toggle the text content to ensure the ARIA-live region re-triggers
+    // the announcement even if the user moves between identical environments.
+    announcer.textContent = "";
+    if (text) {
+      setTimeout(() => {
+        announcer.textContent = text;
+      }, 50);
+    }
+  };
 
   return Extension.create({
     name: "announcer",
@@ -26,39 +40,35 @@ export const AnnouncerPlugin = (t) => {
             // 1. Process active marks at current selection
             const marks = $from.marks();
             marks.forEach((mark) => {
-              const label = t.ariaDescriptions[mark.type.name];
+              const label = t[mark.type.name]?.label;
               if (label) stack.push(label);
             });
 
             // 2. Handle Node Selection (Atomic nodes like HorizontalRule)
             if (selection.node) {
-              let label = t.ariaDescriptions[selection.node.type.name];
-              if (selection.node.type.name === "horizontalRule") {
-                // For separators, we just want the role (e.g., "Separator")
-                // without the extra description (e.g., "Section break")
-                label = t.ariaDescriptions.roleSeparator || "Separator";
-              }
+              const label = t[selection.node.type.name]?.label;
               if (label) stack.push(label);
             }
 
             // 3. Process node hierarchy (Wrappers)
-            // Iterate from the bottom up to the document root
             for (let d = $from.depth; d > 0; d--) {
               const node = $from.node(d);
-              let label = t.ariaDescriptions[node.type.name];
+              const nodeName = node.type.name;
+              let label;
 
-              // Specific handling for dynamic levels
-              if (node.type.name === "heading") {
-                label = t.ariaDescriptions[`heading${node.attrs.level}`];
+              if (nodeName === "heading") {
+                label = t[`heading${node.attrs.level}`]?.label;
+              } else {
+                label = t[nodeName]?.label;
               }
 
-              // Special handling for RTL based on attributes
+              // Special handling for RTL
               if (node.attrs && node.attrs.dir === "rtl") {
-                label = t.ariaDescriptions.rtlText;
+                const rtlLabel = t.rtlBlock?.label;
+                if (rtlLabel) stack.push(rtlLabel);
               }
 
               if (label && !stack.includes(label)) {
-                // Add to stack if not already present (avoid duplicates)
                 stack.push(label);
               }
             }
@@ -80,17 +90,3 @@ export const AnnouncerPlugin = (t) => {
     },
   });
 };
-
-function updateAnnouncer(text) {
-  const announcer = document.getElementById("editor-announcer");
-  if (!announcer) return;
-
-  // We toggle the text content to ensure the ARIA-live region re-triggers
-  // the announcement even if the user moves between identical environments.
-  announcer.textContent = "";
-  if (text) {
-    setTimeout(() => {
-      announcer.textContent = text;
-    }, 50);
-  }
-}
