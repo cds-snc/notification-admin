@@ -186,11 +186,22 @@ def platform_admin_services():
         trial_mode_services=request.endpoint == "main.trial_services",
     )
 
+    start_date = api_args.get("start_date", datetime.utcnow().date())
+    end_date = api_args.get("end_date", datetime.utcnow().date())
+
+    sms_cost_by_service = {}
+    for service in services:
+        try:
+            cost_data = billing_api_client.get_sms_cost_for_service(service["id"], start_date=start_date, end_date=end_date)
+            sms_cost_by_service[service["id"]] = cost_data
+        except Exception:
+            sms_cost_by_service[service["id"]] = {"fragment_count": 0, "total_cost": 0}
+
     return render_template(
         "views/platform-admin/services.html",
         include_from_test_key=form.include_from_test_key.data,
         form=form,
-        services=list(format_stats_by_service(services)),
+        services=list(format_stats_by_service(services, sms_cost_by_service)),
         page_title="{} services".format("Trial mode" if request.endpoint == "main.trial_services" else "Live"),
         global_stats=create_global_stats(services),
     )
@@ -689,8 +700,11 @@ def create_global_stats(services):
     return stats
 
 
-def format_stats_by_service(services):
+def format_stats_by_service(services, sms_cost_by_service=None):
+    if sms_cost_by_service is None:
+        sms_cost_by_service = {}
     for service in services:
+        cost_data = sms_cost_by_service.get(service["id"], {})
         yield {
             "id": service["id"],
             "name": service["name"],
@@ -701,6 +715,10 @@ def format_stats_by_service(services):
                     "failed": stats["failed"],
                 }
                 for msg_type, stats in service["statistics"].items()
+            },
+            "sms_cost": {
+                "fragment_count": cost_data.get("fragment_count", 0),
+                "total_cost": cost_data.get("total_cost", 0),
             },
             "restricted": service["restricted"],
             "research_mode": service["research_mode"],

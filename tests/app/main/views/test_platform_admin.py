@@ -407,6 +407,21 @@ def test_format_stats_by_service_returns_correct_values(fake_uuid):
     assert ret[0]["stats"]["letter"]["delivered"] == 20
     assert ret[0]["stats"]["letter"]["failed"] == 7
 
+    assert ret[0]["sms_cost"]["fragment_count"] == 0
+    assert ret[0]["sms_cost"]["total_cost"] == 0
+
+
+def test_format_stats_by_service_includes_sms_cost(fake_uuid):
+    services = [service_json(fake_uuid, "a", [])]
+    services[0]["statistics"] = create_stats(sms_requested=10, sms_delivered=8, sms_failed=2)
+    sms_cost_by_service = {
+        services[0]["id"]: {"fragment_count": 42, "total_cost": 1.26},
+    }
+
+    ret = list(format_stats_by_service(services, sms_cost_by_service))
+    assert ret[0]["sms_cost"]["fragment_count"] == 42
+    assert ret[0]["sms_cost"]["total_cost"] == 1.26
+
 
 @pytest.mark.parametrize(
     "endpoint, restricted, research_mode",
@@ -458,6 +473,44 @@ def test_should_show_email_and_sms_stats_for_all_service_types(
     assert sms_sending == 32
     assert sms_delivered == 7
     assert sms_failed == 11
+
+
+def test_should_show_sms_cost_columns_in_services_table(
+    platform_admin_client,
+    mock_get_detailed_services,
+    fake_uuid,
+    mocker,
+):
+    services = [
+        service_json(
+            fake_uuid,
+            "My Service",
+            [],
+            restricted=False,
+            research_mode=False,
+        )
+    ]
+    services[0]["statistics"] = create_stats(
+        sms_requested=50,
+        sms_delivered=40,
+        sms_failed=10,
+    )
+    mock_get_detailed_services.return_value = {"data": services}
+
+    mocker.patch(
+        "app.billing_api_client.get_sms_cost_for_service",
+        return_value={"fragment_count": 123, "total_cost": 3.69},
+    )
+
+    response = platform_admin_client.get(url_for("main.live_services"))
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    fragments = page.find("span", {"data-testid": "sms-fragments"})
+    cost = page.find("span", {"data-testid": "sms-cost"})
+
+    assert fragments.text.strip() == "123"
+    assert cost.text.strip() == "$3.69"
 
 
 @pytest.mark.parametrize(
