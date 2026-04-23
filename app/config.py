@@ -266,6 +266,7 @@ class Production(Config):
 class Staging(Production):
     NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
 
@@ -273,11 +274,13 @@ class Staging(Production):
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = NotifyEnv.SCRATCH.value
     NOTIFY_LOG_LEVEL = "INFO"
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
 
 
 class Dev(Production):
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
 
 
 configs = {
