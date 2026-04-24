@@ -4,6 +4,7 @@
   }
 
   details summary {
+    list-style: none;
     @apply pl-gutter mb-gutterHalf underline inline-block text-blue cursor-pointer relative border-blue;
   }
   details summary:before {
@@ -20,13 +21,6 @@
   details summary:focus,
   details summary:focus-visible {
     @apply outline outline-yellow outline-4;
-  }
-
-  summary::-moz-details-marker,
-  summary::-ms-details-marker,
-  summary::-o-details-marker,
-  summary::-webkit-details-marker {
-    @apply hidden;
   }
 
   details summary::-webkit-details-marker {

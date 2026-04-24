@@ -326,15 +326,32 @@ section[id]:target {
     @apply outline-none;
   }
 }
+
+.skiplink:focus {
+  @apply flex outline-none bg-yellow border-b-2 border-blue no-underline;
+  z-index: 1;
+}
+
+.skiplink:not(:focus) {
+  @apply absolute;
+  left: -9999em;
+}
+
+.skiplink:focus,
+.skiplink:visited {
+  color: #0b0c0c;
+}
+
+#skiplink-container .skiplink {
+  display: -moz-inline-stack;
+  display: inline-block;
+}
+
 @layer components {
   /* Hide, but not for screenreaders */
   .visually-hidden,
   .visuallyhidden {
-    clip: rect(0 0 0 0);
-    height: 1px;
-    width: 1px;
-    margin: -1px;
-    @apply absolute overflow-hidden border-0 p-0;
+    @apply sr-only;
   }
 
   .research-mode {

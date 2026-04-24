@@ -66,7 +66,7 @@
   .template-list-folder {
     background-size: auto 20px;
     background-position: 0px 4px;
-    @apply inline pl-16 bg-no-repeat bg-folderBlue; /* Overwrite for browsers that support SVG */
+    @apply inline pl-16 bg-no-repeat bg-folderBlue;
   }
   .template-list-folder:hover {
     @apply bg-folderBlueHover;
