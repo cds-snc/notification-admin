@@ -1,39 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useEditorContext } from "./EditorContext";
 import "./tooltip.compiled.css";
 
 const TooltipWrapper = ({ children, label, shortcut }) => {
-  const [visible, setVisible] = useState(false);
-  const ref = React.useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const { t } = useEditorContext();
+  const tooltipRef = useRef(null);
+  const targetRef = useRef(null);
 
-  const show = () => setVisible(true);
-  const hide = () => setVisible(false);
-
-  const child = React.Children.only(children);
-  const cloned = React.cloneElement(child, {
-    onMouseEnter: (e) => {
-      show();
-      if (child.props.onMouseEnter) child.props.onMouseEnter(e);
-    },
-    onMouseLeave: (e) => {
-      hide();
-      if (child.props.onMouseLeave) child.props.onMouseLeave(e);
-    },
-    onFocus: (e) => {
-      show();
-      if (child.props.onFocus) child.props.onFocus(e);
-    },
-    onBlur: (e) => {
-      hide();
-      if (child.props.onBlur) child.props.onBlur(e);
-    },
-    ref,
-  });
+  const showTooltip = () => setIsVisible(true);
+  const hideTooltip = () => setIsVisible(false);
 
   return (
-    <span className="rte-tooltip-wrapper">
-      {cloned}
-      {visible && (
-        <div role="tooltip" className="rte-tooltip-box">
+    <span
+      className="rte-tooltip-wrapper"
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onFocus={showTooltip}
+      onBlur={hideTooltip}
+      ref={targetRef}
+    >
+      {React.cloneElement(children)}
+      {isVisible && (
+        <div
+          ref={tooltipRef}
+          className="rte-tooltip-box"
+          role="tooltip"
+          aria-hidden="true"
+        >
           <div
             className={
               shortcut ? "rte-tooltip-label" : "rte-tooltip-label no-shortcut"
@@ -42,6 +36,7 @@ const TooltipWrapper = ({ children, label, shortcut }) => {
             {label}
           </div>
           {shortcut && <div className="rte-tooltip-shortcut">{shortcut}</div>}
+          {!shortcut && <div className="sr-only">{t.noShortcut}</div>}
           <div aria-hidden="true" className="rte-tooltip-caret" />
         </div>
       )}

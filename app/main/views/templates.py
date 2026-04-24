@@ -269,6 +269,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["template_category_id"],
                         template["text_direction_rtl"],
+                        use_custom_unsubscribe_url=template.get("use_custom_unsubscribe_url"),
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -280,6 +281,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["folder"],
                         template["template_category_id"],
+                        use_custom_unsubscribe_url=template.get("use_custom_unsubscribe_url"),
                     )
                     template_id = new_template["data"]["id"]
 
@@ -898,6 +900,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
@@ -967,6 +972,8 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             other_category=other_category,
             template_category_mode="expand",
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 
@@ -1012,6 +1019,8 @@ def edit_service_template(service_id, template_id):
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
         template["text_direction_rtl"] = new_template_data["text_direction_rtl"]
+        if "use_custom_unsubscribe_url" in new_template_data:
+            template["use_custom_unsubscribe_url"] = new_template_data["use_custom_unsubscribe_url"]
 
     template["template_content"] = template["content"]
 
@@ -1077,6 +1086,9 @@ def edit_service_template(service_id, template_id):
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data,
                         form.text_direction_rtl.data,
+                        use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                        if hasattr(form, "use_custom_unsubscribe_url")
+                        else None,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
@@ -1138,6 +1150,8 @@ def edit_service_template(service_id, template_id):
             other_category=other_category,
             template_category_mode="expand" if request.method == "POST" else None,
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 
@@ -1666,6 +1680,9 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
