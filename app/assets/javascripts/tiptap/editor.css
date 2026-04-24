@@ -1,3 +1,4 @@
+@reference "../../stylesheets/tailwind/style.css";
 /* Basic editor styles */
 .tiptap {
   min-height: 400px;
@@ -332,7 +333,7 @@
   background-size: auto 175%;
   background-position: right 0.75rem bottom 75%;
   z-index: -1;
-  @apply bg-tryRte bg-no-repeat;
+  @apply bg-(--image-tryRte) bg-no-repeat;
 }
 @container (width < 680px) {
   .toolbar.markdown-mode:after {

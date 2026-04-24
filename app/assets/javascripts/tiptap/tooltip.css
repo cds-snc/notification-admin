@@ -1,3 +1,4 @@
+@reference "../../stylesheets/tailwind/style.css";
 .rte-tooltip-wrapper {
   position: relative;
   display: inline-block;

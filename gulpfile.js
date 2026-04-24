@@ -12,13 +12,11 @@ plugins.addSrc = require("gulp-add-src");
 plugins.babel = require("gulp-babel");
 plugins.base64 = require("gulp-base64-inline");
 plugins.concat = require("gulp-concat");
-plugins.cleanCSS = require('gulp-clean-css');
 plugins.jshint = require("gulp-jshint");
 plugins.prettyerror = require("gulp-prettyerror");
 plugins.rename = require("gulp-rename");
 plugins.uglify = require("gulp-uglify");
-plugins.postcss = require('gulp-postcss');
-plugins.cssnano = require('cssnano');
+// Removed plugins.cleanCSS, plugins.postcss, plugins.cssnano as they are handled by Tailwind 4 + Vite
 // compression plugins intentionally not used here to avoid extra deps
 
 // 2. CONFIGURATION
@@ -122,17 +120,9 @@ const minifyIndividualJs = () => {
 
 // copy static css
 const static_css = () => {
-  return src(paths.src + "/stylesheets/index.css")
-    .pipe(plugins.concat("index.css"))
-    // Minify with PostCSS + cssnano and remove all comments
-    .pipe(plugins.postcss([
-      plugins.cssnano({
-        preset: ['default', {
-          discardComments: { removeAll: true }
-        }]
-      })
-    ]))
-    .pipe(dest(paths.dist + "stylesheets/"));
+    // This is now handled by Vite, so we just return a stream that does nothing
+    // or we can remove it from the parallel tasks.
+    return Promise.resolve();
 };
 
 // Copy images

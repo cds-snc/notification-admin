@@ -72,7 +72,7 @@
   }
 
   /* https://github.com/alphagov/product-page-example/blob/master/source/stylesheets/modules/_sub-navigation.scss */
-  @screen md {
+  @variant md {
     .sub-navigation {
       margin-top: 45px;
     }

@@ -66,10 +66,10 @@
   .template-list-folder {
     background-size: auto 20px;
     background-position: 0px 4px;
-    @apply inline pl-16 bg-no-repeat bg-folderBluePng bg-folderBlue; /* Overwrite for browsers that support SVG */
+    @apply inline pl-16 bg-no-repeat bg-folderBlue;
   }
   .template-list-folder:hover {
-    @apply bg-folderBlueHoverPng bg-folderBlueHover;
+    @apply bg-folderBlueHover;
   }
   .template-list-template a {
     @apply inline;
@@ -80,7 +80,7 @@
   .template-list-selected-counter {
     @apply text-gray-grey1 mx-0 my-gutterHalf;
   }
-  @screen lg {
+  @variant lg {
     .template-list-selected-counter {
       top: 29px;
       @apply absolute right-0 m-0;
@@ -115,7 +115,7 @@
     @apply inline bg-no-repeat align-top text-smaller min-h-12;
   }
   .folder-heading-folder {
-    @apply p-0 pl-gutter bg-folderBlackPng bg-folderBlack;
+    @apply p-0 pl-gutter bg-folderBlack;
   }
   .folder-heading-folder-group:not(:last-child) {
     @apply mr-4 mb-4;
@@ -132,10 +132,10 @@
     @apply inline;
   }
   .folder-heading a.folder-heading-folder {
-    @apply inline bg-folderBluePng bg-folderBlue;
+    @apply inline bg-folderBlue;
   }
   .folder-heading a.folder-heading-folder:hover {
-    @apply bg-folderBlueHoverPng bg-folderBlueHover;
+    @apply bg-folderBlueHover;
   }
   .folder-heading a.folder-heading-folder-truncated {
     @apply inline-block;

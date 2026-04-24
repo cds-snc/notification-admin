@@ -1,4 +1,223 @@
-@import "./components/tailwind.css";
+@import "tailwindcss";
+
+@source inline("sm:bg-{emptyBird,emptyBirdHole,emptyFlower,emptyTruck,emptyBirdCurious,tryRte}");
+
+@theme {
+  /* Screens */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 320px;
+  --breakpoint-smaller: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+
+  /* Font Sizes */
+  --text-*: initial;
+  --text-xs: 0.875rem;
+  --text-small: 1.0625rem;
+  --text-smaller: 1.25rem;
+  --text-base: 1.25rem;
+  --text-title: 1.5rem;
+  --text-titlelarge: 1.75rem;
+  --text-lg: 2.25rem;
+  --text-xxl: 3.25rem;
+
+  /* Spacing */
+  --spacing-0: 0rem;
+  --spacing-1: 0.1875rem;
+  --spacing-2: 0.3125rem;
+  --spacing-3: 0.5rem;
+  --spacing-4: 0.625rem;
+  --spacing-5: 0.75rem;
+  --spacing-6: 0.9375rem;
+  --spacing-8: 1.25rem;
+  --spacing-10: 1.5625rem;
+  --spacing-12: 1.875rem;
+  --spacing-16: 2.5rem;
+  --spacing-20: 3.125rem;
+  --spacing-24: 3.75rem;
+  --spacing-56: 8.75rem;
+  --spacing-gutter: 1.875rem;
+  --spacing-gutterHalf: 0.9375rem;
+  --spacing-gutterAndAHalf: 2.8125rem;
+  --spacing-doubleGutter: 3.75rem;
+  --spacing-target: 45px;
+  --spacing-lineLength: 80ch;
+
+  /* Colors */
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-red: #9f331a;
+  --color-red-hover: #471a0a;
+  --color-red-border: #9f331a;
+  --color-red-mellow: #d74224;
+  --color-red-100: #ffc6c3;
+  --color-red-300: #fb6252;
+  --color-red-500: #d74224;
+  --color-red-700: #9f331a;
+  --color-red-900: #471a0a;
+
+  --color-blue-light: #f5f9ff;
+  --color-blue-lighter: #b2e3ff;
+  --color-blue: #213045;
+  --color-blue-border: #1a3152;
+  --color-blue-selected: #75b9e0;
+  --color-blue-lightblue25: #d5e8f3;
+  --color-blue-lightblue: #0154b0;
+  --color-blue-slightlight: #284162;
+  --color-blue-100: #aee4fe;
+  --color-blue-200: #d7e5f5;
+  --color-blue-300: #71a7f3;
+  --color-blue-500: #1354ec;
+  --color-blue-600: #6584a6;
+  --color-blue-700: #425a76;
+  --color-blue-800: #31455c;
+  --color-blue-900: #26374a;
+
+  --color-brand: #b3e4fb;
+  --color-brand-100: #b3e4fb;
+  --color-brand-300: #509dc4;
+  --color-brand-500: #427d9f;
+  --color-brand-700: #2c5e79;
+  --color-brand-900: #0e2a3c;
+
+  --color-gray: #eee;
+  --color-gray-button: #dee0e2;
+  --color-gray-selected: #e1e4e7;
+  --color-gray-hover: #d0d3d6;
+  --color-gray-border: #b5babe;
+  --color-gray-grey1: #595959;
+  --color-gray-grey2: #bfc1c3;
+  --color-gray-grey4: #f8f8f8;
+  --color-gray-lightgrey: #c0c1c3;
+  --color-gray-visitedlight: #929aa4;
+  --color-gray-visiteddark: #c8cdd1;
+  --color-gray-light: #f5fff9;
+  --color-gray-100: #f0f2f5;
+  --color-gray-200: #cfd5dd;
+  --color-gray-300: #afb9c3;
+  --color-gray-400: #909ca8;
+  --color-gray-500: #737f8c;
+  --color-gray-600: #5e6975;
+  --color-gray-700: #49535d;
+  --color-gray-800: #343c45;
+  --color-gray-900: #21262c;
+
+  --color-yellow: #ffbf47;
+  --color-yellow-light: #ffe7bb;
+  --color-yellow-100: #ffda3d;
+  --color-yellow-300: #b79000;
+  --color-yellow-500: #977100;
+  --color-yellow-700: #755300;
+  --color-yellow-900: #392300;
+
+  --color-green: #00672f;
+  --color-green-darker: #00703c;
+  --color-green-hover: #00692f;
+  --color-green-border: #003618;
+  --color-green-green: #006435;
+  --color-green-100: #8cf39c;
+  --color-green-300: #29a35a;
+  --color-green-500: #308741;
+  --color-green-700: #1e662d;
+
+  --color-lime: #d3e766;
+  --color-lime-100: #d3e766;
+  --color-lime-700: #545e00;
+
+  --color-orange-light: #fef9f6;
+  --color-orange: #c86117;
+
+  --color-purple-300: #9d8cf2;
+  --color-rose-300: #df93ec;
+
+  /* Shadows */
+  --shadow-outline: 0 0 0 3px var(--color-yellow);
+  --shadow-outline2: 0 0 0 2px var(--color-blue);
+  --shadow-outline4: 0 0 0 4px var(--color-yellow);
+  --shadow-inset1: inset -1px 0 0 0 var(--color-gray-300);
+  --shadow-inset3: inset -3px 0 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-outset1: 1px 0 0 0 var(--color-gray-300);
+  --shadow-outset2: 0 2px 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-outset2neg: 0 -2px 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-outset3: 3px 0 0 0
+    color-mix(in oklab, var(--color-gray-300), 20%, transparent);
+  --shadow-yellow3:
+    -3px 0 0 0 var(--color-yellow), 3px 0 0 0 var(--color-yellow);
+  --shadow-focusLine2: 0 2px 0 3px var(--color-blue);
+  --shadow-insetLine2: inset 0 -2px 0 0 var(--color-blue);
+  --shadow-button2: 0 2px 0 var(--color-blue);
+  --shadow-none: none;
+
+  /* Fonts */
+  --font-sans: "Lato", "Arial", "sans-serif";
+  --font-body: "Noto Sans", "Arial", "sans-serif";
+  --font-monospace: "Noto Sans Mono", "monospace";
+  --font-arabic: "Noto Sans Arabic", "Arial", "sans-serif";
+  --font-aboriginal: "Noto Sans Canadian Aboriginal", "Arial", "sans-serif";
+
+  /* Animations & Keyframes */
+  --animate-ellipsis: ellipsis steps(4, end) 1.5s infinite;
+  @keyframes ellipsis {
+    100% {
+      width: 1.25em;
+    }
+  }
+
+  /* Other Extend items */
+  --border-width-1: 1px;
+  --border-width-10: 10px;
+  --line-height-extra-tight: 0.9;
+  --transition-duration-600: 600ms;
+  --z-index-100: 100;
+
+  --background-image-tick: url("/static/images/tick.svg");
+  --background-image-crossGrey: url("/static/images/cross-grey.svg");
+  --background-image-folder: url("/static/images/folder-black.svg");
+  --background-image-folderBlack: url("/static/images/folder-black-bold.svg");
+  --background-image-folderBlue: url("/static/images/folder-blue-bold.svg");
+  --background-image-folderBlueHover: url("/static/images/folder-blue-bold-hover.svg");
+  --background-image-emptyBird: url("/static/images/empty-bird.svg");
+  --background-image-emptyBirdHole: url("/static/images/empty-bird-hole.svg");
+  --background-image-emptyFlower: url("/static/images/empty-flower.svg");
+  --background-image-emptyTruck: url("/static/images/empty-truck.svg");
+  --background-image-emptyBirdCurious: url("/static/images/empty-bird-curious.svg");
+  --background-image-tryRte: url("/static/images/try-rte.svg");
+}
+
+/* Custom variant */
+@variant link (&:link);
+
+/* Custom utilities */
+@utility border-b-gray-button {
+  border-bottom-color: var(--color-gray-button);
+}
+@utility border-l-gray-button {
+  border-left-color: var(--color-gray-button);
+}
+@utility border-b-gray-grey2 {
+  border-bottom-color: var(--color-gray-grey2);
+}
+
+@utility container {
+  margin-inline: auto !important;
+}
+
+@utility focus-ring {
+  @apply border-blue-500 outline-white outline-solid outline-2 ring-blue-500 ring-5;
+}
+
+@utility focus-bg {
+  @apply outline-none bg-blue-500 text-white no-underline;
+}
+
+@source "../../templates/**/*.html";
+@source "../../assets/javascripts/*.js";
 
 @import "./toolkit/shims.css";
 
@@ -63,55 +282,9 @@
 @import "../fa-svg-with-js.css";
 @import "../../../../node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css";
 
-/*! purgecss start ignore */
-@-ms-viewport {
-  width: device-width;
-}
-
-html {
-  background-color: #dee0e2;
-  -ms-overflow-style: scrollbar;
-}
-
+/* Styles from style.css */
 body {
-  @apply leading-normal font-normal;
-  background: white;
-  color: #0b0c0c;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body,
-button,
-input,
-table,
-td,
-th {
   @apply font-body;
-}
-
-html,
-body,
-div,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-article,
-aside,
-footer,
-header,
-hgroup,
-nav,
-section {
-  @apply m-0 p-0 align-baseline;
-}
-
-main {
-  @apply block;
 }
 
 input[type="search"]::-webkit-search-cancel-button {
@@ -125,32 +298,24 @@ input[type="search"]::-webkit-search-decoration {
 
 section[id]:target {
   scroll-margin-top: 30px;
-  --yellow: theme("colors.yellow.DEFAULT");
-  --white: white;
   box-shadow:
-    0 0 0 15px var(--white),
-    0 0 0 20px var(--yellow);
+    0 0 0 15px var(--color-white),
+    0 0 0 20px var(--color-yellow);
   animation: target 3s linear 3s forwards;
-  /* @apply bg-yellow-light; */
 }
 
 @keyframes target {
   0% {
     box-shadow:
-      0 0 0 15px var(--white),
-      0 0 0 20px var(--yellow);
+      0 0 0 15px var(--color-white),
+      0 0 0 20px var(--color-yellow);
   }
 
   100% {
     box-shadow:
-      0 0 0 15px var(--white),
-      0 0 0 20px var(--white);
+      0 0 0 15px var(--color-white),
+      0 0 0 20px var(--color-white);
   }
-}
-
-.decoration-clone {
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
 }
 
 .js-enabled .js-hidden {
@@ -160,98 +325,6 @@ section[id]:target {
   .input {
     @apply outline-none;
   }
-}
-.visually-hidden,
-.visuallyhidden {
-  @apply absolute overflow-hidden top-auto;
-  left: -9999em;
-  width: 1px;
-  height: 1px;
-}
-
-.visually-hidden.focusable:active,
-.visually-hidden.focusable:focus,
-.visuallyhidden.focusable:active,
-.visuallyhidden.focusable:focus {
-  @apply h-auto m-0 overflow-visible static w-auto;
-  clip: auto;
-}
-
-.flip {
-  transform: rotate(-180deg);
-  transition: all 0.5s ease;
-  padding-top: 2px;
-}
-
-label {
-  @apply block text-smaller pb-2;
-}
-
-.group:before,
-.group:after {
-  content: "\0020";
-  @apply block h-0 overflow-hidden;
-}
-
-.group:after {
-  @apply clear-both;
-}
-
-.group {
-  zoom: 1;
-}
-
-.content-fixed {
-  @apply fixed top-0;
-}
-
-.shim {
-  display: block;
-}
-
-.line-under {
-  text-underline-position: under;
-}
-
-.feature-box {
-  @apply w-3/4;
-}
-
-@screen lg {
-  .feature-box {
-    @apply w-1/3;
-  }
-}
-
-.quote-box {
-  @apply text-small mb-10;
-}
-
-.quote-box div:first-child {
-  @apply font-bold italic mb-2;
-}
-
-/* honeypot field*/
-.phone {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px 1px 1px 1px);
-  /* IE6, IE7 */
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
-  /* added line */
-}
-
-.border-box {
-  font-size: 0.9em;
-  border: 1px solid #000;
-  @apply p-8 mb-8;
-}
-
-.border-box strong {
-  @apply font-bold;
 }
 
 .skiplink:focus {
@@ -278,11 +351,7 @@ label {
   /* Hide, but not for screenreaders */
   .visually-hidden,
   .visuallyhidden {
-    clip: rect(0 0 0 0);
-    height: 1px;
-    width: 1px;
-    margin: -1px;
-    @apply absolute overflow-hidden border-0 p-0;
+    @apply sr-only;
   }
 
   .research-mode {
@@ -316,7 +385,7 @@ label {
     @apply font-monospace overflow-x-scroll p-4 pr-0;
   }
 
-  @screen md {
+  @variant md {
     .inline.block-label {
       @apply inline-block float-none;
     }
@@ -360,4 +429,3 @@ label {
 .overflow-anywhere {
   overflow-wrap: anywhere;
 }
-/*! purgecss end ignore */

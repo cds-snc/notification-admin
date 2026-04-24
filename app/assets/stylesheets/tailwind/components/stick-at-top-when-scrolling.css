@@ -94,7 +94,7 @@
   }
 
   .js-stick-at-bottom-when-scrolling.content-fixed {
-    @apply transition-background duration-300 ease-in-out;
+    @apply transition-[background] duration-300 ease-in-out;
   }
   .js-stick-at-bottom-when-scrolling-loaded.content-fixed-onload {
     @apply transition-none;

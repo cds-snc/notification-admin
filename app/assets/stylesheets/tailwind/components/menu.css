@@ -36,7 +36,7 @@
     @apply transform rotate-180;
   }
 
-  :has > [data-module="menu"] {
+  :has(> [data-module="menu"]) {
     @apply relative;
   }
 
