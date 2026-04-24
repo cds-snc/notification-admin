@@ -9,7 +9,6 @@ const LinkModal = ({
   position,
   onClose,
   outline,
-  justOpened = false,
   onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
@@ -113,10 +112,18 @@ const LinkModal = ({
     if (formattedUrl) {
       const { from, to } = editor.state.selection;
 
-      // When there's no selection (cursor only), insert the URL as text
-      // and create a markdown link [url](url) so MarkdownLink extension
-      // will convert it to a proper link mark.
-      if (from === to) {
+      // When the cursor is inside an existing link (collapsed selection),
+      // update the link's href across its full range rather than inserting.
+      // When there is no selection and no existing link, insert the URL as
+      // markdown [url](url) so MarkdownLink converts it to a link mark.
+      if (from === to && editor.isActive("link")) {
+        editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          .setLink({ href: formattedUrl })
+          .run();
+      } else if (from === to) {
         const markdownLink = `[${formattedUrl}](${formattedUrl})`;
         editor.chain().focus().insertContent(markdownLink).run();
       } else {
@@ -180,11 +187,6 @@ const LinkModal = ({
 
   if (!isVisible) return null;
 
-  // When the modal just opened, include announcement in label for screen readers
-  const labelText = justOpened
-    ? `Link editor opened. ${t.enterLink}`
-    : t.enterLink;
-
   return (
     <div
       ref={modalRef}
@@ -193,7 +195,7 @@ const LinkModal = ({
       data-testid="link-modal"
     >
       <label htmlFor="link-input" className="sr-only">
-        {labelText}
+        {t.enterLink}
       </label>
       <input
         id="link-input"
