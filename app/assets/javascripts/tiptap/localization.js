@@ -7,7 +7,7 @@ const getPlatform = () => {
 
 const platform = getPlatform();
 
-const shortcuts = {
+export const shortcuts = {
   heading1: platform === "mac" ? "⌘+Opt+1" : "Ctrl+Alt+1",
   heading2: platform === "mac" ? "⌘+Opt+2" : "Ctrl+Alt+2",
   variable: platform === "mac" ? "⌘+Shift+U" : "Ctrl+Shift+U",
@@ -20,6 +20,9 @@ const shortcuts = {
   link: platform === "mac" ? "⌘+K" : "Ctrl+K",
   bold: platform === "mac" ? "⌘+B" : "Ctrl+B",
   italic: platform === "mac" ? "⌘+I" : "Ctrl+I",
+  // KeyboardEvent uses Alt for the Option key on macOS.
+  toolbarFocusAria: "Alt+F10",
+  toolbarFocusDisplay: platform === "mac" ? "Opt+F10" : "Alt+F10",
 };
 
 export const translations = {
@@ -29,6 +32,7 @@ export const translations = {
 
     // MenuBar
     toolbar: "Editor toolbar",
+    toolbarShortcutHintTemplate: "Toolbar shortcut: {shortcut}",
     toggleMd: "View source",
     linkDialogOpened: "Link dialog opened",
     applied: "applied.",
@@ -118,6 +122,8 @@ export const translations = {
 
     // MenuBar
     toolbar: "Barre d'outils de l'éditeur",
+    toolbarShortcutHintTemplate:
+      "Raccourci pour atteindre la barre d'outils : {shortcut}",
     toggleMd: "Voir la source",
     linkDialogOpened: "Boîte de dialogue du lien ouverte",
     applied: "appliqué.",
