@@ -29,9 +29,9 @@ import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
-import { translations } from "./localization";
 import { EditorProvider } from "./EditorContext";
 import { AnnouncerPlugin } from "./AnnouncerPlugin";
+import { shortcuts, translations } from "./localization";
 
 const SimpleEditor = ({
   inputId,
@@ -55,6 +55,18 @@ const SimpleEditor = ({
   const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
   const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
+  const shortcutHintId = labelId
+    ? `${labelId}-shortcut-hint`
+    : "rte-shortcut-hint";
+  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay;
+  const localized = translations[lang] || translations.en;
+  const shortcutHintTemplate =
+    localized.toolbarShortcutHintTemplate ||
+    translations.en.toolbarShortcutHintTemplate;
+  const shortcutHintText = shortcutHintTemplate.replace(
+    "{shortcut}",
+    toolbarShortcutDisplay,
+  );
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
@@ -231,7 +243,7 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
-        "aria-describedby": "toolbar-liveregion",
+        "aria-describedby": `toolbar-liveregion ${shortcutHintId}`,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -859,6 +871,9 @@ const SimpleEditor = ({
   return (
     <EditorProvider lang={lang}>
       <div className="editor-wrapper">
+        <span id={shortcutHintId} className="sr-only">
+          {shortcutHintText}
+        </span>
         <MenuBar
           editor={editor}
           openLinkModal={openLinkModal}
@@ -894,6 +909,7 @@ const SimpleEditor = ({
               }}
               onKeyDown={onMarkdownKeyDown}
               className="markdown-view"
+              aria-describedby={shortcutHintId}
               aria-label={viewLabel.markdown}
               spellCheck="false"
               data-testid="template-content"

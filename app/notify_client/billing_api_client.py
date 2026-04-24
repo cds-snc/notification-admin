@@ -33,15 +33,6 @@ class BillingAPIClient(NotifyAdminAPIClient):
             data=data,
         )
 
-    def get_sms_cost_for_service(self, service_id, start_date, end_date):
-        return self.get(
-            url="/service/{}/billing/sms-cost".format(service_id),
-            params={
-                "start_date": str(start_date),
-                "end_date": str(end_date),
-            },
-        )
-
     def get_usage_for_all_services(self, start_date, end_date):
         return self.get(
             url="/platform-stats/usage-for-all-services",
