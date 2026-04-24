@@ -51,9 +51,6 @@ const SimpleEditor = ({
     initialMode === "markdown",
   );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
-  const [justOpenedLink, setJustOpenedLink] = useState(false);
-  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
-  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
   const shortcutHintId = labelId
     ? `${labelId}-shortcut-hint`
@@ -207,7 +204,6 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
-      MarkdownLink.configure({}),
       MarkdownLink.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -251,15 +247,6 @@ const SimpleEditor = ({
           const { left, bottom } = event.target.getBoundingClientRect();
           setModalPosition({ top: bottom + 8, left });
           setLinkModalVisible(true);
-          // record current link so transaction listener won't re-open redundantly
-          try {
-            currentLinkRef.current = editor.getAttributes("link").href || null;
-          } catch (e) {
-            console.error(
-              "[SimpleEditor] Error getting link attributes in handleClickOn:",
-              e,
-            );
-          }
           return true;
         }
         return false;
@@ -514,71 +501,6 @@ const SimpleEditor = ({
 
     dom.addEventListener("keydown", onCaptureKeyDown, true);
     return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
-  }, [editor]);
-
-  // Listen to keyboard arrow events and check for link transitions
-  React.useEffect(() => {
-    if (!editor) return;
-
-    const handleTransaction = () => {
-      // This fires after every editor transaction, including arrow key navigation
-      const isOnLink = editor.isActive("link");
-      const linkHref = editor.getAttributes("link").href || null;
-
-      const now = Date.now();
-      const lastEvent = lastUserEventRef.current;
-
-      const recentArrowOrClick =
-        lastEvent &&
-        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
-        now - lastEvent.time < 800;
-
-      // Only auto-open on transitions caused by recent arrow navigation or clicks
-      if (
-        isOnLink &&
-        linkHref !== currentLinkRef.current &&
-        recentArrowOrClick
-      ) {
-        openLinkModal();
-        currentLinkRef.current = linkHref;
-
-        setTimeout(() => {
-          setJustOpenedLink(true);
-          setTimeout(() => setJustOpenedLink(false), 2500);
-        }, 600);
-      } else if (!isOnLink && currentLinkRef.current) {
-        // Left a link - close modal
-        setLinkModalVisible(false);
-        currentLinkRef.current = null;
-        setJustOpenedLink(false);
-      }
-    };
-
-    editor.on("transaction", handleTransaction);
-
-    // listen to DOM keydown/clicks to record recent arrow or click events
-    const dom = editor.view.dom;
-    const onKeyDown = (e) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
-        lastUserEventRef.current = {
-          type: "arrow",
-          key: e.key,
-          time: Date.now(),
-        };
-      }
-    };
-    const onClick = () => {
-      lastUserEventRef.current = { type: "click", time: Date.now() };
-    };
-
-    dom.addEventListener("keydown", onKeyDown);
-    dom.addEventListener("click", onClick);
-
-    return () => {
-      editor.off("transaction", handleTransaction);
-      dom.removeEventListener("keydown", onKeyDown);
-      dom.removeEventListener("click", onClick);
-    };
   }, [editor]);
 
   // Update hidden input field when content changes
@@ -927,14 +849,7 @@ const SimpleEditor = ({
             setLinkModalVisible(false);
             setSelectionHighlight(null);
           }}
-          justOpened={justOpenedLink}
-          onSavedLink={(href) => {
-            try {
-              currentLinkRef.current = href || null;
-            } catch (e) {
-              console.error("[SimpleEditor] Error in onSavedLink callback:", e);
-            }
-          }}
+          onSavedLink={() => {}}
         />
       </div>
     </EditorProvider>
