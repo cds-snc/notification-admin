@@ -610,11 +610,11 @@ const MenuBar = ({
               announceToggle(
                 () => editor.chain().focus().toggleOrderedList().run(),
                 () => editor.isActive("orderedList"),
-                t.numberedList,
+                t.orderedList,
               )
             }
             isActive={editor.isActive("orderedList")}
-            labels={t.numberedList}
+            labels={t.orderedList}
           >
             <ListOrdered />
           </ToolbarButton>

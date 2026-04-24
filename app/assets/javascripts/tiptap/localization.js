@@ -12,7 +12,7 @@ export const shortcuts = {
   heading2: platform === "mac" ? "⌘+Opt+2" : "Ctrl+Alt+2",
   variable: platform === "mac" ? "⌘+Shift+U" : "Ctrl+Shift+U",
   bulletList: platform === "mac" ? "⌘+Shift+8" : "Ctrl+Shift+8",
-  numberedList: platform === "mac" ? "⌘+Shift+7" : "Ctrl+Shift+7",
+  orderedList: platform === "mac" ? "⌘+Shift+7" : "Ctrl+Shift+7",
   horizontalRule: platform === "mac" ? "⌘+Enter" : "Ctrl+Enter",
   horizontalRuleFR: platform === "mac" ? "⌘+Retour" : "Ctrl+Retour",
   blockquote: platform === "mac" ? "⌘+Shift+9" : "Ctrl+Shift+9",
@@ -62,9 +62,9 @@ export const translations = {
       label: "Bulleted List",
       shortcut: shortcuts.bulletList,
     },
-    numberedList: {
+    orderedList: {
       label: "Numbered List",
-      shortcut: shortcuts.numberedList,
+      shortcut: shortcuts.orderedList,
     },
     link: {
       label: "Link",
@@ -153,9 +153,9 @@ export const translations = {
       label: "Liste à puces",
       shortcut: shortcuts.bulletList,
     },
-    numberedList: {
+    orderedList: {
       label: "Liste numérotée",
-      shortcut: shortcuts.numberedList,
+      shortcut: shortcuts.orderedList,
     },
     link: {
       label: "Lien",
