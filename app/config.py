@@ -30,7 +30,7 @@ class Config(object):
     # List of service IDs allowed to use the one-click unsubscribe header feature (applies in production only).
     ONE_CLICK_UNSUB_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ONE_CLICK_UNSUB_SERVICE_IDS", "").split(",")]
     # When True, all services can use the one-click unsubscribe feature (non-prod envs).
-    ONE_CLICK_UNSUB_ALL_SERVICES: bool = os.getenv("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+    ONE_CLICK_UNSUB_ALL_SERVICES = env.bool("ONE_CLICK_UNSUB_ALL_SERVICES", False)
     ADMIN_BASE_URL = (
         "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
         if os.environ.get("HEROKU_APP_NAME", "") != ""
