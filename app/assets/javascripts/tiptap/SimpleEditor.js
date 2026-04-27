@@ -30,6 +30,7 @@ import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
+import { AnnouncerPlugin } from "./AnnouncerPlugin";
 import { shortcuts, translations } from "./localization";
 
 const SimpleEditor = ({
@@ -42,6 +43,7 @@ const SimpleEditor = ({
   preferenceUpdateUrl,
   csrfToken,
 }) => {
+  const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [selectionHighlight, setSelectionHighlight] = useState(null);
@@ -71,6 +73,8 @@ const SimpleEditor = ({
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const announcerRef = useRef(null);
 
   const conditionalLabels = {
     en: {
@@ -153,6 +157,9 @@ const SimpleEditor = ({
       HardBreak,
       History,
 
+      // Universal announcer for all nodes and marks
+      AnnouncerPlugin(t, announcerRef),
+
       // Node extensions that match toolbar features
       Heading.configure({
         levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
@@ -160,10 +167,22 @@ const SimpleEditor = ({
       Blockquote.configure({
         content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
       }),
-      BulletList,
-      OrderedList,
+      BulletList.configure({
+        HTMLAttributes: {
+          role: "list",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          role: "list",
+        },
+      }),
       ListItem,
-      HorizontalRule,
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          role: "separator",
+        },
+      }),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -171,8 +190,16 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       // Mark extensions that match toolbar features
-      Bold,
-      Italic,
+      Bold.configure({
+        HTMLAttributes: {
+          role: "status",
+        },
+      }),
+      Italic.configure({
+        HTMLAttributes: {
+          role: "status",
+        },
+      }),
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -180,6 +207,7 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
+      MarkdownLink.configure({}),
       MarkdownLink.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -189,9 +217,9 @@ const SimpleEditor = ({
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
-      EnglishBlock,
+      EnglishBlock.configure({}),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock,
+      FrenchBlock.configure({}),
       RTLBlock,
       MenubarShortcut,
 
@@ -215,7 +243,7 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
-        "aria-describedby": shortcutHintId,
+        "aria-describedby": `toolbar-liveregion ${shortcutHintId}`,
         "aria-multiline": "true",
       },
       handleClickOn(view, pos, node, nodePos, event) {
@@ -855,6 +883,13 @@ const SimpleEditor = ({
           useUnifiedConditionalButton={useUnifiedConditionalButton}
         />
         <div className="editor-content">
+          <div
+            ref={announcerRef}
+            data-testid={`${labelId}-cursor-announcer`}
+            className="sr-only"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
           {isMarkdownView ? (
             <textarea
               value={markdownValue}
