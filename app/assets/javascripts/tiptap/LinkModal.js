@@ -8,7 +8,6 @@ const LinkModal = ({
   isVisible,
   position,
   onClose,
-  outline,
   onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
