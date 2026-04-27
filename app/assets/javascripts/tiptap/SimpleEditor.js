@@ -46,7 +46,6 @@ const SimpleEditor = ({
   const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-  const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(
     initialMode === "markdown",
   );
@@ -110,39 +109,6 @@ const SimpleEditor = ({
       }
     }
   }, [isMarkdownView, modeInputId]);
-
-  // Helper function to get selection bounds for highlighting relative to modal position
-  const getSelectionBounds = () => {
-    try {
-      const selection = window.getSelection();
-      if (!selection.rangeCount) return null;
-
-      const range = selection.getRangeAt(0);
-
-      // For empty/collapsed selections, create a small highlight at cursor position
-      if (range.collapsed) {
-        const rect = range.getBoundingClientRect();
-        return {
-          top: rect.top,
-          left: Math.max(0, rect.left - 2), // Small margin for visibility
-          width: 4, // Small width for cursor highlight
-          height: rect.height || 20, // Fallback height
-        };
-      }
-
-      // For text selections, get the full bounding rectangle
-      const rect = range.getBoundingClientRect();
-      return {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      };
-    } catch (err) {
-      console.warn("Error getting selection bounds:", err);
-      return null;
-    }
-  };
 
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
@@ -242,15 +208,6 @@ const SimpleEditor = ({
         "aria-describedby": `toolbar-liveregion ${shortcutHintId}`,
         "aria-multiline": "true",
       },
-      handleClickOn(view, pos, node, nodePos, event) {
-        if (node.type.name === "link") {
-          const { left, bottom } = event.target.getBoundingClientRect();
-          setModalPosition({ top: bottom + 8, left });
-          setLinkModalVisible(true);
-          return true;
-        }
-        return false;
-      },
       handlePaste: (view, event, slice) => {
         const text = event.clipboardData?.getData("text/plain");
 
@@ -277,10 +234,6 @@ const SimpleEditor = ({
   });
 
   const openLinkModal = () => {
-    // Capture selection bounds for highlighting
-    const bounds = getSelectionBounds();
-    setSelectionHighlight(bounds);
-
     try {
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
@@ -844,10 +797,8 @@ const SimpleEditor = ({
           editor={editor}
           isVisible={isLinkModalVisible}
           position={modalPosition}
-          outline={selectionHighlight}
           onClose={() => {
             setLinkModalVisible(false);
-            setSelectionHighlight(null);
           }}
           onSavedLink={() => {}}
         />
