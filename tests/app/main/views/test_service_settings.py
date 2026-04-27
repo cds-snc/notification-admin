@@ -394,6 +394,30 @@ def test_should_redirect_after_change_service_name(
     assert mock_service_name_is_unique.called is True
 
 
+def test_should_reject_service_name_change_when_combined_email_header_is_too_long(
+    client_request,
+    mock_update_service,
+    mock_service_name_is_unique,
+):
+    """Renaming a service to a very long unicode name should fail validation
+    so we don't end up with an SES `from` header longer than 320 characters."""
+    long_service_name = (
+        "Message de Jimmy Royééééééééé – Gestionnaire principal responsable des urgences "
+        "et des évacuations du BIN // Message from Jimmy Royééééééééé – NPB Lead senior "
+        "manager for emergencies and évacuations"
+    )
+
+    page = client_request.post(
+        "main.service_name_change",
+        service_id=SERVICE_ONE_ID,
+        _data={"name": long_service_name},
+        _expected_status=200,
+    )
+
+    assert "Your service name and email address combined are too long" in page.text
+    assert mock_update_service.called is False
+
+
 @pytest.mark.parametrize(
     "user, expected_text, expected_link",
     [
