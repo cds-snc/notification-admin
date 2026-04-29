@@ -416,11 +416,11 @@ Basic FR Block!
 [[/fr]]
 
 [[en]]
-[link in EN block](https://www.google.ca)
+[link](https://www.google.ca) in EN block
 [[/en]]
 
 [[fr]]
-[link in FR block](https://www.google.ca)
+[link](https://www.google.ca) in FR block
 [[/fr]]`
         },
         QUOTE_BLOCKS: {

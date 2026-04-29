@@ -483,4 +483,37 @@ describe("Link tests", () => {
         .and("contain.text", "var");
     });
   });
+
+  it("Editing an existing link with cursor inside updates the full link href", () => {
+    // Type link text, select all, insert a link
+    RichTextEditor.Components.Editor().type("link text{selectall}");
+    RichTextEditor.Components.LinkButton().click();
+    cy.scrollTo("top");
+    RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    // Move cursor to the middle of the link text (click the link)
+    cy.scrollTo("top");
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://example.com"]')
+      .click();
+
+    // Open the link modal again (cursor is now inside the existing link)
+    RichTextEditor.Components.LinkButton().click();
+    cy.scrollTo("top");
+
+    // Change the URL and save
+    RichTextEditor.Components.LinkModal.URLInput()
+      .clear()
+      .type("https://new.example.com");
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    // Switch to markdown and verify the link was updated (not duplicated)
+    cy.scrollTo("top");
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "contain.value",
+      "[link text](https://new.example.com)",
+    );
+  });
 });

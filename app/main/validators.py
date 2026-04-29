@@ -260,12 +260,24 @@ def validate_combined_email_header_length(form, field):
     When a service name contains unicode characters, it gets MIME-encoded in the email header,
     which can significantly increase its length.
     """
-    # Only validate if both name and email_from are present
-    if not hasattr(form, "name") or not hasattr(form, "email_from"):
+    # At least one of name or email_from must be on the form for this
+    # validator to be meaningful.
+    if not hasattr(form, "name") and not hasattr(form, "email_from"):
         return
 
-    service_name = form.name.data if form.name.data else ""
-    email_from = form.email_from.data if form.email_from.data else ""
+    if hasattr(form, "name"):
+        service_name = form.name.data if form.name.data else ""
+    else:
+        service_name = getattr(current_service, "name", "") or ""
+
+    # If the form does not include an email_from field (e.g. when renaming an
+    # existing service), fall back to the current service's email_from so we
+    # still validate the combined header length when only the name is being
+    # edited.
+    if hasattr(form, "email_from"):
+        email_from = form.email_from.data if form.email_from.data else ""
+    else:
+        email_from = getattr(current_service, "email_from", "") or ""
 
     # If either field is empty, skip this validation (let other validators handle it)
     if not service_name or not email_from:
