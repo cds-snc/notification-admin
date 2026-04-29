@@ -7,10 +7,13 @@ This folder contains Cypress tests suites.  In order to run them, you'll need to
 ### In your devcontainer
 There are some issues getting the cypress UI to launch within the devcontainer.  For now, you can run the headless tests inside the dev container but if you want to launch the cypress UI you will need to do that outside of the dev container.  
 
-There are 3 helper scripts in `package.json` to run 2 of the test suites.  Run these from the `tests_cypress/` folder:
+There are helper scripts in `package.json` to run CI and accessibility suites.  Run these from the `tests_cypress/` folder:
 - `npm run cypress`:  this will open Cypress with its UI and you can choose any test suite to run
 - `npm run a11y`: this will run the accessibility tests in headless mode using the electron browser
 - `npm run ci`: this will run the headless CI tests in headless mode using the electron browser
+- `npm run ci:shard:1`: runs shard 1 (profile and auth-adjacent flows)
+- `npm run ci:shard:2`: runs shard 2 (template and editor/component-heavy flows)
+- `npm run ci:shard:3`: runs shard 3 (a11y/navigation/branding flows)
 
 ### Outside of your devcontainer
 To launch the cypress UI, where you can choose your test suite and visually debug and inspect tests, run (from the `tests_cypress/` folder):

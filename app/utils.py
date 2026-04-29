@@ -80,7 +80,7 @@ CSV_COLUMN_HEADER_MAPPINGS = [
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
-    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
+    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains if not line.strip().startswith("#")]
 
 
 user_is_logged_in = login_required

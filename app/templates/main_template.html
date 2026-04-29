@@ -9,7 +9,6 @@
   <meta charset="utf-8"/>
   <meta name="format-detection" content="telephone=no"/>
   <title>{% block page_title %}Notification{% endblock %}</title>
-  {% include 'partials/newrelic-head.html' %}
   {% include 'partials/google-tag-manager-head.html' %}
   {% from "components/indicator.html" import indicator %}
   {% from "components/badge.html" import badge %}
@@ -138,7 +137,9 @@
       sms_estimate_one: "{{ _('Estimate: 1 text message part.') }}",
       sms_variables_warning: "{{ _('Variables may increase number of messages.') }}",
       sms_count: "{{ _('Total: {} text message parts.') }}",
-      sms_one: "{{ _('Total: 1 text message part.') }}"
+      sms_one: "{{ _('Total: 1 text message part.') }}",
+      sms_character_count_over_limit: "{{ _('{} too many characters') }}",
+      sms_one_character_count_over_limit: "{{ _('1 too many characters') }}"
     }
 
   </script>

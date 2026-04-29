@@ -29,6 +29,9 @@ import { Markdown } from "tiptap-markdown";
 import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
+import { EditorProvider } from "./EditorContext";
+import { AnnouncerPlugin } from "./AnnouncerPlugin";
+import { shortcuts, translations } from "./localization";
 
 const SimpleEditor = ({
   inputId,
@@ -40,23 +43,34 @@ const SimpleEditor = ({
   preferenceUpdateUrl,
   csrfToken,
 }) => {
+  const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-  const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(
     initialMode === "markdown",
   );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
-  const [justOpenedLink, setJustOpenedLink] = useState(false);
-  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
-  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
+  const shortcutHintId = labelId
+    ? `${labelId}-shortcut-hint`
+    : "rte-shortcut-hint";
+  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay;
+  const localized = translations[lang] || translations.en;
+  const shortcutHintTemplate =
+    localized.toolbarShortcutHintTemplate ||
+    translations.en.toolbarShortcutHintTemplate;
+  const shortcutHintText = shortcutHintTemplate.replace(
+    "{shortcut}",
+    toolbarShortcutDisplay,
+  );
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const announcerRef = useRef(null);
 
   const conditionalLabels = {
     en: {
@@ -96,39 +110,6 @@ const SimpleEditor = ({
     }
   }, [isMarkdownView, modeInputId]);
 
-  // Helper function to get selection bounds for highlighting relative to modal position
-  const getSelectionBounds = () => {
-    try {
-      const selection = window.getSelection();
-      if (!selection.rangeCount) return null;
-
-      const range = selection.getRangeAt(0);
-
-      // For empty/collapsed selections, create a small highlight at cursor position
-      if (range.collapsed) {
-        const rect = range.getBoundingClientRect();
-        return {
-          top: rect.top,
-          left: Math.max(0, rect.left - 2), // Small margin for visibility
-          width: 4, // Small width for cursor highlight
-          height: rect.height || 20, // Fallback height
-        };
-      }
-
-      // For text selections, get the full bounding rectangle
-      const rect = range.getBoundingClientRect();
-      return {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      };
-    } catch (err) {
-      console.warn("Error getting selection bounds:", err);
-      return null;
-    }
-  };
-
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
@@ -139,6 +120,9 @@ const SimpleEditor = ({
       HardBreak,
       History,
 
+      // Universal announcer for all nodes and marks
+      AnnouncerPlugin(t, announcerRef),
+
       // Node extensions that match toolbar features
       Heading.configure({
         levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
@@ -146,10 +130,22 @@ const SimpleEditor = ({
       Blockquote.configure({
         content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
       }),
-      BulletList,
-      OrderedList,
+      BulletList.configure({
+        HTMLAttributes: {
+          role: "list",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          role: "list",
+        },
+      }),
       ListItem,
-      HorizontalRule,
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          role: "separator",
+        },
+      }),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -157,8 +153,16 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       // Mark extensions that match toolbar features
-      Bold,
-      Italic,
+      Bold.configure({
+        HTMLAttributes: {
+          role: "status",
+        },
+      }),
+      Italic.configure({
+        HTMLAttributes: {
+          role: "status",
+        },
+      }),
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -175,9 +179,9 @@ const SimpleEditor = ({
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
-      EnglishBlock,
+      EnglishBlock.configure({}),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock,
+      FrenchBlock.configure({}),
       RTLBlock,
       MenubarShortcut,
 
@@ -201,25 +205,8 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
+        "aria-describedby": `toolbar-liveregion ${shortcutHintId}`,
         "aria-multiline": "true",
-      },
-      handleClickOn(view, pos, node, nodePos, event) {
-        if (node.type.name === "link") {
-          const { left, bottom } = event.target.getBoundingClientRect();
-          setModalPosition({ top: bottom + 8, left });
-          setLinkModalVisible(true);
-          // record current link so transaction listener won't re-open redundantly
-          try {
-            currentLinkRef.current = editor.getAttributes("link").href || null;
-          } catch (e) {
-            console.error(
-              "[SimpleEditor] Error getting link attributes in handleClickOn:",
-              e,
-            );
-          }
-          return true;
-        }
-        return false;
       },
       handlePaste: (view, event, slice) => {
         const text = event.clipboardData?.getData("text/plain");
@@ -247,10 +234,6 @@ const SimpleEditor = ({
   });
 
   const openLinkModal = () => {
-    // Capture selection bounds for highlighting
-    const bounds = getSelectionBounds();
-    setSelectionHighlight(bounds);
-
     try {
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
@@ -471,71 +454,6 @@ const SimpleEditor = ({
 
     dom.addEventListener("keydown", onCaptureKeyDown, true);
     return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
-  }, [editor]);
-
-  // Listen to keyboard arrow events and check for link transitions
-  React.useEffect(() => {
-    if (!editor) return;
-
-    const handleTransaction = () => {
-      // This fires after every editor transaction, including arrow key navigation
-      const isOnLink = editor.isActive("link");
-      const linkHref = editor.getAttributes("link").href || null;
-
-      const now = Date.now();
-      const lastEvent = lastUserEventRef.current;
-
-      const recentArrowOrClick =
-        lastEvent &&
-        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
-        now - lastEvent.time < 800;
-
-      // Only auto-open on transitions caused by recent arrow navigation or clicks
-      if (
-        isOnLink &&
-        linkHref !== currentLinkRef.current &&
-        recentArrowOrClick
-      ) {
-        openLinkModal();
-        currentLinkRef.current = linkHref;
-
-        setTimeout(() => {
-          setJustOpenedLink(true);
-          setTimeout(() => setJustOpenedLink(false), 2500);
-        }, 600);
-      } else if (!isOnLink && currentLinkRef.current) {
-        // Left a link - close modal
-        setLinkModalVisible(false);
-        currentLinkRef.current = null;
-        setJustOpenedLink(false);
-      }
-    };
-
-    editor.on("transaction", handleTransaction);
-
-    // listen to DOM keydown/clicks to record recent arrow or click events
-    const dom = editor.view.dom;
-    const onKeyDown = (e) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
-        lastUserEventRef.current = {
-          type: "arrow",
-          key: e.key,
-          time: Date.now(),
-        };
-      }
-    };
-    const onClick = () => {
-      lastUserEventRef.current = { type: "click", time: Date.now() };
-    };
-
-    dom.addEventListener("keydown", onKeyDown);
-    dom.addEventListener("click", onClick);
-
-    return () => {
-      editor.off("transaction", handleTransaction);
-      dom.removeEventListener("keydown", onKeyDown);
-      dom.removeEventListener("click", onClick);
-    };
   }, [editor]);
 
   // Update hidden input field when content changes
@@ -824,65 +742,68 @@ const SimpleEditor = ({
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
+
   return (
-    <div className="editor-wrapper">
-      <MenuBar
-        editor={editor}
-        openLinkModal={openLinkModal}
-        lang={lang}
-        onToggleMarkdownView={toggleViewMode}
-        isMarkdownView={isMarkdownView}
-        toggleLabel={toggleLabel}
-        useUnifiedConditionalButton={useUnifiedConditionalButton}
-      />
-      <div className="editor-content">
-        {isMarkdownView ? (
-          <textarea
-            value={markdownValue}
-            onChange={(event) => {
-              setMarkdownValue(event.target.value);
-              if (
-                !hasTrackedEditRef.current.markdown &&
-                typeof gtag === "function"
-              ) {
-                hasTrackedEditRef.current.markdown = true;
-                gtag("event", "editor_content_changed", {
-                  event_category: "Template Editor",
-                  event_label: "Content change in markdown mode",
-                  editor_mode: "markdown",
-                });
-              }
-            }}
-            onKeyDown={onMarkdownKeyDown}
-            className="markdown-view"
-            aria-label={viewLabel.markdown}
-            spellCheck="false"
-            data-testid="template-content"
-          ></textarea>
-        ) : (
-          <EditorContent editor={editor} data-testid="rte-editor" />
-        )}
+    <EditorProvider lang={lang}>
+      <div className="editor-wrapper">
+        <span id={shortcutHintId} className="sr-only">
+          {shortcutHintText}
+        </span>
+        <MenuBar
+          editor={editor}
+          openLinkModal={openLinkModal}
+          onToggleMarkdownView={toggleViewMode}
+          isMarkdownView={isMarkdownView}
+          toggleLabel={toggleLabel}
+          useUnifiedConditionalButton={useUnifiedConditionalButton}
+        />
+        <div className="editor-content">
+          <div
+            ref={announcerRef}
+            data-testid={`${labelId}-cursor-announcer`}
+            className="sr-only"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
+          {isMarkdownView ? (
+            <textarea
+              value={markdownValue}
+              onChange={(event) => {
+                setMarkdownValue(event.target.value);
+                if (
+                  !hasTrackedEditRef.current.markdown &&
+                  typeof gtag === "function"
+                ) {
+                  hasTrackedEditRef.current.markdown = true;
+                  gtag("event", "editor_content_changed", {
+                    event_category: "Template Editor",
+                    event_label: "Content change in markdown mode",
+                    editor_mode: "markdown",
+                  });
+                }
+              }}
+              onKeyDown={onMarkdownKeyDown}
+              className="markdown-view"
+              aria-describedby={shortcutHintId}
+              aria-label={viewLabel.markdown}
+              spellCheck="false"
+              data-testid="template-content"
+            ></textarea>
+          ) : (
+            <EditorContent editor={editor} data-testid="rte-editor" />
+          )}
+        </div>
+        <LinkModal
+          editor={editor}
+          isVisible={isLinkModalVisible}
+          position={modalPosition}
+          onClose={() => {
+            setLinkModalVisible(false);
+          }}
+          onSavedLink={() => {}}
+        />
       </div>
-      <LinkModal
-        editor={editor}
-        isVisible={isLinkModalVisible}
-        position={modalPosition}
-        outline={selectionHighlight}
-        onClose={() => {
-          setLinkModalVisible(false);
-          setSelectionHighlight(null);
-        }}
-        lang={lang}
-        justOpened={justOpenedLink}
-        onSavedLink={(href) => {
-          try {
-            currentLinkRef.current = href || null;
-          } catch (e) {
-            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
-          }
-        }}
-      />
-    </div>
+    </EditorProvider>
   );
 };
 
