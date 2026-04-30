@@ -2453,3 +2453,4 @@
 "Use ((unsubscribe_url)) for one-click unsubscribe","Utilisez ((unsubscribe_url)) pour le désabonnement en un clic"
 "SMS parts","parties de SMS"
 "SMS cost","coût de SMS"
+"<b>Note:</b> When filtered by date range, the cost for today is <b>not included</b> in the results.","<b>Remarque :</b> Lorsque vous appliquez un filtre par plage de dates, le coût d’aujourd’hui n’est <b>pas inclus</b> dans les résultats."
