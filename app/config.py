@@ -66,17 +66,18 @@ class Config(object):
     DEBUG = False
     DEBUG_KEY = os.environ.get("DEBUG_KEY", "")
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
-        "central": 25_000,
-        "local": 25_000,
-        "nhs_central": 250_000,
-        "nhs_local": 25_000,
-        "nhs_gp": 25_000,
-        "emergency_service": 25_000,
-        "school_or_college": 25_000,
-        "other": 25_000,
+        "central": 100_000,
+        "local": 100_000,
+        "nhs_central": 100_000,
+        "nhs_local": 100_000,
+        "nhs_gp": 100_000,
+        "emergency_service": 100_000,
+        "school_or_college": 100_000,
+        "other": 100_000,
     }
     DEFAULT_LIVE_SERVICE_LIMIT = env.int("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
-    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1000)
+    # Must match DEFAULT_SMS_DAILY_LIMIT in notification-api/app/models.py
+    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1500)
     DEFAULT_SERVICE_LIMIT = env.int("DEFAULT_SERVICE_LIMIT", 50)
     DEFAULT_SMS_DAILY_LIMIT = env.int("DEFAULT_SMS_DAILY_LIMIT", 50)
     DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")
