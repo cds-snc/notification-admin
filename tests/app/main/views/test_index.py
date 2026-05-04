@@ -157,7 +157,6 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "pricing",
         "roadmap",
         "email",
         "sms",
@@ -172,6 +171,14 @@ def test_static_pages(
 ):
     page = client_request.get("main.{}".format(view))
     assert not page.select_one("meta[name=description]")
+
+
+def test_pricing_page_requires_platform_admin(
+    platform_admin_client,
+    mock_get_organisation_by_domain,
+):
+    response = platform_admin_client.get(url_for("main.pricing"))
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
