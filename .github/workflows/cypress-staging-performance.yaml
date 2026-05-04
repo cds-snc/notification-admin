@@ -15,5 +15,5 @@ jobs:
     uses: ./.github/workflows/_cypress-staging-run.yaml
     secrets: inherit
     with:
-      spec: cypress/e2e/performance/service_performance.cy.js
+      spec: cypress/e2e/performance/page_performance.cy.js
       slack_failure_message: Staging performance tests failed
