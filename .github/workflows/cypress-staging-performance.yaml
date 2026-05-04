@@ -3,6 +3,11 @@ name: Cypress staging performance tests
 on:
   schedule:
     - cron: 0 14 * * 1-5
+  pull_request:
+    branches:
+      - main
+    types:
+      - synchronize
   workflow_dispatch:
 
 jobs:
