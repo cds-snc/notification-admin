@@ -83,6 +83,15 @@
             </dd>
           </div>
 
+          {% if item.permissions and 'manage_templates' in item.permissions %}
+          <div class="flex flex-col gap-1">
+            <dt>{{ _('API key permissions') }}:</dt>
+            <dd class="hint ml-0">
+              {{ _('Manage templates') }}
+            </dd>
+          </div>
+          {% endif %}
+
           <div class="flex flex-col gap-1">
             <dt>{{ _('Created:') }}</dt>
             <dd class="ml-0">

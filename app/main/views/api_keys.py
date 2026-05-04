@@ -16,6 +16,7 @@ from app.main.forms import (
     ServiceReceiveMessagesCallbackForm,
 )
 from app.notify_client.api_key_api_client import (
+    KEY_PERMISSION_MANAGE_TEMPLATES,
     KEY_TYPE_NORMAL,
     KEY_TYPE_TEAM,
     KEY_TYPE_TEST,
@@ -93,10 +94,14 @@ def create_api_key(service_id):
     if form.validate_on_submit():
         if form.key_type.data in disabled_options:
             abort(400)
+        permissions = []
+        if form.manage_templates.data:
+            permissions.append(KEY_PERMISSION_MANAGE_TEMPLATES)
         keydata = api_key_api_client.create_api_key(
             service_id=service_id,
             key_name=form.key_name.data,
             key_type=form.key_type.data,
+            permissions=permissions,
         )
         return render_template(
             "views/api/keys/show.html",
@@ -109,6 +114,7 @@ def create_api_key(service_id):
         form=form,
         disabled_options=disabled_options,
         option_hints=option_hints,
+        show_manage_templates=current_user.has_permissions("manage_api_keys"),
     )
 
 
