@@ -114,7 +114,7 @@ def test_user_information_page_shows_information_about_user(client, platform_adm
     assert document.xpath("//a/text()[normalize-space()='Fresh Orchard Juice']")
 
     assert document.xpath("//h2/text()[normalize-space()='Default editor']")
-    assert document.xpath("//strong/text()[normalize-space()='Markdown editor']")
+    assert document.xpath("//strong[@data-testid='default-editor-badge' and contains(@class, 'badge-gray')]")
 
     assert document.xpath("//h2/text()[normalize-space()='Last sign-in']")
     assert not document.xpath("//p/text()[normalize-space()='0 failed sign-in attempts']")
@@ -146,7 +146,7 @@ def test_user_information_page_shows_rte_default_editor_badge(client, platform_a
     assert response.status_code == 200
 
     document = html.fromstring(response.get_data(as_text=True))
-    assert document.xpath("//strong/text()[normalize-space()='Rich text editor']")
+    assert document.xpath("//strong[@data-testid='default-editor-badge' and contains(@class, 'badge-green')]")
 
 
 def test_user_information_page_shows_unblocked_user(client, platform_admin_user, mocker):
