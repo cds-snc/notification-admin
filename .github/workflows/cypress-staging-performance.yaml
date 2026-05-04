@@ -1,0 +1,14 @@
+name: Cypress staging performance tests
+
+on:
+  schedule:
+    - cron: 0 14 * * 1-5
+  workflow_dispatch:
+
+jobs:
+  run:
+    uses: ./.github/workflows/_cypress-staging-run.yaml
+    secrets: inherit
+    with:
+      spec: cypress/e2e/performance/page_performance.cy.js
+      slack_failure_message: Staging performance tests failed
