@@ -77,9 +77,12 @@ def test_find_users_by_email_validates_against_empty_search_submission(client_re
 
 
 def test_user_information_page_shows_information_about_user(client, platform_admin_user, mocker):
+    user = user_json(name="Apple Bloom", services=[1, 2])
+    user["default_editor_is_rte"] = False
+
     mocker.patch(
         "app.user_api_client.get_user",
-        return_value=user_json(name="Apple Bloom", services=[1, 2]),
+        return_value=user,
         autospec=True,
     )
 
@@ -110,10 +113,40 @@ def test_user_information_page_shows_information_about_user(client, platform_adm
     assert document.xpath("//h2/text()[normalize-space()='Trial services']")
     assert document.xpath("//a/text()[normalize-space()='Fresh Orchard Juice']")
 
+    assert document.xpath("//h2/text()[normalize-space()='Default editor']")
+    assert document.xpath("//strong[@data-testid='default-editor-badge' and contains(@class, 'badge-gray')]")
+
     assert document.xpath("//h2/text()[normalize-space()='Last sign-in']")
     assert not document.xpath("//p/text()[normalize-space()='0 failed sign-in attempts']")
 
     assert document.xpath("//a/text()[normalize-space()='Block user']")
+
+
+def test_user_information_page_shows_rte_default_editor_badge(client, platform_admin_user, mocker):
+    user = user_json(name="Apple Bloom")
+    user["default_editor_is_rte"] = True
+
+    mocker.patch(
+        "app.user_api_client.get_user",
+        return_value=user,
+        autospec=True,
+    )
+
+    mocker.patch(
+        "app.user_api_client.get_organisations_and_services_for_user",
+        return_value={
+            "organisations": [],
+            "services": [],
+        },
+        autospec=True,
+    )
+
+    client.login(platform_admin_user)
+    response = client.get(url_for("main.user_information", user_id=345))
+    assert response.status_code == 200
+
+    document = html.fromstring(response.get_data(as_text=True))
+    assert document.xpath("//strong[@data-testid='default-editor-badge' and contains(@class, 'badge-green')]")
 
 
 def test_user_information_page_shows_unblocked_user(client, platform_admin_user, mocker):

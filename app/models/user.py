@@ -56,6 +56,10 @@ class User(JSONModel, UserMixin):
         self.max_failed_login_count = current_app.config["MAX_FAILED_LOGIN_COUNT"]
         self._platform_admin = _dict["platform_admin"]
 
+    @property
+    def default_editor_is_rte(self):
+        return self._dict.get("default_editor_is_rte")
+
     @classmethod
     def from_id(cls, user_id):
         return cls(user_api_client.get_user(user_id))
