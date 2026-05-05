@@ -101,7 +101,8 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   it("announces Blockquote when arrowing into a blockquote", () => {
-    RichTextEditor.Components.Editor().find("blockquote").prev().click();
+    RichTextEditor.Components.Editor().find("ol li").last().click();
+    cy.realPress("End");
     cy.realPress("ArrowDown");
     RichTextEditor.Components.EditorAnnouncer().should(
       "contain.text",
