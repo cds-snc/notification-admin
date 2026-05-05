@@ -11,4 +11,5 @@ jobs:
     secrets: inherit
     with:
       spec: cypress/e2e/performance/page_performance.cy.js
+      send_slack_on_failure: false
       slack_failure_message: Staging performance tests failed

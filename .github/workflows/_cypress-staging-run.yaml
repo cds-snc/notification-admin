@@ -7,17 +7,23 @@ on:
         description: Cypress spec file(s) to run (newline-separated)
         required: true
         type: string
+      send_slack_on_failure:
+        description: Whether to send Slack notifications when tests fail
+        required: false
+        default: true
+        type: boolean
       slack_failure_message:
         description: Parent Slack message text posted on failure
-        required: true
+        required: false
+        default: Cypress staging tests failed
         type: string
     secrets:
       CYPRESS_ENV_JSON:
         required: true
       SLACK_BOT_TOKEN:
-        required: true
+        required: false
       SLACK_CHANNEL:
-        required: true
+        required: false
 
 defaults:
   run:
@@ -59,11 +65,11 @@ jobs:
           retention-days: 30
 
       - name: Install jq for Slack notifications
-        if: failure()
+        if: failure() && inputs.send_slack_on_failure
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Build failure previews from mochawesome
-        if: failure()
+        if: failure() && inputs.send_slack_on_failure
         run: |
           set -euo pipefail
           RESULTS_DIR=tests_cypress/cypress/results
@@ -109,7 +115,7 @@ jobs:
           jq . "$TMP" || true
 
       - name: Fetch artifact download URL
-        if: failure()
+        if: failure() && inputs.send_slack_on_failure
         id: artifact_link
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,7 +131,7 @@ jobs:
           echo "artifact_url=$url" >> $GITHUB_OUTPUT
 
       - name: Post parent message (chat.postMessage)
-        if: failure()
+        if: failure() && inputs.send_slack_on_failure
         id: post_parent
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -165,7 +171,7 @@ jobs:
           echo "ts=$ts" >> $GITHUB_OUTPUT
 
       - name: Post threaded replies (max 5)
-        if: failure()
+        if: failure() && inputs.send_slack_on_failure
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}

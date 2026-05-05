@@ -13,5 +13,6 @@ jobs:
       spec: |
         cypress/e2e/admin/a11y/app_pages.cy.js
         cypress/e2e/admin/a11y/gca_pages.cy.js
+      send_slack_on_failure: true
       slack_failure_message: Staging a11y tests failed
 
