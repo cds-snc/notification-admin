@@ -47,6 +47,7 @@ from app.utils import (
     get_logo_cdn_domain,
     is_safe_redirect_url,
     user_is_logged_in,
+    user_is_platform_admin,
 )
 
 
@@ -99,6 +100,7 @@ def verify_mobile():
 
 
 @main.route("/pricing")
+@user_is_platform_admin
 def pricing():
     lang = get_current_locale(current_app)
 
