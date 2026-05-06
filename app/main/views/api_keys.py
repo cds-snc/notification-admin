@@ -1,6 +1,6 @@
 from flask import Markup, abort, flash, g, redirect, render_template, request, url_for
 from flask_babel import lazy_gettext as _l
-from flask_login import current_user
+from flask_login import current_app, current_user
 
 from app import (
     api_key_api_client,
@@ -114,7 +114,7 @@ def create_api_key(service_id):
         form=form,
         disabled_options=disabled_options,
         option_hints=option_hints,
-        show_manage_templates=current_user.has_permissions("manage_api_keys"),
+        show_manage_templates=current_app.config["FF_ADD_TEMPLATE_PERM"] and current_user.has_permissions("manage_api_keys"),
     )
 
 
