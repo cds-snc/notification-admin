@@ -94,6 +94,7 @@ const javascripts = () => {
     .pipe(plugins.concat("all.min.js"))
     .pipe(
       plugins.addSrc.prepend([
+        paths.src + "javascripts/react.vendor.min.js",
         paths.src + "javascripts/index.min.js",
         paths.src + "javascripts/scheduler.min.js",
         paths.src + "javascripts/tiptap.min.js",
