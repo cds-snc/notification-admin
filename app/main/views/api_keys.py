@@ -1,6 +1,6 @@
-from flask import Markup, abort, flash, g, redirect, render_template, request, url_for
+from flask import Markup, abort, current_app, flash, g, redirect, render_template, request, url_for
 from flask_babel import lazy_gettext as _l
-from flask_login import current_app, current_user
+from flask_login import current_user
 
 from app import (
     api_key_api_client,
