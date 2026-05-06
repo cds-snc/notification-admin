@@ -5,7 +5,7 @@ from werkzeug.datastructures import MultiDict
 
 from app.main.forms import CreateKeyForm
 from app.notify_client.api_key_api_client import ApiKeyApiClient
-from tests.conftest import SERVICE_ONE_ID
+from tests.conftest import SERVICE_ONE_ID, set_config
 
 
 class TestCreateKeyFormValidation:
@@ -68,18 +68,21 @@ class TestCreateKeyFormValidation:
 class TestCreateApiKeyView:
     def test_create_api_key_page_shows_manage_templates_checkbox(
         self,
+        app_,
         client_request,
         mock_get_api_keys,
         mock_get_live_service,
         mock_has_permissions,
     ):
-        page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
+        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
+            page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
         checkbox = page.find("input", {"name": "manage_templates", "type": "checkbox"})
         assert checkbox is not None
 
     def test_create_api_key_with_manage_templates_permission(
         self,
+        app_,
         client_request,
         api_user_active,
         mock_login,
@@ -96,16 +99,17 @@ class TestCreateApiKeyView:
             return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
         )
 
-        client_request.post(
-            "main.create_api_key",
-            service_id=SERVICE_ONE_ID,
-            _data={
-                "key_name": key_name_from_user,
-                "key_type": "normal",
-                "manage_templates": "manage_templates",
-            },
-            _expected_status=200,
-        )
+        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
+            client_request.post(
+                "main.create_api_key",
+                service_id=SERVICE_ONE_ID,
+                _data={
+                    "key_name": key_name_from_user,
+                    "key_type": "normal",
+                    "manage_templates": "manage_templates",
+                },
+                _expected_status=200,
+            )
 
         post.assert_called_once_with(
             url="/service/{}/api-key".format(SERVICE_ONE_ID),
@@ -119,6 +123,7 @@ class TestCreateApiKeyView:
 
     def test_create_api_key_without_manage_templates_permission(
         self,
+        app_,
         client_request,
         api_user_active,
         mock_login,
@@ -135,15 +140,16 @@ class TestCreateApiKeyView:
             return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
         )
 
-        client_request.post(
-            "main.create_api_key",
-            service_id=SERVICE_ONE_ID,
-            _data={
-                "key_name": key_name_from_user,
-                "key_type": "normal",
-            },
-            _expected_status=200,
-        )
+        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
+            client_request.post(
+                "main.create_api_key",
+                service_id=SERVICE_ONE_ID,
+                _data={
+                    "key_name": key_name_from_user,
+                    "key_type": "normal",
+                },
+                _expected_status=200,
+            )
 
         post.assert_called_once_with(
             url="/service/{}/api-key".format(SERVICE_ONE_ID),
