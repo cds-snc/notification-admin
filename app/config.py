@@ -92,6 +92,7 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
+    FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
@@ -196,6 +197,7 @@ class Development(Config):
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"
+    FF_ADD_TEMPLATE_PERM = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -265,6 +267,7 @@ class Production(Config):
 
 
 class Staging(Production):
+    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
@@ -277,6 +280,7 @@ class Scratch(Production):
 
 
 class Dev(Production):
+    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
 

@@ -25,10 +25,9 @@
     {{ textbox(form.key_name, label=label_txt) }}
     {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints, use_aria_labelledby=False) }}
     {% if show_manage_templates %}
-      <div class="mt-6 mb-6">
-        <h2 class="heading-medium">{{ _('API key permissions') }}</h2>
-        {{ checkbox(form.manage_templates) }}
-      </div>
+      <h3 class="heading-xsmall font-bold mb-2">{{ _('Add permission for above API key') }}</h3>
+      {{ checkbox(form.manage_templates) }}
+      <div class="clear-both"></div>
     {% endif %}
     {{ page_footer(button_txt) }}
   {% endcall %}

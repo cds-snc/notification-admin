@@ -2453,3 +2453,4 @@
 "Allow this key to manage templates (create, update, or delete)","Permettre à cette clé de gérer les gabarits (créer, mettre à jour ou supprimer)"
 "API key permissions","Permissions de la clé API"
 "Manage templates","Gestion des gabarits"
+"Add permission for above API key","Ajouter une permission pour la clé API ci-dessus"
