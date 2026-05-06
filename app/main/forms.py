@@ -1027,8 +1027,9 @@ class CreateKeyForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
     )
 
-    manage_templates = BooleanField(
-        _l("Allow this key to manage templates (create, update, or delete)"),
+    manage_templates = SelectMultipleField(
+        _l("API key permissions"),
+        choices=[("manage_templates", _l("Allow this key to manage templates (create, update, or delete)"))],
     )
 
     def validate_key_name(self, key_name):

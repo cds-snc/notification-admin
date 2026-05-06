@@ -3,7 +3,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/radios.html" import radios %}
-{% from "components/checkbox.html" import checkbox %}
+{% from "components/checkbox.html" import checkboxes %}
 {% from "components/form.html" import form_wrapper %}
 
 {% block service_page_title %}
@@ -25,9 +25,7 @@
     {{ textbox(form.key_name, label=label_txt) }}
     {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints, use_aria_labelledby=False) }}
     {% if show_manage_templates %}
-      <h2 class="heading-xsmall font-bold mb-2">{{ _('Add permission for above API key') }}</h2>
-      {{ checkbox(form.manage_templates) }}
-      <div class="clear-both"></div>
+      {{ checkboxes(form.manage_templates) }}
     {% endif %}
     {{ page_footer(button_txt) }}
   {% endcall %}

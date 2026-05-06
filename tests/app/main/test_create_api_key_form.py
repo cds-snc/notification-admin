@@ -49,20 +49,20 @@ class TestCreateKeyFormValidation:
         form.validate()
         assert form.errors["key_type"] == [expected_error]
 
-    def test_manage_templates_field_defaults_to_false(self, client):
+    def test_manage_templates_field_defaults_to_empty(self, client):
         form = CreateKeyForm([], formdata=MultiDict([("key_name", "Some key"), ("key_type", "a")]))
         form.key_type.choices = [("a", "a"), ("b", "b")]
         form.validate()
-        assert form.manage_templates.data is False
+        assert form.manage_templates.data == []
 
-    def test_manage_templates_field_is_true_when_checked(self, client):
+    def test_manage_templates_field_is_selected_when_checked(self, client):
         form = CreateKeyForm(
             [],
-            formdata=MultiDict([("key_name", "Some key"), ("key_type", "a"), ("manage_templates", "y")]),
+            formdata=MultiDict([("key_name", "Some key"), ("key_type", "a"), ("manage_templates", "manage_templates")]),
         )
         form.key_type.choices = [("a", "a"), ("b", "b")]
         form.validate()
-        assert form.manage_templates.data is True
+        assert form.manage_templates.data == ["manage_templates"]
 
 
 class TestCreateApiKeyView:
@@ -101,7 +101,7 @@ class TestCreateApiKeyView:
             _data={
                 "key_name": key_name_from_user,
                 "key_type": "normal",
-                "manage_templates": "y",
+                "manage_templates": "manage_templates",
             },
             _expected_status=200,
         )
