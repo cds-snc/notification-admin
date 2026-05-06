@@ -25,7 +25,7 @@
     {{ textbox(form.key_name, label=label_txt) }}
     {{ radios(form.key_type, disable=disabled_options, option_hints=option_hints, use_aria_labelledby=False) }}
     {% if show_manage_templates %}
-      <h3 class="heading-xsmall font-bold mb-2">{{ _('Add permission for above API key') }}</h3>
+      <h2 class="heading-xsmall font-bold mb-2">{{ _('Add permission for above API key') }}</h2>
       {{ checkbox(form.manage_templates) }}
       <div class="clear-both"></div>
     {% endif %}
