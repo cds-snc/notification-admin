@@ -71,6 +71,7 @@ class TestCreateApiKeyView:
         client_request,
         mock_get_api_keys,
         mock_get_live_service,
+        mock_has_permissions,
     ):
         page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
