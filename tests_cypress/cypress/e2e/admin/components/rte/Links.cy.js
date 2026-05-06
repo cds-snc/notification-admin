@@ -496,7 +496,7 @@ describe("Link tests", () => {
     cy.scrollTo("top");
     RichTextEditor.Components.Editor()
       .find('a[href="https://example.com"]')
-      .click();
+      .realClick();
 
     // Open the link modal again (cursor is now inside the existing link)
     RichTextEditor.Components.LinkButton().click();

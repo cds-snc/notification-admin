@@ -130,6 +130,9 @@
     </form>
   </div>
 
-  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+{% endblock %}
 
+{% block page_script %}
+  {{ super() }}
+  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
 {% endblock %}

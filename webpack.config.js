@@ -28,6 +28,19 @@ module.exports = {
     filename: "javascripts/[name].min.js",
     path: path.resolve(__dirname, "app/assets")
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+          name: 'react.vendor',
+          chunks: 'all',
+          priority: 20,
+          enforce: true,
+        },
+      },
+    },
+  },
 
   plugins: [
     new webpack.ProgressPlugin(),

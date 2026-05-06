@@ -101,7 +101,8 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   it("announces Blockquote when arrowing into a blockquote", () => {
-    RichTextEditor.Components.Editor().find("blockquote").prev().click();
+    RichTextEditor.Components.Editor().find("ol li").last().click();
+    cy.realPress("End");
     cy.realPress("ArrowDown");
     RichTextEditor.Components.EditorAnnouncer().should(
       "contain.text",
@@ -174,13 +175,9 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   // TODO: put this back in when we fix #3111
-  it.skip("announces Link when cursor is in a link", () => {
-    RichTextEditor.Components.Editor()
-      .find("a")
-      .first()
-      .closest("p")
-      .click("left");
-    cy.realPress("End");
+  it("announces Link when cursor is in a link", () => {
+    RichTextEditor.Components.Editor().find("a").first().click();
+    RichTextEditor.Components.Editor().realPress("ArrowLeft");
     RichTextEditor.Components.EditorAnnouncer().should("contain.text", "Link");
   });
 
