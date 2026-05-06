@@ -27,3 +27,11 @@
   </div>
 
   {% endblock %}
+
+{% block page_script %}
+  {{ super() }}
+  
+  {% if component == 'scheduler' %}
+    <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+  {% endif %}
+{% endblock %}
