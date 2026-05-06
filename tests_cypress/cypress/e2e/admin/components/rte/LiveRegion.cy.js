@@ -175,13 +175,12 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   // TODO: put this back in when we fix #3111
-  it.skip("announces Link when cursor is in a link", () => {
+  it("announces Link when cursor is in a link", () => {
     RichTextEditor.Components.Editor()
       .find("a")
       .first()
-      .closest("p")
-      .click("left");
-    cy.realPress("End");
+      .click();
+    RichTextEditor.Components.Editor().realPress("ArrowLeft");
     RichTextEditor.Components.EditorAnnouncer().should("contain.text", "Link");
   });
 
