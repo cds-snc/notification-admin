@@ -3218,8 +3218,8 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "template_id": fake_uuid,
                 "month": 4,
@@ -3229,6 +3229,15 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
                 "type": "sms",
             }
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 1,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",
@@ -3238,8 +3247,8 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "count": 1101,
                 "is_precompiled_letter": False,
@@ -3268,6 +3277,15 @@ def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fa
                 "year": 2023,
             },
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 2,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",

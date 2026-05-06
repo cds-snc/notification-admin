@@ -1,6 +1,7 @@
 {% from "components/message-count-label.html" import template_label %}
 {% from "components/pill.html" import pill %}
 {% from "components/table.html" import list_table, field, right_aligned_field_heading, row_heading, spark_bar_field %}
+{% from "components/previous-next-navigation.html" import previous_next_navigation %}
 
 {% extends "admin_template.html" %}
 
@@ -54,6 +55,8 @@
         </div>
       {% endif %}
     {% endfor %}
+
+    {{ previous_next_navigation(prev_page, next_page) }}
   </div>
 
   <p class="align-with-heading-copy">

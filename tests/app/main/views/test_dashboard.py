@@ -314,7 +314,7 @@ def test_should_show_monthly_breakdown_of_template_usage(
 ):
     page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, **extra_args)
 
-    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016)
+    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016, page=1, page_size=50)
 
     table_rows = page.select("tbody tr")
 
@@ -322,6 +322,72 @@ def test_should_show_monthly_breakdown_of_template_usage(
 
     assert len(table_rows) == len(["April"])
     assert len(page.select(".table-no-data")) == len(["May", "June", "July"])
+
+
+def test_template_usage_shows_pagination_links(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 1,
+            "page_size": 50,
+            "links": {"next": "page 2"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".next-page") is not None
+    assert nav.select_one(".previous-page") is None
+
+
+def test_template_usage_page_2_shows_prev_link(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 2,
+            "page_size": 50,
+            "links": {"prev": "page 1"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, page=2)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".previous-page") is not None
+    assert nav.select_one(".next-page") is None
 
 
 def test_anyone_can_see_monthly_breakdown(
