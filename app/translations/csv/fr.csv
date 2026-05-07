@@ -2450,3 +2450,6 @@
 "Annual text message parts limit","Limite maximale de parties de messages texte par exercice financier"
 "text message part","partie de message texte"
 "Use ((unsubscribe_url)) for one-click unsubscribe","Utilisez ((unsubscribe_url)) pour le désabonnement en un clic"
+"Allow this key to manage templates (create, update, or delete)","Permettre à cette clé de gérer les gabarits (créer, mettre à jour ou supprimer)"
+"API key permissions","Permissions de la clé API"
+"Manage templates","Gestion des gabarits"
