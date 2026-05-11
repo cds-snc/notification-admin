@@ -43,7 +43,6 @@ class Config(object):
     API_HOST_NAME = os.environ.get("API_HOST_NAME")
     ASSET_DOMAIN = os.getenv("ASSET_DOMAIN", "assets.notification.canada.ca")
     ASSET_PATH = "/static/"
-    ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     A11Y_FEEDBACK_URL_EN = os.environ.get(
         "A11Y_FEEDBACK_URL_EN", "https://forms-formulaires.alpha.canada.ca/en/id/cmk4jw8nu00wrx9016kz1gf54"
@@ -196,9 +195,6 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
-    DEBUG_KEY = "debug"
-    FF_ADD_TEMPLATE_PERM = True
-    MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -240,7 +236,6 @@ class ProductionFF(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
-    DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value

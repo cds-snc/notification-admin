@@ -26,7 +26,6 @@ import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
 import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
-import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
@@ -745,7 +744,7 @@ const SimpleEditor = ({
 
   return (
     <EditorProvider lang={lang}>
-      <div className="editor-wrapper">
+      <div className="editor-wrapper" style={{ background: 'pink'}}>
         <span id={shortcutHintId} className="sr-only">
           {shortcutHintText}
         </span>

@@ -31,3 +31,8 @@ export const load = function (
     element,
   );
 };
+
+// Expose as window global for dynamic script loading compatibility
+if (typeof window !== "undefined") {
+  window.Tiptap = { load };
+}

@@ -2,6 +2,11 @@
 
 @import "./toolkit/shims.css";
 
+/* Tiptap editor and scheduler component styles */
+@import "../../javascripts/tiptap/editor.css";
+@import "../../javascripts/tiptap/tooltip.css";
+@import "../../javascripts/scheduler/style.css";
+
 /* elements */
 @import "./elements/reset.css";
 @import "./elements/details.css";

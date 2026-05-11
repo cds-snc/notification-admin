@@ -9,3 +9,8 @@ import { App } from "./App";
 export const load = function (element) {
   ReactDOM.render(<App />, element);
 };
+
+// Expose as window global for webpackLoader.js compatibility
+if (typeof window !== "undefined") {
+  window.Scheduler = { load };
+}

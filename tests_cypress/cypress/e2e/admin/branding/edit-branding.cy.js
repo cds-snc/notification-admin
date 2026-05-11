@@ -10,9 +10,6 @@ const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Edit Branding", () => {
   beforeEach(() => {
-    // stop the recurring dashboard fetch requests
-    cy.intercept("GET", "**/dashboard.json", {});
-
     cy.login();
 
     cy.visit(`/services/${CYPRESS_SERVICE_ID}/edit-branding`);
