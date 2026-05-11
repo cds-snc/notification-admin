@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { App } from "./App";
 
 /**
@@ -7,7 +7,8 @@ import { App } from "./App";
  * render the scheduler.
  */
 export const load = function (element) {
-  ReactDOM.render(<App />, element);
+  const root = createRoot(element);
+  root.render(<App />);
 };
 
 // Expose as window global for webpackLoader.js compatibility

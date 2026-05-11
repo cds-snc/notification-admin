@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import SimpleEditor from "./SimpleEditor";
 
 /**
@@ -17,7 +17,8 @@ export const load = function (
   preferenceUpdateUrl,
   csrfToken,
 ) {
-  ReactDOM.render(
+  const root = createRoot(element);
+  root.render(
     <SimpleEditor
       inputId={id}
       labelId={labelId}
@@ -28,7 +29,6 @@ export const load = function (
       preferenceUpdateUrl={preferenceUpdateUrl}
       csrfToken={csrfToken}
     />,
-    element,
   );
 };
 
