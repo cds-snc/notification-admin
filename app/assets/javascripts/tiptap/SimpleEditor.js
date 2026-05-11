@@ -744,7 +744,7 @@ const SimpleEditor = ({
 
   return (
     <EditorProvider lang={lang}>
-      <div className="editor-wrapper" style={{ background: 'pink'}}>
+      <div className="editor-wrapper" style={{ background: "pink" }}>
         <span id={shortcutHintId} className="sr-only">
           {shortcutHintText}
         </span>
