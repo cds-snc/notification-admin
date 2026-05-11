@@ -53,8 +53,9 @@ coverage: venv ## Create coverage report
 
 .PHONY: run-dev
 run-dev:
-	npm run watch & \
-	FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=0.0.0.0
+	@npm run watch &
+	@FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=0.0.0.0; \
+	kill 0
 
 .PHONY: watch
 watch:
