@@ -269,7 +269,7 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
 
-    - name: Install root dependencies (tiptap, react, babel, webpack)
+    - name: Install root dependencies
       run: npm ci
 
     - name: Install Cypress dependencies
