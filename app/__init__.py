@@ -744,8 +744,8 @@ def useful_headers_after_request(response):
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
     vite_dev = current_app.config.get("NOTIFY_ENVIRONMENT") == "development"
-    vite_connect_src = "ws://localhost:5173 http://localhost:5173" if vite_dev else ""
-    vite_script_src = "http://localhost:5173" if vite_dev else ""
+    vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
+    vite_script_src = " http://localhost:5173" if vite_dev else ""
     response.headers.add(
         "Report-To",
         """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
@@ -754,9 +754,9 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' {vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"connect-src 'self' {vite_connect_src} *.google-analytics.com *.googletagmanager.com;"
+            f"script-src 'self'{vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src-elem 'self'{vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"connect-src 'self'{vite_connect_src} *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
