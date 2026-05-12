@@ -19,7 +19,7 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
-import { faXmark } from "@fortawesome/free-solid-svg-icons/faXMark";
+import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
