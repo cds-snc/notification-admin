@@ -3576,8 +3576,10 @@ class TestCreateFromSampleTemplate:
 class TestOneClickUnsubscribe:
     """Tests for the one-click unsubscribe header feature."""
 
+    @pytest.mark.parametrize("placeholder", ["unsubscribe_url", "unsub_link"])
     def test_one_click_unsub_checkbox_shown_when_placeholder_in_content(
         self,
+        placeholder,
         client_request,
         mock_get_template_categories,
         mock_get_limit_stats,
@@ -3595,7 +3597,7 @@ class TestOneClickUnsubscribe:
                     SERVICE_ONE_ID,
                     fake_uuid,
                     type_="email",
-                    content="Hello ((unsubscribe_url))",
+                    content=f"Hello (({placeholder}))",
                     subject="Subject",
                 )
             },
