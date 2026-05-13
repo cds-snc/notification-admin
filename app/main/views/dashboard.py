@@ -428,7 +428,7 @@ def get_dashboard_partials(service_id):
         timings["get_scheduled_jobs"] = (time.time() - start) * 1000
 
         start = time.time()
-        immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id)
+        immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id, page_size=10)
         timings["get_immediate_jobs"] = (time.time() - start) * 1000
 
         start = time.time()
