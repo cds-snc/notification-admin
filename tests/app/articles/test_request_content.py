@@ -2,7 +2,7 @@ import pytest
 import requests_mock
 from werkzeug.exceptions import Forbidden
 
-from app.articles.api import get_content
+from app.articles.api import _get_headers, get_content
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"
@@ -54,3 +54,34 @@ def test_get_content_403(app_, mocker, capsys):
                 get_content("pages", {"slug": "mypage", "lang": "en"})
 
             assert "403 Forbidden" in str(exception.value)
+
+
+class TestGetHeaders:
+    def test_waf_rate_bypass_header_included_when_secret_set(self, app_, mocker):
+        with app_.test_request_context():
+            mocker.patch.dict(
+                "app.current_app.config",
+                values={"GC_ARTICLES_WAF_RATE_BYPASS_SECRET": "some-secret"},
+            )
+            headers = _get_headers()
+            assert headers["waf-rate-bypass"] == "some-secret"
+
+    def test_waf_rate_bypass_header_not_included_when_secret_not_set(self, app_, mocker):
+        with app_.test_request_context():
+            mocker.patch.dict(
+                "app.current_app.config",
+                values={"GC_ARTICLES_WAF_RATE_BYPASS_SECRET": None},
+            )
+            headers = _get_headers()
+            assert "waf-rate-bypass" not in headers
+
+    def test_waf_rate_bypass_header_included_alongside_auth_header(self, app_, mocker):
+        mocker.patch("app.articles.api.authenticate", return_value="some-token")
+        with app_.test_request_context():
+            mocker.patch.dict(
+                "app.current_app.config",
+                values={"GC_ARTICLES_WAF_RATE_BYPASS_SECRET": "some-secret"},
+            )
+            headers = _get_headers(auth_required=True)
+            assert headers["waf-rate-bypass"] == "some-secret"
+            assert headers["Authorization"] == "Bearer some-token"
