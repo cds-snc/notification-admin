@@ -535,7 +535,7 @@ def _get_daily_stats(service_id):
     """
     use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
 
-    # Try Redis first via the annual_limit_client hash (returns {} when not seeded)
+    # Try Redis first via the annual_limit_client
     if current_app.config.get("REDIS_ENABLED"):
         counts = annual_limit_client.get_all_notification_counts(service_id)
         if counts:
@@ -559,7 +559,7 @@ def _get_daily_stats(service_id):
             highest_notification_count_daily = max(sms_requested, email_requested)
             return dashboard_totals_daily, highest_notification_count_daily, []
 
-    # Fallback: query the template-statistics API (hits DB)
+    # Fallback to the DB if Redis isn't available or data doesn't exist yet.
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
     stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=use_billable_units)
     dashboard_totals_daily = get_dashboard_totals(stats_daily)
