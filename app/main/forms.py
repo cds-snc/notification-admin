@@ -914,7 +914,7 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
         ],
     )
 
-    use_custom_unsubscribe_url = BooleanField(_l("Use ((unsubscribe_url)) for one-click unsubscribe"))
+    use_custom_unsubscribe_url = BooleanField(_l("Use ((unsubscribe_url)) or ((unsub_link)) for one-click unsubscribe"))
 
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):

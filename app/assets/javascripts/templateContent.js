@@ -1,6 +1,6 @@
 /*
  * This module enhances the template content text area with a switch to enable right-to-left text direction.
- * It also shows/hides the one-click unsubscribe checkbox based on whether ((unsubscribe_url)) is in the content.
+ * It also shows/hides the one-click unsubscribe checkbox based on whether ((unsubscribe_url)) or ((unsub_link)) is in the content.
  */
 (function () {
   const checkbox = document.getElementById("text_direction_rtl");
@@ -20,16 +20,17 @@
   }
 })();
 
-// Show/hide the one-click unsubscribe checkbox based on whether ((unsubscribe_url)) is in the content.
+// Show/hide the one-click unsubscribe checkbox based on whether ((unsubscribe_url)) or ((unsub_link)) is in the content.
 (function () {
   var setting = document.getElementById("custom-unsub-url-setting");
   if (!setting) return;
   var contentInput = document.getElementById("template_content");
   if (!contentInput) return;
   contentInput.addEventListener("change", function () {
+    var val = contentInput.value;
     setting.classList.toggle(
       "hidden",
-      !contentInput.value.includes("((unsubscribe_url))"),
+      !val.includes("((unsubscribe_url))") && !val.includes("((unsub_link))"),
     );
   });
 })();
