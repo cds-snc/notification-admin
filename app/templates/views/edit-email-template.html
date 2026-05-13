@@ -98,8 +98,15 @@
         <div id="custom-unsub-url-setting" class="form-group mb-8 {{ 'hidden' if '((unsubscribe_url))' not in (form.template_content.data or '') and '((unsub_link))' not in (form.template_content.data or '') else '' }}">
           <div class="multiple-choice float-none">
             {{ form.use_custom_unsubscribe_url(class="multiple-choice__input") }}
-            <label class="multiple-choice__label" for="{{ form.use_custom_unsubscribe_url.id }}">
-              {{ form.use_custom_unsubscribe_url.label.text }}
+            <label class="multiple-choice__label"
+                   for="{{ form.use_custom_unsubscribe_url.id }}"
+                   data-label-unsubscribe-url="{{ _('Use ((unsubscribe_url)) for one-click unsubscribe') }}"
+                   data-label-unsub-link="{{ _('Use ((unsub_link)) for one-click unsubscribe') }}">
+              {% if '((unsub_link))' in (form.template_content.data or '') and '((unsubscribe_url))' not in (form.template_content.data or '') %}
+                {{ _('Use ((unsub_link)) for one-click unsubscribe') }}
+              {% else %}
+                {{ _('Use ((unsubscribe_url)) for one-click unsubscribe') }}
+              {% endif %}
             </label>
           </div>
         </div>
