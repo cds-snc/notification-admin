@@ -20,7 +20,7 @@ jobs:
 
     name: Build and push
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
     - name: Install AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -29,7 +29,7 @@ jobs:
         aws --version
 
     - name: Configure credentials to CDS public ECR using OIDC
-      uses: aws-actions/configure-aws-credentials@master
+      uses: aws-actions/configure-aws-credentials@ffc08eae7350b1061d7de219e2135c75561fb680 # master
       with:
         role-to-assume: arn:aws:iam::283582579564:role/notification-admin-apply
         role-session-name: NotifyAdminGitHubActions
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Notify and scan
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
     - name: my-app-install token
       id: notify-pr-bot
@@ -73,12 +73,12 @@ jobs:
         app_id: ${{ secrets.NOTIFY_PR_BOT_APP_ID }}
         private_key: ${{ secrets.NOTIFY_PR_BOT_PRIVATE_KEY }}
 
-    - uses: cds-snc/notification-pr-bot@main
+    - uses: cds-snc/notification-pr-bot@fc22ac1d3c1be8eaeccb96c2ef1468f2121449de # main
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
     - name: Docker generate SBOM
-      uses: cds-snc/security-tools/.github/actions/generate-sbom@12a0cdea1c5a515dfcbe353693db804a1793c0ed # v4.0.1
+      uses: cds-snc/security-tools/.github/actions/generate-sbom@837a88b6337d4842543184c8eac97a8adac8f302 # v4.0.3
       env:
         TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
       with:
