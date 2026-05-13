@@ -111,8 +111,14 @@ def _get_headers(auth_required=False):
     base_endpoint = current_app.config["GC_ARTICLES_API"]
     username = current_app.config["GC_ARTICLES_API_AUTH_USERNAME"]
     password = current_app.config["GC_ARTICLES_API_AUTH_PASSWORD"]
+    waf_rate_bypass_secret = current_app.config["GC_ARTICLES_WAF_RATE_BYPASS_SECRET"]
+
+    headers = {}
+    if waf_rate_bypass_secret:
+        headers["waf-rate-bypass"] = waf_rate_bypass_secret
 
     if auth_required:
         token = authenticate(username, password, base_endpoint)
-        return {"Authorization": "Bearer {}".format(token)}
-    return {}
+        headers["Authorization"] = "Bearer {}".format(token)
+
+    return headers
