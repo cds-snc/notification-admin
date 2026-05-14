@@ -98,6 +98,7 @@ class Config(object):
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
+    GC_ARTICLES_WAF_RATE_BYPASS_SECRET = env.str("GC_ARTICLES_WAF_RATE_BYPASS_SECRET", "my-secret-key")
     GC_ORGANISATIONS_BUCKET_NAME = os.environ.get("GC_ORGANISATIONS_BUCKET_NAME")
     GC_ORGANISATIONS_FILENAME = os.getenv("GC_ORGANISATIONS_FILENAME", "all.json")
     GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "G-R04KFLQCVQ")
@@ -174,6 +175,7 @@ class Config(object):
             "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
             "GC_ARTICLES_API_AUTH_USERNAME",
+            "GC_ARTICLES_WAF_RATE_BYPASS_SECRET",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
             "SECRET_KEY",

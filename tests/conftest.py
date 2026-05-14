@@ -2574,7 +2574,7 @@ def mock_has_no_jobs(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_jobs(mocker, api_user_active):
-    def _get_jobs(service_id, limit_days=None, statuses=None, page=1):
+    def _get_jobs(service_id, limit_days=None, statuses=None, page=1, page_size=None):
         if statuses is None:
             statuses = ["", "scheduled", "pending", "cancelled", "finished"]
 
