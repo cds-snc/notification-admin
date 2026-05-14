@@ -197,6 +197,9 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    DEBUG_KEY = "debug"
+    FF_ADD_TEMPLATE_PERM = True
+    MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -238,6 +241,7 @@ class ProductionFF(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     ASSET_DOMAIN = "static.example.com"
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
+    DEBUG = True
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value
