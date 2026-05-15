@@ -6,7 +6,7 @@ ARG POETRY_VIRTUALENVS_CREATE="false"
 
 # Node.js build stage — uses Node 22 on Alpine (musl) so Rolldown's musl native
 # binding resolves correctly. npm install (not ci) re-resolves platform optional deps.
-FROM node:22-alpine AS node-build
+FROM node:22.22.3-alpine AS node-build
 ARG APP_DIR="/app"
 WORKDIR ${APP_DIR}
 COPY package.json package-lock.json ./

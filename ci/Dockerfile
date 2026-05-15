@@ -1,6 +1,6 @@
 # Node.js build stage — Node 22 on Alpine (musl) so Rolldown's musl native
 # binding resolves correctly. npm install re-resolves platform optional deps.
-FROM node:22-alpine AS node-build
+FROM node:22.22.3-alpine AS node-build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
