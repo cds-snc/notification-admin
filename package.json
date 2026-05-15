@@ -7,8 +7,10 @@
   },
   "scripts": {
     "test": "jest --config tests/javascripts/jest.config.js tests/javascripts",
+    "build:legacy-individual": "node scripts/build-legacy-individual.mjs",
+    "watch:assets": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/static/stylesheets/index.css --watch & vite & vite build --config vite.legacy.config.js --watch",
     "build": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/static/stylesheets/index.css --minify && vite build && vite build --config vite.legacy.config.js && node scripts/build-legacy-individual.mjs",
-    "watch": "npx tailwindcss -i ./app/assets/stylesheets/tailwind/style.css -o ./app/static/stylesheets/index.css --watch & vite & vite build --config vite.legacy.config.js --watch",
+    "watch": "npm run build:legacy-individual && npm run watch:assets",
     "dev": "vite"
   },
   "repository": {
