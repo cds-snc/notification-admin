@@ -66,9 +66,13 @@ export default defineConfig({
 
       output: {
         format: "es",
-        // Fixed filenames — no content hashes — so AssetFingerprinter works unchanged
+        // Entry files keep stable names so AssetFingerprinter can fingerprint them
+        // via MD5 query params (e.g. index.min.js?abc123).
+        // Shared chunks get content-hashed filenames so that when a chunk's
+        // content changes its URL changes too, busting the immutable CDN/browser
+        // cache without needing a manifest.
         entryFileNames: "javascripts/[name].min.js",
-        chunkFileNames: "javascripts/[name].min.js",
+        chunkFileNames: "javascripts/[name]-[hash].min.js",
         assetFileNames: "assets/[name][extname]",
       },
     },
