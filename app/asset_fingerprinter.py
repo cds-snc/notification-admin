@@ -19,17 +19,19 @@ class AssetFingerprinter(object):
     * 'app/static' is assumed to be the root for all asset files
     """
 
-    def __init__(self, asset_root="/static/", filesystem_path="app/static/", cdn_domain=None):
+    def __init__(self, asset_root="/static/", filesystem_path="app/static/", cdn_domain=None, debug=False):
         self._cache = {}
         self._cdn_domain = cdn_domain
         self._asset_root = asset_root
         self._filesystem_path = filesystem_path
+        self._debug = debug
 
     def get_url(self, asset_path):
-        if asset_path not in self._cache:
-            self._cache[asset_path] = (
-                self._asset_root + asset_path + "?" + self.get_asset_fingerprint(self._filesystem_path + asset_path)
-            )
+        if self._debug or asset_path not in self._cache:
+            url = self._asset_root + asset_path + "?" + self.get_asset_fingerprint(self._filesystem_path + asset_path)
+            if not self._debug:
+                self._cache[asset_path] = url
+            return url
         return self._cache[asset_path]
 
     def get_s3_url(self, asset_path):

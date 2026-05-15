@@ -43,7 +43,6 @@ class Config(object):
     API_HOST_NAME = os.environ.get("API_HOST_NAME")
     ASSET_DOMAIN = os.getenv("ASSET_DOMAIN", "assets.notification.canada.ca")
     ASSET_PATH = "/static/"
-    ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     A11Y_FEEDBACK_URL_EN = os.environ.get(
         "A11Y_FEEDBACK_URL_EN", "https://forms-formulaires.alpha.canada.ca/en/id/cmk4jw8nu00wrx9016kz1gf54"
@@ -154,6 +153,7 @@ class Config(object):
 
     TEMPLATE_PREVIEW_API_HOST = os.environ.get("TEMPLATE_PREVIEW_API_HOST", "http://localhost:6013")
     TEMPLATE_PREVIEW_API_KEY = os.environ.get("TEMPLATE_PREVIEW_API_KEY", "my-secret-key")
+    VITE_HMR_ENABLED = False
     WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
@@ -198,6 +198,7 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    VITE_HMR_ENABLED = False
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
     MOU_BUCKET_NAME = "notify.tools-mou"

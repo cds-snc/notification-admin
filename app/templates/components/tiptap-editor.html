@@ -35,7 +35,8 @@
 
                 if (!window.tiptapLoaded) {
                     var script = document.createElement('script');
-                    script.src = '{{ asset_url("javascripts/tiptap.min.js") }}';
+                    script.type = 'module';
+                    script.src = '{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/tiptap/editor.js{% else %}{{ asset_url("javascripts/tiptap.min.js") }}{% endif %}';
                     script.nonce = '{{ request_nonce }}';
                     script.onload = function() {
                         window.tiptapLoaded = true;
