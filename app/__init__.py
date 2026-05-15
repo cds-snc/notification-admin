@@ -147,7 +147,7 @@ def create_app(application):
     application.config.from_object(config)
     asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
     asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
-    asset_fingerprinter._debug = application.config.get("NOTIFY_ENVIRONMENT") == "development"
+    asset_fingerprinter._debug = application.config.get("VITE_HMR_ENABLED", False)
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
@@ -312,7 +312,7 @@ def init_app(application):
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
             "asset_s3_url": asset_fingerprinter.get_s3_url,
-            "vite_dev_server": application.config.get("NOTIFY_ENVIRONMENT") == "development",
+            "vite_dev_server": application.config.get("VITE_HMR_ENABLED", False),
             "current_lang": get_current_locale(application),
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
@@ -743,7 +743,7 @@ def useful_headers_after_request(response):
     response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
-    vite_dev = current_app.config.get("NOTIFY_ENVIRONMENT") == "development"
+    vite_dev = current_app.config.get("VITE_HMR_ENABLED", False)
     vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
     vite_script_src = " http://localhost:5173" if vite_dev else ""
     response.headers.add(
