@@ -43,6 +43,16 @@ function jsxInJsFiles() {
  * See vite.legacy.config.js for the IIFE legacy (jQuery) bundle.
  */
 export default defineConfig({
+  // Dependency scanning happens before our Babel pre-transform plugin runs.
+  // Treat app .js files as JSX there too so `vite` can start in dev mode.
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        ".js": "jsx",
+      },
+    },
+  },
+
   build: {
     outDir: path.resolve(__dirname, "app/static"),
     emptyOutDir: false, // don't wipe app/static/images etc.
