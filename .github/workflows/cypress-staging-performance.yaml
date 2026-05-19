@@ -12,3 +12,4 @@ jobs:
     with:
       spec: cypress/e2e/performance/page_performance.cy.js
       slack_failure_message: Staging performance tests failed
+      report_to_slack: false
