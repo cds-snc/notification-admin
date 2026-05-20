@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useEditorContext } from "./EditorContext";
-import "./tooltip.compiled.css";
 
 const TooltipWrapper = ({ children, label, shortcut }) => {
   const [isVisible, setIsVisible] = useState(false);

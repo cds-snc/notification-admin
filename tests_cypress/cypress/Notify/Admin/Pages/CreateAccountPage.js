@@ -1,5 +1,5 @@
 import RegisterPage from "./RegisterPage";
-const { recurse } = require('cypress-recurse')
+import { recurse } from 'cypress-recurse';
 
 
 let Components = {

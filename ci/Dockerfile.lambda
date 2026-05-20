@@ -4,6 +4,16 @@ ARG POETRY_HOME="/opt/poetry"
 ARG POETRY_VERSION="1.7.1"
 ARG POETRY_VIRTUALENVS_CREATE="false"
 
+# Node.js build stage — uses Node 22 on Alpine (musl) so Rolldown's musl native
+# binding resolves correctly. npm install (not ci) re-resolves platform optional deps.
+FROM node:22.22.3-alpine AS node-build
+ARG APP_DIR="/app"
+WORKDIR ${APP_DIR}
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
 # Build image
 FROM python:3.12-alpine3.20@sha256:5049c050bdc68575a10bcb1885baa0689b6c15152d8a56a7e399fb49f783bf98 as base
 
@@ -30,8 +40,6 @@ RUN apk add --no-cache \
     libtool \
     libxml2-dev \
     libxslt-dev \
-    nodejs \
-    npm \
     make \
     rust \
     cargo
@@ -56,12 +64,8 @@ RUN python -m venv ${APP_VENV} \
     && poetry install \
     && poetry add wheel awslambdaric
 
-COPY package.json package-lock.json ${APP_DIR}/
-RUN npm ci
-
 COPY . ${APP_DIR}
-RUN npm run build && \
-    rm -rf node_modules
+COPY --from=node-build ${APP_DIR}/app/static ${APP_DIR}/app/static
 
 RUN . ${APP_VENV}/bin/activate \
     && poetry run make babel \

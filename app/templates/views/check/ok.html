@@ -134,5 +134,5 @@
 
 {% block page_script %}
   {{ super() }}
-  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+  <script nonce="{{ request_nonce }}" type="module" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/scheduler/scheduler.js{% else %}{{ asset_url('javascripts/scheduler.min.js') }}{% endif %}"></script>
 {% endblock %}

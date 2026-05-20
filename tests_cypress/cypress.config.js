@@ -1,6 +1,34 @@
 const fs = require("fs");
 const { defineConfig } = require("cypress");
 const htmlvalidate = require("cypress-html-validate/plugin");
+const { transformSync } = require("@babel/core");
+
+// Vite plugin: Babel-transform JSX in .js files (app sources + Cypress spec files).
+// Needed because Vite's OXC parser only handles JSX in .jsx/.tsx files natively.
+function jsxInJsFiles() {
+  return {
+    name: "jsx-in-js-files",
+    enforce: "pre",
+    transform(code, id) {
+      if (id.includes("node_modules")) return null;
+      if (!id.endsWith(".js")) return null;
+      if (!code.includes("<")) return null;
+      try {
+        const result = transformSync(code, {
+          filename: id,
+          presets: [["@babel/preset-react", { runtime: "classic" }]],
+          configFile: false,
+          babelrc: false,
+          sourceMaps: true,
+        });
+        if (!result) return null;
+        return { code: result.code, map: result.map };
+      } catch (_) {
+        return null;
+      }
+    },
+  };
+}
 
 // Lazily load e2e-only plugins so they don't fail when cypress.env.json is absent
 // (component tests don't need these and the file isn't committed to the repo)
@@ -158,8 +186,10 @@ module.exports = defineConfig({
   component: {
     devServer: {
       framework: "react",
-      bundler: "webpack",
-      webpackConfig: require("./webpack.component.config.js"),
+      bundler: "vite",
+      viteConfig: {
+        plugins: [jsxInJsFiles()],
+      },
     },
     specPattern: "**/component/**/*.cy.js",
     supportFile: "cypress/support/component.js",

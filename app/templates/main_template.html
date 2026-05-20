@@ -198,9 +198,16 @@
 {% include 'partials/google-analytics.html' %}
 
 {% block page_script %}
-<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/react.vendor.min.js') }}"></script>
-<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/index.min.js') }}"></script>
-<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% if vite_dev_server %}
+  {# HMR dev mode — React entries served from Vite dev server; legacy bundle from built static file #}
+  <script nonce="{{ request_nonce }}" type="module" src="http://localhost:5173/@vite/client"></script>
+  <script nonce="{{ request_nonce }}" type="module" src="http://localhost:5173/app/assets/javascripts/index.js"></script>
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% else %}
+  {# index.min.js is an ES module; all.min.js is a classic IIFE (jQuery/legacy) #}
+  <script nonce="{{ request_nonce }}" type="module" src="{{ asset_url('javascripts/index.min.js') }}"></script>
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% endif %}
 
 {% if current_user.is_authenticated %}
   <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/sessionRedirect.min.js') }}"></script>

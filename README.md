@@ -32,21 +32,20 @@ https://github.com/alphagov/notifications-admin
 
 Languages needed
 - Python 3.12
-- [Node](https://nodejs.org/) 10.15.3 or greater
-- [npm](https://www.npmjs.com/) 6.4.1 or greater
+- [Node](https://nodejs.org/) 22.22.3
+- [npm](https://www.npmjs.com/)
 
 ```shell
     brew install node
 ```
 
 [NPM](npmjs.org) is Node's package management tool. `n` is a tool for managing
-different versions of Node. The following installs `n` and uses the long term support (LTS)
+different versions of Node. The following installs `n` and uses the repo's pinned
 version of Node.
 
 ```shell
     npm install -g n
-    n lts
-    npm rebuild node-sass
+    n 22.22.3
 ```
 
 
@@ -331,19 +330,18 @@ https://github.com/alphagov/notifications-admin
 
 Langages nécessaires
 - Python 3.12
-- [Node](https://nodejs.org/) 10.15.3 ou supérieur
-- [npm](https://www.npmjs.com/) 6.4.1 ou plus
+- [Node](https://nodejs.org/) 22.22.3
+- [npm](https://www.npmjs.com/)
 ```shell
 brew install node
 ```
 
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
-différentes versions de Node. Ce qui suit installe `n` et utilise le support à long terme (LTS)
-version de Node.
+différentes versions de Node. Ce qui suit installe `n` et utilise la version de Node
+épinglée pour ce dépôt.
 ```shell
 npm install -g n
-n lts
-npm rebuild node-sass
+n 22.22.3
 ```
 
 ### Instruction d'installation locale
