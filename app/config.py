@@ -116,7 +116,7 @@ class Config(object):
 
     NOTIFY_APP_NAME = "admin"
     NOTIFY_BAD_FILLER_UUID = "00000000-0000-0000-0000-000000000000"
-    NOTIFY_ENVIRONMENT = NotifyEnv.DEVELOPMENT.value
+    NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "DEBUG"
     NOTIFY_LOG_PATH = os.getenv("NOTIFY_LOG_PATH", "")
 
@@ -234,6 +234,7 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_USE_BILLABLE_UNITS = True
+    VITE_HMR_ENABLED = False
 
 
 class ProductionFF(Config):
@@ -258,6 +259,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
+    VITE_HMR_ENABLED = False
 
 
 class Production(Config):
@@ -267,6 +269,7 @@ class Production(Config):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
+    VITE_HMR_ENABLED = False
 
 
 class Staging(Production):
@@ -275,17 +278,20 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    VITE_HMR_ENABLED = False
 
 
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = NotifyEnv.SCRATCH.value
     NOTIFY_LOG_LEVEL = "INFO"
+    VITE_HMR_ENABLED = False
 
 
 class Dev(Production):
     FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
+    VITE_HMR_ENABLED = False
 
 
 configs = {
