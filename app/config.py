@@ -198,7 +198,7 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
-    VITE_HMR_ENABLED = False
+    VITE_HMR_ENABLED = os.environ.get("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
     MOU_BUCKET_NAME = "notify.tools-mou"
