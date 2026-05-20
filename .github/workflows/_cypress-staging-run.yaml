@@ -9,15 +9,20 @@ on:
         type: string
       slack_failure_message:
         description: Parent Slack message text posted on failure
-        required: true
+        required: false
         type: string
+      report_to_slack:
+        description: Whether to post failure notifications to Slack
+        required: false
+        type: boolean
+        default: true
     secrets:
       CYPRESS_ENV_JSON:
         required: true
       SLACK_BOT_TOKEN:
-        required: true
+        required: false
       SLACK_CHANNEL:
-        required: true
+        required: false
 
 defaults:
   run:
@@ -59,11 +64,11 @@ jobs:
           retention-days: 30
 
       - name: Install jq for Slack notifications
-        if: failure()
+        if: failure() && inputs.report_to_slack
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Build failure previews from mochawesome
-        if: failure()
+        if: failure() && inputs.report_to_slack
         run: |
           set -euo pipefail
           RESULTS_DIR=tests_cypress/cypress/results
@@ -109,7 +114,7 @@ jobs:
           jq . "$TMP" || true
 
       - name: Fetch artifact download URL
-        if: failure()
+        if: failure() && inputs.report_to_slack
         id: artifact_link
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,7 +130,7 @@ jobs:
           echo "artifact_url=$url" >> $GITHUB_OUTPUT
 
       - name: Post parent message (chat.postMessage)
-        if: failure()
+        if: failure() && inputs.report_to_slack
         id: post_parent
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -165,7 +170,7 @@ jobs:
           echo "ts=$ts" >> $GITHUB_OUTPUT
 
       - name: Post threaded replies (max 5)
-        if: failure()
+        if: failure() && inputs.report_to_slack
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
