@@ -28,6 +28,8 @@
     "mochawesome": "^7.1.4",
     "mochawesome-merge": "^5.1.0",
     "mochawesome-report-generator": "^6.3.2",
-    "vite": "^6.3.0"
+    "vite": "^6.3.0",
+    "@babel/core": "^7.22.9",
+    "@babel/preset-react": "^7.22.5"
   }
 }
