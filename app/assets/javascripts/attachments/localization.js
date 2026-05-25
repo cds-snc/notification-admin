@@ -58,11 +58,11 @@ const fr = {
   attachMoreFiles: "Joindre d'autres fichiers",
   noFilesAttached: "Aucun fichier joint",
 
-  chooseUpToFiles: (count) => `Choisissez jusqu'a ${count} fichiers.`,
+  chooseUpToFiles: (count) => `Choisissez jusqu'à ${count} fichiers.`,
   maxCombinedSize: "Maximum 6 Mo pour tous les fichiers combinés.",
   unsupportedType: (name) => `${name} a un type de fichier non pris en charge.`,
   filenameNoParentheses: (name) =>
-    `${name} ne peut pas contenir de parentheses.`,
+    `${name} ne peut pas contenir de parenthèses.`,
   summaryUploading: (count) =>
     `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
   summaryScanning: (count) =>
