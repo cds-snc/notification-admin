@@ -16,6 +16,7 @@ export const AttachFilesModal = ({
   const [selectedFiles, setSelectedFiles] = useState([]);
   const dialogRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
+  const previousBodyOverflow = useRef("");
 
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +30,7 @@ export const AttachFilesModal = ({
     }
 
     previouslyFocusedElement.current = document.activeElement;
+  previousBodyOverflow.current = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const dialogElement = dialogRef.current;
@@ -120,7 +122,7 @@ export const AttachFilesModal = ({
         blockPointerOutsideDialog,
         true,
       );
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousBodyOverflow.current;
 
       if (
         previouslyFocusedElement.current &&
@@ -137,17 +139,21 @@ export const AttachFilesModal = ({
 
   const onChange = (event) => {
     const files = Array.from(event.target.files || []);
-    setSelectedFiles(files);
+    const normalizedFiles = files.map((file, index) => ({
+      id: `${file.name}-${file.size}-${file.lastModified || 0}-${index}`,
+      file,
+    }));
+    setSelectedFiles(normalizedFiles);
   };
 
-  const onRemovePending = (name) => {
+  const onRemovePending = (fileId) => {
     setSelectedFiles((currentFiles) =>
-      currentFiles.filter((file) => file.name !== name),
+      currentFiles.filter((pendingFile) => pendingFile.id !== fileId),
     );
   };
 
   const submit = () => {
-    onAttach(selectedFiles);
+    onAttach(selectedFiles.map((pendingFile) => pendingFile.file));
   };
 
   return createPortal(
@@ -205,27 +211,27 @@ export const AttachFilesModal = ({
         </div>
         {selectedFiles.length > 0 && (
           <ul className="space-y-2 mb-4" data-testid="pending-files-list">
-            {selectedFiles.map((file) => (
+            {selectedFiles.map((pendingFile) => (
               <li
-                key={file.name}
+                key={pendingFile.id}
                 className="border border-gray-300 p-3 flex justify-between items-center align-middle"
               >
                 <span
                   className="min-w-0 pr-4 mb-0"
-                  title={file.name}
+                  title={pendingFile.file.name}
                   style={{
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {file.name}
+                  {pendingFile.file.name}
                 </span>
                 <button
                   className="link text-red-700"
                   type="button"
                   data-testid="attachments-pending-remove"
-                  onClick={() => onRemovePending(file.name)}
+                  onClick={() => onRemovePending(pendingFile.id)}
                 >
                   <span className="font-bold underline">{copy.remove}</span>
                   <span aria-hidden="true">&nbsp;×</span>

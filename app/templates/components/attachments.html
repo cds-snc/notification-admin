@@ -19,19 +19,42 @@
         }
       }
 
-      if (!window.attachmentsLoaded) {
-        var script = document.createElement("script");
-        script.type = "module";
-        script.src = "{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/attachments/attachments.js{% else %}{{ asset_url('javascripts/attachments.min.js') }}{% endif %}";
-        script.nonce = "{{ request_nonce }}";
-        script.onload = function () {
-          window.attachmentsLoaded = true;
-          boot();
-        };
-        document.head.appendChild(script);
-      } else {
-        boot();
+      if (!window.attachmentsLoadPromise) {
+        window.attachmentsLoadPromise = new Promise(function (resolve, reject) {
+          if (window.Attachments) {
+            resolve();
+            return;
+          }
+
+          var existingScript = document.getElementById("attachments-widget-script");
+          if (existingScript) {
+            existingScript.addEventListener("load", resolve, { once: true });
+            existingScript.addEventListener(
+              "error",
+              function () {
+                window.attachmentsLoadPromise = null;
+                reject(new Error("Failed to load attachments script"));
+              },
+              { once: true },
+            );
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.id = "attachments-widget-script";
+          script.type = "module";
+          script.src = "{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/attachments/attachments.js{% else %}{{ asset_url('javascripts/attachments.min.js') }}{% endif %}";
+          script.nonce = "{{ request_nonce }}";
+          script.onload = resolve;
+          script.onerror = function () {
+            window.attachmentsLoadPromise = null;
+            reject(new Error("Failed to load attachments script"));
+          };
+          document.head.appendChild(script);
+        });
       }
+
+      window.attachmentsLoadPromise.then(boot).catch(function () {});
     })();
   </script>
 {% endmacro %}
