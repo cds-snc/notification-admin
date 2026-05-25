@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getAttachmentTranslations } from "./localization";
 
 const DEFAULT_COPY = getAttachmentTranslations("en");
@@ -154,6 +154,29 @@ export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
 
 export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
   const [files, setFiles] = useState(initialFiles);
+  const timeoutIdsRef = useRef([]);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      timeoutIdsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+      timeoutIdsRef.current = [];
+    };
+  }, []);
+
+  const schedule = (callback, delay) => {
+    const timeoutId = setTimeout(() => {
+      if (!isMountedRef.current) {
+        return;
+      }
+      callback();
+      timeoutIdsRef.current = timeoutIdsRef.current.filter((id) => id !== timeoutId);
+    }, delay);
+
+    timeoutIdsRef.current.push(timeoutId);
+    return timeoutId;
+  };
 
   const pendingCount = useMemo(
     () =>
@@ -181,7 +204,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
 
     const preparedIds = new Set(prepared.map((file) => file.id));
 
-    setTimeout(() => {
+    schedule(() => {
       setFiles((currentFiles) =>
         currentFiles.map((currentFile) =>
           preparedIds.has(currentFile.id)
@@ -209,7 +232,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
         });
       }
 
-      setTimeout(() => {
+      schedule(() => {
         setFiles((currentFiles) =>
           currentFiles.map((currentFile) => {
             if (!preparedIds.has(currentFile.id)) {
@@ -225,7 +248,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
         );
       }, 1800);
     } catch (error) {
-      setTimeout(() => {
+      schedule(() => {
         setFiles((currentFiles) =>
           currentFiles.map((currentFile) =>
             preparedIds.has(currentFile.id)
