@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { AttachFilesModal } from "./AttachFilesModal";
 import { AttachedFileRow } from "./AttachedFileRow";
 import {
