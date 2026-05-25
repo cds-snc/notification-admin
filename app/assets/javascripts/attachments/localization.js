@@ -12,24 +12,31 @@ const en = {
   maxCombinedSize: "Maximum 6 MB for all files combined.",
   unsupportedType: (name) => `${name} has an unsupported file type.`,
   filenameNoParentheses: (name) => `${name} cannot contain parentheses.`,
-  summaryUploading: (count) => `${count} ${count === 1 ? "file" : "files"} uploading`,
-  summaryScanning: (count) => `${count} ${count === 1 ? "file" : "files"} scanning`,
-  summaryAttached: (count) => `${count} ${count === 1 ? "file" : "files"} attached`,
-  summaryNotAttached: (count) => `${count} ${count === 1 ? "file" : "files"} not attached`,
+  summaryUploading: (count) =>
+    `${count} ${count === 1 ? "file" : "files"} uploading`,
+  summaryScanning: (count) =>
+    `${count} ${count === 1 ? "file" : "files"} scanning`,
+  summaryAttached: (count) =>
+    `${count} ${count === 1 ? "file" : "files"} attached`,
+  summaryNotAttached: (count) =>
+    `${count} ${count === 1 ? "file" : "files"} not attached`,
 
   modalTitle: "Attach files",
   modalIntro: "Choose up to 10 files. Maximum 6 MB for all files combined.",
   modalClassificationPrefix: "Only send files with",
-  modalClassificationLinkText: "non-emergency, unclassified or Protected A information",
+  modalClassificationLinkText:
+    "non-emergency, unclassified or Protected A information",
   modalAttachedFilesCanBe: "Attached files can be:",
   modalTextDocuments: "- Text documents (.pdf, .doc, .docx, .odt, .rtf, txt)",
   modalDataDocuments: "- Spreadsheets and data (.xlsx, .csv, .json)",
   modalImageDocuments: "- Images (.jpeg, .jpg, .png)",
   modalChooseFiles: "Choose files",
   modalNoFilesSelected: "No files selected",
-  modalFilesSelected: (count) => `${count} file${count === 1 ? "" : "s"} selected`,
+  modalFilesSelected: (count) =>
+    `${count} file${count === 1 ? "" : "s"} selected`,
   remove: "Remove",
-  modalScanNotice: "GC Notify scans your files after you attach them to this template.",
+  modalScanNotice:
+    "GC Notify scans your files after you attach them to this template.",
   modalAttachToTemplate: "Attach to template",
   cancel: "Cancel",
 
@@ -54,25 +61,34 @@ const fr = {
   chooseUpToFiles: (count) => `Choisissez jusqu'a ${count} fichiers.`,
   maxCombinedSize: "Maximum 6 Mo pour tous les fichiers combinés.",
   unsupportedType: (name) => `${name} a un type de fichier non pris en charge.`,
-  filenameNoParentheses: (name) => `${name} ne peut pas contenir de parentheses.`,
-  summaryUploading: (count) => `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
-  summaryScanning: (count) => `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
-  summaryAttached: (count) => `${count} ${count === 1 ? "fichier" : "fichiers"} joints`,
-  summaryNotAttached: (count) => `${count} ${count === 1 ? "fichier non-joint" : "fichiers non-joints"}`,
+  filenameNoParentheses: (name) =>
+    `${name} ne peut pas contenir de parentheses.`,
+  summaryUploading: (count) =>
+    `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
+  summaryScanning: (count) =>
+    `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
+  summaryAttached: (count) =>
+    `${count} ${count === 1 ? "fichier" : "fichiers"} joints`,
+  summaryNotAttached: (count) =>
+    `${count} ${count === 1 ? "fichier non-joint" : "fichiers non-joints"}`,
 
   modalTitle: "Joindre des fichiers",
-  modalIntro: "Choisissez jusqu'à 10 fichiers. Maximum 6 Mo pour tous les fichiers combinés.",
+  modalIntro:
+    "Choisissez jusqu'à 10 fichiers. Maximum 6 Mo pour tous les fichiers combinés.",
   modalClassificationPrefix: "Les fichiers joints ne doivent contenir que des",
-  modalClassificationLinkText: "renseignements non urgents, non classifiés ou de niveau protégé A",
+  modalClassificationLinkText:
+    "renseignements non urgents, non classifiés ou de niveau protégé A",
   modalAttachedFilesCanBe: "Les fichiers joints sont des:",
   modalTextDocuments: "- Documents texte (.pdf, .doc, .docx, .odt, .rtf, txt)",
   modalDataDocuments: "- Feuilles de calcul et données (.xlsx, .csv, .json)",
   modalImageDocuments: "- Images (.jpeg, .jpg, .png)",
   modalChooseFiles: "Choisir des fichiers",
   modalNoFilesSelected: "Aucun fichier sélectionné",
-  modalFilesSelected: (count) => `${count} fichier${count === 1 ? "" : "s"} sélectionné${count === 1 ? "" : "s"}`,
+  modalFilesSelected: (count) =>
+    `${count} fichier${count === 1 ? "" : "s"} sélectionné${count === 1 ? "" : "s"}`,
   remove: "Supprimer",
-  modalScanNotice: "Notification GC analyse vos fichiers après que vous les aurez joints au gabarit.",
+  modalScanNotice:
+    "Notification GC analyse vos fichiers après que vous les aurez joints au gabarit.",
   modalAttachToTemplate: "Joindre au gabarit",
   cancel: "Annuler",
 

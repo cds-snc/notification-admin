@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { AttachFilesModal } from "./AttachFilesModal";
 import { AttachedFileRow } from "./AttachedFileRow";
-import { summarizeStatuses, useAttachments, validateFiles } from "./useAttachments";
+import {
+  summarizeStatuses,
+  useAttachments,
+  validateFiles,
+} from "./useAttachments";
 import { getAttachmentTranslations } from "./localization";
 
 export const AttachmentsWidget = ({
@@ -17,7 +21,10 @@ export const AttachmentsWidget = ({
 
   const { files, attachFiles, removeFile } = useAttachments(initialFiles, copy);
 
-  const statusSummary = useMemo(() => summarizeStatuses(files, copy), [files, copy]);
+  const statusSummary = useMemo(
+    () => summarizeStatuses(files, copy),
+    [files, copy],
+  );
 
   const handleAttach = async (selectedFiles) => {
     const result = validateFiles(selectedFiles, files, copy);
@@ -55,7 +62,9 @@ export const AttachmentsWidget = ({
       ) : null}
 
       <div className="flex items-center justify-between gap-4 border-t border-gray-300 pt-4">
-        <p className="hint" data-testid="attachments-summary">{statusSummary}</p>
+        <p className="hint" data-testid="attachments-summary">
+          {statusSummary}
+        </p>
         <button
           type="button"
           className="button button-secondary"

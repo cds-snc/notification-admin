@@ -31,7 +31,8 @@ export const ATTACHMENT_STATUSES = {
 
 const ALLOWED_EXTENSIONS = new Set(ACCEPTED_EXTENSIONS);
 
-const hasInvalidParentheses = (fileName) => fileName.includes("(") || fileName.includes(")");
+const hasInvalidParentheses = (fileName) =>
+  fileName.includes("(") || fileName.includes(")");
 
 const getExtension = (fileName) => {
   const lastDot = fileName.lastIndexOf(".");
@@ -41,7 +42,11 @@ const getExtension = (fileName) => {
   return fileName.slice(lastDot).toLowerCase();
 };
 
-export const validateFiles = (selectedFiles, existingFiles, copy = DEFAULT_COPY) => {
+export const validateFiles = (
+  selectedFiles,
+  existingFiles,
+  copy = DEFAULT_COPY,
+) => {
   const issues = [];
   const acceptedFiles = [];
 
@@ -50,8 +55,14 @@ export const validateFiles = (selectedFiles, existingFiles, copy = DEFAULT_COPY)
     issues.push(copy.chooseUpToFiles(MAX_FILES));
   }
 
-  const existingTotalBytes = existingFiles.reduce((sum, file) => sum + (file.size || 0), 0);
-  const selectedTotalBytes = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+  const existingTotalBytes = existingFiles.reduce(
+    (sum, file) => sum + (file.size || 0),
+    0,
+  );
+  const selectedTotalBytes = selectedFiles.reduce(
+    (sum, file) => sum + file.size,
+    0,
+  );
 
   if (existingTotalBytes + selectedTotalBytes > MAX_TOTAL_BYTES) {
     issues.push(copy.maxCombinedSize);
@@ -147,7 +158,9 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
   const pendingCount = useMemo(
     () =>
       files.filter(
-        (file) => file.status === ATTACHMENT_STATUSES.UPLOADING || file.status === ATTACHMENT_STATUSES.PENDING_SCAN,
+        (file) =>
+          file.status === ATTACHMENT_STATUSES.UPLOADING ||
+          file.status === ATTACHMENT_STATUSES.PENDING_SCAN,
       ).length,
     [files],
   );
@@ -205,7 +218,8 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
 
             return {
               ...currentFile,
-              status: statusById.get(currentFile.id) || ATTACHMENT_STATUSES.ATTACHED,
+              status:
+                statusById.get(currentFile.id) || ATTACHMENT_STATUSES.ATTACHED,
             };
           }),
         );
@@ -224,7 +238,9 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
   };
 
   const removeFile = (fileId) => {
-    setFiles((currentFiles) => currentFiles.filter((file) => file.id !== fileId));
+    setFiles((currentFiles) =>
+      currentFiles.filter((file) => file.id !== fileId),
+    );
   };
 
   return {
