@@ -62,6 +62,7 @@ export default defineConfig({
         index: path.resolve(__dirname, "app/assets/javascripts/index.js"),
         scheduler: path.resolve(__dirname, "app/assets/javascripts/scheduler/scheduler.js"),
         tiptap: path.resolve(__dirname, "app/assets/javascripts/tiptap/editor.js"),
+        attachments: path.resolve(__dirname, "app/assets/javascripts/attachments/attachments.js"),
       },
 
       output: {

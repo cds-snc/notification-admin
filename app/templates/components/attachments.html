@@ -1,0 +1,37 @@
+{% macro attachments_widget(mount_id, props={}, lang=None) %}
+  <div id="{{ mount_id }}"></div>
+  <script nonce="{{ request_nonce }}">
+    (function () {
+      var element = document.getElementById("{{ mount_id }}");
+      if (!element) {
+        return;
+      }
+
+      var props = Object.assign(
+        {
+          lang: {{ (lang or current_lang) | tojson }}
+        },
+        {{ props | tojson }}
+      );
+      function boot() {
+        if (window.Attachments) {
+          window.Attachments.load(element, props);
+        }
+      }
+
+      if (!window.attachmentsLoaded) {
+        var script = document.createElement("script");
+        script.type = "module";
+        script.src = "{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/attachments/attachments.js{% else %}{{ asset_url('javascripts/attachments.min.js') }}{% endif %}";
+        script.nonce = "{{ request_nonce }}";
+        script.onload = function () {
+          window.attachmentsLoaded = true;
+          boot();
+        };
+        document.head.appendChild(script);
+      } else {
+        boot();
+      }
+    })();
+  </script>
+{% endmacro %}
