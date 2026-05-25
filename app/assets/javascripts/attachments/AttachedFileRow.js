@@ -73,22 +73,12 @@ export const AttachedFileRow = ({
                 ></div>
               ) : null}
               <p className="min-w-0">
-                {isAttached ? (
-                  <a
-                    href="#"
-                    title={file.name}
-                    className="attachment-file-name-truncate"
-                  >
-                    {file.name}
-                  </a>
-                ) : (
-                  <span
-                    title={file.name}
-                    className="attachment-file-name-truncate"
-                  >
-                    {file.name}
-                  </span>
-                )}
+                <span
+                  title={file.name}
+                  className="attachment-file-name-truncate"
+                >
+                  {file.name}
+                </span>
               </p>
             </div>
           </div>
