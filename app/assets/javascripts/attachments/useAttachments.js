@@ -171,7 +171,9 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
         return;
       }
       callback();
-      timeoutIdsRef.current = timeoutIdsRef.current.filter((id) => id !== timeoutId);
+      timeoutIdsRef.current = timeoutIdsRef.current.filter(
+        (id) => id !== timeoutId,
+      );
     }, delay);
 
     timeoutIdsRef.current.push(timeoutId);

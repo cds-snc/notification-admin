@@ -30,7 +30,7 @@ export const AttachFilesModal = ({
     }
 
     previouslyFocusedElement.current = document.activeElement;
-  previousBodyOverflow.current = document.body.style.overflow;
+    previousBodyOverflow.current = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const dialogElement = dialogRef.current;
