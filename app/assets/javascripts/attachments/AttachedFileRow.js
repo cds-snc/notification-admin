@@ -16,7 +16,6 @@ export const AttachedFileRow = ({
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
     file.status === ATTACHMENT_STATUSES.PENDING_SCAN;
   const isMalware = file.status === ATTACHMENT_STATUSES.MALWARE;
-  const isAttached = file.status === ATTACHMENT_STATUSES.ATTACHED;
 
   return (
     <li
