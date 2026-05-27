@@ -41,7 +41,10 @@ li.attachment-file-row:after {
   max-height: 0;
   opacity: 0;
   transform: translateY(-6px);
-  transition: max-height 260ms ease, opacity 180ms ease, transform 220ms ease;
+  transition:
+    max-height 260ms ease,
+    opacity 180ms ease,
+    transform 220ms ease;
 }
 
 .attachments-panel--open {

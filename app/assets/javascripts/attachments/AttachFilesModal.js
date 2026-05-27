@@ -17,7 +17,6 @@ export const AttachFilesModal = ({
   const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
   const dialogRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
-  const previousBodyOverflow = useRef("");
 
   useEffect(() => {
     if (isOpen) {
@@ -46,8 +45,7 @@ export const AttachFilesModal = ({
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         ),
       ).filter((element) => !element.hasAttribute("disabled"));
-      };
-      
+    };
 
     const focusableElements = getFocusableElements();
     if (focusableElements.length > 0) {
@@ -175,7 +173,10 @@ export const AttachFilesModal = ({
               className="border border-gray-300 p-3 flex justify-between items-start align-top"
             >
               <div className="flex items-start min-w-0">
-                <div className="loading-spinner shrink-0 mr-3" data-testid="attachment-row-spinner" />
+                <div
+                  className="loading-spinner shrink-0 mr-3"
+                  data-testid="attachment-row-spinner"
+                />
                 <div className="min-w-0">
                   <span
                     className="attachment-file-name-truncate pr-4 mb-0 block"
