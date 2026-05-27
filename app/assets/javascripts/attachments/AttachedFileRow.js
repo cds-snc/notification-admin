@@ -52,7 +52,7 @@ export const AttachedFileRow = ({
           </div>
         </div>
       ) : (
-        <div className="flex justify-between gap-6 items-center">
+        <div className="flex justify-between gap-6 items-start">
           <div className="flex flex-col min-w-0">
             {isMalware ? (
               <p
@@ -65,13 +65,13 @@ export const AttachedFileRow = ({
             <div className="flex items-center min-w-0">
               {isInProgress ? (
                 <div
-                  className="loading-spinner shrink-0"
+                  className="loading-spinner shrink-0 mr-3"
                   role="status"
                   aria-label={copy.rowSpinnerAriaLabel}
                   data-testid="attachment-row-spinner"
                 ></div>
               ) : null}
-              <p className="min-w-0">
+              <p className="min-w-0 mb-0">
                 <span
                   title={file.name}
                   className="attachment-file-name-truncate"
@@ -83,7 +83,7 @@ export const AttachedFileRow = ({
           </div>
           <button
             type="button"
-            className="link text-red-700 shrink-0 inline-flex items-center gap-2"
+            className="link text-red-700 shrink-0 inline-flex items-center gap-2 self-start"
             data-testid="attachments-remove"
             onClick={() => onRequestRemove(file.id)}
           >

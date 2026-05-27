@@ -27,12 +27,12 @@ li.attachment-file-row:after {
 }
 
 .attachment-file-name-truncate {
-  display: inline-block;
+  display: block;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: bottom;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  word-break: break-word;
 }
 
 /* Inline panel open animation */

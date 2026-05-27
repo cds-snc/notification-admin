@@ -172,16 +172,21 @@ export const AttachFilesModal = ({
           {selectedFiles.map((pendingFile) => (
             <li
               key={pendingFile.id}
-              className="border border-gray-300 p-3 flex justify-between items-center align-middle"
+              className="border border-gray-300 p-3 flex justify-between items-start align-top"
             >
-              <span
-                className="attachment-file-name-truncate min-w-0 pr-4 mb-0"
-                title={pendingFile.file.name}
-              >
-                {pendingFile.file.name}
-              </span>
+              <div className="flex items-start min-w-0">
+                <div className="loading-spinner shrink-0 mr-3" data-testid="attachment-row-spinner" />
+                <div className="min-w-0">
+                  <span
+                    className="attachment-file-name-truncate pr-4 mb-0 block"
+                    title={pendingFile.file.name}
+                  >
+                    {pendingFile.file.name}
+                  </span>
+                </div>
+              </div>
               <button
-                className="link text-red-700"
+                className="link text-red-700 self-start"
                 type="button"
                 data-testid="attachments-pending-remove"
                 onClick={() => onRemovePending(pendingFile.id)}
