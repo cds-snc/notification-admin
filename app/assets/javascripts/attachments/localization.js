@@ -27,9 +27,9 @@ const en = {
   modalClassificationLinkText:
     "non-emergency, unclassified or Protected A information",
   modalAttachedFilesCanBe: "Attached files can be:",
-  modalTextDocuments: "- Text documents (.pdf, .doc, .docx, .odt, .rtf, .txt)",
-  modalDataDocuments: "- Spreadsheets and data (.xlsx, .csv, .json)",
-  modalImageDocuments: "- Images (.jpeg, .jpg, .png)",
+  modalTextDocuments: "Text documents (.pdf, .doc, .docx, .odt, .rtf, .txt)",
+  modalDataDocuments: "Spreadsheets and data (.xlsx, .csv, .json)",
+  modalImageDocuments: "Images (.jpeg, .jpg, .png)",
   modalChooseFiles: "Choose files",
   modalNoFilesSelected: "No files selected",
   modalFilesSelected: (count) =>
@@ -79,9 +79,9 @@ const fr = {
   modalClassificationLinkText:
     "renseignements non urgents, non classifiés ou de niveau protégé A",
   modalAttachedFilesCanBe: "Les fichiers joints sont des:",
-  modalTextDocuments: "- Documents texte (.pdf, .doc, .docx, .odt, .rtf, .txt)",
-  modalDataDocuments: "- Feuilles de calcul et données (.xlsx, .csv, .json)",
-  modalImageDocuments: "- Images (.jpeg, .jpg, .png)",
+  modalTextDocuments: "Documents texte (.pdf, .doc, .docx, .odt, .rtf, .txt)",
+  modalDataDocuments: "Feuilles de calcul et données (.xlsx, .csv, .json)",
+  modalImageDocuments: "Images (.jpeg, .jpg, .png)",
   modalChooseFiles: "Choisir des fichiers",
   modalNoFilesSelected: "Aucun fichier sélectionné",
   modalFilesSelected: (count) =>
