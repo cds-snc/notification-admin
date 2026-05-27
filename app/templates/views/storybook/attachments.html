@@ -26,7 +26,7 @@
 </script>
 
 <div class="space-y-10">
-  <div class="w-full max-w-[760px] border border-gray-300 p-8 bg-white">
+  <div class="w-full max-w-[760px] p-8 bg-white">
     <h3 class="heading-small mb-4">No files attached</h3>
     {{ attachments_widget(
         "storybook-attachments-empty",
@@ -40,7 +40,9 @@
     }}
   </div>
 
-  <div class="w-full max-w-[760px] border border-gray-300 p-8 bg-white">
+  <hr />
+
+  <div class="w-full max-w-[760px] p-8 bg-white">
     <h3 class="heading-small mb-4">Mixed in-progress and attached</h3>
     {{ attachments_widget(
         "storybook-attachments-in-progress",
@@ -66,8 +68,10 @@
       )
     }}
   </div>
+  
+  <hr />
 
-  <div class="w-full max-w-[760px] border border-gray-300 p-8 bg-white">
+  <div class="w-full max-w-[760px] p-8 bg-white">
     <h3 class="heading-small mb-4">Unsafe file state</h3>
     {{ attachments_widget(
         "storybook-attachments-malware",
@@ -94,7 +98,9 @@
     }}
   </div>
 
-  <div class="w-full max-w-[760px] border border-gray-300 p-8 bg-white">
+  <hr />
+
+  <div class="w-full max-w-[760px] p-8 bg-white">
     <h3 class="heading-small mb-4">Interactive status simulation</h3>
     <p class="hint mb-4">Attach files with names containing malware/virus or fail/error to simulate non-attached outcomes.</p>
     {{ attachments_widget(

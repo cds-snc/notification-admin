@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+// Render inline as an expanding panel instead of a portal/modal
 import { ACCEPT_ATTRIBUTE } from "./useAttachments";
 import { getAttachmentTranslations } from "./localization";
 
@@ -14,6 +14,7 @@ export const AttachFilesModal = ({
   onAttach,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
   const dialogRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
   const previousBodyOverflow = useRef("");
@@ -21,17 +22,18 @@ export const AttachFilesModal = ({
   useEffect(() => {
     if (isOpen) {
       setSelectedFiles([]);
+      // trigger open animation on next tick
+      setTimeout(() => setIsAnimatingOpen(true), 10);
     }
   }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
+      setIsAnimatingOpen(false);
       return undefined;
     }
 
     previouslyFocusedElement.current = document.activeElement;
-    previousBodyOverflow.current = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const dialogElement = dialogRef.current;
     const getFocusableElements = () => {
@@ -44,43 +46,13 @@ export const AttachFilesModal = ({
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         ),
       ).filter((element) => !element.hasAttribute("disabled"));
-    };
+      };
+      
 
     const focusableElements = getFocusableElements();
     if (focusableElements.length > 0) {
       focusableElements[0].focus();
     }
-
-    const keepFocusInsideDialog = (event) => {
-      if (!dialogElement) {
-        return;
-      }
-
-      if (dialogElement.contains(event.target)) {
-        return;
-      }
-
-      event.preventDefault();
-      const activeFocusableElements = getFocusableElements();
-      if (activeFocusableElements.length > 0) {
-        activeFocusableElements[0].focus();
-      } else {
-        dialogElement.focus();
-      }
-    };
-
-    const blockPointerOutsideDialog = (event) => {
-      if (!dialogElement) {
-        return;
-      }
-
-      if (dialogElement.contains(event.target)) {
-        return;
-      }
-
-      event.preventDefault();
-      event.stopPropagation();
-    };
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -111,18 +83,9 @@ export const AttachFilesModal = ({
     };
 
     document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("focusin", keepFocusInsideDialog, true);
-    document.addEventListener("pointerdown", blockPointerOutsideDialog, true);
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("focusin", keepFocusInsideDialog, true);
-      document.removeEventListener(
-        "pointerdown",
-        blockPointerOutsideDialog,
-        true,
-      );
-      document.body.style.overflow = previousBodyOverflow.current;
 
       if (
         previouslyFocusedElement.current &&
@@ -156,124 +119,115 @@ export const AttachFilesModal = ({
     onAttach(selectedFiles.map((pendingFile) => pendingFile.file));
   };
 
-  return createPortal(
+  return (
     <div
-      className="fixed inset-0 bg-gray-900/40 z-30"
-      role="dialog"
-      aria-modal="true"
+      ref={dialogRef}
+      tabIndex="-1"
+      role="region"
       aria-labelledby="attachments-modal-title"
-      data-testid="attachments-modal"
+      data-testid="attachments-panel"
+      className={`bg-white w-full max-w-[720px] p-6 shadow-sm text-base mt-4 attachments-panel border border-gray-300 ${
+        isAnimatingOpen ? "attachments-panel--open" : ""
+      }`}
     >
-      <div
-        ref={dialogRef}
-        tabIndex="-1"
-        className="bg-white w-[95%] max-w-[720px] mx-auto mt-16 p-8 border border-gray-300 shadow-lg text-base"
-      >
-        <h2 id="attachments-modal-title" className="heading-large mb-4">
-          {copy.modalTitle}
-        </h2>
-        <p>{copy.modalIntro}</p>
-        <p>
-          {copy.modalClassificationPrefix}{" "}
-          <a href={classificationUrl}>{copy.modalClassificationLinkText}</a>.
+      <h2 id="attachments-modal-title" className="heading-large mb-4">
+        {copy.modalTitle}
+      </h2>
+      <p>{copy.modalIntro}</p>
+      <p>
+        {copy.modalClassificationPrefix}{" "}
+        <a href={classificationUrl}>{copy.modalClassificationLinkText}</a>.
+      </p>
+
+      <ul className="list list-bullet ml-5">
+        <li>{copy.modalAttachedFilesCanBe}</li>
+        <li>{copy.modalTextDocuments}</li>
+        <li>{copy.modalDataDocuments}</li>
+        <li>{copy.modalImageDocuments}</li>
+      </ul>
+
+      <div className="border-l-4 border-gray-300 mb-4">
+        <label className="file-field pl-4 py-2 block mb-4">
+          <span className="button button-secondary">
+            {copy.modalChooseFiles}
+          </span>
+          <input
+            type="file"
+            multiple
+            accept={ACCEPT_ATTRIBUTE}
+            className="hidden"
+            data-testid="attachments-file-input"
+            onChange={onChange}
+          />
+        </label>
+
+        <p className="mb-2 pl-4">
+          {selectedFiles.length
+            ? copy.modalFilesSelected(selectedFiles.length)
+            : copy.modalNoFilesSelected}
         </p>
-
-        <ul class="list list-bullet ml-5">
-          <li>{copy.modalAttachedFilesCanBe}</li>
-          <li>{copy.modalTextDocuments}</li>
-          <li>{copy.modalDataDocuments}</li>
-          <li>{copy.modalImageDocuments}</li>
-        </ul>
-
-        <div className="border-l-4 border-gray-300 mb-4">
-          <label className="file-field pl-4 py-2 block mb-4">
-            <span className="button button-secondary">
-              {copy.modalChooseFiles}
-            </span>
-            <input
-              type="file"
-              multiple
-              accept={ACCEPT_ATTRIBUTE}
-              className="hidden"
-              data-testid="attachments-file-input"
-              onChange={onChange}
-            />
-          </label>
-
-          <p className="mb-2 pl-4">
-            {selectedFiles.length
-              ? copy.modalFilesSelected(selectedFiles.length)
-              : copy.modalNoFilesSelected}
-          </p>
-        </div>
-        {selectedFiles.length > 0 && (
-          <ul className="space-y-2 mb-4" data-testid="pending-files-list">
-            {selectedFiles.map((pendingFile) => (
-              <li
-                key={pendingFile.id}
-                className="border border-gray-300 p-3 flex justify-between items-center align-middle"
+      </div>
+      {selectedFiles.length > 0 && (
+        <ul className="space-y-2 mb-4" data-testid="pending-files-list">
+          {selectedFiles.map((pendingFile) => (
+            <li
+              key={pendingFile.id}
+              className="border border-gray-300 p-3 flex justify-between items-center align-middle"
+            >
+              <span
+                className="attachment-file-name-truncate min-w-0 pr-4 mb-0"
+                title={pendingFile.file.name}
               >
-                <span
-                  className="min-w-0 pr-4 mb-0"
-                  title={pendingFile.file.name}
-                  style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {pendingFile.file.name}
-                </span>
-                <button
-                  className="link text-red-700"
-                  type="button"
-                  data-testid="attachments-pending-remove"
-                  onClick={() => onRemovePending(pendingFile.id)}
-                >
-                  <span className="font-bold underline">{copy.remove}</span>
-                  <span aria-hidden="true">&nbsp;×</span>
-                </button>
-              </li>
+                {pendingFile.file.name}
+              </span>
+              <button
+                className="link text-red-700"
+                type="button"
+                data-testid="attachments-pending-remove"
+                onClick={() => onRemovePending(pendingFile.id)}
+              >
+                <span className="font-bold underline">{copy.remove}</span>
+                <span aria-hidden="true">&nbsp;×</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {issues.length > 0 && (
+        <div
+          className="banner-dangerous p-4 mb-4"
+          role="alert"
+          data-testid="attach-validation-errors"
+        >
+          <ul className="list list-bullet">
+            {issues.map((issue) => (
+              <li key={issue}>{issue}</li>
             ))}
           </ul>
-        )}
-
-        {issues.length > 0 && (
-          <div
-            className="banner-dangerous p-4 mb-4"
-            role="alert"
-            data-testid="attach-validation-errors"
-          >
-            <ul className="list list-bullet">
-              {issues.map((issue) => (
-                <li key={issue}>{issue}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <p className="mt-10">{copy.modalScanNotice}</p>
-
-        <div className="flex gap-4 items-center">
-          <button
-            type="button"
-            className="button"
-            data-testid="attachments-submit"
-            onClick={submit}
-          >
-            {copy.modalAttachToTemplate}
-          </button>
-          <button
-            type="button"
-            className="button button-secondary text-base"
-            data-testid="attachments-cancel"
-            onClick={onClose}
-          >
-            {copy.cancel}
-          </button>
         </div>
+      )}
+
+      <p className="mt-10">{copy.modalScanNotice}</p>
+
+      <div className="flex gap-4 items-center">
+        <button
+          type="button"
+          className="button"
+          data-testid="attachments-submit"
+          onClick={submit}
+        >
+          {copy.modalAttachToTemplate}
+        </button>
+        <button
+          type="button"
+          className="button button-secondary text-base"
+          data-testid="attachments-cancel"
+          onClick={onClose}
+        >
+          {copy.cancel}
+        </button>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 };
