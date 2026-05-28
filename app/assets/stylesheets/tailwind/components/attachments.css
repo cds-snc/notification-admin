@@ -27,7 +27,6 @@ li.attachment-file-row:after {
 }
 
 .attachment-file-name-truncate {
-  display: block;
   max-width: 100%;
   overflow: visible;
   text-overflow: unset;
