@@ -18,6 +18,7 @@ export const AttachFilesModal = ({
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
   const dialogRef = useRef(null);
+  const headingRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
 
   useEffect(() => {
@@ -36,57 +37,11 @@ export const AttachFilesModal = ({
 
     previouslyFocusedElement.current = document.activeElement;
 
-    const dialogElement = dialogRef.current;
-    const getFocusableElements = () => {
-      if (!dialogElement) {
-        return [];
-      }
-
-      return Array.from(
-        dialogElement.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-        ),
-      ).filter((element) => !element.hasAttribute("disabled"));
-    };
-
-    const focusableElements = getFocusableElements();
-    if (focusableElements.length > 0) {
-      focusableElements[0].focus();
+    if (headingRef.current && headingRef.current.focus) {
+      headingRef.current.focus();
     }
 
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (event.key !== "Tab") {
-        return;
-      }
-
-      const activeFocusableElements = getFocusableElements();
-      if (!activeFocusableElements.length) {
-        return;
-      }
-
-      const first = activeFocusableElements[0];
-      const last = activeFocusableElements[activeFocusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
-
       if (
         previouslyFocusedElement.current &&
         previouslyFocusedElement.current.focus
@@ -127,6 +82,13 @@ export const AttachFilesModal = ({
     onAttach(selectedFiles.map((pendingFile) => pendingFile.file));
   };
 
+  const onPanelKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onClose();
+    }
+  };
+
   return (
     <div
       ref={dialogRef}
@@ -134,11 +96,17 @@ export const AttachFilesModal = ({
       role="region"
       aria-labelledby="attachments-modal-title"
       data-testid="attachments-panel"
+      onKeyDown={onPanelKeyDown}
       className={`bg-white w-full max-w-[720px] p-6 shadow-sm text-base mt-4 attachments-panel border border-gray-300 ${
         isAnimatingOpen ? "attachments-panel--open" : ""
       }`}
     >
-      <h2 id="attachments-modal-title" className="heading-large mb-4">
+      <h2
+        ref={headingRef}
+        id="attachments-modal-title"
+        className="heading-large mb-4"
+        tabIndex="-1"
+      >
         {copy.modalTitle}
       </h2>
       <p>{copy.modalIntro}</p>
@@ -154,22 +122,25 @@ export const AttachFilesModal = ({
         <li>{copy.modalImageDocuments}</li>
       </ul>
 
-      <div className="border-l-4 border-gray-300 mb-4">
-        <label className="file-field pl-4 py-2 block mb-4">
-          <span className="button button-secondary">
-            {copy.modalChooseFiles}
-          </span>
-          <input
-            type="file"
-            multiple
-            accept={ACCEPT_ATTRIBUTE}
-            className="hidden"
-            data-testid="attachments-file-input"
-            onChange={onChange}
-          />
+      <div className="file-upload-group relative inline-flex flex-col gap-2 items-start mb-4">
+        <input
+          id="attachments-file-input"
+          type="file"
+          name="attachments"
+          multiple
+          accept={ACCEPT_ATTRIBUTE}
+          className="file-upload-field"
+          data-testid="attachments-file-input"
+          onChange={onChange}
+        />
+        <label
+          htmlFor="attachments-file-input"
+          className="file-upload-button button button-secondary"
+        >
+          {copy.modalChooseFiles}
         </label>
 
-        <p className="mb-2 pl-4">
+        <p className="mb-2">
           {selectedFiles.length
             ? copy.modalFilesSelected(selectedFiles.length)
             : copy.modalNoFilesSelected}

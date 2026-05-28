@@ -76,14 +76,47 @@ describe("Attachments component", () => {
       .should("not.exist");
   });
 
-  it("closes modal with Escape and keeps focus in modal while open", () => {
+  it("focuses the panel header when opened and closes with Escape", () => {
     Attachments.openModal("attachments-empty");
 
-    Components.Modal().should("be.visible");
-    cy.get("body").click(0, 0);
-    cy.focused().closest('[data-testid="attachments-modal"]').should("exist");
+    Components.Panel().should("be.visible");
+    cy.focused().should("have.id", "attachments-modal-title");
 
     Attachments.pressEscape();
-    Components.Modal().should("not.exist");
+    Components.Panel().should("not.exist");
+  });
+
+  it("does not show a loading indicator for selected (not yet attached) files", () => {
+    Attachments.openModal("attachments-empty");
+
+    Attachments.selectFiles({
+      contents: Cypress.Buffer.from("pending-file-content"),
+      fileName: "pending-only.pdf",
+      mimeType: "application/pdf",
+    });
+
+    Components.PendingList().contains("pending-only.pdf").should("exist");
+    Components.PendingRowSpinner().should("not.exist");
+  });
+
+  it("skips invalid selected files and keeps valid ones in pending list", () => {
+    Attachments.openModal("attachments-empty");
+
+    Attachments.selectFiles([
+      {
+        contents: Cypress.Buffer.from("bad"),
+        fileName: "bad(name).pdf",
+        mimeType: "application/pdf",
+      },
+      {
+        contents: Cypress.Buffer.from("good"),
+        fileName: "good-file.pdf",
+        mimeType: "application/pdf",
+      },
+    ]);
+
+    Components.ValidationErrors().contains("bad(name).pdf cannot contain parentheses.").should("exist");
+    Components.PendingList().contains("good-file.pdf").should("exist");
+    Components.PendingList().contains("bad(name).pdf").should("not.exist");
   });
 });
