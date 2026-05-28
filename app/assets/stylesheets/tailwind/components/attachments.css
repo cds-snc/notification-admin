@@ -33,6 +33,9 @@ li.attachment-file-row:after {
   white-space: normal;
   word-break: break-word;
 }
+.banner-dangerous .attachment-file-name-truncate {
+  font-weight: bold;
+}
 
 /* Inline panel open animation */
 .attachments-panel {
