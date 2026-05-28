@@ -48,7 +48,9 @@ li.attachment-file-row:after {
 }
 
 .attachments-panel--open {
-  max-height: 1200px; /* large enough for content */
+  /* Keep the open animation while allowing long file lists to fully render. */
+  max-height: 10000px;
   opacity: 1;
   transform: translateY(0);
+  overflow: visible;
 }
