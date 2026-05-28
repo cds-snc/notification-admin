@@ -80,6 +80,10 @@ export const AttachmentsWidget = ({
         issues={validationIssues}
         copy={copy}
         classificationUrl={classificationUrl}
+        onIssuesChange={setValidationIssues}
+        onValidateSelection={(selectedFiles) =>
+          validateFiles(selectedFiles, files, copy)
+        }
         onClose={() => {
           setAttachModalOpen(false);
           setValidationIssues([]);

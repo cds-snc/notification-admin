@@ -10,6 +10,8 @@ export const AttachFilesModal = ({
   issues,
   copy = DEFAULT_COPY,
   classificationUrl = "#",
+  onIssuesChange,
+  onValidateSelection,
   onClose,
   onAttach,
 }) => {
@@ -100,7 +102,15 @@ export const AttachFilesModal = ({
 
   const onChange = (event) => {
     const files = Array.from(event.target.files || []);
-    const normalizedFiles = files.map((file, index) => ({
+    const validation = onValidateSelection
+      ? onValidateSelection(files)
+      : { acceptedFiles: files, issues: [] };
+
+    if (typeof onIssuesChange === "function") {
+      onIssuesChange(validation.issues);
+    }
+
+    const normalizedFiles = validation.acceptedFiles.map((file, index) => ({
       id: `${file.name}-${file.size}-${file.lastModified || 0}-${index}`,
       file,
     }));
@@ -172,19 +182,13 @@ export const AttachFilesModal = ({
               key={pendingFile.id}
               className="border border-gray-300 p-3 flex justify-between items-start align-top"
             >
-              <div className="flex items-start min-w-0">
-                <div
-                  className="loading-spinner shrink-0 mr-3"
-                  data-testid="attachment-row-spinner"
-                />
-                <div className="min-w-0">
-                  <span
-                    className="attachment-file-name-truncate pr-4 mb-0 block"
-                    title={pendingFile.file.name}
-                  >
-                    {pendingFile.file.name}
-                  </span>
-                </div>
+              <div className="min-w-0 pr-4">
+                <span
+                  className="attachment-file-name-truncate mb-0 block"
+                  title={pendingFile.file.name}
+                >
+                  {pendingFile.file.name}
+                </span>
               </div>
               <button
                 className="link text-red-700 self-start"
