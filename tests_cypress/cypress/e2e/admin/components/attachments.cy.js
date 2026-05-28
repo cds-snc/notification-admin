@@ -115,7 +115,9 @@ describe("Attachments component", () => {
       },
     ]);
 
-    Components.ValidationErrors().contains("bad(name).pdf cannot contain parentheses.").should("exist");
+    Components.ValidationErrors()
+      .contains("bad(name).pdf cannot contain parentheses.")
+      .should("exist");
     Components.PendingList().contains("good-file.pdf").should("exist");
     Components.PendingList().contains("bad(name).pdf").should("not.exist");
   });
