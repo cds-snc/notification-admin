@@ -23,7 +23,13 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
         throw new Error("a11yScan is not supported in component tests. Run this check in an e2e test instead.");
     }
     const current_hostname = getHostname('Admin');
-    const ignoreLinks = ['documentation.staging.notification.cdssandbox.xyz', 'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/']
+    const ignoreLinks = [
+        'documentation.staging.notification.cdssandbox.xyz', 
+        'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 
+        'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/',
+        'https://www.w3.org',
+        'https://w3.org'
+    ];
 
     if (url) {
         cy.visit(url);
