@@ -43,7 +43,7 @@ export const AttachedFileRow = ({
       {isConfirmingRemoval ? (
         <div className="p-4" role="alert">
           <p className="heading-small mt-0 mb-3">{copy.removeConfirmTitle}</p>
-          {!isMalware ? (
+          {canDownload ? (
             <p className="mb-3 mt-0">
               {copy.removeConfirmBodyPrefix} '{fileNameNode}'{" "}
               {copy.removeConfirmBodySuffix}
@@ -97,8 +97,8 @@ export const AttachedFileRow = ({
             data-testid="attachments-remove"
             onClick={() => onRequestRemove(file.id)}
           >
-            <span className="underline">{copy.remove}</span>
-            <span aria-hidden="true">×</span>
+            <span className="font-bold underline">{copy.remove}</span>
+            <span className="text-[24px]" aria-hidden="true">×</span>
           </button>
         </div>
       )}

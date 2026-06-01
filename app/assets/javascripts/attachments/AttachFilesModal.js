@@ -217,7 +217,7 @@ export const AttachFilesModal = ({
                 onClick={() => onRemovePending(pendingFile.id)}
               >
                 <span className="font-bold underline">{copy.remove}</span>
-                <span aria-hidden="true">&nbsp;×</span>
+                <span className="text-[24px]" aria-hidden="true">&nbsp;×</span>
               </button>
             </li>
           ))}
