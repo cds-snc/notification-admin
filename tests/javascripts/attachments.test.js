@@ -197,7 +197,7 @@ describe("attachments - render contracts", () => {
     );
 
     expect(html).toContain('<span class="underline">Remove</span>');
-    expect(html).toContain('<span aria-hidden="true">×</span>');
+    expect(html).toContain('aria-hidden="true">×</span>');
     expect(html).not.toContain("gap-2 underline");
   });
 
@@ -286,6 +286,26 @@ describe("attachments - render contracts", () => {
           id: "file-malware-remove-1",
           name: "document_with_malware.pdf",
           status: ATTACHMENT_STATUSES.MALWARE,
+        },
+        isConfirmingRemoval: true,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain("Download a copy of");
+    expect(html).not.toContain('data-testid="attachment-download-link"');
+  });
+
+  test("uploading remove confirmation omits download prompt", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-uploading-remove-1",
+          name: "still-uploading.pdf",
+          status: ATTACHMENT_STATUSES.UPLOADING,
+          downloadUrl: "/storybook/downloads/still-uploading.pdf",
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},

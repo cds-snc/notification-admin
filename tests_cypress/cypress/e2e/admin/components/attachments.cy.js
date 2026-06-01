@@ -121,6 +121,18 @@ describe("Attachments component", () => {
       .should("not.exist");
   });
 
+  it("does not show download prompt when removing an in-progress file", () => {
+    Components.List("attachments-in-progress")
+      .contains("Filename.pdf")
+      .should("exist");
+
+    Attachments.removeByFilename("attachments-in-progress", "Filename.pdf");
+
+    Components.Root("attachments-in-progress")
+      .contains("Download a copy of")
+      .should("not.exist");
+  });
+
   it("focuses the panel header when opened and closes with Escape", () => {
     Attachments.openModal("attachments-empty");
 
