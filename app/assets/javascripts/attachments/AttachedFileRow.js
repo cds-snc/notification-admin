@@ -16,23 +16,40 @@ export const AttachedFileRow = ({
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
     file.status === ATTACHMENT_STATUSES.PENDING_SCAN;
   const isMalware = file.status === ATTACHMENT_STATUSES.MALWARE;
+  const downloadHref = file.downloadUrl || file.download_url || file.url;
+  const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
+
+  const fileNameNode = canDownload ? (
+    <a
+      href={downloadHref}
+      download={file.name}
+      className="attachment-file-name-truncate"
+      title={file.name}
+      data-testid="attachment-download-link"
+    >
+      {file.name}
+    </a>
+  ) : (
+    <span title={file.name} className="attachment-file-name-truncate">
+      {file.name}
+    </span>
+  );
 
   return (
     <li
-      className={`attachment-file-row border border-gray-300 p-3 mb-2${isMalware ? " bg-gray-100" : ""}`}
+      className={`attachment-file-row border border-gray-300 p-3 mb-2${isMalware ? " bg-gray-100" : ""}${isConfirmingRemoval ? " border-red" : ""}`}
       data-testid="attached-file-row"
     >
       {isConfirmingRemoval ? (
-        <div className="banner-dangerous p-4" role="alert">
-          <p className="heading-small">{copy.removeConfirmTitle}</p>
-          <p className="mb-3">
-            {copy.removeConfirmBodyPrefix}{" "}
-            <span title={file.name} className="attachment-file-name-truncate">
-              '{file.name}'
-            </span>{" "}
-            {copy.removeConfirmBodySuffix}
-          </p>
-          <div className="flex gap-4">
+        <div className="p-4" role="alert">
+          <p className="heading-small mt-0 mb-3">{copy.removeConfirmTitle}</p>
+          {!isMalware ? (
+            <p className="mb-3 mt-0">
+              {copy.removeConfirmBodyPrefix} '{fileNameNode}'{" "}
+              {copy.removeConfirmBodySuffix}
+            </p>
+          ) : null}
+          <div className="flex gap-4 mt-6">
             <button
               type="button"
               className="button button-red"
@@ -71,14 +88,7 @@ export const AttachedFileRow = ({
                   data-testid="attachment-row-spinner"
                 ></div>
               ) : null}
-              <p className="min-w-0 mb-0">
-                <span
-                  title={file.name}
-                  className="attachment-file-name-truncate"
-                >
-                  {file.name}
-                </span>
-              </p>
+              <p className="min-w-0 mb-0">{fileNameNode}</p>
             </div>
           </div>
           <button

@@ -20,7 +20,10 @@
         return { status: "upload-failed" };
       }
 
-      return { status: "attached" };
+      return {
+        status: "attached",
+        downloadUrl: "/storybook/downloads/" + encodeURIComponent(file.name)
+      };
     });
   };
 </script>
@@ -58,7 +61,8 @@
               "id": "storybook-progress-2",
               "name": "Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf",
               "size": 170000,
-              "status": "attached"
+              "status": "attached",
+              "downloadUrl": "/storybook/downloads/Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf"
             }
           ],
           "onAttachFilesHandler": "storybookAttachmentsNoop",
@@ -87,7 +91,8 @@
               "id": "storybook-malware-2",
               "name": "safe_permit.pdf",
               "size": 260000,
-              "status": "attached"
+              "status": "attached",
+              "downloadUrl": "/storybook/downloads/safe_permit.pdf"
             }
           ],
           "onAttachFilesHandler": "storybookAttachmentsNoop",
@@ -111,7 +116,8 @@
               "id": "storybook-interactive-1",
               "name": "already_attached_notice.pdf",
               "size": 220000,
-              "status": "attached"
+              "status": "attached",
+              "downloadUrl": "/storybook/downloads/already_attached_notice.pdf"
             }
           ],
           "onAttachFilesHandler": "storybookAttachmentsSimulatedResults",

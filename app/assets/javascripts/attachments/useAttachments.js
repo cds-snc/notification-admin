@@ -155,6 +155,7 @@ export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
 export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
   const [files, setFiles] = useState(initialFiles);
   const timeoutIdsRef = useRef([]);
+  const objectUrlsRef = useRef(new Set());
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -162,8 +163,35 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
       isMountedRef.current = false;
       timeoutIdsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
       timeoutIdsRef.current = [];
+      objectUrlsRef.current.forEach((url) => {
+        if (typeof URL !== "undefined" && URL.revokeObjectURL) {
+          URL.revokeObjectURL(url);
+        }
+      });
+      objectUrlsRef.current.clear();
     };
   }, []);
+
+  const resolveDownloadInfo = (resultItem, sourceFile) => {
+    const providedDownloadUrl =
+      resultItem?.downloadUrl || resultItem?.download_url || resultItem?.url;
+
+    if (providedDownloadUrl) {
+      return { downloadUrl: providedDownloadUrl, isObjectUrl: false };
+    }
+
+    if (
+      sourceFile &&
+      typeof URL !== "undefined" &&
+      typeof URL.createObjectURL === "function"
+    ) {
+      const objectUrl = URL.createObjectURL(sourceFile);
+      objectUrlsRef.current.add(objectUrl);
+      return { downloadUrl: objectUrl, isObjectUrl: true };
+    }
+
+    return { downloadUrl: undefined, isObjectUrl: false };
+  };
 
   const schedule = (callback, delay) => {
     const timeoutId = setTimeout(() => {
@@ -196,6 +224,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
       name: file.name,
       size: file.size,
       status: ATTACHMENT_STATUSES.UPLOADING,
+      sourceFile: file,
     }));
 
     if (!prepared.length) {
@@ -223,16 +252,38 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
         callbackResult = await onAttachFiles(selectedFiles);
       }
 
-      const statusById = new Map();
+      const resultById = new Map();
       if (Array.isArray(callbackResult)) {
         callbackResult.forEach((item, index) => {
           const preparedFile = prepared[index];
           if (!preparedFile) {
             return;
           }
-          statusById.set(preparedFile.id, normalizeStatus(item?.status));
+
+          const status = normalizeStatus(item?.status);
+          const downloadInfo =
+            status === ATTACHMENT_STATUSES.ATTACHED
+              ? resolveDownloadInfo(item, preparedFile.sourceFile)
+              : { downloadUrl: undefined, isObjectUrl: false };
+
+          resultById.set(preparedFile.id, {
+            status,
+            ...downloadInfo,
+          });
         });
       }
+
+      prepared.forEach((preparedFile) => {
+        if (resultById.has(preparedFile.id)) {
+          return;
+        }
+
+        const downloadInfo = resolveDownloadInfo(null, preparedFile.sourceFile);
+        resultById.set(preparedFile.id, {
+          status: ATTACHMENT_STATUSES.ATTACHED,
+          ...downloadInfo,
+        });
+      });
 
       schedule(() => {
         setFiles((currentFiles) =>
@@ -241,10 +292,19 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
               return currentFile;
             }
 
+            const resolvedResult = resultById.get(currentFile.id) || {
+              status: ATTACHMENT_STATUSES.ATTACHED,
+              downloadUrl: undefined,
+              isObjectUrl: false,
+            };
+
             return {
               ...currentFile,
-              status:
-                statusById.get(currentFile.id) || ATTACHMENT_STATUSES.ATTACHED,
+              status: resolvedResult.status,
+              downloadUrl:
+                resolvedResult.downloadUrl || currentFile.downloadUrl,
+              isObjectUrl: resolvedResult.isObjectUrl,
+              sourceFile: undefined,
             };
           }),
         );
@@ -254,7 +314,11 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
         setFiles((currentFiles) =>
           currentFiles.map((currentFile) =>
             preparedIds.has(currentFile.id)
-              ? { ...currentFile, status: ATTACHMENT_STATUSES.UPLOAD_FAILED }
+              ? {
+                  ...currentFile,
+                  status: ATTACHMENT_STATUSES.UPLOAD_FAILED,
+                  sourceFile: undefined,
+                }
               : currentFile,
           ),
         );
@@ -263,9 +327,21 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
   };
 
   const removeFile = (fileId) => {
-    setFiles((currentFiles) =>
-      currentFiles.filter((file) => file.id !== fileId),
-    );
+    setFiles((currentFiles) => {
+      const fileToRemove = currentFiles.find((file) => file.id === fileId);
+
+      if (
+        fileToRemove?.isObjectUrl &&
+        fileToRemove.downloadUrl &&
+        typeof URL !== "undefined" &&
+        URL.revokeObjectURL
+      ) {
+        URL.revokeObjectURL(fileToRemove.downloadUrl);
+        objectUrlsRef.current.delete(fileToRemove.downloadUrl);
+      }
+
+      return currentFiles.filter((file) => file.id !== fileId);
+    });
   };
 
   return {
