@@ -1,6 +1,6 @@
 ---
 name: tailwind-authoring-notify-admin
-description: 'Authors Tailwind/CSS changes in notification-admin — utilities-first markup, `@apply` for reused semantic classes, theme tokens, and safelist updates. Use this skill whenever the user asks to "style this", "add a class", "update CSS", "use @apply", "tailwind not picking up my class", "add to safelist", or is editing files under app/assets/stylesheets/ or tailwind.config.js, even if Tailwind isn\'t explicitly mentioned.'
+description: 'Authors Tailwind/CSS changes in notification-admin — utilities-first markup, `@apply` for reused semantic classes, theme tokens, and safelist updates. Use this skill whenever the user asks to "style this", "add a class", "update CSS", "use @apply", "tailwind not picking up my class", "add to safelist", or is editing files under app/assets/stylesheets/ or tailwind.config.js, even if Tailwind isn''t explicitly mentioned.'
 argument-hint: 'Describe the component/page styling change and whether classes are static or runtime-generated.'
 ---
 
