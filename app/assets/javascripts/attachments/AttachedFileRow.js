@@ -98,7 +98,9 @@ export const AttachedFileRow = ({
             onClick={() => onRequestRemove(file.id)}
           >
             <span className="font-bold underline">{copy.remove}</span>
-            <span className="text-[24px]" aria-hidden="true">×</span>
+            <span className="text-[24px]" aria-hidden="true">
+              ×
+            </span>
           </button>
         </div>
       )}
