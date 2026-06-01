@@ -51,6 +51,55 @@ export const AttachFilesModal = ({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (!isOpen || !isAnimatingOpen || !dialogRef.current) {
+      return undefined;
+    }
+
+    const panel = dialogRef.current;
+    let frameId;
+    const startTime = performance.now();
+    const maxFollowDurationMs = 1400;
+    let stableFrames = 0;
+
+    // Keep the expanding panel in view while max-height animation runs.
+    const scrollWithAnimation = () => {
+      if (!panel.isConnected) {
+        return;
+      }
+
+      const rect = panel.getBoundingClientRect();
+      const viewportPadding = 16;
+      const bottomOverflow = rect.bottom - window.innerHeight + viewportPadding;
+
+      if (bottomOverflow > 0) {
+        stableFrames = 0;
+        const step = Math.min(48, Math.max(14, bottomOverflow * 0.35));
+        window.scrollBy({
+          top: step,
+          behavior: "auto",
+        });
+      } else {
+        stableFrames += 1;
+      }
+
+      if (
+        performance.now() - startTime < maxFollowDurationMs &&
+        stableFrames < 2
+      ) {
+        frameId = window.requestAnimationFrame(scrollWithAnimation);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(scrollWithAnimation);
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, [isOpen, isAnimatingOpen]);
+
   if (!isOpen) {
     return null;
   }
