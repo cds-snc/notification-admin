@@ -1,6 +1,6 @@
 ---
 name: a11y-gov-ui-review
-description: 'Reviews Flask/Jinja and React UI changes for accessibility against WCAG 2.1 AA with full keyboard support. Use this skill whenever the user asks "is this accessible", "check a11y", "keyboard navigation", "screen reader", "WCAG", "add labels", "focus order", or is changing forms, modals, tables, navigation, or other interactive markup — even if accessibility isn\'t explicitly mentioned.'
+description: 'Reviews Flask/Jinja and React UI changes for accessibility against WCAG 2.1 AA with full keyboard support. Use this skill whenever the user asks "is this accessible", "check a11y", "keyboard navigation", "screen reader", "WCAG", "add labels", "focus order", or is changing forms, modals, tables, navigation, or other interactive markup — even if accessibility isn''t explicitly mentioned.'
 argument-hint: 'Describe the UI change and whether to review templates, React components, or both.'
 ---
 

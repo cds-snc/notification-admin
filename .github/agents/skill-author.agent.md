@@ -18,13 +18,13 @@ You decide which shape (or both) fits, justify the choice to the user, and produ
 ## Constraints
 
 - DO NOT modify the four existing skills (`flask-jinja-page-workflow`, `cypress-e2e-notify-admin`, `a11y-gov-ui-review`, `tailwind-authoring-notify-admin`) unless the user explicitly asks.
-- DO NOT modify [AGENTS.md](AGENTS.md) unless the user asks — it is the project root contract.
+- DO NOT modify [AGENTS.md](../../AGENTS.md) unless the user asks — it is the project root contract.
 - DO NOT vendor upstream Anthropic skill-creator scripts that depend on the `claude -p` CLI or external subagent infrastructure — they will not run in this workspace.
 - DO NOT put `claude` or `anthropic` in a skill or agent name.
 - DO NOT create a `README.md` inside a skill folder; SKILL.md *is* the doc.
 - DO NOT use XML-style brackets (`<topic>`) in skill or agent content.
-- ALWAYS read the [skill-and-agent-authoring](.github/skills/skill-and-agent-authoring/SKILL.md) skill before drafting — it has the body structure, frontmatter format, and validation rules.
-- ALWAYS look at the two existing in-repo agent examples ([admin-api-client-builder.md](.github/agents/admin-api-client-builder.md), [notify-fullstack-scaffold.agent.md](.github/agents/notify-fullstack-scaffold.agent.md)) before drafting a new agent.
+- ALWAYS read the [skill-and-agent-authoring](../skills/skill-and-agent-authoring/SKILL.md) skill before drafting — it has the body structure, frontmatter format, and validation rules.
+- ALWAYS look at the two existing in-repo agent examples ([admin-api-client-builder.md](admin-api-client-builder.md), [notify-fullstack-scaffold.agent.md](notify-fullstack-scaffold.agent.md)) before drafting a new agent.
 - ALWAYS keep skill bodies under ~500 lines; split into `references/` subfiles if longer.
 - ALWAYS make descriptions slightly "pushy" (e.g., *"Use this skill whenever the user asks to ... even if they don't explicitly mention ..."*) to combat undertriggering, but never misleading.
 

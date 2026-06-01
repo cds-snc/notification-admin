@@ -1,6 +1,6 @@
 ---
 name: flask-jinja-page-workflow
-description: 'Adds or updates server-rendered Flask + Jinja pages in notification-admin — routes, views, forms, templates, partials, and matching tests. Use this skill whenever the user asks to "add a route", "new page", "new view", "wire up a form", "update this Jinja template", "add a partial", or is touching files under app/main/views/ or app/templates/, even if they don\'t explicitly mention Flask or Jinja.'
+description: 'Adds or updates server-rendered Flask + Jinja pages in notification-admin — routes, views, forms, templates, partials, and matching tests. Use this skill whenever the user asks to "add a route", "new page", "new view", "wire up a form", "update this Jinja template", "add a partial", or is touching files under app/main/views/ or app/templates/, even if they don''t explicitly mention Flask or Jinja.'
 argument-hint: 'Describe the page or flow to add/change, route path, and permission requirements.'
 ---
 

@@ -29,19 +29,19 @@ argument-hint: 'Describe the flow to cover, the page(s) involved, and whether ne
 - Repo guide: tests_cypress/README.md
 
 ## Conventions
-- Use the Page Object Model. A page module exports two objects:
-  - `Components` — selector functions returning `cy.get(...)`
+- Use the Page Object Model. Existing page modules define:
+  - `Components` — selector functions returning Cypress chains
   - `Actions` — higher-level user interactions composed from `Components`
-  Plus a `URL` constant when the page has a stable route.
+  Then default-export a page object shaped like `{ Components, ...Actions }` so specs can call actions at the page-object top level.
 - **Always select by `data-testid`** using `cy.getByTestId('...')`. This decouples tests from UI structure so the markup can be refactored without breaking tests.
   - If a needed element has no `data-testid`, add one to the Jinja template or React component as part of your change. Keep ids kebab-case and scoped to the feature.
   - Do not use `#id`, class, tag, or Tailwind utility selectors. Limited use of `cy.contains('h1', '...')` is acceptable only for asserting visible page headings.
-- Import page objects from the barrel: `import { LoginPage, TemplatesPage } from "../../Notify/Admin/Pages/all";`
+- Import the default barrel object, then read pages from it: `import Pages from "../../Notify/Admin/Pages/all";`
 - Use `before` to log in once per suite and `beforeEach` to stub recurring polling (e.g. `cy.intercept('GET', '**/dashboard.json', {})`).
-- **Always add accessibility coverage.** Every spec must call `cy.a11yScan(url)` (defined in [tests_cypress/cypress/support/commands.js](tests_cypress/cypress/support/commands.js)) for each page state under test. This runs axe, html validation, dead-link, and mime-type checks in one call.
+- **Always add accessibility coverage.** Every spec must call `cy.a11yScan(url)` (defined in [tests_cypress/cypress/support/commands.js](../../../tests_cypress/cypress/support/commands.js)) for each page state under test. This runs axe, html validation, dead-link, and mime-type checks in one call.
 
 ## Authentication and Test Users
-- A regular service user and a platform-admin user are created automatically on first login via the `createAccount` task (see [tests_cypress/cypress/support/commands.js](tests_cypress/cypress/support/commands.js)). Do not hand-roll users or fixtures for auth.
+- A regular service user and a platform-admin user are created automatically on first login via the `createAccount` task (see [tests_cypress/cypress/support/commands.js](../../../tests_cypress/cypress/support/commands.js)). Do not hand-roll users or fixtures for auth.
 - Use `cy.login()` for a standard service user, and `cy.loginAsPlatformAdmin()` for platform-admin flows. Pass `false` to skip the terms-of-use prompt (e.g. `cy.login(false)`).
 - Both helpers wrap `cy.session(...)`, so calling them in `before` (or in `beforeEach` when sessions differ between tests) is cheap — the session is cached for the spec.
 - After login, ids are available via `Cypress.env('REGULAR_USER_ID')` and `Cypress.env('ADMIN_USER_ID')` if a test needs them.
@@ -58,7 +58,7 @@ argument-hint: 'Describe the flow to cover, the page(s) involved, and whether ne
 ## Validation Commands
 - Run a single spec: `npx cypress run --spec tests_cypress/cypress/e2e/admin/<file>.cy.js`
 - Open interactive runner: `npx cypress open`
-- See [tests_cypress/README.md](tests_cypress/README.md) for env vars and auth setup.
+- See [tests_cypress/README.md](../../../tests_cypress/README.md) for env vars and auth setup.
 
 ## Guardrails
 - Don't couple tests to Tailwind utility classes or generated DOM structure.

@@ -90,7 +90,7 @@ A skill body usually wants these sections, in this order. Keep each tight.
 
 - **Imperative voice**: "Add the route to `app/main/views/<module>.py`", not "The route should be added".
 - **Explain the why**: "Use `data-testid` selectors so refactoring markup doesn't break tests" is more durable than "NEVER use CSS class selectors".
-- **Reference real files** with markdown links so the model can jump to them: `[app/utils.py](app/utils.py)`.
+- **Reference real files** with markdown links so the model can jump to them: `[app/utils.py](../../../app/utils.py)`.
 - **Avoid duplicating** content from [AGENTS.md](../../../AGENTS.md) — link instead.
 - **Negative space matters**: a clear "When NOT to Use" prevents the skill from misfiring on adjacent work.
 

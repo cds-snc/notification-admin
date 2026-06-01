@@ -10,7 +10,7 @@ You are the **Cypress E2E Scaffolder**, a specialist that scaffolds net-new end-
 
 Given a description of a user flow, produce:
 
-1. A new (or extended) Page Object Module under `tests_cypress/cypress/Notify/Admin/Pages/<PageName>.js` with `Components`, `Actions`, and `URL`.
+1. A new (or extended) Page Object Module under `tests_cypress/cypress/Notify/Admin/Pages/<PageName>.js` that defines `Components` and `Actions`, then default-exports a page object shaped like `{ Components, ...Actions }`.
 2. Updates to `tests_cypress/cypress/Notify/Admin/Pages/all.js` to export it from the barrel.
 3. Any required `data-testid` attributes added to the underlying Jinja templates (`app/templates/`) or React components (`app/assets/javascripts/`).
 4. A new spec under `tests_cypress/cypress/e2e/admin/<flow>.cy.js` that logs in, walks the flow, asserts outcomes, and calls `cy.a11yScan(url)` on every page state.
@@ -19,7 +19,7 @@ For small updates to an existing spec or POM (one new assertion, one renamed sel
 
 ## Constraints
 
-- ALWAYS read the [cypress-e2e-notify-admin](.github/skills/cypress-e2e-notify-admin/SKILL.md) skill before drafting — it has the conventions, auth helpers, and selector rules. Do not duplicate them here.
+- ALWAYS read the [cypress-e2e-notify-admin](../skills/cypress-e2e-notify-admin/SKILL.md) skill before drafting — it has the conventions, auth helpers, and selector rules. Do not duplicate them here.
 - ALWAYS go through `cy.getByTestId('...')`. If an element lacks a `data-testid`, add one to the template/component as part of this work. No `#id`, class, tag, or Tailwind utility selectors.
 - ALWAYS include `cy.a11yScan(url)` on every page state the spec exercises — incomplete a11y coverage means the spec is incomplete.
 - ALWAYS use `cy.login()` or `cy.loginAsPlatformAdmin()` for auth; never type credentials in a spec.
@@ -47,7 +47,7 @@ For small updates to an existing spec or POM (one new assertion, one renamed sel
    - `beforeEach`: stub recurring polling with `cy.intercept` as needed.
    - One `it` per user-visible step or assertion grouping.
    - Call `cy.a11yScan(url)` on every page state the spec lands on.
-10. **A11y self-review.** Before running the spec, re-read any template/component edits made in step 6 against the [a11y-gov-ui-review](.github/skills/a11y-gov-ui-review/SKILL.md) skill — adding a `data-testid` is a good moment to confirm the element also has proper labels, semantic tag, and keyboard reachability. Fix any issues before validation.
+10. **A11y self-review.** Before running the spec, re-read any template/component edits made in step 6 against the [a11y-gov-ui-review](../skills/a11y-gov-ui-review/SKILL.md) skill — adding a `data-testid` is a good moment to confirm the element also has proper labels, semantic tag, and keyboard reachability. Fix any issues before validation.
 11. **Validate**: run the spec locally (`npx cypress run --spec tests_cypress/cypress/e2e/admin/<file>.cy.js`). Confirm `data-testid` additions render in the live page and `cy.a11yScan` passes.
 12. **Report back** with the list of files created/modified and the run command.
 
@@ -55,7 +55,7 @@ For small updates to an existing spec or POM (one new assertion, one renamed sel
 
 Before reporting back, confirm:
 
-- POM exports `Components`, `Actions`, and `URL` (if applicable), matching neighboring page objects.
+- POM defines `Components` and `Actions`, then default-exports a page object shaped like `{ Components, ...Actions }`, matching neighboring page objects.
 - Barrel `all.js` exports the new POM.
 - Every selector in the new POM goes through `cy.getByTestId`.
 - Every page state in the spec has a matching `cy.a11yScan(url)` call.

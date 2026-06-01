@@ -194,6 +194,6 @@ If a full suite cannot be run, document what was run and why.
 - Prefer linking to source docs/config files instead of copying detailed procedures.
 - If a section grows large, move detail into a scoped instruction/skill and link it here.
 
-## Clarifications and and asking questions
+## Clarifications and asking questions
 - Use the #askUser tool for all questions and clarifications
 - Use the #askUser tool before finalizing any request

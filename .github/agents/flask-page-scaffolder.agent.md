@@ -20,7 +20,7 @@ For small updates to existing pages (add a field, rename a label, tweak a permis
 
 ## Constraints
 
-- ALWAYS read the [flask-jinja-page-workflow](.github/skills/flask-jinja-page-workflow/SKILL.md) skill before drafting — it has the conventions and file locations. Do not duplicate them here.
+- ALWAYS read the [flask-jinja-page-workflow](../skills/flask-jinja-page-workflow/SKILL.md) skill before drafting — it has the conventions and file locations. Do not duplicate them here.
 - ALWAYS reuse existing decorators from `app/utils.py` (`user_has_permissions(...)`, `user_is_gov_user`, `user_is_platform_admin`) for authorization. Do not invent new ones or duplicate permission logic in the view body.
 - ALWAYS extend `app/templates/main_template.html`; never duplicate the base layout.
 - ALWAYS prefer existing partials in `app/templates/partials/` and components in `app/templates/components/` before writing fresh markup. If a pattern is used twice, extract a partial.
@@ -55,7 +55,7 @@ For small updates to existing pages (add a field, rename a label, tweak a permis
    - Use existing form-rendering macros for input fields if the page has a form.
 10. **Wire blueprint imports** in `app/main/__init__.py` only if a brand-new view module was created.
 11. **Write the test** under `tests/app/main/views/test_<module>.py` following the neighboring pattern: a logged-in client fixture, asserts on response status, page content, and (for POST) the side-effect call to the API client (typically via `mocker.patch`).
-12. **A11y self-review.** Before validation, re-read the new template against the [a11y-gov-ui-review](.github/skills/a11y-gov-ui-review/SKILL.md) skill: semantic landmarks, every form input has a `<label for>`, buttons are `<button>` not styled `<div>`, images have `alt`, focusable elements are reachable via keyboard, color isn't the only state signal, and ARIA is used only where native semantics fall short. Fix any issues before reporting back — a11y is a gate on net-new work, not a follow-up task.
+12. **A11y self-review.** Before validation, re-read the new template against the [a11y-gov-ui-review](../skills/a11y-gov-ui-review/SKILL.md) skill: semantic landmarks, every form input has a `<label for>`, buttons are `<button>` not styled `<div>`, images have `alt`, focusable elements are reachable via keyboard, color isn't the only state signal, and ARIA is used only where native semantics fall short. Fix any issues before reporting back — a11y is a gate on net-new work, not a follow-up task.
 13. **Validate**: run `poetry run pytest tests/app/main/views/test_<module>.py -n 4`.
 14. **Report back** with the list of files created/modified and the test command.
 
