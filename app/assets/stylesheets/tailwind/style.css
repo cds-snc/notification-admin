@@ -55,6 +55,7 @@
 @import "./components/indicator.css";
 @import "./components/badge.css";
 @import "./components/pricing.css";
+@import "./components/attachments.css";
 
 /* views */
 @import "./views/dashboard.css";

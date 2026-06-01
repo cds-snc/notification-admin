@@ -44,10 +44,10 @@ function jsxInJsFiles() {
  */
 export default defineConfig({
   // Dependency scanning happens before our Babel pre-transform plugin runs.
-  // Treat app .js files as JSX there too so `vite` can start in dev mode.
+  // Treat .js files as JSX there too so `vite` can start in dev mode.
   optimizeDeps: {
-    esbuildOptions: {
-      loader: {
+    rolldownOptions: {
+      moduleTypes: {
         ".js": "jsx",
       },
     },
@@ -62,6 +62,7 @@ export default defineConfig({
         index: path.resolve(__dirname, "app/assets/javascripts/index.js"),
         scheduler: path.resolve(__dirname, "app/assets/javascripts/scheduler/scheduler.js"),
         tiptap: path.resolve(__dirname, "app/assets/javascripts/tiptap/editor.js"),
+        attachments: path.resolve(__dirname, "app/assets/javascripts/attachments/attachments.js"),
       },
 
       output: {

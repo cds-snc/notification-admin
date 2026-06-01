@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import inject from "@rollup/plugin-inject";
 import path from "path";
 
 /**
@@ -18,7 +17,7 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "app/static"),
     emptyOutDir: false,
 
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         all: path.resolve(__dirname, "app/assets/javascripts/all.js"),
       },
@@ -27,16 +26,16 @@ export default defineConfig({
         format: "iife",
         entryFileNames: "javascripts/[name].min.js",
       },
+
+      transform: {
+        inject: {
+          $: ["jquery", "default"],
+          jQuery: ["jquery", "default"],
+          accessibleAutocomplete: ["accessible-autocomplete", "default"],
+        },
+      },
     },
   },
-
-  plugins: [
-    inject({
-      $: ["jquery", "default"],
-      jQuery: ["jquery", "default"],
-      accessibleAutocomplete: ["accessible-autocomplete", "default"],
-    }),
-  ],
 
   resolve: {
     alias: {
