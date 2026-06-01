@@ -44,10 +44,10 @@ function jsxInJsFiles() {
  */
 export default defineConfig({
   // Dependency scanning happens before our Babel pre-transform plugin runs.
-  // Treat app .js files as JSX there too so `vite` can start in dev mode.
+  // Treat .js files as JSX there too so `vite` can start in dev mode.
   optimizeDeps: {
-    esbuildOptions: {
-      loader: {
+    rolldownOptions: {
+      moduleTypes: {
         ".js": "jsx",
       },
     },
