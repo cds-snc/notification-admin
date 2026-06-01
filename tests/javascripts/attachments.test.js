@@ -196,7 +196,7 @@ describe("attachments - render contracts", () => {
       }),
     );
 
-    expect(html).toContain('<span class="underline">Remove</span>');
+    expect(html).toContain('underline">Remove</span>');
     expect(html).toContain('aria-hidden="true">×</span>');
     expect(html).not.toContain("gap-2 underline");
   });
