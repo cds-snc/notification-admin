@@ -65,14 +65,59 @@ describe("Attachments component", () => {
     });
   });
 
+  it("uses simulated backend download URL for newly attached files", () => {
+    Attachments.openModal("attachments-interactive");
+
+    Attachments.selectFiles({
+      contents: Cypress.Buffer.from("safe-content"),
+      fileName: "fresh-attach.pdf",
+      mimeType: "application/pdf",
+    });
+
+    Attachments.submitModal();
+
+    Components.List("attachments-interactive", { timeout: 6000 })
+      .contains("fresh-attach.pdf")
+      .parents('[data-testid="attached-file-row"]')
+      .first()
+      .find('[data-testid="attachment-download-link"]')
+      .should("have.attr", "href", "/storybook/downloads/fresh-attach.pdf");
+  });
+
   it("supports remove confirmation flow", () => {
     Components.List("attachments-malware")
       .contains("safe_permit.pdf")
       .should("exist");
     Attachments.removeByFilename("attachments-malware", "safe_permit.pdf");
+
+    Components.Root("attachments-malware")
+      .find('[data-testid="attachment-download-link"]')
+      .contains("safe_permit.pdf")
+      .should("have.attr", "href", "/storybook/downloads/safe_permit.pdf");
+
     Attachments.confirmRemove();
     Components.List("attachments-malware")
       .contains("safe_permit.pdf")
+      .should("not.exist");
+  });
+
+  it("does not show download prompt when removing a malware file", () => {
+    Attachments.removeByFilename(
+      "attachments-malware",
+      "document_with_malware.pdf",
+    );
+
+    Components.Root("attachments-malware")
+      .contains("Download a copy of")
+      .should("not.exist");
+  });
+
+  it("renders no download link for malware rows in the list", () => {
+    Components.List("attachments-malware")
+      .contains("document_with_malware.pdf")
+      .parents('[data-testid="attached-file-row"]')
+      .first()
+      .find('[data-testid="attachment-download-link"]')
       .should("not.exist");
   });
 

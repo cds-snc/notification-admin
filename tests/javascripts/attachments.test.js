@@ -1,4 +1,6 @@
 const React = require("react");
+const ReactDOMClient = require("react-dom/client");
+const { act } = React;
 
 const { TextEncoder, TextDecoder } = require("util");
 global.TextEncoder = TextEncoder;
@@ -11,6 +13,7 @@ const {
   summarizeStatuses,
   ATTACHMENT_STATUSES,
   ACCEPT_ATTRIBUTE,
+  useAttachments,
 } = require("../../app/assets/javascripts/attachments/useAttachments");
 const {
   AttachedFileRow,
@@ -235,6 +238,66 @@ describe("attachments - render contracts", () => {
     expect(html).toContain('class="attachment-file-name-truncate"');
   });
 
+  test("attached file renders clickable download link", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-download-1",
+          name: "downloadable.pdf",
+          status: ATTACHMENT_STATUSES.ATTACHED,
+          downloadUrl: "/storybook/downloads/downloadable.pdf",
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="attachment-download-link"');
+    expect(html).toContain('href="/storybook/downloads/downloadable.pdf"');
+  });
+
+  test("remove confirmation keeps filename downloadable when available", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-download-2",
+          name: "remove-me.pdf",
+          status: ATTACHMENT_STATUSES.ATTACHED,
+          downloadUrl: "/storybook/downloads/remove-me.pdf",
+        },
+        isConfirmingRemoval: true,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain("Download a copy of");
+    expect(html).toContain('data-testid="attachment-download-link"');
+    expect(html).toContain('href="/storybook/downloads/remove-me.pdf"');
+  });
+
+  test("malware remove confirmation omits download prompt", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-malware-remove-1",
+          name: "document_with_malware.pdf",
+          status: ATTACHMENT_STATUSES.MALWARE,
+        },
+        isConfirmingRemoval: true,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain("Download a copy of");
+    expect(html).not.toContain('data-testid="attachment-download-link"');
+  });
+
   test("accept attribute includes expected extensions", () => {
     const expectedExtensions = [
       ".pdf",
@@ -257,5 +320,129 @@ describe("attachments - render contracts", () => {
 
     expect(ACCEPT_ATTRIBUTE).not.toContain(".exe");
     expect(ACCEPT_ATTRIBUTE).not.toContain(".zip");
+  });
+});
+
+describe("attachments - useAttachments", () => {
+  const originalUrl = global.URL;
+  const originalActEnvironment = global.IS_REACT_ACT_ENVIRONMENT;
+
+  const setupHookHarness = (initialFiles = []) => {
+    let latest = null;
+
+    const HookHarness = ({ files }) => {
+      latest = useAttachments(files);
+      return null;
+    };
+
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = ReactDOMClient.createRoot(container);
+
+    act(() => {
+      root.render(React.createElement(HookHarness, { files: initialFiles }));
+    });
+
+    return {
+      getState: () => latest,
+      cleanup: () => {
+        act(() => {
+          root.unmount();
+        });
+        container.remove();
+      },
+    };
+  };
+
+  beforeAll(() => {
+    global.IS_REACT_ACT_ENVIRONMENT = true;
+  });
+
+  afterAll(() => {
+    global.IS_REACT_ACT_ENVIRONMENT = originalActEnvironment;
+  });
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    global.URL = {
+      createObjectURL: jest.fn(() => "blob:generated-object-url"),
+      revokeObjectURL: jest.fn(),
+    };
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+    global.URL = originalUrl;
+  });
+
+  test("maps callback download_url to file downloadUrl", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "server-link.pdf", size: 1234 }],
+        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED, download_url: "/download/server-link.pdf" }],
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
+    expect(file.downloadUrl).toBe("/download/server-link.pdf");
+    expect(global.URL.createObjectURL).not.toHaveBeenCalled();
+
+    harness.cleanup();
+  });
+
+  test("uses object URL fallback for attached file when callback omits URL", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "fallback.pdf", size: 4321 }],
+        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED }],
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
+    expect(file.downloadUrl).toBe("blob:generated-object-url");
+    expect(file.isObjectUrl).toBe(true);
+    expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
+
+    harness.cleanup();
+  });
+
+  test("does not keep a download URL for malware status", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "unsafe.pdf", size: 567 }],
+        async () => [{ status: ATTACHMENT_STATUSES.MALWARE, download_url: "/download/unsafe.pdf" }],
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.status).toBe(ATTACHMENT_STATUSES.MALWARE);
+    expect(file.downloadUrl).toBeUndefined();
+    expect(global.URL.createObjectURL).not.toHaveBeenCalled();
+
+    harness.cleanup();
   });
 });
