@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from flask import render_template, request
+from flask import jsonify, render_template, request
 from flask_wtf import FlaskForm as Form
 from wtforms import BooleanField, RadioField, StringField
 from wtforms.validators import DataRequired
@@ -143,3 +143,13 @@ def storybook():
         full_form=full_form,
         complex_markdown=complex_markdown,
     )
+
+
+@main.route("/_storybook/attachments/attach", methods=["POST"])
+def storybook_attachments_attach():
+    return jsonify({"data": []})
+
+
+@main.route("/_storybook/attachments/remove", methods=["POST"])
+def storybook_attachments_remove():
+    return ("", 204)

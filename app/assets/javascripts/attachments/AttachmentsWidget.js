@@ -10,7 +10,9 @@ import { getAttachmentTranslations } from "./localization";
 
 export const AttachmentsWidget = ({
   initialFiles = [],
-  onAttachFiles,
+  attachEndpoint,
+  removeEndpoint,
+  csrfToken,
   lang = "en",
   classificationUrl,
 }) => {
@@ -20,6 +22,62 @@ export const AttachmentsWidget = ({
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
 
   const { files, attachFiles, removeFile } = useAttachments(initialFiles, copy);
+
+  const uploadFiles = async (selectedFiles) => {
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("files", file, file.name);
+    });
+
+    const response = await fetch(attachEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: csrfToken
+        ? {
+            "X-CSRFToken": csrfToken,
+          }
+        : undefined,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload attachments (${response.status})`);
+    }
+
+    if (!response.headers.get("content-type")?.includes("application/json")) {
+      return [];
+    }
+
+    const payload = await response.json();
+    if (Array.isArray(payload)) {
+      return payload;
+    }
+
+    return payload.data || payload.files || [];
+  };
+
+  const deleteFile = async (file) => {
+    const response = await fetch(removeEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        ...(csrfToken
+          ? {
+              "X-CSRFToken": csrfToken,
+            }
+          : {}),
+      },
+      body: JSON.stringify({
+        fileId: file.id,
+        name: file.name,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to remove attachment (${response.status})`);
+    }
+  };
 
   const statusSummary = useMemo(
     () => summarizeStatuses(files, copy),
@@ -34,7 +92,7 @@ export const AttachmentsWidget = ({
       return;
     }
 
-    await attachFiles(result.acceptedFiles, onAttachFiles);
+    await attachFiles(result.acceptedFiles, uploadFiles);
     setAttachModalOpen(false);
   };
 
@@ -50,9 +108,21 @@ export const AttachmentsWidget = ({
               file={file}
               isConfirmingRemoval={removeCandidateId === file.id}
               onRequestRemove={setRemoveCandidateId}
-              onConfirmRemove={(fileId) => {
-                removeFile(fileId);
-                setRemoveCandidateId(null);
+              onConfirmRemove={async (fileId) => {
+                const fileToRemove = files.find((currentFile) => currentFile.id === fileId);
+                if (!fileToRemove) {
+                  setRemoveCandidateId(null);
+                  return;
+                }
+
+                try {
+                  await deleteFile(fileToRemove);
+                  removeFile(fileId);
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setRemoveCandidateId(null);
+                }
               }}
               onCancelRemove={() => setRemoveCandidateId(null)}
               copy={copy}

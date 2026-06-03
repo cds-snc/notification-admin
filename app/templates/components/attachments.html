@@ -1,23 +1,20 @@
-{% macro attachments_widget(mount_id, props={}, lang=None) %}
+{% macro attachments_widget(mount_id, initialFiles=None, classificationUrl=None, attachEndpoint=None, removeEndpoint=None, lang=None) %}
   <div id="{{ mount_id }}"></div>
   <script nonce="{{ request_nonce }}">
     (function () {
-      var element = document.getElementById("{{ mount_id }}");
+      var element = document.getElementById({{ mount_id | tojson }});
       if (!element) {
         return;
       }
 
-      var props = Object.assign(
-        {
-          lang: {{ (lang or current_lang) | tojson }}
-        },
-        {{ props | tojson }}
-      );
-      function boot() {
-        if (window.Attachments) {
-          window.Attachments.load(element, props);
-        }
-      }
+      var props = {
+        initialFiles: {{ (initialFiles or []) | tojson }},
+        classificationUrl: {{ (classificationUrl or '#') | tojson }},
+        attachEndpoint: {{ attachEndpoint | tojson }},
+        removeEndpoint: {{ removeEndpoint | tojson }},
+        csrfToken: {{ csrf_token() | tojson }},
+        lang: {{ (lang or current_lang) | tojson }},
+      };
 
       if (!window.attachmentsLoadPromise) {
         window.attachmentsLoadPromise = new Promise(function (resolve, reject) {
@@ -54,7 +51,11 @@
         });
       }
 
-      window.attachmentsLoadPromise.then(boot).catch(function () {});
+      window.attachmentsLoadPromise.then(function () {
+        if (window.Attachments) {
+          window.Attachments.load(element, props);
+        }
+      }).catch(function () {});
     })();
   </script>
 {% endmacro %}
