@@ -199,6 +199,10 @@ def view_template(service_id, template_id):
     delete_preview_data(service_id, template_id)
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
+    template_attachments = []
+
+    if template["template_type"] == "email":
+        template_attachments = current_service.get_template_attachments(template_id)
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
@@ -211,9 +215,33 @@ def view_template(service_id, template_id):
         "views/templates/template.html",
         template=preview_template,
         template_postage=template["postage"],
+        template_attachments=template_attachments,
         user_has_template_permission=user_has_template_permission,
         **get_limit_stats(template["template_type"], preview_template),
     )
+
+
+# TODO: hook these up to the API client when its available
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments",
+    methods=["POST"],
+)
+@user_has_permissions()
+def attach_files(service_id, template_id):
+    return jsonify({"data": []})
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove",
+    methods=["POST"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove/<file_id>",
+    methods=["POST"],
+)
+@user_has_permissions()
+def remove_files(service_id, template_id, file_id=None):
+    return ("", 204)
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])

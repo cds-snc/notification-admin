@@ -190,6 +190,10 @@ class Service(JSONModel):
     def get_template(self, template_id, version=None):
         return service_api_client.get_service_template(self.id, str(template_id), version)["data"]
 
+    # TODO: complete this method when the backend API is available
+    def get_template_attachments(self, template_id):
+        return []
+
     def get_template_folder_with_user_permission_or_403(self, folder_id, user):
         template_folder = self.get_template_folder(folder_id)
 

@@ -92,6 +92,7 @@ class Config(object):
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
+    FF_FILE_ATTACHMENTS = env.bool("FF_FIL_ATTACHMENTS", False)
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
@@ -201,6 +202,7 @@ class Development(Config):
     VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
+    FF_FILE_ATTACHMENTS = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -268,6 +270,7 @@ class Production(Config):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.notification.canada.ca"
     NO_BRANDING_ID = "760c802a-7762-4f71-b19e-f93c66c92f1a"
+    FF_FILE_ATTACHMENTS = False
 
 
 class Staging(Production):
@@ -276,6 +279,7 @@ class Staging(Production):
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_FILE_ATTACHMENTS = True
 
 
 class Scratch(Production):

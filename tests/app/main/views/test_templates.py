@@ -759,6 +759,32 @@ def test_should_show_template_id_on_template_page(
     assert page.select(".api-key-key")[0].text == fake_uuid
 
 
+def test_should_show_attachments_widget_on_email_template_page(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert page.select_one("#template-attachments") is not None
+    assert "viewTemplateAttachmentsNoop" not in str(page)
+    assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.remove_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+
+
 def test_should_show_logos_on_template_page(
     client_request,
     fake_uuid,
