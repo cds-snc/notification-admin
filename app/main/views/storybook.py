@@ -151,5 +151,6 @@ def storybook_attachments_attach():
 
 
 @main.route("/_storybook/attachments/remove", methods=["POST"])
-def storybook_attachments_remove():
+@main.route("/_storybook/attachments/remove/<file_id>", methods=["POST"])
+def storybook_attachments_remove(file_id=None):
     return ("", 204)

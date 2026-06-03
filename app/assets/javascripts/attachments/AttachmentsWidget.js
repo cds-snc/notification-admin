@@ -57,21 +57,14 @@ export const AttachmentsWidget = ({
   };
 
   const deleteFile = async (file) => {
-    const response = await fetch(removeEndpoint, {
+    const response = await fetch(`${removeEndpoint}/${encodeURIComponent(file.id)}`, {
       method: "POST",
       credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        ...(csrfToken
-          ? {
-              "X-CSRFToken": csrfToken,
-            }
-          : {}),
-      },
-      body: JSON.stringify({
-        fileId: file.id,
-        name: file.name,
-      }),
+      headers: csrfToken
+        ? {
+            "X-CSRFToken": csrfToken,
+          }
+        : undefined,
     });
 
     if (!response.ok) {
