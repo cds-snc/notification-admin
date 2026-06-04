@@ -48,24 +48,22 @@ export const AttachmentsWidget = ({
       return [];
     }
 
-    const payload = await response.json();
-    if (Array.isArray(payload)) {
-      return payload;
-    }
-
-    return payload.data || payload.files || [];
+    return response.json();
   };
 
   const deleteFile = async (file) => {
-    const response = await fetch(`${removeEndpoint}/${encodeURIComponent(file.id)}`, {
-      method: "POST",
-      credentials: "same-origin",
-      headers: csrfToken
-        ? {
-            "X-CSRFToken": csrfToken,
-          }
-        : undefined,
-    });
+    const response = await fetch(
+      `${removeEndpoint}/${encodeURIComponent(file.id)}`,
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: csrfToken
+          ? {
+              "X-CSRFToken": csrfToken,
+            }
+          : undefined,
+      },
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to remove attachment (${response.status})`);
@@ -102,7 +100,9 @@ export const AttachmentsWidget = ({
               isConfirmingRemoval={removeCandidateId === file.id}
               onRequestRemove={setRemoveCandidateId}
               onConfirmRemove={async (fileId) => {
-                const fileToRemove = files.find((currentFile) => currentFile.id === fileId);
+                const fileToRemove = files.find(
+                  (currentFile) => currentFile.id === fileId,
+                );
                 if (!fileToRemove) {
                   setRemoveCandidateId(null);
                   return;
