@@ -1,3 +1,4 @@
+import base64
 import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
@@ -60,6 +61,7 @@ from app.models.template_list import (
     TemplateList,
     TemplateLists,
 )
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.notification_counts_client import notification_counts_client
 from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
@@ -228,7 +230,26 @@ def view_template(service_id, template_id):
 )
 @user_has_permissions()
 def attach_files(service_id, template_id):
-    return jsonify({"data": []})
+    uploaded_files = request.files.getlist("files")
+    created_files = []
+
+    for uploaded_file in uploaded_files:
+        file_contents = uploaded_file.read()
+        file_size = len(file_contents)
+        file_data = base64.b64encode(file_contents).decode("ascii")
+
+        created_files.append(
+            file_api_client.create_file(
+                template_id,
+                "template_attach",
+                uploaded_file.filename,
+                uploaded_file.mimetype or "application/octet-stream",
+                file_size,
+                file_data,
+            )
+        )
+
+    return jsonify(created_files)
 
 
 @main.route(
@@ -241,6 +262,7 @@ def attach_files(service_id, template_id):
 )
 @user_has_permissions()
 def remove_files(service_id, template_id, file_id=None):
+    file_api_client.delete_file(template_id, file_id)
     return ("", 204)
 
 
