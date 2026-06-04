@@ -4595,6 +4595,11 @@ def mock_get_template_folders(mocker):
     return mocker.patch("app.template_folder_api_client.get_template_folders", return_value=[])
 
 
+@pytest.fixture(autouse=True)
+def mock_get_template_attachments(mocker):
+    return mocker.patch("app.models.service.file_api_client.get_files_by_template_id", return_value=[])
+
+
 @pytest.fixture
 def mock_move_to_template_folder(mocker):
     return mocker.patch("app.template_folder_api_client.move_to_folder")
