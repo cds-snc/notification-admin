@@ -91,14 +91,15 @@
       </div>
   </div>
 
-  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' %}
+  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") %}
     <div class="mb-16">
       {{ attachments_widget(
         "template-attachments",
         template_attachments,
         url_for('main.terms'),
         url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
-        url_for('main.remove_files', service_id=current_service.id, template_id=template.id)
+        url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
+        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id)
       ) }}
     </div>
   {% endif %}
