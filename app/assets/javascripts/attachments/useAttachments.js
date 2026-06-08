@@ -235,7 +235,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
           const status = normalizeStatus(item?.status);
 
           resultById.set(preparedFile.id, {
-            id: item.id,
+            id: item.document_id,
             status,
           });
         });
