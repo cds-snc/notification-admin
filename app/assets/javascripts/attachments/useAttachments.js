@@ -23,11 +23,14 @@ export const ACCEPT_ATTRIBUTE = ACCEPTED_EXTENSIONS.join(",");
 
 export const ATTACHMENT_STATUSES = {
   UPLOADING: "uploading",
-  PENDING_SCAN: "pending-scan",
-  ATTACHED: "attached",
-  MALWARE: "malware",
+  PENDING_VIRUS_SCAN: "pending_virus_scan",
+  UPLOADED: "uploaded",
+  VIRUS_SCAN_FAILED: "virus_scan_failed",
+  DELETED: "deleted",
   UPLOAD_FAILED: "upload-failed",
 };
+
+const FILE_STATUS_POLL_INTERVAL_MS = 2000;
 
 const ALLOWED_EXTENSIONS = new Set(ACCEPTED_EXTENSIONS);
 
@@ -98,18 +101,36 @@ const nextId = () => {
 };
 
 const normalizeStatus = (status) => {
+  if (status === "pending_virus_scan") {
+    return ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
+  }
+
+  if (status === "virus_scan_failed") {
+    return ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
+  }
+
+  if (status === "uploaded") {
+    return ATTACHMENT_STATUSES.UPLOADED;
+  }
+
   if (
     status === ATTACHMENT_STATUSES.UPLOADING ||
-    status === ATTACHMENT_STATUSES.PENDING_SCAN ||
-    status === ATTACHMENT_STATUSES.ATTACHED ||
-    status === ATTACHMENT_STATUSES.MALWARE ||
+    status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN ||
+    status === ATTACHMENT_STATUSES.UPLOADED ||
+    status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED ||
+    status === ATTACHMENT_STATUSES.DELETED ||
     status === ATTACHMENT_STATUSES.UPLOAD_FAILED
   ) {
     return status;
   }
 
-  return ATTACHMENT_STATUSES.ATTACHED;
+  return ATTACHMENT_STATUSES.UPLOADED;
 };
+
+const normalizeFile = (file) => ({
+  ...file,
+  status: normalizeStatus(file.status),
+});
 
 export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   const counts = {
@@ -120,11 +141,11 @@ export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   };
 
   for (const file of files) {
-    if (file.status === ATTACHMENT_STATUSES.PENDING_SCAN) {
+    if (file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN) {
       counts.scanning += 1;
     } else if (file.status === ATTACHMENT_STATUSES.UPLOADING) {
       counts.uploading += 1;
-    } else if (file.status === ATTACHMENT_STATUSES.ATTACHED) {
+    } else if (file.status === ATTACHMENT_STATUSES.UPLOADED) {
       counts.attached += 1;
     } else {
       counts.failed += 1;
@@ -152,9 +173,14 @@ export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   return chunks.length ? chunks.join(", ") : copy.noFilesAttached;
 };
 
-export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
-  const [files, setFiles] = useState(initialFiles);
+export const useAttachments = (
+  initialFiles = [],
+  copy = DEFAULT_COPY,
+  fetchFileStatus = null,
+) => {
+  const [files, setFiles] = useState(() => initialFiles.map(normalizeFile));
   const timeoutIdsRef = useRef([]);
+  const pollTimeoutIdsRef = useRef(new Map());
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -162,8 +188,75 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
       isMountedRef.current = false;
       timeoutIdsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
       timeoutIdsRef.current = [];
+      pollTimeoutIdsRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+      pollTimeoutIdsRef.current.clear();
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof fetchFileStatus !== "function") {
+      return;
+    }
+
+    const pendingFiles = files.filter(
+      (file) => file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+    );
+
+    const pendingIds = new Set(pendingFiles.map((file) => file.id));
+
+    pollTimeoutIdsRef.current.forEach((timeoutId, fileId) => {
+      if (!pendingIds.has(fileId)) {
+        clearTimeout(timeoutId);
+        pollTimeoutIdsRef.current.delete(fileId);
+      }
+    });
+
+    pendingFiles.forEach((file) => {
+      if (pollTimeoutIdsRef.current.has(file.id)) {
+        return;
+      }
+
+      const poll = async () => {
+        if (!isMountedRef.current) {
+          return;
+        }
+
+        try {
+          const response = await fetchFileStatus(file.id);
+          const responseData = response?.data || response;
+          const nextStatus = normalizeStatus(responseData?.status);
+
+          if (nextStatus === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN) {
+            const timeoutId = setTimeout(poll, FILE_STATUS_POLL_INTERVAL_MS);
+            pollTimeoutIdsRef.current.set(file.id, timeoutId);
+            return;
+          }
+
+          pollTimeoutIdsRef.current.delete(file.id);
+          setFiles((currentFiles) =>
+            currentFiles.map((currentFile) =>
+              currentFile.id === file.id
+                ? {
+                    ...currentFile,
+                    id:
+                      responseData?.document_id ||
+                      responseData?.id ||
+                      currentFile.id,
+                    status: nextStatus,
+                    sourceFile: undefined,
+                  }
+                : currentFile,
+            ),
+          );
+        } catch (error) {
+          const timeoutId = setTimeout(poll, FILE_STATUS_POLL_INTERVAL_MS);
+          pollTimeoutIdsRef.current.set(file.id, timeoutId);
+        }
+      };
+
+      poll();
+    });
+  }, [files, fetchFileStatus]);
 
   const schedule = (callback, delay) => {
     const timeoutId = setTimeout(() => {
@@ -185,7 +278,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
       files.filter(
         (file) =>
           file.status === ATTACHMENT_STATUSES.UPLOADING ||
-          file.status === ATTACHMENT_STATUSES.PENDING_SCAN,
+          file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
       ).length,
     [files],
   );
@@ -211,7 +304,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
       setFiles((currentFiles) =>
         currentFiles.map((currentFile) =>
           preparedIds.has(currentFile.id)
-            ? { ...currentFile, status: ATTACHMENT_STATUSES.PENDING_SCAN }
+            ? { ...currentFile, status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN }
             : currentFile,
         ),
       );
@@ -248,7 +341,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
 
         resultById.set(preparedFile.id, {
           id: preparedFile.id,
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         });
       });
 
@@ -261,7 +354,7 @@ export const useAttachments = (initialFiles = [], copy = DEFAULT_COPY) => {
 
             const resolvedResult = resultById.get(currentFile.id) || {
               id: currentFile.id,
-              status: ATTACHMENT_STATUSES.ATTACHED,
+              status: ATTACHMENT_STATUSES.UPLOADED,
             };
 
             return {

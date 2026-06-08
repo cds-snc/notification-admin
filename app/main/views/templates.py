@@ -266,6 +266,20 @@ def remove_files(service_id, template_id, file_id=None):
     return ("", 204)
 
 
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions()
+def template_attachment_status(service_id, template_id, file_id=None):
+    file_id = file_id or request.args.get("file_id")
+    return jsonify(file_api_client.get_file_status(template_id, file_id))
+
+
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
 @main.route(
     "/services/<service_id>/templates/sample/<uuid:sample_template_id>/preview",

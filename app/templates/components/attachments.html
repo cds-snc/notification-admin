@@ -1,4 +1,4 @@
-{% macro attachments_widget(mount_id, initialFiles=None, classificationUrl=None, attachEndpoint=None, removeEndpoint=None, lang=None) %}
+{% macro attachments_widget(mount_id, initialFiles=None, classificationUrl=None, attachEndpoint=None, removeEndpoint=None, statusEndpoint=None, lang=None) %}
   <div id="{{ mount_id }}"></div>
   <script nonce="{{ request_nonce }}">
     (function () {
@@ -12,6 +12,7 @@
         classificationUrl: {{ (classificationUrl or '#') | tojson }},
         attachEndpoint: {{ attachEndpoint | tojson }},
         removeEndpoint: {{ removeEndpoint | tojson }},
+        statusEndpoint: {{ statusEndpoint | tojson }},
         csrfToken: {{ csrf_token() | tojson }},
         lang: {{ (lang or current_lang) | tojson }},
       };

@@ -14,8 +14,8 @@ export const AttachedFileRow = ({
 }) => {
   const isInProgress =
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
-    file.status === ATTACHMENT_STATUSES.PENDING_SCAN;
-  const isMalware = file.status === ATTACHMENT_STATUSES.MALWARE;
+    file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
+  const isMalware = file.status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
   const fileNameNode = (
     <span title={file.name} className="attachment-file-name-truncate">
       {file.name}
