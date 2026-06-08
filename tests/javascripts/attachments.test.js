@@ -106,8 +106,8 @@ describe("attachments - summarizeStatuses", () => {
   test("returns grouped summary text", () => {
     const files = [
       { status: ATTACHMENT_STATUSES.UPLOADING },
-      { status: ATTACHMENT_STATUSES.PENDING_SCAN },
-      { status: ATTACHMENT_STATUSES.ATTACHED },
+      { status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
       { status: ATTACHMENT_STATUSES.UPLOAD_FAILED },
     ];
 
@@ -116,8 +116,8 @@ describe("attachments - summarizeStatuses", () => {
 
   test("summarizes attached-only files with proper pluralization", () => {
     const files = [
-      { status: ATTACHMENT_STATUSES.ATTACHED },
-      { status: ATTACHMENT_STATUSES.ATTACHED },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
     ];
 
     expect(summarizeStatuses(files)).toBe("2 files attached");
@@ -127,7 +127,7 @@ describe("attachments - summarizeStatuses", () => {
     const files = [
       { status: ATTACHMENT_STATUSES.UPLOADING },
       { status: ATTACHMENT_STATUSES.UPLOADING },
-      { status: ATTACHMENT_STATUSES.PENDING_SCAN },
+      { status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN },
     ];
 
     expect(summarizeStatuses(files)).toBe("2 files uploading, 1 file scanning");
@@ -135,7 +135,7 @@ describe("attachments - summarizeStatuses", () => {
 
   test("groups malware and upload-failed into issues bucket", () => {
     const files = [
-      { status: ATTACHMENT_STATUSES.MALWARE },
+      { status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED },
       { status: ATTACHMENT_STATUSES.UPLOAD_FAILED },
     ];
 
@@ -151,7 +151,7 @@ describe("attachments - render contracts", () => {
           file: {
             id: "file-a",
             name: "duplicate-name.pdf",
-            status: ATTACHMENT_STATUSES.ATTACHED,
+            status: ATTACHMENT_STATUSES.UPLOADED,
           },
           isConfirmingRemoval: false,
           onRequestRemove: () => {},
@@ -162,7 +162,7 @@ describe("attachments - render contracts", () => {
           file: {
             id: "file-b",
             name: "duplicate-name.pdf",
-            status: ATTACHMENT_STATUSES.PENDING_SCAN,
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
           },
           isConfirmingRemoval: false,
           onRequestRemove: () => {},
@@ -187,7 +187,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-1",
           name: "Filename.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -207,7 +207,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "malware-1",
           name: "document_with_malware.pdf",
-          status: ATTACHMENT_STATUSES.MALWARE,
+          status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -226,7 +226,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-2",
           name: "Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -244,7 +244,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-download-2",
           name: "remove-me.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},
@@ -263,7 +263,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-malware-remove-1",
           name: "document_with_malware.pdf",
-          status: ATTACHMENT_STATUSES.MALWARE,
+          status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED,
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},
@@ -323,11 +323,11 @@ describe("attachments - render contracts", () => {
 describe("attachments - useAttachments", () => {
   const originalActEnvironment = global.IS_REACT_ACT_ENVIRONMENT;
 
-  const setupHookHarness = (initialFiles = []) => {
+  const setupHookHarness = (initialFiles = [], fetchFileStatus = null) => {
     let latest = null;
 
     const HookHarness = ({ files }) => {
-      latest = useAttachments(files);
+      latest = useAttachments(files, undefined, fetchFileStatus);
       return null;
     };
 
@@ -373,7 +373,7 @@ describe("attachments - useAttachments", () => {
     await act(async () => {
       await harness.getState().attachFiles(
         [{ name: "document-id.pdf", size: 2468 }],
-        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED, document_id: "file-456" }],
+        async () => [{ status: ATTACHMENT_STATUSES.UPLOADED, document_id: "file-456" }],
       );
     });
 
@@ -383,8 +383,62 @@ describe("attachments - useAttachments", () => {
     });
 
     const [file] = harness.getState().files;
-    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
     expect(file.id).toBe("file-456");
+
+    harness.cleanup();
+  });
+
+  test("normalizes pending_virus_scan initial files to scanning", async () => {
+    const harness = setupHookHarness([
+      {
+        id: "file-999",
+        name: "persisted.pdf",
+          status: "pending_virus_scan",
+      },
+    ]);
+
+    const { files, pendingCount } = harness.getState();
+
+    expect(files).toHaveLength(1);
+    expect(files[0].status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+    expect(pendingCount).toBe(1);
+
+    harness.cleanup();
+  });
+
+  test("polls pending_scan files until the backend finishes scanning", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "uploaded" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-777",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    const [file] = harness.getState().files;
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
+    expect(file.id).toBe("file-777");
 
     harness.cleanup();
   });

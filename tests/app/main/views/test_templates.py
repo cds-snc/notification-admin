@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from unittest.mock import ANY, MagicMock, Mock, patch
+from uuid import UUID
 
 import pytest
 from flask import url_for
@@ -51,6 +52,7 @@ from tests.conftest import (
     fake_uuid,
     mock_get_service_template_with_process_type,
     normalize_spaces,
+    set_config,
 )
 
 DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
@@ -764,6 +766,38 @@ def test_should_show_attachments_widget_on_email_template_page(
     mock_get_template_folders,
     mock_get_limit_stats,
     fake_uuid,
+    app_,
+    service_one,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is not None
+    assert "viewTemplateAttachmentsNoop" not in str(page)
+    assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.remove_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.template_attachment_status", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+
+
+def test_should_not_show_attachments_widget_without_send_files_permission(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
     mocker,
 ):
     current_user.verified_phonenumber = True
@@ -772,17 +806,45 @@ def test_should_show_attachments_widget_on_email_template_page(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    page = client_request.get(
-        ".view_template",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-        _test_page_title=False,
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is None
+
+
+def test_template_attachment_status_route_returns_file_status(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mock_get_file_status = mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_status",
+        return_value={"status": "pending_virus_scan", "document_id": "file-1"},
     )
 
-    assert page.select_one("#template-attachments") is not None
-    assert "viewTemplateAttachmentsNoop" not in str(page)
-    assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
-    assert url_for("main.remove_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    response = client_request.get(
+        ".template_attachment_status",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        file_id="file-1",
+        _test_page_title=False,
+        _return_response=True,
+    )
+
+    assert response.get_json() == {"status": "pending_virus_scan", "document_id": "file-1"}
+    mock_get_file_status.assert_called_once_with(UUID(fake_uuid), "file-1")
 
 
 def test_should_show_logos_on_template_page(
