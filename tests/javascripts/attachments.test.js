@@ -144,6 +144,49 @@ describe("attachments - summarizeStatuses", () => {
 });
 
 describe("attachments - render contracts", () => {
+  test("uploaded file renders download link when download endpoint is configured", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-download-1",
+          name: "report.pdf",
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        downloadEndpoint: "/services/service-1/templates/template-1/attachments/download",
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="attachment-download-link"');
+    expect(html).toContain('href="/services/service-1/templates/template-1/attachments/download/file-download-1"');
+  });
+
+  test.each([
+    [ATTACHMENT_STATUSES.UPLOADING],
+    [ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN],
+    [ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED],
+  ])("%s status does not render a download link", (status) => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-no-download-1",
+          name: "no-download.pdf",
+          status,
+        },
+        downloadEndpoint: "/services/service-1/templates/template-1/attachments/download",
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain('data-testid="attachment-download-link"');
+  });
+
   test("renders duplicate filenames as separate rows when ids differ", () => {
     const html = renderToStaticMarkup(
       React.createElement(React.Fragment, null,

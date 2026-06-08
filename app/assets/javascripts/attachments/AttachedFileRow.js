@@ -8,6 +8,7 @@ export const AttachedFileRow = ({
   file,
   copy = DEFAULT_COPY,
   isConfirmingRemoval,
+  downloadEndpoint,
   onRequestRemove,
   onConfirmRemove,
   onCancelRemove,
@@ -16,7 +17,22 @@ export const AttachedFileRow = ({
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
     file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
   const isMalware = file.status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
-  const fileNameNode = (
+  const downloadHref = downloadEndpoint
+    ? `${downloadEndpoint}/${encodeURIComponent(file.id)}`
+    : null;
+  const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
+
+  const fileNameNode = canDownload ? (
+    <a
+      href={downloadHref}
+      download={file.name}
+      className="attachment-file-name-truncate"
+      title={file.name}
+      data-testid="attachment-download-link"
+    >
+      {file.name}
+    </a>
+  ) : (
     <span title={file.name} className="attachment-file-name-truncate">
       {file.name}
     </span>

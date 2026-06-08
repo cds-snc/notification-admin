@@ -99,7 +99,8 @@
         url_for('main.terms'),
         url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
         url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
-        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id)
+        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
+        url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
       ) }}
     </div>
   {% endif %}

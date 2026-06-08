@@ -13,6 +13,7 @@ export const AttachmentsWidget = ({
   attachEndpoint,
   removeEndpoint,
   statusEndpoint,
+  downloadEndpoint,
   csrfToken,
   lang = "en",
   classificationUrl,
@@ -151,6 +152,7 @@ export const AttachmentsWidget = ({
                 }
               }}
               onCancelRemove={() => setRemoveCandidateId(null)}
+              downloadEndpoint={downloadEndpoint}
               copy={copy}
             />
           ))}

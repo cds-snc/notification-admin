@@ -57,6 +57,16 @@ class TestFileApiClient:
             {"status": "uploaded"},
         )
 
+    def test_get_file_contents_returns_stub_example_file(self):
+        client = FileApiClient()
+
+        ret = client.get_file_contents("template-id", "file-id")
+
+        assert ret["filename"] == "example-file-id.txt"
+        assert ret["mime_type"] == "text/plain"
+        assert b"template-id" in ret["content"]
+        assert b"file-id" in ret["content"]
+
 
 def test_singleton_client_exposes_methods():
     assert file_api_client is not None

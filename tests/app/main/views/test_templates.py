@@ -790,6 +790,7 @@ def test_should_show_attachments_widget_on_email_template_page(
     assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
     assert url_for("main.remove_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
     assert url_for("main.template_attachment_status", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.download_template_attachment", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
 
 
 def test_should_not_show_attachments_widget_without_send_files_permission(
@@ -845,6 +846,43 @@ def test_template_attachment_status_route_returns_file_status(
 
     assert response.get_json() == {"status": "pending_virus_scan", "document_id": "file-1"}
     mock_get_file_status.assert_called_once_with(UUID(fake_uuid), "file-1")
+
+
+def test_template_attachment_download_route_returns_file(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mock_get_file_contents = mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_contents",
+        return_value={
+            "filename": "example-file-1.txt",
+            "mime_type": "text/plain",
+            "content": b"example content",
+        },
+    )
+
+    response = client_request.get(
+        ".download_template_attachment",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        file_id="file-1",
+        _test_page_title=False,
+        _return_response=True,
+    )
+
+    assert response.status_code == 200
+    assert response.mimetype == "text/plain"
+    assert response.data == b"example content"
+    assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
+    mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
 
 
 def test_should_show_logos_on_template_page(

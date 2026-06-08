@@ -5,6 +5,7 @@ from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import (
+    Response,
     abort,
     current_app,
     flash,
@@ -278,6 +279,30 @@ def remove_files(service_id, template_id, file_id=None):
 def template_attachment_status(service_id, template_id, file_id=None):
     file_id = file_id or request.args.get("file_id")
     return jsonify(file_api_client.get_file_status(template_id, file_id))
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions()
+def download_template_attachment(service_id, template_id, file_id=None):
+    file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
+    file_payload = file_api_client.get_file_contents(template_id, file_id)
+    file_name = file_payload["filename"]
+
+    return Response(
+        file_payload["content"],
+        mimetype=file_payload["mime_type"],
+        headers={"Content-Disposition": f'attachment; filename="{file_name}"'},
+    )
 
 
 @main.route("/services/<service_id>/templates/<uuid:template_id>/preview", methods=["GET", "POST"])
