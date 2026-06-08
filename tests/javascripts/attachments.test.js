@@ -388,4 +388,26 @@ describe("attachments - useAttachments", () => {
 
     harness.cleanup();
   });
+
+  test("preserves document_id on attached files", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "document-id.pdf", size: 2468 }],
+        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED, document_id: "file-456" }],
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
+    expect(file.id).toBe("file-456");
+
+    harness.cleanup();
+  });
 });
