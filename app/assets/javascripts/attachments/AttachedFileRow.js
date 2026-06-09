@@ -16,6 +16,7 @@ export const AttachedFileRow = ({
   const isInProgress =
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
     file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
+  const isUploaded = file.status === ATTACHMENT_STATUSES.UPLOADED;
   const isMalware = file.status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
   const downloadHref = downloadEndpoint
     ? `${downloadEndpoint}/${encodeURIComponent(file.id)}`
@@ -33,7 +34,7 @@ export const AttachedFileRow = ({
       {file.name}
     </a>
   ) : (
-    <span title={file.name} className="attachment-file-name-truncate">
+    <span className="attachment-file-name-truncate">
       {file.name}
     </span>
   );
@@ -46,10 +47,12 @@ export const AttachedFileRow = ({
       {isConfirmingRemoval ? (
         <div className="p-4" role="alert">
           <p className="heading-small mt-0 mb-3">{copy.removeConfirmTitle}</p>
-          <p className="mb-3 mt-0">
-            {copy.removeConfirmBodyPrefix} '{fileNameNode}'{" "}
-            {copy.removeConfirmBodySuffix}
-          </p>
+          {isUploaded ? (
+            <p className="mb-3 mt-0">
+              {copy.removeConfirmBodyPrefix} '{fileNameNode}'{" "}
+              {copy.removeConfirmBodySuffix}
+            </p>
+          ) : null}
           <div className="flex gap-4 mt-6">
             <button
               type="button"
