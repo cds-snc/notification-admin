@@ -168,7 +168,6 @@ def create_app(application):
         cache,
         # API clients
         api_key_api_client,
-        file_api_client,
         billing_api_client,
         complaint_api_client,
         email_branding_client,
