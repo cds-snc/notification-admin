@@ -585,9 +585,7 @@ describe("attachments - useAttachments", () => {
       jest.advanceTimersByTime(1800);
     });
 
-    const [file] = harness.getState().files;
-    expect(file.id).toBeDefined();
-    expect(file.status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+    expect(harness.getState().files).toHaveLength(0);
 
     harness.cleanup();
   });
@@ -615,6 +613,25 @@ describe("attachments - useAttachments", () => {
     const [file] = harness.getState().files;
     expect(file.id).toBe("file-unknown-status-1");
     expect(file.status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+
+    harness.cleanup();
+  });
+
+  test("does not render file when upload response has no id", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "missing-id.pdf", size: 2048 }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          },
+        ],
+      );
+    });
+
+    expect(harness.getState().files).toHaveLength(0);
 
     harness.cleanup();
   });
