@@ -27,8 +27,9 @@ export const ATTACHMENT_STATUSES = {
   UPLOADED: "uploaded",
   VIRUS_SCAN_FAILED: "virus_scan_failed",
   DELETED: "deleted",
-  UPLOAD_FAILED: "upload-failed",
 };
+
+const VALID_ATTACHMENT_STATUSES = new Set(Object.values(ATTACHMENT_STATUSES));
 
 const FILE_STATUS_POLL_INTERVAL_MS = 2000;
 
@@ -100,36 +101,12 @@ const nextId = () => {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
-const normalizeStatus = (status) => {
-  if (status === "pending_virus_scan") {
-    return ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
-  }
-
-  if (status === "virus_scan_failed") {
-    return ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
-  }
-
-  if (status === "uploaded") {
-    return ATTACHMENT_STATUSES.UPLOADED;
-  }
-
-  if (
-    status === ATTACHMENT_STATUSES.UPLOADING ||
-    status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN ||
-    status === ATTACHMENT_STATUSES.UPLOADED ||
-    status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED ||
-    status === ATTACHMENT_STATUSES.DELETED ||
-    status === ATTACHMENT_STATUSES.UPLOAD_FAILED
-  ) {
-    return status;
-  }
-
-  return ATTACHMENT_STATUSES.UPLOADED;
-};
+const parseApiStatus = (status, fallbackStatus) =>
+  VALID_ATTACHMENT_STATUSES.has(status) ? status : fallbackStatus;
 
 const normalizeFile = (file) => ({
   ...file,
-  status: normalizeStatus(file.status),
+  status: parseApiStatus(file.status, ATTACHMENT_STATUSES.DELETED),
 });
 
 export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
@@ -224,7 +201,10 @@ export const useAttachments = (
         try {
           const response = await fetchFileStatus(file.id);
           const responseData = response?.data || response;
-          const nextStatus = normalizeStatus(responseData?.status);
+          const nextStatus = parseApiStatus(
+            responseData?.status,
+            ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          );
 
           if (nextStatus === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN) {
             const timeoutId = setTimeout(poll, FILE_STATUS_POLL_INTERVAL_MS);
@@ -239,8 +219,8 @@ export const useAttachments = (
                 ? {
                     ...currentFile,
                     id:
-                      responseData?.document_id ||
                       responseData?.id ||
+                      responseData?.document_id ||
                       currentFile.id,
                     status: nextStatus,
                     sourceFile: undefined,
@@ -317,18 +297,24 @@ export const useAttachments = (
         callbackResult = await onAttachFiles(selectedFiles);
       }
 
+      const callbackItems = Array.isArray(callbackResult) ? callbackResult : [];
+
       const resultById = new Map();
-      if (Array.isArray(callbackResult)) {
-        callbackResult.forEach((item, index) => {
+      if (callbackItems.length) {
+        callbackItems.forEach((item, index) => {
           const preparedFile = prepared[index];
           if (!preparedFile) {
             return;
           }
 
-          const status = normalizeStatus(item?.status);
+          const itemData = item?.data || item;
+          const status = parseApiStatus(
+            itemData?.status,
+            ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          );
 
           resultById.set(preparedFile.id, {
-            id: item.document_id,
+            id: itemData?.id || itemData?.document_id,
             status,
           });
         });
@@ -341,7 +327,7 @@ export const useAttachments = (
 
         resultById.set(preparedFile.id, {
           id: preparedFile.id,
-          status: ATTACHMENT_STATUSES.UPLOADED,
+          status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
         });
       });
 
@@ -354,7 +340,7 @@ export const useAttachments = (
 
             const resolvedResult = resultById.get(currentFile.id) || {
               id: currentFile.id,
-              status: ATTACHMENT_STATUSES.UPLOADED,
+              status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
             };
 
             return {
@@ -373,7 +359,7 @@ export const useAttachments = (
             preparedIds.has(currentFile.id)
               ? {
                   ...currentFile,
-                  status: ATTACHMENT_STATUSES.UPLOAD_FAILED,
+                  status: ATTACHMENT_STATUSES.DELETED,
                   sourceFile: undefined,
                 }
               : currentFile,
