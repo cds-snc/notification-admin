@@ -228,13 +228,16 @@ def view_template(service_id, template_id):
     )
 
 
-# TODO: hook these up to the API client when its available
+# Template attachment endpoints (gated by FF_FILE_ATTACHMENTS)
 @main.route(
     "/services/<service_id>/templates/<uuid:template_id>/attachments",
     methods=["POST"],
 )
 @user_has_permissions("manage_templates")
 def attach_files(service_id, template_id):
+    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
+        abort(404)
+
     uploaded_files = request.files.getlist("files")
     created_files = []
 
@@ -267,6 +270,12 @@ def attach_files(service_id, template_id):
 )
 @user_has_permissions("manage_templates")
 def remove_files(service_id, template_id, file_id=None):
+    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
+        abort(404)
+
+    if not file_id:
+        abort(400)
+
     file_api_client.delete_file(template_id, file_id)
     return ("", 204)
 
@@ -281,7 +290,13 @@ def remove_files(service_id, template_id, file_id=None):
 )
 @user_has_permissions("manage_templates")
 def template_attachment_status(service_id, template_id, file_id=None):
+    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
+        abort(404)
+
     file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
     return jsonify(file_api_client.get_file_status(template_id, file_id))
 
 
@@ -295,13 +310,17 @@ def template_attachment_status(service_id, template_id, file_id=None):
 )
 @user_has_permissions("manage_templates")
 def download_template_attachment(service_id, template_id, file_id=None):
+    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
+        abort(404)
+
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
     file_id = file_id or request.args.get("file_id")
     if not file_id:
         abort(400)
 
     file_payload = file_api_client.get_file_contents(template_id, file_id)
     file_name = file_payload["filename"]
-
     return Response(
         file_payload["content"],
         mimetype=file_payload["mime_type"],

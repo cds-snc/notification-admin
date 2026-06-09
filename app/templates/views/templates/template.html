@@ -91,7 +91,7 @@
       </div>
   </div>
 
-  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") %}
+  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
     <div class="mb-16">
       {{ attachments_widget(
         "template-attachments",
