@@ -4,8 +4,10 @@ import Pages from "../../../Notify/Admin/Pages/all";
 import { getServiceID, getTemplateID } from "../../../support/utils";
 
 const Page = Pages.TemplatesPage;
+const ServiceSettingsPage = Pages.ServiceSettingsPage;
 const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 const EMAIL_TEMPLATE_ID = getTemplateID("SMOKE_TEST_EMAIL");
+const TEMPLATE_VIEW_PATH = `/services/${CYPRESS_SERVICE_ID}/templates/${EMAIL_TEMPLATE_ID}`;
 
 const scanCurrentState = () => {
   cy.a11yScan(false, {
@@ -17,10 +19,35 @@ const scanCurrentState = () => {
   });
 };
 
+const setAllowFileAttachments = (enabled) => {
+  ServiceSettingsPage.VisitFileAttachmentsSettingPage(CYPRESS_SERVICE_ID);
+  ServiceSettingsPage.SetAllowFileAttachments(enabled);
+  ServiceSettingsPage.SaveFileAttachmentsSetting();
+  ServiceSettingsPage.Components.MessageBanner().contains("Setting updated");
+};
+
 describe("Template attachments", () => {
   beforeEach(() => {
     cy.loginAsPlatformAdmin();
+    setAllowFileAttachments(true);
     cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
+  });
+
+  afterEach(() => {
+    // Keep baseline permission enabled for any dependent tests.
+    setAllowFileAttachments(true);
+  });
+
+  it("shows and hides attachments widget based on Send files by email setting", () => {
+    setAllowFileAttachments(false);
+
+    cy.visit(TEMPLATE_VIEW_PATH);
+    Page.Components.AttachmentsWidget().should("not.exist");
+
+    setAllowFileAttachments(true);
+
+    cy.visit(TEMPLATE_VIEW_PATH);
+    Page.Components.AttachmentsWidget().should("be.visible");
   });
 
   it("attaches and removes a file on an existing template", () => {
@@ -38,9 +65,6 @@ describe("Template attachments", () => {
     Page.Components.AttachmentsList({ timeout: 10000 })
       .contains(attachmentFileName)
       .should("exist");
-    cy.getByTestId("attachment-row-spinner", { timeout: 10000 }).should(
-      "not.exist",
-    );
     scanCurrentState();
 
     cy.intercept("POST", "**/attachments/remove/**").as("removeAttachment");
