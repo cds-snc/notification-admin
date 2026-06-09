@@ -218,10 +218,6 @@ export const useAttachments = (
               currentFile.id === file.id
                 ? {
                     ...currentFile,
-                    id:
-                      responseData?.id ||
-                      responseData?.document_id ||
-                      currentFile.id,
                     status: nextStatus,
                     sourceFile: undefined,
                   }
@@ -264,31 +260,9 @@ export const useAttachments = (
   );
 
   const attachFiles = async (selectedFiles, onAttachFiles) => {
-    const prepared = selectedFiles.map((file) => ({
-      id: nextId(),
-      name: file.name,
-      size: file.size,
-      status: ATTACHMENT_STATUSES.UPLOADING,
-      sourceFile: file,
-    }));
-
-    if (!prepared.length) {
+    if (!selectedFiles.length) {
       return;
     }
-
-    setFiles((currentFiles) => [...currentFiles, ...prepared]);
-
-    const preparedIds = new Set(prepared.map((file) => file.id));
-
-    schedule(() => {
-      setFiles((currentFiles) =>
-        currentFiles.map((currentFile) =>
-          preparedIds.has(currentFile.id)
-            ? { ...currentFile, status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN }
-            : currentFile,
-        ),
-      );
-    }, 500);
 
     try {
       let callbackResult = null;
@@ -299,73 +273,41 @@ export const useAttachments = (
 
       const callbackItems = Array.isArray(callbackResult) ? callbackResult : [];
 
-      const resultById = new Map();
-      if (callbackItems.length) {
-        callbackItems.forEach((item, index) => {
-          const preparedFile = prepared[index];
-          if (!preparedFile) {
-            return;
-          }
-
-          const itemData = item?.data || item;
-          const status = parseApiStatus(
-            itemData?.status,
-            ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
-          );
-
-          resultById.set(preparedFile.id, {
-            id: itemData?.id || itemData?.document_id,
-            status,
-          });
-        });
+      if (!callbackItems.length) {
+        return;
       }
 
-      prepared.forEach((preparedFile) => {
-        if (resultById.has(preparedFile.id)) {
-          return;
-        }
+      const uploadedFiles = callbackItems
+        .map((item, index) => {
+          const itemData = item?.data || item;
+          const fileId = itemData?.id;
 
-        resultById.set(preparedFile.id, {
-          id: preparedFile.id,
-          status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
-        });
-      });
+          if (!fileId) {
+            return null;
+          }
 
-      schedule(() => {
-        setFiles((currentFiles) =>
-          currentFiles.map((currentFile) => {
-            if (!preparedIds.has(currentFile.id)) {
-              return currentFile;
-            }
+          const sourceFile = selectedFiles[index];
 
-            const resolvedResult = resultById.get(currentFile.id) || {
-              id: currentFile.id,
-              status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
-            };
+          return {
+            id: fileId,
+            name: sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
+            size: sourceFile?.size || itemData?.file_size || 0,
+            status: parseApiStatus(
+              itemData?.status,
+              ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+            ),
+            sourceFile: undefined,
+          };
+        })
+        .filter(Boolean);
 
-            return {
-              ...currentFile,
-              id: resolvedResult.id || currentFile.id,
-              status: resolvedResult.status,
-              sourceFile: undefined,
-            };
-          }),
-        );
-      }, 1800);
+      if (!uploadedFiles.length) {
+        return;
+      }
+
+      setFiles((currentFiles) => [...currentFiles, ...uploadedFiles]);
     } catch (error) {
-      schedule(() => {
-        setFiles((currentFiles) =>
-          currentFiles.map((currentFile) =>
-            preparedIds.has(currentFile.id)
-              ? {
-                  ...currentFile,
-                  status: ATTACHMENT_STATUSES.DELETED,
-                  sourceFile: undefined,
-                }
-              : currentFile,
-          ),
-        );
-      }, 1800);
+      return;
     }
   };
 
