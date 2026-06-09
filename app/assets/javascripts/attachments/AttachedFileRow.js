@@ -34,9 +34,7 @@ export const AttachedFileRow = ({
       {file.name}
     </a>
   ) : (
-    <span className="attachment-file-name-truncate">
-      {file.name}
-    </span>
+    <span className="attachment-file-name-truncate">{file.name}</span>
   );
 
   return (
