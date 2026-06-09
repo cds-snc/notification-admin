@@ -149,6 +149,7 @@ def storybook():
 def storybook_attachments_attach():
     return jsonify([])
 
+
 @main.route("/_storybook/attachments/remove", methods=["POST"])
 @main.route("/_storybook/attachments/remove/<file_id>", methods=["POST"])
 def storybook_attachments_remove(file_id=None):
