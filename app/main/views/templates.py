@@ -204,7 +204,11 @@ def view_template(service_id, template_id):
     template_folder = current_service.get_template_folder(template["folder"])
     template_attachments = []
 
-    if template["template_type"] == "email":
+    if (
+        current_app.config.get("FF_FILE_ATTACHMENTS")
+        and template["template_type"] == "email"
+        and current_service.has_permission("upload_document")
+    ):
         template_attachments = current_service.get_template_attachments(template_id)
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
@@ -229,7 +233,7 @@ def view_template(service_id, template_id):
     "/services/<service_id>/templates/<uuid:template_id>/attachments",
     methods=["POST"],
 )
-@user_has_permissions()
+@user_has_permissions("manage_templates")
 def attach_files(service_id, template_id):
     uploaded_files = request.files.getlist("files")
     created_files = []
@@ -261,7 +265,7 @@ def attach_files(service_id, template_id):
     "/services/<service_id>/templates/<uuid:template_id>/attachments/remove/<file_id>",
     methods=["POST"],
 )
-@user_has_permissions()
+@user_has_permissions("manage_templates")
 def remove_files(service_id, template_id, file_id=None):
     file_api_client.delete_file(template_id, file_id)
     return ("", 204)
@@ -275,7 +279,7 @@ def remove_files(service_id, template_id, file_id=None):
     "/services/<service_id>/templates/<uuid:template_id>/attachments/status/<file_id>",
     methods=["GET"],
 )
-@user_has_permissions()
+@user_has_permissions("manage_templates")
 def template_attachment_status(service_id, template_id, file_id=None):
     file_id = file_id or request.args.get("file_id")
     return jsonify(file_api_client.get_file_status(template_id, file_id))
@@ -289,7 +293,7 @@ def template_attachment_status(service_id, template_id, file_id=None):
     "/services/<service_id>/templates/<uuid:template_id>/attachments/download/<file_id>",
     methods=["GET"],
 )
-@user_has_permissions()
+@user_has_permissions("manage_templates")
 def download_template_attachment(service_id, template_id, file_id=None):
     file_id = file_id or request.args.get("file_id")
     if not file_id:
