@@ -40,9 +40,13 @@ const removeAttachmentIfPresent = (fileName) => {
         return;
       }
 
-      cy.intercept("POST", "**/attachments/remove/**").as("cleanupRemoveAttachment");
+      cy.intercept("POST", "**/attachments/remove/**").as(
+        "cleanupRemoveAttachment",
+      );
       Page.RemoveAttachedFile(fileName);
-      cy.wait("@cleanupRemoveAttachment").its("response.statusCode").should("eq", 204);
+      cy.wait("@cleanupRemoveAttachment")
+        .its("response.statusCode")
+        .should("eq", 204);
     });
   });
 };
