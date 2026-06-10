@@ -13,6 +13,7 @@ class TestFileApiClient:
 
     def test_create_file(self, mocker):
         client = FileApiClient()
+        mocker.patch("app.notify_client.file_api_client.current_user", new=mocker.Mock(id="test-user-id"))
         mock_post = mocker.patch.object(client, "post", return_value={"id": "file-id"})
 
         ret = client.create_file(
@@ -34,6 +35,7 @@ class TestFileApiClient:
                 "mime_type": "application/pdf",
                 "file_size": 1234,
                 "file_data": "Zm9v",
+                "created_by": "test-user-id",
             },
         )
 
