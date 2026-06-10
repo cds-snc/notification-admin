@@ -229,14 +229,18 @@ def view_template(service_id, template_id):
 
 
 # Template attachment endpoints (gated by FF_FILE_ATTACHMENTS)
+def _abort_if_attachments_disabled_for_service():
+    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
+        abort(404)
+
+
 @main.route(
     "/services/<service_id>/templates/<uuid:template_id>/attachments",
     methods=["POST"],
 )
 @user_has_permissions("manage_templates")
 def attach_files(service_id, template_id):
-    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
-        abort(404)
+    _abort_if_attachments_disabled_for_service()
 
     uploaded_files = request.files.getlist("files")
     created_files = []
@@ -270,8 +274,7 @@ def attach_files(service_id, template_id):
 )
 @user_has_permissions("manage_templates")
 def remove_files(service_id, template_id, file_id=None):
-    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
-        abort(404)
+    _abort_if_attachments_disabled_for_service()
 
     if not file_id:
         abort(400)
@@ -290,8 +293,7 @@ def remove_files(service_id, template_id, file_id=None):
 )
 @user_has_permissions("manage_templates")
 def template_attachment_status(service_id, template_id, file_id=None):
-    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
-        abort(404)
+    _abort_if_attachments_disabled_for_service()
 
     file_id = file_id or request.args.get("file_id")
     if not file_id:
@@ -310,8 +312,7 @@ def template_attachment_status(service_id, template_id, file_id=None):
 )
 @user_has_permissions("manage_templates")
 def download_template_attachment(service_id, template_id, file_id=None):
-    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
-        abort(404)
+    _abort_if_attachments_disabled_for_service()
 
     current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
