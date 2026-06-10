@@ -534,6 +534,82 @@ describe("attachments - useAttachments", () => {
     harness.cleanup();
   });
 
+  test("stops polling after status becomes uploaded", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "uploaded" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-stop-uploaded",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    harness.cleanup();
+  });
+
+  test("stops polling after status becomes virus_scan_failed", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "virus_scan_failed" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-stop-malware",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    harness.cleanup();
+  });
+
   test("keeps file in pending_virus_scan when upload callback returns wrapped data response", async () => {
     const harness = setupHookHarness();
 
