@@ -8,6 +8,7 @@ const ServiceSettingsPage = Pages.ServiceSettingsPage;
 const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 const EMAIL_TEMPLATE_ID = getTemplateID("SMOKE_TEST_EMAIL");
 const TEMPLATE_VIEW_PATH = `/services/${CYPRESS_SERVICE_ID}/templates/${EMAIL_TEMPLATE_ID}`;
+const TEST_ATTACHMENT_FILE_NAME = "smoke-test-attachment-e2e.png";
 
 const scanCurrentState = () => {
   cy.a11yScan(false, {
@@ -26,16 +27,38 @@ const setAllowFileAttachments = (enabled) => {
   ServiceSettingsPage.Components.MessageBanner().contains("Setting updated");
 };
 
+const removeAttachmentIfPresent = (fileName) => {
+  cy.visit(TEMPLATE_VIEW_PATH);
+
+  cy.get("body").then(($body) => {
+    if (!$body.find("[data-testid='attachments-list']").length) {
+      return;
+    }
+
+    Page.Components.AttachmentsList().then(($list) => {
+      if (!$list.text().includes(fileName)) {
+        return;
+      }
+
+      cy.intercept("POST", "**/attachments/remove/**").as("cleanupRemoveAttachment");
+      Page.RemoveAttachedFile(fileName);
+      cy.wait("@cleanupRemoveAttachment").its("response.statusCode").should("eq", 204);
+    });
+  });
+};
+
 describe("Template attachments", () => {
   beforeEach(() => {
     cy.loginAsPlatformAdmin();
     setAllowFileAttachments(true);
+    removeAttachmentIfPresent(TEST_ATTACHMENT_FILE_NAME);
     cy.visit(`/services/${CYPRESS_SERVICE_ID}/templates`);
   });
 
   afterEach(() => {
     // Keep baseline permission enabled for any dependent tests.
     setAllowFileAttachments(true);
+    removeAttachmentIfPresent(TEST_ATTACHMENT_FILE_NAME);
   });
 
   it("shows and hides attachments widget based on Send files by email setting", () => {
@@ -50,8 +73,8 @@ describe("Template attachments", () => {
     Page.Components.AttachmentsWidget().should("be.visible");
   });
 
-  it("attaches and removes a file on an existing template", () => {
-    const attachmentFileName = `smoke-test-attachment-${Date.now()}.png`;
+  it.only("attaches and removes a file on an existing template", () => {
+    const attachmentFileName = TEST_ATTACHMENT_FILE_NAME;
 
     Page.SelectTemplateById(CYPRESS_SERVICE_ID, EMAIL_TEMPLATE_ID);
     Page.Components.AttachmentsWidget().should("be.visible");
