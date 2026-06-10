@@ -1,3 +1,5 @@
+from flask_login import current_user
+
 from app.notify_client import NotifyAdminAPIClient
 
 
@@ -10,6 +12,7 @@ class FileApiClient(NotifyAdminAPIClient):
             "mime_type": mime_type,
             "file_size": file_size,
             "file_data": file_data,
+            "created_by": current_user.id,
         }
         return self.post(f"/templates/{template_id}/files", data)
 
