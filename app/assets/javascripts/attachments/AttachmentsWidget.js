@@ -10,7 +10,11 @@ import { getAttachmentTranslations } from "./localization";
 
 export const AttachmentsWidget = ({
   initialFiles = [],
-  onAttachFiles,
+  attachEndpoint,
+  removeEndpoint,
+  statusEndpoint,
+  downloadEndpoint,
+  csrfToken,
   lang = "en",
   classificationUrl,
 }) => {
@@ -19,7 +23,86 @@ export const AttachmentsWidget = ({
   const [removeCandidateId, setRemoveCandidateId] = useState(null);
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
 
-  const { files, attachFiles, removeFile } = useAttachments(initialFiles, copy);
+  const fetchFileStatus = useMemo(() => {
+    if (!statusEndpoint) {
+      return null;
+    }
+
+    return async (fileId) => {
+      const response = await fetch(
+        `${statusEndpoint}/${encodeURIComponent(fileId)}`,
+        {
+          method: "GET",
+          credentials: "same-origin",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch attachment status (${response.status})`,
+        );
+      }
+
+      if (!response.headers.get("content-type")?.includes("application/json")) {
+        return null;
+      }
+
+      return response.json();
+    };
+  }, [statusEndpoint]);
+
+  const { files, attachFiles, removeFile } = useAttachments(
+    initialFiles,
+    copy,
+    fetchFileStatus,
+  );
+
+  const uploadFiles = async (selectedFiles) => {
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("files", file, file.name);
+    });
+
+    const response = await fetch(attachEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: csrfToken
+        ? {
+            "X-CSRFToken": csrfToken,
+          }
+        : undefined,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload attachments (${response.status})`);
+    }
+
+    if (!response.headers.get("content-type")?.includes("application/json")) {
+      return [];
+    }
+
+    return response.json();
+  };
+
+  const deleteFile = async (file) => {
+    const response = await fetch(
+      `${removeEndpoint}/${encodeURIComponent(file.id)}`,
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: csrfToken
+          ? {
+              "X-CSRFToken": csrfToken,
+            }
+          : undefined,
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to remove attachment (${response.status})`);
+    }
+  };
 
   const statusSummary = useMemo(
     () => summarizeStatuses(files, copy),
@@ -34,8 +117,14 @@ export const AttachmentsWidget = ({
       return;
     }
 
-    await attachFiles(result.acceptedFiles, onAttachFiles);
-    setAttachModalOpen(false);
+    try {
+      await attachFiles(result.acceptedFiles, uploadFiles);
+      setAttachModalOpen(false);
+    } catch (error) {
+      setValidationIssues([
+        error.message || "Failed to attach files. Please try again.",
+      ]);
+    }
   };
 
   return (
@@ -50,11 +139,26 @@ export const AttachmentsWidget = ({
               file={file}
               isConfirmingRemoval={removeCandidateId === file.id}
               onRequestRemove={setRemoveCandidateId}
-              onConfirmRemove={(fileId) => {
-                removeFile(fileId);
-                setRemoveCandidateId(null);
+              onConfirmRemove={async (fileId) => {
+                const fileToRemove = files.find(
+                  (currentFile) => currentFile.id === fileId,
+                );
+                if (!fileToRemove) {
+                  setRemoveCandidateId(null);
+                  return;
+                }
+
+                try {
+                  await deleteFile(fileToRemove);
+                  removeFile(fileId);
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setRemoveCandidateId(null);
+                }
               }}
               onCancelRemove={() => setRemoveCandidateId(null)}
+              downloadEndpoint={downloadEndpoint}
               copy={copy}
             />
           ))}

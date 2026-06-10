@@ -106,9 +106,9 @@ describe("attachments - summarizeStatuses", () => {
   test("returns grouped summary text", () => {
     const files = [
       { status: ATTACHMENT_STATUSES.UPLOADING },
-      { status: ATTACHMENT_STATUSES.PENDING_SCAN },
-      { status: ATTACHMENT_STATUSES.ATTACHED },
-      { status: ATTACHMENT_STATUSES.UPLOAD_FAILED },
+      { status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
+      { status: ATTACHMENT_STATUSES.DELETED },
     ];
 
     expect(summarizeStatuses(files)).toBe("1 file uploading, 1 file scanning, 1 file attached, 1 file not attached");
@@ -116,8 +116,8 @@ describe("attachments - summarizeStatuses", () => {
 
   test("summarizes attached-only files with proper pluralization", () => {
     const files = [
-      { status: ATTACHMENT_STATUSES.ATTACHED },
-      { status: ATTACHMENT_STATUSES.ATTACHED },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
+      { status: ATTACHMENT_STATUSES.UPLOADED },
     ];
 
     expect(summarizeStatuses(files)).toBe("2 files attached");
@@ -127,16 +127,16 @@ describe("attachments - summarizeStatuses", () => {
     const files = [
       { status: ATTACHMENT_STATUSES.UPLOADING },
       { status: ATTACHMENT_STATUSES.UPLOADING },
-      { status: ATTACHMENT_STATUSES.PENDING_SCAN },
+      { status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN },
     ];
 
     expect(summarizeStatuses(files)).toBe("2 files uploading, 1 file scanning");
   });
 
-  test("groups malware and upload-failed into issues bucket", () => {
+  test("groups malware and deleted into issues bucket", () => {
     const files = [
-      { status: ATTACHMENT_STATUSES.MALWARE },
-      { status: ATTACHMENT_STATUSES.UPLOAD_FAILED },
+      { status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED },
+      { status: ATTACHMENT_STATUSES.DELETED },
     ];
 
     expect(summarizeStatuses(files)).toBe("2 files not attached");
@@ -144,6 +144,49 @@ describe("attachments - summarizeStatuses", () => {
 });
 
 describe("attachments - render contracts", () => {
+  test("uploaded file renders download link when download endpoint is configured", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-download-1",
+          name: "report.pdf",
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        downloadEndpoint: "/services/service-1/templates/template-1/attachments/download",
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="attachment-download-link"');
+    expect(html).toContain('href="/services/service-1/templates/template-1/attachments/download/file-download-1"');
+  });
+
+  test.each([
+    [ATTACHMENT_STATUSES.UPLOADING],
+    [ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN],
+    [ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED],
+  ])("%s status does not render a download link", (status) => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-no-download-1",
+          name: "no-download.pdf",
+          status,
+        },
+        downloadEndpoint: "/services/service-1/templates/template-1/attachments/download",
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain('data-testid="attachment-download-link"');
+  });
+
   test("renders duplicate filenames as separate rows when ids differ", () => {
     const html = renderToStaticMarkup(
       React.createElement(React.Fragment, null,
@@ -151,7 +194,7 @@ describe("attachments - render contracts", () => {
           file: {
             id: "file-a",
             name: "duplicate-name.pdf",
-            status: ATTACHMENT_STATUSES.ATTACHED,
+            status: ATTACHMENT_STATUSES.UPLOADED,
           },
           isConfirmingRemoval: false,
           onRequestRemove: () => {},
@@ -162,7 +205,7 @@ describe("attachments - render contracts", () => {
           file: {
             id: "file-b",
             name: "duplicate-name.pdf",
-            status: ATTACHMENT_STATUSES.PENDING_SCAN,
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
           },
           isConfirmingRemoval: false,
           onRequestRemove: () => {},
@@ -187,7 +230,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-1",
           name: "Filename.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -207,7 +250,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "malware-1",
           name: "document_with_malware.pdf",
-          status: ATTACHMENT_STATUSES.MALWARE,
+          status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -226,7 +269,7 @@ describe("attachments - render contracts", () => {
         file: {
           id: "file-2",
           name: "Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: false,
         onRequestRemove: () => {},
@@ -238,34 +281,13 @@ describe("attachments - render contracts", () => {
     expect(html).toContain('class="attachment-file-name-truncate"');
   });
 
-  test("attached file renders clickable download link", () => {
-    const html = renderToStaticMarkup(
-      React.createElement(AttachedFileRow, {
-        file: {
-          id: "file-download-1",
-          name: "downloadable.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
-          downloadUrl: "/storybook/downloads/downloadable.pdf",
-        },
-        isConfirmingRemoval: false,
-        onRequestRemove: () => {},
-        onConfirmRemove: () => {},
-        onCancelRemove: () => {},
-      }),
-    );
-
-    expect(html).toContain('data-testid="attachment-download-link"');
-    expect(html).toContain('href="/storybook/downloads/downloadable.pdf"');
-  });
-
-  test("remove confirmation keeps filename downloadable when available", () => {
+  test("remove confirmation shows filename text", () => {
     const html = renderToStaticMarkup(
       React.createElement(AttachedFileRow, {
         file: {
           id: "file-download-2",
           name: "remove-me.pdf",
-          status: ATTACHMENT_STATUSES.ATTACHED,
-          downloadUrl: "/storybook/downloads/remove-me.pdf",
+          status: ATTACHMENT_STATUSES.UPLOADED,
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},
@@ -274,18 +296,18 @@ describe("attachments - render contracts", () => {
       }),
     );
 
+    expect(html).toContain("remove-me.pdf");
     expect(html).toContain("Download a copy of");
-    expect(html).toContain('data-testid="attachment-download-link"');
-    expect(html).toContain('href="/storybook/downloads/remove-me.pdf"');
+    expect(html).not.toContain('data-testid="attachment-download-link"');
   });
 
-  test("malware remove confirmation omits download prompt", () => {
+  test("malware remove confirmation does not show download prompt text", () => {
     const html = renderToStaticMarkup(
       React.createElement(AttachedFileRow, {
         file: {
           id: "file-malware-remove-1",
           name: "document_with_malware.pdf",
-          status: ATTACHMENT_STATUSES.MALWARE,
+          status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED,
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},
@@ -298,14 +320,32 @@ describe("attachments - render contracts", () => {
     expect(html).not.toContain('data-testid="attachment-download-link"');
   });
 
-  test("uploading remove confirmation omits download prompt", () => {
+  test("uploading remove confirmation does not show download prompt text", () => {
     const html = renderToStaticMarkup(
       React.createElement(AttachedFileRow, {
         file: {
           id: "file-uploading-remove-1",
           name: "still-uploading.pdf",
           status: ATTACHMENT_STATUSES.UPLOADING,
-          downloadUrl: "/storybook/downloads/still-uploading.pdf",
+        },
+        isConfirmingRemoval: true,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain("Download a copy of");
+    expect(html).not.toContain('data-testid="attachment-download-link"');
+  });
+
+  test("pending scan remove confirmation does not show download prompt text", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-pending-remove-1",
+          name: "pending-scan.pdf",
+          status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
         },
         isConfirmingRemoval: true,
         onRequestRemove: () => {},
@@ -344,14 +384,13 @@ describe("attachments - render contracts", () => {
 });
 
 describe("attachments - useAttachments", () => {
-  const originalUrl = global.URL;
   const originalActEnvironment = global.IS_REACT_ACT_ENVIRONMENT;
 
-  const setupHookHarness = (initialFiles = []) => {
+  const setupHookHarness = (initialFiles = [], fetchFileStatus = null) => {
     let latest = null;
 
     const HookHarness = ({ files }) => {
-      latest = useAttachments(files);
+      latest = useAttachments(files, undefined, fetchFileStatus);
       return null;
     };
 
@@ -384,25 +423,20 @@ describe("attachments - useAttachments", () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
-    global.URL = {
-      createObjectURL: jest.fn(() => "blob:generated-object-url"),
-      revokeObjectURL: jest.fn(),
-    };
   });
 
   afterEach(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
-    global.URL = originalUrl;
   });
 
-  test("maps callback download_url to file downloadUrl", async () => {
+  test("uses id from upload response", async () => {
     const harness = setupHookHarness();
 
     await act(async () => {
       await harness.getState().attachFiles(
-        [{ name: "server-link.pdf", size: 1234 }],
-        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED, download_url: "/download/server-link.pdf" }],
+        [{ name: "document-id.pdf", size: 2468 }],
+        async () => [{ status: ATTACHMENT_STATUSES.UPLOADED, id: "file-456" }],
       );
     });
 
@@ -412,20 +446,25 @@ describe("attachments - useAttachments", () => {
     });
 
     const [file] = harness.getState().files;
-    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
-    expect(file.downloadUrl).toBe("/download/server-link.pdf");
-    expect(global.URL.createObjectURL).not.toHaveBeenCalled();
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
+    expect(file.id).toBe("file-456");
 
     harness.cleanup();
   });
 
-  test("uses object URL fallback for attached file when callback omits URL", async () => {
+  test("prefers id over document_id when both are present", async () => {
     const harness = setupHookHarness();
 
     await act(async () => {
       await harness.getState().attachFiles(
-        [{ name: "fallback.pdf", size: 4321 }],
-        async () => [{ status: ATTACHMENT_STATUSES.ATTACHED }],
+        [{ name: "both-ids.pdf", size: 2468 }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+            id: "file-id-preferred",
+            document_id: "document-id-secondary",
+          },
+        ],
       );
     });
 
@@ -435,21 +474,156 @@ describe("attachments - useAttachments", () => {
     });
 
     const [file] = harness.getState().files;
-    expect(file.status).toBe(ATTACHMENT_STATUSES.ATTACHED);
-    expect(file.downloadUrl).toBe("blob:generated-object-url");
-    expect(file.isObjectUrl).toBe(true);
-    expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
+    expect(file.id).toBe("file-id-preferred");
+    expect(file.status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
 
     harness.cleanup();
   });
 
-  test("does not keep a download URL for malware status", async () => {
+  test("normalizes pending_virus_scan initial files to scanning", async () => {
+    const harness = setupHookHarness([
+      {
+        id: "file-999",
+        name: "persisted.pdf",
+          status: "pending_virus_scan",
+      },
+    ]);
+
+    const { files, pendingCount } = harness.getState();
+
+    expect(files).toHaveLength(1);
+    expect(files[0].status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+    expect(pendingCount).toBe(1);
+
+    harness.cleanup();
+  });
+
+  test("polls pending_scan files until the backend finishes scanning", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "uploaded" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-777",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    const [file] = harness.getState().files;
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
+    expect(file.id).toBe("file-777");
+
+    harness.cleanup();
+  });
+
+  test("stops polling after status becomes uploaded", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "uploaded" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-stop-uploaded",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    harness.cleanup();
+  });
+
+  test("stops polling after status becomes virus_scan_failed", async () => {
+    const fetchFileStatus = jest
+      .fn()
+      .mockResolvedValueOnce({ status: "pending_virus_scan" })
+      .mockResolvedValueOnce({ status: "virus_scan_failed" });
+
+    const harness = setupHookHarness(
+      [
+        {
+          id: "file-stop-malware",
+          name: "pending.pdf",
+          status: "pending_virus_scan",
+        },
+      ],
+      fetchFileStatus,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
+      await Promise.resolve();
+    });
+
+    expect(fetchFileStatus).toHaveBeenCalledTimes(2);
+
+    harness.cleanup();
+  });
+
+  test("keeps file in pending_virus_scan when upload callback returns wrapped data response", async () => {
     const harness = setupHookHarness();
 
     await act(async () => {
       await harness.getState().attachFiles(
-        [{ name: "unsafe.pdf", size: 567 }],
-        async () => [{ status: ATTACHMENT_STATUSES.MALWARE, download_url: "/download/unsafe.pdf" }],
+        [{ name: "wrapped-pending.pdf", size: 2048 }],
+        async () => [
+          {
+            data: {
+              id: "file-wrapped-1",
+              status: "pending_virus_scan",
+            },
+          },
+        ],
       );
     });
 
@@ -459,9 +633,105 @@ describe("attachments - useAttachments", () => {
     });
 
     const [file] = harness.getState().files;
-    expect(file.status).toBe(ATTACHMENT_STATUSES.MALWARE);
-    expect(file.downloadUrl).toBeUndefined();
-    expect(global.URL.createObjectURL).not.toHaveBeenCalled();
+    expect(file.id).toBe("file-wrapped-1");
+    expect(file.status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+
+    harness.cleanup();
+  });
+
+  test("keeps file in pending_virus_scan when upload callback returns non-array payload", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "wrapped-list.pdf", size: 1024 }],
+        async () => ({
+          data: [
+            {
+              id: "file-wrapped-list-1",
+              status: "pending_virus_scan",
+            },
+          ],
+        }),
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    expect(harness.getState().files).toHaveLength(0);
+
+    harness.cleanup();
+  });
+
+  test("keeps file in pending_virus_scan when upload callback returns unknown status", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "unknown-status.pdf", size: 2048 }],
+        async () => [
+          {
+            id: "file-unknown-status-1",
+            status: "created",
+          },
+        ],
+      );
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(500);
+      jest.advanceTimersByTime(1800);
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.id).toBe("file-unknown-status-1");
+    expect(file.status).toBe(ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN);
+
+    harness.cleanup();
+  });
+
+  test("does not render file when upload response has no id", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "missing-id.pdf", size: 2048 }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          },
+        ],
+      );
+    });
+
+    expect(harness.getState().files).toHaveLength(0);
+
+    harness.cleanup();
+  });
+
+  test("throws a retry error when upload callback fails", async () => {
+    const harness = setupHookHarness();
+    let thrownError = null;
+
+    await act(async () => {
+      try {
+        await harness.getState().attachFiles(
+          [{ name: "failed-upload.pdf", size: 2048 }],
+          async () => {
+            throw new Error("network error");
+          },
+        );
+      } catch (error) {
+        thrownError = error;
+      }
+    });
+
+    expect(thrownError).toBeTruthy();
+    expect(thrownError.message).toBe("Failed to attach files. Please try again.");
+    expect(harness.getState().files).toHaveLength(0);
 
     harness.cleanup();
   });

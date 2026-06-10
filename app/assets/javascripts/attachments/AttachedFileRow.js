@@ -8,15 +8,19 @@ export const AttachedFileRow = ({
   file,
   copy = DEFAULT_COPY,
   isConfirmingRemoval,
+  downloadEndpoint,
   onRequestRemove,
   onConfirmRemove,
   onCancelRemove,
 }) => {
   const isInProgress =
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
-    file.status === ATTACHMENT_STATUSES.PENDING_SCAN;
-  const isMalware = file.status === ATTACHMENT_STATUSES.MALWARE;
-  const downloadHref = file.downloadUrl || file.download_url || file.url;
+    file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
+  const isUploaded = file.status === ATTACHMENT_STATUSES.UPLOADED;
+  const isMalware = file.status === ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED;
+  const downloadHref = downloadEndpoint
+    ? `${downloadEndpoint}/${encodeURIComponent(file.id)}`
+    : null;
   const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
 
   const fileNameNode = canDownload ? (
@@ -30,9 +34,7 @@ export const AttachedFileRow = ({
       {file.name}
     </a>
   ) : (
-    <span title={file.name} className="attachment-file-name-truncate">
-      {file.name}
-    </span>
+    <span className="attachment-file-name-truncate">{file.name}</span>
   );
 
   return (
@@ -43,7 +45,7 @@ export const AttachedFileRow = ({
       {isConfirmingRemoval ? (
         <div className="p-4" role="alert">
           <p className="heading-small mt-0 mb-3">{copy.removeConfirmTitle}</p>
-          {canDownload ? (
+          {isUploaded ? (
             <p className="mb-3 mt-0">
               {copy.removeConfirmBodyPrefix} '{fileNameNode}'{" "}
               {copy.removeConfirmBodySuffix}

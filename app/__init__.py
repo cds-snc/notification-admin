@@ -71,6 +71,7 @@ from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
 from app.notify_client.email_branding_client import email_branding_client
 from app.notify_client.events_api_client import events_api_client
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.inbound_number_client import inbound_number_client
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.job_api_client import job_api_client
@@ -171,6 +172,7 @@ def create_app(application):
         complaint_api_client,
         email_branding_client,
         events_api_client,
+        file_api_client,
         inbound_number_client,
         invite_api_client,
         job_api_client,

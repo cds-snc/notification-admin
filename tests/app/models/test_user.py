@@ -1,4 +1,5 @@
 import pytest
+from flask import session
 
 from app.models.user import AnonymousUser, User
 
@@ -66,11 +67,11 @@ def test_activate_user_already_active(app_, api_user_active, mock_activate_user)
         (False, None, False),
     ],
 )
-def test_platform_admin_flag_set_in_session(client, mocker, is_platform_admin, value_in_session, expected_result):
-    session_dict = {}
-    if value_in_session is not None:
-        session_dict["disable_platform_admin_view"] = value_in_session
+def test_platform_admin_flag_set_in_session(app_, is_platform_admin, value_in_session, expected_result):
+    with app_.test_request_context("/"):
+        if value_in_session is None:
+            session.pop("disable_platform_admin_view", None)
+        else:
+            session["disable_platform_admin_view"] = value_in_session
 
-    mocker.patch.dict("app.models.user.session", values=session_dict, clear=True)
-
-    assert User({"platform_admin": is_platform_admin}).platform_admin == expected_result
+        assert User({"platform_admin": is_platform_admin}).platform_admin == expected_result
