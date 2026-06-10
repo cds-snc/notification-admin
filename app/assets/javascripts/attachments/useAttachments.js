@@ -308,7 +308,7 @@ export const useAttachments = (
 
       setFiles((currentFiles) => [...currentFiles, ...uploadedFiles]);
     } catch (error) {
-      return;
+      throw new Error("Failed to attach files. Please try again.");
     }
   };
 

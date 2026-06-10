@@ -117,8 +117,14 @@ export const AttachmentsWidget = ({
       return;
     }
 
-    await attachFiles(result.acceptedFiles, uploadFiles);
-    setAttachModalOpen(false);
+    try {
+      await attachFiles(result.acceptedFiles, uploadFiles);
+      setAttachModalOpen(false);
+    } catch (error) {
+      setValidationIssues([
+        error.message || "Failed to attach files. Please try again.",
+      ]);
+    }
   };
 
   return (

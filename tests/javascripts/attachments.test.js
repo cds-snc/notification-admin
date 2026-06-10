@@ -635,4 +635,28 @@ describe("attachments - useAttachments", () => {
 
     harness.cleanup();
   });
+
+  test("throws a retry error when upload callback fails", async () => {
+    const harness = setupHookHarness();
+    let thrownError = null;
+
+    await act(async () => {
+      try {
+        await harness.getState().attachFiles(
+          [{ name: "failed-upload.pdf", size: 2048 }],
+          async () => {
+            throw new Error("network error");
+          },
+        );
+      } catch (error) {
+        thrownError = error;
+      }
+    });
+
+    expect(thrownError).toBeTruthy();
+    expect(thrownError.message).toBe("Failed to attach files. Please try again.");
+    expect(harness.getState().files).toHaveLength(0);
+
+    harness.cleanup();
+  });
 });
