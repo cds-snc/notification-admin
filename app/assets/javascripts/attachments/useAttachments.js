@@ -290,7 +290,8 @@ export const useAttachments = (
 
           return {
             id: fileId,
-            name: sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
+            name:
+              sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
             size: sourceFile?.size || itemData?.file_size || 0,
             status: parseApiStatus(
               itemData?.status,
