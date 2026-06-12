@@ -4,4 +4,4 @@ import "./sitemap/sitemap.cy";
 import "./branding/all.cy";
 import "./template-categories.cy";
 import "./template/attachments.cy";
-import "./component/attachments.cy";
+import "./components/attachments.cy";
