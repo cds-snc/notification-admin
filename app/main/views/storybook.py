@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from flask import jsonify, render_template, request
+from flask import Response, jsonify, render_template, request
 from flask_wtf import FlaskForm as Form
 from wtforms import BooleanField, RadioField, StringField
 from wtforms.validators import DataRequired
@@ -147,10 +147,43 @@ def storybook():
 
 @main.route("/_storybook/attachments/attach", methods=["POST"])
 def storybook_attachments_attach():
-    return jsonify([])
+    uploaded_files = request.files.getlist("files")
+    created_files = []
+
+    for uploaded_file in uploaded_files:
+        filename = uploaded_file.filename or "unnamed-file"
+        name_lower = filename.lower()
+
+        if "malware" in name_lower or "virus" in name_lower:
+            status = "virus_scan_failed"
+        elif "fail" in name_lower or "error" in name_lower:
+            status = "deleted"
+        else:
+            status = "uploaded"
+
+        created_files.append(
+            {
+                "id": filename,
+                "name": filename,
+                "status": status,
+            }
+        )
+
+    return jsonify(created_files)
 
 
 @main.route("/_storybook/attachments/remove", methods=["POST"])
 @main.route("/_storybook/attachments/remove/<file_id>", methods=["POST"])
 def storybook_attachments_remove(file_id=None):
     return ("", 204)
+
+
+@main.route("/storybook/downloads", methods=["GET"])
+@main.route("/storybook/downloads/<file_id>", methods=["GET"])
+def storybook_attachments_download(file_id=None):
+    file_id = file_id or "attachment.txt"
+    return Response(
+        f"Mock Storybook attachment for {file_id}\n".encode("utf-8"),
+        mimetype="text/plain",
+        headers={"Content-Disposition": f'attachment; filename="{file_id}"'},
+    )
