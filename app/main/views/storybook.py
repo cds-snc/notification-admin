@@ -178,8 +178,8 @@ def storybook_attachments_remove(file_id=None):
     return ("", 204)
 
 
-@main.route("/storybook/downloads", methods=["GET"])
-@main.route("/storybook/downloads/<file_id>", methods=["GET"])
+@main.route("/_storybook/attachments/download", methods=["GET"])
+@main.route("/_storybook/attachments/download/<file_id>", methods=["GET"])
 def storybook_attachments_download(file_id=None):
     file_id = file_id or "attachment.txt"
     return Response(
