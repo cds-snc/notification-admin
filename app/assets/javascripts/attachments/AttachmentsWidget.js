@@ -1,0 +1,199 @@
+import React, { useMemo, useState } from "react";
+import { AttachFilesModal } from "./AttachFilesModal";
+import { AttachedFileRow } from "./AttachedFileRow";
+import {
+  summarizeStatuses,
+  useAttachments,
+  validateFiles,
+} from "./useAttachments";
+import { getAttachmentTranslations } from "./localization";
+
+export const AttachmentsWidget = ({
+  initialFiles = [],
+  attachEndpoint,
+  removeEndpoint,
+  statusEndpoint,
+  downloadEndpoint,
+  csrfToken,
+  lang = "en",
+  classificationUrl,
+}) => {
+  const [isAttachModalOpen, setAttachModalOpen] = useState(false);
+  const [validationIssues, setValidationIssues] = useState([]);
+  const [removeCandidateId, setRemoveCandidateId] = useState(null);
+  const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
+
+  const fetchFileStatus = useMemo(() => {
+    if (!statusEndpoint) {
+      return null;
+    }
+
+    return async (fileId) => {
+      const response = await fetch(
+        `${statusEndpoint}/${encodeURIComponent(fileId)}`,
+        {
+          method: "GET",
+          credentials: "same-origin",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch attachment status (${response.status})`,
+        );
+      }
+
+      if (!response.headers.get("content-type")?.includes("application/json")) {
+        return null;
+      }
+
+      return response.json();
+    };
+  }, [statusEndpoint]);
+
+  const { files, attachFiles, removeFile } = useAttachments(
+    initialFiles,
+    copy,
+    fetchFileStatus,
+  );
+
+  const uploadFiles = async (selectedFiles) => {
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("files", file, file.name);
+    });
+
+    const response = await fetch(attachEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: csrfToken
+        ? {
+            "X-CSRFToken": csrfToken,
+          }
+        : undefined,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload attachments (${response.status})`);
+    }
+
+    if (!response.headers.get("content-type")?.includes("application/json")) {
+      return [];
+    }
+
+    return response.json();
+  };
+
+  const deleteFile = async (file) => {
+    const response = await fetch(
+      `${removeEndpoint}/${encodeURIComponent(file.id)}`,
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: csrfToken
+          ? {
+              "X-CSRFToken": csrfToken,
+            }
+          : undefined,
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to remove attachment (${response.status})`);
+    }
+  };
+
+  const statusSummary = useMemo(
+    () => summarizeStatuses(files, copy),
+    [files, copy],
+  );
+
+  const handleAttach = async (selectedFiles) => {
+    const result = validateFiles(selectedFiles, files, copy);
+    setValidationIssues(result.issues);
+
+    if (result.issues.length) {
+      return;
+    }
+
+    try {
+      await attachFiles(result.acceptedFiles, uploadFiles);
+      setAttachModalOpen(false);
+    } catch (error) {
+      setValidationIssues([
+        error.message || "Failed to attach files. Please try again.",
+      ]);
+    }
+  };
+
+  return (
+    <section className="mb-16" data-testid="attachments-widget">
+      <h2 className="heading-medium">{copy.attachedFilesHeading}</h2>
+
+      {files.length ? (
+        <ul className="mt-4 mb-4" data-testid="attachments-list">
+          {files.map((file) => (
+            <AttachedFileRow
+              key={file.id}
+              file={file}
+              isConfirmingRemoval={removeCandidateId === file.id}
+              onRequestRemove={setRemoveCandidateId}
+              onConfirmRemove={async (fileId) => {
+                const fileToRemove = files.find(
+                  (currentFile) => currentFile.id === fileId,
+                );
+                if (!fileToRemove) {
+                  setRemoveCandidateId(null);
+                  return;
+                }
+
+                try {
+                  await deleteFile(fileToRemove);
+                  removeFile(fileId);
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setRemoveCandidateId(null);
+                }
+              }}
+              onCancelRemove={() => setRemoveCandidateId(null)}
+              downloadEndpoint={downloadEndpoint}
+              copy={copy}
+            />
+          ))}
+        </ul>
+      ) : null}
+
+      <div className="flex items-center justify-between gap-4 border-t border-gray-300 pt-4">
+        <p className="hint" data-testid="attachments-summary">
+          {statusSummary}
+        </p>
+        <button
+          type="button"
+          className="button button-secondary"
+          data-testid="attachments-open-modal"
+          onClick={() => setAttachModalOpen(true)}
+        >
+          {files.length ? copy.attachMoreFiles : copy.attachFiles}
+        </button>
+      </div>
+
+      <AttachFilesModal
+        isOpen={isAttachModalOpen}
+        issues={validationIssues}
+        copy={copy}
+        classificationUrl={classificationUrl}
+        onIssuesChange={setValidationIssues}
+        onValidateSelection={(selectedFiles) =>
+          validateFiles(selectedFiles, files, copy)
+        }
+        onClose={() => {
+          setAttachModalOpen(false);
+          setValidationIssues([]);
+        }}
+        onAttach={handleAttach}
+      />
+    </section>
+  );
+};

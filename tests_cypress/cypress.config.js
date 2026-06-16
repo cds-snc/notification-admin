@@ -188,6 +188,13 @@ module.exports = defineConfig({
       framework: "react",
       bundler: "vite",
       viteConfig: {
+        optimizeDeps: {
+          esbuildOptions: {
+            loader: {
+              ".js": "jsx",
+            },
+          },
+        },
         plugins: [jsxInJsFiles()],
       },
     },

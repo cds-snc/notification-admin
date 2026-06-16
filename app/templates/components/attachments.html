@@ -1,0 +1,63 @@
+{% macro attachments_widget(mount_id, initialFiles=None, classificationUrl=None, attachEndpoint=None, removeEndpoint=None, statusEndpoint=None, downloadEndpoint=None, lang=None) %}
+  <div id="{{ mount_id }}"></div>
+  <script nonce="{{ request_nonce }}">
+    (function () {
+      var element = document.getElementById({{ mount_id | tojson }});
+      if (!element) {
+        return;
+      }
+
+      var props = {
+        initialFiles: {{ (initialFiles or []) | tojson }},
+        classificationUrl: {{ (classificationUrl or '#') | tojson }},
+        attachEndpoint: {{ attachEndpoint | tojson }},
+        removeEndpoint: {{ removeEndpoint | tojson }},
+        statusEndpoint: {{ statusEndpoint | tojson }},
+        downloadEndpoint: {{ downloadEndpoint | tojson }},
+        csrfToken: {{ csrf_token() | tojson }},
+        lang: {{ (lang or current_lang) | tojson }},
+      };
+
+      if (!window.attachmentsLoadPromise) {
+        window.attachmentsLoadPromise = new Promise(function (resolve, reject) {
+          if (window.Attachments) {
+            resolve();
+            return;
+          }
+
+          var existingScript = document.getElementById("attachments-widget-script");
+          if (existingScript) {
+            existingScript.addEventListener("load", resolve, { once: true });
+            existingScript.addEventListener(
+              "error",
+              function () {
+                window.attachmentsLoadPromise = null;
+                reject(new Error("Failed to load attachments script"));
+              },
+              { once: true },
+            );
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.id = "attachments-widget-script";
+          script.type = "module";
+          script.src = "{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/attachments/attachments.js{% else %}{{ asset_url('javascripts/attachments.min.js') }}{% endif %}";
+          script.nonce = "{{ request_nonce }}";
+          script.onload = resolve;
+          script.onerror = function () {
+            window.attachmentsLoadPromise = null;
+            reject(new Error("Failed to load attachments script"));
+          };
+          document.head.appendChild(script);
+        });
+      }
+
+      window.attachmentsLoadPromise.then(function () {
+        if (window.Attachments) {
+          window.Attachments.load(element, props);
+        }
+      }).catch(function () {});
+    })();
+  </script>
+{% endmacro %}

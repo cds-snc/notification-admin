@@ -28,7 +28,8 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
         'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 
         'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/',
         'https://www.w3.org',
-        'https://w3.org'
+        'https://w3.org',
+        'laws-lois.justice.gc.ca'
     ];
 
     if (url) {

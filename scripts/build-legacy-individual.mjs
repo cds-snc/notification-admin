@@ -8,7 +8,6 @@
  */
 
 import { build } from "vite";
-import inject from "@rollup/plugin-inject";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -38,14 +37,16 @@ for (const name of files) {
       outDir: path.resolve(root, "app/static/javascripts"),
       emptyOutDir: false,
       minify: true,
+      rolldownOptions: {
+        transform: {
+          inject: {
+            $: ["jquery", "default"],
+            jQuery: ["jquery", "default"],
+            accessibleAutocomplete: ["accessible-autocomplete", "default"],
+          },
+        },
+      },
     },
-    plugins: [
-      inject({
-        $: ["jquery", "default"],
-        jQuery: ["jquery", "default"],
-        accessibleAutocomplete: ["accessible-autocomplete", "default"],
-      }),
-    ],
   });
 }
 

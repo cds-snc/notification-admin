@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/attachments.html" import attachments_widget with context %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/folder-path.html" import folder_path, page_title_folder_path %}
 {% from "components/page-footer.html" import page_footer %}
@@ -44,7 +45,7 @@
   </div>
 
   {% include 'views/templates/_template.html' %}
-
+ 
   <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
       <div class="{% if template.template_type == 'email' %}w-1/2{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
@@ -89,6 +90,20 @@
         {% endif %}
       </div>
   </div>
+
+  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
+    <div class="mb-16">
+      {{ attachments_widget(
+        "template-attachments",
+        template_attachments,
+        url_for('main.terms'),
+        url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
+        url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
+        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
+        url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
+      ) }}
+    </div>
+  {% endif %}
 
   <div class="mb-16">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}
