@@ -348,6 +348,33 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 
+def test_authenticate_security_key_returns_json_when_api_returns_500(client_request, api_nongov_user_active, mocker):
+    """Regression test: API 500s must not bubble up as an HTML 500 from admin."""
+    mocker.patch(
+        "app.user_api_client.authenticate_security_keys",
+        side_effect=HTTPError(response=Mock(status_code=500), message="boom"),
+    )
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_authenticate_security_keys"),
+    )
+    # Upstream 5xx is normalised to 502 to avoid Flask rendering an HTML 500 page
+    assert resp.status_code == 502
+    assert resp.is_json
+    assert "error" in resp.get_json()
+
+
+def test_authenticate_security_key_propagates_4xx_status(client_request, api_nongov_user_active, mocker):
+    mocker.patch(
+        "app.user_api_client.authenticate_security_keys",
+        side_effect=HTTPError(response=Mock(status_code=400), message="No security keys registered"),
+    )
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_authenticate_security_keys"),
+    )
+    assert resp.status_code == 400
+    assert resp.is_json
+
+
 def test_user_profile_add_security_keys_shows_duplicate_message(
     client_request,
     mock_get_user,

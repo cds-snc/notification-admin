@@ -482,7 +482,24 @@ def user_profile_authenticate_security_keys():
         user_id = session["user_details"]["id"]
     else:
         user_id = current_user.id
-    result = user_api_client.authenticate_security_keys(user_id)
+    try:
+        result = user_api_client.authenticate_security_keys(user_id)
+    except HTTPError as e:
+        # The API can return 4xx (e.g. no keys registered) or 5xx (deserialization
+        # or fido2 server failure). Surface a JSON response so the browser-side
+        # FIDO2 flow shows a sensible message instead of dumping an HTML 500 page.
+        current_app.logger.warning(
+            "FIDO2 authenticate_begin failed for user %s: status=%s message=%s",
+            user_id,
+            getattr(e, "status_code", "unknown"),
+            getattr(e, "message", str(e)),
+        )
+        status_code = getattr(e, "status_code", 500) or 500
+        # Normalise unexpected upstream errors to 502 so we don't masquerade as
+        # an admin-level 500 (which would render an HTML traceback page).
+        if status_code >= 500:
+            status_code = 502
+        return jsonify({"error": "Could not start security key authentication"}), status_code
     return jsonify(result["data"])
 
 
