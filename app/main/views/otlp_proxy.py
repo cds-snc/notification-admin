@@ -8,6 +8,7 @@ from app.main import main
 
 OTLP_PROXY_TIMEOUT = 10
 OTLP_SIGNAL_TYPES = {"metrics", "traces"}
+OTLP_SIGNAL_PATHS = {"metrics": "/v1/metrics", "traces": "/v1/traces"}
 OTLP_MAX_PAYLOAD_BYTES = 1 * 1024 * 1024  # 1 MB
 
 
@@ -28,7 +29,7 @@ def otlp_proxy(signal_type):
     if not otlp_base_url:
         current_app.logger.error("[OTEL] OTLP_ENDPOINT is not configured; cannot proxy telemetry")
         return Response(status=503)
-    upstream_url = f"{otlp_base_url}/v1/{signal_type}"
+    upstream_url = otlp_base_url + OTLP_SIGNAL_PATHS[signal_type]
     payload_size = len(request.get_data(cache=True))
     current_app.logger.debug(f"[OTEL] OTLP proxy received {signal_type} export request (payload_bytes={payload_size})")
     request_headers = {}
