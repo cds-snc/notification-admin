@@ -14,7 +14,7 @@ def test_otlp_proxy_forwards_trace_payload_to_upstream(client, mocker):
     )
 
     assert response.status_code == 202
-    assert response.data == b"ok"
+    assert response.data == b""
     post_mock.assert_called_once_with(
         "https://otlp-collector.signoz.svc.cluster.local:4318/v1/traces",
         data=b'{"resourceSpans":[]}',
