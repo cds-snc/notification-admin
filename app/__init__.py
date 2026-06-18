@@ -759,8 +759,7 @@ def useful_headers_after_request(response):
     vite_script_src = " http://localhost:5173" if vite_dev else ""
     otlp_connect_src = ""
     otel_enabled = current_app.config.get("FF_ENABLE_CLIENT_SIDE_OTEL", False)
-    is_telemetry_test_page = request.endpoint == "main.telemetry_test"
-    if otel_enabled or is_telemetry_test_page:
+    if otel_enabled:
         otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
         parsed_otlp_endpoint = urlparse(otlp_endpoint)
         if parsed_otlp_endpoint.scheme and parsed_otlp_endpoint.netloc:
