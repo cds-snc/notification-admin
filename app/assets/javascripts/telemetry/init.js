@@ -8,7 +8,10 @@ import {
   SEMRESATTRS_SERVICE_NAME,
   SEMRESATTRS_SERVICE_VERSION,
 } from "@opentelemetry/semantic-conventions";
-import { MeterProvider, PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
+import {
+  MeterProvider,
+  PeriodicExportingMetricReader,
+} from "@opentelemetry/sdk-metrics";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { FetchInstrumentation } from "@opentelemetry/instrumentation-fetch";
 import { XMLHttpRequestInstrumentation } from "@opentelemetry/instrumentation-xml-http-request";
@@ -24,7 +27,10 @@ const OTLP_PROXY_PATH_PATTERN = /\/otlp-proxy\/v1\/(traces|metrics)$/;
 const toMsEpoch = (relativeTimeMs) => performance.timeOrigin + relativeTimeMs;
 
 const createNavigationSpan = (tracer) => {
-  if (typeof performance === "undefined" || typeof performance.getEntriesByType !== "function") {
+  if (
+    typeof performance === "undefined" ||
+    typeof performance.getEntriesByType !== "function"
+  ) {
     return;
   }
 
@@ -37,17 +43,39 @@ const createNavigationSpan = (tracer) => {
     startTime: toMsEpoch(navigationEntry.startTime),
   });
 
-  pageLoadSpan.setAttribute("browser.navigation.type", navigationEntry.type || "unknown");
-  pageLoadSpan.setAttribute("browser.navigation.protocol", navigationEntry.nextHopProtocol || "unknown");
-  pageLoadSpan.setAttribute("browser.navigation.redirect_count", navigationEntry.redirectCount || 0);
-  pageLoadSpan.setAttribute("browser.navigation.dom_complete_ms", navigationEntry.domComplete || 0);
-  pageLoadSpan.setAttribute("browser.navigation.dom_content_loaded_ms", navigationEntry.domContentLoadedEventEnd || 0);
-  pageLoadSpan.setAttribute("browser.navigation.response_start_ms", navigationEntry.responseStart || 0);
-  pageLoadSpan.setAttribute("browser.navigation.response_end_ms", navigationEntry.responseEnd || 0);
+  pageLoadSpan.setAttribute(
+    "browser.navigation.type",
+    navigationEntry.type || "unknown",
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.protocol",
+    navigationEntry.nextHopProtocol || "unknown",
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.redirect_count",
+    navigationEntry.redirectCount || 0,
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.dom_complete_ms",
+    navigationEntry.domComplete || 0,
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.dom_content_loaded_ms",
+    navigationEntry.domContentLoadedEventEnd || 0,
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.response_start_ms",
+    navigationEntry.responseStart || 0,
+  );
+  pageLoadSpan.setAttribute(
+    "browser.navigation.response_end_ms",
+    navigationEntry.responseEnd || 0,
+  );
 
-  const endTime = navigationEntry.loadEventEnd > 0
-    ? toMsEpoch(navigationEntry.loadEventEnd)
-    : toMsEpoch(performance.now());
+  const endTime =
+    navigationEntry.loadEventEnd > 0
+      ? toMsEpoch(navigationEntry.loadEventEnd)
+      : toMsEpoch(performance.now());
   pageLoadSpan.end(endTime);
 };
 
@@ -69,7 +97,8 @@ const isOtlpRequestUrl = (requestUrl, otlpEndpoint) => {
 
   return getOtlpBaseCandidates(otlpEndpoint).some(
     (candidate) =>
-      requestUrl.startsWith(`${candidate}/v1/traces`) || requestUrl.startsWith(`${candidate}/v1/metrics`)
+      requestUrl.startsWith(`${candidate}/v1/traces`) ||
+      requestUrl.startsWith(`${candidate}/v1/metrics`),
   );
 };
 
@@ -126,7 +155,9 @@ const installOtlpXhrLogging = (otlpEndpoint) => {
     if (isOtlpRequestUrl(this.__otelRequestUrl, otlpEndpoint)) {
       this.addEventListener("loadend", () => {
         if (this.status >= 400) {
-          console.error(`[OTEL] Export XHR failed: ${this.status} ${this.statusText} for ${this.__otelRequestUrl}`);
+          console.error(
+            `[OTEL] Export XHR failed: ${this.status} ${this.statusText} for ${this.__otelRequestUrl}`,
+          );
         }
       });
       this.addEventListener("error", () => {
@@ -149,7 +180,8 @@ const initTelemetry = () => {
   }
 
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
-  const otelServiceName = window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
+  const otelServiceName =
+    window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
   installOtlpFetchLogging(otlpEndpoint);
   installOtlpXhrLogging(otlpEndpoint);
 
@@ -159,36 +191,39 @@ const initTelemetry = () => {
       [SEMRESATTRS_SERVICE_NAME]: otelServiceName,
       [SEMRESATTRS_SERVICE_VERSION]: "0.0.1",
       environment: process.env.VITE_ENV || "development",
-    })
+    }),
   );
 
   // Initialize Trace Provider
   const tracerProvider = new BasicTracerProvider({ resource });
-  
+
   // Create and set context manager globally
   const contextManager = new ZoneContextManager();
   context.setContextManager(contextManager);
-  
+
   // Create and set propagator globally
   const propagator = new CompositePropagator({
     propagators: [new W3CTraceContextPropagator()],
   });
   propagation.setGlobalPropagator(propagator);
-  
+
   // Set tracer provider globally
   trace.setTracerProvider(tracerProvider);
-  
-  const traceUrl = `${otlpEndpoint.replace(/\/$/, '')}/v1/traces`;
+
+  const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
   const traceExporter = new OTLPTraceExporter({ url: traceUrl });
   tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
   // Initialize Metrics Provider
-  const metricsUrl = `${otlpEndpoint.replace(/\/$/, '')}/v1/metrics`;
+  const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;
   const metricReader = new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter({ url: metricsUrl }),
     intervalMillis: 60000,
   });
-  const meterProvider = new MeterProvider({ resource, readers: [metricReader] });
+  const meterProvider = new MeterProvider({
+    resource,
+    readers: [metricReader],
+  });
 
   // Register auto-instrumentations
   registerInstrumentations({
@@ -218,8 +253,11 @@ const initTelemetry = () => {
     createNavigationSpan(tracer);
 
     setTimeout(() => {
-      tracerProvider.forceFlush()
-        .catch((error) => console.error('[OTEL] Trace forceFlush failed:', error));
+      tracerProvider
+        .forceFlush()
+        .catch((error) =>
+          console.error("[OTEL] Trace forceFlush failed:", error),
+        );
     }, 2000);
   }
 
