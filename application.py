@@ -10,7 +10,7 @@ from app import create_app
 load_dotenv()
 
 # Check if OpenTelemetry is enabled via feature flag
-enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "false"
+enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
 
 if not enable_otel:
     # Only use AWS X-Ray when OpenTelemetry is disabled

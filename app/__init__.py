@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from numbers import Number
 from time import monotonic
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import timeago
 from flask import (
@@ -310,6 +310,12 @@ def init_app(application):
 
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
+
+        otel_enabled = application.config["FF_ENABLE_CLIENT_SIDE_OTEL"]
+        otel_upstream_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+        otel_endpoint = "/otlp-proxy" if otel_enabled else otel_upstream_endpoint
+        otel_client_service_name = os.environ.get("OTEL_CLIENT_SERVICE_NAME", "notification-admin-frontend")
+
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
@@ -322,6 +328,9 @@ def init_app(application):
             "limit_reset_time_et": get_limit_reset_time_et(),
             "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
+            "enable_client_side_otel": otel_enabled,
+            "otlp_endpoint": otel_endpoint,
+            "otel_client_service_name": otel_client_service_name,
         }
 
 
@@ -748,6 +757,14 @@ def useful_headers_after_request(response):
     vite_dev = current_app.config.get("VITE_HMR_ENABLED", False)
     vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
     vite_script_src = " http://localhost:5173" if vite_dev else ""
+    otlp_connect_src = ""
+    otel_enabled = current_app.config.get("FF_ENABLE_CLIENT_SIDE_OTEL", False)
+    is_telemetry_test_page = request.endpoint == "main.telemetry_test"
+    if otel_enabled or is_telemetry_test_page:
+        otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+        parsed_otlp_endpoint = urlparse(otlp_endpoint)
+        if parsed_otlp_endpoint.scheme and parsed_otlp_endpoint.netloc:
+            otlp_connect_src = f" {parsed_otlp_endpoint.scheme}://{parsed_otlp_endpoint.netloc}"
     response.headers.add(
         "Report-To",
         """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
@@ -758,7 +775,7 @@ def useful_headers_after_request(response):
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self'{vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             f"script-src-elem 'self'{vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"connect-src 'self'{vite_connect_src} *.google-analytics.com *.googletagmanager.com;"
+            f"connect-src 'self'{vite_connect_src}{otlp_connect_src} *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"

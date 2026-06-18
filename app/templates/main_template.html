@@ -141,6 +141,11 @@
       sms_character_count_over_limit: "{{ _('{} too many characters') }}",
       sms_one_character_count_over_limit: "{{ _('1 too many characters') }}"
     }
+    window.OTEL_CONFIG = {
+      enabled: {{ 'true' if enable_client_side_otel else 'false' }},
+      endpoint: "{{ otlp_endpoint }}",
+      serviceName: "{{ otel_client_service_name }}"
+    }
 
   </script>
   <style title="CSS strings" nonce="{{ request_nonce }}">
