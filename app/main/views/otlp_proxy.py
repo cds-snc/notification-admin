@@ -21,8 +21,9 @@ def otlp_proxy(signal_type):
     if not current_app.config.get("FF_ENABLE_CLIENT_SIDE_OTEL", False):
         abort(404)
 
-    if request.content_length and request.content_length > OTLP_MAX_PAYLOAD_BYTES:
-        current_app.logger.warning(f"[OTEL] OTLP proxy rejected oversized {signal_type} payload ({request.content_length} bytes)")
+    payload = request.get_data(cache=False)
+    if len(payload) > OTLP_MAX_PAYLOAD_BYTES:
+        current_app.logger.warning(f"[OTEL] OTLP proxy rejected oversized {signal_type} payload ({len(payload)} bytes)")
         abort(413)
 
     otlp_base_url = os.environ.get("OTLP_ENDPOINT", "").rstrip("/")
@@ -30,8 +31,7 @@ def otlp_proxy(signal_type):
         current_app.logger.error("[OTEL] OTLP_ENDPOINT is not configured; cannot proxy telemetry")
         return Response(status=503)
     upstream_url = otlp_base_url + OTLP_SIGNAL_PATHS[signal_type]
-    payload_size = len(request.get_data(cache=True))
-    current_app.logger.debug(f"[OTEL] OTLP proxy received {signal_type} export request (payload_bytes={payload_size})")
+    current_app.logger.debug(f"[OTEL] OTLP proxy received {signal_type} export request (payload_bytes={len(payload)})")
     request_headers = {}
 
     for header_name in ("Content-Encoding", "Content-Type", "traceparent", "tracestate", "baggage"):
@@ -42,7 +42,7 @@ def otlp_proxy(signal_type):
     try:
         upstream_response = requests.post(
             upstream_url,
-            data=request.get_data(cache=True),
+            data=payload,
             headers=request_headers,
             timeout=OTLP_PROXY_TIMEOUT,
         )
@@ -54,9 +54,4 @@ def otlp_proxy(signal_type):
         f"[OTEL] OTLP proxy {signal_type} export returned {upstream_response.status_code} from {upstream_url}"
     )
 
-    response_headers = [
-        (header_name, header_value)
-        for header_name, header_value in upstream_response.headers.items()
-        if header_name.lower() not in {"connection", "content-length", "transfer-encoding"}
-    ]
-    return Response(upstream_response.content, status=upstream_response.status_code, headers=response_headers)
+    return Response(status=upstream_response.status_code)

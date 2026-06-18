@@ -179,6 +179,11 @@ const initTelemetry = () => {
     return null;
   }
 
+  if (window.__otelInitialized) {
+    return window.otel ?? null;
+  }
+  window.__otelInitialized = true;
+
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
   const otelServiceName =
     window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
@@ -190,7 +195,7 @@ const initTelemetry = () => {
     new Resource({
       [SEMRESATTRS_SERVICE_NAME]: otelServiceName,
       [SEMRESATTRS_SERVICE_VERSION]: "0.0.1",
-      environment: process.env.VITE_ENV || "development",
+      environment: import.meta.env.VITE_ENV || "development",
     }),
   );
 
@@ -230,11 +235,9 @@ const initTelemetry = () => {
     instrumentations: [
       new FetchInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
-        propagateTraceHeaderCorsUrls: [/.*/],
       }),
       new XMLHttpRequestInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
-        propagateTraceHeaderCorsUrls: [/.*/],
       }),
       new UserInteractionInstrumentation({
         eventNames: ["click", "submit"],
@@ -245,21 +248,19 @@ const initTelemetry = () => {
   });
 
   // Set global trace and meter providers
-  if (typeof window !== "undefined") {
-    const tracer = tracerProvider.getTracer(otelServiceName);
-    const meter = meterProvider.getMeter(otelServiceName);
-    window.otel = { tracerProvider, meterProvider, tracer, meter };
+  const tracer = tracerProvider.getTracer(otelServiceName);
+  const meter = meterProvider.getMeter(otelServiceName);
+  window.otel = { tracerProvider, meterProvider, tracer, meter };
 
-    createNavigationSpan(tracer);
+  createNavigationSpan(tracer);
 
-    setTimeout(() => {
-      tracerProvider
-        .forceFlush()
-        .catch((error) =>
-          console.error("[OTEL] Trace forceFlush failed:", error),
-        );
-    }, 2000);
-  }
+  setTimeout(() => {
+    tracerProvider
+      .forceFlush()
+      .catch((error) =>
+        console.error("[OTEL] Trace forceFlush failed:", error),
+      );
+  }, 2000);
 
   return { tracerProvider, meterProvider };
 };
