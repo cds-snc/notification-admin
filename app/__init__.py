@@ -774,7 +774,7 @@ def useful_headers_after_request(response):
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self'{vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             f"script-src-elem 'self'{vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"connect-src 'self'{vite_connect_src} {otlp_connect_src} *.google-analytics.com *.googletagmanager.com;"
+            f"connect-src 'self'{vite_connect_src}{' ' + otlp_connect_src if otlp_connect_src else ''} *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
