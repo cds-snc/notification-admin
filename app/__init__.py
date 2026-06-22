@@ -311,7 +311,7 @@ def init_app(application):
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
 
-        otel_enabled = application.config["FF_ENABLE_CLIENT_SIDE_OTEL"]
+        otel_enabled = application.config["ENABLE_CLIENT_SIDE_OTEL"]
         otel_upstream_endpoint = os.environ.get("OTLP_ENDPOINT", "")
         otel_endpoint = "/otlp-proxy" if otel_enabled else otel_upstream_endpoint
         otel_client_service_name = os.environ.get("OTEL_CLIENT_SERVICE_NAME", "notification-admin-frontend")
@@ -758,7 +758,7 @@ def useful_headers_after_request(response):
     vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
     vite_script_src = " http://localhost:5173" if vite_dev else ""
     otlp_connect_src = ""
-    otel_enabled = current_app.config.get("FF_ENABLE_CLIENT_SIDE_OTEL", False)
+    otel_enabled = current_app.config.get("ENABLE_CLIENT_SIDE_OTEL", False)
     if otel_enabled:
         otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
         parsed_otlp_endpoint = urlparse(otlp_endpoint)

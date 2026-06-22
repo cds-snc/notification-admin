@@ -165,7 +165,7 @@ def test_headers_include_otlp_origin_in_connect_src_when_client_side_otel_enable
         return_value={"data": [("2020-11-01", "email", 20)]},
     )
     mocker.patch.dict(os.environ, {"OTLP_ENDPOINT": "https://otlp-collector.signoz.svc.cluster.local:4318/"})
-    client.application.config["FF_ENABLE_CLIENT_SIDE_OTEL"] = True
+    client.application.config["ENABLE_CLIENT_SIDE_OTEL"] = True
 
     nonce = "PTV4HSwytpCSrW4v001LB5qKL-Hp0QyMJiGqNnKV2no"
     mocker.patch("app.safe_get_request_nonce", return_value=nonce)

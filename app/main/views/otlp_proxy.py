@@ -18,7 +18,7 @@ def otlp_proxy(signal_type):
     if signal_type not in OTLP_SIGNAL_TYPES:
         abort(404)
 
-    if not current_app.config.get("FF_ENABLE_CLIENT_SIDE_OTEL", False):
+    if not current_app.config.get("ENABLE_CLIENT_SIDE_OTEL", False):
         abort(404)
 
     payload = request.get_data(cache=False)
