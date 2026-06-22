@@ -175,6 +175,9 @@ const installOtlpXhrLogging = (otlpEndpoint) => {
 };
 
 const initTelemetry = () => {
+  if (window.__otelInitialized) {
+    return window.__otelInitialized;
+  }
   if (!window.OTEL_CONFIG?.enabled) {
     return null;
   }
