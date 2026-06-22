@@ -265,8 +265,9 @@ const initTelemetry = () => {
       );
   }, 2000);
 
-  return { tracerProvider, meterProvider };
-};
+  const providers = { tracerProvider, meterProvider };
+  window.__otelInitialized = providers;
+  return providers;
 
 // Initialize telemetry on module load if enabled
 if (typeof window !== "undefined") {
