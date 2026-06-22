@@ -763,7 +763,7 @@ def useful_headers_after_request(response):
         otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
         parsed_otlp_endpoint = urlparse(otlp_endpoint)
         if parsed_otlp_endpoint.scheme and parsed_otlp_endpoint.netloc:
-            otlp_connect_src = f" {parsed_otlp_endpoint.scheme}://{parsed_otlp_endpoint.netloc}"
+            otlp_connect_src = f"{parsed_otlp_endpoint.scheme}://{parsed_otlp_endpoint.netloc}"
     response.headers.add(
         "Report-To",
         """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
