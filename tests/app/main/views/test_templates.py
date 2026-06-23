@@ -930,6 +930,26 @@ def test_template_attachment_routes_return_404_without_upload_document_permissio
         assert response.status_code == 404
 
 
+def test_attach_files_returns_404_when_ff_file_attachments_disabled(
+    client_request,
+    mock_get_template_folders,
+    fake_uuid,
+    service_one,
+    app_,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+        client_request.post(
+            ".attach_files",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _expected_status=404,
+            _test_page_title=False,
+        )
+
+
 def test_should_show_logos_on_template_page(
     client_request,
     fake_uuid,
