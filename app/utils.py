@@ -250,12 +250,10 @@ def get_warnings_for_csv(recipients, template_type):
         unique_duplicates = recipients.count_of_unique_duplicate_recipients
         duplicate_rows = recipients.count_of_duplicate_recipient_rows
         if unique_duplicates == 1:
-            warnings.append(
-                _("1 recipient appears in your list more than once. " "They will receive the message multiple times.")
-            )
+            warnings.append(_("1 recipient appears in your list more than once. They will receive the message multiple times."))
         else:
             warnings.append(
-                _("{} recipients appear in your list more than once. " "They will receive the message multiple times.").format(
+                _("{} recipients appear in your list more than once. They will receive the message multiple times.").format(
                     unique_duplicates
                 )
             )

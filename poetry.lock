@@ -1645,7 +1645,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.2.24"
+version = "53.2.25"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1681,8 +1681,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.24"
-resolved_reference = "4c1b806a12c7690639ce7f24990a32374e803f3f"
+reference = "fix/3319-warn-duplicate-recipients"
+resolved_reference = "a68486d1df7857e6390d3f09f72ef3582b8dfc17"
 
 [[package]]
 name = "openpyxl"
@@ -2947,4 +2947,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "3abcc834258f19dbd9f42f0f368a22d7ebb4aa49ae9bc69c245fed78fd7838f0"
+content-hash = "01426d4fdfd55a9754d2a26f66e8b927c34b51e379bc3a41a73d45629c9ae563"
