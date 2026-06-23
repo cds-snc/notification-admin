@@ -1,3 +1,8 @@
+import initTelemetry from "../telemetry/init.js";
+
+// Initialize telemetry first, before anything else.
+initTelemetry();
+
 import React from "react";
 import { createRoot } from "react-dom/client";
 import SimpleEditor from "./SimpleEditor";
