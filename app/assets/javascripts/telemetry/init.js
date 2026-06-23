@@ -17,7 +17,6 @@ import { FetchInstrumentation } from "@opentelemetry/instrumentation-fetch";
 import { XMLHttpRequestInstrumentation } from "@opentelemetry/instrumentation-xml-http-request";
 import { UserInteractionInstrumentation } from "@opentelemetry/instrumentation-user-interaction";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
-import { propagation, trace, context } from "@opentelemetry/api";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { W3CTraceContextPropagator } from "@opentelemetry/core";
 import { CompositePropagator } from "@opentelemetry/core";
@@ -205,18 +204,13 @@ const initTelemetry = () => {
   // Initialize Trace Provider
   const tracerProvider = new BasicTracerProvider({ resource });
 
-  // Create and set context manager globally
-  const contextManager = new ZoneContextManager();
-  context.setContextManager(contextManager);
-
-  // Create and set propagator globally
-  const propagator = new CompositePropagator({
-    propagators: [new W3CTraceContextPropagator()],
+  // Register context manager, propagator, and set global tracer provider
+  tracerProvider.register({
+    contextManager: new ZoneContextManager(),
+    propagator: new CompositePropagator({
+      propagators: [new W3CTraceContextPropagator()],
+    }),
   });
-  propagation.setGlobalPropagator(propagator);
-
-  // Set tracer provider globally
-  trace.setTracerProvider(tracerProvider);
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
   const traceExporter = new OTLPTraceExporter({ url: traceUrl });
