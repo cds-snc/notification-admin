@@ -227,14 +227,19 @@ def get_attachments(notification, sending_method):
     }
 
 
+def get_template_attach_documents(notification):
+    """Return documents from personalisation that were attached by the API at send time (template_attach)."""
+    return [
+        v["document"]
+        for v in notification.get("personalisation", {}).values()
+        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == "template_attach"
+    ]
+
+
 def get_notification_attachments(notification, just_sent=False):
     # Check personalisation for both user-provided attachments ("attach") and
     # template-level file attachments ("template_attach") stored by the API.
-    personalisation_docs = [
-        v["document"]
-        for v in notification.get("personalisation", {}).values()
-        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") in ("attach", "template_attach")
-    ]
+    personalisation_docs = list(get_attachments(notification, "attach").values()) + get_template_attach_documents(notification)
     if personalisation_docs:
         return [
             {
