@@ -859,6 +859,147 @@ def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
     assert "terms.pdf" in attachments_section.text
 
 
+@pytest.mark.parametrize(
+    "config_flag, has_permission",
+    [
+        (False, True),  # FF off → no attachments
+        (True, False),  # no upload_document permission → no attachments
+    ],
+)
+def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+    config_flag,
+    has_permission,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=has_permission)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+    """,
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", config_flag):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    assert page.select_one("[data-testid='template-attachments-list']") is None
+
+
+def test_get_template_attachment_context_returns_empty_for_non_email_template(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_sms_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        phone number
+        +16505551234
+    """,
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    assert page.select_one("[data-testid='template-attachments-list']") is None
+
+
+def test_get_template_attachment_context_excludes_deleted_and_virus_scan_failed(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "visible.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "gone.pdf", "status": "deleted", "size": 500},
+        {"id": "file-3", "name": "infected.pdf", "status": "virus_scan_failed", "size": 500},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+    """,
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert "visible.pdf" in attachments_section.text
+    assert "gone.pdf" not in attachments_section.text
+    assert "infected.pdf" not in attachments_section.text
+
+
 def test_upload_valid_csv_only_sets_meta_if_filename_known(
     client_request,
     mocker,

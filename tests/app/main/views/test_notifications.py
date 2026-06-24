@@ -403,6 +403,49 @@ def test_notification_status_page_does_not_call_live_api_for_historical_view(
     assert "live-file.pdf" not in str(page)
 
 
+def test_notification_status_page_template_attach_personalisation_wins_over_live_api_when_just_sent(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    # template_attach entries in personalisation should take priority over the
+    # live template attachments API, just as "attach" entries do.
+    notification = create_notification(
+        template_type="email",
+        personalisation={
+            "_file_0": {
+                "document": {
+                    "sending_method": "template_attach",
+                    "filename": "personalisation-file.pdf",
+                    "file_size": 694807,
+                    "url": "https://example.com/personalisation-file.pdf",
+                }
+            }
+        },
+    )
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=notification,
+    )
+    mock_live_api = mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
+    )
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
+
+    mock_live_api.assert_not_called()
+    assert "personalisation-file.pdf — 694.8 kB" in str(page)
+    assert "live-file.pdf" not in str(page)
+
+
 @pytest.mark.parametrize("message_type, has_problem_address_filter", [("sms", False), ("email", True)])
 def test_problem_email_address_filter_only_present_when_viewing_emails(
     client_request,
