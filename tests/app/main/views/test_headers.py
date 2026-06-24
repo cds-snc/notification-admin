@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from app.asset_fingerprinter import asset_fingerprinter
@@ -151,4 +153,27 @@ def test_headers_non_ascii_characters_are_replaced(
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "report-to default;"
         )
+    )
+
+
+def test_headers_include_otlp_origin_in_connect_src_when_client_side_otel_enabled(
+    client, mocker, mock_get_service_and_organisation_counts, mock_calls_out_to_GCA
+):
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": service})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+    mocker.patch.dict(os.environ, {"OTLP_ENDPOINT": "https://otlp-collector.signoz.svc.cluster.local:4318/"})
+    client.application.config["ENABLE_CLIENT_SIDE_OTEL"] = True
+
+    nonce = "PTV4HSwytpCSrW4v001LB5qKL-Hp0QyMJiGqNnKV2no"
+    mocker.patch("app.safe_get_request_nonce", return_value=nonce)
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert (
+        "connect-src 'self' https://otlp-collector.signoz.svc.cluster.local:4318 *.google-analytics.com *.googletagmanager.com;"
+        in response.headers["Content-Security-Policy"]
     )

@@ -22,6 +22,7 @@ from app.main.views import (  # noqa isort:skip
     new_password,
     newsletter,
     notifications,
+    otlp_proxy,
     organisations,
     platform_admin,
     providers,
