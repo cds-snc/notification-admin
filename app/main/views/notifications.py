@@ -228,47 +228,52 @@ def get_attachments(notification, sending_method):
 
 
 def get_notification_attachments(notification, just_sent=False):
-    # For historical views, only show documents explicitly attached in personalisation.
-    # For the immediate post-send view (just_sent), also show current template attachments.
-    attach_documents = list(get_attachments(notification, "attach").values())
-    if attach_documents:
-        return attach_documents
+    # Check personalisation for both user-provided attachments ("attach") and
+    # template-level file attachments ("template_attach") stored by the API.
+    personalisation_docs = [
+        v["document"]
+        for v in notification.get("personalisation", {}).values()
+        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") in ("attach", "template_attach")
+    ]
+    if personalisation_docs:
+        return [
+            {
+                "filename": doc.get("filename"),
+                "file_size": doc.get("file_size") or 0,
+            }
+            for doc in personalisation_docs
+        ]
 
-    if not just_sent or notification.get("notification_type") != "email":
+    if notification.get("notification_type") != "email":
         return []
 
+    if not just_sent:
+        # Historical view with no personalisation attachments — nothing to show.
+        return []
+
+    # For the immediate post-send view, fall back to live template attachments
+    # (covers the window before the API has embedded files into personalisation).
     template_id = notification.get("template", {}).get("id")
     if not template_id:
         return []
 
     template_files = current_service.get_template_attachments(template_id)
-
     if not template_files:
         return []
 
     attachments = []
-
     for file_data in template_files:
         if not isinstance(file_data, dict):
             continue
-
         if file_data.get("status") in ("deleted", "virus_scan_failed", "uploading", "pending_virus_scan"):
             continue
-
         filename = file_data.get("filename") or file_data.get("name")
         if not filename:
             continue
-
         file_size = file_data.get("file_size")
         if file_size is None:
             file_size = file_data.get("size")
-
-        attachments.append(
-            {
-                "filename": filename,
-                "file_size": file_size or 0,
-            }
-        )
+        attachments.append({"filename": filename, "file_size": file_size or 0})
 
     return attachments
 
