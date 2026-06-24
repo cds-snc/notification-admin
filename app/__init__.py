@@ -319,6 +319,7 @@ def init_app(application):
             url.strip() for url in os.environ.get("OTEL_PROPAGATE_TRACE_HEADER_CORS_URLS", "").split(",") if url.strip()
         ]
         otel_user_id = str(current_user.id) if current_user.is_authenticated else ""
+        otel_traceparent = _get_current_traceparent() if otel_enabled else ""
 
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
@@ -337,6 +338,7 @@ def init_app(application):
             "otel_client_service_name": otel_client_service_name,
             "otel_propagate_cors_urls": otel_propagate_cors_urls,
             "otel_user_id": otel_user_id,
+            "otel_traceparent": otel_traceparent,
         }
 
 
@@ -351,6 +353,22 @@ def safe_get_request_nonce():
     except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
+
+
+def _get_current_traceparent():
+    # Build a W3C traceparent string from the active OTel span so the browser
+    # can attach its page_load span to the Flask request that served the HTML.
+    # opentelemetry-api is provided at runtime by the k8s sidecar; when absent
+    # (local dev, tests) we simply return "" and the frontend creates a root span.
+    try:
+        from opentelemetry import trace as otel_trace  # type: ignore[import-not-found]
+    except ImportError:
+        return ""
+
+    span_context = otel_trace.get_current_span().get_span_context()
+    if not span_context.is_valid:
+        return ""
+    return f"00-{span_context.trace_id:032x}-{span_context.span_id:016x}-{span_context.trace_flags:02x}"
 
 
 def linkable_name(value):

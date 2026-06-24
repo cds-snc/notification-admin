@@ -146,7 +146,8 @@
       endpoint: "{{ otlp_endpoint }}",
       serviceName: "{{ otel_client_service_name }}",
       propagateTraceHeaderCorsUrls: {{ otel_propagate_cors_urls|tojson }},
-      userId: "{{ otel_user_id }}"
+      userId: "{{ otel_user_id }}",
+      traceparent: "{{ otel_traceparent }}"
     }
 
   </script>

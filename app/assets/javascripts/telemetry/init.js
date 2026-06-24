@@ -15,7 +15,6 @@ import {
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { FetchInstrumentation } from "@opentelemetry/instrumentation-fetch";
 import { XMLHttpRequestInstrumentation } from "@opentelemetry/instrumentation-xml-http-request";
-import { UserInteractionInstrumentation } from "@opentelemetry/instrumentation-user-interaction";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { W3CTraceContextPropagator } from "@opentelemetry/core";
@@ -99,7 +98,37 @@ const buildCorsUrlMatchers = (rawUrls) => {
 
 const toMsEpoch = (relativeTimeMs) => performance.timeOrigin + relativeTimeMs;
 
-const createNavigationSpan = (tracer) => {
+const TRACEPARENT_PATTERN = /^00-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/i;
+
+// Parses a W3C traceparent string into an OTel Context whose active span is the
+// remote parent. Used to attach the browser.page_load span to the Flask server
+// span that rendered the HTML, since full-page navigations can't carry
+// traceparent on the request itself.
+const parentContextFromTraceparent = (traceparent) => {
+  if (typeof traceparent !== "string") {
+    return null;
+  }
+  const match = TRACEPARENT_PATTERN.exec(traceparent);
+  if (!match) {
+    return null;
+  }
+  const [, traceId, spanId, flagsHex] = match;
+  if (
+    traceId === "00000000000000000000000000000000" ||
+    spanId === "0000000000000000"
+  ) {
+    return null;
+  }
+  const spanContext = {
+    traceId,
+    spanId,
+    traceFlags: parseInt(flagsHex, 16),
+    isRemote: true,
+  };
+  return trace.setSpanContext(otelContext.active(), spanContext);
+};
+
+const createNavigationSpan = (tracer, parentContext) => {
   if (
     typeof performance === "undefined" ||
     typeof performance.getEntriesByType !== "function"
@@ -112,9 +141,12 @@ const createNavigationSpan = (tracer) => {
     return;
   }
 
-  const pageLoadSpan = tracer.startSpan("browser.page_load", {
+  const spanOptions = {
     startTime: toMsEpoch(navigationEntry.startTime),
-  });
+  };
+  const pageLoadSpan = parentContext
+    ? tracer.startSpan("browser.page_load", spanOptions, parentContext)
+    : tracer.startSpan("browser.page_load", spanOptions);
 
   pageLoadSpan.setAttribute(
     "browser.navigation.type",
@@ -331,9 +363,6 @@ const initTelemetry = () => {
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
         propagateTraceHeaderCorsUrls,
       }),
-      new UserInteractionInstrumentation({
-        eventNames: ["click", "submit"],
-      }),
     ],
     tracerProvider,
     meterProvider,
@@ -344,7 +373,10 @@ const initTelemetry = () => {
   const meter = meterProvider.getMeter(otelServiceName);
   window.otel = { tracerProvider, meterProvider, tracer, meter };
 
-  createNavigationSpan(tracer);
+  const pageLoadParentContext = parentContextFromTraceparent(
+    window.OTEL_CONFIG.traceparent,
+  );
+  createNavigationSpan(tracer, pageLoadParentContext);
 
   setTimeout(() => {
     tracerProvider
