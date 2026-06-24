@@ -22,9 +22,6 @@ import { W3CTraceContextPropagator } from "@opentelemetry/core";
 import { CompositePropagator } from "@opentelemetry/core";
 import {
   context as otelContext,
-  diag,
-  DiagConsoleLogger,
-  DiagLogLevel,
   propagation,
   trace,
 } from "@opentelemetry/api";
@@ -262,14 +259,6 @@ const initTelemetry = () => {
   const propagateTraceHeaderCorsUrls = buildCorsUrlMatchers(
     window.OTEL_CONFIG.propagateTraceHeaderCorsUrls,
   );
-
-  if (
-    typeof window !== "undefined" &&
-    typeof window.location?.search === "string" &&
-    window.location.search.includes("otelDebug=1")
-  ) {
-    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-  }
 
   installOtlpFetchLogging(otlpEndpoint);
   installOtlpXhrLogging(otlpEndpoint);
