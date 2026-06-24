@@ -81,7 +81,11 @@ describe("Attachments component", () => {
       .parents('[data-testid="attached-file-row"]')
       .first()
       .find('[data-testid="attachment-download-link"]')
-      .should("have.attr", "href", "/storybook/downloads/fresh-attach.pdf");
+      .should(
+        "have.attr",
+        "href",
+        "/_storybook/attachments/download/fresh-attach.pdf",
+      );
   });
 
   it("supports remove confirmation flow", () => {
@@ -93,7 +97,11 @@ describe("Attachments component", () => {
     Components.Root("attachments-malware")
       .find('[data-testid="attachment-download-link"]')
       .contains("safe_permit.pdf")
-      .should("have.attr", "href", "/storybook/downloads/safe_permit.pdf");
+      .should(
+        "have.attr",
+        "href",
+        "/_storybook/attachments/download/safe_permit.pdf",
+      );
 
     Attachments.confirmRemove();
     Components.List("attachments-malware")

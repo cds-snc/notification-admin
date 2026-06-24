@@ -77,7 +77,7 @@ describe("Template attachments", () => {
     Page.Components.AttachmentsWidget().should("be.visible");
   });
 
-  it.only("attaches and removes a file on an existing template", () => {
+  it("attaches and removes a file on an existing template", () => {
     const attachmentFileName = TEST_ATTACHMENT_FILE_NAME;
 
     Page.SelectTemplateById(CYPRESS_SERVICE_ID, EMAIL_TEMPLATE_ID);
