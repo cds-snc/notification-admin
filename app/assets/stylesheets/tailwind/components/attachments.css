@@ -1,10 +1,10 @@
-li.attachment-file-row {
+.attachment-file-row {
   position: relative;
   padding-top: 1rem;
   padding-left: 1rem;
 }
 
-li.attachment-file-row:before {
+.attachment-file-row:before {
   content: "";
   position: absolute;
   top: -1px;
@@ -15,7 +15,7 @@ li.attachment-file-row:before {
   z-index: 2;
 }
 
-li.attachment-file-row:after {
+.attachment-file-row:after {
   content: "";
   position: absolute;
   top: -1px;
