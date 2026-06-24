@@ -33,6 +33,11 @@
   white-space: normal;
   word-break: break-word;
 }
+
+/* Pulls the attachment list flush against the bottom of the template preview above it. */
+.attachment-list-flush-top {
+  margin-top: -31px;
+}
 .banner-dangerous .attachment-file-name-truncate {
   font-weight: bold;
 }
