@@ -336,21 +336,32 @@ def test_notification_status_page_falls_back_to_template_attachments_for_admin_s
     assert "still-scanning.pdf" not in str(page)
 
 
-def test_notification_status_page_does_not_fall_back_to_template_attachments_without_just_sent(
+def test_notification_status_page_shows_historical_template_attach_from_personalisation(
     client_request,
     mocker,
     service_one,
     fake_uuid,
 ):
-    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
+    # The API embeds template-level file attachments into personalisation with
+    # sending_method="template_attach" when the notification is sent.
+    notification = create_notification(
+        template_type="email",
+        personalisation={
+            "name": "Jo",
+            "_file_0": {
+                "document": {
+                    "sending_method": "template_attach",
+                    "filename": "historical-file.pdf",
+                    "file_size": 694807,
+                    "url": "https://example.com/historical-file.pdf",
+                }
+            },
+        },
+    )
 
     mocker.patch(
         "app.notification_api_client.get_notification",
         return_value=notification,
-    )
-    mocker.patch(
-        "app.models.service.Service.get_template_attachments",
-        return_value=[{"name": "current-template-file.pdf", "file_size": 694807, "status": "uploaded"}],
     )
 
     page = client_request.get(
@@ -359,8 +370,37 @@ def test_notification_status_page_does_not_fall_back_to_template_attachments_wit
         notification_id=fake_uuid,
     )
 
-    assert "Attachments" not in [h2.text for h2 in page.select("h2")]
-    assert "current-template-file.pdf" not in str(page)
+    assert "Attachments" in [h2.text for h2 in page.select("h2")]
+    assert "historical-file.pdf — 694.8 kB" in str(page)
+
+
+def test_notification_status_page_does_not_call_live_api_for_historical_view(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    # Historical views should never call the live template attachments API;
+    # they rely solely on personalisation data recorded at send time.
+    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=notification,
+    )
+    mock_get_attachments = mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
+    )
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+    )
+
+    mock_get_attachments.assert_not_called()
+    assert "live-file.pdf" not in str(page)
 
 
 @pytest.mark.parametrize("message_type, has_problem_address_filter", [("sms", False), ("email", True)])
