@@ -102,6 +102,48 @@ def service_can_bulk_send(service_id):
     return str(service_id) in bulk_sending_services
 
 
+def get_template_attachment_context(template_id, template_type):
+    context = {
+        "template_attachments": [],
+        "has_incomplete_template_attachments": False,
+    }
+
+    if (
+        not current_app.config.get("FF_FILE_ATTACHMENTS")
+        or template_type != "email"
+        or not current_service.has_permission("upload_document")
+    ):
+        return context
+
+    attachments = current_service.get_template_attachments(template_id)
+    visible_attachments = []
+
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+
+        if status in ("deleted", "virus_scan_failed"):
+            continue
+
+        if status in ("uploading", "pending_virus_scan"):
+            context["has_incomplete_template_attachments"] = True
+
+        filename = attachment.get("name") or attachment.get("filename")
+        if not filename:
+            continue
+
+        visible_attachments.append(
+            {
+                "id": attachment.get("id"),
+                "filename": filename,
+                "file_size": attachment.get("size") or attachment.get("file_size"),
+                "status": status,
+            }
+        )
+
+    context["template_attachments"] = visible_attachments
+    return context
+
+
 def get_csv_max_rows(service_id):
     if service_can_bulk_send(service_id):
         return int(current_app.config["CSV_MAX_ROWS_BULK_SEND"])
@@ -622,6 +664,7 @@ def send_test_step(service_id, template_id, step_index):
 
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
     template.values[current_placeholder] = None
+    attachment_context = get_template_attachment_context(template_id, db_template["template_type"])
 
     return render_template(
         "views/send-test.html",
@@ -638,6 +681,7 @@ def send_test_step(service_id, template_id, step_index):
         help=get_help_argument(),
         link_to_upload=(request.endpoint == "main.send_one_off_step" and step_index == 0),
         bulk_send_allowed=service_can_bulk_send(service_id),
+        **attachment_context,
     )
 
 
@@ -719,6 +763,8 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         sms_sender=sms_sender,
         page_count=get_page_count_for_letter(db_template),
     )
+
+    attachment_context = get_template_attachment_context(template_id, db_template["template_type"])
     recipients = RecipientCSV(
         contents,
         template=template,
@@ -769,6 +815,7 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
     return dict(
         recipients=recipients,
         template=template,
+        **attachment_context,
         errors=recipients.has_errors,
         row_errors=get_errors_for_csv(recipients, template.template_type),
         count_of_recipients=len(recipients),
@@ -1121,6 +1168,7 @@ def _check_notification(service_id, template_id, exception=None):
         ),
         page_count=get_page_count_for_letter(db_template),
     )
+    attachment_context = get_template_attachment_context(template_id, db_template["template_type"])
 
     step_index = len(
         fields_to_fill_in(
@@ -1169,6 +1217,7 @@ def _check_notification(service_id, template_id, exception=None):
 
     return dict(
         template=template,
+        **attachment_context,
         back_link=back_link,
         help=get_help_argument(),
         stats_daily=stats_daily,

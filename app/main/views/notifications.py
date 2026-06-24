@@ -51,6 +51,8 @@ from app.utils import (
 def view_notification(service_id, notification_id):
     notification = notification_api_client.get_notification(service_id, str(notification_id))
     notification["template"].update({"reply_to_text": notification["reply_to_text"]})
+    just_sent = bool(request.args.get("just_sent"))
+    attachments = get_notification_attachments(notification, just_sent=just_sent)
 
     personalisation = get_all_personalisation_from_notification(notification)
 
@@ -145,7 +147,7 @@ def view_notification(service_id, notification_id):
         sent_with_test_key=(notification.get("key_type") == KEY_TYPE_TEST),
         back_link=back_link,
         just_sent=request.args.get("just_sent"),
-        attachments=get_attachments(notification, "attach").values(),
+        attachments=attachments,
         billable_units=notification.get("billable_units"),
     )
 
@@ -223,6 +225,52 @@ def get_attachments(notification, sending_method):
         for k, v in (notification.get("personalisation", {})).items()
         if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == sending_method
     }
+
+
+def get_notification_attachments(notification, just_sent=False):
+    # For historical views, only show documents explicitly attached in personalisation.
+    # For the immediate post-send view (just_sent), also show current template attachments.
+    attach_documents = list(get_attachments(notification, "attach").values())
+    if attach_documents:
+        return attach_documents
+
+    if not just_sent or notification.get("notification_type") != "email":
+        return []
+
+    template_id = notification.get("template", {}).get("id")
+    if not template_id:
+        return []
+
+    template_files = current_service.get_template_attachments(template_id)
+
+    if not template_files:
+        return []
+
+    attachments = []
+
+    for file_data in template_files:
+        if not isinstance(file_data, dict):
+            continue
+
+        if file_data.get("status") in ("deleted", "virus_scan_failed", "uploading", "pending_virus_scan"):
+            continue
+
+        filename = file_data.get("filename") or file_data.get("name")
+        if not filename:
+            continue
+
+        file_size = file_data.get("file_size")
+        if file_size is None:
+            file_size = file_data.get("size")
+
+        attachments.append(
+            {
+                "filename": filename,
+                "file_size": file_size or 0,
+            }
+        )
+
+    return attachments
 
 
 def get_all_personalisation_from_notification(notification):
