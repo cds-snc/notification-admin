@@ -27,14 +27,24 @@ const OTLP_PROXY_PATH_PATTERN = /\/otlp-proxy\/v1\/(traces|metrics)$/;
 const SESSION_ID_STORAGE_KEY = "otel.session.id";
 
 const generateSessionId = () => {
-  if (
-    typeof crypto !== "undefined" &&
-    typeof crypto.randomUUID === "function"
-  ) {
+  if (typeof crypto === "undefined") {
+    return null;
+  }
+  if (typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }
-  // Fallback for environments without crypto.randomUUID — not cryptographically strong, only used for grouping.
-  return `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+  if (typeof crypto.getRandomValues === "function") {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    // RFC 4122 v4 layout
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join(
+      "",
+    );
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+  return null;
 };
 
 const getOrCreateSessionId = () => {
@@ -45,7 +55,9 @@ const getOrCreateSessionId = () => {
     let sessionId = window.sessionStorage.getItem(SESSION_ID_STORAGE_KEY);
     if (!sessionId) {
       sessionId = generateSessionId();
-      window.sessionStorage.setItem(SESSION_ID_STORAGE_KEY, sessionId);
+      if (sessionId) {
+        window.sessionStorage.setItem(SESSION_ID_STORAGE_KEY, sessionId);
+      }
     }
     return sessionId;
   } catch (_error) {
