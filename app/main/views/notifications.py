@@ -217,8 +217,8 @@ def get_single_notification_partials(notification):
     }
 
 
-# Used to get api-send attachments
 def get_attachments(notification, sending_method):
+    """Return personalisation documents sent via the API with the given sending method (attach or link)."""
     if sending_method not in ["attach", "link"]:
         raise NotImplementedError
     return {
@@ -228,7 +228,6 @@ def get_attachments(notification, sending_method):
     }
 
 
-# Used to get template-level attachments
 def get_template_attach_documents(notification):
     """Return documents from personalisation that were attached by the API at send time (template_attach)."""
     return [
