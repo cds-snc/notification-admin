@@ -22,6 +22,7 @@
         'default',
         with_tick=True
       ) }}
+    {% include "partials/template-attachments-warning.html" %}
   </section>
   {% if not request.args.from_test %}
     <section class="clear-both contain-floats" id="ok-file">
@@ -78,6 +79,7 @@
       {{ _("This shows the message to the recipient of row {}.").format(preview_row) }}
     </p>
     {{ template|string|translate_preview_template }}
+    {% include "partials/template-attachments-list.html" %}
     {{ previous_next_navigation(
     previous_page={
       "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name, _anchor='ok-preview'),
