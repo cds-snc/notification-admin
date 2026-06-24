@@ -20,8 +20,73 @@ import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { W3CTraceContextPropagator } from "@opentelemetry/core";
 import { CompositePropagator } from "@opentelemetry/core";
+import {
+  context as otelContext,
+  diag,
+  DiagConsoleLogger,
+  DiagLogLevel,
+  propagation,
+  trace,
+} from "@opentelemetry/api";
 
 const OTLP_PROXY_PATH_PATTERN = /\/otlp-proxy\/v1\/(traces|metrics)$/;
+
+const SESSION_ID_STORAGE_KEY = "otel.session.id";
+
+const generateSessionId = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID — not cryptographically strong, only used for grouping.
+  return `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+};
+
+const getOrCreateSessionId = () => {
+  try {
+    if (typeof window === "undefined" || !window.sessionStorage) {
+      return generateSessionId();
+    }
+    let sessionId = window.sessionStorage.getItem(SESSION_ID_STORAGE_KEY);
+    if (!sessionId) {
+      sessionId = generateSessionId();
+      window.sessionStorage.setItem(SESSION_ID_STORAGE_KEY, sessionId);
+    }
+    return sessionId;
+  } catch (_error) {
+    return generateSessionId();
+  }
+};
+
+// SpanProcessor that stamps session.id (and optional enduser.id) on every span as it starts,
+// so spans across separate page navigations can be grouped in the backend even when they
+// can't share a trace_id (full-page navigations don't propagate W3C trace context).
+const createSessionAttributeSpanProcessor = (sessionId, userId) => ({
+  onStart(span) {
+    if (sessionId) {
+      span.setAttribute("session.id", sessionId);
+    }
+    if (userId) {
+      span.setAttribute("enduser.id", userId);
+    }
+  },
+  onEnd() {},
+  forceFlush() {
+    return Promise.resolve();
+  },
+  shutdown() {
+    return Promise.resolve();
+  },
+});
+
+const buildCorsUrlMatchers = (rawUrls) => {
+  if (!Array.isArray(rawUrls)) {
+    return [];
+  }
+  const escapeForRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return rawUrls
+    .filter((value) => typeof value === "string" && value.length > 0)
+    .map((value) => new RegExp(`^${escapeForRegex(value)}`));
+};
 
 const toMsEpoch = (relativeTimeMs) => performance.timeOrigin + relativeTimeMs;
 
@@ -189,6 +254,23 @@ const initTelemetry = () => {
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
   const otelServiceName =
     window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
+  const sessionId = getOrCreateSessionId();
+  const userId =
+    typeof window.OTEL_CONFIG.userId === "string" && window.OTEL_CONFIG.userId
+      ? window.OTEL_CONFIG.userId
+      : "";
+  const propagateTraceHeaderCorsUrls = buildCorsUrlMatchers(
+    window.OTEL_CONFIG.propagateTraceHeaderCorsUrls,
+  );
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.location?.search === "string" &&
+    window.location.search.includes("otelDebug=1")
+  ) {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+  }
+
   installOtlpFetchLogging(otlpEndpoint);
   installOtlpXhrLogging(otlpEndpoint);
 
@@ -201,16 +283,26 @@ const initTelemetry = () => {
     }),
   );
 
-  // Initialize Trace Provider
+  // Initialize Trace Provider. We register the context manager, propagator,
+  // and tracer provider explicitly on the api package rather than relying on
+  // tracerProvider.register(), because that helper is a no-op when another
+  // OTel package has already touched api.context/api.propagation during import
+  // (which happens with the @opentelemetry/instrumentation auto-loader).
+  const propagator = new CompositePropagator({
+    propagators: [new W3CTraceContextPropagator()],
+  });
+  const contextManager = new ZoneContextManager();
+  contextManager.enable();
+
   const tracerProvider = new BasicTracerProvider({ resource });
 
-  // Register context manager, propagator, and set global tracer provider
-  tracerProvider.register({
-    contextManager: new ZoneContextManager(),
-    propagator: new CompositePropagator({
-      propagators: [new W3CTraceContextPropagator()],
-    }),
-  });
+  otelContext.setGlobalContextManager(contextManager);
+  propagation.setGlobalPropagator(propagator);
+  trace.setGlobalTracerProvider(tracerProvider);
+
+  tracerProvider.addSpanProcessor(
+    createSessionAttributeSpanProcessor(sessionId, userId),
+  );
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
   const traceExporter = new OTLPTraceExporter({ url: traceUrl });
@@ -232,9 +324,11 @@ const initTelemetry = () => {
     instrumentations: [
       new FetchInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
+        propagateTraceHeaderCorsUrls,
       }),
       new XMLHttpRequestInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
+        propagateTraceHeaderCorsUrls,
       }),
       new UserInteractionInstrumentation({
         eventNames: ["click", "submit"],
