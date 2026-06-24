@@ -6,7 +6,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/banner.html" import banner %}
-{% from "components/banner.html" import banner_wrapper %}
+{% from "components/notice.html" import notice %}
 {% from "components/remaining-messages-summary.html" import remaining_messages_summary with context %}
 {% set page_title = _('Review before sending') %}
 {% block service_page_title %}
@@ -28,15 +28,12 @@
   {# Issue #3319: non-blocking warning when the CSV contains duplicate recipients. #}
   {% if row_warnings %}
     <div class="mb-12 clear-both contain-floats" aria-live="polite" data-testid="duplicate-recipients-warning">
-      {% call banner_wrapper(type='warning') %}
-        <h2 class='banner-title' data-module="track-error" data-error-type="Duplicate recipients" data-error-label="{{ upload_id }}">
-          {{ row_warnings[0] }}
-        </h2>
+      {% call notice(type="warning", title=row_warnings[0], headingLevel=2) %}
         {% for warning in row_warnings[1:] %}
-          <p class="mb-0">{{ warning }}</p>
+          <p>{{ warning }}</p>
         {% endfor %}
         {% if count_of_duplicate_recipients %}
-          <p class="mb-0">
+          <p>
             <a href="{{ url_for('.download_duplicate_recipients', service_id=current_service.id, template_id=template.id, upload_id=upload_id, original_file_name=original_file_name) }}" download>
               {{ _('Download a list of duplicate recipients') }}
             </a>
