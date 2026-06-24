@@ -262,6 +262,107 @@ def test_notification_status_page_shows_attachments_with_links(
     assert "Download it https://example.com/test.pdf" in page.select_one(".email-message-body").text
 
 
+def test_notification_status_page_prefers_personalisation_attachments_over_template_attachments_when_just_sent(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    notification = create_notification(
+        template_type="email",
+        personalisation={
+            "poster": {
+                "document": {
+                    "sending_method": "attach",
+                    "filename": "poster.pdf",
+                    "file_size": 694807,
+                    "url": "https://example.com/poster.pdf",
+                }
+            }
+        },
+    )
+    notification["template"]["files"] = [{"name": "admin-file.pdf", "file_size": 694807}]
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=notification,
+    )
+    mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[{"name": "admin-file.pdf", "file_size": 694807, "status": "uploaded"}],
+    )
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
+
+    assert "poster.pdf — 694.8 kB" in str(page)
+    assert "admin-file.pdf" not in str(page)
+
+
+def test_notification_status_page_falls_back_to_template_attachments_for_admin_sent_email(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
+    notification["template"].pop("files", None)
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=notification,
+    )
+    mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[
+            {"name": "current-template-file.pdf", "file_size": 694807, "status": "uploaded"},
+            {"name": "still-scanning.pdf", "file_size": 100, "status": "pending_virus_scan"},
+        ],
+    )
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
+
+    assert "Attachments" in [h2.text for h2 in page.select("h2")]
+    assert "current-template-file.pdf — 694.8 kB" in str(page)
+    assert "still-scanning.pdf" not in str(page)
+
+
+def test_notification_status_page_does_not_fall_back_to_template_attachments_without_just_sent(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+):
+    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
+
+    mocker.patch(
+        "app.notification_api_client.get_notification",
+        return_value=notification,
+    )
+    mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[{"name": "current-template-file.pdf", "file_size": 694807, "status": "uploaded"}],
+    )
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+    )
+
+    assert "Attachments" not in [h2.text for h2 in page.select("h2")]
+    assert "current-template-file.pdf" not in str(page)
+
+
 @pytest.mark.parametrize("message_type, has_problem_address_filter", [("sms", False), ("email", True)])
 def test_problem_email_address_filter_only_present_when_viewing_emails(
     client_request,
