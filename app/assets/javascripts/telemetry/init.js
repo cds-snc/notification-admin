@@ -20,18 +20,17 @@ import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { W3CTraceContextPropagator } from "@opentelemetry/core";
 import { CompositePropagator } from "@opentelemetry/core";
-import {
-  context as otelContext,
-  propagation,
-  trace,
-} from "@opentelemetry/api";
+import { context as otelContext, propagation, trace } from "@opentelemetry/api";
 
 const OTLP_PROXY_PATH_PATTERN = /\/otlp-proxy\/v1\/(traces|metrics)$/;
 
 const SESSION_ID_STORAGE_KEY = "otel.session.id";
 
 const generateSessionId = () => {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return crypto.randomUUID();
   }
   // Fallback for environments without crypto.randomUUID — not cryptographically strong, only used for grouping.
@@ -79,7 +78,8 @@ const buildCorsUrlMatchers = (rawUrls) => {
   if (!Array.isArray(rawUrls)) {
     return [];
   }
-  const escapeForRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapeForRegex = (value) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return rawUrls
     .filter((value) => typeof value === "string" && value.length > 0)
     .map((value) => new RegExp(`^${escapeForRegex(value)}`));
