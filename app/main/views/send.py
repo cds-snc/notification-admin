@@ -56,6 +56,7 @@ from app.models.user import Users
 from app.notify_client.notification_counts_client import notification_counts_client
 from app.s3_client.s3_csv_client import (
     copy_bulk_send_file_to_uploads,
+    get_csv_metadata,
     list_bulk_send_uploads,
     s3download,
     s3upload,
@@ -897,6 +898,25 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if session.get("sender_id"):
         metadata_kwargs["sender_id"] = session["sender_id"]
 
+    # Persist duplicate-recipient counts on the upload so that, when (or if) the
+    # user proceeds to start_job, we can attribute the send back to the warning
+    # that was shown here. See issue #3319.
+    if data["count_of_duplicate_recipients"]:
+        metadata_kwargs["count_of_duplicate_recipients"] = data["count_of_duplicate_recipients"]
+        metadata_kwargs["count_of_duplicate_recipient_rows"] = data["count_of_duplicate_recipient_rows"]
+        current_app.logger.info(
+            "bulk_send.duplicate_recipients_warning_shown",
+            extra={
+                "service_id": str(service_id),
+                "template_id": str(template_id),
+                "template_type": data["template"].template_type,
+                "upload_id": upload_id,
+                "count_of_recipients": data["count_of_recipients"],
+                "count_of_duplicate_recipients": data["count_of_duplicate_recipients"],
+                "count_of_duplicate_recipient_rows": data["count_of_duplicate_recipient_rows"],
+            },
+        )
+
     set_metadata_on_csv_upload(service_id, upload_id, **metadata_kwargs)
 
     return render_template("views/check/ok.html", **data)
@@ -988,6 +1008,25 @@ def check_notification_preview(service_id, template_id, filetype):
 @main.route("/services/<service_id>/start-job/<upload_id>", methods=["POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def start_job(service_id, upload_id):
+    # If the upload had a duplicate-recipients warning attached, log that the
+    # user proceeded with the send so we can compare against the count of
+    # "warning shown" log lines (issue #3319). We read this before creating the
+    # job so that a failure here can't block a send.
+    upload_metadata = get_csv_metadata(service_id, upload_id)
+    count_of_duplicate_recipients = int(upload_metadata.get("count_of_duplicate_recipients", 0) or 0)
+    if count_of_duplicate_recipients:
+        current_app.logger.info(
+            "bulk_send.duplicate_recipients_sent_anyway",
+            extra={
+                "service_id": str(service_id),
+                "template_id": upload_metadata.get("template_id"),
+                "upload_id": upload_id,
+                "notification_count": int(upload_metadata.get("notification_count", 0) or 0),
+                "count_of_duplicate_recipients": count_of_duplicate_recipients,
+                "count_of_duplicate_recipient_rows": int(upload_metadata.get("count_of_duplicate_recipient_rows", 0) or 0),
+            },
+        )
+
     try:
         job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
     except HTTPError as exception:
