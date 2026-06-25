@@ -2454,3 +2454,7 @@
 "Allow this key to manage templates (create, update, or delete)","Permettre à cette clé de gérer les gabarits (créer, mettre à jour ou supprimer)"
 "API key permissions","Permissions de la clé API"
 "Manage templates","Gestion des gabarits"
+"1 recipient appears in your list more than once. They will receive the message multiple times.","1 destinataire figure plusieurs fois dans votre liste. Cette personne recevra le message plusieurs fois."
+"{} recipients appear in your list more than once. They will receive the message multiple times.","{} destinataires figurent plusieurs fois dans votre liste. Ces personnes recevront le message plusieurs fois."
+"{} rows are duplicates of an earlier row.","{} lignes sont des doublons d’une ligne précédente."
+"Download a list of duplicate recipients","Télécharger la liste des destinataires en double"
