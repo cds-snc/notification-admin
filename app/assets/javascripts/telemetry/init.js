@@ -189,6 +189,14 @@ const initTelemetry = () => {
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
   const otelServiceName =
     window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
+  const authToken = window.OTEL_CONFIG.authToken;
+  const authMode = window.OTEL_CONFIG.authMode;
+  const otelAuthHeaders =
+    authMode === "csrf"
+      ? { "X-CSRFToken": authToken }
+      : authMode === "signed"
+        ? { "X-OTEL-Token": authToken }
+        : {};
   installOtlpFetchLogging(otlpEndpoint);
   installOtlpXhrLogging(otlpEndpoint);
 
@@ -213,13 +221,13 @@ const initTelemetry = () => {
   });
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
-  const traceExporter = new OTLPTraceExporter({ url: traceUrl });
+  const traceExporter = new OTLPTraceExporter({ url: traceUrl, headers: otelAuthHeaders });
   tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
   // Initialize Metrics Provider
   const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;
   const metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({ url: metricsUrl }),
+    exporter: new OTLPMetricExporter({ url: metricsUrl, headers: otelAuthHeaders }),
     intervalMillis: 60000,
   });
   const meterProvider = new MeterProvider({

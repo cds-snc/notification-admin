@@ -2,6 +2,9 @@ import os
 
 import requests
 from flask import Response, abort, current_app, request
+from flask_login import current_user
+from flask_wtf.csrf import CSRFError, validate_csrf
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from app import csrf
 from app.main import main
@@ -10,6 +13,7 @@ OTLP_PROXY_TIMEOUT = 10
 OTLP_SIGNAL_TYPES = {"metrics", "traces"}
 OTLP_SIGNAL_PATHS = {"metrics": "/v1/metrics", "traces": "/v1/traces"}
 OTLP_MAX_PAYLOAD_BYTES = 1 * 1024 * 1024  # 1 MB
+OTLP_UNAUTHENTICATED_TOKEN_TTL = 5 * 60  # 5 minutes
 
 
 @main.route("/otlp-proxy/v1/<signal_type>", methods=["POST"])
@@ -20,6 +24,21 @@ def otlp_proxy(signal_type):
 
     if not current_app.config.get("ENABLE_CLIENT_SIDE_OTEL", False):
         abort(404)
+
+    if current_user.is_authenticated:
+        token = request.headers.get("X-CSRFToken", "")
+        try:
+            validate_csrf(token)
+        except CSRFError:
+            abort(403)
+    else:
+        token = request.headers.get("X-OTEL-Token", "")
+        try:
+            URLSafeTimedSerializer(current_app.config["SECRET_KEY"]).loads(
+                token, salt="otel-proxy", max_age=OTLP_UNAUTHENTICATED_TOKEN_TTL
+            )
+        except (BadSignature, SignatureExpired):
+            abort(401)
 
     payload = request.get_data(cache=False)
     if len(payload) > OTLP_MAX_PAYLOAD_BYTES:

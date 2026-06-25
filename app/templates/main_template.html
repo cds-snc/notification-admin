@@ -144,7 +144,9 @@
     window.OTEL_CONFIG = {
       enabled: {{ 'true' if enable_client_side_otel else 'false' }},
       endpoint: "{{ otlp_endpoint }}",
-      serviceName: "{{ otel_client_service_name }}"
+      serviceName: "{{ otel_client_service_name }}",
+      authToken: {{ otel_auth_token | tojson }},
+      authMode: "{{ otel_auth_mode }}"
     }
 
   </script>

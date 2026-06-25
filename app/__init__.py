@@ -25,8 +25,8 @@ from flask_babel import Babel, _
 from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
-from flask_wtf.csrf import CSRFError
-from itsdangerous import BadSignature
+from flask_wtf.csrf import CSRFError, generate_csrf
+from itsdangerous import BadSignature, URLSafeTimedSerializer
 from notifications_python_client.errors import HTTPError
 from notifications_utils import formatters, logging, request_helper
 from notifications_utils.formatters import formatted_list
@@ -316,6 +316,16 @@ def init_app(application):
         otel_endpoint = "/otlp-proxy" if otel_enabled else otel_upstream_endpoint
         otel_client_service_name = os.environ.get("OTEL_CLIENT_SERVICE_NAME", "notification-admin-frontend")
 
+        otel_auth_token = ""
+        otel_auth_mode = ""
+        if otel_enabled:
+            if current_user.is_authenticated:
+                otel_auth_token = generate_csrf()
+                otel_auth_mode = "csrf"
+            else:
+                otel_auth_token = URLSafeTimedSerializer(application.config["SECRET_KEY"]).dumps(nonce or "", salt="otel-proxy")
+                otel_auth_mode = "signed"
+
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
@@ -331,6 +341,8 @@ def init_app(application):
             "enable_client_side_otel": otel_enabled,
             "otlp_endpoint": otel_endpoint,
             "otel_client_service_name": otel_client_service_name,
+            "otel_auth_token": otel_auth_token,
+            "otel_auth_mode": otel_auth_mode,
         }
 
 
