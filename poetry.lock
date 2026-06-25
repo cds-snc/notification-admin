@@ -1681,8 +1681,8 @@ werkzeug = "3.0.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "fix/3319-warn-duplicate-recipients"
-resolved_reference = "30a40fe2bb8262aff3c7f2da91e7953f11f797d2"
+reference = "53.2.26"
+resolved_reference = "ecff1b67474eb82ca6f64bec1cc68e31fe504d23"
 
 [[package]]
 name = "openpyxl"
@@ -2947,4 +2947,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "01426d4fdfd55a9754d2a26f66e8b927c34b51e379bc3a41a73d45629c9ae563"
+content-hash = "f9c49828b19c57d7fd7b1f756d643f47185057d4b7a4b476ef9064dfa32f4667"
