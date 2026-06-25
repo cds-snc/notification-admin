@@ -146,7 +146,10 @@
       endpoint: "{{ otlp_endpoint }}",
       serviceName: "{{ otel_client_service_name }}",
       authToken: {{ otel_auth_token | tojson }},
-      authMode: "{{ otel_auth_mode }}"
+      authMode: "{{ otel_auth_mode }}",
+      propagateTraceHeaderCorsUrls: {{ otel_propagate_cors_urls|tojson }},
+      userId: "{{ otel_user_id }}",
+      traceparent: "{{ otel_traceparent }}"
     }
 
   </script>
