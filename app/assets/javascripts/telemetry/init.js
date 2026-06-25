@@ -150,7 +150,10 @@ const createNavigationSpan = (tracer, parentContext) => {
 
   if (typeof window !== "undefined") {
     const { pathname, href } = window.location;
-    const section = pathname === "/" ? "home" : pathname.split("/").filter(Boolean)[0] || "unknown";
+    const section =
+      pathname === "/"
+        ? "home"
+        : pathname.split("/").filter(Boolean)[0] || "unknown";
     pageLoadSpan.setAttribute("page.path", pathname);
     pageLoadSpan.setAttribute("page.url", href);
     pageLoadSpan.setAttribute("page.section", section);
@@ -354,13 +357,19 @@ const initTelemetry = () => {
   );
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
-  const traceExporter = new OTLPTraceExporter({ url: traceUrl, headers: otelAuthHeaders });
+  const traceExporter = new OTLPTraceExporter({
+    url: traceUrl,
+    headers: otelAuthHeaders,
+  });
   tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
   // Initialize Metrics Provider
   const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;
   const metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({ url: metricsUrl, headers: otelAuthHeaders }),
+    exporter: new OTLPMetricExporter({
+      url: metricsUrl,
+      headers: otelAuthHeaders,
+    }),
     intervalMillis: 60000,
   });
   const meterProvider = new MeterProvider({
