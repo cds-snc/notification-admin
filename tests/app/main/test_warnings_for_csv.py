@@ -43,7 +43,7 @@ def test_returns_singular_warning_for_one_duplicate_recipient(app_):
     with app_.test_request_context():
         warnings = get_warnings_for_csv(recipients, "email")
     assert len(warnings) == 1
-    assert "1 recipient appears in your list more than once" in warnings[0]
+    assert "1 recipient appears more than once in your list" in warnings[0]
 
 
 def test_returns_plural_warning_for_multiple_duplicate_recipients(app_):
@@ -56,7 +56,7 @@ def test_returns_plural_warning_for_multiple_duplicate_recipients(app_):
     with app_.test_request_context():
         warnings = get_warnings_for_csv(recipients, "email")
     assert len(warnings) == 1
-    assert "3 recipients appear in your list more than once" in warnings[0]
+    assert "3 recipients appear more than once in your list" in warnings[0]
 
 
 def test_includes_row_count_when_it_differs_from_unique_count(app_):
@@ -70,7 +70,7 @@ def test_includes_row_count_when_it_differs_from_unique_count(app_):
     with app_.test_request_context():
         warnings = get_warnings_for_csv(recipients, "sms")
     assert len(warnings) == 2
-    assert "1 recipient appears in your list more than once" in warnings[0]
+    assert "1 recipient appears more than once in your list" in warnings[0]
     assert "3 rows are duplicates of an earlier row" in warnings[1]
 
 
