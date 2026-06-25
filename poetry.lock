@@ -1682,7 +1682,7 @@ werkzeug = "3.0.6"
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
 reference = "fix/3319-warn-duplicate-recipients"
-resolved_reference = "f153e7a17efcc7651af0d478281e5927ad301ac4"
+resolved_reference = "30a40fe2bb8262aff3c7f2da91e7953f11f797d2"
 
 [[package]]
 name = "openpyxl"
