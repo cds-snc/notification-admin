@@ -320,7 +320,6 @@ def init_app(application):
         ]
         otel_user_id = str(current_user.id) if current_user.is_authenticated else ""
         otel_traceparent = _get_current_traceparent() if otel_enabled else ""
-
         otel_auth_token = ""
         otel_auth_mode = ""
         if otel_enabled:
