@@ -56,6 +56,7 @@ from app.models.user import Users
 from app.notify_client.notification_counts_client import notification_counts_client
 from app.s3_client.s3_csv_client import (
     copy_bulk_send_file_to_uploads,
+    get_csv_metadata,
     list_bulk_send_uploads,
     s3download,
     s3upload,
@@ -70,6 +71,7 @@ from app.utils import (
     get_help_argument,
     get_limit_reset_time_et,
     get_template,
+    get_warnings_for_csv,
     should_skip_template_page,
     unicode_truncate,
     user_has_permissions,
@@ -771,8 +773,11 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
         template=template,
         errors=recipients.has_errors,
         row_errors=get_errors_for_csv(recipients, template.template_type),
+        row_warnings=get_warnings_for_csv(recipients, template.template_type),
         count_of_recipients=len(recipients),
         count_of_displayed_recipients=len(list(recipients.displayed_rows)),
+        count_of_duplicate_recipients=recipients.count_of_unique_duplicate_recipients,
+        count_of_duplicate_recipient_rows=recipients.count_of_duplicate_recipient_rows,
         original_file_name=request.args.get("original_file_name", ""),
         upload_id=upload_id,
         form=CsvUploadForm(),
@@ -893,6 +898,25 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if session.get("sender_id"):
         metadata_kwargs["sender_id"] = session["sender_id"]
 
+    # Persist duplicate-recipient counts on the upload so that, when (or if) the
+    # user proceeds to start_job, we can attribute the send back to the warning
+    # that was shown here. See issue #3319.
+    if data["count_of_duplicate_recipients"]:
+        metadata_kwargs["count_of_duplicate_recipients"] = data["count_of_duplicate_recipients"]
+        metadata_kwargs["count_of_duplicate_recipient_rows"] = data["count_of_duplicate_recipient_rows"]
+        current_app.logger.info(
+            "bulk_send.duplicate_recipients_warning_shown",
+            extra={
+                "service_id": str(service_id),
+                "template_id": str(template_id),
+                "template_type": data["template"].template_type,
+                "upload_id": upload_id,
+                "count_of_recipients": data["count_of_recipients"],
+                "count_of_duplicate_recipients": data["count_of_duplicate_recipients"],
+                "count_of_duplicate_recipient_rows": data["count_of_duplicate_recipient_rows"],
+            },
+        )
+
     set_metadata_on_csv_upload(service_id, upload_id, **metadata_kwargs)
 
     return render_template("views/check/ok.html", **data)
@@ -920,6 +944,48 @@ def check_messages_preview(service_id, template_id, upload_id, filetype, row_ind
 
 
 @main.route(
+    "/services/<service_id>/<uuid:template_id>/check/<upload_id>/duplicates.csv",
+    methods=["GET"],
+)
+@user_has_permissions("send_messages", restrict_admin_usage=True)
+def download_duplicate_recipients(service_id, template_id, upload_id):
+    """Return a CSV of the rows whose recipient is a duplicate of an earlier
+    row in the same upload. The list is rendered server-side from the original
+    upload (which is scoped to this authenticated user) and is not persisted,
+    so duplicates are visible only to the authenticated sender (issue #3319).
+    """
+    contents = s3download(service_id, upload_id)
+    db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
+    template = get_template(db_template, current_service)
+    recipients = RecipientCSV(
+        contents,
+        template=template,
+        template_type=template.template_type,
+        placeholders=template.placeholders,
+        max_rows=get_csv_max_rows(service_id),
+        international_sms=current_service.has_permission("international_sms"),
+        user_language=get_current_locale(current_app),
+    )
+
+    column_headers = recipients.column_headers
+    duplicate_rows = list(recipients.rows_with_duplicate_recipients)
+
+    rows = [["Row number", *column_headers]]
+    for row in duplicate_rows:
+        rows.append([str(row.index + 2), *(row[column].data or "" for column in column_headers)])
+
+    safe_filename = SanitiseASCII.encode(request.args.get("original_file_name", "duplicates.csv"))
+    return (
+        Spreadsheet.from_rows(rows).as_csv_data,
+        200,
+        {
+            "Content-Type": "text/csv; charset=utf-8",
+            "Content-Disposition": 'attachment; filename="duplicates-{}"'.format(safe_filename),
+        },
+    )
+
+
+@main.route(
     "/services/<service_id>/<uuid:template_id>/check.<filetype>",
     methods=["GET"],
 )
@@ -942,6 +1008,25 @@ def check_notification_preview(service_id, template_id, filetype):
 @main.route("/services/<service_id>/start-job/<upload_id>", methods=["POST"])
 @user_has_permissions("send_messages", restrict_admin_usage=True)
 def start_job(service_id, upload_id):
+    # If the upload had a duplicate-recipients warning attached, log that the
+    # user proceeded with the send so we can compare against the count of
+    # "warning shown" log lines (issue #3319). We read this before creating the
+    # job so that a failure here can't block a send.
+    upload_metadata = get_csv_metadata(service_id, upload_id)
+    count_of_duplicate_recipients = int(upload_metadata.get("count_of_duplicate_recipients", 0) or 0)
+    if count_of_duplicate_recipients:
+        current_app.logger.info(
+            "bulk_send.duplicate_recipients_sent_anyway",
+            extra={
+                "service_id": str(service_id),
+                "template_id": upload_metadata.get("template_id"),
+                "upload_id": upload_id,
+                "notification_count": int(upload_metadata.get("notification_count", 0) or 0),
+                "count_of_duplicate_recipients": count_of_duplicate_recipients,
+                "count_of_duplicate_recipient_rows": int(upload_metadata.get("count_of_duplicate_recipient_rows", 0) or 0),
+            },
+        )
+
     try:
         job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
     except HTTPError as exception:
