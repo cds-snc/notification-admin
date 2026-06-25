@@ -148,6 +148,14 @@ const createNavigationSpan = (tracer, parentContext) => {
     ? tracer.startSpan("browser.page_load", spanOptions, parentContext)
     : tracer.startSpan("browser.page_load", spanOptions);
 
+  if (typeof window !== "undefined") {
+    const { pathname, href } = window.location;
+    const section = pathname === "/" ? "home" : pathname.split("/").filter(Boolean)[0] || "unknown";
+    pageLoadSpan.setAttribute("page.path", pathname);
+    pageLoadSpan.setAttribute("page.url", href);
+    pageLoadSpan.setAttribute("page.section", section);
+  }
+
   pageLoadSpan.setAttribute(
     "browser.navigation.type",
     navigationEntry.type || "unknown",
