@@ -13,7 +13,6 @@ OTLP_PROXY_TIMEOUT = 10
 OTLP_SIGNAL_TYPES = {"metrics", "traces"}
 OTLP_SIGNAL_PATHS = {"metrics": "/v1/metrics", "traces": "/v1/traces"}
 OTLP_MAX_PAYLOAD_BYTES = 1 * 1024 * 1024  # 1 MB
-OTLP_UNAUTHENTICATED_TOKEN_TTL = 5 * 60  # 5 minutes
 
 
 @main.route("/otlp-proxy/v1/<signal_type>", methods=["POST"])
@@ -35,7 +34,7 @@ def otlp_proxy(signal_type):
         token = request.headers.get("X-OTEL-Token", "")
         try:
             URLSafeTimedSerializer(current_app.config["SECRET_KEY"]).loads(
-                token, salt="otel-proxy", max_age=OTLP_UNAUTHENTICATED_TOKEN_TTL
+                token, salt="otel-proxy", max_age=current_app.config["OTEL_CLIENT_SIDE_TOKEN_TTL"]
             )
         except (BadSignature, SignatureExpired):
             abort(401)
