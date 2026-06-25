@@ -26,6 +26,7 @@ def otlp_proxy(signal_type):
 
     if current_user.is_authenticated:
         from wtforms import ValidationError
+
         token = request.headers.get("X-CSRFToken", "")
         try:
             validate_csrf(token)

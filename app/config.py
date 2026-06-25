@@ -93,6 +93,8 @@ class Config(object):
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
     FF_FILE_ATTACHMENTS = env.bool("FF_FILE_ATTACHMENTS", False)
+
+    # OTEL Configuration
     ENABLE_CLIENT_SIDE_OTEL = env.bool("ENABLE_CLIENT_SIDE_OTEL", False)
     OTEL_CLIENT_SIDE_TOKEN_TTL = env.int("OTEL_CLIENT_SIDE_TOKEN_TTL", 5 * 60)  # seconds, default 5 minutes
 
