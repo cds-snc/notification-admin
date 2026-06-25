@@ -35,7 +35,7 @@
         {% if count_of_duplicate_recipients %}
           <p>
             <a href="{{ url_for('.download_duplicate_recipients', service_id=current_service.id, template_id=template.id, upload_id=upload_id, original_file_name=original_file_name) }}" download>
-              {{ _('Download a list of duplicate recipients') }}
+              {{ _('Download the list of duplicate recipients') }}
             </a>
           </p>
         {% endif %}

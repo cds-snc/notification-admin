@@ -3036,6 +3036,11 @@ def mock_s3_set_metadata(mocker, content=None):
     return mocker.patch("app.main.views.send.set_metadata_on_csv_upload")
 
 
+@pytest.fixture(scope="function", autouse=True)
+def mock_s3_get_metadata(mocker):
+    return mocker.patch("app.main.views.send.get_csv_metadata", return_value={})
+
+
 @pytest.fixture(scope="function")
 def sample_invite(mocker, service_one, status="pending", permissions=None):
     id_ = USER_ONE_ID
