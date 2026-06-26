@@ -8,6 +8,7 @@ from dateutil import parser
 from flask import (
     Response,
     abort,
+    current_app,
     flash,
     jsonify,
     redirect,
@@ -228,19 +229,22 @@ def get_attachments(notification, sending_method):
     }
 
 
-def get_template_attach_documents(notification):
-    """Return documents from personalisation that were attached by the API at send time (template_attach)."""
-    return [
+def get_notification_attachments(notification, just_sent=False):
+    ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
+
+    # Get all document attachments from personalisation
+    personalisation_docs = [
         v["document"]
         for v in notification.get("personalisation", {}).values()
-        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == "template_attach"
+        if isinstance(v, dict)
+        and "document" in v
+        and v["document"].get("sending_method")
+        in (
+            "attach",  # API-sent attachments (always shown)
+            "template_attach" if ff_enabled else None,  # Template attachments (only when FF is on)
+        )
     ]
 
-
-def get_notification_attachments(notification, just_sent=False):
-    # Check personalisation for both user-provided attachments ("attach") and
-    # template-level file attachments ("template_attach") stored by the API.
-    personalisation_docs = list(get_attachments(notification, "attach").values()) + get_template_attach_documents(notification)
     if personalisation_docs:
         return [
             {
@@ -250,7 +254,7 @@ def get_notification_attachments(notification, just_sent=False):
             for doc in personalisation_docs
         ]
 
-    if notification.get("notification_type") != "email":
+    if not ff_enabled or notification.get("notification_type") != "email":
         return []
 
     if not just_sent:
@@ -258,7 +262,7 @@ def get_notification_attachments(notification, just_sent=False):
         return []
 
     # For the immediate post-send view, fall back to live template attachments
-    # (covers the window before the API has embedded files into personalisation).
+    # (handles legacy notifications or edge cases where personalisation doesn't have attachments).
     template_id = notification.get("template", {}).get("id")
     if not template_id:
         return []
