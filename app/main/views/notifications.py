@@ -52,8 +52,13 @@ from app.utils import (
 def view_notification(service_id, notification_id):
     notification = notification_api_client.get_notification(service_id, str(notification_id))
     notification["template"].update({"reply_to_text": notification["reply_to_text"]})
-    just_sent = bool(request.args.get("just_sent"))
-    attachments = get_notification_attachments(notification, just_sent=just_sent)
+
+    # Get attachments from personalisation
+    ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
+    methods = ["attach"]
+    if ff_enabled:
+        methods.append("template_attach")
+    attachments = list(get_attachments(notification, methods).values())
 
     personalisation = get_all_personalisation_from_notification(notification)
 
@@ -218,26 +223,25 @@ def get_single_notification_partials(notification):
     }
 
 
-def get_attachments(notification, sending_method):
-    """Return personalisation documents sent via the API with the given sending method (attach, link, or template_attach)."""
-    if sending_method not in ["attach", "link", "template_attach"]:
-        raise NotImplementedError
+def get_attachments(notification, sending_methods):
+    """Return personalisation documents with any of the given sending methods.
+
+    Args:
+        notification: The notification dict
+        sending_methods: Either a string (e.g., "attach") or a list of strings (e.g., ["attach", "template_attach"])
+
+    Returns:
+        Dict of {key: document_dict} for matching documents
+    """
+    # Accept single string for backwards compatibility
+    if isinstance(sending_methods, str):
+        sending_methods = [sending_methods]
+
     return {
         k: v["document"]
         for k, v in (notification.get("personalisation", {})).items()
-        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == sending_method
+        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") in sending_methods
     }
-
-
-def get_notification_attachments(notification, just_sent=False):
-    ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
-
-    # Get API-sent attachments (always shown) and template attachments (only when FF is on)
-    api_attach_docs = get_attachments(notification, "attach").values()
-    template_attach_docs = get_attachments(notification, "template_attach").values() if ff_enabled else []
-    all_docs = list(api_attach_docs) + list(template_attach_docs)
-
-    return [{"filename": doc.get("filename"), "file_size": doc.get("file_size") or 0} for doc in all_docs]
 
 
 def get_all_personalisation_from_notification(notification):
