@@ -102,6 +102,37 @@ def service_can_bulk_send(service_id):
     return str(service_id) in bulk_sending_services
 
 
+def build_template_attachment_personalisation(template_id, template_type):
+    """Return a personalisation dict of template-level file attachments to merge before sending.
+
+    Only populated when FF_FILE_ATTACHMENTS is on, the template is an email,
+    and the service has the upload_document permission. Attachments that are
+    not yet fully uploaded (status != 'uploaded') are skipped.
+    """
+    if (
+        not current_app.config.get("FF_FILE_ATTACHMENTS")
+        or template_type != "email"
+        or not current_service.has_permission("upload_document")
+    ):
+        return {}
+
+    attachments = current_service.get_template_attachments(template_id)
+    result = {}
+    for i, attachment in enumerate(attachments):
+        if attachment.get("status") != "uploaded":
+            continue
+        result[f"_file_{i}"] = {
+            "document": {
+                "id": attachment["id"],
+                "filename": attachment["name"],
+                "mime_type": attachment.get("mime_type"),
+                "file_size": attachment.get("size") or attachment.get("file_size"),
+                "sending_method": "template_attach",
+            }
+        }
+    return result
+
+
 def get_template_attachment_context(template_id, template_type):
     context = {
         "template_attachments": [],
@@ -940,6 +971,11 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     if session.get("sender_id"):
         metadata_kwargs["sender_id"] = session["sender_id"]
 
+    # Add template attachments as personalisation metadata for bulk sends
+    template_attach_personalisation = build_template_attachment_personalisation(template_id, data["template"].template_type)
+    if template_attach_personalisation:
+        metadata_kwargs["template_attach_personalisation"] = json.dumps(template_attach_personalisation)
+
     set_metadata_on_csv_upload(service_id, upload_id, **metadata_kwargs)
 
     return render_template("views/check/ok.html", **data)
@@ -1270,12 +1306,17 @@ def send_notification(service_id, template_id):
 
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    personalisation = {
+        **session["placeholders"],
+        **build_template_attachment_personalisation(db_template["id"], db_template["template_type"]),
+    }
+
     try:
         noti = notification_api_client.send_notification(
             service_id,
             template_id=db_template["id"],
             recipient=session["recipient"] or session["placeholders"]["address line 1"],
-            personalisation=session["placeholders"],
+            personalisation=personalisation,
             sender_id=session["sender_id"] if "sender_id" in session else None,
         )
     except HTTPError as exception:
