@@ -148,6 +148,17 @@ const createNavigationSpan = (tracer, parentContext) => {
     ? tracer.startSpan("browser.page_load", spanOptions, parentContext)
     : tracer.startSpan("browser.page_load", spanOptions);
 
+  if (typeof window !== "undefined") {
+    const { pathname, origin } = window.location;
+    const section =
+      pathname === "/"
+        ? "home"
+        : pathname.split("/").filter(Boolean)[0] || "unknown";
+    pageLoadSpan.setAttribute("page.path", pathname);
+    pageLoadSpan.setAttribute("page.url", `${origin}${pathname}`);
+    pageLoadSpan.setAttribute("page.section", section);
+  }
+
   pageLoadSpan.setAttribute(
     "browser.navigation.type",
     navigationEntry.type || "unknown",
@@ -295,6 +306,14 @@ const initTelemetry = () => {
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
   const otelServiceName =
     window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
+  const authToken = window.OTEL_CONFIG.authToken;
+  const authMode = window.OTEL_CONFIG.authMode;
+  const otelAuthHeaders =
+    authMode === "csrf"
+      ? { "X-CSRFToken": authToken }
+      : authMode === "signed"
+        ? { "X-OTEL-Token": authToken }
+        : {};
   const sessionId = getOrCreateSessionId();
   const userId =
     typeof window.OTEL_CONFIG.userId === "string" && window.OTEL_CONFIG.userId
@@ -338,13 +357,19 @@ const initTelemetry = () => {
   );
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
-  const traceExporter = new OTLPTraceExporter({ url: traceUrl });
+  const traceExporter = new OTLPTraceExporter({
+    url: traceUrl,
+    headers: otelAuthHeaders,
+  });
   tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
   // Initialize Metrics Provider
   const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;
   const metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({ url: metricsUrl }),
+    exporter: new OTLPMetricExporter({
+      url: metricsUrl,
+      headers: otelAuthHeaders,
+    }),
     intervalMillis: 60000,
   });
   const meterProvider = new MeterProvider({
