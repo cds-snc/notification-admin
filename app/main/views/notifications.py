@@ -219,8 +219,8 @@ def get_single_notification_partials(notification):
 
 
 def get_attachments(notification, sending_method):
-    """Return personalisation documents sent via the API with the given sending method (attach or link)."""
-    if sending_method not in ["attach", "link"]:
+    """Return personalisation documents sent via the API with the given sending method (attach, link, or template_attach)."""
+    if sending_method not in ["attach", "link", "template_attach"]:
         raise NotImplementedError
     return {
         k: v["document"]
@@ -232,60 +232,12 @@ def get_attachments(notification, sending_method):
 def get_notification_attachments(notification, just_sent=False):
     ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
 
-    # Get all document attachments from personalisation
-    personalisation_docs = [
-        v["document"]
-        for v in notification.get("personalisation", {}).values()
-        if isinstance(v, dict)
-        and "document" in v
-        and v["document"].get("sending_method")
-        in (
-            "attach",  # API-sent attachments (always shown)
-            "template_attach" if ff_enabled else None,  # Template attachments (only when FF is on)
-        )
-    ]
+    # Get API-sent attachments (always shown) and template attachments (only when FF is on)
+    api_attach_docs = get_attachments(notification, "attach").values()
+    template_attach_docs = get_attachments(notification, "template_attach").values() if ff_enabled else []
+    all_docs = list(api_attach_docs) + list(template_attach_docs)
 
-    if personalisation_docs:
-        return [
-            {
-                "filename": doc.get("filename"),
-                "file_size": doc.get("file_size") or 0,
-            }
-            for doc in personalisation_docs
-        ]
-
-    if not ff_enabled or notification.get("notification_type") != "email":
-        return []
-
-    if not just_sent:
-        # Historical view with no personalisation attachments — nothing to show.
-        return []
-
-    # For the immediate post-send view, fall back to live template attachments
-    # (handles legacy notifications or edge cases where personalisation doesn't have attachments).
-    template_id = notification.get("template", {}).get("id")
-    if not template_id:
-        return []
-
-    template_files = current_service.get_template_attachments(template_id)
-    if not template_files:
-        return []
-
-    attachments = []
-    for file_data in template_files:
-        if not isinstance(file_data, dict):
-            continue
-        if file_data.get("status") in ("deleted", "virus_scan_failed", "uploading", "pending_virus_scan"):
-            continue
-        filename = file_data.get("filename") or file_data.get("name")
-        if not filename:
-            continue
-        file_size = file_data.get("file_size")
-        if file_size is None:
-            file_size = file_data.get("size")
-        attachments.append({"filename": filename, "file_size": file_size or 0})
-
-    return attachments
+    return [{"filename": doc.get("filename"), "file_size": doc.get("file_size") or 0} for doc in all_docs]
 
 
 def get_all_personalisation_from_notification(notification):
