@@ -2457,3 +2457,7 @@
 "File upload in progress","Fichier en préparation"
 "Some files are not yet attached","Certains fichiers ne sont pas encore joints"
 "GC Notify is still scanning your files.","GC Notify analyse toujours vos fichiers."
+"1 recipient appears more than once in your list. They will receive the notification multiple times.","1 destinataire figure plus d’une fois dans votre liste. Cette personne recevra la notification plusieurs fois."
+"{} recipients appear more than once in your list. They will receive the notification multiple times.","{} destinataires figurent plus d’une fois dans votre liste. Ces personnes recevront la notification plusieurs fois."
+"{} rows are duplicates of an earlier row.","{} lignes sont des doublons d’une ligne précédente."
+"Download the list of duplicate recipients","Télécharger la liste des destinataires en double"

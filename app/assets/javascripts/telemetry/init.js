@@ -15,17 +15,120 @@ import {
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { FetchInstrumentation } from "@opentelemetry/instrumentation-fetch";
 import { XMLHttpRequestInstrumentation } from "@opentelemetry/instrumentation-xml-http-request";
-import { UserInteractionInstrumentation } from "@opentelemetry/instrumentation-user-interaction";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { ZoneContextManager } from "@opentelemetry/context-zone";
 import { W3CTraceContextPropagator } from "@opentelemetry/core";
 import { CompositePropagator } from "@opentelemetry/core";
+import { context as otelContext, propagation, trace } from "@opentelemetry/api";
 
 const OTLP_PROXY_PATH_PATTERN = /\/otlp-proxy\/v1\/(traces|metrics)$/;
 
+const SESSION_ID_STORAGE_KEY = "otel.session.id";
+
+const generateSessionId = () => {
+  if (typeof crypto === "undefined") {
+    return null;
+  }
+  if (typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  if (typeof crypto.getRandomValues === "function") {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    // RFC 4122 v4 layout
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join(
+      "",
+    );
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+  return null;
+};
+
+const getOrCreateSessionId = () => {
+  try {
+    if (typeof window === "undefined" || !window.sessionStorage) {
+      return generateSessionId();
+    }
+    let sessionId = window.sessionStorage.getItem(SESSION_ID_STORAGE_KEY);
+    if (!sessionId) {
+      sessionId = generateSessionId();
+      if (sessionId) {
+        window.sessionStorage.setItem(SESSION_ID_STORAGE_KEY, sessionId);
+      }
+    }
+    return sessionId;
+  } catch (_error) {
+    return generateSessionId();
+  }
+};
+
+// SpanProcessor that stamps session.id (and optional enduser.id) on every span as it starts,
+// so spans across separate page navigations can be grouped in the backend even when they
+// can't share a trace_id (full-page navigations don't propagate W3C trace context).
+const createSessionAttributeSpanProcessor = (sessionId, userId) => ({
+  onStart(span) {
+    if (sessionId) {
+      span.setAttribute("session.id", sessionId);
+    }
+    if (userId) {
+      span.setAttribute("enduser.id", userId);
+    }
+  },
+  onEnd() {},
+  forceFlush() {
+    return Promise.resolve();
+  },
+  shutdown() {
+    return Promise.resolve();
+  },
+});
+
+const buildCorsUrlMatchers = (rawUrls) => {
+  if (!Array.isArray(rawUrls)) {
+    return [];
+  }
+  const escapeForRegex = (value) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return rawUrls
+    .filter((value) => typeof value === "string" && value.length > 0)
+    .map((value) => new RegExp(`^${escapeForRegex(value)}`));
+};
+
 const toMsEpoch = (relativeTimeMs) => performance.timeOrigin + relativeTimeMs;
 
-const createNavigationSpan = (tracer) => {
+const TRACEPARENT_PATTERN = /^00-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/i;
+
+// Parses a W3C traceparent string into an OTel Context whose active span is the
+// remote parent. Used to attach the browser.page_load span to the Flask server
+// span that rendered the HTML, since full-page navigations can't carry
+// traceparent on the request itself.
+const parentContextFromTraceparent = (traceparent) => {
+  if (typeof traceparent !== "string") {
+    return null;
+  }
+  const match = TRACEPARENT_PATTERN.exec(traceparent);
+  if (!match) {
+    return null;
+  }
+  const [, traceId, spanId, flagsHex] = match;
+  if (
+    traceId === "00000000000000000000000000000000" ||
+    spanId === "0000000000000000"
+  ) {
+    return null;
+  }
+  const spanContext = {
+    traceId,
+    spanId,
+    traceFlags: parseInt(flagsHex, 16),
+    isRemote: true,
+  };
+  return trace.setSpanContext(otelContext.active(), spanContext);
+};
+
+const createNavigationSpan = (tracer, parentContext) => {
   if (
     typeof performance === "undefined" ||
     typeof performance.getEntriesByType !== "function"
@@ -38,9 +141,23 @@ const createNavigationSpan = (tracer) => {
     return;
   }
 
-  const pageLoadSpan = tracer.startSpan("browser.page_load", {
+  const spanOptions = {
     startTime: toMsEpoch(navigationEntry.startTime),
-  });
+  };
+  const pageLoadSpan = parentContext
+    ? tracer.startSpan("browser.page_load", spanOptions, parentContext)
+    : tracer.startSpan("browser.page_load", spanOptions);
+
+  if (typeof window !== "undefined") {
+    const { pathname, origin } = window.location;
+    const section =
+      pathname === "/"
+        ? "home"
+        : pathname.split("/").filter(Boolean)[0] || "unknown";
+    pageLoadSpan.setAttribute("page.path", pathname);
+    pageLoadSpan.setAttribute("page.url", `${origin}${pathname}`);
+    pageLoadSpan.setAttribute("page.section", section);
+  }
 
   pageLoadSpan.setAttribute(
     "browser.navigation.type",
@@ -189,6 +306,23 @@ const initTelemetry = () => {
   const otlpEndpoint = window.OTEL_CONFIG.endpoint;
   const otelServiceName =
     window.OTEL_CONFIG.serviceName || "notification-admin-frontend";
+  const authToken = window.OTEL_CONFIG.authToken;
+  const authMode = window.OTEL_CONFIG.authMode;
+  const otelAuthHeaders =
+    authMode === "csrf"
+      ? { "X-CSRFToken": authToken }
+      : authMode === "signed"
+        ? { "X-OTEL-Token": authToken }
+        : {};
+  const sessionId = getOrCreateSessionId();
+  const userId =
+    typeof window.OTEL_CONFIG.userId === "string" && window.OTEL_CONFIG.userId
+      ? window.OTEL_CONFIG.userId
+      : "";
+  const propagateTraceHeaderCorsUrls = buildCorsUrlMatchers(
+    window.OTEL_CONFIG.propagateTraceHeaderCorsUrls,
+  );
+
   installOtlpFetchLogging(otlpEndpoint);
   installOtlpXhrLogging(otlpEndpoint);
 
@@ -201,25 +335,41 @@ const initTelemetry = () => {
     }),
   );
 
-  // Initialize Trace Provider
+  // Initialize Trace Provider. We register the context manager, propagator,
+  // and tracer provider explicitly on the api package rather than relying on
+  // tracerProvider.register(), because that helper is a no-op when another
+  // OTel package has already touched api.context/api.propagation during import
+  // (which happens with the @opentelemetry/instrumentation auto-loader).
+  const propagator = new CompositePropagator({
+    propagators: [new W3CTraceContextPropagator()],
+  });
+  const contextManager = new ZoneContextManager();
+  contextManager.enable();
+
   const tracerProvider = new BasicTracerProvider({ resource });
 
-  // Register context manager, propagator, and set global tracer provider
-  tracerProvider.register({
-    contextManager: new ZoneContextManager(),
-    propagator: new CompositePropagator({
-      propagators: [new W3CTraceContextPropagator()],
-    }),
-  });
+  otelContext.setGlobalContextManager(contextManager);
+  propagation.setGlobalPropagator(propagator);
+  trace.setGlobalTracerProvider(tracerProvider);
+
+  tracerProvider.addSpanProcessor(
+    createSessionAttributeSpanProcessor(sessionId, userId),
+  );
 
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
-  const traceExporter = new OTLPTraceExporter({ url: traceUrl });
+  const traceExporter = new OTLPTraceExporter({
+    url: traceUrl,
+    headers: otelAuthHeaders,
+  });
   tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
 
   // Initialize Metrics Provider
   const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;
   const metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({ url: metricsUrl }),
+    exporter: new OTLPMetricExporter({
+      url: metricsUrl,
+      headers: otelAuthHeaders,
+    }),
     intervalMillis: 60000,
   });
   const meterProvider = new MeterProvider({
@@ -232,12 +382,11 @@ const initTelemetry = () => {
     instrumentations: [
       new FetchInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
+        propagateTraceHeaderCorsUrls,
       }),
       new XMLHttpRequestInstrumentation({
         ignoreUrls: [OTLP_PROXY_PATH_PATTERN],
-      }),
-      new UserInteractionInstrumentation({
-        eventNames: ["click", "submit"],
+        propagateTraceHeaderCorsUrls,
       }),
     ],
     tracerProvider,
@@ -249,7 +398,10 @@ const initTelemetry = () => {
   const meter = meterProvider.getMeter(otelServiceName);
   window.otel = { tracerProvider, meterProvider, tracer, meter };
 
-  createNavigationSpan(tracer);
+  const pageLoadParentContext = parentContextFromTraceparent(
+    window.OTEL_CONFIG.traceparent,
+  );
+  createNavigationSpan(tracer, pageLoadParentContext);
 
   setTimeout(() => {
     tracerProvider
