@@ -3512,6 +3512,79 @@ def test_send_notification_submits_data(
     )
 
 
+def test_send_notification_includes_template_attachments_in_personalisation(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_send_notification,
+    mock_get_service_email_template,
+    mock_get_template_attachments,
+):
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "mime_type": "application/pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "mime_type": "application/pdf", "status": "pending_virus_scan", "size": 512},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "test@example.com"
+        session["placeholders"] = {"email address": "test@example.com"}
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    # Only the uploaded file should be injected; pending_virus_scan is skipped.
+    mock_send_notification.assert_called_once_with(
+        service_one["id"],
+        template_id=fake_uuid,
+        recipient="test@example.com",
+        personalisation={
+            "email address": "test@example.com",
+            "_file_0": {
+                "document": {
+                    "id": "file-1",
+                    "filename": "guide.pdf",
+                    "mime_type": "application/pdf",
+                    "file_size": 1280,
+                    "sending_method": "template_attach",
+                },
+            },
+        },
+        sender_id=None,
+    )
+
+
+def test_send_notification_does_not_include_template_attachments_when_flag_off(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_send_notification,
+    mock_get_service_email_template,
+    mock_get_template_attachments,
+):
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "mime_type": "application/pdf", "status": "uploaded", "size": 1280},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "test@example.com"
+        session["placeholders"] = {"email address": "test@example.com"}
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+        client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    mock_send_notification.assert_called_once_with(
+        service_one["id"],
+        template_id=fake_uuid,
+        recipient="test@example.com",
+        personalisation={"email address": "test@example.com"},
+        sender_id=None,
+    )
+
+
 def test_send_notification_clears_session(
     client_request,
     service_one,

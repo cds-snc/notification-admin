@@ -16,6 +16,7 @@ from tests.conftest import (
     create_notification,
     mock_get_notification,
     normalize_spaces,
+    set_config,
 )
 
 
@@ -303,39 +304,6 @@ def test_notification_status_page_prefers_personalisation_attachments_over_templ
     assert "admin-file.pdf" not in str(page)
 
 
-def test_notification_status_page_falls_back_to_template_attachments_for_admin_sent_email(
-    client_request,
-    mocker,
-    service_one,
-    fake_uuid,
-):
-    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
-    notification["template"].pop("files", None)
-
-    mocker.patch(
-        "app.notification_api_client.get_notification",
-        return_value=notification,
-    )
-    mocker.patch(
-        "app.models.service.Service.get_template_attachments",
-        return_value=[
-            {"name": "current-template-file.pdf", "file_size": 694807, "status": "uploaded"},
-            {"name": "still-scanning.pdf", "file_size": 100, "status": "pending_virus_scan"},
-        ],
-    )
-
-    page = client_request.get(
-        "main.view_notification",
-        service_id=service_one["id"],
-        notification_id=fake_uuid,
-        just_sent=True,
-    )
-
-    assert "Attachments" in [h2.text for h2 in page.select("h2")]
-    assert "current-template-file.pdf — 694.8 kB" in str(page)
-    assert "still-scanning.pdf" not in str(page)
-
-
 def test_notification_status_page_shows_historical_template_attach_from_personalisation(
     client_request,
     mocker,
@@ -443,6 +411,66 @@ def test_notification_status_page_template_attach_personalisation_wins_over_live
 
     mock_live_api.assert_not_called()
     assert "personalisation-file.pdf — 694.8 kB" in str(page)
+    assert "live-file.pdf" not in str(page)
+
+
+def test_notification_status_page_hides_template_attach_when_flag_off(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+    app_,
+):
+    # template_attach personalisation should not be shown when FF_FILE_ATTACHMENTS is off.
+    notification = create_notification(
+        template_type="email",
+        personalisation={
+            "_file_0": {
+                "document": {
+                    "sending_method": "template_attach",
+                    "filename": "flagged-file.pdf",
+                    "file_size": 694807,
+                }
+            }
+        },
+    )
+    mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+        )
+
+    assert "Attachments" not in [h2.text for h2 in page.select("h2")]
+    assert "flagged-file.pdf" not in str(page)
+
+
+def test_notification_status_page_does_not_call_live_api_when_flag_off(
+    client_request,
+    mocker,
+    service_one,
+    fake_uuid,
+    app_,
+):
+    # The just_sent live API fallback should not fire when FF_FILE_ATTACHMENTS is off.
+    notification = create_notification(template_type="email", personalisation={"name": "Jo"})
+    mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+    mock_live_api = mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+            just_sent=True,
+        )
+
+    mock_live_api.assert_not_called()
     assert "live-file.pdf" not in str(page)
 
 
