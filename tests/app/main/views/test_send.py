@@ -3166,6 +3166,56 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
     )
 
 
+def test_check_messages_adds_template_attachments_to_metadata(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    mock_get_template_attachments,
+    fake_uuid,
+    app_,
+):
+    mocker.patch("app.main.views.send.s3download", return_value=("email address,\ntest@example.com"))
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280, "mime_type": "application/pdf"},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+            _test_page_title=False,
+        )
+
+    call_kwargs = mock_s3_set_metadata.call_args[1]
+    assert call_kwargs["notification_count"] == 1
+    assert call_kwargs["template_id"] == fake_uuid
+    assert call_kwargs["valid"] is True
+    assert call_kwargs["original_file_name"] == "example.csv"
+    assert "template_attach_personalisation" in call_kwargs
+
+    import json
+
+    template_attach_personalisation = json.loads(call_kwargs["template_attach_personalisation"])
+    assert "_file_0" in template_attach_personalisation
+    assert template_attach_personalisation["_file_0"]["document"]["id"] == "file-1"
+    assert template_attach_personalisation["_file_0"]["document"]["filename"] == "guide.pdf"
+    assert template_attach_personalisation["_file_0"]["document"]["sending_method"] == "template_attach"
+
+
 def test_check_messages_shows_over_max_row_error(
     client_request,
     mock_get_users_by_service,
