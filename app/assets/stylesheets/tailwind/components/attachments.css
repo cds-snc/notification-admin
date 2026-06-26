@@ -1,10 +1,10 @@
-li.attachment-file-row {
+.attachment-file-row {
   position: relative;
   padding-top: 1rem;
   padding-left: 1rem;
 }
 
-li.attachment-file-row:before {
+.attachment-file-row:before {
   content: "";
   position: absolute;
   top: -1px;
@@ -15,7 +15,7 @@ li.attachment-file-row:before {
   z-index: 2;
 }
 
-li.attachment-file-row:after {
+.attachment-file-row:after {
   content: "";
   position: absolute;
   top: -1px;
@@ -32,6 +32,11 @@ li.attachment-file-row:after {
   text-overflow: unset;
   white-space: normal;
   word-break: break-word;
+}
+
+/* Pulls the attachment list flush against the bottom of the template preview above it. */
+.attachment-list-flush-top {
+  margin-top: -31px;
 }
 .banner-dangerous .attachment-file-name-truncate {
   font-weight: bold;
