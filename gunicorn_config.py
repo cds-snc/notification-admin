@@ -71,15 +71,17 @@ def on_starting(server):
     server.log.info("Starting Notifications Admin")
 
 
-def post_fork(server, worker):
-    # Freeze all GC-tracked objects that were loaded during preload_app into the
-    # permanent generation. This prevents the GC from touching (and thus dirtying)
-    # copy-on-write memory pages shared between workers, which would otherwise cause
-    # each worker's RSS to grow monotonically even under low traffic.
+def when_ready(server):
+    # Freeze all GC-tracked objects into the permanent generation while still in the
+    # master process, before any workers are forked. This preserves copy-on-write
+    # sharing of preloaded app memory across workers — the GC will never scan frozen
+    # objects, so their reference counts won't be touched and the OS pages stay shared.
+    # Must run in the master (here) rather than post_fork, because calling gc.freeze()
+    # in a worker would itself dirty CoW pages after the fork.
     # https://docs.python.org/3/library/gc.html#gc.freeze
     if preload_app:
         gc.freeze()
-        server.log.info(f"[worker {worker.pid}] GC frozen: {gc.get_freeze_count()} objects")
+        server.log.info(f"GC frozen in master: {gc.get_freeze_count()} objects")
 
 
 def worker_abort(worker):
