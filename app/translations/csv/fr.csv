@@ -2448,8 +2448,6 @@
 "{} parts estimated","{} parties estimées"
 "1 part estimated","1 partie estimée"
 "{} characters per part","{} caractères par partie"
-"recipient","destinataire"
-"recipients","destinataires"
 "Text messages are measured in parts of 160 characters. Some special characters reduce all parts to 70 characters. More parts means you can send to fewer recipients per day.","Les messages textes sont mesurés en parties de 160 caractères. Certains caractères spéciaux réduisent toutes les parties à 70 caractères. L’ajout de parties réduit le nombre de destinataires quotidiens que vous pouvez rejoindre."
 "What are parts?","Qu’est-ce qu’une partie?"
 "Parts are a unit of measurement. Message size is measured in parts, like file size is measured in megabytes.","Une partie est une unité de mesure. La taille d’un message se mesure en parties, comme un fichier se mesure en mégaoctets."
