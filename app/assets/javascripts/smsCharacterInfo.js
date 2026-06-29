@@ -6,8 +6,8 @@
  *
  * This component listens to `input` events on the #template_content textarea and
  * updates text content in pre-existing HTML elements:
- *   1. #sms-fragment-count-text — "Estimate: N text messages."
- *   2. #sms-fragment-count-suffix — "Variables may increase number of messages." (if placeholders present)
+ *   1. #sms-fragment-count-text / #sms-fragment-count-suffix (legacy hidden text)
+ *   2. Summary metrics cards (#sms-message-size-value, #sms-characters-per-part, #sms-max-daily-send-value)
  *
  * All markup lives in the Jinja template; this script only updates text and visibility.
  * Localisation follows the window.APP_PHRASES pattern used by other components.
@@ -140,6 +140,12 @@
     "sms-fragment-count-suffix",
   );
   var characterCountText = document.getElementById("sms-character-count-text");
+  var charCountCurrent = document.getElementById("sms-char-count-current");
+  var messageSizeValue = document.getElementById("sms-message-size-value");
+  var charactersPerPart = document.getElementById("sms-characters-per-part");
+  var maxDailySendValue = document.getElementById("sms-max-daily-send-value");
+  var maxDailySendLabel = document.getElementById("sms-max-daily-send-label");
+  var dailyLimitValue = document.getElementById("sms-daily-limit-value");
   // Shortening suggestions DOM references (commented out — preserved for future use)
   // var shortenSection = document.getElementById("sms-shorten-suggestions");
   // var shortenList = document.getElementById("sms-shorten-list");
@@ -157,6 +163,16 @@
   // ── i18n strings ────────────────────────────────────────────────────────
   function phrase(key, fallback) {
     return (window.APP_PHRASES && window.APP_PHRASES[key]) || fallback;
+  }
+
+  function parseNumberFromText(value) {
+    if (!value) return 0;
+    var numeric = value.replace(/[^0-9]/g, "");
+    return numeric ? parseInt(numeric, 10) : 0;
+  }
+
+  function formatNumber(value) {
+    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   // ── Placeholder / text helpers ──────────────────────────────────────────
@@ -266,7 +282,59 @@
         )
       : "";
 
+    if (messageSizeValue) {
+      if (hasVars) {
+        if (fragmentCount === 1) {
+          messageSizeValue.textContent = phrase(
+            "sms_part_count_one_estimated",
+            "1 part estimated",
+          );
+        } else {
+          messageSizeValue.textContent = phrase(
+            "sms_part_count_estimated",
+            "{} parts estimated",
+          ).replace("{}", fragmentCount);
+        }
+      } else {
+        if (fragmentCount === 1) {
+          messageSizeValue.textContent = phrase("sms_part_count_one", "1 part");
+        } else {
+          messageSizeValue.textContent = phrase(
+            "sms_part_count",
+            "{} parts",
+          ).replace("{}", fragmentCount);
+        }
+      }
+    }
+
+    if (charactersPerPart) {
+      var charsInSinglePart = hasUnicodeChars(
+        buildFullText(textarea.value || ""),
+      )
+        ? 70
+        : 160;
+      charactersPerPart.textContent = phrase(
+        "sms_characters_per_part",
+        "{} characters per part",
+      ).replace("{}", charsInSinglePart);
+    }
+
+    if (maxDailySendValue && maxDailySendLabel && dailyLimitValue) {
+      var dailyLimit = parseNumberFromText(dailyLimitValue.textContent);
+      var maxRecipients =
+        fragmentCount > 0 ? Math.floor(dailyLimit / fragmentCount) : 0;
+      maxDailySendValue.textContent = formatNumber(maxRecipients);
+      maxDailySendLabel.textContent =
+        maxRecipients === 1
+          ? phrase("sms_recipient_one", "recipient")
+          : phrase("sms_recipient_many", "recipients");
+    }
+
     // -- Character count and limit validation ──────────────────────────────
+    if (charCountCurrent) {
+      charCountCurrent.textContent = characterUnits;
+    }
+
     if (characterCountText) {
       var limit = smsCharCountLimit;
       var remaining = limit - characterUnits;
