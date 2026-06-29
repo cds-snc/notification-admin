@@ -1,3 +1,4 @@
+import gc
 import os
 import sys
 import time
@@ -68,6 +69,17 @@ start_time = time.time()
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+
+
+def post_fork(server, worker):
+    # Freeze all GC-tracked objects that were loaded during preload_app into the
+    # permanent generation. This prevents the GC from touching (and thus dirtying)
+    # copy-on-write memory pages shared between workers, which would otherwise cause
+    # each worker's RSS to grow monotonically even under low traffic.
+    # https://docs.python.org/3/library/gc.html#gc.freeze
+    if preload_app:
+        gc.freeze()
+        server.log.info(f"[worker {worker.pid}] GC frozen: {gc.get_freeze_count()} objects")
 
 
 def worker_abort(worker):
