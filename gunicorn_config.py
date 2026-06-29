@@ -1,3 +1,4 @@
+import gc
 import os
 import sys
 import time
@@ -68,6 +69,19 @@ start_time = time.time()
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+
+
+def when_ready(server):
+    # Freeze all GC-tracked objects into the permanent generation while still in the
+    # master process, before any workers are forked. This preserves copy-on-write
+    # sharing of preloaded app memory across workers — the GC will never scan frozen
+    # objects, so their reference counts won't be touched and the OS pages stay shared.
+    # Must run in the master (here) rather than post_fork, because calling gc.freeze()
+    # in a worker would itself dirty CoW pages after the fork.
+    # https://docs.python.org/3/library/gc.html#gc.freeze
+    if preload_app:
+        gc.freeze()
+        server.log.info(f"GC frozen in master: {gc.get_freeze_count()} objects")
 
 
 def worker_abort(worker):
