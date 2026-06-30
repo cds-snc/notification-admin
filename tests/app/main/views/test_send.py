@@ -3607,7 +3607,7 @@ class TestBulkCheckSmsSendingInfo:
         count_el = page.select_one("[data-testid='sms-message-count']")
         assert count_el is not None
         assert "Estimated" not in count_el.text
-        assert "text message" in count_el.text
+        assert "parts" in count_el.text
 
 
 class TestAnnualLimitsSend:
