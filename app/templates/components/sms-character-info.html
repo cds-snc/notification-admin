@@ -1,38 +1,77 @@
 {% from "components/links.html" import content_link %}
+{% from "components/notice.html" import notice %}
 {% macro sms_character_info(sms_daily_limit, sms_prefix, sms_char_count_limit=612) %}
 <div id="sms-character-info"
-     class="mt-6 bg-gray-100 border-l-4 border-l-gray-300 p-4"
+     class="mt-6"
      data-sms-daily-limit="{{ sms_daily_limit }}"
      data-sms-prefix="{{ sms_prefix }}"
      data-sms-char-count-limit="{{ sms_char_count_limit }}"
      data-testid="sms-character-info">
 
   {# Character count validation — updated live by smsCharacterInfo.js #}
-  <p id="sms-character-count-text" class="empty:hidden" data-testid="sms-character-count-text"></p>
-     
-  {# Fragment count estimate — updated live by smsCharacterInfo.js #}
-  <p id="sms-fragment-count" class="m-0" data-testid="sms-fragment-count">
-    
-    <span id="sms-fragment-count-text" data-testid="sms-fragment-count-text"></span>
-    <span id="sms-fragment-count-suffix" data-testid="sms-fragment-count-suffix"></span>
-  </p>
+  <p id="sms-character-count-text" class="empty:hidden mb-3" data-testid="sms-character-count-text"></p>
 
-  <hr class="my-3 border-gray-300">
+  <div class="mb-4" data-testid="sms-message-metrics">
+    {# Hidden compatibility text used by tests and legacy hooks #}
+    <p id="sms-fragment-count" class="sr-only" data-testid="sms-fragment-count">
+      <span id="sms-fragment-count-text" data-testid="sms-fragment-count-text"></span>
+      <span id="sms-fragment-count-suffix" data-testid="sms-fragment-count-suffix"></span>
+    </p>
 
-  {# Carrier info with guide link #}
-  <p class="mb-0" data-testid="sms-carrier-info">
-    {{ _('Phone carriers count some messages as multiple text message parts.') }}
-  </p>
-  <p class="my-0">
-    {{ _('For details, visit') }}
-    {{ content_link(_('Guide: Counting text message parts'), gca_url_for('guidance'), is_external_link=true, is_sentence_end=true, testid='sms-guide-link') }}
-  </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 border-l-4 border-l-gray-border bg-gray-100">
+      <div class="p-4 border-b md:border-b-0" data-testid="sms-message-size-card">
+        <p class="m-0 text-small">{{ _('Message size:') }}</p>
+        <p class="m-0 text-3xl font-bold"><span id="sms-message-size-value" data-testid="sms-message-size-value"></span></p>
+        <p class="m-0 text-small"><span id="sms-characters-per-part" data-testid="sms-characters-per-part"></span></p>
+      </div>
 
-  {# Daily limit section #}
-  <p id="sms-daily-limit" class="mt-2 mb-0" data-testid="sms-daily-limit">
-    <strong id="sms-daily-limit-value" data-testid="sms-daily-limit-value">{{ sms_daily_limit }}</strong>
-    {{ _('is your daily limit for text message parts') }}
-  </p>
+      <div class="p-4 border-b md:border-b-0 md:border-l md:border-l-gray-300" data-testid="sms-daily-limit-card">
+        <p class="m-0 text-small">{{ _('Daily limit:') }}</p>
+        <p class="m-0 text-3xl font-bold"><span id="sms-daily-limit-value" data-testid="sms-daily-limit-value">{{ sms_daily_limit }}</span> {{ _('parts') }}</p>
+      </div>
+
+      <div class="p-4 md:border-l md:border-l-gray-300" data-testid="sms-maximum-daily-send-card">
+        <p class="m-0 text-small">{{ _('Maximum daily send:') }}</p>
+        <p class="m-0 text-3xl font-bold"><span id="sms-max-daily-send-value" data-testid="sms-max-daily-send-value"></span> <span id="sms-max-daily-send-label" data-testid="sms-max-daily-send-label"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="-ml-gutterHalf mb-4">
+  {% call notice(type="info", title="", headingLevel=0) %}
+    <p class="m-0">{{ _('Text messages are measured in parts of 160 characters. Some special characters reduce all parts to 70 characters. More parts means you can send to fewer recipients per day.') }}</p>
+  {% endcall %}
+  </div>
+
+  <details class="" data-testid="sms-parts-details">
+    <summary class="cursor-pointer font-bold text-blue-700 underline">
+      <h2 class="heading-medium inline">{{ _('What are parts?') }}</h2>
+    </summary>
+    <div class="details-body mt-4 pl-4">
+      <p class="m-0">{{ _('Parts are a unit of measurement. Message size is measured in parts, like file size is measured in megabytes.') }}</p>
+
+      <h3 class="heading-small mt-gutterHalf mb-0">{{ _('Parts count toward your sending limits') }}</h3>
+      <p class="m-0">
+        {{ _('More parts reduce how many messages you can send each day and year.') }}
+        {{ _('For details, visit') }} {{ content_link(_('Counting text message parts'), gca_url_for('counting_text_messages'), is_external_link=true, is_sentence_end=true, testid='sms-guide-link') }}
+      </p>
+
+      <h3 class="heading-small mt-gutterHalf mb-0">{{ _('Parts do not affect recipients') }}</h3>
+      <p class="m-0">
+        {{ _('Recipients still receive one text message.') }}
+      </p>
+
+      <h3 class="heading-small mt-gutterHalf mb-0">{{ _('We show estimates for custom content') }}</h3>
+      <p class="m-0">
+        {{ _('When we detect a ((variable)), we estimate the part count.') }}
+      </p>
+
+      <h3 class="heading-small mt-gutterHalf mb-0">{{ _('Write clear messages to stay within limits') }}</h3>
+      <p class="m-0">
+        {{ _('Do not remove or replace accents to reduce parts. Instead, follow Best practices for text messages.') }}
+      </p>
+    </div>
+  </details>
 
   {# Shortening suggestions section (commented out — GSM character counting logic preserved in JS)
   <div id="sms-shorten-suggestions" class="mt-4 hidden">

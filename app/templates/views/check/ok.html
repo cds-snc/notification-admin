@@ -120,15 +120,15 @@
           <span>
             {% if is_sms_parts_estimated %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Estimate: 1 text message part.") }}
+                {{ _('Message size: 1 part estimated') }}
               {% else %}
-                {{ _("Estimate: {} text message parts.").format(sms_parts_to_send) }}
+                {{ _('Message size: {} parts estimated').format(sms_parts_to_send) }}
               {% endif %}
             {% else %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Total: 1 text message part.") }}
+                {{ _('Message size: 1 part') }}
               {% else %}
-                {{ _("Total: {} text message parts.").format(sms_parts_to_send) }}
+                {{ _('{} parts').format(sms_parts_to_send) }}
               {% endif %}
             {% endif %}
           </span>

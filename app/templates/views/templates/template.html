@@ -74,16 +74,15 @@
             <i aria-hidden="true" class="fa-solid fa-comment-dots pr-2 mt-2"></i>
             {% if template.placeholders %}
               {% if fragment_count == 1 %}
-                {{ _("Estimate: 1 text message part.")}}
+                {{ _('Message size: 1 part estimated') }}
               {% else %}
-                {{ _("Estimate: {} text message parts.").format(fragment_count) }}
+                {{ _('Message size: {} parts estimated').format(fragment_count) }}
               {% endif %}
-              {{ _("Variables may increase number of messages.") }}
             {% else %}
               {% if fragment_count == 1 %}
-                {{ _("Total: 1 text message part.") }}
+                {{ _('Message size: 1 part') }}
               {% else %}
-                {{ _("Total: {} text message parts.").format(fragment_count) }}
+                {{ _('Message size: {} parts').format(fragment_count) }}
               {% endif %}
             {% endif %}
           </p>
