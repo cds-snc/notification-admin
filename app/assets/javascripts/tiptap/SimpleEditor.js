@@ -32,6 +32,25 @@ import { EditorProvider } from "./EditorContext";
 import { AnnouncerPlugin } from "./AnnouncerPlugin";
 import { shortcuts, translations } from "./localization";
 
+// In TipTap 3, `editor.view` returns a Proxy stub (which is truthy) until the
+// underlying ProseMirror view is actually mounted. Accessing most properties on
+// that stub — e.g. `dom`, `coordsAtPos`, `posAtDOM` — THROWS:
+//   "[tiptap error]: The editor view is not available. Cannot access
+//    view['dom']. The editor may not be mounted yet."
+// Optional chaining (`editor?.view?.dom`) does NOT protect against this because
+// the `.dom` getter on the stub is what throws. Effects can run after the
+// editor instance exists but before its view is mounted (timing-dependent,
+// which is why this surfaces intermittently on some browsers), so we must guard
+// every real view access with this helper.
+const isEditorViewMounted = (editor) => {
+  if (!editor || editor.isDestroyed) return false;
+  try {
+    return !!editor.view?.dom;
+  } catch {
+    return false;
+  }
+};
+
 const SimpleEditor = ({
   inputId,
   labelId,
@@ -237,7 +256,7 @@ const SimpleEditor = ({
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
       const sel = editor?.state?.selection;
-      if (editor?.view && sel) {
+      if (isEditorViewMounted(editor) && sel) {
         const pos = sel.from;
         const coords = editor.view.coordsAtPos(pos);
         if (coords) {
@@ -289,7 +308,9 @@ const SimpleEditor = ({
       // If anything goes wrong computing the rect, fall back to opening
       // the modal roughly in the editor area (center top) so it remains usable.
       try {
-        const edRect = editor?.view?.dom?.getBoundingClientRect?.();
+        const edRect = isEditorViewMounted(editor)
+          ? editor.view.dom.getBoundingClientRect?.()
+          : null;
         const left = (edRect?.left || 0) + 20;
         const top = (edRect?.top || 0) + 40;
         setModalPosition({ top, left });
@@ -306,7 +327,7 @@ const SimpleEditor = ({
   const computeModalPosition = () => {
     try {
       const selState = editor?.state?.selection;
-      if (editor?.view && selState) {
+      if (isEditorViewMounted(editor) && selState) {
         const pos = selState.from;
         const coords = editor.view.coordsAtPos(pos);
         if (coords) {
@@ -400,7 +421,7 @@ const SimpleEditor = ({
   // select-all matches mouse select-all for block toggles.
   // Hopefully tiptap will fix this upstream one day! (https://github.com/ueberdosis/tiptap/issues/6260)
   React.useEffect(() => {
-    if (!editor || !editor.view || !editor.view.dom) return;
+    if (!isEditorViewMounted(editor)) return;
     const dom = editor.view.dom;
 
     const onCaptureKeyDown = (e) => {
@@ -453,7 +474,12 @@ const SimpleEditor = ({
 
     dom.addEventListener("keydown", onCaptureKeyDown, true);
     return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
-  }, [editor]);
+    // `isMarkdownView` is a dependency because the ProseMirror view is only
+    // mounted while the RTE (EditorContent) is rendered. When starting in — or
+    // switching to — markdown mode the view is unmounted, so this effect must
+    // re-run when the mode changes to (re)attach the listener once the view is
+    // available again.
+  }, [editor, isMarkdownView]);
 
   // Update hidden input field when content changes
   React.useEffect(() => {
