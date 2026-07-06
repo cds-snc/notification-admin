@@ -53,14 +53,14 @@ def view_notification(service_id, notification_id):
     notification = notification_api_client.get_notification(service_id, str(notification_id))
     notification["template"].update({"reply_to_text": notification["reply_to_text"]})
 
-    # Get attachments from personalisation
+    personalisation = get_all_personalisation_from_notification(notification)
+
+    # Get attachments from personalisation after redaction is applied
     ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
     methods = ["attach"]
     if ff_enabled:
         methods.append("template_attach")
     attachments = list(get_attachments(notification, methods).values())
-
-    personalisation = get_all_personalisation_from_notification(notification)
 
     if notification["template"]["is_precompiled_letter"]:
         try:
