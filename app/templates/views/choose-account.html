@@ -32,6 +32,36 @@
     <li class="browse-list-item">
       <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
     </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
+    <li class="browse-list-item">
+      <a href="{{ url_for('.service_dashboard', service_id=service.id) }}" class="browse-list-link">{{ service.name }}</a>
+    </li>
   {% endfor %}
   {% if show_heading %}
         </ul>
@@ -41,11 +71,10 @@
     </ul>
   {% endif %}
   {% if show_add_service_button %}
-    <div class="js-stick-at-bottom-when-scrolling">
+    <div class="sticky bottom-0 pt-gutterHalf bg-white border-t-1 border-gray-300">
       <a href="{{ url_for('.add_service') }}" class="button button-secondary">{{ _('Add new service') }}</a>
     </div>
   {% endif %}
-  <div class="keyline-block"></div>
 {% endmacro %}
 
 {% block per_page_title %}
@@ -105,7 +134,7 @@
   </nav>
 
   {% if can_add_service %}
-    <div class="js-stick-at-bottom-when-scrolling">
+    <div class="sticky bottom-0 pt-gutterHalf bg-white border-t-1 border-gray-300">
       {% if current_user.has_access_to_live_and_trial_mode_services %}
         <div class="grid-row contain-floats">
           <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
