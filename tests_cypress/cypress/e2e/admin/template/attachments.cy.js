@@ -85,19 +85,19 @@ describe("Template attachments", () => {
       statusCode: 200,
       body: [
         {
-          "created_at": "2026-07-06T15:19:23.410059+00:00",
-          "created_by": "e4c4c4c4-3a9b-4d8c-9b4f-8d3e5f9d8c7a",
-          "document_id": "8c388368-f333-4b77-a885-76914d8e73ac",
-          "file_size": 64,
-          "id": "fd7c843b-db41-44d4-9b72-0654d45e03ef",
-          "mime_type": "text/csv",
-          "name": attachmentFileName,
-          "service_id": "a1cf9c7a-3b04-4170-ba9b-65253270d150",
-          "status": "pending_virus_scan",
-          "template_id": "94ec88ba-15e7-4a6a-87dd-b4017d0d764f",
-          "type": "template_attach",
-          "updated_at": "2026-07-06T15:19:23.410065+00:00"
-        }
+          created_at: "2026-07-06T15:19:23.410059+00:00",
+          created_by: "e4c4c4c4-3a9b-4d8c-9b4f-8d3e5f9d8c7a",
+          document_id: "8c388368-f333-4b77-a885-76914d8e73ac",
+          file_size: 64,
+          id: "fd7c843b-db41-44d4-9b72-0654d45e03ef",
+          mime_type: "text/csv",
+          name: attachmentFileName,
+          service_id: "a1cf9c7a-3b04-4170-ba9b-65253270d150",
+          status: "pending_virus_scan",
+          template_id: "94ec88ba-15e7-4a6a-87dd-b4017d0d764f",
+          type: "template_attach",
+          updated_at: "2026-07-06T15:19:23.410065+00:00",
+        },
       ],
     }).as("attachFile");
 
