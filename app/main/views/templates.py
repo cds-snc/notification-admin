@@ -280,6 +280,14 @@ def remove_files(service_id, template_id, file_id=None):
         abort(400)
 
     file_api_client.delete_file(template_id, file_id)
+    current_app.logger.info(
+        "template_attachment.file_removed_from_template",
+        extra={
+            "service_id": service_id,
+            "template_id": str(template_id),
+            "file_id": file_id,
+        },
+    )
     return ("", 204)
 
 

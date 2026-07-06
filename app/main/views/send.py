@@ -1110,6 +1110,20 @@ def start_job(service_id, upload_id):
     # "warning shown" log lines (issue #3319). We read this before creating the
     # job so that a failure here can't block a send.
     upload_metadata = get_csv_metadata(service_id, upload_id)
+
+    if upload_metadata.get("template_attach_personalisation"):
+        template_attach = json.loads(upload_metadata["template_attach_personalisation"])
+        current_app.logger.info(
+            "template_attachment.bulk_send",
+            extra={
+                "service_id": str(service_id),
+                "template_id": upload_metadata.get("template_id"),
+                "upload_id": upload_id,
+                "attachment_count": len(template_attach),
+                "notification_count": int(upload_metadata.get("notification_count", 0) or 0),
+            },
+        )
+
     count_of_duplicate_recipients = int(upload_metadata.get("count_of_duplicate_recipients", 0) or 0)
     if count_of_duplicate_recipients:
         current_app.logger.info(
@@ -1405,10 +1419,21 @@ def send_notification(service_id, template_id):
 
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    template_attachments = build_template_attachment_personalisation(db_template["id"], db_template["template_type"])
     personalisation = {
         **session["placeholders"],
-        **build_template_attachment_personalisation(db_template["id"], db_template["template_type"]),
+        **template_attachments,
     }
+
+    if template_attachments:
+        current_app.logger.info(
+            "template_attachment.one_off_send",
+            extra={
+                "service_id": str(service_id),
+                "template_id": str(template_id),
+                "attachment_count": len(template_attachments),
+            },
+        )
 
     try:
         noti = notification_api_client.send_notification(
