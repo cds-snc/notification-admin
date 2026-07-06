@@ -108,8 +108,8 @@ def build_template_attachment_personalisation(template_id, template_type):
     """Return a personalisation dict of template-level file attachments to merge before sending.
 
     Only populated when FF_FILE_ATTACHMENTS is on, the template is an email,
-    and the service has the upload_document permission. Attachments that are
-    not yet fully uploaded (status != 'uploaded') are skipped.
+    and the service has the upload_document permission. Only attachments with
+    'uploaded' status and valid id/name are included with contiguous _file_N keys.
     """
     if (
         not current_app.config.get("FF_FILE_ATTACHMENTS")
@@ -120,18 +120,32 @@ def build_template_attachment_personalisation(template_id, template_type):
 
     attachments = current_service.get_template_attachments(template_id)
     result = {}
-    for i, attachment in enumerate(attachments):
-        if attachment.get("status") != "uploaded":
+    file_index = 0  # Track contiguous index for included attachments
+
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+
+        # Only include fully uploaded attachments
+        if status != "uploaded":
             continue
-        result[f"_file_{i}"] = {
+
+        # Skip if missing required fields
+        attachment_id = attachment.get("id")
+        filename = attachment.get("name") or attachment.get("filename")
+        if not attachment_id or not filename:
+            continue
+
+        result[f"_file_{file_index}"] = {
             "document": {
-                "id": attachment["id"],
-                "filename": attachment["name"],
+                "id": attachment_id,
+                "filename": filename,
                 "mime_type": attachment.get("mime_type"),
                 "file_size": attachment.get("size") or attachment.get("file_size"),
                 "sending_method": "template_attach",
             }
         }
+        file_index += 1
+
     return result
 
 
