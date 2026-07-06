@@ -27,6 +27,18 @@ let Components = {
     SelectedTemplateCategoryCollapsed: () => Components.TemplateCategoryButtonContainer().find('p'),
     TCExpandBytton: () => cy.getByTestId('tc_expand_button'),
     TemplatePriority: () => cy.getByTestId('process_type'),
+    AttachmentsWidget: () => cy.getByTestId('attachments-widget'),
+    AttachmentsOpenModalButton: () => cy.getByTestId('attachments-open-modal'),
+    AttachmentsPanel: () => cy.getByTestId('attachments-panel'),
+    AttachmentsFileInput: () => cy.getByTestId('attachments-file-input'),
+    AttachmentsSubmitButton: () => cy.getByTestId('attachments-submit'),
+    AttachmentsList: (options = {}) => cy.getByTestId('attachments-list', options),
+    AttachmentsRemoveButtonForFile: (filename) => Components.AttachmentsList()
+        .contains(filename)
+        .parents('[data-testid="attached-file-row"]')
+        .first()
+        .find('[data-testid="attachments-remove"]'),
+    AttachmentsRemoveConfirmButton: () => cy.getByTestId('attachments-remove-confirm'),
     DeleteTemplateButton: () => cy.contains('a', 'Delete this template'), 
     TextDirectionCheckbox: () => cy.getByTestId('template-rtl'),
     AddRecipientsButton: () => cy.getByTestId('add-recipients'),
@@ -83,6 +95,28 @@ let Actions = {
     },
     SelectTemplateCategory: (category) => {
         Components.TemplateCategories().contains('label', category).click();
+    },
+    OpenAttachmentsModal: () => {
+        Components.AttachmentsOpenModalButton().click();
+        Components.AttachmentsPanel().should('be.visible');
+    },
+    AttachFile: (fileName, fixtureName = "cds2.png", mimeType = "image/png") => {
+        cy.fixture(fixtureName, "base64").then((fileContent) => {
+            Components.AttachmentsFileInput().selectFile(
+                {
+                    contents: Cypress.Buffer.from(fileContent, "base64"),
+                    fileName: fileName,
+                    mimeType: mimeType,
+                },
+                { force: true },
+            );
+        });
+
+        Components.AttachmentsSubmitButton().click();
+    },
+    RemoveAttachedFile: (fileName) => {
+        Components.AttachmentsRemoveButtonForFile(fileName).click();
+        Components.AttachmentsRemoveConfirmButton().should('be.visible').click();
     },
     SetTemplatePriority: (priority) => {
         cy.getByTestId(priority).click();

@@ -1,9 +1,11 @@
+import base64
 import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import (
+    Response,
     abort,
     current_app,
     flash,
@@ -60,6 +62,7 @@ from app.models.template_list import (
     TemplateList,
     TemplateLists,
 )
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.notification_counts_client import notification_counts_client
 from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
@@ -199,6 +202,14 @@ def view_template(service_id, template_id):
     delete_preview_data(service_id, template_id)
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
+    template_attachments = []
+
+    if (
+        current_app.config.get("FF_FILE_ATTACHMENTS")
+        and template["template_type"] == "email"
+        and current_service.has_permission("upload_document")
+    ):
+        template_attachments = current_service.get_template_attachments(template_id)
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
@@ -211,8 +222,110 @@ def view_template(service_id, template_id):
         "views/templates/template.html",
         template=preview_template,
         template_postage=template["postage"],
+        template_attachments=template_attachments,
         user_has_template_permission=user_has_template_permission,
         **get_limit_stats(template["template_type"], preview_template),
+    )
+
+
+# Template attachment endpoints (gated by FF_FILE_ATTACHMENTS)
+def _abort_if_attachments_disabled_for_service():
+    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
+        abort(404)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments",
+    methods=["POST"],
+)
+@user_has_permissions("manage_templates")
+def attach_files(service_id, template_id):
+    _abort_if_attachments_disabled_for_service()
+
+    uploaded_files = request.files.getlist("files")
+    created_files = []
+
+    for uploaded_file in uploaded_files:
+        file_contents = uploaded_file.read()
+        file_size = len(file_contents)
+        file_data = base64.b64encode(file_contents).decode("ascii")
+
+        created_files.append(
+            file_api_client.create_file(
+                template_id,
+                "template_attach",
+                uploaded_file.filename,
+                uploaded_file.mimetype or "application/octet-stream",
+                file_size,
+                file_data,
+            )
+        )
+
+    return jsonify(created_files)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove",
+    methods=["POST"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove/<file_id>",
+    methods=["POST"],
+)
+@user_has_permissions("manage_templates")
+def remove_files(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    if not file_id:
+        abort(400)
+
+    file_api_client.delete_file(template_id, file_id)
+    return ("", 204)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions("manage_templates")
+def template_attachment_status(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
+    return jsonify(file_api_client.get_file_status(template_id, file_id))
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions("manage_templates")
+def download_template_attachment(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
+    file_payload = file_api_client.get_file_contents(template_id, file_id)
+    file_name = file_payload["filename"]
+    return Response(
+        file_payload["content"],
+        mimetype=file_payload["mime_type"],
+        headers={"Content-Disposition": f'attachment; filename="{file_name}"'},
     )
 
 

@@ -89,8 +89,11 @@
     ) }}
   {% endif %}
 
+  {% include "partials/template-attachments-warning.html" %}
+
   {% if template %}
     {{ template|string|translate_preview_template }}
+    {% include "partials/template-attachments-list.html" %}
     {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' and not error %}
       <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
         {% if sms_parts_to_send %}
@@ -98,9 +101,9 @@
             <i aria-hidden="true" class="fa-solid fa-comment-dots"></i>
             <span>
               {% if sms_parts_to_send == 1 %}
-                {{ _("Total: 1 text message part.") }}
+                {{ _("Counted as 1 text message part.") }}
               {% else %}
-                {{ _("Total: {} text message parts.").format(sms_parts_to_send) }}
+                {{ _("Counted as {} text message parts.").format(sms_parts_to_send) }}
               {% endif %}
             </span>
           </div>

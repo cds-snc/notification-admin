@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from numbers import Number
 from time import monotonic
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import timeago
 from flask import (
@@ -25,8 +25,8 @@ from flask_babel import Babel, _
 from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
-from flask_wtf.csrf import CSRFError
-from itsdangerous import BadSignature
+from flask_wtf.csrf import CSRFError, generate_csrf
+from itsdangerous import BadSignature, URLSafeTimedSerializer
 from notifications_python_client.errors import HTTPError
 from notifications_utils import formatters, logging, request_helper
 from notifications_utils.formatters import formatted_list
@@ -71,6 +71,7 @@ from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
 from app.notify_client.email_branding_client import email_branding_client
 from app.notify_client.events_api_client import events_api_client
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.inbound_number_client import inbound_number_client
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.job_api_client import job_api_client
@@ -171,6 +172,7 @@ def create_app(application):
         complaint_api_client,
         email_branding_client,
         events_api_client,
+        file_api_client,
         inbound_number_client,
         invite_api_client,
         job_api_client,
@@ -308,6 +310,7 @@ def init_app(application):
 
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
+
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
@@ -320,6 +323,7 @@ def init_app(application):
             "limit_reset_time_et": get_limit_reset_time_et(),
             "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
+            **_get_otel_template_vars(application, nonce),
         }
 
 
@@ -334,6 +338,53 @@ def safe_get_request_nonce():
     except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
+
+
+def _get_otel_template_vars(application, nonce):
+    otel_enabled = application.config["ENABLE_CLIENT_SIDE_OTEL"]
+    otel_upstream_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+    otel_endpoint = "/otlp-proxy" if otel_enabled else otel_upstream_endpoint
+    otel_client_service_name = os.environ.get("OTEL_CLIENT_SERVICE_NAME", "notification-admin-frontend")
+    otel_propagate_cors_urls = [
+        url.strip() for url in os.environ.get("OTEL_PROPAGATE_TRACE_HEADER_CORS_URLS", "").split(",") if url.strip()
+    ]
+    otel_user_id = str(current_user.id) if current_user.is_authenticated else ""
+    otel_traceparent = _get_current_traceparent() if otel_enabled else ""
+    otel_auth_token = ""
+    otel_auth_mode = ""
+    if otel_enabled:
+        if current_user.is_authenticated:
+            otel_auth_token = generate_csrf()
+            otel_auth_mode = "csrf"
+        else:
+            otel_auth_token = URLSafeTimedSerializer(application.config["SECRET_KEY"]).dumps(nonce or "", salt="otel-proxy")
+            otel_auth_mode = "signed"
+    return {
+        "enable_client_side_otel": otel_enabled,
+        "otlp_endpoint": otel_endpoint,
+        "otel_client_service_name": otel_client_service_name,
+        "otel_auth_token": otel_auth_token,
+        "otel_auth_mode": otel_auth_mode,
+        "otel_propagate_cors_urls": otel_propagate_cors_urls,
+        "otel_user_id": otel_user_id,
+        "otel_traceparent": otel_traceparent,
+    }
+
+
+def _get_current_traceparent():
+    # Build a W3C traceparent string from the active OTel span so the browser
+    # can attach its page_load span to the Flask request that served the HTML.
+    # opentelemetry-api is provided at runtime by the k8s sidecar; when absent
+    # (local dev, tests) we simply return "" and the frontend creates a root span.
+    try:
+        from opentelemetry import trace as otel_trace  # type: ignore[import-not-found]
+    except ImportError:
+        return ""
+
+    span_context = otel_trace.get_current_span().get_span_context()
+    if not span_context.is_valid:
+        return ""
+    return f"00-{span_context.trace_id:032x}-{span_context.span_id:016x}-{span_context.trace_flags:02x}"
 
 
 def linkable_name(value):
@@ -746,6 +797,13 @@ def useful_headers_after_request(response):
     vite_dev = current_app.config.get("VITE_HMR_ENABLED", False)
     vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
     vite_script_src = " http://localhost:5173" if vite_dev else ""
+    otlp_connect_src = ""
+    otel_enabled = current_app.config.get("ENABLE_CLIENT_SIDE_OTEL", False)
+    if otel_enabled:
+        otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+        parsed_otlp_endpoint = urlparse(otlp_endpoint)
+        if parsed_otlp_endpoint.scheme and parsed_otlp_endpoint.netloc:
+            otlp_connect_src = f"{parsed_otlp_endpoint.scheme}://{parsed_otlp_endpoint.netloc}"
     response.headers.add(
         "Report-To",
         """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
@@ -756,7 +814,7 @@ def useful_headers_after_request(response):
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
             f"script-src 'self'{vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
             f"script-src-elem 'self'{vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"connect-src 'self'{vite_connect_src} *.google-analytics.com *.googletagmanager.com;"
+            f"connect-src 'self'{vite_connect_src}{' ' + otlp_connect_src if otlp_connect_src else ''} *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"

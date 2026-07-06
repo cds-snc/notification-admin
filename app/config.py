@@ -92,6 +92,11 @@ class Config(object):
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
+    FF_FILE_ATTACHMENTS = env.bool("FF_FILE_ATTACHMENTS", False)
+
+    # OTEL Configuration
+    ENABLE_CLIENT_SIDE_OTEL = env.bool("ENABLE_CLIENT_SIDE_OTEL", False)
+    OTEL_CLIENT_SIDE_TOKEN_TTL = env.int("OTEL_CLIENT_SIDE_TOKEN_TTL", 5 * 60)  # seconds, default 5 minutes
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
@@ -201,6 +206,7 @@ class Development(Config):
     VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
+    FF_FILE_ATTACHMENTS = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -259,6 +265,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
+    FF_FILE_ATTACHMENTS = True
 
 
 class Production(Config):

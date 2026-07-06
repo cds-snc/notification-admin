@@ -9,13 +9,6 @@ export const load = function (element, props = {}) {
     resolvedProps.lang = window.APP_LANG || "en";
   }
 
-  if (typeof resolvedProps.onAttachFilesHandler === "string") {
-    const handler = window[resolvedProps.onAttachFilesHandler];
-    if (typeof handler === "function") {
-      resolvedProps.onAttachFiles = handler;
-    }
-  }
-
   const root = createRoot(element);
   root.render(<AttachmentsWidget {...resolvedProps} />);
 };

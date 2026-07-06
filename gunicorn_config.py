@@ -1,3 +1,4 @@
+import gc
 import os
 import sys
 import time
@@ -6,10 +7,10 @@ import traceback
 import gunicorn  # type: ignore
 
 # Check if OpenTelemetry is enabled via feature flag
-enable_otel = os.getenv("FF_ENABLE_OTEL", "False").lower() == "true"
+enable_otel = os.getenv("ENABLE_OTEL", "False").lower() == "true"
 environment = os.environ.get("NOTIFY_ENVIRONMENT")
 
-print(f"[GUNICORN CONFIG] FF_ENABLE_OTEL={os.getenv('FF_ENABLE_OTEL')}, enable_otel={enable_otel}")  # noqa: T201
+print(f"[GUNICORN CONFIG] ENABLE_OTEL={os.getenv('ENABLE_OTEL')}, enable_otel={enable_otel}")  # noqa: T201
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
@@ -24,7 +25,7 @@ default_worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent").strip()
 # automatically override to use OTelAwareGeventWorker to prevent boot failures
 if enable_otel and default_worker_class == "gevent":
     worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
-    print(f"[GUNICORN CONFIG] Auto-overriding worker_class from 'gevent' to '{worker_class}' due to FF_ENABLE_OTEL=true")  # noqa: T201
+    print(f"[GUNICORN CONFIG] Auto-overriding worker_class from 'gevent' to '{worker_class}' due to ENABLE_OTEL=true")  # noqa: T201
 else:
     worker_class = default_worker_class
 
@@ -68,6 +69,19 @@ start_time = time.time()
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+
+
+def when_ready(server):
+    # Freeze all GC-tracked objects into the permanent generation while still in the
+    # master process, before any workers are forked. This preserves copy-on-write
+    # sharing of preloaded app memory across workers — the GC will never scan frozen
+    # objects, so their reference counts won't be touched and the OS pages stay shared.
+    # Must run in the master (here) rather than post_fork, because calling gc.freeze()
+    # in a worker would itself dirty CoW pages after the fork.
+    # https://docs.python.org/3/library/gc.html#gc.freeze
+    if preload_app:
+        gc.freeze()
+        server.log.info(f"GC frozen in master: {gc.get_freeze_count()} objects")
 
 
 def worker_abort(worker):
