@@ -8,13 +8,13 @@
 ) %}
   <div class="keyline-block"></div>
   {% if show_heading %}
-    <div class="grid-row contain-floats">
-      <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+    <div class="items-baseline flex flex-col md:flex-row gap-gutter gap-y-gutterHalf">
+      <div class="md:w-1/4">
         <h2>
           {{ heading }}
         </h2>
       </div>
-      <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="md:w-3/4">
         <ul>
   {% else %}
     <ul>
@@ -61,13 +61,13 @@
   <nav class="browse-list {% if current_user.has_access_to_live_and_trial_mode_services %}mt-8 mb-0 block clear-both contain-floats{% endif %}" aria-label="{{ _('Your services') }}">
 
     {% if current_user.platform_admin %}
-      <div class="grid-row contain-floats">
-        <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+      <div class="items-baseline flex flex-col md:flex-row gap-gutter gap-y-gutterHalf">
+        <div class="md:w-1/4">
           <h2>
             {{ _('Admin panel') }}
           </h2>
         </div>
-        <ul class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <ul class="md:w-3/4">
           <li class="browse-list-item">
             <a href="{{ url_for('.organisations') }}" class="browse-list-link">{{ _('All organisations') }}</a>
             <p class="browse-list-hint">
@@ -106,11 +106,11 @@
   {% if can_add_service %}
     <div class="sticky bottom-0 py-gutterHalf bg-white border-t-1 border-gray-300">
       {% if current_user.has_access_to_live_and_trial_mode_services %}
-        <div class="grid-row contain-floats">
-          <div class="md:w-1/4 float-left py-0 px-0 px-gutterHalf box-border">
+        <div class="items-baseline flex flex-col md:flex-row gap-gutter gap-y-gutterHalf">
+          <div class="hidden md:block md:w-1/4">
             &nbsp;
           </div>
-          <div class="float-left py-0 px-gutterHalf box-border">
+          <div class="md:w-3/4">
       {% endif %}
       <a href="{{ url_for('.add_service') }}" class="button button-secondary">{{ _('Add new service') }}</a>
       {% if current_user.has_access_to_live_and_trial_mode_services %}
@@ -120,7 +120,7 @@
     </div>
   {% endif %}
 
-  <div class="grid-row contain-floats py-10 px-6">
+  <div class="py-10">
     <p data-testid="guidance-join-existing-service">{{ _("To join an existing service, check your email for an invitation from the team for that service.  GC Notify staff cannot send these invitations.") }}</p>
     <details data-testid="details-join-existing-service">
       <summary class="flex gap-10 py-2">{{ _("If you do not have an invitation") }}</summary>
