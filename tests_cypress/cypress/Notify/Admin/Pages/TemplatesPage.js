@@ -15,6 +15,11 @@ let Components = {
     // edit template page
     TemplateName: () => cy.getByTestId('template-name'),
     TemplateContent: () => cy.getByTestId('template-content'),
+    // The email editor renders one of two content surfaces depending on the
+    // user's editor preference: the markdown textarea (`template-content`) or
+    // the rich text editor's contenteditable (`rte-editor`). SMS templates
+    // always render the `template-content` textarea.
+    RteEditor: () => cy.getByTestId('rte-editor').find('[contenteditable]').first(),
     TemplateSubject: () => cy.get('textarea[name=subject]'),
     FlashMessage: () => cy.get('.banner-default-with-tick'),
     TemplateCategoryButtonContainer: () => cy.getByTestId('tc_button_container'),
@@ -121,12 +126,27 @@ let Actions = {
     SetTemplatePriority: (priority) => {
         cy.getByTestId(priority).click();
     },
+    EnterTemplateContent: (content) => {
+        // Type into whichever content surface is rendered. When the user's
+        // editor preference is RTE (the default for new accounts), the markdown
+        // `template-content` textarea is not present and we type into the rich
+        // text editor's contenteditable instead. Wait for one of the two
+        // surfaces to mount first so we don't branch before React has rendered.
+        cy.get('[data-testid=template-content], [data-testid=rte-editor]').should('exist');
+        cy.get('body').then(($body) => {
+            if ($body.find('[data-testid=template-content]').length) {
+                Components.TemplateContent().type(content);
+            } else {
+                Components.RteEditor().type(content);
+            }
+        });
+    },
     FillTemplateForm: (name, subject, content, category = null, priority = null) => {
         Components.TemplateName().type(name);
         if (subject) {
             Components.TemplateSubject().type(subject);
         }
-        Components.TemplateContent().type(content);
+        Actions.EnterTemplateContent(content);
         if (category) {
             Actions.SelectTemplateCategory(category);
         }
