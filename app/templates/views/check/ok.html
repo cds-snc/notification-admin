@@ -6,6 +6,7 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/banner.html" import banner %}
+{% from "components/notice.html" import notice %}
 {% from "components/remaining-messages-summary.html" import remaining_messages_summary with context %}
 {% set page_title = _('Review before sending') %}
 {% block service_page_title %}
@@ -22,7 +23,27 @@
         'default',
         with_tick=True
       ) }}
+    {% include "partials/template-attachments-warning.html" %}
   </section>
+
+  {# Issue #3319: non-blocking warning when the CSV contains duplicate recipients. #}
+  {% if row_warnings %}
+    <div class="mb-12 clear-both contain-floats" aria-live="polite" data-testid="duplicate-recipients-warning">
+      {% call notice(type="warning", title=row_warnings[0], headingLevel=2) %}
+        {% for warning in row_warnings[1:] %}
+          <p>{{ warning }}</p>
+        {% endfor %}
+        {% if count_of_duplicate_recipients %}
+          <p>
+            <a href="{{ url_for('.download_duplicate_recipients', service_id=current_service.id, template_id=template.id, upload_id=upload_id, original_file_name=original_file_name) }}" download>
+              {{ _('Download the list of duplicate recipients') }}
+            </a>
+          </p>
+        {% endif %}
+      {% endcall %}
+    </div>
+  {% endif %}
+
   {% if not request.args.from_test %}
     <section class="clear-both contain-floats" id="ok-file">
       <h2 class="heading-medium">{{ _('Recipients') }}</h2>
@@ -78,6 +99,7 @@
       {{ _("This shows the message to the recipient of row {}.").format(preview_row) }}
     </p>
     {{ template|string|translate_preview_template }}
+    {% include "partials/template-attachments-list.html" %}
     {{ previous_next_navigation(
     previous_page={
       "url":url_for('.check_messages', service_id=current_service.id, template_id=template.id, upload_id=upload_id, row_index=(preview_row - 1), original_file_name=original_file_name, _anchor='ok-preview'),
@@ -98,21 +120,21 @@
           <span>
             {% if is_sms_parts_estimated %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Estimate: 1 text message part.") }}
+                {{ _('Message size: 1 part estimated') }}
               {% else %}
-                {{ _("Estimate: {} text message parts.").format(sms_parts_to_send) }}
+                {{ _('Message size: {} parts estimated').format(sms_parts_to_send) }}
               {% endif %}
             {% else %}
               {% if sms_parts_to_send == 1 %}
-                {{ _("Total: 1 text message part.") }}
+                {{ _('Message size: 1 part') }}
               {% else %}
-                {{ _("Total: {} text message parts.").format(sms_parts_to_send) }}
+                {{ _('{} parts').format(sms_parts_to_send) }}
               {% endif %}
             {% endif %}
           </span>
         </div>
       {% endif %}
-      {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False) }}
+      {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True, use_billable_units=True) }}
     </div>
   {% endif %}
   <div class="mb-12 clear-both contain-floats">
@@ -130,6 +152,9 @@
     </form>
   </div>
 
-  <script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/scheduler.min.js') }}"></script>
+{% endblock %}
 
+{% block page_script %}
+  {{ super() }}
+  <script nonce="{{ request_nonce }}" type="module" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/scheduler/scheduler.js{% else %}{{ asset_url('javascripts/scheduler.min.js') }}{% endif %}"></script>
 {% endblock %}

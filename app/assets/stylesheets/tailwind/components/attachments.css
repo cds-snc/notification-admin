@@ -1,0 +1,63 @@
+.attachment-file-row {
+  position: relative;
+  padding-top: 1rem;
+  padding-left: 1rem;
+}
+
+.attachment-file-row:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border-width: 0 0 16px 16px;
+  border-style: solid;
+  border-color: #afb9c3 #fff;
+  z-index: 2;
+}
+
+.attachment-file-row:after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border-width: 16px 16px 0 0;
+  border-style: solid;
+  border-color: #ffffff #fff;
+  z-index: 1;
+}
+
+.attachment-file-name-truncate {
+  max-width: 100%;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Pulls the attachment list flush against the bottom of the template preview above it. */
+.attachment-list-flush-top {
+  margin-top: -31px;
+}
+.banner-dangerous .attachment-file-name-truncate {
+  font-weight: bold;
+}
+
+/* Inline panel open animation */
+.attachments-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    max-height 260ms ease,
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+.attachments-panel--open {
+  /* Keep the open animation while allowing long file lists to fully render. */
+  max-height: 10000px;
+  opacity: 1;
+  transform: translateY(0);
+  overflow: visible;
+}

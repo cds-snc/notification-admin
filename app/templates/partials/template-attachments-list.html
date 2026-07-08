@@ -1,0 +1,37 @@
+{#
+  READ-ONLY ATTACHMENTS VIEW (SERVER-RENDERED)
+
+  This partial intentionally mirrors the visual/status language of the React
+  attachments rows for send/check pages where we render server-side preview UI.
+
+  Keep these in sync when changing attachment UX:
+  - app/assets/javascripts/attachments/AttachedFileRow.js
+  - app/assets/javascripts/attachments/localization.js
+  - app/assets/stylesheets/tailwind/components/attachments.css
+
+  Parity rules:
+  - pending_virus_scan / uploading must show the same loading-spinner pattern.
+  - uploaded rows remain visible without warning icon.
+  - summary text and warning behavior should track product decisions in send views.
+ #}
+{% if template.template_type == 'email' and template_attachments %}
+  <section class="mb-8 border border-gray-300 p-4 attachment-list-flush-top" data-testid="template-attachments-list">
+    <ul class="list-none m-0 p-0" data-testid="template-attachments-items">
+      {% for attachment in template_attachments %}
+        <li class="attachment-file-row border border-gray-300 p-3 mb-2" data-testid="template-attachments-item">
+          <div class="flex items-start gap-2">
+            {% if attachment.status in ['uploading', 'pending_virus_scan'] %}
+              <div
+                class="loading-spinner shrink-0 mr-3"
+                role="status"
+                aria-label="{{ _('File upload in progress') }}"
+                data-testid="attachment-row-spinner"
+              ></div>
+            {% endif %}
+            <span class="attachment-file-name-truncate">{{ attachment.filename }}</span>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}

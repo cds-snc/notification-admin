@@ -1,9 +1,11 @@
+import base64
 import json
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import (
+    Response,
     abort,
     current_app,
     flash,
@@ -19,7 +21,10 @@ from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
-from notifications_utils import TEMPLATE_NAME_CHAR_COUNT_LIMIT
+from notifications_utils import (
+    SMS_CHAR_COUNT_LIMIT,
+    TEMPLATE_NAME_CHAR_COUNT_LIMIT,
+)
 from notifications_utils.formatters import nl2br
 from notifications_utils.recipients import first_column_headings
 
@@ -57,11 +62,13 @@ from app.models.template_list import (
     TemplateList,
     TemplateLists,
 )
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.notification_counts_client import notification_counts_client
 from app.sample_template_utils import create_temporary_sample_template, get_sample_templates, get_sample_templates_by_type
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
+    get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
     user_has_permissions,
@@ -180,7 +187,11 @@ def get_limit_stats(notification_type, template=None):
                 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later."
             )
         else:
-            limit_stats["heading"] = _("Sending paused until 7pm ET. You can schedule more messages to send later.")
+            limit_reset_time = get_limit_reset_time_et()
+            current_lang = get_current_locale(current_app)
+            limit_stats["heading"] = _("Sending paused until {} ET. You can schedule more messages to send later.").format(
+                limit_reset_time[current_lang]
+            )
 
     return limit_stats
 
@@ -191,6 +202,14 @@ def view_template(service_id, template_id):
     delete_preview_data(service_id, template_id)
     template = current_service.get_template(template_id)
     template_folder = current_service.get_template_folder(template["folder"])
+    template_attachments = []
+
+    if (
+        current_app.config.get("FF_FILE_ATTACHMENTS")
+        and template["template_type"] == "email"
+        and current_service.has_permission("upload_document")
+    ):
+        template_attachments = current_service.get_template_attachments(template_id)
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
@@ -203,8 +222,110 @@ def view_template(service_id, template_id):
         "views/templates/template.html",
         template=preview_template,
         template_postage=template["postage"],
+        template_attachments=template_attachments,
         user_has_template_permission=user_has_template_permission,
         **get_limit_stats(template["template_type"], preview_template),
+    )
+
+
+# Template attachment endpoints (gated by FF_FILE_ATTACHMENTS)
+def _abort_if_attachments_disabled_for_service():
+    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
+        abort(404)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments",
+    methods=["POST"],
+)
+@user_has_permissions("manage_templates")
+def attach_files(service_id, template_id):
+    _abort_if_attachments_disabled_for_service()
+
+    uploaded_files = request.files.getlist("files")
+    created_files = []
+
+    for uploaded_file in uploaded_files:
+        file_contents = uploaded_file.read()
+        file_size = len(file_contents)
+        file_data = base64.b64encode(file_contents).decode("ascii")
+
+        created_files.append(
+            file_api_client.create_file(
+                template_id,
+                "template_attach",
+                uploaded_file.filename,
+                uploaded_file.mimetype or "application/octet-stream",
+                file_size,
+                file_data,
+            )
+        )
+
+    return jsonify(created_files)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove",
+    methods=["POST"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/remove/<file_id>",
+    methods=["POST"],
+)
+@user_has_permissions("manage_templates")
+def remove_files(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    if not file_id:
+        abort(400)
+
+    file_api_client.delete_file(template_id, file_id)
+    return ("", 204)
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/status/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions("manage_templates")
+def template_attachment_status(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
+    return jsonify(file_api_client.get_file_status(template_id, file_id))
+
+
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download",
+    methods=["GET"],
+)
+@main.route(
+    "/services/<service_id>/templates/<uuid:template_id>/attachments/download/<file_id>",
+    methods=["GET"],
+)
+@user_has_permissions("manage_templates")
+def download_template_attachment(service_id, template_id, file_id=None):
+    _abort_if_attachments_disabled_for_service()
+
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    file_id = file_id or request.args.get("file_id")
+    if not file_id:
+        abort(400)
+
+    file_payload = file_api_client.get_file_contents(template_id, file_id)
+    file_name = file_payload["filename"]
+    return Response(
+        file_payload["content"],
+        mimetype=file_payload["mime_type"],
+        headers={"Content-Disposition": f'attachment; filename="{file_name}"'},
     )
 
 
@@ -261,6 +382,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["template_category_id"],
                         template["text_direction_rtl"],
+                        use_custom_unsubscribe_url=template.get("use_custom_unsubscribe_url"),
                     )
                 else:
                     new_template = service_api_client.create_service_template(
@@ -272,6 +394,7 @@ def preview_template(service_id, template_id=None, sample_template_id=None):
                         None if template["process_type"] == TC_PRIORITY_VALUE else template["process_type"],
                         template["folder"],
                         template["template_category_id"],
+                        use_custom_unsubscribe_url=template.get("use_custom_unsubscribe_url"),
                     )
                     template_id = new_template["data"]["id"]
 
@@ -890,6 +1013,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:
@@ -958,6 +1084,9 @@ def add_service_template(service_id, template_type, template_folder_id=None):  #
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand",
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 
@@ -1003,6 +1132,8 @@ def edit_service_template(service_id, template_id):
         template["name"] = new_template_data["name"]
         template["subject"] = new_template_data["subject"]
         template["text_direction_rtl"] = new_template_data["text_direction_rtl"]
+        if "use_custom_unsubscribe_url" in new_template_data:
+            template["use_custom_unsubscribe_url"] = new_template_data["use_custom_unsubscribe_url"]
 
     template["template_content"] = template["content"]
 
@@ -1068,6 +1199,9 @@ def edit_service_template(service_id, template_id):
                         None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                         form.template_category_id.data,
                         form.text_direction_rtl.data,
+                        use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                        if hasattr(form, "use_custom_unsubscribe_url")
+                        else None,
                     )
                     # Send the information in form's template_category_other field to Freshdesk
                     # This code path is a little complex - We do not want to raise an error if the request to Freshdesk fails, only if template creation fails
@@ -1128,6 +1262,9 @@ def edit_service_template(service_id, template_id):
             template_category_hints=template_category_hints,
             other_category=other_category,
             template_category_mode="expand" if request.method == "POST" else None,
+            sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
+            one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
+            or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
         )
 
 
@@ -1656,6 +1793,9 @@ def create_from_sample_template(service_id, template_type, template_id, template
                 None if form.process_type.data == TC_PRIORITY_VALUE else form.process_type.data,
                 template_folder_id,
                 form.template_category_id.data,
+                use_custom_unsubscribe_url=form.use_custom_unsubscribe_url.data
+                if hasattr(form, "use_custom_unsubscribe_url")
+                else None,
             )
             # Send the information in form's template_category_other field to Freshdesk
             if form.template_category_other.data:

@@ -51,6 +51,7 @@ const createLanguageNode = (language, langCode) => {
           lang: langCode,
           "data-lang": language.toLowerCase(),
           "data-type": `${language.toLowerCase()}-block`,
+          role: "region",
           ...HTMLAttributes,
         },
         0,

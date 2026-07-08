@@ -76,6 +76,7 @@ const ConditionalNode = Node.create({
         "data-type": "conditional",
         "data-condition": HTMLAttributes.condition || "",
         class: "conditional-block",
+        role: "group",
         ...HTMLAttributes,
       },
       0,

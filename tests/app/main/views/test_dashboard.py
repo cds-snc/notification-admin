@@ -314,7 +314,7 @@ def test_should_show_monthly_breakdown_of_template_usage(
 ):
     page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, **extra_args)
 
-    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016)
+    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016, page=1, page_size=50)
 
     table_rows = page.select("tbody tr")
 
@@ -322,6 +322,72 @@ def test_should_show_monthly_breakdown_of_template_usage(
 
     assert len(table_rows) == len(["April"])
     assert len(page.select(".table-no-data")) == len(["May", "June", "July"])
+
+
+def test_template_usage_shows_pagination_links(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 1,
+            "page_size": 50,
+            "links": {"next": "page 2"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".next-page") is not None
+    assert nav.select_one(".previous-page") is None
+
+
+def test_template_usage_page_2_shows_prev_link(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 2,
+            "page_size": 50,
+            "links": {"prev": "page 1"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, page=2)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".previous-page") is not None
+    assert nav.select_one(".next-page") is None
 
 
 def test_anyone_can_see_monthly_breakdown(
@@ -347,6 +413,13 @@ def test_anyone_can_see_monthly_breakdown(
     )
 
 
+@pytest.mark.parametrize(
+    "use_billable_units, expected_sms_label",
+    [
+        (True, "text message parts"),
+        (False, "text messages"),
+    ],
+)
 def test_monthly_shows_letters_in_breakdown(
     client_request,
     service_one,
@@ -354,15 +427,20 @@ def test_monthly_shows_letters_in_breakdown(
     mock_get_monthly_notification_stats,
     mock_get_service_statistics,
     mock_get_template_statistics,
+    app_,
+    use_billable_units,
+    expected_sms_label,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
     mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
-    page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", use_billable_units):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
 
     assert normalize_spaces(columns[2].text) == "emails"
-    assert normalize_spaces(columns[3].text) == "text messages"
+    assert normalize_spaces(columns[3].text) == expected_sms_label
 
 
 @pytest.mark.parametrize(
@@ -473,7 +551,7 @@ def test_monthly_shows_sms_billable_units_when_ff_enabled(
 
     # SMS column should show billable units (150 + 75 = 225), not requested count (100)
     assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "225"
-    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text message parts"
 
     # Annual overview box for SMS should also show billable units total (225), not notification count (100).
     # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
@@ -596,7 +674,7 @@ def test_daily_usage_section_shown(
                 "email": {"requested": 1000000000, "delivered": 0, "failed": 0},
                 "sms": {"requested": 1000000, "delivered": 0, "failed": 0},
             },
-            ".big-number-dark",
+            ".big-number",
             3,
         ),
     ],

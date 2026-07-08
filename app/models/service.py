@@ -12,6 +12,7 @@ from app.models.user import InvitedUsers, User, Users
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.email_branding_client import email_branding_client
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.inbound_number_client import inbound_number_client
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.job_api_client import job_api_client
@@ -189,6 +190,9 @@ class Service(JSONModel):
 
     def get_template(self, template_id, version=None):
         return service_api_client.get_service_template(self.id, str(template_id), version)["data"]
+
+    def get_template_attachments(self, template_id):
+        return file_api_client.get_files_by_template_id(str(template_id))
 
     def get_template_folder_with_user_permission_or_403(self, folder_id, user):
         template_folder = self.get_template_folder(folder_id)

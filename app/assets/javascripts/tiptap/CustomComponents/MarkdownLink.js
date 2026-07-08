@@ -6,6 +6,9 @@ import { InputRule } from "@tiptap/core";
  * Converts [text](url) to a proper link as you type
  */
 const MarkdownLink = Link.extend({
+  inclusive() {
+    return false;
+  },
   addInputRules() {
     return [
       new InputRule({

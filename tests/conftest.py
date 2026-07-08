@@ -1033,7 +1033,17 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
 
 @pytest.fixture(scope="function")
 def mock_create_service_template(mocker, fake_uuid):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         template = template_json(
             service_id=service,
             id_=fake_uuid,
@@ -1067,6 +1077,7 @@ def mock_update_service_template(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
@@ -1076,7 +1087,18 @@ def mock_update_service_template(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_400_name_too_long(mocker):
-    def _update(id_, name, type_, content, service, subject=None, process_type=None, postage=None, template_category_id=None):
+    def _update(
+        id_,
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        postage=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"name": ["Template name must be less than 256 characters"]},
@@ -1103,6 +1125,7 @@ def mock_update_service_template_400_name_too_long(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
@@ -1119,7 +1142,17 @@ def mock_update_service_template_400_name_too_long(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_content_too_big(mocker):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"content": ["Content has a character count greater than the limit of 459"]},
@@ -1149,6 +1182,7 @@ def mock_update_service_template_400_content_too_big(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
@@ -2540,7 +2574,7 @@ def mock_has_no_jobs(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_jobs(mocker, api_user_active):
-    def _get_jobs(service_id, limit_days=None, statuses=None, page=1):
+    def _get_jobs(service_id, limit_days=None, statuses=None, page=1, page_size=None):
         if statuses is None:
             statuses = ["", "scheduled", "pending", "cancelled", "finished"]
 
@@ -3002,6 +3036,11 @@ def mock_s3_set_metadata(mocker, content=None):
     return mocker.patch("app.main.views.send.set_metadata_on_csv_upload")
 
 
+@pytest.fixture(scope="function", autouse=True)
+def mock_s3_get_metadata(mocker):
+    return mocker.patch("app.main.views.send.get_csv_metadata", return_value={})
+
+
 @pytest.fixture(scope="function")
 def sample_invite(mocker, service_one, status="pending", permissions=None):
     id_ = USER_ONE_ID
@@ -3184,8 +3223,8 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "template_id": fake_uuid,
                 "month": 4,
@@ -3195,6 +3234,15 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
                 "type": "sms",
             }
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 1,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",
@@ -3204,8 +3252,8 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "count": 1101,
                 "is_precompiled_letter": False,
@@ -3234,6 +3282,15 @@ def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fa
                 "year": 2023,
             },
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 2,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",
@@ -4541,6 +4598,11 @@ def url_for_endpoint_with_token(endpoint, token):
 @pytest.fixture
 def mock_get_template_folders(mocker):
     return mocker.patch("app.template_folder_api_client.get_template_folders", return_value=[])
+
+
+@pytest.fixture(autouse=True)
+def mock_get_template_attachments(mocker):
+    return mocker.patch("app.models.service.file_api_client.get_files_by_template_id", return_value=[])
 
 
 @pytest.fixture

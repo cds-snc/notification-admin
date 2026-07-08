@@ -27,6 +27,10 @@ class Config(object):
 
     # List of allowed service IDs that are allowed to send HTML through their templates.
     ALLOW_HTML_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ALLOW_HTML_SERVICE_IDS", "").split(",")]
+    # List of service IDs allowed to use the one-click unsubscribe header feature (applies in production only).
+    ONE_CLICK_UNSUB_SERVICE_IDS: List[str] = [id.strip() for id in os.getenv("ONE_CLICK_UNSUB_SERVICE_IDS", "").split(",")]
+    # When True, all services can use the one-click unsubscribe feature (non-prod envs).
+    ONE_CLICK_UNSUB_ALL_SERVICES = env.bool("ONE_CLICK_UNSUB_ALL_SERVICES", False)
     ADMIN_BASE_URL = (
         "https://" + os.environ.get("HEROKU_APP_NAME", "") + ".herokuapp.com"
         if os.environ.get("HEROKU_APP_NAME", "") != ""
@@ -39,7 +43,6 @@ class Config(object):
     API_HOST_NAME = os.environ.get("API_HOST_NAME")
     ASSET_DOMAIN = os.getenv("ASSET_DOMAIN", "assets.notification.canada.ca")
     ASSET_PATH = "/static/"
-    ASSETS_DEBUG = False
     AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
     A11Y_FEEDBACK_URL_EN = os.environ.get(
         "A11Y_FEEDBACK_URL_EN", "https://forms-formulaires.alpha.canada.ca/en/id/cmk4jw8nu00wrx9016kz1gf54"
@@ -62,17 +65,18 @@ class Config(object):
     DEBUG = False
     DEBUG_KEY = os.environ.get("DEBUG_KEY", "")
     DEFAULT_FREE_SMS_FRAGMENT_LIMITS = {
-        "central": 25_000,
-        "local": 25_000,
-        "nhs_central": 250_000,
-        "nhs_local": 25_000,
-        "nhs_gp": 25_000,
-        "emergency_service": 25_000,
-        "school_or_college": 25_000,
-        "other": 25_000,
+        "central": 100_000,
+        "local": 100_000,
+        "nhs_central": 100_000,
+        "nhs_local": 100_000,
+        "nhs_gp": 100_000,
+        "emergency_service": 100_000,
+        "school_or_college": 100_000,
+        "other": 100_000,
     }
     DEFAULT_LIVE_SERVICE_LIMIT = env.int("DEFAULT_LIVE_SERVICE_LIMIT", 10_000)
-    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1000)
+    # Must match DEFAULT_SMS_DAILY_LIMIT in notification-api/app/models.py
+    DEFAULT_LIVE_SMS_DAILY_LIMIT = env.int("DEFAULT_LIVE_SMS_DAILY_LIMIT", 1500)
     DEFAULT_SERVICE_LIMIT = env.int("DEFAULT_SERVICE_LIMIT", 50)
     DEFAULT_SMS_DAILY_LIMIT = env.int("DEFAULT_SMS_DAILY_LIMIT", 50)
     DOCUMENTATION_DOMAIN = os.getenv("DOCUMENTATION_DOMAIN", "documentation.notification.canada.ca")
@@ -87,12 +91,19 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
+    FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
+    FF_FILE_ATTACHMENTS = env.bool("FF_FILE_ATTACHMENTS", False)
+
+    # OTEL Configuration
+    ENABLE_CLIENT_SIDE_OTEL = env.bool("ENABLE_CLIENT_SIDE_OTEL", False)
+    OTEL_CLIENT_SIDE_TOKEN_TTL = env.int("OTEL_CLIENT_SIDE_TOKEN_TTL", 5 * 60)  # seconds, default 5 minutes
 
     FREE_YEARLY_EMAIL_LIMIT = env.int("FREE_YEARLY_EMAIL_LIMIT", 20_000_000)
     FREE_YEARLY_SMS_LIMIT = env.int("FREE_YEARLY_SMS_LIMIT", 100_000)
     GC_ARTICLES_API = os.environ.get("GC_ARTICLES_API", "articles.alpha.canada.ca/notification-gc-notify")
     GC_ARTICLES_API_AUTH_PASSWORD = os.environ.get("GC_ARTICLES_API_AUTH_PASSWORD")
     GC_ARTICLES_API_AUTH_USERNAME = os.environ.get("GC_ARTICLES_API_AUTH_USERNAME")
+    GC_ARTICLES_WAF_RATE_BYPASS_SECRET = env.str("GC_ARTICLES_WAF_RATE_BYPASS_SECRET", "my-secret-key")
     GC_ORGANISATIONS_BUCKET_NAME = os.environ.get("GC_ORGANISATIONS_BUCKET_NAME")
     GC_ORGANISATIONS_FILENAME = os.getenv("GC_ORGANISATIONS_FILENAME", "all.json")
     GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "G-R04KFLQCVQ")
@@ -110,7 +121,7 @@ class Config(object):
 
     NOTIFY_APP_NAME = "admin"
     NOTIFY_BAD_FILLER_UUID = "00000000-0000-0000-0000-000000000000"
-    NOTIFY_ENVIRONMENT = NotifyEnv.DEVELOPMENT.value
+    NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "DEBUG"
     NOTIFY_LOG_PATH = os.getenv("NOTIFY_LOG_PATH", "")
 
@@ -119,6 +130,8 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = 8 * 60 * 60  # 8 hours
     REDIS_ENABLED = env.bool("REDIS_ENABLED", False)
     REDIS_URL = os.environ.get("REDIS_URL")
+    CACHE_TYPE = "RedisCache" if REDIS_ENABLED else "SimpleCache"
+    CACHE_REDIS_URL = os.environ.get("REDIS_URL")
     REPORTS_BUCKET_NAME = os.getenv("REPORTS_BUCKET_NAME", "notification-canada-ca-production-reports")
     ROUTE_SECRET_KEY_1 = os.environ.get("ROUTE_SECRET_KEY_1", "")
     ROUTE_SECRET_KEY_2 = os.environ.get("ROUTE_SECRET_KEY_2", "")
@@ -145,6 +158,7 @@ class Config(object):
 
     TEMPLATE_PREVIEW_API_HOST = os.environ.get("TEMPLATE_PREVIEW_API_HOST", "http://localhost:6013")
     TEMPLATE_PREVIEW_API_KEY = os.environ.get("TEMPLATE_PREVIEW_API_KEY", "my-secret-key")
+    VITE_HMR_ENABLED = False
     WAF_SECRET = os.environ.get("WAF_SECRET", "waf-secret")
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
@@ -167,6 +181,7 @@ class Config(object):
             "DEBUG_KEY",
             "GC_ARTICLES_API_AUTH_PASSWORD",
             "GC_ARTICLES_API_AUTH_USERNAME",
+            "GC_ARTICLES_WAF_RATE_BYPASS_SECRET",
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
             "SECRET_KEY",
@@ -188,9 +203,14 @@ class Development(Config):
     API_HOST_NAME = os.environ.get("API_HOST_NAME", "http://localhost:6011")
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
+    VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
+    FF_ADD_TEMPLATE_PERM = True
+    FF_FILE_ATTACHMENTS = True
     MOU_BUCKET_NAME = "notify.tools-mou"
+    ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
@@ -220,6 +240,7 @@ class Test(Development):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_USE_BILLABLE_UNITS = True
+    VITE_HMR_ENABLED = False
 
 
 class ProductionFF(Config):
@@ -244,6 +265,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
+    FF_FILE_ATTACHMENTS = True
 
 
 class Production(Config):
@@ -256,6 +278,7 @@ class Production(Config):
 
 
 class Staging(Production):
+    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
@@ -265,9 +288,11 @@ class Staging(Production):
 class Scratch(Production):
     NOTIFY_ENVIRONMENT = NotifyEnv.SCRATCH.value
     NOTIFY_LOG_LEVEL = "INFO"
+    VITE_HMR_ENABLED = False
 
 
 class Dev(Production):
+    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
 

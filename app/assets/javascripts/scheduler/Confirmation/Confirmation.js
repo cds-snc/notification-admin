@@ -18,13 +18,13 @@ export const Confirmation = () => {
     <div className="confirmation set">
       <i
         aria-hidden="true"
-        class="confirmationIcon fa-xl fa-solid fa-paper-plane"
+        className="confirmationIcon fa-xl fa-solid fa-paper-plane"
       ></i>
 
       <div className="confirmationMessage" role="status" aria-atomic="true">
         <p>{translate("message_will_be_sent")}</p>
         <p className="confirmationTime">
-          <time datetime={date}>
+          <time dateTime={date}>
             {translate("date_prefix")}
             {dayjs(date).format(translate("date_format"))} {translate("at")}{" "}
             {timeFormat}, {translate("local_time_suffix")}

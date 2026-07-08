@@ -23,11 +23,13 @@
     <div class="md:w-3/4 float-left py-0 px-0 px-gutterHalf box-border">
         <div class="flex flex-wrap md:flex-nowrap items-baseline border-b-1 border-gray-400 py-5">
             <div class="w-full sm:w-3/4" tabindex="0">
-                <div class="font-bold inline-block mt-2 break-words mr-5 overflow-anywhere">
+                <div class="inline-block mt-2 break-words mr-5 overflow-anywhere">
                     {% if editing %}
                         {{ textbox(form_field, safe_error_message=True, autocomplete='change-value') }}
+                    {% elif form_field.data %}
+                        {{ "+" ~ form_field.data[-11:][:1] ~ " " if form_field.data|length > 10 else "" }}({{ form_field.data[-10:][:3] }})&nbsp;{{ form_field.data[-10:][3:6] }}-{{ form_field.data[-10:][6:] }}
                     {% else %}
-                        {{ form_field.data if form_field.data else "Not set" }}
+                        {{ _("Not set") }}
                     {% endif %}
                 </div>
             </div>

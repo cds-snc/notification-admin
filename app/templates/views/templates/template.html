@@ -1,4 +1,5 @@
 {% extends "admin_template.html" %}
+{% from "components/attachments.html" import attachments_widget with context %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/folder-path.html" import folder_path, page_title_folder_path %}
 {% from "components/page-footer.html" import page_footer %}
@@ -44,19 +45,15 @@
   </div>
 
   {% include 'views/templates/_template.html' %}
-
+ 
   <div class="flex mb-16 -mt-8{% if template.template_type != 'email' %} flex-col{% endif %}">
       <div class="{% if template.template_type == 'email' %}w-1/2{% else %}mb-6{% endif %}">
         {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
-          {% if config['FF_USE_BILLABLE_UNITS'] %}
-            <p class="flex items-center gap-2 pb-2 {% if template.template_type == 'sms' %}max-w-[464px]{% endif %} mb-4">
-          {% endif %}
-          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
-            {% if config['FF_USE_BILLABLE_UNITS'] %}<i aria-hidden="true" class="fa-solid fa-pen-to-square pr-4"></i>{% endif %}{{ _('Edit this template') }}
-          </a>
-          {% if config['FF_USE_BILLABLE_UNITS'] %}
-            </p>
-          {% endif %}
+          <p class="flex items-center gap-2 pb-2 {% if template.template_type == 'sms' %}max-w-[464px]{% endif %} mb-4">
+            <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
+              <i aria-hidden="true" class="fa-solid fa-pen-to-square pr-4"></i>{{ _('Edit this template') }}
+            </a>
+          </p>
         {% endif %}
         {% if template._template.updated_at %}
         <div class="flex {% if template.template_type == 'email' %}items-center{% else %}items-start{% endif %} gap-2 {% if template.template_type == 'sms' %}max-w-[464px]{% endif %}">
@@ -77,22 +74,35 @@
             <i aria-hidden="true" class="fa-solid fa-comment-dots pr-2 mt-2"></i>
             {% if template.placeholders %}
               {% if fragment_count == 1 %}
-                {{ _("Estimate: 1 text message part.")}}
+                {{ _('Message size: 1 part estimated') }}
               {% else %}
-                {{ _("Estimate: {} text message parts.").format(fragment_count) }}
+                {{ _('Message size: {} parts estimated').format(fragment_count) }}
               {% endif %}
-              {{ _("Variables may increase number of messages.") }}
             {% else %}
               {% if fragment_count == 1 %}
-                {{ _("Total: 1 text message part.") }}
+                {{ _('Message size: 1 part') }}
               {% else %}
-                {{ _("Total: {} text message parts.").format(fragment_count) }}
+                {{ _('Message size: {} parts').format(fragment_count) }}
               {% endif %}
             {% endif %}
           </p>
         {% endif %}
       </div>
   </div>
+
+  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
+    <div class="mb-16">
+      {{ attachments_widget(
+        "template-attachments",
+        template_attachments,
+        url_for('main.terms'),
+        url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
+        url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
+        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
+        url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
+      ) }}
+    </div>
+  {% endif %}
 
   <div class="mb-16">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}

@@ -570,6 +570,7 @@ class RenameServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -586,6 +587,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -912,6 +914,8 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
         ],
     )
 
+    use_custom_unsubscribe_url = BooleanField(_l("Use ((unsubscribe_url)) for one-click unsubscribe"))
+
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
     subject = TextAreaField("Main heading", validators=[DataRequired(message="This cannot be empty")])
@@ -1021,6 +1025,11 @@ class CreateKeyForm(StripWhitespaceForm):
     key_name = StringField(
         "Description of key",
         validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
+    )
+
+    manage_templates = SelectMultipleField(
+        _l("API key permissions"),
+        choices=[("manage_templates", _l("Allow this key to manage templates (create, update, or delete)"))],
     )
 
     def validate_key_name(self, key_name):

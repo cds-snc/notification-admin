@@ -75,8 +75,8 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages No value",
-                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
+                "Daily maximum 1,000 text message parts No value",
+                "Annual maximum(April 1 to March 31) 100,000 text message parts No value",
             ],
         ),
         (
@@ -98,16 +98,16 @@ def mock_get_service_settings_page_common(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages No value",
-                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
+                "Daily maximum 1,000 text message parts No value",
+                "Annual maximum(April 1 to March 31) 100,000 text message parts No value",
                 "Label Value Action",
                 "Live On Change",
                 "Count in list of live services Yes Change",
                 "Organisation Test Organisation Government of Canada Change",
                 "Daily email limit 1,000 Change",
-                "Daily text message limit 1,000 Change",
+                "Daily text message parts limit 1,000 Change",
                 "Annual email limit 20,000,000 Change",
-                "Annual text message limit 100,000 Change",
+                "Annual text message parts limit 100,000 Change",
                 "API rate limit per minute 100 No value",
                 "Text message senders GOVUK Manage",
                 "Receive text messages Off Change",
@@ -145,7 +145,8 @@ def test_should_show_overview_inc_sms_daily_limit(
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     client.login(user, mocker, service_one)
-    response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert page.find("h1").text == "Settings"
@@ -232,8 +233,8 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages On Change",
-                "Daily maximum 1,000 text messages No value",
-                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
+                "Daily maximum 1,000 text message parts No value",
+                "Annual maximum(April 1 to March 31) 100,000 text message parts No value",
             ],
         ),
         (
@@ -253,8 +254,8 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send text messages On Change",
                 "Start text messages with service name On Change",
                 "Send international text messages Off Change",
-                "Daily maximum 1,000 text messages No value",
-                "Annual maximum(April 1 to March 31) 100,000 text messages No value",
+                "Daily maximum 1,000 text message parts No value",
+                "Annual maximum(April 1 to March 31) 100,000 text message parts No value",
             ],
         ),
     ],
@@ -277,7 +278,8 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     client.login(active_user_with_permissions, mocker, service_one)
     service_one["permissions"] = permissions
     service_one["email_branding"] = uuid4()
-    response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     rows = page.find_all("tr")
     for index, row in enumerate(expected_rows):
@@ -392,6 +394,30 @@ def test_should_redirect_after_change_service_name(
     assert mock_service_name_is_unique.called is True
 
 
+def test_should_reject_service_name_change_when_combined_email_header_is_too_long(
+    client_request,
+    mock_update_service,
+    mock_service_name_is_unique,
+):
+    """Renaming a service to a very long unicode name should fail validation
+    so we don't end up with an SES `from` header longer than 320 characters."""
+    long_service_name = (
+        "Message de Jimmy Royééééééééé – Gestionnaire principal responsable des urgences "
+        "et des évacuations du BIN // Message from Jimmy Royééééééééé – NPB Lead senior "
+        "manager for emergencies and évacuations"
+    )
+
+    page = client_request.post(
+        "main.service_name_change",
+        service_id=SERVICE_ONE_ID,
+        _data={"name": long_service_name},
+        _expected_status=200,
+    )
+
+    assert "Your service name and email address combined are too long" in page.text
+    assert mock_update_service.called is False
+
+
 @pytest.mark.parametrize(
     "user, expected_text, expected_link",
     [
@@ -442,10 +468,10 @@ def test_show_restricted_service(
 @pytest.mark.parametrize(
     "current_limit, expected_limit, current_sms_limit, expected_sms_limit",
     [
-        (42, 10_000, 33, 1000),
+        (42, 10_000, 33, 1500),
         # Maps to DEFAULT_SERVICE_LIMIT and DEFAULT_LIVE_SERVICE_LIMIT in config
-        (50, 10_000, 50, 1000),
-        (50_000, 10_000, 3000, 1000),
+        (50, 10_000, 50, 1500),
+        (50_000, 10_000, 3000, 1500),
     ],
 )
 def test_switch_service_to_live(

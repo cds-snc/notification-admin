@@ -3,10 +3,8 @@ import os
 import subprocess
 import sys
 import tempfile
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from scripts.test_translations import extra_keys_in_app
+from test_translations import extra_keys_in_app
 
 
 def get_translation_keys(csv_path):

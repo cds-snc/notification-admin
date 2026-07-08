@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from unittest.mock import ANY, MagicMock, Mock, patch
+from uuid import UUID
 
 import pytest
 from flask import url_for
@@ -51,6 +52,7 @@ from tests.conftest import (
     fake_uuid,
     mock_get_service_template_with_process_type,
     normalize_spaces,
+    set_config,
 )
 
 DEFAULT_PROCESS_TYPE = TemplateProcessTypes.BULK.value
@@ -195,7 +197,16 @@ class TestSendOtherCategoryInfo:
         )
 
         mock_update_service_template.assert_called_with(
-            fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
+            fake_uuid,
+            name,
+            "sms",
+            content,
+            SERVICE_ONE_ID,
+            None,
+            None,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
+            False,
+            use_custom_unsubscribe_url=None,
         )
         assert mock_send_other_category_to_freshdesk.called is True
         mock_send_other_category_to_freshdesk.assert_called_once_with(
@@ -748,6 +759,175 @@ def test_should_show_template_id_on_template_page(
         _test_page_title=False,
     )
     assert page.select(".api-key-key")[0].text == fake_uuid
+
+
+def test_should_show_attachments_widget_on_email_template_page(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    service_one,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is not None
+    assert "viewTemplateAttachmentsNoop" not in str(page)
+    assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.remove_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.template_attachment_status", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+    assert url_for("main.download_template_attachment", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
+
+
+def test_should_not_show_attachments_widget_without_send_files_permission(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is None
+
+
+def test_template_attachment_status_route_returns_file_status(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mock_get_file_status = mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_status",
+        return_value={"status": "pending_virus_scan", "document_id": "file-1"},
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        response = client_request.get(
+            ".template_attachment_status",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            file_id="file-1",
+            _test_page_title=False,
+            _return_response=True,
+        )
+
+    assert response.get_json() == {"status": "pending_virus_scan", "document_id": "file-1"}
+    mock_get_file_status.assert_called_once_with(UUID(fake_uuid), "file-1")
+
+
+def test_template_attachment_download_route_returns_file(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mock_get_file_contents = mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_contents",
+        return_value={
+            "filename": "example-file-1.txt",
+            "mime_type": "text/plain",
+            "content": b"example content",
+        },
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        response = client_request.get(
+            ".download_template_attachment",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            file_id="file-1",
+            _test_page_title=False,
+            _return_response=True,
+        )
+
+    assert response.status_code == 200
+    assert response.mimetype == "text/plain"
+    assert response.data == b"example content"
+    assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
+    mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
+
+
+@pytest.mark.parametrize(
+    "route_name, method, route_params",
+    [
+        (".attach_files", "post", {}),
+        (".remove_files", "post", {"file_id": "file-1"}),
+        (".template_attachment_status", "get", {"file_id": "file-1"}),
+        (".download_template_attachment", "get", {"file_id": "file-1"}),
+    ],
+)
+def test_template_attachment_routes_return_404_without_upload_document_permission(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    route_name,
+    method,
+    route_params,
+):
+    current_user.verified_phonenumber = True
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        request_func = getattr(client_request, method)
+        response = request_func(
+            route_name,
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _expected_status=404,
+            _test_page_title=False,
+            _return_response=True,
+            **route_params,
+        )
+
+    if method == "get":
+        assert response.status_code == 404
 
 
 def test_should_show_logos_on_template_page(
@@ -1332,7 +1512,16 @@ def test_should_redirect_when_saving_a_template(
     assert flash_banner == f"‘{name}’ template saved"
     # self, id_, name, type_, content, service_id, subject=None, process_type=None, template_category_id=None
     mock_update_service_template.assert_called_with(
-        fake_uuid, name, "sms", content, SERVICE_ONE_ID, None, None, DEFAULT_TEMPLATE_CATEGORY_LOW, False
+        fake_uuid,
+        name,
+        "sms",
+        content,
+        SERVICE_ONE_ID,
+        None,
+        None,
+        DEFAULT_TEMPLATE_CATEGORY_LOW,
+        False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1373,6 +1562,7 @@ def test_should_edit_content_when_process_type_is_set_not_platform_admin(
         process_type,
         TESTING_TEMPLATE_CATEGORY,
         False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1731,6 +1921,7 @@ def test_should_redirect_when_saving_a_template_email(
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
         False,
+        use_custom_unsubscribe_url=False,
     )
 
 
@@ -1954,6 +2145,7 @@ def test_preview_should_update_and_redirect_on_save(client_request, mock_update_
         DEFAULT_PROCESS_TYPE,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
         False,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -1994,6 +2186,7 @@ def test_preview_should_create_and_redirect_on_save(client_request, mock_create_
         DEFAULT_PROCESS_TYPE,
         None,
         DEFAULT_TEMPLATE_CATEGORY_LOW,
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -2446,6 +2639,7 @@ def test_should_create_sms_template_without_downgrading_unicode_characters(
         ANY,  # process_type
         ANY,  # parent_folder_id
         ANY,  # template_category_id
+        use_custom_unsubscribe_url=None,
     )
 
 
@@ -2905,6 +3099,7 @@ class TestAnnualLimits:
         else:
             assert page.find(attrs={"data-testid": "send-buttons"}) is None
 
+    @freeze_time("2024-01-15 12:00:00")  # EST: UTC midnight = 7PM ET
     @pytest.mark.parametrize(
         "remaining_daily, remaining_annual, expected_heading",
         [
@@ -2919,8 +3114,8 @@ class TestAnnualLimits:
                 100,
                 "This message exceeds your daily limit. You can shorten the message or schedule more messages to send later.",
             ),
-            # Daily remaining = 0 (true zero) → standard paused heading
-            (0, 100, "Sending paused until 7pm ET. You can schedule more messages to send later."),
+            # Daily remaining = 0 (true zero) → standard paused heading (EST: 7PM)
+            (0, 100, "Sending paused until 7PM ET. You can schedule more messages to send later."),
             # Annual remaining > 0 but < fragment_count → fragment-specific heading
             (100, 2, "This message exceeds your annual limit."),
             (100, 1, "This message exceeds your annual limit."),
@@ -2990,6 +3185,60 @@ class TestAnnualLimits:
         heading = page.select_one("h2.heading-medium")
         assert heading is not None
         assert normalize_spaces(heading.text) == expected_heading
+
+
+@freeze_time("2024-07-15 12:00:00")  # EDT: UTC midnight = 8PM ET
+def test_heading_text_daily_limit_paused_during_edt(
+    client_request,
+    mock_get_template_folders,
+    mock_notification_counts_client,
+    fake_uuid,
+    mocker,
+    app_,
+):
+    """When in EDT (summer), the daily limit reset time should show 8PM instead of 7PM."""
+    app_.config["FF_USE_BILLABLE_UNITS"] = True
+
+    long_content = "A" * 400
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={
+            "data": template_json(
+                SERVICE_ONE_ID,
+                fake_uuid,
+                name="Long SMS",
+                type_="sms",
+                content=long_content,
+            )
+        },
+    )
+    mocker.patch(
+        "app.template_category_api_client.get_all_template_categories",
+        return_value=[],
+    )
+
+    current_user.verified_phonenumber = True
+    mock_notification_counts_client.get_limit_stats.return_value = {
+        "email": {
+            "annual": {"limit": 1000, "sent": 0, "remaining": 100},
+            "daily": {"limit": 1000, "sent": 0, "remaining": 0},
+        },
+        "sms": {
+            "annual": {"limit": 1000, "sent": 0, "remaining": 100},
+            "daily": {"limit": 1000, "sent": 0, "remaining": 0},
+        },
+    }
+
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    heading = page.select_one("h2.heading-medium")
+    assert heading is not None
+    assert normalize_spaces(heading.text) == "Sending paused until 8PM ET. You can schedule more messages to send later."
 
     def test_fragment_count_shows_plain_text_when_no_placeholders(
         self,
@@ -3493,3 +3742,286 @@ class TestCreateFromSampleTemplate:
             template_id="ffffffff-ffff-ffff-ffff-ffffffffffff",
             _expected_status=404,
         )
+
+
+class TestOneClickUnsubscribe:
+    """Tests for the one-click unsubscribe header feature."""
+
+    @pytest.mark.parametrize("placeholder", ["unsubscribe_url", "unsub_link"])
+    def test_one_click_unsub_checkbox_shown_when_placeholder_in_content(
+        self,
+        placeholder,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content=f"Hello (({placeholder}))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is not None
+
+    def test_one_click_unsub_checkbox_not_shown_without_placeholder_in_content(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="No placeholder here",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        setting = page.select_one("#custom-unsub-url-setting")
+        assert setting is not None
+        assert "hidden" in setting.get("class", [])
+
+    def test_one_click_unsub_checkbox_not_shown_when_feature_disabled(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
+        app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = []
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is None
+
+    def test_one_click_unsub_checkbox_shown_when_service_in_allowlist(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = False
+        app_.config["ONE_CLICK_UNSUB_SERVICE_IDS"] = [SERVICE_ONE_ID]
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    type_="email",
+                    content="Hello ((unsubscribe_url))",
+                    subject="Subject",
+                )
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        assert page.select_one("#custom-unsub-url-setting") is not None
+
+    def test_create_email_template_sends_use_custom_unsubscribe_url(
+        self,
+        client_request,
+        mock_create_service_template,
+        mock_get_template_categories,
+        mock_get_template_folders,
+        mock_get_service_template_when_no_template_exists,
+        mock_get_limit_stats,
+        app_,
+        fake_uuid,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+
+        client_request.post(
+            ".add_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_type="email",
+            _data={
+                "name": "My email template",
+                "subject": "Hello",
+                "template_content": "Body with ((unsubscribe_url))",
+                "template_type": "email",
+                "template_category_id": TESTING_TEMPLATE_CATEGORY,
+                "service": SERVICE_ONE_ID,
+                "process_type": None,
+                "button_pressed": "save",
+                "use_custom_unsubscribe_url": "y",
+            },
+            _follow_redirects=True,
+        )
+
+        mock_create_service_template.assert_called_once_with(
+            "My email template",
+            "email",
+            "Body with ((unsubscribe_url))",
+            SERVICE_ONE_ID,
+            "Hello",
+            None,
+            None,
+            TESTING_TEMPLATE_CATEGORY,
+            use_custom_unsubscribe_url=True,
+        )
+
+    def test_edit_email_template_with_use_custom_unsubscribe_url_checked(
+        self,
+        client_request,
+        mock_update_service_template,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": template_json(
+                    SERVICE_ONE_ID,
+                    fake_uuid,
+                    name="My email template",
+                    type_="email",
+                    content="Body with ((unsubscribe_url))",
+                    subject="Hello",
+                )
+            },
+        )
+
+        client_request.post(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _data={
+                "id": fake_uuid,
+                "name": "My email template",
+                "subject": "Hello",
+                "template_content": "Body with ((unsubscribe_url))",
+                "template_type": "email",
+                "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+                "service": SERVICE_ONE_ID,
+                "process_type": DEFAULT_PROCESS_TYPE,
+                "button_pressed": "save",
+                "use_custom_unsubscribe_url": "y",  # checkbox checked
+            },
+            _expected_status=302,
+        )
+
+        mock_update_service_template.assert_called_with(
+            fake_uuid,
+            "My email template",
+            "email",
+            "Body with ((unsubscribe_url))",
+            SERVICE_ONE_ID,
+            "Hello",
+            DEFAULT_PROCESS_TYPE,
+            DEFAULT_TEMPLATE_CATEGORY_LOW,
+            False,
+            use_custom_unsubscribe_url=True,
+        )
+
+    def test_use_custom_unsubscribe_url_preserved_when_loading_edit_form(
+        self,
+        client_request,
+        mock_get_template_categories,
+        mock_get_limit_stats,
+        mocker,
+        fake_uuid,
+        app_,
+    ):
+        app_.config["ONE_CLICK_UNSUB_ALL_SERVICES"] = True
+        current_user.verified_phonenumber = True
+
+        mocker.patch(
+            "app.service_api_client.get_service_template",
+            return_value={
+                "data": {
+                    **template_json(
+                        SERVICE_ONE_ID,
+                        fake_uuid,
+                        name="My email template",
+                        type_="email",
+                        content="Body with ((unsubscribe_url))",
+                        subject="Hello",
+                    ),
+                    "use_custom_unsubscribe_url": True,
+                }
+            },
+        )
+
+        page = client_request.get(
+            ".edit_service_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
+        checkbox = page.select_one("input[name=use_custom_unsubscribe_url]")
+        assert checkbox is not None
+        assert checkbox.has_attr("checked")

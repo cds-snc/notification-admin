@@ -37,8 +37,11 @@ from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
+    generate_next_dict,
+    generate_previous_dict,
     get_current_financial_year,
     get_month_name,
+    get_page_from_request,
     user_has_permissions,
     yyyy_mm_to_datetime,
 )
@@ -178,8 +181,15 @@ def template_history(service_id):
 @main.route("/services/<service_id>/template-usage")
 @user_has_permissions("view_activity")
 def template_usage(service_id):
+    page = get_page_from_request()
+    if page is None:
+        abort(404, "Invalid page argument ({}).".format(request.args.get("page")))
+
     year, current_financial_year = requested_and_current_financial_year(request)
-    stats = template_statistics_client.get_monthly_template_usage_for_service(service_id, year)
+    page_size = 50
+
+    response = template_statistics_client.get_monthly_template_usage_for_service(service_id, year, page=page, page_size=page_size)
+    stats = response["data"]
 
     stats = sorted(stats, key=lambda x: (x["count"]), reverse=True)
 
@@ -200,6 +210,14 @@ def template_usage(service_id):
 
     months = [get_monthly_template_stats(month, stats) for month in get_months_for_financial_year(year, time_format="%B")]
 
+    url_args = {"year": year}
+    prev_page = None
+    next_page = None
+    if response["links"].get("prev"):
+        prev_page = generate_previous_dict("main.template_usage", service_id, page, url_args=url_args)
+    if response["links"].get("next"):
+        next_page = generate_next_dict("main.template_usage", service_id, page, url_args=url_args)
+
     return render_template(
         "views/dashboard/all-template-statistics.html",
         months=reversed(months),
@@ -217,6 +235,8 @@ def template_usage(service_id):
             end=current_financial_year,
         ),
         selected_year=year,
+        prev_page=prev_page,
+        next_page=next_page,
     )
 
 
@@ -366,23 +386,23 @@ def aggregate_template_usage(template_statistics, sort_key="count"):
 
 def aggregate_notifications_stats(template_statistics, use_billable_units=False):
     template_statistics = filter_out_cancelled_stats(template_statistics)
-    # The API now returns both 'count' and 'billable_units' fields
-    # Use count for display (sent messages), billable_units for limits tracking
-    # Fall back to count if billable_units is not available (for backwards compatibility)
-    if use_billable_units and template_statistics and "billable_units" in template_statistics[0]:
-        count_field = "billable_units"
-    else:
-        count_field = "count"
+    # The API returns both 'count' and 'billable_units' fields when FF_USE_BILLABLE_UNITS is enabled.
+    # Email notifications never have billable units (always 0), so always use 'count' for email.
+    # Only use 'billable_units' for SMS when use_billable_units is True.
 
     notifications = {
         template_type: {status: 0 for status in ("requested", "delivered", "failed")} for template_type in ["sms", "email"]
     }
     for stat in template_statistics:
-        notifications[stat["template_type"]]["requested"] += stat[count_field]
+        if use_billable_units and stat["template_type"] == "sms" and "billable_units" in stat:
+            count_value = stat["billable_units"]
+        else:
+            count_value = stat["count"]
+        notifications[stat["template_type"]]["requested"] += count_value
         if stat["status"] in DELIVERED_STATUSES:
-            notifications[stat["template_type"]]["delivered"] += stat[count_field]
+            notifications[stat["template_type"]]["delivered"] += count_value
         elif stat["status"] in FAILURE_STATUSES:
-            notifications[stat["template_type"]]["failed"] += stat[count_field]
+            notifications[stat["template_type"]]["failed"] += count_value
 
     return notifications
 
@@ -398,7 +418,7 @@ def get_dashboard_partials(service_id):
     timings["template_statistics_weekly"] = (time.time() - start) * 1000
 
     start = time.time()
-    template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)
+    template_statistics_weekly = aggregate_template_usage(all_statistics_weekly)[:10]
     timings["aggregate_template_usage"] = (time.time() - start) * 1000
 
     scheduled_jobs, immediate_jobs = [], []
@@ -408,7 +428,7 @@ def get_dashboard_partials(service_id):
         timings["get_scheduled_jobs"] = (time.time() - start) * 1000
 
         start = time.time()
-        immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id)
+        immediate_jobs_raw = job_api_client.get_immediate_jobs(service_id, page_size=10)
         timings["get_immediate_jobs"] = (time.time() - start) * 1000
 
         start = time.time()

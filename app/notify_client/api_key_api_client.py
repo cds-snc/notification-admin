@@ -5,13 +5,18 @@ KEY_TYPE_NORMAL = "normal"
 KEY_TYPE_TEAM = "team"
 KEY_TYPE_TEST = "test"
 
+# must match api key permissions in notifications-api/app/models.py
+KEY_PERMISSION_MANAGE_TEMPLATES = "manage_templates"
+
 
 class ApiKeyApiClient(NotifyAdminAPIClient):
     def get_api_keys(self, service_id):
         return self.get(url="/service/{}/api-keys".format(service_id))
 
-    def create_api_key(self, service_id, key_name, key_type):
+    def create_api_key(self, service_id, key_name, key_type, permissions=None):
         data = {"name": key_name, "key_type": key_type}
+        if permissions:
+            data["permissions"] = permissions
         data = _attach_current_user(data)
         key = self.post(url="/service/{}/api-key".format(service_id), data=data)
         return key["data"]

@@ -219,6 +219,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         parent_folder_id=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Create a service template.
@@ -237,6 +238,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             data.update({"subject": subject})
         if parent_folder_id:
             data.update({"parent_folder_id": parent_folder_id})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template".format(service_id)
         return self.post(endpoint, data)
@@ -255,6 +258,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         process_type=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Update a service template.
@@ -272,6 +276,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
         if subject:
             data.update({"subject": subject})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
 
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)

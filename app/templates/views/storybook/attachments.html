@@ -1,0 +1,108 @@
+{% from "components/attachments.html" import attachments_widget with context %}
+
+<h2 class="heading-medium">Attachments</h2>
+<p class="mb-6">React component demo for adding and removing template attachments.</p>
+
+<script nonce="{{ request_nonce }}">
+</script>
+
+<div class="space-y-10">
+  <div class="w-full max-w-[760px] p-8 bg-white">
+    <h3 class="heading-small mb-4">No files attached</h3>
+    {{ attachments_widget(
+        "storybook-attachments-empty",
+        [],
+        url_for("main.terms"),
+        url_for("main.storybook_attachments_attach"),
+        url_for("main.storybook_attachments_remove"),
+        none,
+        url_for("main.storybook_attachments_download"),
+        lang=current_lang
+      )
+    }}
+  </div>
+
+  <hr />
+
+  <div class="w-full max-w-[760px] p-8 bg-white">
+    <h3 class="heading-small mb-4">Mixed in-progress and attached</h3>
+    {{ attachments_widget(
+        "storybook-attachments-in-progress",
+        [
+          {
+            "id": "Filename.pdf",
+            "name": "Filename.pdf",
+            "size": 320000,
+            "status": "pending_virus_scan"
+          },
+          {
+            "id": "Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf",
+            "name": "Sometimes_you_need_a_very_very_very_very_long_file_name_final_v1_final_final_3_hello.pdf",
+            "size": 170000,
+            "status": "uploaded"
+          }
+        ],
+        url_for("main.terms"),
+        url_for("main.storybook_attachments_attach"),
+        url_for("main.storybook_attachments_remove"),
+        none,
+        url_for("main.storybook_attachments_download"),
+        lang=current_lang
+      )
+    }}
+  </div>
+  
+  <hr />
+
+  <div class="w-full max-w-[760px] p-8 bg-white">
+    <h3 class="heading-small mb-4">Unsafe file state</h3>
+    {{ attachments_widget(
+        "storybook-attachments-malware",
+        [
+          {
+            "id": "document_with_malware.pdf",
+            "name": "document_with_malware.pdf",
+            "size": 470000,
+            "status": "virus_scan_failed"
+          },
+          {
+            "id": "safe_permit.pdf",
+            "name": "safe_permit.pdf",
+            "size": 260000,
+            "status": "uploaded"
+          }
+        ],
+        url_for("main.terms"),
+        url_for("main.storybook_attachments_attach"),
+        url_for("main.storybook_attachments_remove"),
+        none,
+        url_for("main.storybook_attachments_download"),
+        lang=current_lang
+      )
+    }}
+  </div>
+
+  <hr />
+
+  <div class="w-full max-w-[760px] p-8 bg-white">
+    <h3 class="heading-small mb-4">Interactive status simulation</h3>
+    <p class="hint mb-4">Attach files with names containing malware/virus or fail/error to simulate non-attached outcomes.</p>
+    {{ attachments_widget(
+        "storybook-attachments-interactive",
+        [
+          {
+            "id": "already_attached_notice.pdf",
+            "name": "already_attached_notice.pdf",
+            "size": 220000,
+            "status": "uploaded"
+          }
+        ],
+        url_for("main.terms"),
+        url_for("main.storybook_attachments_attach"),
+        url_for("main.storybook_attachments_remove"),
+        none,
+        url_for("main.storybook_attachments_download"),
+        lang=current_lang
+      )
+    }}
+  </div>
