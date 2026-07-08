@@ -254,13 +254,17 @@ export const AttachFilesModal = ({
         <button
           type="button"
           className={`button ${
-            isLoading || selectedFiles.length === 0
+            isLoading || selectedFiles.length === 0 || issues.length > 0
               ? "bg-gray-400 hover:bg-gray-400 cursor-wait pointer-events-none"
               : ""
           }`}
           data-testid="attachments-submit"
-          onClick={selectedFiles.length > 0 ? submit : undefined}
-          aria-disabled={isLoading || selectedFiles.length === 0}
+          onClick={
+            selectedFiles.length > 0 && issues.length === 0 ? submit : undefined
+          }
+          aria-disabled={
+            isLoading || selectedFiles.length === 0 || issues.length > 0
+          }
         >
           {isLoading && (
             <div
