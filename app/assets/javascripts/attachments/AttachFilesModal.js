@@ -131,7 +131,9 @@ export const AttachFilesModal = ({
   const submit = async () => {
     setIsLoading(true);
     try {
-      await Promise.resolve(onAttach(selectedFiles.map((pendingFile) => pendingFile.file)));
+      await Promise.resolve(
+        onAttach(selectedFiles.map((pendingFile) => pendingFile.file)),
+      );
     } finally {
       setIsLoading(false);
     }
