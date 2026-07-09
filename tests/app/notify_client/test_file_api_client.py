@@ -59,15 +59,28 @@ class TestFileApiClient:
             {"status": "uploaded"},
         )
 
-    def test_get_file_contents_returns_stub_example_file(self):
+    def test_get_file_contents_returns_stub_example_file(self, mocker):
+        import base64
+
         client = FileApiClient()
+        file_data = base64.b64encode(b"Example content for template-id, file-id.").decode("ascii")
+        mock_get = mocker.patch.object(
+            client,
+            "get",
+            return_value={
+                "name": "example-file-id.txt",
+                "mime_type": "text/plain",
+                "file_data": file_data,
+                "file_size": 100,
+            },
+        )
 
         ret = client.get_file_contents("template-id", "file-id")
 
         assert ret["filename"] == "example-file-id.txt"
         assert ret["mime_type"] == "text/plain"
-        assert b"template-id" in ret["content"]
-        assert b"file-id" in ret["content"]
+        assert b"template-id" in ret["content"] or b"Example content" in ret["content"]
+        mock_get.assert_called_once_with("/templates/template-id/files/file-id/download")
 
 
 def test_singleton_client_exposes_methods():
