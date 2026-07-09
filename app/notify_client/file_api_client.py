@@ -28,9 +28,9 @@ class FileApiClient(NotifyAdminAPIClient):
         response = self.get(f"/templates/{template_id}/files/{file_id}/download")
 
         return {
-            "filename": response.get("name"),
-            "mime_type": response.get("mime_type"),
-            "content": base64.b64decode(response.get("file_data")),
+            "filename": response["name"],
+            "mime_type": response["mime_type"],
+            "content": base64.b64decode(response["file_data"]),
         }
 
     def delete_file(self, template_id, file_id):
