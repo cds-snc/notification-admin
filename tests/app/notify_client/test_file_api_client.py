@@ -59,11 +59,12 @@ class TestFileApiClient:
             {"status": "uploaded"},
         )
 
-    def test_get_file_contents_returns_stub_example_file(self, mocker):
+    def test_get_file_contents_decodes_base64_response(self, mocker):
         import base64
 
         client = FileApiClient()
-        file_data = base64.b64encode(b"Example content for template-id, file-id.").decode("ascii")
+        expected_content = b"Example content for template-id, file-id."
+        file_data = base64.b64encode(expected_content).decode("ascii")
         mock_get = mocker.patch.object(
             client,
             "get",
@@ -79,7 +80,7 @@ class TestFileApiClient:
 
         assert ret["filename"] == "example-file-id.txt"
         assert ret["mime_type"] == "text/plain"
-        assert b"template-id" in ret["content"] or b"Example content" in ret["content"]
+        assert ret["content"] == expected_content
         mock_get.assert_called_once_with("/templates/template-id/files/file-id/download")
 
 
