@@ -12,6 +12,7 @@ export const AttachedFileRow = ({
   onRequestRemove,
   onConfirmRemove,
   onCancelRemove,
+  onDownloadError,
 }) => {
   const isInProgress =
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
@@ -23,10 +24,33 @@ export const AttachedFileRow = ({
     : null;
   const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
 
+  const handleDownload = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(downloadHref);
+      if (!response.ok) {
+        throw new Error(`Download failed with status ${response.status}`);
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (typeof onDownloadError === "function") {
+        onDownloadError(file.id, error.message);
+      }
+    }
+  };
+
   const fileNameNode = canDownload ? (
     <a
       href={downloadHref}
-      download={file.name}
+      onClick={handleDownload}
       className="attachment-file-name-truncate"
       title={file.name}
       data-testid="attachment-download-link"
