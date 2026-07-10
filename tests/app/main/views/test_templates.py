@@ -930,6 +930,108 @@ def test_template_attachment_routes_return_404_without_upload_document_permissio
         assert response.status_code == 404
 
 
+def test_template_attachment_download_returns_404_when_file_not_found(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_contents",
+        side_effect=HTTPError(status_code=404),
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        response = client_request.get(
+            ".download_template_attachment",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            file_id="file-1",
+            _test_page_title=False,
+            _return_response=True,
+            _expected_status=404,
+        )
+
+    assert response.status_code == 404
+
+
+def test_template_attachment_download_shows_error_when_file_not_ready(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_contents",
+        side_effect=HTTPError(status_code=409),
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        response = client_request.get(
+            ".download_template_attachment",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            file_id="file-1",
+            _test_page_title=False,
+            _return_response=True,
+        )
+
+    assert response.status_code == 302
+    assert response.location.endswith(f"/services/{SERVICE_ONE_ID}/templates/{fake_uuid}")
+
+
+def test_template_attachment_download_returns_500_when_api_errors(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mocker.patch(
+        "app.main.views.templates.file_api_client.get_file_contents",
+        side_effect=HTTPError(status_code=500),
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        response = client_request.get(
+            ".download_template_attachment",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            file_id="file-1",
+            _test_page_title=False,
+            _return_response=True,
+            _expected_status=500,
+        )
+
+    assert response.status_code == 500
+
+
 def test_should_show_logos_on_template_page(
     client_request,
     fake_uuid,

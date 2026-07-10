@@ -736,3 +736,105 @@ describe("attachments - useAttachments", () => {
     harness.cleanup();
   });
 });
+
+describe("attachments - download error handling", () => {
+  const setupGlobalFetch = (ok, statusCode = 200) => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok,
+        status: statusCode,
+        blob: () => Promise.resolve(new Blob(["test content"])),
+        headers: {
+          get: () => null,
+        },
+      }),
+    );
+    global.URL.createObjectURL = jest.fn(() => "blob:mock-url");
+    global.URL.revokeObjectURL = jest.fn();
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    delete global.fetch;
+    delete global.URL.createObjectURL;
+    delete global.URL.revokeObjectURL;
+  });
+
+  test("AttachedFileRow calls onDownloadError when fetch fails", async () => {
+    setupGlobalFetch(false, 500);
+    const onDownloadError = jest.fn();
+
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = ReactDOMClient.createRoot(container);
+
+    await act(async () => {
+      root.render(
+        React.createElement(AttachedFileRow, {
+          file: {
+            id: "file-1",
+            name: "test.pdf",
+            status: ATTACHMENT_STATUSES.UPLOADED,
+          },
+          downloadEndpoint: "/download",
+          isConfirmingRemoval: false,
+          onRequestRemove: () => {},
+          onConfirmRemove: () => {},
+          onCancelRemove: () => {},
+          onDownloadError,
+        }),
+      );
+    });
+
+    const downloadLink = container.querySelector("[data-testid='attachment-download-link']");
+    await act(async () => {
+      downloadLink.click();
+    });
+
+    expect(onDownloadError).toHaveBeenCalledWith("file-1", expect.stringContaining("Download failed"));
+
+    root.unmount();
+    document.body.removeChild(container);
+  });
+
+  test("AttachedFileRow successfully downloads file when fetch succeeds", async () => {
+    setupGlobalFetch(true);
+    const onDownloadError = jest.fn();
+
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = ReactDOMClient.createRoot(container);
+
+    await act(async () => {
+      root.render(
+        React.createElement(AttachedFileRow, {
+          file: {
+            id: "file-2",
+            name: "success.pdf",
+            status: ATTACHMENT_STATUSES.UPLOADED,
+          },
+          downloadEndpoint: "/download",
+          isConfirmingRemoval: false,
+          onRequestRemove: () => {},
+          onConfirmRemove: () => {},
+          onCancelRemove: () => {},
+          onDownloadError,
+        }),
+      );
+    });
+
+    const downloadLink = container.querySelector("[data-testid='attachment-download-link']");
+    await act(async () => {
+      downloadLink.click();
+    });
+
+    expect(onDownloadError).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledWith("/download/file-2");
+
+    root.unmount();
+    document.body.removeChild(container);
+  });
+});
