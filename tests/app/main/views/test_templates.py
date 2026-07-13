@@ -945,9 +945,10 @@ def test_template_attachment_download_returns_404_when_file_not_found(
         "app.service_api_client.get_service_template",
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
+    resp_mock = Mock(status_code=404)
     mocker.patch(
         "app.main.views.templates.file_api_client.get_file_contents",
-        side_effect=HTTPError(status_code=404),
+        side_effect=HTTPError(response=resp_mock, message="File not found"),
     )
 
     with set_config(app_, "FF_FILE_ATTACHMENTS", True):
@@ -979,9 +980,10 @@ def test_template_attachment_download_shows_error_when_file_not_ready(
         "app.service_api_client.get_service_template",
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
+    resp_mock = Mock(status_code=409)
     mocker.patch(
         "app.main.views.templates.file_api_client.get_file_contents",
-        side_effect=HTTPError(status_code=409),
+        side_effect=HTTPError(response=resp_mock, message="File not ready"),
     )
 
     with set_config(app_, "FF_FILE_ATTACHMENTS", True):
@@ -992,6 +994,7 @@ def test_template_attachment_download_shows_error_when_file_not_ready(
             file_id="file-1",
             _test_page_title=False,
             _return_response=True,
+            _expected_status=302,
         )
 
     assert response.status_code == 302
@@ -1013,23 +1016,19 @@ def test_template_attachment_download_returns_500_when_api_errors(
         "app.service_api_client.get_service_template",
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
+    resp_mock = Mock(status_code=500)
     mocker.patch(
         "app.main.views.templates.file_api_client.get_file_contents",
-        side_effect=HTTPError(status_code=500),
+        side_effect=HTTPError(response=resp_mock, message="Internal server error"),
     )
 
     with set_config(app_, "FF_FILE_ATTACHMENTS", True):
-        response = client_request.get(
-            ".download_template_attachment",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            file_id="file-1",
-            _test_page_title=False,
-            _return_response=True,
-            _expected_status=500,
-        )
+        from werkzeug.exceptions import InternalServerError
 
-    assert response.status_code == 500
+        with pytest.raises(InternalServerError):
+            client_request.logged_in_client.get(
+                f"/services/{SERVICE_ONE_ID}/templates/{fake_uuid}/attachments/download/file-1",
+            )
 
 
 def test_should_show_logos_on_template_page(

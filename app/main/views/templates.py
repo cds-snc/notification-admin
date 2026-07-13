@@ -323,6 +323,9 @@ def download_template_attachment(service_id, template_id, file_id=None):
     try:
         file_payload = file_api_client.get_file_contents(template_id, file_id)
     except HTTPError as e:
+        if e.status_code == 409:
+            # File not ready (e.g., virus scan pending)
+            return redirect(url_for("main.view_template", service_id=service_id, template_id=template_id))
         abort(e.status_code)
 
     file_name = file_payload["filename"]
