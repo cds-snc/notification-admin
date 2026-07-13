@@ -404,7 +404,7 @@ def get_status_filters(service, message_type, statistics):
         }
     else:
         stats = statistics[message_type]
-    stats["sending"] = stats["requested"] - stats["delivered"] - stats["failed"]
+    stats["sending"] = max(0, stats["requested"] - stats["delivered"] - stats["failed"])
 
     filters = [
         # key, label, option
@@ -431,11 +431,20 @@ def get_status_filters(service, message_type, statistics):
 
 
 def _get_job_counts(job):
-    sending = (
-        0
-        if job["job_status"] == "scheduled"
-        else (job.get("notification_count", 0) - job.get("notifications_delivered", 0) - job.get("notifications_failed", 0))
-    )
+    # "in transit" is the number of notifications still being sent. Use the
+    # actual sending/pending/created count from the job statistics rather than
+    # deriving it as (notification_count - delivered - failed): a job can create
+    # more notifications than notification_count (e.g. duplicate rows from task
+    # retries), which made the derived value go negative.
+    if job["job_status"] == "scheduled":
+        sending = 0
+    elif "notifications_sending" in job:
+        sending = job["notifications_sending"]
+    else:
+        sending = max(
+            0,
+            job.get("notification_count", 0) - job.get("notifications_delivered", 0) - job.get("notifications_failed", 0),
+        )
     return [
         (
             label,

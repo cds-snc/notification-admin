@@ -45,6 +45,7 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 
@@ -64,6 +65,7 @@ class JobApiClient(NotifyAdminAPIClient):
             job["notifications_delivered"] = stats["delivered"]
             job["notifications_failed"] = stats["failed"]
             job["notifications_requested"] = stats["requested"]
+            job["notifications_sending"] = stats["sending"]
 
         return jobs
 
@@ -124,6 +126,7 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 
@@ -136,6 +139,7 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 
