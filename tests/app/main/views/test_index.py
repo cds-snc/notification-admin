@@ -157,7 +157,6 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "roadmap",
         "email",
         "sms",
         "letters",
