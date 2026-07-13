@@ -1,3 +1,5 @@
+import base64
+
 from flask_login import current_user
 
 from app.notify_client import NotifyAdminAPIClient
@@ -23,14 +25,12 @@ class FileApiClient(NotifyAdminAPIClient):
         return self.get(f"/templates/{template_id}/files/{file_id}/status")
 
     def get_file_contents(self, template_id, file_id):
-        # TODO: Call the API download endpoint when backend support is available.
-        # For now, return a predictable example file payload for the UI flow.
+        response = self.get(f"/templates/{template_id}/files/{file_id}/download")
+
         return {
-            "filename": f"example-{file_id}.txt",
-            "mime_type": "text/plain",
-            "content": (
-                f"Example file contents for template {template_id}, file {file_id}.\n" "Backend download integration is pending."
-            ).encode("utf-8"),
+            "filename": response["name"],
+            "mime_type": response["mime_type"],
+            "content": base64.b64decode(response["file_data"]),
         }
 
     def delete_file(self, template_id, file_id):
