@@ -21,6 +21,7 @@ export const AttachmentsWidget = ({
   const [isAttachModalOpen, setAttachModalOpen] = useState(false);
   const [validationIssues, setValidationIssues] = useState([]);
   const [removeCandidateId, setRemoveCandidateId] = useState(null);
+  const [downloadError, setDownloadError] = useState(null);
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
 
   const fetchFileStatus = useMemo(() => {
@@ -131,6 +132,16 @@ export const AttachmentsWidget = ({
     <section className="mb-16" data-testid="attachments-widget">
       <h2 className="heading-medium">{copy.attachedFilesHeading}</h2>
 
+      {downloadError && (
+        <div
+          className="banner-dangerous p-4 mb-4"
+          role="alert"
+          data-testid="download-error-message"
+        >
+          <p>{downloadError}</p>
+        </div>
+      )}
+
       {files.length ? (
         <ul className="mt-4 mb-4" data-testid="attachments-list">
           {files.map((file) => (
@@ -158,6 +169,9 @@ export const AttachmentsWidget = ({
                 }
               }}
               onCancelRemove={() => setRemoveCandidateId(null)}
+              onDownloadError={(fileId, error) => {
+                setDownloadError(`Failed to download file. ${error}`);
+              }}
               downloadEndpoint={downloadEndpoint}
               copy={copy}
             />
