@@ -1,3 +1,4 @@
+import ipaddress
 import re
 import time
 from email.utils import formataddr
@@ -179,8 +180,13 @@ def _is_localhost_url(url):
     """Check if a URL references localhost or a loopback address."""
     try:
         parsed = urlparse(url)
-        hostname = parsed.hostname or ""
-        return hostname in ("localhost", "127.0.0.1", "::1") or hostname.endswith(".localhost")
+        hostname = (parsed.hostname or "").rstrip(".")
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            return True
+        try:
+            return ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            return False
     except Exception:
         return False
 
