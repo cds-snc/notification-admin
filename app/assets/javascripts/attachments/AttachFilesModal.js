@@ -17,6 +17,7 @@ export const AttachFilesModal = ({
 }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dialogRef = useRef(null);
   const headingRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
@@ -127,8 +128,15 @@ export const AttachFilesModal = ({
     );
   };
 
-  const submit = () => {
-    onAttach(selectedFiles.map((pendingFile) => pendingFile.file));
+  const submit = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.resolve(
+        onAttach(selectedFiles.map((pendingFile) => pendingFile.file)),
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onPanelKeyDown = (event) => {
@@ -245,10 +253,26 @@ export const AttachFilesModal = ({
       <div className="flex gap-4 items-center">
         <button
           type="button"
-          className="button"
+          className={`button ${
+            isLoading || selectedFiles.length === 0 || issues.length > 0
+              ? "bg-gray-400 hover:bg-gray-400 cursor-wait pointer-events-none"
+              : ""
+          }`}
           data-testid="attachments-submit"
-          onClick={submit}
+          onClick={
+            selectedFiles.length > 0 && issues.length === 0 ? submit : undefined
+          }
+          aria-disabled={
+            isLoading || selectedFiles.length === 0 || issues.length > 0
+          }
         >
+          {isLoading && (
+            <div
+              className="loading-spinner shrink-0 mr-2 inline-block"
+              role="status"
+              aria-label={copy.rowSpinnerAriaLabel}
+            />
+          )}
           {copy.modalAttachToTemplate}
         </button>
         <button
@@ -256,6 +280,7 @@ export const AttachFilesModal = ({
           className="button button-secondary text-base"
           data-testid="attachments-cancel"
           onClick={onClose}
+          disabled={isLoading}
         >
           {copy.cancel}
         </button>

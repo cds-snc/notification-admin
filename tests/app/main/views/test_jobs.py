@@ -5,6 +5,7 @@ import pytest
 from flask import url_for
 from freezegun import freeze_time
 
+from app.main.views.jobs import _get_job_counts
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     JOB_API_KEY_NAME,
@@ -15,6 +16,58 @@ from tests.conftest import (
     mock_get_notifications,
     normalize_spaces,
 )
+
+
+@pytest.mark.parametrize(
+    "job, expected_in_transit",
+    [
+        # Uses the actual sending statistic when present.
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+                "notifications_sending": 57,
+            },
+            57,
+        ),
+        # Scheduled jobs are always shown as 0 in transit.
+        (
+            {
+                "job_status": "scheduled",
+                "notification_count": 30,
+                "notifications_delivered": 0,
+                "notifications_failed": 0,
+                "notifications_sending": 0,
+            },
+            0,
+        ),
+        # Falls back to the clamped subtraction when no sending stat is available,
+        # and never returns a negative number (delivered + failed can exceed
+        # notification_count when duplicate notifications are created).
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+            },
+            0,
+        ),
+        (
+            {"job_status": "finished", "notification_count": 30, "notifications_delivered": 10, "notifications_failed": 5},
+            15,
+        ),
+    ],
+)
+def test_get_job_counts_in_transit(app_, job, expected_in_transit):
+    job = {"service": SERVICE_ONE_ID, "id": "job-id", **job}
+
+    with app_.test_request_context():
+        counts = dict((label, count) for label, _query_param, _link, count in _get_job_counts(job))
+
+    assert counts["in transit"] == expected_in_transit
 
 
 @pytest.mark.parametrize(
