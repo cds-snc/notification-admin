@@ -6,7 +6,7 @@ from wtforms import ValidationError
 from wtforms.validators import StopValidation
 
 from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
-from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail
+from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
 
 
 @pytest.mark.parametrize("password", ["notification", "11111111", "kittykat", "blackbox"])
@@ -276,3 +276,31 @@ def test_optional_integer_range_custom_message():
     with pytest.raises(ValidationError) as exc:
         validator(form, field)
     assert str(exc.value) == "Custom error message"
+
+
+class TestIsLocalhostUrl:
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://localhost/callback",
+            "https://localhost:8080/callback",
+            "https://127.0.0.1/callback",
+            "https://127.0.0.1:443/callback",
+            "https://[::1]/callback",
+            "http://localhost/callback",
+            "https://sub.localhost/path",
+        ],
+    )
+    def test_detects_localhost_urls(self, url):
+        assert _is_localhost_url(url) is True
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://example.com/callback",
+            "https://my-service.gc.ca/callback",
+            "https://notlocalhost.com/callback",
+        ],
+    )
+    def test_allows_non_localhost_urls(self, url):
+        assert _is_localhost_url(url) is False
