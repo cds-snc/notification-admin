@@ -25,7 +25,7 @@ test:
 test-translations: babel
 	poetry run pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && poetry run po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
-	python scripts/test-translations.py /tmp/messages.csv
+	python scripts/test_translations.py /tmp/messages.csv
 	rm /tmp/messages.csv
 
 .PHONY: babel
@@ -38,6 +38,10 @@ babel:
 .PHONY: search-csv
 search-csv:
 	python scripts/search_csv.py
+
+.PHONY: cleanup-translations
+cleanup-translations: ## Find unused translations in fr.csv
+	poetry run python scripts/cleanup_translations.py
 
 .PHONY: freeze-requirements
 freeze-requirements:
