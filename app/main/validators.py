@@ -1,6 +1,8 @@
+import ipaddress
 import re
 import time
 from email.utils import formataddr
+from urllib.parse import urlparse
 
 import pwnedpasswords
 import requests
@@ -174,6 +176,21 @@ class ValidCallbackUrl:
             validate_callback_url(field.data, form.bearer_token.data)
 
 
+def _is_localhost_url(url):
+    """Check if a URL references localhost or a loopback address."""
+    try:
+        parsed = urlparse(url)
+        hostname = (parsed.hostname or "").rstrip(".")
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            return True
+        try:
+            return ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            return False
+    except Exception:
+        return False
+
+
 def validate_callback_url(service_callback_url, bearer_token):
     """Validates a callback URL, checking that it is https and by sending a POST request to the URL with a health_check parameter.
     4xx responses are considered invalid. 5xx responses are considered valid as it indicates there is at least a service running
@@ -186,6 +203,12 @@ def validate_callback_url(service_callback_url, bearer_token):
     Raises:
         ValidationError: If the URL is not HTTPS or the http response is 4xx.
     """
+    if _is_localhost_url(service_callback_url):
+        current_app.logger.warning(
+            f"Unable to create callback for service: {current_service.id}. Error: Localhost callback URLs are not allowed: URL: {service_callback_url}"
+        )
+        raise ValidationError(_l("Enter a public URL. Localhost URLs cannot be used for callbacks."))
+
     if not validators.url(service_callback_url):
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id}. Error: Invalid callback URL format: URL: {service_callback_url}"

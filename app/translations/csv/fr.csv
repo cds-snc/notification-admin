@@ -821,6 +821,7 @@
 "Add an endpoint where GC Notify should send POST requests","Ajouter un point de terminaison où Notification GC peut envoyer les requêtes « POST »"
 "Must start with https://","Doit commencer par https://"
 "Enter a URL that starts with https://","Entrez une URL qui commence par https://"
+"Enter a public URL. Localhost URLs cannot be used for callbacks.","Entrez une URL publique. Les URL localhost ne peuvent pas être utilisées pour les fonctions de rappel."
 "Add a secret value for authentication","Ajouter une valeur secrète pour l’authentification"
 "At least 10 characters","Au moins 10 caractères"
 "Callbacks for received text messages","Fonctions de rappel pour les messages texte reçus"
