@@ -67,7 +67,7 @@ ORGANISIATION_STEP_DICT: dict[str, dict[str, Any]] = {
 
 
 def get_wizard_order() -> list[str]:
-    if current_app.config["FF_SALESFORCE_CONTACT"]:
+    if current_app.config["IS_GC_ORGANISATIONS"]:
         return [STEP_LOGO, STEP_SERVICE_AND_EMAIL, STEP_ORGANISATION]
     return [STEP_LOGO, STEP_SERVICE_AND_EMAIL]
 
@@ -157,7 +157,7 @@ def _renderTemplateStep(form, current_step: str, government_type: Optional[str])
     step_num = WIZARD_ORDER.index(current_step) + 1
 
     autocomplete_data = None
-    if current_app.config["FF_SALESFORCE_CONTACT"] and current_step == STEP_ORGANISATION:
+    if current_app.config["IS_GC_ORGANISATIONS"] and current_step == STEP_ORGANISATION:
         autocomplete_data = current_app.config["CRM_ORG_LIST"].get("names", {})
 
     if step_num > 1:
@@ -232,9 +232,9 @@ def add_service():
     service_name = data["name"]
     default_branding_is_french = data["default_branding"] == FieldWithLanguageOptions.FRENCH_OPTION_VALUE
     # organisation_notes will be visible at the go live request
-    if current_app.config["FF_SALESFORCE_CONTACT"] and government_type != GOVERNMENT_TYPE_OTHER:
+    if current_app.config["IS_GC_ORGANISATIONS"] and government_type != GOVERNMENT_TYPE_OTHER:
         organisation_notes = f'{data["parent_organisation_name"]} > {data["child_organisation_name"]}'
-    elif current_app.config["FF_SALESFORCE_CONTACT"] and government_type == GOVERNMENT_TYPE_OTHER:
+    elif current_app.config["IS_GC_ORGANISATIONS"] and government_type == GOVERNMENT_TYPE_OTHER:
         organisation_notes = data["other_organisation_name"]
     else:
         organisation_notes = None

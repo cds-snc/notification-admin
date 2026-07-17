@@ -263,7 +263,7 @@ def terms_of_use(service_id):
 @user_is_gov_user
 def use_case(service_id):
     DEFAULT_STEP = "about-service"
-    display_org_question = not current_service.organisation_notes or not current_app.config["FF_SALESFORCE_CONTACT"]
+    display_org_question = not current_service.organisation_notes or not current_app.config["IS_GC_ORGANISATIONS"]
     steps = [
         {
             "form": GoLiveAboutServiceForm if display_org_question else GoLiveAboutServiceFormNoOrg,
