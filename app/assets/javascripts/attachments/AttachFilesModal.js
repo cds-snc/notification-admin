@@ -74,7 +74,11 @@ export const AttachFilesModal = ({
     previouslyFocusedElement.current = document.activeElement;
 
     // Only focus heading if no files are selected yet
-    if (selectedFiles.length === 0 && headingRef.current && headingRef.current.focus) {
+    if (
+      selectedFiles.length === 0 &&
+      headingRef.current &&
+      headingRef.current.focus
+    ) {
       headingRef.current.focus();
     }
 
@@ -224,7 +228,10 @@ export const AttachFilesModal = ({
         <li>{copy.modalImageDocuments}</li>
       </ul>
 
-      <div className={`file-upload-group relative inline-flex flex-col gap-2 items-start mb-4 ${issues.length > 0 ? "border-l-4 pl-4" : ""}`} style={issues.length > 0 ? { borderLeftColor: "#b91c1c" } : {}}>
+      <div
+        className={`file-upload-group relative inline-flex flex-col gap-2 items-start mb-4 ${issues.length > 0 ? "border-l-4 pl-4" : ""}`}
+        style={issues.length > 0 ? { borderLeftColor: "#b91c1c" } : {}}
+      >
         {issues.length > 0 && (
           <div
             id="attachment-errors"

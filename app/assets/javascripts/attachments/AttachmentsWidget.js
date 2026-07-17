@@ -78,7 +78,7 @@ export const AttachmentsWidget = ({
 
     if (!response.ok) {
       let errorMessage = `Failed to upload attachments (${response.status})`;
-      
+
       // Try to extract error details from API response
       try {
         const errorData = await response.json();
@@ -93,7 +93,7 @@ export const AttachmentsWidget = ({
       } catch (parseError) {
         console.error("Failed to parse error response:", parseError);
       }
-      
+
       throw new Error(errorMessage);
     }
 
@@ -167,10 +167,7 @@ export const AttachmentsWidget = ({
       )}
 
       {files.length ? (
-        <ul 
-          className="mt-4 mb-4" 
-          data-testid="attachments-list"
-        >
+        <ul className="mt-4 mb-4" data-testid="attachments-list">
           {files.map((file) => (
             <AttachedFileRow
               key={file.id}
