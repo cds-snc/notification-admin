@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { AttachFilesModal } from "./AttachFilesModal";
 import { AttachedFileRow } from "./AttachedFileRow";
 import {
@@ -23,6 +23,7 @@ export const AttachmentsWidget = ({
   const [removeCandidateId, setRemoveCandidateId] = useState(null);
   const [downloadError, setDownloadError] = useState(null);
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
+  const attachMoreButtonRef = useRef(null);
 
   const fetchFileStatus = useMemo(() => {
     if (!statusEndpoint) {
@@ -76,7 +77,24 @@ export const AttachmentsWidget = ({
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to upload attachments (${response.status})`);
+      let errorMessage = `Failed to upload attachments (${response.status})`;
+      
+      // Try to extract error details from API response
+      try {
+        const errorData = await response.json();
+        console.log("API error response:", errorData);
+        console.log("copy.overFileLimit:", copy.overFileLimit);
+        if (errorData.error === "over_file_limit") {
+          errorMessage = copy.overFileLimit;
+          console.log("Set errorMessage to:", errorMessage);
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch (parseError) {
+        console.error("Failed to parse error response:", parseError);
+      }
+      
+      throw new Error(errorMessage);
     }
 
     if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -121,6 +139,12 @@ export const AttachmentsWidget = ({
     try {
       await attachFiles(result.acceptedFiles, uploadFiles);
       setAttachModalOpen(false);
+      // Focus the "attach more files" button after successful attachment
+      if (attachMoreButtonRef.current) {
+        setTimeout(() => {
+          attachMoreButtonRef.current?.focus();
+        }, 0);
+      }
     } catch (error) {
       setValidationIssues([
         error.message || "Failed to attach files. Please try again.",
@@ -143,7 +167,10 @@ export const AttachmentsWidget = ({
       )}
 
       {files.length ? (
-        <ul className="mt-4 mb-4" data-testid="attachments-list">
+        <ul 
+          className="mt-4 mb-4" 
+          data-testid="attachments-list"
+        >
           {files.map((file) => (
             <AttachedFileRow
               key={file.id}
@@ -166,9 +193,17 @@ export const AttachmentsWidget = ({
                   console.error(error);
                 } finally {
                   setRemoveCandidateId(null);
+                  if (attachMoreButtonRef.current) {
+                    attachMoreButtonRef.current.focus();
+                  }
                 }
               }}
-              onCancelRemove={() => setRemoveCandidateId(null)}
+              onCancelRemove={() => {
+                setRemoveCandidateId(null);
+                if (attachMoreButtonRef.current) {
+                  attachMoreButtonRef.current.focus();
+                }
+              }}
               onDownloadError={(fileId, error) => {
                 setDownloadError(`Failed to download file. ${error}`);
               }}
@@ -180,16 +215,26 @@ export const AttachmentsWidget = ({
       ) : null}
 
       <div className="flex items-center justify-between gap-4 border-t border-gray-300 pt-4">
-        <p className="hint" data-testid="attachments-summary">
+        <p
+          id="attachments-status"
+          className="hint"
+          data-testid="attachments-summary"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {statusSummary}
         </p>
         <button
+          ref={attachMoreButtonRef}
           type="button"
           className="button button-secondary"
           data-testid="attachments-open-modal"
+          aria-labelledby="attachments-button-label attachments-status"
           onClick={() => setAttachModalOpen(true)}
         >
-          {files.length ? copy.attachMoreFiles : copy.attachFiles}
+          <span id="attachments-button-label">
+            {files.length ? copy.attachMoreFiles : copy.attachFiles}
+          </span>
         </button>
       </div>
 
