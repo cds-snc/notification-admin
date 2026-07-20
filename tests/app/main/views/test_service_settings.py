@@ -68,7 +68,7 @@ def mock_get_service_settings_page_common(
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -91,7 +91,7 @@ def mock_get_service_settings_page_common(
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -226,7 +226,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -247,7 +247,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -3419,7 +3419,7 @@ def test_service_switch_upload_document(
     assert page.h1.text == "Send files by email"
 
     paragraph = page.select_one("#main_content p").text.strip()
-    assert "This feature is only available when sending through the API" in paragraph
+    assert "Allow files to be attached to email notifications" in paragraph
 
     assert page.select_one("input[checked]")["value"] == expected_initial_value
     assert len(page.select("input[checked]")) == 1
@@ -3432,6 +3432,19 @@ def test_service_switch_upload_document(
     )
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
+
+
+def test_service_switch_upload_document_returns_404_when_feature_flag_is_off(
+    client_request,
+    service_one,
+    app_,
+):
+    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+        client_request.get(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+            _expected_status=404,
+        )
 
 
 @pytest.mark.parametrize(

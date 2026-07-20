@@ -436,10 +436,13 @@ def set_sensitive_service(service_id):
 )
 @user_has_permissions("manage_service")
 def service_switch_upload_document(service_id):
+    if not current_app.config.get("FF_FILE_ATTACHMENTS"):
+        abort(404)
+
     title = _("Send files by email")
     form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
     help = _(
-        "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>."
+        "Allow files to be attached to email notifications.<br>Learn more in the <a href='{}'>API documentation</a>."
     ).format(documentation_url("send", section="sending-a-file-by-email"))
 
     if form.validate_on_submit():
