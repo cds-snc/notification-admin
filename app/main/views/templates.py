@@ -111,6 +111,20 @@ def get_email_preview_template(template, template_id, service_id):
     return email_preview_template
 
 
+def _get_visible_template_attachments(attachments):
+    visible_attachments = []
+
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+
+        if status in ("deleted", "virus_scan_failed"):
+            continue
+
+        visible_attachments.append(attachment)
+
+    return visible_attachments
+
+
 def set_preview_data(data, service_id, template_id=None):
     key = f"template-preview:{service_id}:{template_id}"
     redis_client.set(key=key, value=json.dumps(data), ex=int(timedelta(days=1).total_seconds()))
@@ -209,7 +223,7 @@ def view_template(service_id, template_id):
         and template["template_type"] == "email"
         and current_service.has_permission("upload_document")
     ):
-        template_attachments = current_service.get_template_attachments(template_id)
+        template_attachments = _get_visible_template_attachments(current_service.get_template_attachments(template_id))
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
