@@ -237,3 +237,89 @@ class TestApiKeyApiClient:
                 "created_by": "user-id",
             },
         )
+
+
+class TestManageReportsPermission:
+    def test_manage_reports_choice_added_when_ff_report_api_enabled(self, client):
+        form = CreateKeyForm([], ff_report_api=True)
+        choice_values = [value for value, _ in form.manage_templates.choices]
+        assert "manage_reports" in choice_values
+
+    def test_manage_reports_choice_label(self, client):
+        form = CreateKeyForm([], ff_report_api=True)
+        choices = dict(form.manage_templates.choices)
+        assert choices["manage_reports"] == "Allow this key to create and download delivery reports"
+
+    def test_manage_reports_choice_not_added_when_ff_report_api_disabled(self, client):
+        form = CreateKeyForm([], ff_report_api=False)
+        choice_values = [value for value, _ in form.manage_templates.choices]
+        assert "manage_reports" not in choice_values
+
+    def test_create_api_key_page_shows_manage_reports_checkbox_when_ff_enabled(
+        self,
+        app_,
+        client_request,
+        mock_get_api_keys,
+        mock_get_live_service,
+        mock_has_permissions,
+    ):
+        with set_config(app_, "FF_REPORT_API", True):
+            page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
+
+        checkbox = page.find("input", {"name": "manage_templates", "value": "manage_reports", "type": "checkbox"})
+        assert checkbox is not None
+
+    def test_create_api_key_page_hides_manage_reports_checkbox_when_ff_disabled(
+        self,
+        app_,
+        client_request,
+        mock_get_api_keys,
+        mock_get_live_service,
+        mock_has_permissions,
+    ):
+        with set_config(app_, "FF_REPORT_API", False):
+            page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
+
+        checkbox = page.find("input", {"name": "manage_templates", "value": "manage_reports", "type": "checkbox"})
+        assert checkbox is None
+
+    def test_create_api_key_with_manage_reports_permission(
+        self,
+        app_,
+        client_request,
+        api_user_active,
+        mock_login,
+        mock_get_api_keys,
+        mock_get_live_service,
+        mock_has_permissions,
+        fake_uuid,
+        mocker,
+    ):
+        key_name_from_user = "Reports key"
+        key_name_fixed = "reports_key"
+        post = mocker.patch(
+            "app.notify_client.api_key_api_client.ApiKeyApiClient.post",
+            return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
+        )
+
+        with set_config(app_, "FF_REPORT_API", True):
+            client_request.post(
+                "main.create_api_key",
+                service_id=SERVICE_ONE_ID,
+                _data={
+                    "key_name": key_name_from_user,
+                    "key_type": "normal",
+                    "manage_templates": "manage_reports",
+                },
+                _expected_status=200,
+            )
+
+        post.assert_called_once_with(
+            url="/service/{}/api-key".format(SERVICE_ONE_ID),
+            data={
+                "name": key_name_from_user,
+                "key_type": "normal",
+                "permissions": ["manage_reports"],
+                "created_by": api_user_active["id"],
+            },
+        )

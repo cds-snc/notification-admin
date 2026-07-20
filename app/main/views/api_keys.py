@@ -16,6 +16,7 @@ from app.main.forms import (
     ServiceReceiveMessagesCallbackForm,
 )
 from app.notify_client.api_key_api_client import (
+    KEY_PERMISSION_MANAGE_REPORTS,
     KEY_PERMISSION_MANAGE_TEMPLATES,
     KEY_TYPE_NORMAL,
     KEY_TYPE_TEAM,
@@ -79,7 +80,7 @@ def api_keys(service_id):
 @main.route("/services/<service_id>/api/keys/create", methods=["GET", "POST"])
 @user_has_permissions("manage_api_keys", restrict_admin_usage=True)
 def create_api_key(service_id):
-    form = CreateKeyForm(current_service.api_keys)
+    form = CreateKeyForm(current_service.api_keys, ff_report_api=current_app.config["FF_REPORT_API"])
     form.key_type.choices = [
         (KEY_TYPE_NORMAL, _l("Live – sends to anyone")),
         (KEY_TYPE_TEAM, _l("Team and safelist – limits who you can send to")),
@@ -95,8 +96,10 @@ def create_api_key(service_id):
         if form.key_type.data in disabled_options:
             abort(400)
         permissions = []
-        if form.manage_templates.data:
+        if KEY_PERMISSION_MANAGE_TEMPLATES in form.manage_templates.data:
             permissions.append(KEY_PERMISSION_MANAGE_TEMPLATES)
+        if KEY_PERMISSION_MANAGE_REPORTS in form.manage_templates.data:
+            permissions.append(KEY_PERMISSION_MANAGE_REPORTS)
         keydata = api_key_api_client.create_api_key(
             service_id=service_id,
             key_name=form.key_name.data,
@@ -115,6 +118,7 @@ def create_api_key(service_id):
         disabled_options=disabled_options,
         option_hints=option_hints,
         show_manage_templates=current_app.config["FF_ADD_TEMPLATE_PERM"] and current_user.has_permissions("manage_api_keys"),
+        show_manage_reports=current_app.config["FF_REPORT_API"] and current_user.has_permissions("manage_api_keys"),
     )
 
 
