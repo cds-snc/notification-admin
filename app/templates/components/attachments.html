@@ -8,6 +8,7 @@
       }
 
       var props = {
+        idPrefix: {{ mount_id | tojson }},
         initialFiles: {{ (initialFiles or []) | tojson }},
         classificationUrl: {{ (classificationUrl or '#') | tojson }},
         attachEndpoint: {{ attachEndpoint | tojson }},

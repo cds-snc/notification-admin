@@ -17,6 +17,7 @@ export const AttachmentsWidget = ({
   csrfToken,
   lang = "en",
   classificationUrl,
+  idPrefix = "attachments-widget",
 }) => {
   const [isAttachModalOpen, setAttachModalOpen] = useState(false);
   const [validationIssues, setValidationIssues] = useState([]);
@@ -24,6 +25,8 @@ export const AttachmentsWidget = ({
   const [downloadError, setDownloadError] = useState(null);
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
   const attachMoreButtonRef = useRef(null);
+  const statusId = `${idPrefix}-attachments-status`;
+  const buttonLabelId = `${idPrefix}-attachments-button-label`;
 
   const fetchFileStatus = useMemo(() => {
     if (!statusEndpoint) {
@@ -213,7 +216,7 @@ export const AttachmentsWidget = ({
 
       <div className="flex items-center justify-between gap-4 border-t border-gray-300 pt-4">
         <p
-          id="attachments-status"
+          id={statusId}
           className="hint"
           data-testid="attachments-summary"
           aria-live="polite"
@@ -226,10 +229,10 @@ export const AttachmentsWidget = ({
           type="button"
           className="button button-secondary"
           data-testid="attachments-open-modal"
-          aria-labelledby="attachments-button-label attachments-status"
+          aria-labelledby={`${buttonLabelId} ${statusId}`}
           onClick={() => setAttachModalOpen(true)}
         >
-          <span id="attachments-button-label">
+          <span id={buttonLabelId}>
             {files.length ? copy.attachMoreFiles : copy.attachFiles}
           </span>
         </button>
