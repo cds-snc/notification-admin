@@ -1018,7 +1018,7 @@ class CreateKeyForm(StripWhitespaceForm):
         self.existing_key_names = [key["name"].lower() for key in existing_keys if not key["expiry_date"]]
         super().__init__(*args, **kwargs)
         if ff_report_api:
-            self.manage_templates.choices = list(self.manage_templates.choices) + [
+            self.permissions.choices = list(self.permissions.choices) + [
                 ("manage_reports", _l("Allow this key to create and download delivery reports"))
             ]
 
@@ -1031,7 +1031,7 @@ class CreateKeyForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
     )
 
-    manage_templates = SelectMultipleField(
+    permissions = SelectMultipleField(
         _l("API key permissions"),
         choices=[("manage_templates", _l("Allow this key to manage templates (create, update, or delete)"))],
     )

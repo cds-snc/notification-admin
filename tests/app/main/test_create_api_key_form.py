@@ -53,7 +53,7 @@ class TestCreateKeyFormValidation:
         form = CreateKeyForm([], formdata=MultiDict([("key_name", "Some key"), ("key_type", "a")]))
         form.key_type.choices = [("a", "a"), ("b", "b")]
         form.validate()
-        assert form.manage_templates.data == []
+        assert form.permissions.data == []
 
     def test_manage_templates_field_is_selected_when_checked(self, client):
         form = CreateKeyForm(
@@ -62,7 +62,7 @@ class TestCreateKeyFormValidation:
         )
         form.key_type.choices = [("a", "a"), ("b", "b")]
         form.validate()
-        assert form.manage_templates.data == ["manage_templates"]
+        assert form.permissions.data == ["manage_templates"]
 
 
 class TestCreateApiKeyView:
@@ -242,17 +242,17 @@ class TestApiKeyApiClient:
 class TestManageReportsPermission:
     def test_manage_reports_choice_added_when_ff_report_api_enabled(self, client):
         form = CreateKeyForm([], ff_report_api=True)
-        choice_values = [value for value, _ in form.manage_templates.choices]
+        choice_values = [value for value, _ in form.permissions.choices]
         assert "manage_reports" in choice_values
 
     def test_manage_reports_choice_label(self, client):
         form = CreateKeyForm([], ff_report_api=True)
-        choices = dict(form.manage_templates.choices)
+        choices = dict(form.permissions.choices)
         assert choices["manage_reports"] == "Allow this key to create and download delivery reports"
 
     def test_manage_reports_choice_not_added_when_ff_report_api_disabled(self, client):
         form = CreateKeyForm([], ff_report_api=False)
-        choice_values = [value for value, _ in form.manage_templates.choices]
+        choice_values = [value for value, _ in form.permissions.choices]
         assert "manage_reports" not in choice_values
 
     def test_create_api_key_page_shows_manage_reports_checkbox_when_ff_enabled(

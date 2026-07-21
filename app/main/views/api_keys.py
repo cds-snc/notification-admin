@@ -96,9 +96,9 @@ def create_api_key(service_id):
         if form.key_type.data in disabled_options:
             abort(400)
         permissions = []
-        if KEY_PERMISSION_MANAGE_TEMPLATES in form.manage_templates.data:
+        if KEY_PERMISSION_MANAGE_TEMPLATES in form.permissions.data:
             permissions.append(KEY_PERMISSION_MANAGE_TEMPLATES)
-        if KEY_PERMISSION_MANAGE_REPORTS in form.manage_templates.data:
+        if KEY_PERMISSION_MANAGE_REPORTS in form.permissions.data:
             permissions.append(KEY_PERMISSION_MANAGE_REPORTS)
         keydata = api_key_api_client.create_api_key(
             service_id=service_id,
