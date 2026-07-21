@@ -182,11 +182,14 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   it("announces Variable when cursor is inside a variable mark", () => {
-    // The variable mark has inclusive:false, so marks() only returns it when
-    // textOffset > 0 (cursor strictly inside, not at a boundary).
-    // realClick() fires native OS-level mouse events so the browser resolves
-    // the cursor to the centre of the span text (~textOffset 4), triggering
-    // ProseMirror's selectionchange → selectionSet transaction → announcer.
+    // Use a minimal document so the click target is unambiguous.
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().clear().type("((variable))", {
+      delay: 0,
+    });
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    // Place the cursor inside the variable mark to trigger announcement.
     RichTextEditor.Components.Editor()
       .find('span[data-type="variable"]')
       .first()
