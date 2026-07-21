@@ -93,6 +93,7 @@ class Config(object):
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
     FF_FILE_ATTACHMENTS = env.bool("FF_FILE_ATTACHMENTS", False)
+    FF_REPORT_API = env.bool("FF_REPORT_API", False)
 
     # OTEL Configuration
     ENABLE_CLIENT_SIDE_OTEL = env.bool("ENABLE_CLIENT_SIDE_OTEL", False)
@@ -207,6 +208,7 @@ class Development(Config):
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
     FF_FILE_ATTACHMENTS = True
+    FF_REPORT_API = env.bool("FF_REPORT_API", False)
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -266,6 +268,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
     FF_FILE_ATTACHMENTS = True
+    FF_REPORT_API = False
 
 
 class Production(Config):
