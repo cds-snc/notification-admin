@@ -58,7 +58,7 @@ class TestCreateKeyFormValidation:
     def test_manage_templates_field_is_selected_when_checked(self, client):
         form = CreateKeyForm(
             [],
-            formdata=MultiDict([("key_name", "Some key"), ("key_type", "a"), ("manage_templates", "manage_templates")]),
+            formdata=MultiDict([("key_name", "Some key"), ("key_type", "a"), ("permissions", "manage_templates")]),
         )
         form.key_type.choices = [("a", "a"), ("b", "b")]
         form.validate()
