@@ -77,7 +77,7 @@ class TestCreateApiKeyView:
         with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
             page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
-        checkbox = page.find("input", {"name": "manage_templates", "type": "checkbox"})
+        checkbox = page.find("input", {"name": "permissions", "type": "checkbox"})
         assert checkbox is not None
 
     def test_create_api_key_with_manage_templates_permission(
@@ -106,7 +106,7 @@ class TestCreateApiKeyView:
                 _data={
                     "key_name": key_name_from_user,
                     "key_type": "normal",
-                    "manage_templates": "manage_templates",
+                    "permissions": "manage_templates",
                 },
                 _expected_status=200,
             )
@@ -266,7 +266,7 @@ class TestManageReportsPermission:
         with set_config(app_, "FF_REPORT_API", True):
             page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
-        checkbox = page.find("input", {"name": "manage_templates", "value": "manage_reports", "type": "checkbox"})
+        checkbox = page.find("input", {"name": "permissions", "value": "manage_reports", "type": "checkbox"})
         assert checkbox is not None
 
     def test_create_api_key_page_hides_manage_reports_checkbox_when_ff_disabled(
@@ -280,7 +280,7 @@ class TestManageReportsPermission:
         with set_config(app_, "FF_REPORT_API", False):
             page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
-        checkbox = page.find("input", {"name": "manage_templates", "value": "manage_reports", "type": "checkbox"})
+        checkbox = page.find("input", {"name": "permissions", "value": "manage_reports", "type": "checkbox"})
         assert checkbox is None
 
     def test_create_api_key_with_manage_reports_permission(
@@ -309,7 +309,7 @@ class TestManageReportsPermission:
                 _data={
                     "key_name": key_name_from_user,
                     "key_type": "normal",
-                    "manage_templates": "manage_reports",
+                    "permissions": "manage_reports",
                 },
                 _expected_status=200,
             )
