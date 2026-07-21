@@ -1014,9 +1014,13 @@ class ChooseTimeForm(StripWhitespaceForm):
 
 
 class CreateKeyForm(StripWhitespaceForm):
-    def __init__(self, existing_keys, *args, **kwargs):
+    def __init__(self, existing_keys, ff_report_api=False, *args, **kwargs):
         self.existing_key_names = [key["name"].lower() for key in existing_keys if not key["expiry_date"]]
         super().__init__(*args, **kwargs)
+        if ff_report_api:
+            self.permissions.choices = list(self.permissions.choices) + [
+                ("manage_reports", _l("Allow this key to create and download delivery reports"))
+            ]
 
     key_type = RadioField(
         _l("Type of API key"),
@@ -1027,7 +1031,7 @@ class CreateKeyForm(StripWhitespaceForm):
         validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
     )
 
-    manage_templates = SelectMultipleField(
+    permissions = SelectMultipleField(
         _l("API key permissions"),
         choices=[("manage_templates", _l("Allow this key to manage templates (create, update, or delete)"))],
     )

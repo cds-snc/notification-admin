@@ -7,6 +7,7 @@ KEY_TYPE_TEST = "test"
 
 # must match api key permissions in notifications-api/app/models.py
 KEY_PERMISSION_MANAGE_TEMPLATES = "manage_templates"
+KEY_PERMISSION_MANAGE_REPORTS = "manage_reports"
 
 
 class ApiKeyApiClient(NotifyAdminAPIClient):

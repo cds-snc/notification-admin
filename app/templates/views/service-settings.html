@@ -150,17 +150,19 @@
             for=txt
           )}}
         {% endcall %}
-        {% call settings_row(if_has_permission='email') %}
-          {% set txt = _('Send files by email') %}
-          {{ text_field(txt) }}
-          {{ boolean_field('upload_document' in current_service.permissions, suffix=_('(API-only)')) }}
-          {{ edit_field(
-            change_txt,
-            url_for('.service_switch_upload_document', service_id=current_service.id),
-            permissions=['manage_service'],
-            for=txt
-          )}}
-        {% endcall %}
+        {% if config['FF_FILE_ATTACHMENTS'] %}
+          {% call settings_row(if_has_permission='email') %}
+            {% set txt = _('Send files by email') %}
+            {{ text_field(txt) }}
+            {{ boolean_field('upload_document' in current_service.permissions) }}
+            {{ edit_field(
+              change_txt,
+              url_for('.service_switch_upload_document', service_id=current_service.id),
+              permissions=['manage_service'],
+              for=txt
+            )}}
+          {% endcall %}
+        {% endif %}
 
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Daily maximum') %}
