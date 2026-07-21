@@ -1541,7 +1541,7 @@
 "failures","échecs"
 "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>.","Cette fonctionnalité n’est disponible que pour les envois programmés par le biais de l’API.<br>Pour en savoir plus, consultez la <a href='{}'>documentation API</a>."
 "(API-only)","(API seulement)"
-"Allow files to be attached to email notifications.<br>Learn more in the <a href='{}'>API documentation</a>.","Permettre de joindre des fichiers aux notifications par courriel.<br>Pour en savoir plus, consultez la <a href='{}'>documentation API</a>."
+"Allow files to be attached to email notifications.<br>Files can be attached on the templates page or through the API<br>Learn more in the <a href='{}'>API documentation</a>.","Permettre de joindre des fichiers aux notifications par courriel.<br>Les fichiers peuvent être joints sur la page des gabarits ou par l'API.<br>Pour en savoir plus, consultez la <a href='{}'>documentation API</a>."
 "Setting updated","Paramètre mis à jour"
 "Target audience","Public cible"
 "Features list","Liste de fonctionnalités"

@@ -3434,17 +3434,18 @@ def test_service_switch_upload_document(
     assert mocked_fn.call_args[0][0] == service_one["id"]
 
 
-def test_service_switch_upload_document_returns_404_when_feature_flag_is_off(
+def test_service_switch_upload_document_shows_api_only_help_when_feature_flag_is_off(
     client_request,
     service_one,
     app_,
 ):
     with set_config(app_, "FF_FILE_ATTACHMENTS", False):
-        client_request.get(
+        page = client_request.get(
             "main.service_switch_upload_document",
             service_id=service_one["id"],
-            _expected_status=404,
         )
+        paragraph = page.select_one("#main_content p").text.strip()
+        assert "This feature is only available when sending through the API" in paragraph
 
 
 @pytest.mark.parametrize(
