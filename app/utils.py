@@ -687,6 +687,21 @@ def guess_name_from_email_address(email_address):
     )
 
 
+def filter_attachments(attachments, exclude_statuses=None, include_statuses=None):
+    if exclude_statuses and include_statuses:
+        raise ValueError("Cannot specify both exclude_statuses and include_statuses")
+
+    filtered = []
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+        if include_statuses is not None and status not in include_statuses:
+            continue
+        if exclude_statuses is not None and status in exclude_statuses:
+            continue
+        filtered.append(attachment)
+    return filtered
+
+
 def should_skip_template_page(template_type):
     return (
         current_user.has_permissions("send_messages")

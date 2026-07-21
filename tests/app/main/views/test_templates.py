@@ -793,6 +793,48 @@ def test_should_show_attachments_widget_on_email_template_page(
     assert url_for("main.download_template_attachment", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
 
 
+def test_should_not_render_unsafe_or_deleted_template_attachments_on_template_page_reload(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    service_one,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[
+            {"id": "uploaded-1", "name": "safe-file.pdf", "status": "uploaded"},
+            {"id": "pending-1", "name": "still-scanning.pdf", "status": "pending_virus_scan"},
+            {"id": "unsafe-1", "name": "unsafe-file.pdf", "status": "virus_scan_failed"},
+            {"id": "deleted-1", "name": "deleted-file.pdf", "status": "deleted"},
+        ],
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    page_html = str(page)
+
+    assert "safe-file.pdf" in page_html
+    assert "still-scanning.pdf" in page_html
+    assert "unsafe-file.pdf" not in page_html
+    assert "deleted-file.pdf" not in page_html
+
+
 def test_should_not_show_attachments_widget_without_send_files_permission(
     client_request,
     mock_get_template_folders,
