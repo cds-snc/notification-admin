@@ -438,11 +438,14 @@ def set_sensitive_service(service_id):
 def service_switch_upload_document(service_id):
     title = _("Send files by email")
     form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
-    help = _(
-        "Allow files to be attached to email notifications.<br>Files can be attached on the templates page or through the API<br>Learn more in the <a href='{}'>API documentation</a>."
-        if current_app.config.get("FF_FILE_ATTACHMENTS")
-        else "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>."
-    ).format(documentation_url("send", section="sending-a-file-by-email"))
+    if current_app.config.get("FF_FILE_ATTACHMENTS"):
+        help = _(
+            "Allow files to be attached to email notifications.<br>Files can be attached on the templates page or through the API<br>Learn more in the <a href='{}'>API documentation</a>."
+        ).format(documentation_url("send", section="sending-a-file-by-email"))
+    else:
+        help = _(
+            "This feature is only available when sending through the API.<br>Learn more in the <a href='{}'>API documentation</a>."
+        ).format(documentation_url("send", section="sending-a-file-by-email"))
 
     if form.validate_on_submit():
         current_service.force_permission("upload_document", on=form.enabled.data)
