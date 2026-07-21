@@ -68,6 +68,7 @@ from app.sample_template_utils import create_temporary_sample_template, get_samp
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
+    filter_attachments,
     get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
@@ -109,20 +110,6 @@ def get_email_preview_template(template, template_id, service_id):
     )
 
     return email_preview_template
-
-
-def _get_visible_template_attachments(attachments):
-    visible_attachments = []
-
-    for attachment in attachments:
-        status = attachment.get("status") or "uploaded"
-
-        if status in ("deleted", "virus_scan_failed"):
-            continue
-
-        visible_attachments.append(attachment)
-
-    return visible_attachments
 
 
 def set_preview_data(data, service_id, template_id=None):
@@ -223,7 +210,10 @@ def view_template(service_id, template_id):
         and template["template_type"] == "email"
         and current_service.has_permission("upload_document")
     ):
-        template_attachments = _get_visible_template_attachments(current_service.get_template_attachments(template_id))
+        template_attachments = filter_attachments(
+            current_service.get_template_attachments(template_id),
+            exclude_statuses={"deleted", "virus_scan_failed"},
+        )
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
