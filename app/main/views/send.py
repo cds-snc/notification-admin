@@ -67,6 +67,7 @@ from app.utils import (
     PermanentRedirect,
     Spreadsheet,
     email_or_sms_not_enabled,
+    filter_attachments,
     get_errors_for_csv,
     get_help_argument,
     get_limit_reset_time_et,
@@ -118,17 +119,14 @@ def build_template_attachment_personalisation(template_id, template_type):
     ):
         return {}
 
-    attachments = current_service.get_template_attachments(template_id)
+    attachments = filter_attachments(
+        current_service.get_template_attachments(template_id),
+        include_statuses={"uploaded"},
+    )
     result = {}
     file_index = 0  # Track contiguous index for included attachments
 
     for attachment in attachments:
-        status = attachment.get("status") or "uploaded"
-
-        # Only include fully uploaded attachments
-        if status != "uploaded":
-            continue
-
         # Skip if missing required fields
         attachment_id = attachment.get("id")
         filename = attachment.get("name") or attachment.get("filename")
