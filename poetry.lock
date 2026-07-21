@@ -1681,8 +1681,8 @@ werkzeug = "3.1.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "fix/mistune-concurrency-issues"
-resolved_reference = "cb751ff3ebf74347be4e15de3dbfb3a9a564a609"
+reference = "53.2.30"
+resolved_reference = "21a241b6697ce07da316bd5c435298d76380ba71"
 
 [[package]]
 name = "openpyxl"
@@ -2947,4 +2947,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "07272b8f8378b63c5b4710eb32f7fc5fac538d6aec0a3ad655c9a6bb51109a3b"
+content-hash = "785492b4936303b94f5d79661a11f13271fa2933f0cd2b8c9f6dd55b84590fb0"
