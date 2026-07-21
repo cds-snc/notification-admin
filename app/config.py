@@ -268,6 +268,7 @@ class ProductionFF(Config):
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
     FF_FILE_ATTACHMENTS = True
+    FF_REPORT_API = False
 
 
 class Production(Config):
