@@ -2476,6 +2476,7 @@
 "Use ((unsubscribe_url)) for one-click unsubscribe","Utilisez ((unsubscribe_url)) pour le désabonnement en un clic"
 "Use ((unsub_link)) for one-click unsubscribe","Utilisez ((unsub_link)) pour le désabonnement en un clic"
 "Allow this key to manage templates (create, update, or delete)","Permettre à cette clé de gérer les gabarits (créer, mettre à jour ou supprimer)"
+"Allow this key to create and download delivery reports","Permettre à cette clé de créer et de télécharger des rapports de livraison"
 "API key permissions","Permissions de la clé API"
 "Manage templates","Gestion des gabarits"
 "File upload in progress","Fichier en préparation"
