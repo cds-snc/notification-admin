@@ -461,6 +461,20 @@ def service_switch_upload_document(service_id):
 
 
 @main.route(
+    "/services/<service_id>/service-settings/enable-file-attachments",
+    methods=["POST"],
+)
+@user_has_permissions("manage_service")
+def enable_file_attachments(service_id):
+    current_service.force_permission("upload_document", on=True)
+    flash(_("File sending has been turned on"), "default_with_tick")
+    next_url = request.form.get("next", "")
+    if next_url and next_url.startswith("/"):
+        return redirect(next_url)
+    return redirect(url_for(".service_settings", service_id=service_id))
+
+
+@main.route(
     "/services/<service_id>/service-settings/switch-count-as-live",
     methods=["GET", "POST"],
 )
