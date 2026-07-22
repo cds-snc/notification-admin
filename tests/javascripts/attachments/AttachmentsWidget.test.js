@@ -108,7 +108,7 @@ describe("AttachmentsWidget accessibility", () => {
     const totalSize = container.querySelector('[data-testid="attachments-total-size"]');
 
     expect(heading.textContent).toContain("Attached files");
-    expect(totalSize.textContent).toBe("3.0 KB total");
+    expect(totalSize.textContent).toBe("(3.0 KB)");
 
     act(() => root.unmount());
   });

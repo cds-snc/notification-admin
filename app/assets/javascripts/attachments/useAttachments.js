@@ -109,14 +109,6 @@ const nextId = () => {
 const parseApiStatus = (status, fallbackStatus) =>
   VALID_ATTACHMENT_STATUSES.has(status) ? status : fallbackStatus;
 
-const normalizeFile = (file) => ({
-  ...file,
-  name: file.name || file.filename,
-  file_size:
-    typeof file.file_size === "string" ? Number(file.file_size) : file.file_size,
-  status: parseApiStatus(file.status, ATTACHMENT_STATUSES.DELETED),
-});
-
 export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   const counts = {
     scanning: 0,
@@ -163,7 +155,7 @@ export const useAttachments = (
   copy = DEFAULT_COPY,
   fetchFileStatus = null,
 ) => {
-  const [files, setFiles] = useState(() => initialFiles.map(normalizeFile));
+  const [files, setFiles] = useState(() => initialFiles);
   const timeoutIdsRef = useRef([]);
   const pollTimeoutIdsRef = useRef(new Map());
   const isMountedRef = useRef(true);

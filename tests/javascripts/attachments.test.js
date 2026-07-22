@@ -494,20 +494,20 @@ describe("attachments - useAttachments", () => {
     jest.useRealTimers();
   });
 
-  test("normalizes legacy filename into name", () => {
+  test("preserves provided string file_size", () => {
     const harness = setupHookHarness([
       {
-        id: "legacy-file-1",
-        filename: "legacy-name.pdf",
-        file_size: 2048,
+        id: "file-1",
+        name: "test.pdf",
+        file_size: "2048",
         status: "uploaded",
       },
     ]);
 
     const [file] = harness.getState().files;
 
-    expect(file.name).toBe("legacy-name.pdf");
-    expect(file.file_size).toBe(2048);
+    expect(file.name).toBe("test.pdf");
+    expect(file.file_size).toBe("2048");
     expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
 
     harness.cleanup();
