@@ -785,6 +785,13 @@ def test_should_show_attachments_widget_on_email_template_page(
             _test_page_title=False,
         )
 
+    with client_request.session_transaction() as session:
+        assert session[f"enable_file_attachments_next_url_{SERVICE_ONE_ID}"] == url_for(
+            "main.view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
     assert page.select_one("#template-attachments") is not None
     assert "viewTemplateAttachmentsNoop" not in str(page)
     assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)

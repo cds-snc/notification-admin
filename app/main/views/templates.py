@@ -220,6 +220,17 @@ def view_template(service_id, template_id):
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
 
+    if (
+        current_app.config.get("FF_FILE_ATTACHMENTS")
+        and template["template_type"] == "email"
+        and current_user.has_permissions("manage_service")
+    ):
+        session[f"enable_file_attachments_next_url_{service_id}"] = url_for(
+            ".view_template",
+            service_id=service_id,
+            template_id=template_id,
+        )
+
     preview_template = get_email_preview_template(template, template_id, service_id)
 
     return render_template(

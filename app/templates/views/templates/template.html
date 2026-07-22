@@ -110,7 +110,6 @@
             <p data-testid="file-attachments-enable-notice">{{ _('To send attachments, turn on file sending in your service settings.') }}</p>
             <form method="post" action="{{ url_for('main.enable_file_attachments', service_id=current_service.id) }}" data-testid="file-attachments-enable-form">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-              <input type="hidden" name="next" value="{{ url_for('main.view_template', service_id=current_service.id, template_id=template.id) }}" />
               <button type="submit" class="button-link" data-testid="file-attachments-enable-button">{{ _('Turn on file sending') }}</button>
             </form>
           {% endcall %}
