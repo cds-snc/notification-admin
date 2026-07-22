@@ -5,6 +5,7 @@ const { act } = React;
 const { TextEncoder, TextDecoder } = require("util");
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 const { renderToStaticMarkup } = require("react-dom/server");
 
@@ -384,8 +385,6 @@ describe("attachments - render contracts", () => {
 });
 
 describe("attachments - useAttachments", () => {
-  const originalActEnvironment = global.IS_REACT_ACT_ENVIRONMENT;
-
   const setupHookHarness = (initialFiles = [], fetchFileStatus = null) => {
     let latest = null;
 
@@ -412,14 +411,6 @@ describe("attachments - useAttachments", () => {
       },
     };
   };
-
-  beforeAll(() => {
-    global.IS_REACT_ACT_ENVIRONMENT = true;
-  });
-
-  afterAll(() => {
-    global.IS_REACT_ACT_ENVIRONMENT = originalActEnvironment;
-  });
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -730,7 +721,7 @@ describe("attachments - useAttachments", () => {
     });
 
     expect(thrownError).toBeTruthy();
-    expect(thrownError.message).toBe("Failed to attach files. Please try again.");
+    expect(thrownError.message).toBe("network error");
     expect(harness.getState().files).toHaveLength(0);
 
     harness.cleanup();

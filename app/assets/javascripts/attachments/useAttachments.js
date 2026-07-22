@@ -85,6 +85,11 @@ export const validateFiles = (
       continue;
     }
 
+    if (existingFiles.some((existingFile) => existingFile.name === file.name)) {
+      issues.push(copy.duplicateFilename(file.name));
+      continue;
+    }
+
     acceptedFiles.push(file);
   }
 
@@ -308,7 +313,7 @@ export const useAttachments = (
 
       setFiles((currentFiles) => [...currentFiles, ...uploadedFiles]);
     } catch (error) {
-      throw new Error("Failed to attach files. Please try again.");
+      throw error;
     }
   };
 

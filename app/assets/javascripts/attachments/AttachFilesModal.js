@@ -21,6 +21,9 @@ export const AttachFilesModal = ({
   const dialogRef = useRef(null);
   const headingRef = useRef(null);
   const previouslyFocusedElement = useRef(null);
+  const submitButtonRef = useRef(null);
+  const announcementRef = useRef(null);
+  const chooseFilesInputRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -30,6 +33,38 @@ export const AttachFilesModal = ({
     }
   }, [isOpen]);
 
+  // Accessibility: Announce file selection and focus the submit button
+  // This helps screen reader users know they can now submit their selection
+  useEffect(() => {
+    // Focus submit button and announce when files are selected
+    if (selectedFiles.length > 0) {
+      // Announce the selection
+      if (announcementRef.current) {
+        announcementRef.current.textContent = copy.modalFilesSelected(
+          selectedFiles.length,
+        );
+      }
+      // Focus button after DOM update
+      if (submitButtonRef.current) {
+        setTimeout(() => {
+          submitButtonRef.current?.focus();
+        }, 0);
+      }
+    }
+  }, [selectedFiles.length, copy]);
+
+  useEffect(() => {
+    // Focus and announce when validation issues occur
+    if (issues.length > 0 && chooseFilesInputRef.current) {
+      setTimeout(() => {
+        chooseFilesInputRef.current?.focus();
+      }, 0);
+      if (announcementRef.current) {
+        announcementRef.current.textContent = issues.join(" ");
+      }
+    }
+  }, [issues]);
+
   useEffect(() => {
     if (!isOpen) {
       setIsAnimatingOpen(false);
@@ -38,7 +73,12 @@ export const AttachFilesModal = ({
 
     previouslyFocusedElement.current = document.activeElement;
 
-    if (headingRef.current && headingRef.current.focus) {
+    // Only focus heading if no files are selected yet
+    if (
+      selectedFiles.length === 0 &&
+      headingRef.current &&
+      headingRef.current.focus
+    ) {
       headingRef.current.focus();
     }
 
@@ -50,7 +90,7 @@ export const AttachFilesModal = ({
         previouslyFocusedElement.current.focus();
       }
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, selectedFiles.length]);
 
   useEffect(() => {
     if (!isOpen || !isAnimatingOpen || !dialogRef.current) {
@@ -115,17 +155,20 @@ export const AttachFilesModal = ({
       onIssuesChange(validation.issues);
     }
 
-    const normalizedFiles = validation.acceptedFiles.map((file, index) => ({
-      id: `${file.name}-${file.size}-${file.lastModified || 0}-${index}`,
+    const normalizedFiles = validation.acceptedFiles.map((file) => ({
+      id: `${file.name}-${file.size}-${file.lastModified || 0}-${Math.random()}`,
       file,
     }));
-    setSelectedFiles(normalizedFiles);
+    setSelectedFiles((currentFiles) => [...currentFiles, ...normalizedFiles]);
   };
 
   const onRemovePending = (fileId) => {
     setSelectedFiles((currentFiles) =>
       currentFiles.filter((pendingFile) => pendingFile.id !== fileId),
     );
+    if (typeof onIssuesChange === "function") {
+      onIssuesChange([]);
+    }
   };
 
   const submit = async () => {
@@ -158,6 +201,12 @@ export const AttachFilesModal = ({
         isAnimatingOpen ? "attachments-panel--open" : ""
       }`}
     >
+      <div
+        ref={announcementRef}
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      />
       <h2
         ref={headingRef}
         id="attachments-modal-title"
@@ -179,8 +228,27 @@ export const AttachFilesModal = ({
         <li>{copy.modalImageDocuments}</li>
       </ul>
 
-      <div className="file-upload-group relative inline-flex flex-col gap-2 items-start mb-4">
+      <div
+        className={`file-upload-group relative inline-flex flex-col gap-2 items-start mb-4 ${issues.length > 0 ? "border-l-4 pl-4" : ""}`}
+        style={issues.length > 0 ? { borderLeftColor: "#b91c1c" } : {}}
+      >
+        {issues.length > 0 && (
+          <div
+            id="attachment-errors"
+            className="text-red-700 font-bold mb-2 w-full"
+            role="alert"
+            data-testid="attach-validation-errors"
+          >
+            <p className="font-bold mb-2">Error:</p>
+            <ul className="list list-bullet">
+              {issues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <input
+          ref={chooseFilesInputRef}
           id="attachments-file-input"
           type="file"
           name="attachments"
@@ -188,6 +256,7 @@ export const AttachFilesModal = ({
           accept={ACCEPT_ATTRIBUTE}
           className="file-upload-field"
           data-testid="attachments-file-input"
+          aria-describedby={issues.length > 0 ? "attachment-errors" : undefined}
           onChange={onChange}
         />
         <label
@@ -222,6 +291,7 @@ export const AttachFilesModal = ({
                 className="link text-red-700 self-start"
                 type="button"
                 data-testid="attachments-pending-remove"
+                aria-label={`Remove ${pendingFile.file.name}`}
                 onClick={() => onRemovePending(pendingFile.id)}
               >
                 <span className="font-bold underline">{copy.remove}</span>
@@ -234,24 +304,11 @@ export const AttachFilesModal = ({
         </ul>
       )}
 
-      {issues.length > 0 && (
-        <div
-          className="banner-dangerous p-4 mb-4"
-          role="alert"
-          data-testid="attach-validation-errors"
-        >
-          <ul className="list list-bullet">
-            {issues.map((issue) => (
-              <li key={issue}>{issue}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <p className="mt-10">{copy.modalScanNotice}</p>
 
       <div className="flex gap-4 items-center">
         <button
+          ref={submitButtonRef}
           type="button"
           className={`button ${
             isLoading || selectedFiles.length === 0 || issues.length > 0
@@ -259,6 +316,11 @@ export const AttachFilesModal = ({
               : ""
           }`}
           data-testid="attachments-submit"
+          aria-label={
+            selectedFiles.length > 0
+              ? `${copy.modalAttachToTemplate}, ${copy.modalFilesSelected(selectedFiles.length)}`
+              : copy.modalAttachToTemplate
+          }
           onClick={
             selectedFiles.length > 0 && issues.length === 0 ? submit : undefined
           }

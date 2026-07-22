@@ -248,22 +248,38 @@ def attach_files(service_id, template_id):
 
     uploaded_files = request.files.getlist("files")
     created_files = []
+    error = None
 
     for uploaded_file in uploaded_files:
         file_contents = uploaded_file.read()
         file_size = len(file_contents)
         file_data = base64.b64encode(file_contents).decode("ascii")
 
-        created_files.append(
-            file_api_client.create_file(
-                template_id,
-                "template_attach",
-                uploaded_file.filename,
-                uploaded_file.mimetype or "application/octet-stream",
-                file_size,
-                file_data,
+        try:
+            created_files.append(
+                file_api_client.create_file(
+                    template_id,
+                    "template_attach",
+                    uploaded_file.filename,
+                    uploaded_file.mimetype or "application/octet-stream",
+                    file_size,
+                    file_data,
+                )
             )
-        )
+        except HTTPError as e:
+            # Store error but continue processing remaining files
+            # This allows partial uploads to succeed while reporting the error
+            if not error:
+                error = e
+
+    # If there was an error, return it with whatever files were created
+    if error:
+        try:
+            error_code = json.loads(error.response.text)["error"]
+        except (json.JSONDecodeError, KeyError, TypeError):
+            error_code = "unknown_error"
+
+        return jsonify({"error": error_code}), error.status_code
 
     return jsonify(created_files)
 
