@@ -1281,6 +1281,7 @@ def edit_service_template(service_id, template_id):
             )
         )
     else:
+        template_attachments = None
         if (
             current_app.config.get("FF_FILE_ATTACHMENTS")
             and template["template_type"] == "email"
