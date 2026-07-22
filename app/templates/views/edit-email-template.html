@@ -10,6 +10,7 @@
 {% from "components/template-content.html" import template_content with context %}
 {% from "components/links.html" import content_link with context %}
 {% from "components/tiptap-editor.html" import tiptap_editor with context %}
+{% from "components/notice.html" import notice %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -84,6 +85,50 @@
         templateType=template_type if template_type else template.template_type,
         initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
       }}
+
+      {% if config['FF_FILE_ATTACHMENTS'] and attachments %}
+        {% set attachment_count = attachments|length %}
+
+        <section class="mb-16">
+          <h2 id="attachments-heading" class="heading-medium">
+            {{ _("Attachments") }}
+          </h2>
+
+          {% call notice('info') %}
+            <p data-testid="file-attachments-edit-template-notice">
+              {{ _('To edit attachments, save changes to your template or press back.') }}
+            </p>
+          {% endcall %}
+
+          <ul
+            class="mt-5 mb-4"
+            data-testid="attachments-list-static"
+            aria-label="{{ _('Files attached to this template') }}"
+          >
+            {% for attachment in attachments %}
+              {% set readable_size = attachment['file_size'] | filesizeformat %}
+
+              <li
+                class="attachment-file-row border border-gray-300 p-3 mb-2"
+                data-testid="attached-file-row-static"
+                tabindex="0"
+                aria-label="{{ _('Attachment') }} {{ attachment['name'] }}, {{ readable_size }}"
+              >
+                <div class="flex justify-between gap-6 items-start">
+                  <div class="flex flex-col min-w-0">
+                    {{ attachment['name'] }}
+                  </div>
+
+                  <div class="inline-flex items-center gap-2" aria-hidden="true">
+                    {{ readable_size }}
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          <p id="template-attachments-attachments-status" class="hint" data-testid="attachments-summary-static" aria-live="polite" aria-atomic="true">{{ attachment_count }} {{ _('files attached') }} </p>
+        </section>
+      {% endif %}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}

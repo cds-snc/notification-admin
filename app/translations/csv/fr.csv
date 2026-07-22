@@ -2494,3 +2494,7 @@
 "Counted as 1 text message part.","Compté comme 1 partie de message texte."
 "Counted as {} text message parts.","Compté comme {} parties de messages texte."
 "Text message parts count toward your sending limits.","Les parties de message texte comptent envers vos limites d'envoi."
+"To edit attachments, save changes to your template or press back.","Pour modifier les pièces jointes, enregistrez les modifications apportées à votre modèle ou appuyez sur Retour."
+"Attachment,","Pièce jointe"
+"files attached","fichiers joints"
+"Files attached to this template","Fichiers joints à ce gabarit"
