@@ -1,5 +1,6 @@
 {% extends "admin_template.html" %}
 {% from "components/attachments.html" import attachments_widget with context %}
+{% from "components/notice.html" import notice %}
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/folder-path.html" import folder_path, page_title_folder_path %}
 {% from "components/page-footer.html" import page_footer %}
@@ -90,17 +91,35 @@
       </div>
   </div>
 
-  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
+  {% if config['FF_FILE_ATTACHMENTS'] and template.template_type == 'email' and current_user.has_permissions('manage_templates') %}
     <div class="mb-16">
-      {{ attachments_widget(
-        "template-attachments",
-        template_attachments,
-        url_for('main.terms'),
-        url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
-        url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
-        url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
-        url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
-      ) }}
+      {% if current_service.has_permission("upload_document") %}
+        {{ attachments_widget(
+          "template-attachments",
+          template_attachments,
+          url_for('main.terms'),
+          url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
+          url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
+          url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
+          url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
+        ) }}
+      {% else %}
+        <h2 class="heading-medium" data-testid="attached-files-heading">{{ _('Attached files') }}</h2>
+        {% if current_user.has_permissions('manage_service') %}
+          {% call notice('info') %}
+            <p data-testid="file-attachments-enable-notice">{{ _('To send attachments, turn on file sending in your service settings.') }}</p>
+            <form method="post" action="{{ url_for('main.enable_file_attachments', service_id=current_service.id) }}" data-testid="file-attachments-enable-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="hidden" name="next" value="{{ url_for('main.view_template', service_id=current_service.id, template_id=template.id) }}" />
+              <button type="submit" class="button-link" data-testid="file-attachments-enable-button">{{ _('Turn on file sending') }}</button>
+            </form>
+          {% endcall %}
+        {% else %}
+          {% call notice('info') %}
+            <p data-testid="file-attachments-ask-manager-notice">{{ _('To send attachments, ask a service manager to turn on file sending in the service settings.') }}</p>
+          {% endcall %}
+        {% endif %}
+      {% endif %}
     </div>
   {% endif %}
 
