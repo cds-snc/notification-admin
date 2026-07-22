@@ -1,14 +1,223 @@
-{% from "components/table.html" import mapping_table, row, text_field, edit_field, field with context %}
-{% extends "content_template.html" %}
+{% extends "admin_template.html" %}
+
+{# Roadmap illustrations from Flowbite (https://www.flowbite.com/illustrations/) #}
+{# Licensed under MIT (https://github.com/themesberg/flowbite-illustrations) #}
 
 {% block per_page_title %}
-  {{ _('Roadmap') }}
+  {{ _('GC Notify Roadmap') }}
 {% endblock %}
 
-{% block content_column_content %}
+{% block meta %}
+  {% set description = _('GC Notify Roadmap for 2026-2027. Discover upcoming features and improvements.') %}
+  {% set meta_title = _('GC Notify Roadmap | Notification GC') %}
+  <meta name="description" content="{{ description }}"/>
+  <meta property="og:title" content="{{ meta_title }}"/>
+  <meta property="og:description" content="{{ description }}"/>
+{% endblock %}
 
-  <h1 class="heading-large">{{ _('Roadmap') }}</h1>
+{% block content %}
+  <div class="roadmap-content mx-auto px-gutterHalf py-8">
+    <!-- Roadmap Header -->
+    <div class="mb-12 text-center">
+      <div class="roadmap-year text-blue-500 font-bold text-xs">2026-2027</div>
+      <h1 class="roadmap-title">{{ _('GC Notify Roadmap') }}</h1>
+    </div>
 
-  <p>{{ _('Coming soon') }}</p>
+    <!-- Roadmap Initiatives -->
+    <div class="flex flex-col gap-12">
+      
+      <!-- Initiative 1: Support large-scale notification delivery -->
+      <div class="rounded px-8 py-8 shadow-sm">
+        <div class="initiative-row grid grid-cols-1 md:grid-cols-2 items-center">
+          <div class="py-4">
+            <h2 class="heading-medium initiative-title mb-4">{{ _('Support large-scale notification delivery') }}</h2>
+            <div class="initiative-description">
+              <ul class="list list-bullet">
+                <li>{{ _('Support higher-volume sending for large government programs') }}</li>
+                <li>{{ _('Improve onboarding and operational support for large-scale usage') }}</li>
+                <li>{{ _('Continue platform performance, scalability, and reliability improvements') }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex items-center justify-center min-h-250">
+            <!-- SVG placeholder for large-scale notification delivery -->
+            <div class="svg-placeholder w-full h-full flex items-center justify-center" id="large-scale-svg">
+              <img src="{{ asset_url('images/roadmap/scale.png') }}" alt="{{ _('Large-scale notification delivery illustration') }}" class="initiative-svg" width="50%"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Initiative 2: Improve service management -->
+      <div class="rounded px-8 py-8 shadow-sm initiative-reversed">
+        <div class="initiative-row grid grid-cols-1 md:grid-cols-2 items-center">
+          <div class="flex items-center justify-center min-h-250 order-last md:order-first">
+            <!-- SVG placeholder for improve service management -->
+            <div class="svg-placeholder w-full h-full flex items-center justify-center" id="service-management-svg">
+              <img src="{{ asset_url('images/roadmap/service_mgmt.png') }}" alt="{{ _('Improve service management illustration') }}" class="initiative-svg" width="70%" />
+            </div>
+          </div>
+          <div class="py-4 order-first md:order-last">
+            <h2 class="heading-medium initiative-title mb-4">{{ _('Improve service management') }}</h2>
+            <div class="initiative-description">
+              <ul class="list list-bullet">
+                <li>{{ _('Research and define the needs of teams that manage multiple Notify services') }}</li>
+                <li>{{ _('Explore group-level monitoring, reporting, and usage insights') }}</li>
+                <li>{{ _('Improve account and service management capabilities') }}</li>
+                <li>{{ _('Reduce manual reporting and administrative effort') }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Initiative 3: Turn user insights into product improvements -->
+      <div class="rounded px-8 py-8 shadow-sm">
+        <div class="initiative-row grid grid-cols-1 md:grid-cols-2 items-center">
+          <div class="py-4">
+            <h2 class="heading-medium initiative-title mb-4">{{ _('Turn user insights into product improvements') }}</h2>
+            <div class="initiative-description">
+              <ul class="list list-bullet">
+                <li>{{ _('Release file attachments in the Notify interface') }}</li>
+                <li>{{ _('Expand template management and reporting capabilities through the API') }}</li>
+                <li>{{ _('Improve account and service management experiences') }}</li>
+                <li>{{ _('Explore emerging user and platform needs through research') }}</li>
+                <li>{{ _('Deliver improvements informed by client feedback, support trends, and operational insights') }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex items-center justify-center min-h-250">
+            <!-- SVG placeholder for user insights -->
+            <div class="svg-placeholder w-full h-full flex items-center justify-center" id="user-insights-svg">
+              <img src="{{ asset_url('images/roadmap/user_insights.png') }}" alt="{{ _('Turn user insights into product improvements illustration') }}" class="initiative-svg" width="70%" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Initiative 4: Strengthen platform security and reliability -->
+      <div class="rounded px-8 py-8 shadow-sm initiative-reversed">
+        <div class="initiative-row grid grid-cols-1 md:grid-cols-2 items-center">
+          <div class="flex items-center justify-center min-h-250 order-last md:order-first">
+            <!-- SVG placeholder for security and reliability -->
+            <div class="svg-placeholder w-full h-full flex items-center justify-center" id="security-svg">
+              <img src="{{ asset_url('images/roadmap/security.png') }}" alt="{{ _('Strengthen platform security and reliability illustration') }}" class="initiative-svg" width="60%" />
+            </div>
+          </div>
+          <div class="py-4 order-first md:order-last">
+            <h2 class="heading-medium initiative-title mb-4">{{ _('Strengthen platform security and reliability') }}</h2>
+            <div class="initiative-description">
+              <ul class="list list-bullet">
+                <li>{{ _('Deliver planned security improvements identified through our security assessment') }}</li>
+                <li>{{ _('Improve monitoring, observability, and threat detection') }}</li>
+                <li>{{ _('Reduce security-related technical debt') }}</li>
+                <li>{{ _('Improve platform resilience and operational readiness') }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- Status Cards Section -->
+    <div class="mt-16 bg-gray-100 -mx-gutterHalf px-gutterHalf py-16">
+      <h2 class="heading-medium text-center mb-12">{{ _('This year at a glance') }}</h2>
+      <div class="roadmap-content mx-auto px-gutterHalf py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-0 items-center roadmap-cards">
+        
+        <!-- Recently shipped -->
+        <div class="bg-white rounded-l-2xl border-2 border-black border-r-0 p-8 pl-12 shadow-lg flex flex-col justify-center">
+          <h3 class="heading-medium text-gray-900 mb-12 text-center roadmap-card-title">{{ _('Recently shipped') }}</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-check text-green-300 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Modernized Message Editing') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-check text-green-300 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('SMS Usage Transparency') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-check text-green-300 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Platform Reliability Improvements') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-check text-green-300 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Improved Monitoring & Observability') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-check text-green-300 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Better Developer Resources') }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Working on now -->
+        <div class="bg-white rounded-2xl border-2 border-black p-8 pl-12 shadow-lg min-h-[420px] flex flex-col justify-center">
+          <h3 class="heading-medium text-gray-900 mb-12 text-center roadmap-card-title">{{ _('Working on now') }}</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-gray-700 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"/>
+              </svg>
+              <span class="text-gray-700">{{ _('File Attachments') }}</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-gray-700 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"/>
+              </svg>
+              <span class="text-gray-700">{{ _('API Enhancements') }}</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-gray-700 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"/>
+              </svg>
+              <span class="text-gray-700">{{ _('Large-Scale Service Support') }}</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-gray-700 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"/>
+              </svg>
+              <span class="text-gray-700">{{ _('Account & Service Management') }}</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 text-gray-700 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"/>
+              </svg>
+              <span class="text-gray-700">{{ _('Security Improvements') }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Exploring -->
+        <div class="bg-white rounded-r-2xl border-2 border-black border-l-0 p-8 pl-12 shadow-lg flex flex-col justify-center">
+          <h3 class="heading-medium text-gray-900 mb-12 text-center roadmap-card-title">{{ _('Exploring') }}</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-paper-plane text-gray-400 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Service Groups') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-paper-plane text-gray-400 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Aggregated Reporting & Insights') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-paper-plane text-gray-400 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Emerging User Needs') }}</span>
+            </li>
+            <li class="flex items-center">
+              <i aria-hidden="true" class="fa-solid fa-paper-plane text-gray-400 w-8 h-8 text-xs rounded-full mx-1" data-testid="rms-icon"></i>
+              <span class="text-gray-700">{{ _('Future Messaging Capabilities') }}</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+      </div>
+    </div>
+
+  </div>
 
 {% endblock %}

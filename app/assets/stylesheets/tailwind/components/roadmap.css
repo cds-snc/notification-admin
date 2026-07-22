@@ -1,0 +1,91 @@
+/* Roadmap specific styles */
+
+.roadmap-year {
+  letter-spacing: 0.05em;
+  font-size: 20px;
+}
+
+.roadmap-title {
+  margin: 0 !important;
+  font-size: 60px !important;
+}
+
+.roadmap-content {
+  max-width: 80rem;
+}
+
+.roadmap-cards {
+  margin: 0 4rem;
+}
+
+.roadmap-card-title {
+  background: linear-gradient(135deg, rgb(159, 179, 209), rgb(90, 125, 175));
+  padding: 1rem;
+  border-radius: 1rem;
+  color: white;
+}
+
+.initiative-title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.initiative-description {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.initiative-description p {
+  margin: 0 0 0.5rem 0;
+}
+
+.initiative-subheading {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem !important;
+}
+
+.svg-placeholder {
+  background: linear-gradient(135deg, #9fb3d1 0%, #5a7daf 100%);
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.initiative-svg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  padding: 1rem;
+}
+
+.initiative-row {
+  gap: 6rem;
+}
+
+/* Minimum height for placeholder containers */
+.min-h-250 {
+  min-height: 250px;
+}
+
+@media (max-width: 768px) {
+  .min-h-250 {
+    min-height: 200px;
+  }
+}
+
+#large-scale-svg img {
+  width: 150px;
+}
+
+#service-management-svg img {
+  width: 275px;
+}
+
+#user-insights-svg img {
+  width: 300px;
+}
+
+#security-svg img {
+  width: 300px;
+}
