@@ -60,7 +60,7 @@ export const validateFiles = (
   }
 
   const existingTotalBytes = existingFiles.reduce(
-    (sum, file) => sum + (file.size || 0),
+    (sum, file) => sum + (file.file_size || 0),
     0,
   );
   const selectedTotalBytes = selectedFiles.reduce(
@@ -111,6 +111,9 @@ const parseApiStatus = (status, fallbackStatus) =>
 
 const normalizeFile = (file) => ({
   ...file,
+  name: file.name || file.filename,
+  file_size:
+    typeof file.file_size === "string" ? Number(file.file_size) : file.file_size,
   status: parseApiStatus(file.status, ATTACHMENT_STATUSES.DELETED),
 });
 
@@ -297,7 +300,7 @@ export const useAttachments = (
             id: fileId,
             name:
               sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
-            size: sourceFile?.size || itemData?.file_size || 0,
+            file_size: sourceFile?.size || itemData?.file_size || 0,
             status: parseApiStatus(
               itemData?.status,
               ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
