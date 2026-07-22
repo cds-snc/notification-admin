@@ -132,7 +132,10 @@ export const AttachedFileRow = ({
               <p className="min-w-0 mb-0">
                 {fileNameNode}
                 {fileSizeLabel ? (
-                  <span className="attachment-size" data-testid="attachment-file-size">
+                  <span
+                    className="attachment-size"
+                    data-testid="attachment-file-size"
+                  >
                     {` (${fileSizeLabel})`}
                   </span>
                 ) : null}

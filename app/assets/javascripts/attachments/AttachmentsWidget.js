@@ -133,7 +133,8 @@ export const AttachmentsWidget = ({
   );
   const totalFileSizeLabel = useMemo(() => {
     const countableFiles = files.filter(
-      (file) => file.status !== "virus_scan_failed" && file.status !== "deleted",
+      (file) =>
+        file.status !== "virus_scan_failed" && file.status !== "deleted",
     );
     const totalBytes = sumAttachmentFileSizes(countableFiles);
 
@@ -169,7 +170,10 @@ export const AttachmentsWidget = ({
       <h2 className="heading-medium" data-testid="attachments-heading">
         {copy.attachedFilesHeading}
         {totalFileSizeLabel ? (
-          <span className="hint text-xs inline ml-2" data-testid="attachments-total-size">
+          <span
+            className="hint text-xs inline ml-2"
+            data-testid="attachments-total-size"
+          >
             ({totalFileSizeLabel})
           </span>
         ) : null}
