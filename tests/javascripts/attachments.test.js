@@ -494,7 +494,7 @@ describe("attachments - useAttachments", () => {
     jest.useRealTimers();
   });
 
-  test("preserves provided string file_size", () => {
+  test("normalizes provided string file_size to a number", () => {
     const harness = setupHookHarness([
       {
         id: "file-1",
@@ -507,7 +507,7 @@ describe("attachments - useAttachments", () => {
     const [file] = harness.getState().files;
 
     expect(file.name).toBe("test.pdf");
-    expect(file.file_size).toBe("2048");
+    expect(file.file_size).toBe(2048);
     expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
 
     harness.cleanup();
@@ -531,6 +531,29 @@ describe("attachments - useAttachments", () => {
     const [file] = harness.getState().files;
     expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
     expect(file.id).toBe("file-456");
+
+    harness.cleanup();
+  });
+
+  test("normalizes upload response file_size string to number", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "from-api-size.pdf" }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.UPLOADED,
+            id: "file-size-from-api",
+            file_size: "1234",
+          },
+        ],
+      );
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.file_size).toBe(1234);
+    expect(file.id).toBe("file-size-from-api");
 
     harness.cleanup();
   });
