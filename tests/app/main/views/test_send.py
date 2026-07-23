@@ -808,6 +808,8 @@ def test_check_messages_ok_shows_template_attachments_and_scanning_warning(
     assert page.select_one("[data-testid='template-attachments-warning']") is not None
     assert "guide.pdf" in attachments_section.text
     assert "pending.pdf" in attachments_section.text
+    size_labels = attachments_section.select("[data-testid='attachment-file-size']")
+    assert len(size_labels) == 2
 
 
 def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
