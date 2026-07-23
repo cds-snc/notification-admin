@@ -238,6 +238,61 @@ def _abort_if_attachments_disabled_for_service():
         abort(404)
 
 
+def _build_file_upload_error_response(http_error):
+    """
+    Build a structured error response from an HTTPError raised by file upload.
+    Handles different error types from the API:
+    - over_file_limit: Returns structured response with usage details
+    - invalid base64: Returns invalid_file_data
+    - permission denied (403): Returns permission error
+    - not found (404): Returns not found error
+    - server error (500): Returns server error
+    """
+    try:
+        error_data = json.loads(http_error.response.text)
+    except (json.JSONDecodeError, TypeError, AttributeError):
+        error_data = {}
+
+    error_code = http_error.status_code
+    error_message = getattr(http_error, "message", str(http_error))
+    api_error = error_data.get("error")
+    api_message = error_data.get("message")
+
+    # Prioritize explicit API error codes from payload, even if status code is transformed.
+    if api_error == "over_file_limit":
+        return {
+            "error": "over_file_limit",
+            "current_usage": error_data.get("current_usage", 0),
+            "requested": error_data.get("requested", 0),
+            "limit": error_data.get("limit", 0),
+        }
+
+    if api_error == "file_data is not valid base64":
+        return {"error": "invalid_file_data"}
+
+    unsupported_doc_type_message = "unsupported document type"
+    if (isinstance(api_message, str) and unsupported_doc_type_message in api_message.lower()) or (
+        isinstance(api_error, str) and unsupported_doc_type_message in api_error.lower()
+    ):
+        return {"error": "unsupported_file_type"}
+
+    # Handle specific error cases
+    if error_code == 400:
+        # Generic 400 error
+        return {
+            "error": "bad_request",
+            "message": api_message or api_error or error_message,
+        }
+    elif error_code == 403:
+        return {"error": "permission_denied", "message": "You don't have permission to upload files"}
+    elif error_code == 404:
+        return {"error": "template_not_found", "message": "The template was not found"}
+    elif error_code >= 500:
+        return {"error": "server_error", "message": "Failed to upload file to storage"}
+    else:
+        return {"error": "unknown_error", "status_code": error_code, "message": error_message}
+
+
 @main.route(
     "/services/<service_id>/templates/<uuid:template_id>/attachments",
     methods=["POST"],
@@ -249,6 +304,7 @@ def attach_files(service_id, template_id):
     uploaded_files = request.files.getlist("files")
     created_files = []
     error = None
+    error_status_code = 500
 
     for uploaded_file in uploaded_files:
         file_contents = uploaded_file.read()
@@ -271,15 +327,12 @@ def attach_files(service_id, template_id):
             # This allows partial uploads to succeed while reporting the error
             if not error:
                 error = e
+                error_status_code = e.status_code
 
     # If there was an error, return it with whatever files were created
     if error:
-        try:
-            error_code = json.loads(error.response.text)["error"]
-        except (json.JSONDecodeError, KeyError, TypeError):
-            error_code = "unknown_error"
-
-        return jsonify({"error": error_code}), error.status_code
+        error_response = _build_file_upload_error_response(error)
+        return jsonify(error_response), error_status_code
 
     return jsonify(created_files)
 

@@ -85,16 +85,15 @@ export const AttachmentsWidget = ({
       // Try to extract error details from API response
       try {
         const errorData = await response.json();
-        console.log("API error response:", errorData);
-        console.log("copy.overFileLimit:", copy.overFileLimit);
         if (errorData.error === "over_file_limit") {
           errorMessage = copy.overFileLimit;
-          console.log("Set errorMessage to:", errorMessage);
+        } else if (errorData.error === "unsupported_file_type") {
+          errorMessage = copy.unsupportedFileType;
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }
       } catch (parseError) {
-        console.error("Failed to parse error response:", parseError);
+        // Fall back to the default status-based message when response body is not JSON.
       }
 
       throw new Error(errorMessage);
