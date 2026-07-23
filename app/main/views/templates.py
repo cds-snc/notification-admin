@@ -255,9 +255,11 @@ def _build_file_upload_error_response(http_error):
 
     error_code = http_error.status_code
     error_message = getattr(http_error, "message", str(http_error))
+    api_error = error_data.get("error")
+    api_message = error_data.get("message")
 
     # Prioritize explicit API error codes from payload, even if status code is transformed.
-    if error_data.get("error") == "over_file_limit":
+    if api_error == "over_file_limit":
         return {
             "error": "over_file_limit",
             "current_usage": error_data.get("current_usage", 0),
@@ -265,13 +267,22 @@ def _build_file_upload_error_response(http_error):
             "limit": error_data.get("limit", 0),
         }
 
-    if error_data.get("error") == "file_data is not valid base64":
+    if api_error == "file_data is not valid base64":
         return {"error": "invalid_file_data"}
+
+    unsupported_doc_type_message = "unsupported document type"
+    if (isinstance(api_message, str) and unsupported_doc_type_message in api_message.lower()) or (
+        isinstance(api_error, str) and unsupported_doc_type_message in api_error.lower()
+    ):
+        return {"error": "unsupported_file_type"}
 
     # Handle specific error cases
     if error_code == 400:
         # Generic 400 error
-        return {"error": "bad_request", "message": error_data.get("error", error_message)}
+        return {
+            "error": "bad_request",
+            "message": api_message or api_error or error_message,
+        }
     elif error_code == 403:
         return {"error": "permission_denied", "message": "You don't have permission to upload files"}
     elif error_code == 404:

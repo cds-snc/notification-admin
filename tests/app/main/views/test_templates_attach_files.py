@@ -81,6 +81,22 @@ class TestBuildFileUploadErrorResponse:
 
         assert result["error"] == "bad_request"
 
+    def test_unsupported_document_type_message_returns_specific_error(self):
+        """Test that unsupported document type messages map to unsupported_file_type."""
+        error_response = Mock()
+        error_response.status_code = 400
+        error_response.text = json.dumps(
+            {
+                "error": "bad_request",
+                "message": ("Unsupported document type 'text/html'. Supported types are: " "['application/pdf', 'text/plain']"),
+            }
+        )
+        http_error = HTTPError(error_response)
+
+        result = _build_file_upload_error_response(http_error)
+
+        assert result["error"] == "unsupported_file_type"
+
     def test_403_error_returns_permission_denied(self):
         """Test that 403 errors are identified as permission errors."""
         error_response = Mock()

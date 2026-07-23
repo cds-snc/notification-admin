@@ -87,6 +87,8 @@ export const AttachmentsWidget = ({
         const errorData = await response.json();
         if (errorData.error === "over_file_limit") {
           errorMessage = copy.overFileLimit;
+        } else if (errorData.error === "unsupported_file_type") {
+          errorMessage = copy.unsupportedFileType;
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }

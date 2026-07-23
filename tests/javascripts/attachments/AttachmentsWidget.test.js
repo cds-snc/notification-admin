@@ -252,4 +252,43 @@ describe("AttachmentsWidget accessibility", () => {
 
     act(() => root.unmount());
   });
+
+  test("shows unsupported file type message when API returns unsupported_file_type", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        error: "unsupported_file_type",
+      }),
+    });
+
+    const { container, root } = renderComponent(
+      React.createElement(AttachmentsWidget, {
+        ...baseProps,
+        initialFiles: [],
+      }),
+    );
+
+    const openModalButton = container.querySelector(
+      '[data-testid="attachments-open-modal"]',
+    );
+    act(() => {
+      openModalButton.click();
+    });
+
+    const input = container.querySelector('[data-testid="attachments-file-input"]');
+    const file = new File(["abc"], "fake.csv", { type: "text/csv" });
+    selectFiles(input, [file]);
+
+    const submitButton = container.querySelector('[data-testid="attachments-submit"]');
+    await act(async () => {
+      submitButton.click();
+    });
+
+    const errors = container.querySelector('[data-testid="attach-validation-errors"]');
+    expect(errors.textContent).toContain("File type not supported");
+
+    act(() => root.unmount());
+  });
 });
