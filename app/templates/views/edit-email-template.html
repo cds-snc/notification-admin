@@ -87,8 +87,6 @@
       }}
 
       {% if config['FF_FILE_ATTACHMENTS'] and attachments %}
-        {% set attachment_count = attachments|length %}
-
         <section class="mb-16">
           <h2 id="attachments-heading" class="heading-medium">
             {{ _("Attachments") }}
@@ -100,33 +98,9 @@
             </p>
           {% endcall %}
 
-          <ul
-            class="mt-5 mb-4"
-            data-testid="attachments-list-static"
-            aria-label="{{ _('Files attached to this template') }}"
-          >
-            {% for attachment in attachments %}
-              {% set readable_size = attachment['file_size'] | filesizeformat %}
-
-              <li
-                class="attachment-file-row border border-gray-300 p-3 mb-2"
-                data-testid="attached-file-row-static"
-                tabindex="0"
-                aria-label="{{ _('Attachment') }} {{ attachment['name'] }}, {{ readable_size }}"
-              >
-                <div class="flex justify-between gap-6 items-start">
-                  <div class="flex flex-col min-w-0">
-                    {{ attachment['name'] }}
-                  </div>
-
-                  <div class="inline-flex items-center gap-2" aria-hidden="true">
-                    {{ readable_size }}
-                  </div>
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-          <p id="template-attachments-attachments-status" class="hint" data-testid="attachments-summary-static" aria-live="polite" aria-atomic="true">{{ attachment_count }} {{ _('files attached') }} </p>
+          {% set template_attachments = attachments %}
+          {% set attachment_list_classes = 'mt-4' %}
+          {% include "partials/template-attachments-list.html" %}
         </section>
       {% endif %}
 
