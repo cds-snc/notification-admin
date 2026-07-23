@@ -6,6 +6,7 @@ import {
   useAttachments,
   validateFiles,
 } from "./useAttachments";
+import { formatFileSize, sumAttachmentFileSizes } from "./fileSize";
 import { getAttachmentTranslations } from "./localization";
 
 export const AttachmentsWidget = ({
@@ -130,6 +131,15 @@ export const AttachmentsWidget = ({
     () => summarizeStatuses(files, copy),
     [files, copy],
   );
+  const totalFileSizeLabel = useMemo(() => {
+    const countableFiles = files.filter(
+      (file) =>
+        file.status !== "virus_scan_failed" && file.status !== "deleted",
+    );
+    const totalBytes = sumAttachmentFileSizes(countableFiles);
+
+    return totalBytes > 0 ? formatFileSize(totalBytes) : null;
+  }, [files]);
 
   const handleAttach = async (selectedFiles) => {
     const result = validateFiles(selectedFiles, files, copy);
@@ -157,7 +167,17 @@ export const AttachmentsWidget = ({
 
   return (
     <section className="mb-16" data-testid="attachments-widget">
-      <h2 className="heading-medium">{copy.attachedFilesHeading}</h2>
+      <h2 className="heading-medium" data-testid="attachments-heading">
+        {copy.attachedFilesHeading}
+        {totalFileSizeLabel ? (
+          <span
+            className="hint text-xs inline ml-2"
+            data-testid="attachments-total-size"
+          >
+            ({totalFileSizeLabel})
+          </span>
+        ) : null}
+      </h2>
 
       {downloadError && (
         <div

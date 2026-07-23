@@ -66,7 +66,7 @@ describe("AttachmentsWidget accessibility", () => {
           {
             id: "f1",
             name: "doc.pdf",
-            size: 100,
+            file_size: 100,
             status: ATTACHMENT_STATUSES.UPLOADED,
           },
         ],
@@ -77,6 +77,42 @@ describe("AttachmentsWidget accessibility", () => {
     act(() => withFiles.root.unmount());
   });
 
+  test("heading shows total file size from visible attachments", () => {
+    const { container, root } = renderComponent(
+      React.createElement(AttachmentsWidget, {
+        ...baseProps,
+        initialFiles: [
+          {
+            id: "f1",
+            name: "doc-1.pdf",
+            file_size: 1024,
+            status: ATTACHMENT_STATUSES.UPLOADED,
+          },
+          {
+            id: "f2",
+            name: "doc-2.pdf",
+            file_size: 2048,
+            status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          },
+          {
+            id: "f3",
+            name: "bad.pdf",
+            file_size: 4096,
+            status: ATTACHMENT_STATUSES.VIRUS_SCAN_FAILED,
+          },
+        ],
+      }),
+    );
+
+    const heading = container.querySelector('[data-testid="attachments-heading"]');
+    const totalSize = container.querySelector('[data-testid="attachments-total-size"]');
+
+    expect(heading.textContent).toContain("Attached files");
+    expect(totalSize.textContent).toBe("(3.0 KB)");
+
+    act(() => root.unmount());
+  });
+
   test("remove action has accessible aria-label with filename", () => {
     const { container, root } = renderComponent(
       React.createElement(AttachmentsWidget, {
@@ -85,7 +121,7 @@ describe("AttachmentsWidget accessibility", () => {
           {
             id: "f1",
             name: "document.pdf",
-            size: 100,
+            file_size: 100,
             status: ATTACHMENT_STATUSES.UPLOADED,
           },
         ],
@@ -106,13 +142,13 @@ describe("AttachmentsWidget accessibility", () => {
           {
             id: "s1",
             name: "scan-1.pdf",
-            size: 100,
+            file_size: 100,
             status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
           },
           {
             id: "s2",
             name: "scan-2.pdf",
-            size: 100,
+            file_size: 100,
             status: ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
           },
         ],
@@ -133,7 +169,7 @@ describe("AttachmentsWidget accessibility", () => {
           {
             id: "f1",
             name: "focus.pdf",
-            size: 100,
+            file_size: 100,
             status: ATTACHMENT_STATUSES.UPLOADED,
           },
         ],

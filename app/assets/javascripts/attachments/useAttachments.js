@@ -46,6 +46,15 @@ const getExtension = (fileName) => {
   return fileName.slice(lastDot).toLowerCase();
 };
 
+const toFiniteFileSize = (value) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return undefined;
+  }
+
+  return parsed;
+};
+
 export const validateFiles = (
   selectedFiles,
   existingFiles,
@@ -60,7 +69,7 @@ export const validateFiles = (
   }
 
   const existingTotalBytes = existingFiles.reduce(
-    (sum, file) => sum + (file.size || 0),
+    (sum, file) => sum + (toFiniteFileSize(file.file_size) || 0),
     0,
   );
   const selectedTotalBytes = selectedFiles.reduce(
@@ -109,11 +118,6 @@ const nextId = () => {
 const parseApiStatus = (status, fallbackStatus) =>
   VALID_ATTACHMENT_STATUSES.has(status) ? status : fallbackStatus;
 
-const normalizeFile = (file) => ({
-  ...file,
-  status: parseApiStatus(file.status, ATTACHMENT_STATUSES.DELETED),
-});
-
 export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   const counts = {
     scanning: 0,
@@ -160,7 +164,12 @@ export const useAttachments = (
   copy = DEFAULT_COPY,
   fetchFileStatus = null,
 ) => {
-  const [files, setFiles] = useState(() => initialFiles.map(normalizeFile));
+  const [files, setFiles] = useState(() =>
+    initialFiles.map((file) => ({
+      ...file,
+      file_size: toFiniteFileSize(file.file_size),
+    })),
+  );
   const timeoutIdsRef = useRef([]);
   const pollTimeoutIdsRef = useRef(new Map());
   const isMountedRef = useRef(true);
@@ -297,7 +306,9 @@ export const useAttachments = (
             id: fileId,
             name:
               sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
-            size: sourceFile?.size || itemData?.file_size || 0,
+            file_size: toFiniteFileSize(
+              sourceFile?.size ?? itemData?.file_size,
+            ),
             status: parseApiStatus(
               itemData?.status,
               ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,

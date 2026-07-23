@@ -137,6 +137,7 @@ describe("AttachFilesModal accessibility", () => {
     expect(onValidateSelection).toHaveBeenCalled();
     expect(onIssuesChange).toHaveBeenCalledWith([]);
     expect(pendingList.textContent).toContain("test.pdf");
+    expect(pendingList.textContent).toContain("3 B");
     expect(removeButton.getAttribute("aria-label")).toBe("Remove test.pdf");
 
     act(() => root.unmount());

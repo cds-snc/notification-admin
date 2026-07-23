@@ -27,7 +27,7 @@ describe("useAttachments and validateFiles", () => {
   });
 
   test("validateFiles detects duplicate filename against existing files", () => {
-    const existingFiles = [{ id: "a", name: "duplicate.pdf", size: 123 }];
+    const existingFiles = [{ id: "a", name: "duplicate.pdf", file_size: 123 }];
     const selectedFiles = [new File(["x"], "duplicate.pdf", { type: "application/pdf" })];
 
     const result = validateFiles(selectedFiles, existingFiles, copy);
@@ -39,7 +39,7 @@ describe("useAttachments and validateFiles", () => {
   });
 
   test("validateFiles enforces 6 MB combined size limit", () => {
-    const existingFiles = [{ id: "a", name: "existing.pdf", size: 4 * 1024 * 1024 }];
+    const existingFiles = [{ id: "a", name: "existing.pdf", file_size: 4 * 1024 * 1024 }];
     const selectedFiles = [new File(["x"], "new.pdf", { type: "application/pdf" })];
 
     Object.defineProperty(selectedFiles[0], "size", {

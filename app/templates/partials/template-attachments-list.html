@@ -29,7 +29,14 @@
                 data-testid="attachment-row-spinner"
               ></div>
             {% endif %}
-            <span class="attachment-file-name-truncate">{{ attachment.filename }}</span>
+            <p class="min-w-0 mb-0">
+              <span class="attachment-file-name-truncate">{{ attachment.filename }}</span>
+              {% if attachment.file_size is not none %}
+                <span class="attachment-size" data-testid="attachment-file-size">
+                  ({{ attachment.file_size | filesizeformat }})
+                </span>
+              {% endif %}
+            </p>
           </div>
         </li>
       {% endfor %}
