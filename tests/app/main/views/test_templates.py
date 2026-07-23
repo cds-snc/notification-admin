@@ -1,3 +1,5 @@
+import io
+import json
 from datetime import datetime
 from functools import partial
 from unittest.mock import ANY, MagicMock, Mock, patch
@@ -933,6 +935,140 @@ def test_template_attachment_download_route_returns_file(
     assert response.data == b"example content"
     assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
     mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
+
+
+@pytest.mark.parametrize(
+    "status_code,error_payload,expected_payload",
+    [
+        (
+            400,
+            {
+                "error": "over_file_limit",
+                "current_usage": 5000000,
+                "requested": 2000000,
+                "limit": 6291456,
+            },
+            {
+                "error": "over_file_limit",
+                "current_usage": 5000000,
+                "requested": 2000000,
+                "limit": 6291456,
+            },
+        ),
+        (
+            400,
+            {"error": "file_data is not valid base64"},
+            {"error": "invalid_file_data"},
+        ),
+        (
+            400,
+            {"error": "some other error"},
+            {"error": "bad_request", "message": "some other error"},
+        ),
+        (
+            403,
+            {},
+            {
+                "error": "permission_denied",
+                "message": "You don't have permission to upload files",
+            },
+        ),
+        (
+            404,
+            {},
+            {
+                "error": "template_not_found",
+                "message": "The template was not found",
+            },
+        ),
+        (
+            500,
+            {},
+            {
+                "error": "server_error",
+                "message": "Failed to upload file to storage",
+            },
+        ),
+    ],
+)
+def test_template_attachment_upload_route_maps_api_errors(
+    client_request,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+    status_code,
+    error_payload,
+    expected_payload,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    error_response = Mock(status_code=status_code)
+    error_response.text = json.dumps(error_payload)
+    mocker.patch(
+        "app.main.views.templates.file_api_client.create_file",
+        side_effect=HTTPError(response=error_response, message="upload failed"),
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        response = client_request.logged_in_client.post(
+            url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+            data={"files": (io.BytesIO(b"file-content"), "test.pdf")},
+            content_type="multipart/form-data",
+        )
+
+    assert response.status_code == status_code
+    assert response.get_json() == expected_payload
+
+
+def test_template_attachment_upload_continues_after_first_error(
+    client_request,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    error_response = Mock(status_code=400)
+    error_response.text = json.dumps(
+        {
+            "error": "over_file_limit",
+            "current_usage": 5000000,
+            "requested": 2000000,
+            "limit": 6291456,
+        }
+    )
+    create_file_mock = mocker.patch(
+        "app.main.views.templates.file_api_client.create_file",
+        side_effect=[
+            HTTPError(response=error_response, message="upload failed"),
+            {"id": "second-file", "status": "pending_virus_scan"},
+        ],
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+        response = client_request.logged_in_client.post(
+            url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+            data={
+                "files": [
+                    (io.BytesIO(b"first-file"), "first.pdf"),
+                    (io.BytesIO(b"second-file"), "second.pdf"),
+                ]
+            },
+            content_type="multipart/form-data",
+        )
+
+    assert create_file_mock.call_count == 2
+    assert response.status_code == 400
+    assert response.get_json() == {
+        "error": "over_file_limit",
+        "current_usage": 5000000,
+        "requested": 2000000,
+        "limit": 6291456,
+    }
 
 
 @pytest.mark.parametrize(

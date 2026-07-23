@@ -17,6 +17,18 @@ const renderComponent = (element) => {
   return { container, root };
 };
 
+const selectFiles = (input, files) => {
+  Object.defineProperty(input, "files", {
+    value: files,
+    writable: false,
+    configurable: true,
+  });
+
+  act(() => {
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+};
+
 describe("AttachmentsWidget accessibility", () => {
   const baseProps = {
     attachEndpoint: "/attach",
@@ -153,6 +165,90 @@ describe("AttachmentsWidget accessibility", () => {
     });
 
     expect(document.activeElement).toBe(attachMoreButton);
+
+    act(() => root.unmount());
+  });
+
+  test("shows over file limit message when API returns over_file_limit", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        error: "over_file_limit",
+        current_usage: 5000000,
+        requested: 2000000,
+        limit: 6291456,
+      }),
+    });
+
+    const { container, root } = renderComponent(
+      React.createElement(AttachmentsWidget, {
+        ...baseProps,
+        initialFiles: [],
+      }),
+    );
+
+    const openModalButton = container.querySelector(
+      '[data-testid="attachments-open-modal"]',
+    );
+    act(() => {
+      openModalButton.click();
+    });
+
+    const input = container.querySelector('[data-testid="attachments-file-input"]');
+    const file = new File(["abc"], "large.pdf", { type: "application/pdf" });
+    selectFiles(input, [file]);
+
+    const submitButton = container.querySelector('[data-testid="attachments-submit"]');
+    await act(async () => {
+      submitButton.click();
+    });
+
+    const errors = container.querySelector('[data-testid="attach-validation-errors"]');
+    expect(errors.textContent).toContain(
+      "The total file size exceeds the 6 MB limit. Please remove some files and try again.",
+    );
+
+    act(() => root.unmount());
+  });
+
+  test("shows generic storage error message when API returns server_error", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        error: "server_error",
+        message: "Failed to upload file to storage",
+      }),
+    });
+
+    const { container, root } = renderComponent(
+      React.createElement(AttachmentsWidget, {
+        ...baseProps,
+        initialFiles: [],
+      }),
+    );
+
+    const openModalButton = container.querySelector(
+      '[data-testid="attachments-open-modal"]',
+    );
+    act(() => {
+      openModalButton.click();
+    });
+
+    const input = container.querySelector('[data-testid="attachments-file-input"]');
+    const file = new File(["abc"], "test.pdf", { type: "application/pdf" });
+    selectFiles(input, [file]);
+
+    const submitButton = container.querySelector('[data-testid="attachments-submit"]');
+    await act(async () => {
+      submitButton.click();
+    });
+
+    const errors = container.querySelector('[data-testid="attach-validation-errors"]');
+    expect(errors.textContent).toContain("Failed to upload file to storage");
 
     act(() => root.unmount());
   });
