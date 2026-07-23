@@ -726,6 +726,40 @@ describe("attachments - useAttachments", () => {
 
     harness.cleanup();
   });
+
+  test("adds partial uploaded files when upload callback throws with createdFiles", async () => {
+    const harness = setupHookHarness();
+    let thrownError = null;
+
+    await act(async () => {
+      try {
+        const uploadError = new Error("partial upload");
+        uploadError.createdFiles = [
+          {
+            id: "partial-1",
+            status: "pending_virus_scan",
+          },
+        ];
+
+        await harness.getState().attachFiles(
+          [{ name: "partial-file.pdf", size: 2048 }],
+          async () => {
+            throw uploadError;
+          },
+        );
+      } catch (error) {
+        thrownError = error;
+      }
+    });
+
+    expect(thrownError).toBeTruthy();
+    expect(thrownError.message).toBe("partial upload");
+    expect(harness.getState().files).toHaveLength(1);
+    expect(harness.getState().files[0].id).toBe("partial-1");
+    expect(harness.getState().files[0].name).toBe("partial-file.pdf");
+
+    harness.cleanup();
+  });
 });
 
 describe("attachments - download error handling", () => {

@@ -332,6 +332,8 @@ def attach_files(service_id, template_id):
     # If there was an error, return it with whatever files were created
     if error:
         error_response = _build_file_upload_error_response(error)
+        if created_files:
+            error_response["created_files"] = created_files
         return jsonify(error_response), error_status_code
 
     return jsonify(created_files)

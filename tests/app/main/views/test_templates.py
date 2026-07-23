@@ -1068,6 +1068,7 @@ def test_template_attachment_upload_continues_after_first_error(
         "current_usage": 5000000,
         "requested": 2000000,
         "limit": 6291456,
+        "created_files": [{"id": "second-file", "status": "pending_virus_scan"}],
     }
 
 

@@ -253,6 +253,58 @@ describe("AttachmentsWidget accessibility", () => {
     act(() => root.unmount());
   });
 
+  test("keeps successfully created files when API returns error with created_files", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        error: "over_file_limit",
+        created_files: [
+          {
+            id: "created-1",
+            status: "pending_virus_scan",
+            file_size: 1024,
+          },
+        ],
+      }),
+    });
+
+    const { container, root } = renderComponent(
+      React.createElement(AttachmentsWidget, {
+        ...baseProps,
+        initialFiles: [],
+      }),
+    );
+
+    const openModalButton = container.querySelector(
+      '[data-testid="attachments-open-modal"]',
+    );
+    act(() => {
+      openModalButton.click();
+    });
+
+    const input = container.querySelector('[data-testid="attachments-file-input"]');
+    const file = new File(["abc"], "partial.pdf", { type: "application/pdf" });
+    selectFiles(input, [file]);
+
+    const submitButton = container.querySelector('[data-testid="attachments-submit"]');
+    await act(async () => {
+      submitButton.click();
+    });
+
+    const rows = container.querySelectorAll('[data-testid="attached-file-row"]');
+    const errors = container.querySelector('[data-testid="attach-validation-errors"]');
+
+    expect(rows).toHaveLength(1);
+    expect(container.textContent).toContain("partial.pdf");
+    expect(errors.textContent).toContain(
+      "The total file size exceeds the 6 MB limit. Please remove some files and try again.",
+    );
+
+    act(() => root.unmount());
+  });
+
   test("shows unsupported file type message when API returns unsupported_file_type", async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,

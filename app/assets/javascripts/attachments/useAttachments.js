@@ -264,6 +264,31 @@ export const useAttachments = (
     [files],
   );
 
+  const mapUploadedFiles = (callbackItems, selectedFiles) =>
+    callbackItems
+      .map((item, index) => {
+        const itemData = item?.data || item;
+        const fileId = itemData?.id;
+
+        if (!fileId) {
+          return null;
+        }
+
+        const sourceFile = selectedFiles[index];
+
+        return {
+          id: fileId,
+          name: sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
+          size: sourceFile?.size || itemData?.file_size || 0,
+          status: parseApiStatus(
+            itemData?.status,
+            ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          ),
+          sourceFile: undefined,
+        };
+      })
+      .filter(Boolean);
+
   const attachFiles = async (selectedFiles, onAttachFiles) => {
     if (!selectedFiles.length) {
       return;
@@ -282,30 +307,7 @@ export const useAttachments = (
         return;
       }
 
-      const uploadedFiles = callbackItems
-        .map((item, index) => {
-          const itemData = item?.data || item;
-          const fileId = itemData?.id;
-
-          if (!fileId) {
-            return null;
-          }
-
-          const sourceFile = selectedFiles[index];
-
-          return {
-            id: fileId,
-            name:
-              sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
-            size: sourceFile?.size || itemData?.file_size || 0,
-            status: parseApiStatus(
-              itemData?.status,
-              ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
-            ),
-            sourceFile: undefined,
-          };
-        })
-        .filter(Boolean);
+      const uploadedFiles = mapUploadedFiles(callbackItems, selectedFiles);
 
       if (!uploadedFiles.length) {
         return;
@@ -313,6 +315,15 @@ export const useAttachments = (
 
       setFiles((currentFiles) => [...currentFiles, ...uploadedFiles]);
     } catch (error) {
+      const partialItems = Array.isArray(error?.createdFiles)
+        ? error.createdFiles
+        : [];
+      const partialUploadedFiles = mapUploadedFiles(partialItems, selectedFiles);
+
+      if (partialUploadedFiles.length) {
+        setFiles((currentFiles) => [...currentFiles, ...partialUploadedFiles]);
+      }
+
       throw error;
     }
   };
