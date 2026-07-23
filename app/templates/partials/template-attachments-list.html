@@ -15,7 +15,8 @@
   - summary text and warning behavior should track product decisions in send views.
  #}
 {% if template.template_type == 'email' and template_attachments %}
-  <section class="mb-8 border border-gray-300 p-4 attachment-list-flush-top" data-testid="template-attachments-list">
+  {% set attachment_list_classes = attachment_list_classes|default('attachment-list-flush-top') %}
+  <section class="mb-8 border border-gray-300 p-4 {{ attachment_list_classes }}" data-testid="template-attachments-list">
     <ul class="list-none m-0 p-0" data-testid="template-attachments-items">
       {% for attachment in template_attachments %}
         <li class="attachment-file-row border border-gray-300 p-3 mb-2" data-testid="template-attachments-item">
