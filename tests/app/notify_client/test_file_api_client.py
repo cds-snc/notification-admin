@@ -63,7 +63,7 @@ class TestFileApiClient:
                 "base64data",
             )
 
-            assert excinfo.value is http_error
+        assert excinfo.value is http_error
 
     def test_delete_file(self, mocker):
         client = FileApiClient()

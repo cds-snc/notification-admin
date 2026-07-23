@@ -243,7 +243,7 @@ def _build_file_upload_error_response(http_error):
     Build a structured error response from an HTTPError raised by file upload.
     Handles different error types from the API:
     - over_file_limit: Returns structured response with usage details
-    - invalid base64: Returns generic error
+    - invalid base64: Returns invalid_file_data
     - permission denied (403): Returns permission error
     - not found (404): Returns not found error
     - server error (500): Returns server error
