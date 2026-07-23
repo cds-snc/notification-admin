@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 // Render inline as an expanding panel instead of a portal/modal
 import { ACCEPT_ATTRIBUTE } from "./useAttachments";
 import { getAttachmentTranslations } from "./localization";
+import { formatFileSize } from "./fileSize";
 
 const DEFAULT_COPY = getAttachmentTranslations("en");
 
@@ -274,33 +275,47 @@ export const AttachFilesModal = ({
       </div>
       {selectedFiles.length > 0 && (
         <ul className="space-y-2 mb-4" data-testid="pending-files-list">
-          {selectedFiles.map((pendingFile) => (
-            <li
-              key={pendingFile.id}
-              className="border border-gray-300 p-3 flex justify-between items-start align-top"
-            >
-              <div className="min-w-0 pr-4">
-                <span
-                  className="attachment-file-name-truncate mb-0 block"
-                  title={pendingFile.file.name}
-                >
-                  {pendingFile.file.name}
-                </span>
-              </div>
-              <button
-                className="link text-red-700 self-start"
-                type="button"
-                data-testid="attachments-pending-remove"
-                aria-label={`Remove ${pendingFile.file.name}`}
-                onClick={() => onRemovePending(pendingFile.id)}
+          {selectedFiles.map((pendingFile) => {
+            const selectedFileSize = formatFileSize(pendingFile.file.size);
+
+            return (
+              <li
+                key={pendingFile.id}
+                className="border border-gray-300 p-3 flex justify-between items-start align-top"
               >
-                <span className="font-bold underline">{copy.remove}</span>
-                <span className="text-[24px]" aria-hidden="true">
-                  &nbsp;×
-                </span>
-              </button>
-            </li>
-          ))}
+                <div className="min-w-0 pr-4">
+                  <p className="min-w-0 mb-0">
+                    <span
+                      className="attachment-file-name-truncate"
+                      title={pendingFile.file.name}
+                    >
+                      {pendingFile.file.name}
+                    </span>
+                    {selectedFileSize ? (
+                      <span
+                        className="attachment-size"
+                        data-testid="attachment-file-size"
+                      >
+                        {` (${selectedFileSize})`}
+                      </span>
+                    ) : null}
+                  </p>
+                </div>
+                <button
+                  className="link text-red-700 self-start"
+                  type="button"
+                  data-testid="attachments-pending-remove"
+                  aria-label={`Remove ${pendingFile.file.name}`}
+                  onClick={() => onRemovePending(pendingFile.id)}
+                >
+                  <span className="font-bold underline">{copy.remove}</span>
+                  <span className="text-[24px]" aria-hidden="true">
+                    &nbsp;×
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
 

@@ -87,7 +87,7 @@ describe("attachments - validateFiles", () => {
     const existingFiles = Array.from({ length: 10 }, (_, i) => ({
       id: `existing-${i}`,
       name: `existing-${i}.pdf`,
-      size: 100,
+      file_size: 100,
     }));
 
     const selectedFiles = [{ name: "extra.pdf", size: 6 * 1024 * 1024 }];
@@ -282,6 +282,79 @@ describe("attachments - render contracts", () => {
     expect(html).toContain('class="attachment-file-name-truncate"');
   });
 
+  test("shows file size for byte-sized files", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-bytes",
+          name: "tiny.txt",
+          file_size: 512,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="attachment-file-size"');
+    expect(html).toContain("512 B");
+  });
+
+  test("shows file size for kilobyte and megabyte files", () => {
+    const kbHtml = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-kb",
+          name: "report.pdf",
+          file_size: 1536,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    const mbHtml = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-mb",
+          name: "large.pdf",
+          file_size: 2 * 1024 * 1024,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(kbHtml).toContain("1.5 KB");
+    expect(mbHtml).toContain("2.0 MB");
+  });
+
+  test("does not show file size when size is missing", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-no-size",
+          name: "no-size.txt",
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain('data-testid="attachment-file-size"');
+  });
+
   test("remove confirmation shows filename text", () => {
     const html = renderToStaticMarkup(
       React.createElement(AttachedFileRow, {
@@ -421,6 +494,25 @@ describe("attachments - useAttachments", () => {
     jest.useRealTimers();
   });
 
+  test("normalizes provided string file_size to a number", () => {
+    const harness = setupHookHarness([
+      {
+        id: "file-1",
+        name: "test.pdf",
+        file_size: "2048",
+        status: "uploaded",
+      },
+    ]);
+
+    const [file] = harness.getState().files;
+
+    expect(file.name).toBe("test.pdf");
+    expect(file.file_size).toBe(2048);
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
+
+    harness.cleanup();
+  });
+
   test("uses id from upload response", async () => {
     const harness = setupHookHarness();
 
@@ -439,6 +531,29 @@ describe("attachments - useAttachments", () => {
     const [file] = harness.getState().files;
     expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
     expect(file.id).toBe("file-456");
+
+    harness.cleanup();
+  });
+
+  test("normalizes upload response file_size string to number", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "from-api-size.pdf" }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.UPLOADED,
+            id: "file-size-from-api",
+            file_size: "1234",
+          },
+        ],
+      );
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.file_size).toBe(1234);
+    expect(file.id).toBe("file-size-from-api");
 
     harness.cleanup();
   });
