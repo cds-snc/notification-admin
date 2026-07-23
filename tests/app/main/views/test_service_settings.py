@@ -3617,7 +3617,7 @@ def test_archive_service_after_confirm(
     )
 
     mocked_fn.assert_called_once_with(
-        "/service/{}/archive/{}".format(SERVICE_ONE_ID, user.id),
+        "/service/{}/archive/{}".format(SERVICE_ONE_ID, user["id"]),
         data=None,
     )
     assert normalize_spaces(page.select_one("h1").text) == "Your services"
