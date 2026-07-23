@@ -59,7 +59,7 @@ describe("Edit Branding", () => {
       .should(
         "have.attr",
         "alt",
-        "Government of Canada / Gouvernement du Canada",
+        "Government of Canada",
       );
   });
 
@@ -74,7 +74,7 @@ describe("Edit Branding", () => {
       .should(
         "have.attr",
         "alt",
-        "Gouvernement du Canada / Government of Canada",
+        "Gouvernement du Canada",
       );
   });
 
