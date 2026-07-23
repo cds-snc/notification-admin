@@ -56,11 +56,7 @@ describe("Edit Branding", () => {
       .and("contain", "Setting updated");
     BrandingSettingsPage.Components.TemplatePreview()
       .first()
-      .should(
-        "have.attr",
-        "alt",
-        "Government of Canada / Gouvernement du Canada",
-      );
+      .should("have.attr", "alt", "Government of Canada");
   });
 
   it("Saves French-first logo when selected", () => {
@@ -71,11 +67,7 @@ describe("Edit Branding", () => {
       .and("contain", "Setting updated");
     BrandingSettingsPage.Components.TemplatePreview()
       .first()
-      .should(
-        "have.attr",
-        "alt",
-        "Gouvernement du Canada / Government of Canada",
-      );
+      .should("have.attr", "alt", "Gouvernement du Canada");
   });
 
   it("Navigates to branding pool when select another logo from test link is clicked", () => {
