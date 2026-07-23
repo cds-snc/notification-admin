@@ -785,6 +785,13 @@ def test_should_show_attachments_widget_on_email_template_page(
             _test_page_title=False,
         )
 
+    with client_request.session_transaction() as session:
+        assert session[f"enable_file_attachments_next_url_{SERVICE_ONE_ID}"] == url_for(
+            "main.view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        )
+
     assert page.select_one("#template-attachments") is not None
     assert "viewTemplateAttachmentsNoop" not in str(page)
     assert url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
@@ -835,7 +842,7 @@ def test_should_not_render_unsafe_or_deleted_template_attachments_on_template_pa
     assert "deleted-file.pdf" not in page_html
 
 
-def test_should_not_show_attachments_widget_without_send_files_permission(
+def test_should_show_attached_files_heading_and_notice_when_upload_document_permission_missing(
     client_request,
     mock_get_template_folders,
     mock_get_limit_stats,
@@ -858,6 +865,43 @@ def test_should_not_show_attachments_widget_without_send_files_permission(
         )
 
     assert page.select_one("#template-attachments") is None
+    assert page.select_one("[data-testid='attached-files-heading']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-form']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-button']") is not None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
+
+
+def test_should_show_ask_manager_notice_without_manage_service_permission(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    active_user_manage_template_permission,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    client_request.login(active_user_manage_template_permission)
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is None
+    assert page.select_one("[data-testid='attached-files-heading']") is not None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-form']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-button']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is None
 
 
 def test_template_attachment_status_route_returns_file_status(

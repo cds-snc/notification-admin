@@ -74,6 +74,7 @@ from app.utils import (
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
     get_verified_ses_domains,
+    is_safe_redirect_url,
     user_has_permissions,
     user_is_gov_user,
     user_is_platform_admin,
@@ -458,6 +459,20 @@ def service_switch_upload_document(service_id):
         form=form,
         help=help,
     )
+
+
+@main.route(
+    "/services/<service_id>/service-settings/enable-file-attachments",
+    methods=["POST"],
+)
+@user_has_permissions("manage_service")
+def enable_file_attachments(service_id):
+    current_service.force_permission("upload_document", on=True)
+    flash(_("File sending has been turned on"), "default_with_tick")
+    next_url = session.pop(f"enable_file_attachments_next_url_{service_id}", "")
+    if next_url and is_safe_redirect_url(next_url):
+        return redirect(next_url)
+    return redirect(url_for(".service_settings", service_id=service_id))
 
 
 @main.route(
