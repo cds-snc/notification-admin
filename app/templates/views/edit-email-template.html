@@ -10,6 +10,7 @@
 {% from "components/template-content.html" import template_content with context %}
 {% from "components/links.html" import content_link with context %}
 {% from "components/tiptap-editor.html" import tiptap_editor with context %}
+{% from "components/notice.html" import notice %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -84,6 +85,24 @@
         templateType=template_type if template_type else template.template_type,
         initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
       }}
+
+      {% if config['FF_FILE_ATTACHMENTS'] and attachments %}
+        <section class="mb-16">
+          <h2 id="attachments-heading" class="heading-medium">
+            {{ _("Attachments") }}
+          </h2>
+
+          {% call notice('info') %}
+            <p data-testid="file-attachments-edit-template-notice">
+              {{ _('To edit attachments, save changes to your template or press back.') }}
+            </p>
+          {% endcall %}
+
+          {% set template_attachments = attachments %}
+          {% set attachment_list_classes = 'mt-4' %}
+          {% include "partials/template-attachments-list.html" %}
+        </section>
+      {% endif %}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}

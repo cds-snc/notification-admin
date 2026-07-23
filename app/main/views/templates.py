@@ -1334,6 +1334,26 @@ def edit_service_template(service_id, template_id):
             )
         )
     else:
+        template_attachments = None
+        if (
+            current_app.config.get("FF_FILE_ATTACHMENTS")
+            and template["template_type"] == "email"
+            and current_service.has_permission("upload_document")
+        ):
+            template_attachments = [
+                {
+                    "id": attachment.get("id"),
+                    "filename": attachment.get("name") or attachment.get("filename"),
+                    "file_size": attachment.get("size") or attachment.get("file_size"),
+                    "status": attachment.get("status") or "uploaded",
+                }
+                for attachment in filter_attachments(
+                    current_service.get_template_attachments(template_id),
+                    exclude_statuses={"deleted", "virus_scan_failed"},
+                )
+                if attachment.get("name") or attachment.get("filename")
+            ]
+
         return render_template(
             f"views/edit-{template['template_type']}-template.html",
             form=form,
@@ -1345,6 +1365,7 @@ def edit_service_template(service_id, template_id):
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
             one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
             or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
+            attachments=template_attachments,
         )
 
 
