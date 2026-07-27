@@ -327,7 +327,10 @@ export const useAttachments = (
       const partialItems = Array.isArray(error?.createdFiles)
         ? error.createdFiles
         : [];
-      const partialUploadedFiles = mapUploadedFiles(partialItems, selectedFiles);
+      const partialUploadedFiles = mapUploadedFiles(
+        partialItems,
+        selectedFiles,
+      );
 
       if (partialUploadedFiles.length) {
         setFiles((currentFiles) => [...currentFiles, ...partialUploadedFiles]);
