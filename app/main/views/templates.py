@@ -222,7 +222,7 @@ def view_template(service_id, template_id):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
 
     if (
-        current_app.config.get("FF_FILE_ATTACHMENTS")
+        file_attachments_enabled_for_service(current_service.id)
         and template["template_type"] == "email"
         and current_user.has_permissions("manage_service")
     ):

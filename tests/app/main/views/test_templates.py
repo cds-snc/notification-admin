@@ -890,7 +890,7 @@ def test_should_show_ask_manager_notice_without_manage_service_permission(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -1055,7 +1055,7 @@ def test_template_attachment_upload_route_maps_api_errors(
         side_effect=HTTPError(response=error_response, message="upload failed"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.logged_in_client.post(
             url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
             data={"files": (io.BytesIO(b"file-content"), "test.pdf")},
@@ -1093,7 +1093,7 @@ def test_template_attachment_upload_continues_after_first_error(
         ],
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.logged_in_client.post(
             url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
             data={
