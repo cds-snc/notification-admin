@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { ATTACHMENT_STATUSES } from "./useAttachments";
 import { getAttachmentTranslations } from "./localization";
+import { formatFileSize } from "./fileSize";
 
 const DEFAULT_COPY = getAttachmentTranslations("en");
 
@@ -33,6 +34,7 @@ export const AttachedFileRow = ({
     ? `${downloadEndpoint}/${encodeURIComponent(file.id)}`
     : null;
   const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
+  const fileSizeLabel = formatFileSize(file.file_size);
 
   const handleDownload = async (e) => {
     e.preventDefault();
@@ -127,7 +129,17 @@ export const AttachedFileRow = ({
                   data-testid="attachment-row-spinner"
                 ></div>
               ) : null}
-              <p className="min-w-0 mb-0">{fileNameNode}</p>
+              <p className="min-w-0 mb-0">
+                {fileNameNode}
+                {fileSizeLabel ? (
+                  <span
+                    className="attachment-size"
+                    data-testid="attachment-file-size"
+                  >
+                    {` (${fileSizeLabel})`}
+                  </span>
+                ) : null}
+              </p>
             </div>
           </div>
           <button

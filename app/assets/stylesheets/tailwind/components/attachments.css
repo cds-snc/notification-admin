@@ -61,3 +61,8 @@
   transform: translateY(0);
   overflow: visible;
 }
+
+.attachment-size {
+  @apply text-gray-700;
+  font-size: 18px;
+}
