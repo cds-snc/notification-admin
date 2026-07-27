@@ -1,3 +1,6 @@
+import pytest
+from notifications_python_client.errors import HTTPError
+
 from app.notify_client.file_api_client import FileApiClient, file_api_client
 
 
@@ -38,6 +41,29 @@ class TestFileApiClient:
                 "created_by": "test-user-id",
             },
         )
+
+    def test_create_file_raises_http_error_on_api_error(self, mocker):
+        client = FileApiClient()
+        mocker.patch("app.notify_client.file_api_client.current_user", new=mocker.Mock(id="test-user-id"))
+
+        error_response = mocker.Mock()
+        error_response.status_code = 400
+        error_response.text = '{"error": "over_file_limit"}'
+        http_error = HTTPError(error_response)
+
+        mocker.patch.object(client, "post", side_effect=http_error)
+
+        with pytest.raises(HTTPError) as excinfo:
+            client.create_file(
+                "template-id",
+                "upload_document",
+                "large-file.pdf",
+                "application/pdf",
+                2000000,
+                "base64data",
+            )
+
+        assert excinfo.value is http_error
 
     def test_delete_file(self, mocker):
         client = FileApiClient()
