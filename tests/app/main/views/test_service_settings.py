@@ -3448,6 +3448,59 @@ def test_service_switch_upload_document_shows_api_only_help_when_feature_flag_is
         assert "This feature is only available when sending through the API" in paragraph
 
 
+def test_enable_file_attachments_turns_on_permission_and_redirects_to_next(
+    client_request,
+    service_one,
+    mocker,
+    fake_uuid,
+):
+    mocked_fn = mocker.patch("app.models.service.Service.force_permission")
+
+    with client_request.session_transaction() as session:
+        session[f"enable_file_attachments_next_url_{service_one['id']}"] = f"/services/{service_one['id']}/templates/{fake_uuid}"
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _expected_redirect=f"/services/{service_one['id']}/templates/{fake_uuid}",
+    )
+
+    mocked_fn.assert_called_once_with("upload_document", on=True)
+
+    with client_request.session_transaction() as session:
+        assert f"enable_file_attachments_next_url_{service_one['id']}" not in session
+
+
+def test_enable_file_attachments_redirects_to_service_settings_without_next(
+    client_request,
+    service_one,
+    mocker,
+):
+    mocker.patch("app.models.service.Service.force_permission")
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _data={},
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+    )
+
+
+def test_enable_file_attachments_rejects_external_next_url(
+    client_request,
+    service_one,
+    mocker,
+):
+    mocker.patch("app.models.service.Service.force_permission")
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _data={"next": "https://evil.example.com/steal-token"},
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+    )
+
+
 @pytest.mark.parametrize(
     "permissions, expected_checked",
     [
