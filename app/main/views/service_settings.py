@@ -514,7 +514,7 @@ def archive_service(service_id):
     if not current_service.active and (current_service.trial_mode or current_user.platform_admin):
         abort(403)
     if request.method == "POST":
-        service_api_client.archive_service(service_id)
+        service_api_client.archive_service(service_id, current_user.id)
         session.pop("service_id", None)
         flash(
             _("‘%(service_name)s’ was deleted", service_name=current_service.name),
