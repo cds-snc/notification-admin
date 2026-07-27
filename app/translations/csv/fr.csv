@@ -2498,7 +2498,8 @@
 "To edit attachments, save changes to your template or press back.","Pour modifier les pièces jointes, enregistrez les modifications apportées à votre modèle ou appuyez sur Retour."
 "Attachment","Pièce jointe"
 "files attached","fichiers joints"
-"Files attached to this template","Fichiers joints à ce gabarit""If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:","Si une adresse courriel est sur la liste de suppression, Notification&nbsp;GC n'enverra pas de courriels à cette adresse. Cela peut arriver&nbsp;si&nbsp;:"
+"Files attached to this template","Fichiers joints à ce gabarit"
+"If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:","Si une adresse courriel est sur la liste de suppression, Notification&nbsp;GC n'enverra pas de courriels à cette adresse. Cela peut arriver&nbsp;si&nbsp;:"
 "the email server was down when we tried to send","le serveur de courriel était en panne quand nous avons essayé d'envoyer"
 "the email server gave an incorrect response","le serveur de courriel a donné une réponse incorrecte"
 "an overactive spam filter blocked the email","un filtre anti-pourriel trop actif a bloqué le courriel"
@@ -2514,4 +2515,3 @@
 "This service has not sent any emails to {}. You can only remove email addresses that your service has sent to.","Ce service n'a envoyé aucun courriel à {}. Vous ne pouvez retirer que les adresses courriel auxquelles votre service a envoyé des courriels."
 "Invalid email address. Please check and try again.","Adresse courriel invalide. Veuillez vérifier et réessayer."
 "Failed to remove email from suppression list. Please try again or contact support.","Échec du retrait de l'adresse courriel de la liste de suppression. Veuillez réessayer ou contacter le support."
-
