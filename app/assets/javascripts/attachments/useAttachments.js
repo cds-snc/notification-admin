@@ -288,7 +288,7 @@ export const useAttachments = (
         return {
           id: fileId,
           name: sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
-          size: sourceFile?.size || itemData?.file_size || 0,
+          file_size: toFiniteFileSize(itemData?.file_size ?? sourceFile?.size),
           status: parseApiStatus(
             itemData?.status,
             ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,

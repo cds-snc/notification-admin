@@ -936,7 +936,9 @@ describe("attachments - download error handling", () => {
 
     expect(onDownloadError).toHaveBeenCalledWith("file-1", expect.stringContaining("Download failed"));
 
-    root.unmount();
+    act(() => {
+      root.unmount();
+    });
     document.body.removeChild(container);
   });
 
@@ -974,7 +976,9 @@ describe("attachments - download error handling", () => {
     expect(onDownloadError).not.toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledWith("/download/file-2");
 
-    root.unmount();
+    act(() => {
+      root.unmount();
+    });
     document.body.removeChild(container);
   });
 });
