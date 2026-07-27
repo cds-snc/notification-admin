@@ -82,23 +82,28 @@ export const AttachmentsWidget = ({
 
     if (!response.ok) {
       let errorMessage = `Failed to upload attachments (${response.status})`;
+      let createdFiles = [];
 
       // Try to extract error details from API response
       try {
         const errorData = await response.json();
-        console.log("API error response:", errorData);
-        console.log("copy.overFileLimit:", copy.overFileLimit);
+        createdFiles = Array.isArray(errorData.created_files)
+          ? errorData.created_files
+          : [];
         if (errorData.error === "over_file_limit") {
           errorMessage = copy.overFileLimit;
-          console.log("Set errorMessage to:", errorMessage);
+        } else if (errorData.error === "unsupported_file_type") {
+          errorMessage = copy.unsupportedFileType;
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }
       } catch (parseError) {
-        console.error("Failed to parse error response:", parseError);
+        // Fall back to the default status-based message when response body is not JSON.
       }
 
-      throw new Error(errorMessage);
+      const uploadError = new Error(errorMessage);
+      uploadError.createdFiles = createdFiles;
+      throw uploadError;
     }
 
     if (!response.headers.get("content-type")?.includes("application/json")) {
