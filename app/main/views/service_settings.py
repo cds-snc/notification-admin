@@ -71,6 +71,7 @@ from app.utils import (
     SENDING_STATUSES,
     documentation_url,
     email_safe,
+    file_attachments_enabled_for_service,
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
     get_verified_ses_domains,
@@ -118,6 +119,7 @@ def service_settings(service_id: str):
         sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
         limits=limits,
         callback_api=callback_api,
+        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
     )
 
 
@@ -438,7 +440,7 @@ def set_sensitive_service(service_id):
 def service_switch_upload_document(service_id):
     title = _("Send files by email")
     form = ServiceOnOffSettingForm(name=title, enabled=current_service.has_permission("upload_document"))
-    if current_app.config.get("FF_FILE_ATTACHMENTS"):
+    if file_attachments_enabled_for_service(current_service.id):
         help = _(
             "Allow files to be attached to email notifications.<br>Files can be attached on the templates page or through the API<br>Learn more in the <a href='{}'>API documentation</a>."
         ).format(documentation_url("send", section="sending-a-file-by-email"))

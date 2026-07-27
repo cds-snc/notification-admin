@@ -145,7 +145,7 @@ def test_should_show_overview_inc_sms_daily_limit(
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     client.login(user, mocker, service_one)
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -278,7 +278,7 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     client.login(active_user_with_permissions, mocker, service_one)
     service_one["permissions"] = permissions
     service_one["email_branding"] = uuid4()
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
         response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     rows = page.find_all("tr")
@@ -3403,6 +3403,7 @@ def test_service_switch_upload_document(
     client_request,
     service_one,
     mocker,
+    app_,
     initial_permissions,
     expected_initial_value,
     posted_value,
@@ -3411,10 +3412,11 @@ def test_service_switch_upload_document(
     mocked_fn = mocker.patch("app.service_api_client.update_service", return_value=service_one)
     service_one["permissions"] = initial_permissions
 
-    page = client_request.get(
-        "main.service_switch_upload_document",
-        service_id=service_one["id"],
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+        )
 
     assert page.h1.text == "Send files by email"
 
@@ -3424,22 +3426,23 @@ def test_service_switch_upload_document(
     assert page.select_one("input[checked]")["value"] == expected_initial_value
     assert len(page.select("input[checked]")) == 1
 
-    client_request.post(
-        "main.service_switch_upload_document",
-        service_id=service_one["id"],
-        _data={"enabled": posted_value},
-        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        client_request.post(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+            _data={"enabled": posted_value},
+            _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+        )
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
 
 
-def test_service_switch_upload_document_shows_api_only_help_when_feature_flag_is_off(
+def test_service_switch_upload_document_shows_api_only_help_when_service_not_allowlisted(
     client_request,
     service_one,
     app_,
 ):
-    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+    with set_config(app_, "FILE_ATTACH_SERVICES", []):
         page = client_request.get(
             "main.service_switch_upload_document",
             service_id=service_one["id"],
