@@ -339,7 +339,7 @@ export const AttachFilesModal = ({
           ref={submitButtonRef}
           type="button"
           className={`button ${
-            isLoading || selectedFiles.length === 0 || issues.length > 0
+            isLoading || selectedFiles.length === 0
               ? "bg-gray-400 hover:bg-gray-400 cursor-wait pointer-events-none"
               : ""
           }`}
@@ -349,12 +349,8 @@ export const AttachFilesModal = ({
               ? `${copy.modalAttachToTemplate}, ${copy.modalFilesSelected(selectedFiles.length)}`
               : copy.modalAttachToTemplate
           }
-          onClick={
-            selectedFiles.length > 0 && issues.length === 0 ? submit : undefined
-          }
-          aria-disabled={
-            isLoading || selectedFiles.length === 0 || issues.length > 0
-          }
+          onClick={selectedFiles.length > 0 ? submit : undefined}
+          aria-disabled={isLoading || selectedFiles.length === 0}
         >
           {isLoading && (
             <div

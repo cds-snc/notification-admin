@@ -174,7 +174,7 @@ describe("AttachFilesModal accessibility", () => {
     act(() => root.unmount());
   });
 
-  test("prevents selecting the same file twice in the same modal session", () => {
+  test("shows duplicate file error but keeps submit button enabled if there are pending files", () => {
     const onIssuesChange = jest.fn();
     const { container, root } = renderComponent(
       React.createElement(AttachFilesModal, {
@@ -204,6 +204,10 @@ describe("AttachFilesModal accessibility", () => {
     const pendingList = container.querySelector('[data-testid="pending-files-list"]');
     const items = pendingList.querySelectorAll("li");
     expect(items).toHaveLength(1);
+
+    // But the submit button should still be enabled since there is a valid file to attach
+    const submitButton = container.querySelector('[data-testid="attachments-submit"]');
+    expect(submitButton.getAttribute("aria-disabled")).toBe("false");
 
     act(() => root.unmount());
   });
