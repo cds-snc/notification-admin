@@ -309,6 +309,7 @@ def test_notification_status_page_shows_historical_template_attach_from_personal
     mocker,
     service_one,
     fake_uuid,
+    app_,
 ):
     # The API embeds template-level file attachments into personalisation with
     # sending_method="template_attach" when the notification is sent.
@@ -332,11 +333,12 @@ def test_notification_status_page_shows_historical_template_attach_from_personal
         return_value=notification,
     )
 
-    page = client_request.get(
-        "main.view_notification",
-        service_id=service_one["id"],
-        notification_id=fake_uuid,
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+        )
 
     assert "Attachments" in [h2.text for h2 in page.select("h2")]
     assert "historical-file.pdf — 694.8 kB" in str(page)
@@ -376,6 +378,7 @@ def test_notification_status_page_template_attach_personalisation_wins_over_live
     mocker,
     service_one,
     fake_uuid,
+    app_,
 ):
     # template_attach entries in personalisation should take priority over the
     # live template attachments API, just as "attach" entries do.
@@ -402,26 +405,27 @@ def test_notification_status_page_template_attach_personalisation_wins_over_live
         return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
     )
 
-    page = client_request.get(
-        "main.view_notification",
-        service_id=service_one["id"],
-        notification_id=fake_uuid,
-        just_sent=True,
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get(
+            "main.view_notification",
+            service_id=service_one["id"],
+            notification_id=fake_uuid,
+            just_sent=True,
+        )
 
     mock_live_api.assert_not_called()
     assert "personalisation-file.pdf — 694.8 kB" in str(page)
     assert "live-file.pdf" not in str(page)
 
 
-def test_notification_status_page_hides_template_attach_when_flag_off(
+def test_notification_status_page_hides_template_attach_when_service_not_safelisted(
     client_request,
     mocker,
     service_one,
     fake_uuid,
     app_,
 ):
-    # template_attach personalisation should not be shown when FF_FILE_ATTACHMENTS is off.
+    # template_attach personalisation should not be shown when service is not safelisted.
     notification = create_notification(
         template_type="email",
         personalisation={
@@ -436,7 +440,7 @@ def test_notification_status_page_hides_template_attach_when_flag_off(
     )
     mocker.patch("app.notification_api_client.get_notification", return_value=notification)
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+    with set_config(app_, "FILE_ATTACH_SERVICES", []):
         page = client_request.get(
             "main.view_notification",
             service_id=service_one["id"],
@@ -447,14 +451,14 @@ def test_notification_status_page_hides_template_attach_when_flag_off(
     assert "flagged-file.pdf" not in str(page)
 
 
-def test_notification_status_page_does_not_call_live_api_when_flag_off(
+def test_notification_status_page_does_not_call_live_api_when_service_not_safelisted(
     client_request,
     mocker,
     service_one,
     fake_uuid,
     app_,
 ):
-    # The just_sent live API fallback should not fire when FF_FILE_ATTACHMENTS is off.
+    # The just_sent live API fallback should not fire when service is not safelisted.
     notification = create_notification(template_type="email", personalisation={"name": "Jo"})
     mocker.patch("app.notification_api_client.get_notification", return_value=notification)
     mock_live_api = mocker.patch(
@@ -462,7 +466,7 @@ def test_notification_status_page_does_not_call_live_api_when_flag_off(
         return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+    with set_config(app_, "FILE_ATTACH_SERVICES", []):
         page = client_request.get(
             "main.view_notification",
             service_id=service_one["id"],

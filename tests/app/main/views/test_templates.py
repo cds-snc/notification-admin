@@ -779,7 +779,7 @@ def test_should_show_attachments_widget_on_email_template_page(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -828,7 +828,7 @@ def test_should_not_render_unsafe_or_deleted_template_attachments_on_template_pa
         ],
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -858,7 +858,7 @@ def test_should_show_attached_files_heading_and_notice_when_upload_document_perm
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -890,7 +890,7 @@ def test_should_show_ask_manager_notice_without_manage_service_permission(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -926,7 +926,7 @@ def test_template_attachment_status_route_returns_file_status(
         return_value={"status": "pending_virus_scan", "document_id": "file-1"},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".template_attachment_status",
             service_id=SERVICE_ONE_ID,
@@ -964,7 +964,7 @@ def test_template_attachment_download_route_returns_file(
         },
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -1055,7 +1055,7 @@ def test_template_attachment_upload_route_maps_api_errors(
         side_effect=HTTPError(response=error_response, message="upload failed"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.logged_in_client.post(
             url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
             data={"files": (io.BytesIO(b"file-content"), "test.pdf")},
@@ -1093,7 +1093,7 @@ def test_template_attachment_upload_continues_after_first_error(
         ],
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.logged_in_client.post(
             url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
             data={
@@ -1137,7 +1137,7 @@ def test_template_attachment_routes_return_404_without_upload_document_permissio
 ):
     current_user.verified_phonenumber = True
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         request_func = getattr(client_request, method)
         response = request_func(
             route_name,
@@ -1174,7 +1174,7 @@ def test_template_attachment_download_returns_404_when_file_not_found(
         side_effect=HTTPError(response=resp_mock, message="File not found"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -1209,7 +1209,7 @@ def test_template_attachment_download_shows_error_when_file_not_ready(
         side_effect=HTTPError(response=resp_mock, message="File not ready"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -1245,7 +1245,7 @@ def test_template_attachment_download_returns_500_when_api_errors(
         side_effect=HTTPError(response=resp_mock, message="Internal server error"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         from werkzeug.exceptions import InternalServerError
 
         with pytest.raises(InternalServerError):

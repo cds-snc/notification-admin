@@ -8,7 +8,6 @@ from dateutil import parser
 from flask import (
     Response,
     abort,
-    current_app,
     flash,
     jsonify,
     redirect,
@@ -37,6 +36,7 @@ from app.template_previews import get_page_count_for_letter
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
+    file_attachments_enabled_for_service,
     generate_notifications_csv,
     get_help_argument,
     get_letter_printing_statement,
@@ -56,7 +56,7 @@ def view_notification(service_id, notification_id):
     personalisation = get_all_personalisation_from_notification(notification)
 
     # Get attachments from personalisation after redaction is applied
-    ff_enabled = current_app.config.get("FF_FILE_ATTACHMENTS")
+    ff_enabled = file_attachments_enabled_for_service(service_id)
     methods = ["attach"]
     if ff_enabled:
         methods.append("template_attach")
