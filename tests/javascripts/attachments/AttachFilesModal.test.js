@@ -173,4 +173,38 @@ describe("AttachFilesModal accessibility", () => {
 
     act(() => root.unmount());
   });
+
+  test("prevents selecting the same file twice in the same modal session", () => {
+    const onIssuesChange = jest.fn();
+    const { container, root } = renderComponent(
+      React.createElement(AttachFilesModal, {
+        isOpen: true,
+        issues: [],
+        copy,
+        onIssuesChange,
+        onValidateSelection: (files) => ({ acceptedFiles: files, issues: [] }),
+        onClose: jest.fn(),
+        onAttach: jest.fn(),
+      }),
+    );
+
+    const input = container.querySelector('[data-testid="attachments-file-input"]');
+    const file = new File(["abc"], "duplicate.pdf", { type: "application/pdf" });
+
+    // First selection should succeed
+    selectFiles(input, [file]);
+    expect(onIssuesChange).toHaveBeenLastCalledWith([]);
+
+    // Second selection of the same file should trigger a duplicate error
+    selectFiles(input, [file]);
+    const lastCall = onIssuesChange.mock.calls[onIssuesChange.mock.calls.length - 1][0];
+    expect(lastCall.some((issue) => issue.includes("duplicate.pdf"))).toBe(true);
+
+    // Verify the file list still only has one file
+    const pendingList = container.querySelector('[data-testid="pending-files-list"]');
+    const items = pendingList.querySelectorAll("li");
+    expect(items).toHaveLength(1);
+
+    act(() => root.unmount());
+  });
 });
