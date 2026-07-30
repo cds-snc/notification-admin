@@ -12,7 +12,7 @@ requires = ["poetry-core>=1.7.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "~3.14.0"
+python = "~3.12.7"
 apig-wsgi = "2.20.0"
 aws-xray-sdk = "^2.14.0"
 
@@ -40,7 +40,7 @@ gunicorn = "22.0.0"
 # Putting upgrade on hold due to v1.0.0 using sha512 instead of sha1 by default
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 notifications-python-client = "6.4.1"
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.31" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", tag = "53.2.33" }
 pwnedpasswords = "2.0.0"
 pyexcel = "0.7.6"
 pyexcel-io = "0.6.8"
