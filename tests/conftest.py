@@ -8,6 +8,8 @@ from uuid import UUID, uuid4
 
 import pytest
 import requests
+from app.tou import TERMS_KEY
+from app.types import EmailReplyTo
 from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from freezegun import freeze_time
@@ -17,8 +19,6 @@ from pytest_mock import MockerFixture
 from werkzeug.exceptions import NotFound
 
 from app import create_app
-from app.tou import TERMS_KEY
-from app.types import EmailReplyTo
 
 from . import (
     DEFAULT_TEMPLATE_CATEGORY_HIGH,

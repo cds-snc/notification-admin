@@ -2,10 +2,9 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
 import pytest
+from app.main.views.reports import get_report_totals, set_report_expired
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
-
-from app.main.views.reports import get_report_totals, set_report_expired
 
 
 def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):

@@ -1,7 +1,6 @@
 import pytest
-from flask import session
-
 from app.models.user import AnonymousUser, User
+from flask import session
 
 
 def test_anonymous_user(app_):

@@ -2,9 +2,8 @@ import io
 import json
 from unittest.mock import Mock
 
-from notifications_python_client.errors import HTTPError
-
 from app.main.views.templates import _build_file_upload_error_response
+from notifications_python_client.errors import HTTPError
 
 
 def _mock_file_upload(data=None, filename="test.pdf", mimetype="application/pdf"):

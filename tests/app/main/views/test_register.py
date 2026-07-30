@@ -2,10 +2,9 @@ from datetime import datetime
 from unittest.mock import ANY
 
 import pytest
+from app.models.user import InvitedUser, User
 from bs4 import BeautifulSoup
 from flask import url_for
-
-from app.models.user import InvitedUser, User
 
 
 def test_render_register_returns_template_with_form(client):

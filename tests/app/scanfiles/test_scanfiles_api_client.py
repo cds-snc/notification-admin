@@ -1,9 +1,8 @@
 from unittest import mock
 
 import pytest
-from requests.exceptions import Timeout
-
 from app.scanfiles.scanfiles_api_client import scanfiles_api_client
+from requests.exceptions import Timeout
 
 
 @pytest.fixture

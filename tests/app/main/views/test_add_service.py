@@ -1,8 +1,8 @@
 import pytest
-from flask import Flask, url_for
-
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
+from flask import Flask, url_for
+
 from tests import organisation_json
 from tests.conftest import mock_get_organisation_by_domain, normalize_spaces
 

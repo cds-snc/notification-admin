@@ -11,6 +11,7 @@ from uuid import uuid4
 from zipfile import BadZipFile
 
 import pytest
+from app.main.views.send import daily_email_count, daily_sms_count
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
@@ -23,7 +24,6 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_email_count, daily_sms_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,

@@ -1,10 +1,10 @@
 import pytest
-from bs4 import BeautifulSoup
-from flask import current_app, url_for
-
 from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
+from bs4 import BeautifulSoup
+from flask import current_app, url_for
+
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 services = [

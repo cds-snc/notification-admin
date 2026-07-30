@@ -3,10 +3,6 @@ import re
 from unittest.mock import ANY
 
 import pytest
-from bs4 import BeautifulSoup
-from flask import url_for
-from freezegun import freeze_time
-
 from app.main.views.dashboard import (
     aggregate_by_type_daily,
     aggregate_notifications_stats,
@@ -17,6 +13,10 @@ from app.main.views.dashboard import (
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
+from bs4 import BeautifulSoup
+from flask import url_for
+from freezegun import freeze_time
+
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,

@@ -2,10 +2,10 @@ import json
 import uuid
 
 import pytest
+from app.main.views.jobs import _get_job_counts
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import _get_job_counts
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     JOB_API_KEY_NAME,

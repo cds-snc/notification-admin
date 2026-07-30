@@ -6,11 +6,6 @@ from unittest.mock import ANY, MagicMock, Mock, patch
 from uuid import UUID
 
 import pytest
-from flask import url_for
-from flask_login import current_user
-from freezegun import freeze_time
-from notifications_python_client.errors import HTTPError
-
 from app.main.forms import TC_PRIORITY_VALUE
 from app.main.views.templates import (
     delete_preview_data,
@@ -21,6 +16,11 @@ from app.main.views.templates import (
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.sample_template_utils import clear_sample_template_cache
+from flask import url_for
+from flask_login import current_user
+from freezegun import freeze_time
+from notifications_python_client.errors import HTTPError
+
 from tests import (
     TESTING_TEMPLATE_CATEGORY,
     MockRedis,

@@ -6,11 +6,6 @@ from unittest.mock import Mock, patch
 from urllib.parse import unquote
 
 import pytest
-from flask import current_app, request
-from freezegun import freeze_time
-from pytest_mock import MockerFixture
-
-from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -29,6 +24,11 @@ from app.utils import (
     printing_today_or_tomorrow,
     report_security_finding,
 )
+from flask import current_app, request
+from freezegun import freeze_time
+from pytest_mock import MockerFixture
+
+from app import format_datetime_relative
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_reply_to_email_address,

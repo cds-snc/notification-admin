@@ -3,11 +3,11 @@ import uuid
 from urllib.parse import parse_qs, urlparse
 
 import pytest
+from app.main.views.jobs import get_available_until_date, get_status_filters
+from app.models.service import Service
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_available_until_date, get_status_filters
-from app.models.service import Service
 from tests import notification_json
 from tests.conftest import (
     SERVICE_ONE_ID,
