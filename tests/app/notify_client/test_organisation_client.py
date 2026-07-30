@@ -7,14 +7,7 @@ from app import organisations_client
 
 
 @pytest.mark.parametrize(
-    (
-        "client_method,"
-        "expected_cache_get_calls,"
-        "cache_value,"
-        "expected_api_calls,"
-        "expected_cache_set_calls,"
-        "expected_return_value,"
-    ),
+    ("client_method,expected_cache_get_calls,cache_value,expected_api_calls,expected_cache_set_calls,expected_return_value,"),
     [
         (
             "get_domains",

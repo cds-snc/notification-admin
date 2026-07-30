@@ -276,7 +276,7 @@ def test_shows_message_when_no_notifications(
 
 
 @pytest.mark.parametrize(
-    ("initial_query_arguments," "form_post_data," "expected_search_box_label," "expected_search_box_contents"),
+    ("initial_query_arguments,form_post_data,expected_search_box_label,expected_search_box_contents"),
     [
         (
             {},

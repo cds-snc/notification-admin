@@ -298,7 +298,7 @@ def test_new_user_accept_invite_calls_api_and_views_registration_page(
     assert page.h1.string.strip() == "Create an account"
 
     assert normalize_spaces(page.select_one("main p").text) == (
-        "Your account will be created with this email address: " "invited_user@test.canada.ca"
+        "Your account will be created with this email address: invited_user@test.canada.ca"
     )
 
     form = page.find("form")

@@ -88,7 +88,7 @@ class TestBuildFileUploadErrorResponse:
         error_response.text = json.dumps(
             {
                 "error": "bad_request",
-                "message": ("Unsupported document type 'text/html'. Supported types are: " "['application/pdf', 'text/plain']"),
+                "message": ("Unsupported document type 'text/html'. Supported types are: ['application/pdf', 'text/plain']"),
             }
         )
         http_error = HTTPError(error_response)

@@ -469,7 +469,7 @@ def test_stats_pages_show_last_3_years(
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 fiscal year " "2013 to 2014 fiscal year " "2014 to 2015 fiscal year"
+        "2012 to 2013 fiscal year 2013 to 2014 fiscal year 2014 to 2015 fiscal year"
     )
 
 

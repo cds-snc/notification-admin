@@ -685,5 +685,5 @@ def assert_url_expected(actual: str, expected: str):
             assert parse_qs(expected_parts.query) == parse_qs(actual_parts.query)
         else:
             assert getattr(actual_parts, attribute) == getattr(expected_parts, attribute), (
-                "Expected redirect: {}\n" "Actual redirect: {}"
+                "Expected redirect: {}\nActual redirect: {}"
             ).format(expected, actual)

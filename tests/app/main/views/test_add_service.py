@@ -448,7 +448,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
     mock_create_service_template.assert_called_once_with(
         "Example text message template",
         "sms",
-        ("Hey ((name)), I’m trying out GC Notify. Today is " "((day of week)) and my favourite colour is ((colour))."),
+        ("Hey ((name)), I’m trying out GC Notify. Today is ((day of week)) and my favourite colour is ((colour))."),
         101,
     )
 

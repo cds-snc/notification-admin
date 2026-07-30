@@ -196,7 +196,7 @@ def test_can_create_spreadsheet_from_dict():
             foo="bar",
             name="Jane",
         )
-    ).as_csv_data == ("foo,name\r\n" "bar,Jane\r\n")
+    ).as_csv_data == ("foo,name\r\nbar,Jane\r\n")
 
 
 def test_can_create_spreadsheet_from_dict_with_filename():

@@ -199,7 +199,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
     client_request.login(active_user_with_permissions)
 
     # Simulate coming from the dashboard page
-    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+    referring_url = f"http://localhost/services/{service_one['id']}/{referrer_page}"
 
     # Make a request to the reports page with the dashboard as referer
     response = client_request.get(
@@ -213,7 +213,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
 
     # Verify that the back_link was set in the session
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+        assert session[f"back_link_{service_one['id']}_reports"] == referring_url
 
     # Verify the back link is present in the page content
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -228,10 +228,10 @@ def test_reports_uses_session_back_link_after_refresh(
     client_request.login(active_user_with_permissions)
 
     with client_request.session_transaction() as session:
-        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+        session[f"back_link_{service_one['id']}_reports"] = expected_back_link
 
     # Make the request with the same URL as referer to simulate a refresh
-    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    current_url = f"http://localhost/services/{service_one['id']}/reports"
     response = client_request.get(
         "main.reports",
         service_id=service_one["id"],
@@ -243,7 +243,7 @@ def test_reports_uses_session_back_link_after_refresh(
 
     # Verify the session still contains the original back link
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+        assert session[f"back_link_{service_one['id']}_reports"] == expected_back_link
 
     # The page should still have access to the back_link
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")

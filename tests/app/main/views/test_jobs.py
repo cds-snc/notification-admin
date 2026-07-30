@@ -82,13 +82,13 @@ def test_get_job_counts_in_transit(app_, job, expected_in_transit):
     [
         (
             ("List name Details"),
-            ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
-            ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
+            ("send_me_later.csv Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ],
 )
@@ -163,10 +163,10 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     for index, row in enumerate(
         (
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ):
         assert normalize_spaces(page.select("tr")[index].text) == row
@@ -253,7 +253,7 @@ def test_should_show_page_for_one_job(
     )
 
     assert normalize_spaces(dashboard_table.select_one("tbody tr").text) == normalize_spaces(
-        "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
+        "6502532222 template content No Delivered 11:10:00.061258"
     )
     assert dashboard_table.select_one("tbody tr a")["href"] == url_for(
         "main.view_notification",
