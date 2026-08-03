@@ -84,6 +84,21 @@
           {{ empty_field() }}
         {% endcall %}
 
+        {% call row() %}
+          {% set txt = _('Suppression list') %}
+          {{ text_field(txt) }}
+          {% set suppression_txt = _('Remove blocked email addresses') %}
+          {{ text_field(suppression_txt) }}
+          {% set manage_txt = _('Manage') %}
+          {{ edit_field(
+              manage_txt,
+              url_for('.service_suppression_list', service_id=current_service.id),
+              permissions=['manage_service'],
+              for=txt
+          )
+          }}
+        {% endcall %}
+
       {% endcall %}
 
 
@@ -177,6 +192,8 @@
           {{ text_field(annual_limit, attributes="data-testid=email-annual-limit") }}
           {{ empty_field() }}
         {% endcall %}
+
+
 
       {% endcall %}
 

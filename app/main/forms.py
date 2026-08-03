@@ -1627,6 +1627,13 @@ class ServiceDataRetentionEditForm(StripWhitespaceForm):
     )
 
 
+class SuppressionListRemovalForm(StripWhitespaceForm):
+    email_address = email_address(
+        _l("Email address"),
+        gov_user=False,
+    )
+
+
 class ReturnedLettersForm(StripWhitespaceForm):
     references = TextAreaField(
         "Letter references",
