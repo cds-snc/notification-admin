@@ -1,9 +1,9 @@
 from unittest.mock import Mock, patch
 
 import pytest
-
 from app.notify_client.notification_counts_client import NotificationCounts
 from app.utils import get_current_financial_year
+
 from tests.conftest import set_config
 
 

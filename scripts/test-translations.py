@@ -34,7 +34,7 @@ def csv_to_dict(filename):
     with open(filename, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for index, row in enumerate(reader):
-            d[row["source"]] = row.get("location", f"{filename}:{index+1}")
+            d[row["source"]] = row.get("location", f"{filename}:{index + 1}")
     return d
 
 
@@ -49,7 +49,7 @@ def malformed_rows(filename):
         extra_space_pattern = re.compile(r'".*"(\s*,\s+|\s+,\s*)".*"')  # at least one space on at least one side of the comma
         for index, row in enumerate(file.readlines()):
             if extra_space_pattern.match(row):
-                print(f"Extra space : {filename}:{index+1} : {row}", end="")  # noqa: T201
+                print(f"Extra space : {filename}:{index + 1} : {row}", end="")  # noqa: T201
                 malformed_rows_found = True
     return malformed_rows_found
 
@@ -61,7 +61,7 @@ def need_nbsp(filename):
         for index, row in enumerate(reader):
             french = row["target"]
             if " :" in french or "« " in french or " »" in french:
-                print(f"need &nbsp; in French: {filename}:{index+2}: {french}")  # noqa: T201
+                print(f"need &nbsp; in French: {filename}:{index + 2}: {french}")  # noqa: T201
                 missing_nbsp = True
     return missing_nbsp
 
@@ -74,7 +74,7 @@ def duplicate_keys(filename):
         for index, row in enumerate(reader):
             key = row["source"]
             if key in keys:
-                print(f"Duplicate: {filename}:{index+2} : {key}")  # noqa: T201
+                print(f"Duplicate: {filename}:{index + 2} : {key}")  # noqa: T201
                 duplicates_found = True
             keys.add(key)
     return duplicates_found

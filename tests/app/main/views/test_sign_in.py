@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from unittest import mock
 
 import pytest
+from app.models.user import User
 from bs4 import BeautifulSoup
 from flask import current_app, url_for
 
-from app.models.user import User
 from tests.conftest import normalize_spaces
 
 

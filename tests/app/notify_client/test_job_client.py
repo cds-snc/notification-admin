@@ -2,7 +2,6 @@ import uuid
 from unittest.mock import ANY
 
 import pytest
-
 from app.notify_client.job_api_client import JobApiClient
 
 

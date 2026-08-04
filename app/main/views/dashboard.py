@@ -191,7 +191,7 @@ def template_usage(service_id):
     response = template_statistics_client.get_monthly_template_usage_for_service(service_id, year, page=page, page_size=page_size)
     stats = response["data"]
 
-    stats = sorted(stats, key=lambda x: (x["count"]), reverse=True)
+    stats = sorted(stats, key=lambda x: x["count"], reverse=True)
 
     def get_monthly_template_stats(month_name, stats):
         return {

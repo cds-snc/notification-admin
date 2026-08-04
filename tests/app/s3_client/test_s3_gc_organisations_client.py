@@ -1,4 +1,5 @@
 from app.s3_client.s3_gc_organisations_client import get_gc_organisations_from_s3, parse_gc_organisations_data
+
 from tests.conftest import set_config
 
 

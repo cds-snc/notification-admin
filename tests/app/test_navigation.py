@@ -3,6 +3,7 @@
 from unittest.mock import Mock, patch
 
 from app.navigation import Navigation
+
 from tests.conftest import ORGANISATION_ID, SERVICE_ONE_ID
 
 
@@ -124,9 +125,8 @@ class TestNavigationGetNav:
         mock_url_for.return_value = "/service/123"
 
         # Set up Flask globals for current_service
-        from flask import g
-
         from app.models.service import Service
+        from flask import g
 
         mock_service = Mock(spec=Service)
         mock_service.id = SERVICE_ONE_ID
@@ -178,9 +178,8 @@ class TestNavigationGetNav:
         mock_url_for.return_value = "/service/123"
 
         # Set up Flask globals for current_service
-        from flask import g
-
         from app.models.service import Service
+        from flask import g
 
         mock_service = Mock(spec=Service)
         mock_service.id = SERVICE_ONE_ID

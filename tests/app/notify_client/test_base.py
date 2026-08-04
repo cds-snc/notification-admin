@@ -1,8 +1,7 @@
 import pytest
 import requests
-from notifications_python_client.errors import HTTP503Error
-
 from app.notify_client.service_api_client import service_api_client
+from notifications_python_client.errors import HTTP503Error
 
 
 def test_retry_on_server_error_2_failed_tries(mocker):

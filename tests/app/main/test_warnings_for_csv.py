@@ -1,7 +1,6 @@
 from collections import namedtuple
 
 import pytest
-
 from app.utils import get_warnings_for_csv
 
 # A minimal stand-in for ``RecipientCSV`` covering only the attributes consumed
