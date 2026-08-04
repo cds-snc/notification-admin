@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { AttachFilesModal } from "./AttachFilesModal";
 import { AttachedFileRow } from "./AttachedFileRow";
 import {
@@ -6,6 +6,7 @@ import {
   useAttachments,
   validateFiles,
 } from "./useAttachments";
+import { formatFileSize, sumAttachmentFileSizes } from "./fileSize";
 import { getAttachmentTranslations } from "./localization";
 
 export const AttachmentsWidget = ({
@@ -17,12 +18,16 @@ export const AttachmentsWidget = ({
   csrfToken,
   lang = "en",
   classificationUrl,
+  idPrefix = "attachments-widget",
 }) => {
   const [isAttachModalOpen, setAttachModalOpen] = useState(false);
   const [validationIssues, setValidationIssues] = useState([]);
   const [removeCandidateId, setRemoveCandidateId] = useState(null);
   const [downloadError, setDownloadError] = useState(null);
   const copy = useMemo(() => getAttachmentTranslations(lang), [lang]);
+  const attachMoreButtonRef = useRef(null);
+  const statusId = `${idPrefix}-attachments-status`;
+  const buttonLabelId = `${idPrefix}-attachments-button-label`;
 
   const fetchFileStatus = useMemo(() => {
     if (!statusEndpoint) {
@@ -76,7 +81,29 @@ export const AttachmentsWidget = ({
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to upload attachments (${response.status})`);
+      let errorMessage = `Failed to upload attachments (${response.status})`;
+      let createdFiles = [];
+
+      // Try to extract error details from API response
+      try {
+        const errorData = await response.json();
+        createdFiles = Array.isArray(errorData.created_files)
+          ? errorData.created_files
+          : [];
+        if (errorData.error === "over_file_limit") {
+          errorMessage = copy.overFileLimit;
+        } else if (errorData.error === "unsupported_file_type") {
+          errorMessage = copy.unsupportedFileType;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } catch (parseError) {
+        // Fall back to the default status-based message when response body is not JSON.
+      }
+
+      const uploadError = new Error(errorMessage);
+      uploadError.createdFiles = createdFiles;
+      throw uploadError;
     }
 
     if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -109,6 +136,15 @@ export const AttachmentsWidget = ({
     () => summarizeStatuses(files, copy),
     [files, copy],
   );
+  const totalFileSizeLabel = useMemo(() => {
+    const countableFiles = files.filter(
+      (file) =>
+        file.status !== "virus_scan_failed" && file.status !== "deleted",
+    );
+    const totalBytes = sumAttachmentFileSizes(countableFiles);
+
+    return totalBytes > 0 ? formatFileSize(totalBytes) : null;
+  }, [files]);
 
   const handleAttach = async (selectedFiles) => {
     const result = validateFiles(selectedFiles, files, copy);
@@ -121,6 +157,12 @@ export const AttachmentsWidget = ({
     try {
       await attachFiles(result.acceptedFiles, uploadFiles);
       setAttachModalOpen(false);
+      // Focus the "attach more files" button after successful attachment
+      if (attachMoreButtonRef.current) {
+        setTimeout(() => {
+          attachMoreButtonRef.current?.focus();
+        }, 0);
+      }
     } catch (error) {
       setValidationIssues([
         error.message || "Failed to attach files. Please try again.",
@@ -130,7 +172,17 @@ export const AttachmentsWidget = ({
 
   return (
     <section className="mb-16" data-testid="attachments-widget">
-      <h2 className="heading-medium">{copy.attachedFilesHeading}</h2>
+      <h2 className="heading-medium" data-testid="attachments-heading">
+        {copy.attachedFilesHeading}
+        {totalFileSizeLabel ? (
+          <span
+            className="hint text-xs inline ml-2"
+            data-testid="attachments-total-size"
+          >
+            ({totalFileSizeLabel})
+          </span>
+        ) : null}
+      </h2>
 
       {downloadError && (
         <div
@@ -166,9 +218,17 @@ export const AttachmentsWidget = ({
                   console.error(error);
                 } finally {
                   setRemoveCandidateId(null);
+                  if (attachMoreButtonRef.current) {
+                    attachMoreButtonRef.current.focus();
+                  }
                 }
               }}
-              onCancelRemove={() => setRemoveCandidateId(null)}
+              onCancelRemove={() => {
+                setRemoveCandidateId(null);
+                if (attachMoreButtonRef.current) {
+                  attachMoreButtonRef.current.focus();
+                }
+              }}
               onDownloadError={(fileId, error) => {
                 setDownloadError(`Failed to download file. ${error}`);
               }}
@@ -180,16 +240,26 @@ export const AttachmentsWidget = ({
       ) : null}
 
       <div className="flex items-center justify-between gap-4 border-t border-gray-300 pt-4">
-        <p className="hint" data-testid="attachments-summary">
+        <p
+          id={statusId}
+          className="hint"
+          data-testid="attachments-summary"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {statusSummary}
         </p>
         <button
+          ref={attachMoreButtonRef}
           type="button"
           className="button button-secondary"
           data-testid="attachments-open-modal"
+          aria-labelledby={`${buttonLabelId} ${statusId}`}
           onClick={() => setAttachModalOpen(true)}
         >
-          {files.length ? copy.attachMoreFiles : copy.attachFiles}
+          <span id={buttonLabelId}>
+            {files.length ? copy.attachMoreFiles : copy.attachFiles}
+          </span>
         </button>
       </div>
 

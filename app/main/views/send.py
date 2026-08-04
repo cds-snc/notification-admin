@@ -67,6 +67,8 @@ from app.utils import (
     PermanentRedirect,
     Spreadsheet,
     email_or_sms_not_enabled,
+    file_attachments_enabled_for_service,
+    filter_attachments,
     get_errors_for_csv,
     get_help_argument,
     get_limit_reset_time_et,
@@ -107,28 +109,25 @@ def service_can_bulk_send(service_id):
 def build_template_attachment_personalisation(template_id, template_type):
     """Return a personalisation dict of template-level file attachments to merge before sending.
 
-    Only populated when FF_FILE_ATTACHMENTS is on, the template is an email,
+    Only populated when file attachments are enabled for the service, the template is an email,
     and the service has the upload_document permission. Only attachments with
     'uploaded' status and valid id/name are included with contiguous _file_N keys.
     """
     if (
-        not current_app.config.get("FF_FILE_ATTACHMENTS")
+        not file_attachments_enabled_for_service(current_service.id)
         or template_type != "email"
         or not current_service.has_permission("upload_document")
     ):
         return {}
 
-    attachments = current_service.get_template_attachments(template_id)
+    attachments = filter_attachments(
+        current_service.get_template_attachments(template_id),
+        include_statuses={"uploaded"},
+    )
     result = {}
     file_index = 0  # Track contiguous index for included attachments
 
     for attachment in attachments:
-        status = attachment.get("status") or "uploaded"
-
-        # Only include fully uploaded attachments
-        if status != "uploaded":
-            continue
-
         # Skip if missing required fields
         attachment_id = attachment.get("id")
         filename = attachment.get("name") or attachment.get("filename")
@@ -156,7 +155,7 @@ def get_template_attachment_context(template_id, template_type):
     }
 
     if (
-        not current_app.config.get("FF_FILE_ATTACHMENTS")
+        not file_attachments_enabled_for_service(current_service.id)
         or template_type != "email"
         or not current_service.has_permission("upload_document")
     ):

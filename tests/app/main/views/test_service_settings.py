@@ -68,7 +68,7 @@ def mock_get_service_settings_page_common(
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -91,7 +91,7 @@ def mock_get_service_settings_page_common(
                 "Send emails On Change",
                 "Reply-to addresses Not set Manage",
                 "Email branding English Government of Canada signature Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -145,7 +145,7 @@ def test_should_show_overview_inc_sms_daily_limit(
     mocker.patch("app.service_api_client.get_service", return_value={"data": service_one})
 
     client.login(user, mocker, service_one)
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client.get(url_for("main.service_settings", service_id=SERVICE_ONE_ID))
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -226,7 +226,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -247,7 +247,7 @@ def test_organisation_name_links_to_org_dashboard(
                 "Send emails On Change",
                 "Reply-to addresses test@example.com Manage",
                 "Email branding Your branding (Organisation name) Change",
-                "Send files by email Off (API-only) Change",
+                "Send files by email Off Change",
                 "Daily maximum 1,000 emails No value",
                 "Annual maximum(April 1 to March 31) 20,000,000 emails No value",
                 "Label Value Action",
@@ -278,7 +278,7 @@ def test_should_show_overview_for_service_with_more_things_set_inc_sms_daily_lim
     client.login(active_user_with_permissions, mocker, service_one)
     service_one["permissions"] = permissions
     service_one["email_branding"] = uuid4()
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
         response = client.get(url_for("main.service_settings", service_id=service_one["id"]))
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     rows = page.find_all("tr")
@@ -3403,6 +3403,7 @@ def test_service_switch_upload_document(
     client_request,
     service_one,
     mocker,
+    app_,
     initial_permissions,
     expected_initial_value,
     posted_value,
@@ -3411,27 +3412,96 @@ def test_service_switch_upload_document(
     mocked_fn = mocker.patch("app.service_api_client.update_service", return_value=service_one)
     service_one["permissions"] = initial_permissions
 
-    page = client_request.get(
-        "main.service_switch_upload_document",
-        service_id=service_one["id"],
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+        )
 
     assert page.h1.text == "Send files by email"
 
     paragraph = page.select_one("#main_content p").text.strip()
-    assert "This feature is only available when sending through the API" in paragraph
+    assert "Allow files to be attached to email notifications" in paragraph
 
     assert page.select_one("input[checked]")["value"] == expected_initial_value
     assert len(page.select("input[checked]")) == 1
 
-    client_request.post(
-        "main.service_switch_upload_document",
-        service_id=service_one["id"],
-        _data={"enabled": posted_value},
-        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
-    )
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        client_request.post(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+            _data={"enabled": posted_value},
+            _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+        )
     assert set(mocked_fn.call_args[1]["permissions"]) == set(expected_updated_permissions)
     assert mocked_fn.call_args[0][0] == service_one["id"]
+
+
+def test_service_switch_upload_document_shows_api_only_help_when_service_not_allowlisted(
+    client_request,
+    service_one,
+    app_,
+):
+    with set_config(app_, "FILE_ATTACH_SERVICES", []):
+        page = client_request.get(
+            "main.service_switch_upload_document",
+            service_id=service_one["id"],
+        )
+        paragraph = page.select_one("#main_content p").text.strip()
+        assert "This feature is only available when sending through the API" in paragraph
+
+
+def test_enable_file_attachments_turns_on_permission_and_redirects_to_next(
+    client_request,
+    service_one,
+    mocker,
+    fake_uuid,
+):
+    mocked_fn = mocker.patch("app.models.service.Service.force_permission")
+
+    with client_request.session_transaction() as session:
+        session[f"enable_file_attachments_next_url_{service_one['id']}"] = f"/services/{service_one['id']}/templates/{fake_uuid}"
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _expected_redirect=f"/services/{service_one['id']}/templates/{fake_uuid}",
+    )
+
+    mocked_fn.assert_called_once_with("upload_document", on=True)
+
+    with client_request.session_transaction() as session:
+        assert f"enable_file_attachments_next_url_{service_one['id']}" not in session
+
+
+def test_enable_file_attachments_redirects_to_service_settings_without_next(
+    client_request,
+    service_one,
+    mocker,
+):
+    mocker.patch("app.models.service.Service.force_permission")
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _data={},
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+    )
+
+
+def test_enable_file_attachments_rejects_external_next_url(
+    client_request,
+    service_one,
+    mocker,
+):
+    mocker.patch("app.models.service.Service.force_permission")
+
+    client_request.post(
+        "main.enable_file_attachments",
+        service_id=service_one["id"],
+        _data={"next": "https://evil.example.com/steal-token"},
+        _expected_redirect=url_for("main.service_settings", service_id=service_one["id"]),
+    )
 
 
 @pytest.mark.parametrize(
@@ -3602,7 +3672,10 @@ def test_archive_service_after_confirm(
         _follow_redirects=True,
     )
 
-    mocked_fn.assert_called_once_with("/service/{}/archive".format(SERVICE_ONE_ID), data=None)
+    mocked_fn.assert_called_once_with(
+        "/service/{}/archive/{}".format(SERVICE_ONE_ID, user["id"]),
+        data=None,
+    )
     assert normalize_spaces(page.select_one("h1").text) == "Your services"
     assert normalize_spaces(page.select_one(".banner-default-with-tick").text) == ("‘service one’ was deleted")
 

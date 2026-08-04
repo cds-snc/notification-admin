@@ -794,7 +794,7 @@ def test_check_messages_ok_shows_template_attachments_and_scanning_warning(
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -808,6 +808,8 @@ def test_check_messages_ok_shows_template_attachments_and_scanning_warning(
     assert page.select_one("[data-testid='template-attachments-warning']") is not None
     assert "guide.pdf" in attachments_section.text
     assert "pending.pdf" in attachments_section.text
+    size_labels = attachments_section.select("[data-testid='attachment-file-size']")
+    assert len(size_labels) == 2
 
 
 def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
@@ -843,7 +845,7 @@ def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -860,10 +862,10 @@ def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
 
 
 @pytest.mark.parametrize(
-    "config_flag, has_permission",
+    "file_attach_services, has_permission",
     [
-        (False, True),  # FF off → no attachments
-        (True, False),  # no upload_document permission → no attachments
+        ([], True),  # service not safelisted → no attachments
+        ([SERVICE_ONE_ID], False),  # no upload_document permission → no attachments
     ],
 )
 def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
@@ -880,7 +882,7 @@ def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
     fake_uuid,
     app_,
     mock_get_template_attachments,
-    config_flag,
+    file_attach_services,
     has_permission,
 ):
     with client_request.session_transaction() as session:
@@ -898,7 +900,7 @@ def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", config_flag):
+    with set_config(app_, "FILE_ATTACH_SERVICES", file_attach_services):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -940,7 +942,7 @@ def test_get_template_attachment_context_returns_empty_for_non_email_template(
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -984,7 +986,7 @@ def test_get_template_attachment_context_excludes_deleted_and_virus_scan_failed(
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -1353,7 +1355,7 @@ def test_send_test_step_shows_template_attachments_and_scanning_warning(
         {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
     ]
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
         page = client_request.get(
             "main.send_test_step",
             service_id=service_one["id"],
@@ -2981,7 +2983,7 @@ def test_check_messages_column_errors_shows_template_attachments_and_scanning_wa
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -3030,7 +3032,7 @@ def test_check_messages_column_errors_hides_attachment_warning_when_all_uploaded
     """,
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -3190,7 +3192,7 @@ def test_check_messages_adds_template_attachments_to_metadata(
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         client_request.get(
             "main.check_messages",
             service_id=SERVICE_ONE_ID,
@@ -3354,7 +3356,7 @@ def test_check_notification_email_shows_template_attachments_and_scanning_warnin
         {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
     ]
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
         page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     attachments_section = page.select_one("[data-testid='template-attachments-list']")
@@ -3384,7 +3386,7 @@ def test_check_notification_email_hides_attachment_warning_when_all_uploaded(
         {"id": "file-2", "name": "terms.pdf", "status": "uploaded", "size": 2048},
     ]
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     attachments_section = page.select_one("[data-testid='template-attachments-list']")
@@ -3581,7 +3583,7 @@ def test_send_notification_includes_template_attachments_in_personalisation(
         session["recipient"] = "test@example.com"
         session["placeholders"] = {"email address": "test@example.com"}
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
         client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     # Only the uploaded file should be injected; pending_virus_scan is skipped.
@@ -3605,7 +3607,7 @@ def test_send_notification_includes_template_attachments_in_personalisation(
     )
 
 
-def test_send_notification_does_not_include_template_attachments_when_flag_off(
+def test_send_notification_does_not_include_template_attachments_when_service_not_safelisted(
     client_request,
     service_one,
     fake_uuid,
@@ -3623,7 +3625,7 @@ def test_send_notification_does_not_include_template_attachments_when_flag_off(
         session["recipient"] = "test@example.com"
         session["placeholders"] = {"email address": "test@example.com"}
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", False):
+    with set_config(app_, "FILE_ATTACH_SERVICES", []):
         client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     mock_send_notification.assert_called_once_with(

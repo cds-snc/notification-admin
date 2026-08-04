@@ -177,6 +177,10 @@ def user_is_platform_admin(f):
     return wrapped
 
 
+def file_attachments_enabled_for_service(service_id: str) -> bool:
+    return str(service_id) in current_app.config.get("FILE_ATTACH_SERVICES", [])
+
+
 def redirect_to_sign_in(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
@@ -685,6 +689,21 @@ def guess_name_from_email_address(email_address):
         .then(make_quotes_smart)
         .then(normalize_spaces)
     )
+
+
+def filter_attachments(attachments, exclude_statuses=None, include_statuses=None):
+    if exclude_statuses and include_statuses:
+        raise ValueError("Cannot specify both exclude_statuses and include_statuses")
+
+    filtered = []
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+        if include_statuses is not None and status not in include_statuses:
+            continue
+        if exclude_statuses is not None and status in exclude_statuses:
+            continue
+        filtered.append(attachment)
+    return filtered
 
 
 def should_skip_template_page(template_type):

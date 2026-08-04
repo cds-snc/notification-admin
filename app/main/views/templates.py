@@ -68,6 +68,8 @@ from app.sample_template_utils import create_temporary_sample_template, get_samp
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
+    file_attachments_enabled_for_service,
+    filter_attachments,
     get_limit_reset_time_et,
     get_template,
     should_skip_template_page,
@@ -205,16 +207,30 @@ def view_template(service_id, template_id):
     template_attachments = []
 
     if (
-        current_app.config.get("FF_FILE_ATTACHMENTS")
+        file_attachments_enabled_for_service(current_service.id)
         and template["template_type"] == "email"
         and current_service.has_permission("upload_document")
     ):
-        template_attachments = current_service.get_template_attachments(template_id)
+        template_attachments = filter_attachments(
+            current_service.get_template_attachments(template_id),
+            exclude_statuses={"deleted", "virus_scan_failed"},
+        )
 
     user_has_template_permission = current_user.has_template_folder_permission(template_folder)
 
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
+
+    if (
+        file_attachments_enabled_for_service(current_service.id)
+        and template["template_type"] == "email"
+        and current_user.has_permissions("manage_service")
+    ):
+        session[f"enable_file_attachments_next_url_{service_id}"] = url_for(
+            ".view_template",
+            service_id=service_id,
+            template_id=template_id,
+        )
 
     preview_template = get_email_preview_template(template, template_id, service_id)
 
@@ -223,15 +239,71 @@ def view_template(service_id, template_id):
         template=preview_template,
         template_postage=template["postage"],
         template_attachments=template_attachments,
+        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=user_has_template_permission,
         **get_limit_stats(template["template_type"], preview_template),
     )
 
 
-# Template attachment endpoints (gated by FF_FILE_ATTACHMENTS)
+# Template attachment endpoints (gated by service allowlist)
 def _abort_if_attachments_disabled_for_service():
-    if not current_app.config.get("FF_FILE_ATTACHMENTS") or not current_service.has_permission("upload_document"):
+    if not file_attachments_enabled_for_service(current_service.id) or not current_service.has_permission("upload_document"):
         abort(404)
+
+
+def _build_file_upload_error_response(http_error):
+    """
+    Build a structured error response from an HTTPError raised by file upload.
+    Handles different error types from the API:
+    - over_file_limit: Returns structured response with usage details
+    - invalid base64: Returns invalid_file_data
+    - permission denied (403): Returns permission error
+    - not found (404): Returns not found error
+    - server error (500): Returns server error
+    """
+    try:
+        error_data = json.loads(http_error.response.text)
+    except (json.JSONDecodeError, TypeError, AttributeError):
+        error_data = {}
+
+    error_code = http_error.status_code
+    error_message = getattr(http_error, "message", str(http_error))
+    api_error = error_data.get("error")
+    api_message = error_data.get("message")
+
+    # Prioritize explicit API error codes from payload, even if status code is transformed.
+    if api_error == "over_file_limit":
+        return {
+            "error": "over_file_limit",
+            "current_usage": error_data.get("current_usage", 0),
+            "requested": error_data.get("requested", 0),
+            "limit": error_data.get("limit", 0),
+        }
+
+    if api_error == "file_data is not valid base64":
+        return {"error": "invalid_file_data"}
+
+    unsupported_doc_type_message = "unsupported document type"
+    if (isinstance(api_message, str) and unsupported_doc_type_message in api_message.lower()) or (
+        isinstance(api_error, str) and unsupported_doc_type_message in api_error.lower()
+    ):
+        return {"error": "unsupported_file_type"}
+
+    # Handle specific error cases
+    if error_code == 400:
+        # Generic 400 error
+        return {
+            "error": "bad_request",
+            "message": api_message or api_error or error_message,
+        }
+    elif error_code == 403:
+        return {"error": "permission_denied", "message": "You don't have permission to upload files"}
+    elif error_code == 404:
+        return {"error": "template_not_found", "message": "The template was not found"}
+    elif error_code >= 500:
+        return {"error": "server_error", "message": "Failed to upload file to storage"}
+    else:
+        return {"error": "unknown_error", "status_code": error_code, "message": error_message}
 
 
 @main.route(
@@ -244,22 +316,38 @@ def attach_files(service_id, template_id):
 
     uploaded_files = request.files.getlist("files")
     created_files = []
+    error = None
+    error_status_code = 500
 
     for uploaded_file in uploaded_files:
         file_contents = uploaded_file.read()
         file_size = len(file_contents)
         file_data = base64.b64encode(file_contents).decode("ascii")
 
-        created_files.append(
-            file_api_client.create_file(
-                template_id,
-                "template_attach",
-                uploaded_file.filename,
-                uploaded_file.mimetype or "application/octet-stream",
-                file_size,
-                file_data,
+        try:
+            created_files.append(
+                file_api_client.create_file(
+                    template_id,
+                    "template_attach",
+                    uploaded_file.filename,
+                    uploaded_file.mimetype or "application/octet-stream",
+                    file_size,
+                    file_data,
+                )
             )
-        )
+        except HTTPError as e:
+            # Store error but continue processing remaining files
+            # This allows partial uploads to succeed while reporting the error
+            if not error:
+                error = e
+                error_status_code = e.status_code
+
+    # If there was an error, return it with whatever files were created
+    if error:
+        error_response = _build_file_upload_error_response(error)
+        if created_files:
+            error_response["created_files"] = created_files
+        return jsonify(error_response), error_status_code
 
     return jsonify(created_files)
 
@@ -1261,6 +1349,26 @@ def edit_service_template(service_id, template_id):
             )
         )
     else:
+        template_attachments = None
+        if (
+            file_attachments_enabled_for_service(current_service.id)
+            and template["template_type"] == "email"
+            and current_service.has_permission("upload_document")
+        ):
+            template_attachments = [
+                {
+                    "id": attachment.get("id"),
+                    "filename": attachment.get("name") or attachment.get("filename"),
+                    "file_size": attachment.get("size") or attachment.get("file_size"),
+                    "status": attachment.get("status") or "uploaded",
+                }
+                for attachment in filter_attachments(
+                    current_service.get_template_attachments(template_id),
+                    exclude_statuses={"deleted", "virus_scan_failed"},
+                )
+                if attachment.get("name") or attachment.get("filename")
+            ]
+
         return render_template(
             f"views/edit-{template['template_type']}-template.html",
             form=form,
@@ -1272,6 +1380,8 @@ def edit_service_template(service_id, template_id):
             sms_char_count_limit=SMS_CHAR_COUNT_LIMIT,
             one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
             or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
+            attachments=template_attachments,
+            file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         )
 
 
@@ -1320,6 +1430,7 @@ def delete_service_template(service_id, template_id):
     return render_template(
         "views/templates/template.html",
         template=preview_template,
+        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=True,
         **get_limit_stats(template["template_type"], preview_template),
     )
@@ -1335,6 +1446,7 @@ def confirm_redact_template(service_id, template_id):
     return render_template(
         "views/templates/template.html",
         template=preview_template,
+        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=True,
         show_redaction_message=True,
         **get_limit_stats(template["template_type"], preview_template),

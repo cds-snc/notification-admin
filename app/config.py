@@ -92,7 +92,10 @@ class Config(object):
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
-    FF_FILE_ATTACHMENTS = env.bool("FF_FILE_ATTACHMENTS", False)
+    FF_REPORT_API = env.bool("FF_REPORT_API", False)
+
+    # Comma-separated list of service IDs allowed to use file attachments.
+    FILE_ATTACH_SERVICES: List[str] = [id.strip() for id in os.getenv("FILE_ATTACH_SERVICES", "").split(",") if id.strip()]
 
     # OTEL Configuration
     ENABLE_CLIENT_SIDE_OTEL = env.bool("ENABLE_CLIENT_SIDE_OTEL", False)
@@ -206,7 +209,7 @@ class Development(Config):
     VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
-    FF_FILE_ATTACHMENTS = True
+    FF_REPORT_API = env.bool("FF_REPORT_API", False)
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
@@ -216,6 +219,7 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FILE_ATTACH_SERVICES = ["d6aa2c68-a2d9-4437-ab19-3ae8eb202553", "d4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b"]
 
 
 class Test(Development):
@@ -241,6 +245,7 @@ class Test(Development):
     GC_ORGANISATIONS_BUCKET_NAME = "test-gc-organisations"
     FF_USE_BILLABLE_UNITS = True
     VITE_HMR_ENABLED = False
+    FILE_ATTACH_SERVICES = ["d6aa2c68-a2d9-4437-ab19-3ae8eb202553", "d4e8a7f4-2b8a-4c9a-8b3f-9c2d4e8a7f4b"]
 
 
 class ProductionFF(Config):
@@ -265,7 +270,7 @@ class ProductionFF(Config):
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
     FF_USE_BILLABLE_UNITS = False
-    FF_FILE_ATTACHMENTS = True
+    FF_REPORT_API = False
 
 
 class Production(Config):

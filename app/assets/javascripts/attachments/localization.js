@@ -12,6 +12,10 @@ const en = {
   maxCombinedSize: "Maximum 6 MB for all files combined.",
   unsupportedType: (name) => `${name} has an unsupported file type.`,
   filenameNoParentheses: (name) => `${name} cannot contain parentheses.`,
+  duplicateFilename: (name) => `You've already uploaded this file: ${name}.`,
+  overFileLimit:
+    "The total file size exceeds the 6 MB limit. Please remove some files and try again.",
+  unsupportedFileType: "File type not supported",
   summaryUploading: (count) =>
     `${count} ${count === 1 ? "file" : "files"} uploading`,
   summaryScanning: (count) =>
@@ -63,6 +67,11 @@ const fr = {
   unsupportedType: (name) => `${name} a un type de fichier non pris en charge.`,
   filenameNoParentheses: (name) =>
     `${name} ne peut pas contenir de parenthèses.`,
+  duplicateFilename: (name) =>
+    `Vous avez déjà téléchargé ce fichier : ${name}.`,
+  overFileLimit:
+    "La taille totale des fichiers dépasse la limite de 6 Mo. Veuillez supprimer des fichiers et réessayer.",
+  unsupportedFileType: "Type de fichier non pris en charge",
   summaryUploading: (count) =>
     `${count} ${count === 1 ? "fichier" : "fichiers"} en préparation`,
   summaryScanning: (count) =>

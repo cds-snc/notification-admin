@@ -46,6 +46,15 @@ const getExtension = (fileName) => {
   return fileName.slice(lastDot).toLowerCase();
 };
 
+const toFiniteFileSize = (value) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return undefined;
+  }
+
+  return parsed;
+};
+
 export const validateFiles = (
   selectedFiles,
   existingFiles,
@@ -60,7 +69,7 @@ export const validateFiles = (
   }
 
   const existingTotalBytes = existingFiles.reduce(
-    (sum, file) => sum + (file.size || 0),
+    (sum, file) => sum + (toFiniteFileSize(file.file_size) || 0),
     0,
   );
   const selectedTotalBytes = selectedFiles.reduce(
@@ -85,6 +94,11 @@ export const validateFiles = (
       continue;
     }
 
+    if (existingFiles.some((existingFile) => existingFile.name === file.name)) {
+      issues.push(copy.duplicateFilename(file.name));
+      continue;
+    }
+
     acceptedFiles.push(file);
   }
 
@@ -103,11 +117,6 @@ const nextId = () => {
 
 const parseApiStatus = (status, fallbackStatus) =>
   VALID_ATTACHMENT_STATUSES.has(status) ? status : fallbackStatus;
-
-const normalizeFile = (file) => ({
-  ...file,
-  status: parseApiStatus(file.status, ATTACHMENT_STATUSES.DELETED),
-});
 
 export const summarizeStatuses = (files, copy = DEFAULT_COPY) => {
   const counts = {
@@ -155,7 +164,12 @@ export const useAttachments = (
   copy = DEFAULT_COPY,
   fetchFileStatus = null,
 ) => {
-  const [files, setFiles] = useState(() => initialFiles.map(normalizeFile));
+  const [files, setFiles] = useState(() =>
+    initialFiles.map((file) => ({
+      ...file,
+      file_size: toFiniteFileSize(file.file_size),
+    })),
+  );
   const timeoutIdsRef = useRef([]);
   const pollTimeoutIdsRef = useRef(new Map());
   const isMountedRef = useRef(true);
@@ -259,6 +273,31 @@ export const useAttachments = (
     [files],
   );
 
+  const mapUploadedFiles = (callbackItems, selectedFiles) =>
+    callbackItems
+      .map((item, index) => {
+        const itemData = item?.data || item;
+        const fileId = itemData?.id;
+
+        if (!fileId) {
+          return null;
+        }
+
+        const sourceFile = selectedFiles[index];
+
+        return {
+          id: fileId,
+          name: sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
+          file_size: toFiniteFileSize(itemData?.file_size ?? sourceFile?.size),
+          status: parseApiStatus(
+            itemData?.status,
+            ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
+          ),
+          sourceFile: undefined,
+        };
+      })
+      .filter(Boolean);
+
   const attachFiles = async (selectedFiles, onAttachFiles) => {
     if (!selectedFiles.length) {
       return;
@@ -277,30 +316,7 @@ export const useAttachments = (
         return;
       }
 
-      const uploadedFiles = callbackItems
-        .map((item, index) => {
-          const itemData = item?.data || item;
-          const fileId = itemData?.id;
-
-          if (!fileId) {
-            return null;
-          }
-
-          const sourceFile = selectedFiles[index];
-
-          return {
-            id: fileId,
-            name:
-              sourceFile?.name || itemData?.name || `attachment-${nextId()}`,
-            size: sourceFile?.size || itemData?.file_size || 0,
-            status: parseApiStatus(
-              itemData?.status,
-              ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN,
-            ),
-            sourceFile: undefined,
-          };
-        })
-        .filter(Boolean);
+      const uploadedFiles = mapUploadedFiles(callbackItems, selectedFiles);
 
       if (!uploadedFiles.length) {
         return;
@@ -308,7 +324,19 @@ export const useAttachments = (
 
       setFiles((currentFiles) => [...currentFiles, ...uploadedFiles]);
     } catch (error) {
-      throw new Error("Failed to attach files. Please try again.");
+      const partialItems = Array.isArray(error?.createdFiles)
+        ? error.createdFiles
+        : [];
+      const partialUploadedFiles = mapUploadedFiles(
+        partialItems,
+        selectedFiles,
+      );
+
+      if (partialUploadedFiles.length) {
+        setFiles((currentFiles) => [...currentFiles, ...partialUploadedFiles]);
+      }
+
+      throw error;
     }
   };
 

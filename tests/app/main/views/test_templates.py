@@ -1,3 +1,5 @@
+import io
+import json
 from datetime import datetime
 from functools import partial
 from unittest.mock import ANY, MagicMock, Mock, patch
@@ -777,12 +779,19 @@ def test_should_show_attachments_widget_on_email_template_page(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
             template_id=fake_uuid,
             _test_page_title=False,
+        )
+
+    with client_request.session_transaction() as session:
+        assert session[f"enable_file_attachments_next_url_{SERVICE_ONE_ID}"] == url_for(
+            "main.view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
         )
 
     assert page.select_one("#template-attachments") is not None
@@ -793,7 +802,49 @@ def test_should_show_attachments_widget_on_email_template_page(
     assert url_for("main.download_template_attachment", service_id=SERVICE_ONE_ID, template_id=fake_uuid) in str(page)
 
 
-def test_should_not_show_attachments_widget_without_send_files_permission(
+def test_should_not_render_unsafe_or_deleted_template_attachments_on_template_page_reload(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    service_one,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+    mocker.patch(
+        "app.models.service.Service.get_template_attachments",
+        return_value=[
+            {"id": "uploaded-1", "name": "safe-file.pdf", "status": "uploaded"},
+            {"id": "pending-1", "name": "still-scanning.pdf", "status": "pending_virus_scan"},
+            {"id": "unsafe-1", "name": "unsafe-file.pdf", "status": "virus_scan_failed"},
+            {"id": "deleted-1", "name": "deleted-file.pdf", "status": "deleted"},
+        ],
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    page_html = str(page)
+
+    assert "safe-file.pdf" in page_html
+    assert "still-scanning.pdf" in page_html
+    assert "unsafe-file.pdf" not in page_html
+    assert "deleted-file.pdf" not in page_html
+
+
+def test_should_show_attached_files_heading_and_notice_when_upload_document_permission_missing(
     client_request,
     mock_get_template_folders,
     mock_get_limit_stats,
@@ -807,7 +858,7 @@ def test_should_not_show_attachments_widget_without_send_files_permission(
         return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         page = client_request.get(
             ".view_template",
             service_id=SERVICE_ONE_ID,
@@ -816,6 +867,43 @@ def test_should_not_show_attachments_widget_without_send_files_permission(
         )
 
     assert page.select_one("#template-attachments") is None
+    assert page.select_one("[data-testid='attached-files-heading']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-form']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-button']") is not None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
+
+
+def test_should_show_ask_manager_notice_without_manage_service_permission(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    active_user_manage_template_permission,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    client_request.login(active_user_manage_template_permission)
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            ".view_template",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            _test_page_title=False,
+        )
+
+    assert page.select_one("#template-attachments") is None
+    assert page.select_one("[data-testid='attached-files-heading']") is not None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is not None
+    assert page.select_one("[data-testid='file-attachments-enable-form']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-button']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is None
 
 
 def test_template_attachment_status_route_returns_file_status(
@@ -838,7 +926,7 @@ def test_template_attachment_status_route_returns_file_status(
         return_value={"status": "pending_virus_scan", "document_id": "file-1"},
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".template_attachment_status",
             service_id=SERVICE_ONE_ID,
@@ -876,7 +964,7 @@ def test_template_attachment_download_route_returns_file(
         },
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -891,6 +979,141 @@ def test_template_attachment_download_route_returns_file(
     assert response.data == b"example content"
     assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
     mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
+
+
+@pytest.mark.parametrize(
+    "status_code,error_payload,expected_payload",
+    [
+        (
+            400,
+            {
+                "error": "over_file_limit",
+                "current_usage": 5000000,
+                "requested": 2000000,
+                "limit": 6291456,
+            },
+            {
+                "error": "over_file_limit",
+                "current_usage": 5000000,
+                "requested": 2000000,
+                "limit": 6291456,
+            },
+        ),
+        (
+            400,
+            {"error": "file_data is not valid base64"},
+            {"error": "invalid_file_data"},
+        ),
+        (
+            400,
+            {"error": "some other error"},
+            {"error": "bad_request", "message": "some other error"},
+        ),
+        (
+            403,
+            {},
+            {
+                "error": "permission_denied",
+                "message": "You don't have permission to upload files",
+            },
+        ),
+        (
+            404,
+            {},
+            {
+                "error": "template_not_found",
+                "message": "The template was not found",
+            },
+        ),
+        (
+            500,
+            {},
+            {
+                "error": "server_error",
+                "message": "Failed to upload file to storage",
+            },
+        ),
+    ],
+)
+def test_template_attachment_upload_route_maps_api_errors(
+    client_request,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+    status_code,
+    error_payload,
+    expected_payload,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    error_response = Mock(status_code=status_code)
+    error_response.text = json.dumps(error_payload)
+    mocker.patch(
+        "app.main.views.templates.file_api_client.create_file",
+        side_effect=HTTPError(response=error_response, message="upload failed"),
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        response = client_request.logged_in_client.post(
+            url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+            data={"files": (io.BytesIO(b"file-content"), "test.pdf")},
+            content_type="multipart/form-data",
+        )
+
+    assert response.status_code == status_code
+    assert response.get_json() == expected_payload
+
+
+def test_template_attachment_upload_continues_after_first_error(
+    client_request,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+
+    error_response = Mock(status_code=400)
+    error_response.text = json.dumps(
+        {
+            "error": "over_file_limit",
+            "current_usage": 5000000,
+            "requested": 2000000,
+            "limit": 6291456,
+        }
+    )
+    create_file_mock = mocker.patch(
+        "app.main.views.templates.file_api_client.create_file",
+        side_effect=[
+            HTTPError(response=error_response, message="upload failed"),
+            {"id": "second-file", "status": "pending_virus_scan"},
+        ],
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        response = client_request.logged_in_client.post(
+            url_for("main.attach_files", service_id=SERVICE_ONE_ID, template_id=fake_uuid),
+            data={
+                "files": [
+                    (io.BytesIO(b"first-file"), "first.pdf"),
+                    (io.BytesIO(b"second-file"), "second.pdf"),
+                ]
+            },
+            content_type="multipart/form-data",
+        )
+
+    assert create_file_mock.call_count == 2
+    assert response.status_code == 400
+    assert response.get_json() == {
+        "error": "over_file_limit",
+        "current_usage": 5000000,
+        "requested": 2000000,
+        "limit": 6291456,
+        "created_files": [{"id": "second-file", "status": "pending_virus_scan"}],
+    }
 
 
 @pytest.mark.parametrize(
@@ -914,7 +1137,7 @@ def test_template_attachment_routes_return_404_without_upload_document_permissio
 ):
     current_user.verified_phonenumber = True
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):  # TODO: REMOVE WHEN FF_FILE_ATTACHMENTS IS REMOVED
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         request_func = getattr(client_request, method)
         response = request_func(
             route_name,
@@ -951,7 +1174,7 @@ def test_template_attachment_download_returns_404_when_file_not_found(
         side_effect=HTTPError(response=resp_mock, message="File not found"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -986,7 +1209,7 @@ def test_template_attachment_download_shows_error_when_file_not_ready(
         side_effect=HTTPError(response=resp_mock, message="File not ready"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         response = client_request.get(
             ".download_template_attachment",
             service_id=SERVICE_ONE_ID,
@@ -1022,7 +1245,7 @@ def test_template_attachment_download_returns_500_when_api_errors(
         side_effect=HTTPError(response=resp_mock, message="Internal server error"),
     )
 
-    with set_config(app_, "FF_FILE_ATTACHMENTS", True):
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
         from werkzeug.exceptions import InternalServerError
 
         with pytest.raises(InternalServerError):

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ATTACHMENT_STATUSES } from "./useAttachments";
 import { getAttachmentTranslations } from "./localization";
+import { formatFileSize } from "./fileSize";
 
 const DEFAULT_COPY = getAttachmentTranslations("en");
 
@@ -14,6 +15,16 @@ export const AttachedFileRow = ({
   onCancelRemove,
   onDownloadError,
 }) => {
+  const confirmButtonRef = useRef(null);
+
+  // Accessibility: When user initiates file removal, automatically focus the confirm button
+  // This helps ensure the destructive action requires intentional interaction and makes it
+  // easier for keyboard/screen reader users to confirm or cancel
+  useEffect(() => {
+    if (isConfirmingRemoval && confirmButtonRef.current) {
+      confirmButtonRef.current.focus();
+    }
+  }, [isConfirmingRemoval]);
   const isInProgress =
     file.status === ATTACHMENT_STATUSES.UPLOADING ||
     file.status === ATTACHMENT_STATUSES.PENDING_VIRUS_SCAN;
@@ -23,6 +34,7 @@ export const AttachedFileRow = ({
     ? `${downloadEndpoint}/${encodeURIComponent(file.id)}`
     : null;
   const canDownload = !isInProgress && !isMalware && Boolean(downloadHref);
+  const fileSizeLabel = formatFileSize(file.file_size);
 
   const handleDownload = async (e) => {
     e.preventDefault();
@@ -53,6 +65,7 @@ export const AttachedFileRow = ({
       onClick={handleDownload}
       className="attachment-file-name-truncate"
       title={file.name}
+      aria-label={`Download ${file.name}`}
       data-testid="attachment-download-link"
     >
       {file.name}
@@ -77,9 +90,11 @@ export const AttachedFileRow = ({
           ) : null}
           <div className="flex gap-4 mt-6">
             <button
+              ref={confirmButtonRef}
               type="button"
               className="button button-red"
               data-testid="attachments-remove-confirm"
+              aria-label={`Yes, remove ${file.name}`}
               onClick={() => onConfirmRemove(file.id)}
             >
               {copy.yesRemoveFile}
@@ -114,13 +129,24 @@ export const AttachedFileRow = ({
                   data-testid="attachment-row-spinner"
                 ></div>
               ) : null}
-              <p className="min-w-0 mb-0">{fileNameNode}</p>
+              <p className="min-w-0 mb-0">
+                {fileNameNode}
+                {fileSizeLabel ? (
+                  <span
+                    className="attachment-size"
+                    data-testid="attachment-file-size"
+                  >
+                    {` (${fileSizeLabel})`}
+                  </span>
+                ) : null}
+              </p>
             </div>
           </div>
           <button
             type="button"
             className="link text-red-700 shrink-0 inline-flex items-center gap-2 self-start"
             data-testid="attachments-remove"
+            aria-label={`Remove ${file.name}`}
             onClick={() => onRequestRemove(file.id)}
           >
             <span className="font-bold underline">{copy.remove}</span>

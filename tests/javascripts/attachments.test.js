@@ -5,6 +5,7 @@ const { act } = React;
 const { TextEncoder, TextDecoder } = require("util");
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 const { renderToStaticMarkup } = require("react-dom/server");
 
@@ -86,7 +87,7 @@ describe("attachments - validateFiles", () => {
     const existingFiles = Array.from({ length: 10 }, (_, i) => ({
       id: `existing-${i}`,
       name: `existing-${i}.pdf`,
-      size: 100,
+      file_size: 100,
     }));
 
     const selectedFiles = [{ name: "extra.pdf", size: 6 * 1024 * 1024 }];
@@ -281,6 +282,79 @@ describe("attachments - render contracts", () => {
     expect(html).toContain('class="attachment-file-name-truncate"');
   });
 
+  test("shows file size for byte-sized files", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-bytes",
+          name: "tiny.txt",
+          file_size: 512,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="attachment-file-size"');
+    expect(html).toContain("512 B");
+  });
+
+  test("shows file size for kilobyte and megabyte files", () => {
+    const kbHtml = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-kb",
+          name: "report.pdf",
+          file_size: 1536,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    const mbHtml = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-size-mb",
+          name: "large.pdf",
+          file_size: 2 * 1024 * 1024,
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(kbHtml).toContain("1.5 KB");
+    expect(mbHtml).toContain("2.0 MB");
+  });
+
+  test("does not show file size when size is missing", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AttachedFileRow, {
+        file: {
+          id: "file-no-size",
+          name: "no-size.txt",
+          status: ATTACHMENT_STATUSES.UPLOADED,
+        },
+        isConfirmingRemoval: false,
+        onRequestRemove: () => {},
+        onConfirmRemove: () => {},
+        onCancelRemove: () => {},
+      }),
+    );
+
+    expect(html).not.toContain('data-testid="attachment-file-size"');
+  });
+
   test("remove confirmation shows filename text", () => {
     const html = renderToStaticMarkup(
       React.createElement(AttachedFileRow, {
@@ -384,8 +458,6 @@ describe("attachments - render contracts", () => {
 });
 
 describe("attachments - useAttachments", () => {
-  const originalActEnvironment = global.IS_REACT_ACT_ENVIRONMENT;
-
   const setupHookHarness = (initialFiles = [], fetchFileStatus = null) => {
     let latest = null;
 
@@ -413,14 +485,6 @@ describe("attachments - useAttachments", () => {
     };
   };
 
-  beforeAll(() => {
-    global.IS_REACT_ACT_ENVIRONMENT = true;
-  });
-
-  afterAll(() => {
-    global.IS_REACT_ACT_ENVIRONMENT = originalActEnvironment;
-  });
-
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -428,6 +492,25 @@ describe("attachments - useAttachments", () => {
   afterEach(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
+  });
+
+  test("normalizes provided string file_size to a number", () => {
+    const harness = setupHookHarness([
+      {
+        id: "file-1",
+        name: "test.pdf",
+        file_size: "2048",
+        status: "uploaded",
+      },
+    ]);
+
+    const [file] = harness.getState().files;
+
+    expect(file.name).toBe("test.pdf");
+    expect(file.file_size).toBe(2048);
+    expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
+
+    harness.cleanup();
   });
 
   test("uses id from upload response", async () => {
@@ -448,6 +531,29 @@ describe("attachments - useAttachments", () => {
     const [file] = harness.getState().files;
     expect(file.status).toBe(ATTACHMENT_STATUSES.UPLOADED);
     expect(file.id).toBe("file-456");
+
+    harness.cleanup();
+  });
+
+  test("normalizes upload response file_size string to number", async () => {
+    const harness = setupHookHarness();
+
+    await act(async () => {
+      await harness.getState().attachFiles(
+        [{ name: "from-api-size.pdf" }],
+        async () => [
+          {
+            status: ATTACHMENT_STATUSES.UPLOADED,
+            id: "file-size-from-api",
+            file_size: "1234",
+          },
+        ],
+      );
+    });
+
+    const [file] = harness.getState().files;
+    expect(file.file_size).toBe(1234);
+    expect(file.id).toBe("file-size-from-api");
 
     harness.cleanup();
   });
@@ -730,8 +836,42 @@ describe("attachments - useAttachments", () => {
     });
 
     expect(thrownError).toBeTruthy();
-    expect(thrownError.message).toBe("Failed to attach files. Please try again.");
+    expect(thrownError.message).toBe("network error");
     expect(harness.getState().files).toHaveLength(0);
+
+    harness.cleanup();
+  });
+
+  test("adds partial uploaded files when upload callback throws with createdFiles", async () => {
+    const harness = setupHookHarness();
+    let thrownError = null;
+
+    await act(async () => {
+      try {
+        const uploadError = new Error("partial upload");
+        uploadError.createdFiles = [
+          {
+            id: "partial-1",
+            status: "pending_virus_scan",
+          },
+        ];
+
+        await harness.getState().attachFiles(
+          [{ name: "partial-file.pdf", size: 2048 }],
+          async () => {
+            throw uploadError;
+          },
+        );
+      } catch (error) {
+        thrownError = error;
+      }
+    });
+
+    expect(thrownError).toBeTruthy();
+    expect(thrownError.message).toBe("partial upload");
+    expect(harness.getState().files).toHaveLength(1);
+    expect(harness.getState().files[0].id).toBe("partial-1");
+    expect(harness.getState().files[0].name).toBe("partial-file.pdf");
 
     harness.cleanup();
   });
@@ -796,7 +936,9 @@ describe("attachments - download error handling", () => {
 
     expect(onDownloadError).toHaveBeenCalledWith("file-1", expect.stringContaining("Download failed"));
 
-    root.unmount();
+    act(() => {
+      root.unmount();
+    });
     document.body.removeChild(container);
   });
 
@@ -834,7 +976,9 @@ describe("attachments - download error handling", () => {
     expect(onDownloadError).not.toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledWith("/download/file-2");
 
-    root.unmount();
+    act(() => {
+      root.unmount();
+    });
     document.body.removeChild(container);
   });
 });
