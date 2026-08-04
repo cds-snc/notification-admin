@@ -1,10 +1,10 @@
 import pytest
-from bs4 import BeautifulSoup
-from flask import current_app, url_for
-
 from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
+from bs4 import BeautifulSoup
+from flask import current_app, url_for
+
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 services = [
@@ -145,7 +145,7 @@ def test_security_txt(client):
     security_policy = gca_url_for("security", _external=True)
 
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",

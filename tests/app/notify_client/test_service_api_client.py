@@ -2,11 +2,11 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from app.notify_client.service_api_client import ServiceAPIClient
 from flask import g
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
-from app.notify_client.service_api_client import ServiceAPIClient
 from tests.conftest import SERVICE_ONE_ID
 
 FAKE_TEMPLATE_ID = uuid4()

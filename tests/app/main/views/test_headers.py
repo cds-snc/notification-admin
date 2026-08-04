@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from app.asset_fingerprinter import asset_fingerprinter
 
 service = [
@@ -67,24 +66,21 @@ def test_owasp_useful_headers_set(client, mocker, mock_get_service_and_organisat
         response.headers["Report-To"]
         == """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]"""
     )
-    assert (
-        response.headers["Content-Security-Policy"]
-        == (
-            f"default-src 'self' static.example.com 'unsafe-inline';"
-            f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
-            "object-src 'self';"
-            f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
-            f"font-src 'self' static.example.com fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-            "media-src 'self' *.alpha.canada.ca;"
-            "frame-ancestors 'self';"
-            "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
-            "frame-src 'self' www.googletagmanager.com;"
-            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
-            "report-to default;"
-        )
+    assert response.headers["Content-Security-Policy"] == (
+        f"default-src 'self' static.example.com 'unsafe-inline';"
+        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        f"script-src-elem 'self' 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        "object-src 'self';"
+        f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+        f"font-src 'self' static.example.com fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
+        f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+        "media-src 'self' *.alpha.canada.ca;"
+        "frame-ancestors 'self';"
+        "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
+        "frame-src 'self' www.googletagmanager.com;"
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+        "report-to default;"
     )
 
 
@@ -135,24 +131,21 @@ def test_headers_non_ascii_characters_are_replaced(
     response = client.get("/")
 
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Security-Policy"]
-        == (
-            f"default-src 'self' static.example.com 'unsafe-inline';"
-            f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
-            "object-src 'self';"
-            f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
-            f"font-src 'self' static.example.com fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
-            "media-src 'self' *.alpha.canada.ca;"
-            "frame-ancestors 'self';"
-            "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
-            "frame-src 'self' www.googletagmanager.com;"
-            "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
-            "report-to default;"
-        )
+    assert response.headers["Content-Security-Policy"] == (
+        f"default-src 'self' static.example.com 'unsafe-inline';"
+        f"script-src 'self' static.example.com *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+        f"script-src-elem 'self' 'nonce-{nonce}' 'unsafe-eval' data:;"
+        "connect-src 'self' *.google-analytics.com *.googletagmanager.com;"
+        "object-src 'self';"
+        f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
+        f"font-src 'self' static.example.com fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
+        f"img-src 'self' blob: static.example.com *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
+        "media-src 'self' *.alpha.canada.ca;"
+        "frame-ancestors 'self';"
+        "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
+        "frame-src 'self' www.googletagmanager.com;"
+        "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
+        "report-to default;"
     )
 
 

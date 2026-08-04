@@ -5,14 +5,14 @@ from urllib.parse import parse_qs, urlparse
 from uuid import UUID, uuid4
 
 import pytest
+from app.models.service import Service
+from app.utils import email_safe
 from bs4 import BeautifulSoup
 from flask import Flask, url_for
 from freezegun import freeze_time
 from pytest_mock import MockerFixture
 
 import app
-from app.models.service import Service
-from app.utils import email_safe
 from tests import (
     organisation_json,
     sample_uuid,

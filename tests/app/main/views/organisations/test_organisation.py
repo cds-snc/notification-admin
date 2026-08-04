@@ -266,18 +266,15 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
             (
                 (
                     "yes",
-                    ("Yes " "Users will be told their organisation has already signed the agreement"),
+                    ("Yes Users will be told their organisation has already signed the agreement"),
                 ),
                 (
                     "no",
-                    ("No " "Users will be prompted to sign the agreement before they can go live"),
+                    ("No Users will be prompted to sign the agreement before they can go live"),
                 ),
                 (
                     "unknown",
-                    (
-                        "No (but we have some service-specific agreements in place) "
-                        "Users won’t be prompted to sign the agreement"
-                    ),
+                    ("No (but we have some service-specific agreements in place) Users won’t be prompted to sign the agreement"),
                 ),
             ),
             "no",
