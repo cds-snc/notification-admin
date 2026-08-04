@@ -1,7 +1,6 @@
 import pytest
-from wtforms import Form, StringField
-
 from app.main.forms import StripWhitespaceForm, StripWhitespaceStringField
+from wtforms import Form, StringField
 
 
 class ExampleForm(StripWhitespaceForm):

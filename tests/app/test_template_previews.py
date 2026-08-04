@@ -2,10 +2,10 @@ from functools import partial
 from unittest.mock import Mock
 
 import pytest
+from app.template_previews import TemplatePreview, get_page_count_for_letter
 from notifications_utils.template import LetterPreviewTemplate
 
 from app import load_service_before_request
-from app.template_previews import TemplatePreview, get_page_count_for_letter
 
 
 @pytest.mark.parametrize(

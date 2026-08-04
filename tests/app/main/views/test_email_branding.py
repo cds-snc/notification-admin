@@ -3,14 +3,14 @@ from unittest import mock
 from unittest.mock import call, patch
 
 import pytest
+from app.main.views.email_branding import get_preview_template
+from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
+from app.utils import get_logo_cdn_domain
 from bs4 import BeautifulSoup
 from flask import url_for
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
-from app.main.views.email_branding import get_preview_template
-from app.s3_client.s3_logo_client import EMAIL_LOGO_LOCATION_STRUCTURE, TEMP_TAG
-from app.utils import get_logo_cdn_domain
 from tests import sample_uuid
 from tests.conftest import create_email_branding, normalize_spaces
 

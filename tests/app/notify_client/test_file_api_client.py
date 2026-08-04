@@ -1,7 +1,6 @@
 import pytest
-from notifications_python_client.errors import HTTPError
-
 from app.notify_client.file_api_client import FileApiClient, file_api_client
+from notifications_python_client.errors import HTTPError
 
 
 class TestFileApiClient:
