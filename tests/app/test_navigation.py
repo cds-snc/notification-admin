@@ -21,13 +21,37 @@ class TestNavigationGetNav:
         mock_get_service_id.return_value = SERVICE_ONE_ID
         mock_get_org_id.return_value = None
 
-        # Mock get_service_nav to avoid needing full context
-        with patch.object(nav, "get_service_nav", return_value={"service": "nav"}) as mock_service_nav:
-            result = nav.get_nav()
+        mock_service = Mock()
+        mock_service.id = SERVICE_ONE_ID
 
-            # Assert
-            mock_service_nav.assert_called_once()
-            assert result == {"service": "nav"}
+        # Mock get_service_nav to avoid needing full context
+        mock_g = Mock(get=Mock(return_value=mock_service))
+        with patch("app.navigation.g", mock_g):
+            with patch.object(nav, "get_service_nav", return_value={"service": "nav"}) as mock_service_nav:
+                result = nav.get_nav()
+
+                # Assert
+                mock_service_nav.assert_called_once()
+                assert result == {"service": "nav"}
+
+    @patch("app.navigation._get_service_id_from_view_args")
+    @patch("app.navigation._get_org_id_from_view_args")
+    @patch("app.navigation.current_user")
+    def test_get_nav_returns_user_nav_when_service_not_found(self, mock_current_user, mock_get_org_id, mock_get_service_id):
+        """Test that user navigation is returned when service_id is in URL but service was not found (e.g. 404)."""
+        nav = Navigation()
+        mock_current_user.is_authenticated = True
+        mock_current_user.has_permissions.return_value = True
+        mock_get_service_id.return_value = SERVICE_ONE_ID
+        mock_get_org_id.return_value = None
+
+        mock_g = Mock(get=Mock(return_value=None))
+        with patch("app.navigation.g", mock_g):
+            with patch.object(nav, "get_user_nav", return_value={"user": "nav"}) as mock_user_nav:
+                result = nav.get_nav()
+
+                mock_user_nav.assert_called_once()
+                assert result == {"user": "nav"}
 
     @patch("app.navigation._get_service_id_from_view_args")
     @patch("app.navigation._get_org_id_from_view_args")
@@ -61,13 +85,18 @@ class TestNavigationGetNav:
         mock_get_service_id.return_value = SERVICE_ONE_ID
         mock_get_org_id.return_value = ORGANISATION_ID
 
-        # Mock get_service_nav to avoid needing full context
-        with patch.object(nav, "get_service_nav", return_value={"service": "nav"}) as mock_service_nav:
-            result = nav.get_nav()
+        mock_service = Mock()
+        mock_service.id = SERVICE_ONE_ID
 
-            # Assert
-            mock_service_nav.assert_called_once()
-            assert result == {"service": "nav"}
+        # Mock get_service_nav to avoid needing full context
+        mock_g = Mock(get=Mock(return_value=mock_service))
+        with patch("app.navigation.g", mock_g):
+            with patch.object(nav, "get_service_nav", return_value={"service": "nav"}) as mock_service_nav:
+                result = nav.get_nav()
+
+                # Assert
+                mock_service_nav.assert_called_once()
+                assert result == {"service": "nav"}
 
     def test_get_nav_returns_user_nav_when_no_permissions(self):
         """Test that user navigation is returned when user has no permissions."""
