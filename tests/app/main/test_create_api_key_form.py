@@ -1,10 +1,10 @@
 import uuid
 
 import pytest
-from werkzeug.datastructures import MultiDict
-
 from app.main.forms import CreateKeyForm
 from app.notify_client.api_key_api_client import ApiKeyApiClient
+from werkzeug.datastructures import MultiDict
+
 from tests.conftest import SERVICE_ONE_ID, set_config
 
 

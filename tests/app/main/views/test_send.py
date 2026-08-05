@@ -11,6 +11,7 @@ from uuid import uuid4
 from zipfile import BadZipFile
 
 import pytest
+from app.main.views.send import daily_email_count, daily_sms_count
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
@@ -23,7 +24,6 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_email_count, daily_sms_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -425,7 +425,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             telephone,name
             +16502532222
         """,
-            ("Your spreadsheet is missing a column called ‘phone number’. " "Add the missing column."),
+            ("Your spreadsheet is missing a column called ‘phone number’. Add the missing column."),
             "Check there’s a column for each variable",
         ),
         (
@@ -433,7 +433,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             phone number
             +16502532222
         """,
-            ("Your spreadsheet is missing a column called ‘name’. " "Add the missing column."),
+            ("Your spreadsheet is missing a column called ‘name’. Add the missing column."),
             "Check there’s a column for each variable",
         ),
         (
@@ -451,7 +451,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             """
             phone number, name
         """,
-            ("Spreadsheets need at least 1 row with recipient information. " "Add a row for each recipient."),
+            ("Spreadsheets need at least 1 row with recipient information. Add a row for each recipient."),
             "Check there’s a column for each variable",
         ),
         (
@@ -531,9 +531,9 @@ def test_upload_csv_file_with_missing_columns_shows_error(
         (
             f"""
                 phone number, one, two, three
-                +16502532222, {'a' * 155}, {'a' * 155}, {'a' * 155}
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 50}, {'a' * 50}, {'a' * 50}
+                +16502532222, {"a" * 155}, {"a" * 155}, {"a" * 155}
+                +16502532222, {"a" * 613}, {"a" * 613}, {"a" * 613}
+                +16502532222, {"a" * 50}, {"a" * 50}, {"a" * 50}
             """,
             "Maximum 612 characters. Some messages may be too long due to custom content.",
             "Added custom content exceeds the 612 character limit in 1 row",
@@ -542,9 +542,9 @@ def test_upload_csv_file_with_missing_columns_shows_error(
         (
             f"""
                 phone number, one, two, three
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 619}, {'a' * 619}, {'a' * 619}
-                +16502532222, {'a' * 700}, {'a' * 700}, {'a' * 700}
+                +16502532222, {"a" * 613}, {"a" * 613}, {"a" * 613}
+                +16502532222, {"a" * 619}, {"a" * 619}, {"a" * 619}
+                +16502532222, {"a" * 700}, {"a" * 700}, {"a" * 700}
             """,
             "Maximum 612 characters. Some messages may be too long due to custom content.",
             "Added custom content exceeds the 612 character limit in 3 rows",
@@ -2345,7 +2345,7 @@ def test_download_example_csv(
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert response.get_data(as_text=True) == ("phone number,name,date\r\n" "6502532222,example,example\r\n")
+    assert response.get_data(as_text=True) == ("phone number,name,date\r\n6502532222,example,example\r\n")
     assert "text/csv" in response.headers["Content-Type"]
 
 
@@ -3122,7 +3122,7 @@ def test_warns_if_file_sent_already(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "These messages have already been sent today " "If you need to re-send them, rename the file and upload it again."
+        "These messages have already been sent today If you need to re-send them, rename the file and upload it again."
     )
 
     mock_get_jobs.assert_called_once_with(SERVICE_ONE_ID, limit_days=0)

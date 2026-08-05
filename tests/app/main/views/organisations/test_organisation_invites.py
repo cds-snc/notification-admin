@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 from unittest.mock import ANY
 
 import pytest
+from app.models.user import InvitedOrgUser
 from bs4 import BeautifulSoup
 from flask import url_for
 from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
-
-from app.models.user import InvitedOrgUser
 
 
 def test_view_team_members(

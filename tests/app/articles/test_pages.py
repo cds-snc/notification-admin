@@ -4,9 +4,9 @@ from unittest.mock import MagicMock, Mock, call
 import pytest
 import requests
 import requests_mock
+from app.articles.pages import get_page_by_slug_with_cache
 
 from app.articles import GC_ARTICLES_CACHE_PREFIX, GC_ARTICLES_FALLBACK_CACHE_PREFIX
-from app.articles.pages import get_page_by_slug_with_cache
 from tests import MockRedis
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"

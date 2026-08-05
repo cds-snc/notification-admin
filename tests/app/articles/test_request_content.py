@@ -1,8 +1,7 @@
 import pytest
 import requests_mock
-from werkzeug.exceptions import Forbidden
-
 from app.articles.api import _get_headers, get_content
+from werkzeug.exceptions import Forbidden
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"
 notify_url = f"https://{gc_articles_api}/wp-json/pages"

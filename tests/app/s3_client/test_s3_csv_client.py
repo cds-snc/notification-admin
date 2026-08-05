@@ -1,8 +1,7 @@
 from unittest.mock import Mock
 
-from flask import current_app
-
 from app.s3_client.s3_csv_client import set_metadata_on_csv_upload
+from flask import current_app
 
 
 def test_sets_metadata(client, mocker):
