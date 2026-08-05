@@ -91,7 +91,6 @@ class Config(object):
     FF_SALESFORCE_CONTACT = env.bool("FF_SALESFORCE_CONTACT", True)
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
-    FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
 
     # Comma-separated list of service IDs allowed to use file attachments.
@@ -208,7 +207,6 @@ class Development(Config):
     DEBUG = True
     VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
-    FF_ADD_TEMPLATE_PERM = True
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
@@ -283,7 +281,6 @@ class Production(Config):
 
 
 class Staging(Production):
-    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
@@ -297,7 +294,6 @@ class Scratch(Production):
 
 
 class Dev(Production):
-    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
 
