@@ -38,6 +38,27 @@ def test_client_gets_service(mocker):
     mock_get.assert_called_once_with("/service/foo")
 
 
+def test_client_removes_email_from_suppression_list(mocker):
+    client = ServiceAPIClient()
+    mock_post = mocker.patch.object(client, "post", return_value={"data": {"email_address": "person@example.com"}})
+
+    client.remove_email_from_suppression_list(
+        SERVICE_ONE_ID,
+        "person@example.com",
+        "user-id",
+        request_details="Mailbox issue resolved",
+    )
+
+    mock_post.assert_called_once_with(
+        "/service/{}/email-suppression/removal".format(SERVICE_ONE_ID),
+        data={
+            "email_address": "person@example.com",
+            "updated_by_id": "user-id",
+            "request_details": "Mailbox issue resolved",
+        },
+    )
+
+
 @pytest.mark.parametrize(
     "today_only, limit_days",
     [

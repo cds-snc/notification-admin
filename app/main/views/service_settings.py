@@ -44,6 +44,7 @@ from app.main.forms import (
     LinkOrganisationsForm,
     MessageLimit,
     PreviewBranding,
+    RemoveEmailFromSuppressionListForm,
     RenameServiceForm,
     SearchByNameForm,
     SelectLogoForm,
@@ -606,6 +607,38 @@ def service_sending_domain(service_id):
 @user_has_permissions("manage_service", "manage_api_keys")
 def service_email_reply_to(service_id):
     return render_template("views/service-settings/email_reply_to.html")
+
+
+@main.route(
+    "/services/<service_id>/service-settings/email-suppression/removal",
+    methods=["GET", "POST"],
+)
+@user_has_permissions("manage_service")
+def service_remove_email_from_suppression_list(service_id):
+    form = RemoveEmailFromSuppressionListForm()
+
+    if form.validate_on_submit():
+        try:
+            service_api_client.remove_email_from_suppression_list(
+                service_id=service_id,
+                email_address=form.email_address.data,
+                user_id=current_user.id,
+                request_details=form.request_details.data,
+            )
+        except HTTPError as e:
+            if e.status_code == 400 and isinstance(e.message, dict):
+                form.email_address.errors += e.message.get("email_address", [])
+                form.request_details.errors += e.message.get("request_details", [])
+            else:
+                raise e
+        else:
+            flash(_("Email address removed from suppression list"), "default_with_tick")
+            return redirect(url_for(".service_remove_email_from_suppression_list", service_id=service_id))
+
+    return render_template(
+        "views/service-settings/remove-from-email-suppression-list.html",
+        form=form,
+    )
 
 
 @main.route(

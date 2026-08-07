@@ -1169,6 +1169,14 @@ class ServiceReplyToEmailForm(StripWhitespaceForm):
     is_default = BooleanField(_l("Make this email address the default"))
 
 
+class RemoveEmailFromSuppressionListForm(StripWhitespaceForm):
+    email_address = email_address(label=_l("Email address"), gov_user=False)
+    request_details = TextAreaField(
+        _l("Request details"),
+        validators=[Length(max=500, message=_l("Must be 500 characters or fewer"))],
+    )
+
+
 class ServiceSmsSenderForm(StripWhitespaceForm):
     sms_sender = StringField(
         _l("Text message sender"),
