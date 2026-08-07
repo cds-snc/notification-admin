@@ -265,7 +265,7 @@ class ProductionFF(Config):
     GC_ARTICLES_API = "articles.alpha.canada.ca/notification-gc-notify"
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
-    GC_ORGANISATIONS_BUCKET_NAME = "dev-gc-organisations"
+    GC_ORGANISATIONS_BUCKET_NAME = None
     FF_USE_BILLABLE_UNITS = False
     FF_REPORT_API = False
 
