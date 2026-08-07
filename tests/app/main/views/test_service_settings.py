@@ -1104,7 +1104,7 @@ def test_request_to_go_live_use_case_page(
 
 
 @pytest.mark.parametrize(
-    "salesforce_feature_flag, organisation_notes, organisation_question_visible",
+    "is_gc_organisations, organisation_notes, organisation_question_visible",
     (
         (False, "Some department > Some group", True),
         (False, "", True),
@@ -1117,11 +1117,11 @@ def test_request_to_go_live_use_case_page_hides_organisation(
     mocker: MockerFixture,
     app_: Flask,
     service_one: Service,
-    salesforce_feature_flag: bool,
+    is_gc_organisations: bool,
     organisation_notes: str,
     organisation_question_visible: bool,
 ):
-    with set_config(app_, "FF_SALESFORCE_CONTACT", salesforce_feature_flag):
+    with set_config(app_, "IS_GC_ORGANISATIONS", is_gc_organisations):
         use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
         use_case_data_mock.return_value = None
         service_one.organisation_notes = organisation_notes  # type: ignore

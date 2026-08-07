@@ -183,13 +183,13 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     assert mock_create_or_update_free_sms_fragment_limit.called is True
 
 
-def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
+def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_gc_organisations(
     app_: Flask,
     client_request,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
@@ -227,7 +227,7 @@ def test_wizard_flow_with_step_3_should_create_service(
 ):
     mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
     mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -259,7 +259,7 @@ def test_wizard_flow_with_step_3_should_not_create_service_no_parent_org(
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -287,7 +287,7 @@ def test_wizard_flow_with_step_3b_should_create_service(
 ):
     mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
     mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -316,7 +316,7 @@ def test_wizard_flow_with_step_3b_create_service_no_org(
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
