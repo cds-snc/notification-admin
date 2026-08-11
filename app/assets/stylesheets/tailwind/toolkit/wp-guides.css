@@ -12,6 +12,11 @@
     }
   }
 
+  /* Toolbar guide */
+  .guide-toolbar {
+    @apply mt-0;
+  }
+
   /* Symbols list */
   .page-content ul.guide-symbols-list {
     @apply p-0 flex flex-wrap lg:flex-nowrap items-stretch;
