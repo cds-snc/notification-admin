@@ -114,6 +114,6 @@ def s3download_report_chunks(service_id, report_id, chunk_size=CHUNK_SIZE):
             chunk = body.read(chunk_size)
     except botocore.exceptions.ClientError as e:
         current_app.logger.error(
-            f"Unable to stream S3 file {current_app.config["REPORTS_BUCKET_NAME"]}/{get_report_location(service_id, report_id)}"
+            f"Unable to stream S3 file {current_app.config['REPORTS_BUCKET_NAME']}/{get_report_location(service_id, report_id)}"
         )
         raise e

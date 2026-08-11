@@ -77,7 +77,7 @@ def robots():
 def security_txt():
     security_policy = gca_url_for("security", _external=True)
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",

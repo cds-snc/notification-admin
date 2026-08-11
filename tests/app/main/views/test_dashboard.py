@@ -3,10 +3,6 @@ import re
 from unittest.mock import ANY
 
 import pytest
-from bs4 import BeautifulSoup
-from flask import url_for
-from freezegun import freeze_time
-
 from app.main.views.dashboard import (
     aggregate_by_type_daily,
     aggregate_notifications_stats,
@@ -17,6 +13,10 @@ from app.main.views.dashboard import (
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
+from bs4 import BeautifulSoup
+from flask import url_for
+from freezegun import freeze_time
+
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -469,7 +469,7 @@ def test_stats_pages_show_last_3_years(
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 fiscal year " "2013 to 2014 fiscal year " "2014 to 2015 fiscal year"
+        "2012 to 2013 fiscal year 2013 to 2014 fiscal year 2014 to 2015 fiscal year"
     )
 
 

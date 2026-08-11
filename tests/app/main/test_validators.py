@@ -1,12 +1,11 @@
 from unittest.mock import Mock
 
 import pytest
+from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
+from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
 from flask import g
 from wtforms import ValidationError
 from wtforms.validators import StopValidation
-
-from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
-from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
 
 
 @pytest.mark.parametrize("password", ["notification", "11111111", "kittykat", "blackbox"])
@@ -159,11 +158,11 @@ def test_sms_character_validation(client, msg):
     [
         (
             "∆ abc 📲 def 📵 ghi",
-            ("You can’t use ∆, 📲 or 📵 in text messages. " "They won’t show up properly on everyone’s phones."),
+            ("You can’t use ∆, 📲 or 📵 in text messages. They won’t show up properly on everyone’s phones."),
         ),
         (
             "📵",
-            ("You can’t use 📵 in text messages. " "It won’t show up properly on everyone’s phones."),
+            ("You can’t use 📵 in text messages. It won’t show up properly on everyone’s phones."),
         ),
     ],
 )

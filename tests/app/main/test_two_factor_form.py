@@ -1,7 +1,7 @@
 import pytest
+from app.main.forms import TwoFactorForm
 
 from app import user_api_client
-from app.main.forms import TwoFactorForm
 
 
 def _check_code(code):

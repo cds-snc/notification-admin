@@ -2,9 +2,8 @@ import io
 import json
 from unittest.mock import Mock
 
-from notifications_python_client.errors import HTTPError
-
 from app.main.views.templates import _build_file_upload_error_response
+from notifications_python_client.errors import HTTPError
 
 
 def _mock_file_upload(data=None, filename="test.pdf", mimetype="application/pdf"):
@@ -88,7 +87,7 @@ class TestBuildFileUploadErrorResponse:
         error_response.text = json.dumps(
             {
                 "error": "bad_request",
-                "message": ("Unsupported document type 'text/html'. Supported types are: " "['application/pdf', 'text/plain']"),
+                "message": ("Unsupported document type 'text/html'. Supported types are: ['application/pdf', 'text/plain']"),
             }
         )
         http_error = HTTPError(error_response)

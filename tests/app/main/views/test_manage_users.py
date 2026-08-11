@@ -2,10 +2,10 @@ import copy
 import uuid
 
 import pytest
+from app.utils import is_gov_user
 from flask import url_for
 
 import app
-from app.utils import is_gov_user
 from tests.conftest import (
     SERVICE_ONE_ID,
     USER_ONE_ID,

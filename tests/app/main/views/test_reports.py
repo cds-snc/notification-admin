@@ -2,10 +2,9 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
 import pytest
+from app.main.views.reports import get_report_totals, set_report_expired
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
-
-from app.main.views.reports import get_report_totals, set_report_expired
 
 
 def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):
@@ -33,6 +32,34 @@ def test_get_reports_shows_list_of_reports(client_request, active_user_with_perm
     assert "Deleted at" in rows[1].text  # Status changed due to expiration
     assert "2024-12-31 19.01.00 HNE [fr]" in rows[2].text
     assert "Preparing report" in rows[2].text
+
+
+@freeze_time("2025-01-01 00:01:00.000000")
+def test_get_reports_shows_requesting_api_key_when_requested_via_api(
+    client_request, active_user_with_permissions, mocker, service_one
+):
+    client_request.login(active_user_with_permissions)
+    mocker.patch(
+        "app.reports_api_client.get_reports_for_service",
+        return_value=[
+            {
+                "id": "report-1",
+                "status": "ready",
+                "language": "en",
+                "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+                "requested_at": datetime.now(timezone.utc).isoformat(),
+                "requesting_user": None,
+                "api_key": {"id": "api-key-1", "name": "Test API Key"},
+                "url": "https://example.com/report-1.csv",
+            }
+        ],
+    )
+
+    response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
+
+    reports_table = response.find("table")
+    row = reports_table.find_all("tr")[1]
+    assert "Requested by API key: Test API Key" in row.text
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
@@ -199,7 +226,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
     client_request.login(active_user_with_permissions)
 
     # Simulate coming from the dashboard page
-    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+    referring_url = f"http://localhost/services/{service_one['id']}/{referrer_page}"
 
     # Make a request to the reports page with the dashboard as referer
     response = client_request.get(
@@ -213,7 +240,7 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
 
     # Verify that the back_link was set in the session
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+        assert session[f"back_link_{service_one['id']}_reports"] == referring_url
 
     # Verify the back link is present in the page content
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
@@ -228,10 +255,10 @@ def test_reports_uses_session_back_link_after_refresh(
     client_request.login(active_user_with_permissions)
 
     with client_request.session_transaction() as session:
-        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+        session[f"back_link_{service_one['id']}_reports"] = expected_back_link
 
     # Make the request with the same URL as referer to simulate a refresh
-    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    current_url = f"http://localhost/services/{service_one['id']}/reports"
     response = client_request.get(
         "main.reports",
         service_id=service_one["id"],
@@ -243,7 +270,7 @@ def test_reports_uses_session_back_link_after_refresh(
 
     # Verify the session still contains the original back link
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+        assert session[f"back_link_{service_one['id']}_reports"] == expected_back_link
 
     # The page should still have access to the back_link
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
