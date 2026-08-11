@@ -4,7 +4,7 @@ from app.notify_client.service_api_client import service_api_client
 from notifications_python_client.errors import HTTP503Error
 
 
-def test_retry_on_server_error_2_failed_tries(mocker):
+def test_retry_on_server_error_2_failed_tries(app_, mocker):
     response = requests.Response()
     response._content = b'{"foo": "bar"}'
     response.encoding = "utf-8"
@@ -12,7 +12,7 @@ def test_retry_on_server_error_2_failed_tries(mocker):
 
     # 2 failures, 1 good response, successful on last try
     mocker.patch(
-        "notifications_python_client.base.requests.request",
+        "requests.Session.request",
         side_effect=[
             requests.exceptions.ConnectionError(),
             requests.exceptions.ConnectionError(),
@@ -20,10 +20,13 @@ def test_retry_on_server_error_2_failed_tries(mocker):
         ],
     )
 
-    assert service_api_client.get_live_services_data() == {"foo": "bar"}
+    with app_.test_request_context():
+        # Mock log_admin_call to avoid accessing current_service from request context
+        mocker.patch("app.notify_client.NotifyAdminAPIClient.log_admin_call")
+        assert service_api_client.get_live_services_data() == {"foo": "bar"}
 
 
-def test_retry_on_server_error_3_failed_tries(mocker):
+def test_retry_on_server_error_3_failed_tries(app_, mocker):
     response = requests.Response()
     response._content = b"{}"
     response.encoding = "utf-8"
@@ -31,7 +34,7 @@ def test_retry_on_server_error_3_failed_tries(mocker):
 
     # 3 failures, 1 good response: too many failures
     mocker.patch(
-        "notifications_python_client.base.requests.request",
+        "requests.Session.request",
         side_effect=[
             requests.exceptions.ConnectionError(),
             requests.exceptions.ConnectionError(),
@@ -40,5 +43,8 @@ def test_retry_on_server_error_3_failed_tries(mocker):
         ],
     )
 
-    with pytest.raises(HTTP503Error):
-        service_api_client.get_live_services_data()
+    with app_.test_request_context():
+        # Mock log_admin_call to avoid accessing current_service from request context
+        mocker.patch("app.notify_client.NotifyAdminAPIClient.log_admin_call")
+        with pytest.raises(HTTP503Error):
+            service_api_client.get_live_services_data()
