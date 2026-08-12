@@ -355,6 +355,8 @@ describe("Conditional inline and block tests", () => {
       // Type a block conditional
       RichTextEditor.Components.Editor().type("((var??\ncontent\n))");
 
+      cy.realPress("End");
+
       // Focus should be in the conditional body (at the end of content)
       RichTextEditor.Components.Editor()
         .find("div.conditional-content")
