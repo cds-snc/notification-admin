@@ -35,6 +35,34 @@ def test_get_reports_shows_list_of_reports(client_request, active_user_with_perm
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
+def test_get_reports_shows_requesting_api_key_when_requested_via_api(
+    client_request, active_user_with_permissions, mocker, service_one
+):
+    client_request.login(active_user_with_permissions)
+    mocker.patch(
+        "app.reports_api_client.get_reports_for_service",
+        return_value=[
+            {
+                "id": "report-1",
+                "status": "ready",
+                "language": "en",
+                "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+                "requested_at": datetime.now(timezone.utc).isoformat(),
+                "requesting_user": None,
+                "api_key": {"id": "api-key-1", "name": "Test API Key"},
+                "url": "https://example.com/report-1.csv",
+            }
+        ],
+    )
+
+    response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
+
+    reports_table = response.find("table")
+    row = reports_table.find_all("tr")[1]
+    assert "Requested by API key: Test API Key" in row.text
+
+
+@freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_streams_the_report(
     client_request,
     active_user_with_permissions,
