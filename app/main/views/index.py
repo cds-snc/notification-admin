@@ -265,11 +265,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/roadmap", endpoint="roadmap")
-def roadmap():
-    return render_template("views/roadmap.html")
-
-
 @main.route("/email", endpoint="email")
 def features_email():
     return render_template("views/emails.html")
