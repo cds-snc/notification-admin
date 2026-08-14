@@ -391,7 +391,7 @@
 }
 .info-pane nav li:has([aria-current="page"]) {
   box-shadow: 0 0 0 2px theme("colors.gray.700");
-  @apply bg-gray-100; 
+  @apply bg-gray-100;
 }
 
 .markdown-view {

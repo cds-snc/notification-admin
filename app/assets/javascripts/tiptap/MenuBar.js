@@ -262,11 +262,7 @@ const ToolbarButton = ({
   );
 };
 
-const infoPaneTargets = [
-  "custom-content",
-  "multiple-languages",
-  "email-links",
-];
+const infoPaneTargets = ["custom-content", "multiple-languages", "email-links"];
 
 const MenuBar = ({
   editor,
@@ -859,9 +855,7 @@ const MenuBar = ({
                 <li key={id}>
                   <a
                     href={`#${id}`}
-                    aria-current={
-                      infoPaneTarget === id ? "page" : undefined
-                    }
+                    aria-current={infoPaneTarget === id ? "page" : undefined}
                     onClick={(event) => handleInfoPaneLinkClick(event, id)}
                   >
                     {tabLabel}
@@ -872,11 +866,7 @@ const MenuBar = ({
           </nav>
 
           {infoPaneSections.map(({ id, tabLabel, Component }) => (
-            <Component
-              key={id}
-              t={t}
-              isActive={infoPaneTarget === id}
-            />
+            <Component key={id} t={t} isActive={infoPaneTarget === id} />
           ))}
         </div>
       )}

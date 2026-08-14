@@ -61,7 +61,10 @@ describe("Info pane", () => {
         const targetId = tab.getAttribute("href").slice(1);
 
         RichTextEditor.Components.InfoPaneSection(targetId).should("exist");
-        RichTextEditor.Components.InfoPaneTab(targetId).should("have.length", 1);
+        RichTextEditor.Components.InfoPaneTab(targetId).should(
+          "have.length",
+          1,
+        );
       });
     });
   });
