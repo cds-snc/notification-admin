@@ -42,7 +42,7 @@ def get_sitemap():
                     {"href": documentation_url(), "link_text": _("API documentation")},
                     {"href": gca_url_for("getting_started"), "link_text": _("Getting started")},
                     {"href": gca_url_for("guidance"), "link_text": _("Guidance")},
-                    {"href": gca_url_for("formatting_guide"), "link_text": _("Formatting emails")},
+                    {"href": gca_url_for("formatting_guide"), "link_text": _("Using markdown for email messages")},
                     {"href": gca_url_for("spreadsheets"), "link_text": _("Using a spreadsheet")},
                     {"href": gca_url_for("personalisation_guide"), "link_text": _("Sending custom content")},
                     {"href": gca_url_for("message_delivery_status"), "link_text": _("Understanding delivery and failure")},
