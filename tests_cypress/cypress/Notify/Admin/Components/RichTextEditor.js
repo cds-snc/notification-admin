@@ -22,6 +22,12 @@ let Components = {
     Editor: () => cy.getByTestId('rte-editor').find('[contenteditable]').first(),
     MarkdownEditor: () => cy.getByTestId('template-content'),
     LiveRegion: () => cy.getByTestId('rte-liveregion'),
+    InfoButton: () => cy.getByTestId('rte-info'),
+    InfoPane: () => cy.get('.info-pane'),
+    InfoPaneTabs: () => cy.get('.info-pane nav a'),
+    InfoPaneTab: (id) => cy.get(`.info-pane nav a[href="#${id}"]`),
+    InfoPaneSections: () => cy.get('.info-pane section'),
+    InfoPaneSection: (id) => cy.get(`.info-pane section#${id}`),
     // toolbar buttons
     ToolbarButtons: () => {
         // loop thtought FORMATTING_OPTIONS and get a list of cypress elements for each and return them
