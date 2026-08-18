@@ -847,29 +847,32 @@ const MenuBar = ({
           )}
         </div>
       </AccessibleToolbar>
-      {isInfoOpen && (
-        <div className="info-pane" data-active-section={infoPaneTarget}>
-          <nav aria-label={t.infoTabsLabel}>
-            <ul>
-              {infoPaneSections.map(({ id, tabLabel }) => (
-                <li key={id}>
-                  <a
-                    href={`#${id}`}
-                    aria-current={infoPaneTarget === id ? "page" : undefined}
-                    onClick={(event) => handleInfoPaneLinkClick(event, id)}
-                  >
-                    {tabLabel}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+      <div
+        className={`info-pane${isInfoOpen ? " is-open" : ""}`}
+        data-active-section={infoPaneTarget}
+        aria-hidden={!isInfoOpen}
+        inert={!isInfoOpen}
+      >
+        <nav aria-label={t.infoTabsLabel}>
+          <ul>
+            {infoPaneSections.map(({ id, tabLabel }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  aria-current={infoPaneTarget === id ? "page" : undefined}
+                  onClick={(event) => handleInfoPaneLinkClick(event, id)}
+                >
+                  {tabLabel}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          {infoPaneSections.map(({ id, tabLabel, Component }) => (
-            <Component key={id} t={t} isActive={infoPaneTarget === id} />
-          ))}
-        </div>
-      )}
+        {infoPaneSections.map(({ id, Component }) => (
+          <Component key={id} t={t} isActive={infoPaneTarget === id} />
+        ))}
+      </div>
     </>
   );
 };
