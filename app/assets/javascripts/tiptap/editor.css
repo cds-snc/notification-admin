@@ -366,7 +366,7 @@
   @starting-style {
     height: 0;
   }
-  
+
   @apply bg-gray-200;
 
   p {
