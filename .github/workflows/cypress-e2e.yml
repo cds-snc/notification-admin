@@ -78,7 +78,7 @@ jobs:
 
     # Now checkout the API repo
     - name: Checkout API repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
       with:
         repository: cds-snc/notification-api
         path: api
@@ -230,7 +230,7 @@ jobs:
         spec: ${{ matrix.shard.spec }}
 
     - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: always()
       with:
         name: cypress-artifacts-${{ matrix.shard.name }}
@@ -286,7 +286,7 @@ jobs:
         component: true
 
     - name: Upload component test artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: always()
       with:
         name: cypress-component-artifacts 
