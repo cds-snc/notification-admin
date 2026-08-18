@@ -1263,6 +1263,7 @@
 "You cannot remove the only user for a service","Vous ne pouvez pas retirer le seul utilisateur d’un service."
 "User cannot be removed from service. Check that all services have another team member who can manage settings","L’utilisateur ne peut pas être retiré du service. Vérifiez que tous les services ont un autre membre de l’équipe qui peut gérer les paramètres"
 "Email formatting guide","Guide de mise en forme de courriels"
+"Using markdown for email messages","Balisage markdown pour les courriels"
 "Use this guide to write email message templates. Make sure to send yourself a message before sending to recipients to ensure formatting looks good.","Utilisez ce guide pour créer les gabarits de vos courriels. Vous devriez vous envoyer un message test avant de l’envoyer à des destinataires pour vous assurer que la mise en forme est correcte."
 "To tailor messages to each recipient, read the <a id='link-format-guide' href='{}' target='_blank'>personalisation guide</a>.","Pour adapter les messages à chaque destinataire, consultez le <a id='link-format-guide' href='{}' target='_blank'>guide de personalisation</a>."
 "Personalisation guide","Guide de personnalisation"
