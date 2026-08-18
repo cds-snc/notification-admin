@@ -1,0 +1,9 @@
+{% macro new_feature(title, cta="", cta_link="", anchored_to="") %}
+<div style="--anchored-to:--{{ anchored_to }};" class="new-feature-banner bg-brand-100 flex flex-col gap-4 p-gutterHalf">
+    {{ title }}
+    <div class="flex gap-4">
+        <a class="button" href="{{ cta_link }}">{{ cta }}</a>
+        <button type="button" class="button-link" data-dismiss-notice>{{ _('Hide') }}</button>
+    </div>
+</div>
+{% endmacro %}
