@@ -90,7 +90,7 @@
       {% endif %}
     </div>
   </div>  
-    <div class="mb-16">
+    <div class="mb-16 relative">
       {% if file_attachments_enabled_for_service %} 
         {% if template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
           {{ attachments_widget(
@@ -102,6 +102,13 @@
             url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
             url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
           ) }}
+          <div class="new-feature-banner bg-brand-100 flex flex-col gap-4 p-gutterHalf [--anchored-to:\-\-new-feature-attachments]">
+            Upload attachments without the API
+            <div class="flex gap-4">
+              <a class="button" href="/new-features">About file attachments</a>
+              <button type="button" class="button-link" data-dismiss-notice>{{ _('Dismiss') }}</button>
+            </div>
+          </div>
         {% else %}
           <h2 class="heading-medium" data-testid="attached-files-heading">{{ _('Attached files') }}</h2>
           {% if current_user.has_permissions('manage_service') %}
