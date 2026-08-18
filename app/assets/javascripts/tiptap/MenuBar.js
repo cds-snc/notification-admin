@@ -25,9 +25,9 @@ import {
 } from "./icons";
 import { shortcuts } from "./localization";
 import { useEditorContext } from "./EditorContext";
-import CustomContentInfoPane from "./CustomContentInfoPane";
-import MultipleLanguagesInfoPane from "./MultipleLanguagesInfoPane";
-import EmailLinksInfoPane from "./EmailLinksInfoPane";
+import CustomContentInfoPane from "./InfoPane/CustomContent";
+import MultipleLanguagesInfoPane from "./InfoPane/MultipleLanguages";
+import EmailLinksInfoPane from "./InfoPane/EmailLinks";
 
 /**
  * AccessibleToolbar component that wraps any toolbar content with proper ARIA accessibility.

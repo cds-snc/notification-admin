@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "lucide-react";
-import { englishBlockIcon, frenchBlockIcon, rightToLeftIcon } from "./icons";
+import { englishBlockIcon, frenchBlockIcon, rightToLeftIcon } from "../icons";
 const MultipleLanguagesInfoPane = ({ t, isActive }) => {
   const pane = t.infoPane2;
 

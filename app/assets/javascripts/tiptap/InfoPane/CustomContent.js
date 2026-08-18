@@ -4,7 +4,7 @@ import {
   variableIcon,
   conditionalBlockIcon,
   conditionalInlineIcon,
-} from "./icons";
+} from "../icons";
 
 const CustomContentInfoPane = ({ t, isActive }) => {
   const pane = t.infoPane1;
