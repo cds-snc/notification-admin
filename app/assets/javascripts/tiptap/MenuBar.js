@@ -850,8 +850,8 @@ const MenuBar = ({
       <div
         className={`info-pane${isInfoOpen ? " is-open" : ""}`}
         data-active-section={infoPaneTarget}
-        aria-hidden={!isInfoOpen}
-        inert={!isInfoOpen}
+        aria-hidden={isInfoOpen ? undefined : true}
+        inert={isInfoOpen ? undefined : ""}
       >
         <nav aria-label={t.infoTabsLabel}>
           <ul>
