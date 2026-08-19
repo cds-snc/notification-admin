@@ -291,6 +291,11 @@ const MenuBar = ({
     updateInfoPaneTarget(target);
   };
 
+  const handleMarkdownToggle = () => {
+    setIsInfoOpen(false);
+    onToggleMarkdownView();
+  };
+
   const infoPaneSections = [
     {
       id: "custom-content",
@@ -824,7 +829,7 @@ const MenuBar = ({
               <button
                 type="button"
                 data-testid="rte-toggle-markdown"
-                onClick={onToggleMarkdownView}
+                onClick={handleMarkdownToggle}
                 className="toolbar-button toolbar-button-mode"
                 aria-pressed={isMarkdownView}
               >
@@ -837,7 +842,7 @@ const MenuBar = ({
             <button
               type="button"
               data-testid="rte-toggle-markdown"
-              onClick={onToggleMarkdownView}
+              onClick={handleMarkdownToggle}
               className="toolbar-button toolbar-button-mode toolbar-switch-group"
               aria-pressed={isMarkdownView}
             >
