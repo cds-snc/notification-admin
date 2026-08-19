@@ -3,7 +3,10 @@ import {
   BatchSpanProcessor,
 } from "@opentelemetry/sdk-trace-web";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { defaultResource, resourceFromAttributes } from "@opentelemetry/resources";
+import {
+  defaultResource,
+  resourceFromAttributes,
+} from "@opentelemetry/resources";
 import {
   SEMRESATTRS_SERVICE_NAME,
   SEMRESATTRS_SERVICE_VERSION,
