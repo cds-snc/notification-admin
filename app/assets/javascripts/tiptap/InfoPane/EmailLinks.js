@@ -4,11 +4,7 @@ const EmailLinksInfoPane = ({ t, isActive }) => {
   const pane = t.infoPane3;
 
   return (
-    <section
-      id="email-links"
-      aria-labelledby="email-links-title"
-      hidden={!isActive}
-    >
+    <section id="email-links" aria-label={pane.label} hidden={!isActive}>
       <p>{pane.p1}</p>
       <p>{pane.p2}</p>
       <ol className="list list-number ml-10">
