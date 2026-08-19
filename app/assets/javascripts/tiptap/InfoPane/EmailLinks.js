@@ -6,7 +6,7 @@ const EmailLinksInfoPane = ({ t, isActive }) => {
   return (
     <section
       id="email-links"
-      aria-labelledby="email-links-title"
+      aria-label={pane.label}
       hidden={!isActive}
     >
       <p>{pane.p1}</p>
