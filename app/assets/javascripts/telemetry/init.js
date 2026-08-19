@@ -3,7 +3,7 @@ import {
   BatchSpanProcessor,
 } from "@opentelemetry/sdk-trace-web";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { Resource } from "@opentelemetry/resources";
+import { defaultResource, resourceFromAttributes } from "@opentelemetry/resources";
 import {
   SEMRESATTRS_SERVICE_NAME,
   SEMRESATTRS_SERVICE_VERSION,
@@ -327,8 +327,8 @@ const initTelemetry = () => {
   installOtlpXhrLogging(otlpEndpoint);
 
   // Create resource with service metadata
-  const resource = Resource.default().merge(
-    new Resource({
+  const resource = defaultResource().merge(
+    resourceFromAttributes({
       [SEMRESATTRS_SERVICE_NAME]: otelServiceName,
       [SEMRESATTRS_SERVICE_VERSION]: "0.0.1",
       environment: import.meta.env.VITE_ENV || "development",
