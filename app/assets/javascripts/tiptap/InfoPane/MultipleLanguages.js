@@ -9,11 +9,11 @@ const MultipleLanguagesInfoPane = ({ t, isActive }) => {
       <p>{pane.p1}</p>
       <ul className="list list-bullet ml-10">
         <li>
-          {pane.li1} <Icon iconNode={englishBlockIcon} title={pane.li1Icon1} />{" "}
-          {pane.li1or} <Icon iconNode={frenchBlockIcon} title={pane.li1Icon2} />
+          {pane.li1} <Icon iconNode={englishBlockIcon} role="img" aria-label={pane.li1Icon1} />{" "}
+          {pane.li1or} <Icon iconNode={frenchBlockIcon} role="img" aria-label={pane.li1Icon2} />
         </li>
         <li>
-          {pane.li2} <Icon iconNode={rightToLeftIcon} title={pane.li2Icon} />
+          {pane.li2} <Icon iconNode={rightToLeftIcon} role="img" aria-label={pane.li2Icon} />
         </li>
       </ul>
     </section>

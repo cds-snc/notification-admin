@@ -19,7 +19,7 @@ const CustomContentInfoPane = ({ t, isActive }) => {
         {pane.title}
       </h2>
       <p>
-        {pane.p1} <Icon iconNode={variableIcon} title={pane.p1Icon} />
+        {pane.p1} <Icon iconNode={variableIcon} role="img" aria-label={pane.p1Icon} />
       </p>
       <p>{pane.p2}</p>
       <h3 className="heading-small">{pane.title2}</h3>
@@ -28,11 +28,11 @@ const CustomContentInfoPane = ({ t, isActive }) => {
         <li>{pane.li1}</li>
         <li>
           {pane.li2}{" "}
-          <Icon iconNode={conditionalInlineIcon} title={pane.li2Icon} />
+          <Icon iconNode={conditionalInlineIcon} role="img" aria-label={pane.li2Icon} />
         </li>
         <li>
           {pane.li3}{" "}
-          <Icon iconNode={conditionalBlockIcon} title={pane.li3Icon} />
+          <Icon iconNode={conditionalBlockIcon} role="img" aria-label={pane.li3Icon} />
         </li>
       </ul>
     </section>
