@@ -7,6 +7,7 @@
 {% from "components/textbox.html" import textbox %}
 {% from "components/api-key.html" import api_key %}
 {% from "components/page-header.html" import page_header %}
+{% from "components/new-feature.html" import new_feature %}
 
 {% block service_page_title %}
   {{ page_title_folder_path(current_service.get_template_path(template._template)) }}
@@ -90,7 +91,7 @@
       {% endif %}
     </div>
   </div>  
-    <div class="mb-16">
+    <div class="mb-16 relative">
       {% if file_attachments_enabled_for_service %} 
         {% if template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
           {{ attachments_widget(
@@ -101,6 +102,12 @@
             url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
             url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
             url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
+          ) }}
+          {{ new_feature(
+              title=_("Upload attachments without the API"),
+              cta=_("About file attachments"),
+              cta_link="/new-features",
+              anchored_to="new-feature-attachments"
           ) }}
         {% else %}
           <h2 class="heading-medium" data-testid="attached-files-heading">{{ _('Attached files') }}</h2>
