@@ -68,7 +68,6 @@ from app.sample_template_utils import create_temporary_sample_template, get_samp
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
     email_or_sms_not_enabled,
-    file_attachments_enabled_for_service,
     filter_attachments,
     get_limit_reset_time_et,
     get_template,
@@ -206,11 +205,7 @@ def view_template(service_id, template_id):
     template_folder = current_service.get_template_folder(template["folder"])
     template_attachments = []
 
-    if (
-        file_attachments_enabled_for_service(current_service.id)
-        and template["template_type"] == "email"
-        and current_service.has_permission("upload_document")
-    ):
+    if template["template_type"] == "email" and current_service.has_permission("upload_document"):
         template_attachments = filter_attachments(
             current_service.get_template_attachments(template_id),
             exclude_statuses={"deleted", "virus_scan_failed"},
@@ -221,11 +216,7 @@ def view_template(service_id, template_id):
     if should_skip_template_page(template["template_type"]):
         return redirect(url_for(".send_one_off", service_id=service_id, template_id=template_id))
 
-    if (
-        file_attachments_enabled_for_service(current_service.id)
-        and template["template_type"] == "email"
-        and current_user.has_permissions("manage_service")
-    ):
+    if template["template_type"] == "email" and current_user.has_permissions("manage_service"):
         session[f"enable_file_attachments_next_url_{service_id}"] = url_for(
             ".view_template",
             service_id=service_id,
@@ -239,15 +230,14 @@ def view_template(service_id, template_id):
         template=preview_template,
         template_postage=template["postage"],
         template_attachments=template_attachments,
-        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=user_has_template_permission,
         **get_limit_stats(template["template_type"], preview_template),
     )
 
 
-# Template attachment endpoints (gated by service allowlist)
+# Template attachment endpoints (gated by service permission)
 def _abort_if_attachments_disabled_for_service():
-    if not file_attachments_enabled_for_service(current_service.id) or not current_service.has_permission("upload_document"):
+    if not current_service.has_permission("upload_document"):
         abort(404)
 
 
@@ -1350,11 +1340,7 @@ def edit_service_template(service_id, template_id):
         )
     else:
         template_attachments = None
-        if (
-            file_attachments_enabled_for_service(current_service.id)
-            and template["template_type"] == "email"
-            and current_service.has_permission("upload_document")
-        ):
+        if template["template_type"] == "email" and current_service.has_permission("upload_document"):
             template_attachments = [
                 {
                     "id": attachment.get("id"),
@@ -1381,7 +1367,6 @@ def edit_service_template(service_id, template_id):
             one_click_unsub_enabled=current_app.config.get("ONE_CLICK_UNSUB_ALL_SERVICES", False)
             or str(service_id) in current_app.config.get("ONE_CLICK_UNSUB_SERVICE_IDS", []),
             attachments=template_attachments,
-            file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         )
 
 
@@ -1430,7 +1415,6 @@ def delete_service_template(service_id, template_id):
     return render_template(
         "views/templates/template.html",
         template=preview_template,
-        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=True,
         **get_limit_stats(template["template_type"], preview_template),
     )
@@ -1446,7 +1430,6 @@ def confirm_redact_template(service_id, template_id):
     return render_template(
         "views/templates/template.html",
         template=preview_template,
-        file_attachments_enabled_for_service=file_attachments_enabled_for_service(current_service.id),
         user_has_template_permission=True,
         show_redaction_message=True,
         **get_limit_stats(template["template_type"], preview_template),
