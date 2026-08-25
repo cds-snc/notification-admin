@@ -1,4 +1,7 @@
 /* Basic editor styles */
+:root {
+  interpolate-size: allow-keywords;
+}
 .tiptap {
   min-height: 400px;
   &:focus {
@@ -355,7 +358,18 @@
 }
 
 .info-pane {
-  @apply bg-gray-100 p-8;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  visibility: hidden;
+  transition:
+    max-height 220ms ease,
+    opacity 180ms ease,
+    transform 220ms ease,
+    visibility 0s linear 220ms;
+
+  @apply bg-gray-200;
 
   p {
     margin: 0;
@@ -368,6 +382,43 @@
     vertical-align: middle;
   }
 }
+.info-pane.is-open {
+  max-height: 1000px;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition:
+    max-height 300ms ease,
+    opacity 260ms ease,
+    transform 280ms ease,
+    visibility 0s linear 0s;
+}
+.info-pane section {
+  box-shadow: 0 -2px 0 0 theme("colors.gray.700");
+  @apply p-4 pt-8 bg-gray-100;
+}
+.info-pane section p + p {
+  @apply pt-4;
+}
+.info-pane section svg.lucide {
+  box-shadow: 0 0 0 theme("spacing.1") white;
+  @apply bg-white mx-1;
+}
+.info-pane nav ul {
+  @apply flex flex-nowrap items-stretch p-4 pb-0;
+}
+.info-pane nav li {
+  clip-path: inset(-2px -2px 0 -2px);
+  @apply p-4 w-full;
+}
+.info-pane nav li a {
+  @apply flex justify-center w-full;
+}
+.info-pane nav li:has([aria-current="page"]) {
+  box-shadow: 0 0 0 2px theme("colors.gray.700");
+  @apply bg-gray-100;
+}
+
 .markdown-view {
   width: 100%;
   min-height: 400px;

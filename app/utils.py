@@ -177,10 +177,6 @@ def user_is_platform_admin(f):
     return wrapped
 
 
-def file_attachments_enabled_for_service(service_id: str) -> bool:
-    return str(service_id) in current_app.config.get("FILE_ATTACH_SERVICES", [])
-
-
 def redirect_to_sign_in(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
