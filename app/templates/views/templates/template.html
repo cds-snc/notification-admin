@@ -91,8 +91,8 @@
     </div>
   </div>  
     <div class="mb-16">
-      {% if file_attachments_enabled_for_service %} 
-        {% if template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
+      {% if template.template_type == 'email' %}
+        {% if current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
           {{ attachments_widget(
             "template-attachments",
             template_attachments,

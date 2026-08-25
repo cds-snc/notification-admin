@@ -3437,18 +3437,17 @@ def test_service_switch_upload_document(
     assert mocked_fn.call_args[0][0] == service_one["id"]
 
 
-def test_service_switch_upload_document_shows_api_only_help_when_service_not_allowlisted(
+def test_service_switch_upload_document_shows_template_help_for_any_service(
     client_request,
     service_one,
     app_,
 ):
-    with set_config(app_, "FILE_ATTACH_SERVICES", []):
-        page = client_request.get(
-            "main.service_switch_upload_document",
-            service_id=service_one["id"],
-        )
-        paragraph = page.select_one("#main_content p").text.strip()
-        assert "This feature is only available when sending through the API" in paragraph
+    page = client_request.get(
+        "main.service_switch_upload_document",
+        service_id=service_one["id"],
+    )
+    paragraph = page.select_one("#main_content p").text.strip()
+    assert "Allow files to be attached to email notifications" in paragraph
 
 
 def test_enable_file_attachments_turns_on_permission_and_redirects_to_next(

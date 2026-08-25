@@ -874,6 +874,32 @@ def test_should_show_attached_files_heading_and_notice_when_upload_document_perm
     assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
 
 
+def test_should_not_show_attachment_section_on_sms_template(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="sms")},
+    )
+
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert page.select_one("[data-testid='attached-files-heading']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
+
+
 def test_should_show_ask_manager_notice_without_manage_service_permission(
     client_request,
     mock_get_template_folders,
