@@ -1,6 +1,6 @@
-{% macro new_feature(title, cta="", cta_link="", anchored_to="") %}
-<div style="--anchored-to:--{{ anchored_to }};" class="new-feature-banner hidden bg-brand-100 flex flex-col gap-4 p-gutterHalf" data-new-feature="{{ anchored_to }}">
-    {{ title }}
+{% macro new_feature(title, cta="", cta_link="", anchored_to="", lifespan="") %}
+<div style="--anchored-to:--{{ anchored_to }};" class="new-feature-banner hidden bg-brand-100 flex flex-col gap-4 p-gutterHalf" data-new-feature="{{ anchored_to }}" data-lifespan="{{ lifespan }}">
+    <p class="max-w-[80ch] mb-4"><span class="font-[600]">{{ _("New:") }}</span> {{ title }}</p>
     <div class="flex gap-4">
         <a class="button" href="{{ cta_link }}">{{ cta }}</a>
         <button type="button" class="button-link" data-dismiss-notice>{{ _('Dismiss') }}</button>

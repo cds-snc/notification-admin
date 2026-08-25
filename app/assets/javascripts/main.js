@@ -161,6 +161,18 @@ $(() => GOVUK.modules.start());
 
 document.querySelectorAll("[data-new-feature]").forEach(function (banner) {
   var featureId = banner.dataset.newFeature;
+  var lifespan = banner.dataset.lifespan;
+  var expirationDate = lifespan && new Date(lifespan + "T00:00:00Z");
+
+  if (
+    expirationDate &&
+    !isNaN(expirationDate) &&
+    expirationDate <= new Date()
+  ) {
+    banner.remove();
+    return;
+  }
+
   if (featureId && GOVUK.cookie("new-feature-" + featureId)) {
     banner.remove();
   } else {
