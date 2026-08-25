@@ -164,7 +164,11 @@ document.querySelectorAll("[data-new-feature]").forEach(function (banner) {
   var lifespan = banner.dataset.lifespan;
   var expirationDate = lifespan && new Date(lifespan + "T00:00:00Z");
 
-  if (expirationDate && !isNaN(expirationDate) && expirationDate <= new Date()) {
+  if (
+    expirationDate &&
+    !isNaN(expirationDate) &&
+    expirationDate <= new Date()
+  ) {
     banner.remove();
     return;
   }
