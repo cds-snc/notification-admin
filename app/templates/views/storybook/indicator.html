@@ -54,6 +54,7 @@
 <h2 class="heading-medium mt-8">New Feature Banner</h2>
 <p>The feature banner sits within the page flow. This keeps content visible and accessible.</p> 
 <p>You can optionally anchor the banner to an element using CSS. A caret points to the anchor, creating a visual connection..</p> 
+<p>Set the lifespan to stop showing the banner after a specific date. run `make check-expired-banners` to find expired banners. Omit the lifespan option to show the banner indefinitely.</p>
 <div class="bg-gray-100 px-8 py-16">
     <div class="flex flex-col gap-gutter items-start">
     <button type="button" class="button [anchor-name:--new-feature-example]" id="new-feature-example">Anchoring element</button>
@@ -61,7 +62,8 @@
         title="You can do something with this new thing",
         cta="About this new thing",
         cta_link="/new-features",
-        anchored_to="new-feature-example"
+        anchored_to="new-feature-example",
+        lifespan="2100-12-31"
     ) }}
     </div>
     <h3 class="heading-small mb-2">Code</h3>
@@ -72,7 +74,8 @@
     title=_("You can do something with this new thing"),
     cta=_("About this new thing"),
     cta_link="/new-features",
-    anchored_to="new-feature-example"
+    anchored_to="new-feature-example",
+    lifespan="2100-12-31"
 ) }}
 {% endraw %}</code></pre>
     </div>
