@@ -65,6 +65,11 @@ def _truncate_text_preserving_markup(text, length):
     if truncated.rfind("<") > truncated.rfind(">"):
         truncated = truncated[: truncated.rfind("<")]
 
+    # The redaction tag may still be open if its closing tag was truncated.
+    open_marks = truncated.count("<mark ") - truncated.count("</mark>")
+    if open_marks > 0:
+        truncated += "</mark>" * open_marks
+
     return Markup(truncated) if is_markup else truncated
 
 
