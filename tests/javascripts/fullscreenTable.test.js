@@ -44,11 +44,11 @@ describe('FullscreenTable', () => {
 
       Object.keys(cells).forEach((key, idx) => {
         if (idx === 0) {
-          result += `<td class="table-field-index">
+          result += `<th scope="row" class="table-field-index">
                       <span class="table-field-error">
                         ${key}
                       </span>
-                    </td>`;
+                    </th>`;
         } else {
           result += `<td class="table-field-left-aligned ">
                       <div class="table-field-status-default">

@@ -19,13 +19,6 @@
     </p>
   </div>
 
-  <div>
-    {% call form_wrapper(action=action) %}
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <button type="submit" class="button button-red mt-4" name="generate-report">Generate a report for testing</button>
-    {% endcall %}
-</div>
-
   {{ ajax_block(partials, updates_url, 'reports', interval=5) }}
 
 {% endblock %}

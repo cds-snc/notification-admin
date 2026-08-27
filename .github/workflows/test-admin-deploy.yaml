@@ -16,6 +16,12 @@ env:
   IMAGE: notify/admin
   REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
   ROLE_ARN: arn:aws:iam::239043911459:role/notify-admin-pr
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
 
 jobs:
   build-and-push-container:
@@ -28,13 +34,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Configure AWS credentials
-        id: aws-creds
-        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1
+          role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-admin-test-admin-workflows
+          role-session-name: NotifyAdminTestAdminWorkflows
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Login to ECR
         id: login-ecr
@@ -44,16 +49,18 @@ jobs:
         run: |
           mv ci/Dockerfile.lambda.dockerignore .
 
-      - name: Build Docker image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Build and push Docker image
         run: |
-          docker build \
+          docker buildx build \
             --build-arg GIT_SHA=${{ github.sha }} \
+            --platform linux/amd64 \
+            --provenance=false \
+            --output type=image,push=true \
             -t ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.PR_NUMBER }} \
             -f ci/Dockerfile.lambda .
-          
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.PR_NUMBER }}
 
       - name: Delete old images
         run: |
@@ -75,21 +82,20 @@ jobs:
       - name: Set envs
         run: echo "PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
 
-      - name: Configure AWS credentials
-        id: aws-creds
-        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1
+          role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-admin-test-admin-workflows
+          role-session-name: NotifyAdminTestAdminWorkflows
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Create/Update lambda function
         id: create-update-lambda
         run: |
-          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1; then
+          if aws lambda get-function --function-name $FUNCTION_NAME-$PR_NUMBER ; then
             aws lambda update-function-code \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER > /dev/null 2>&1
+              --image-uri $REGISTRY/$IMAGE:$PR_NUMBER 
 
           else
             aws lambda create-function \
@@ -100,15 +106,20 @@ jobs:
               --memory-size 1024 \
               --code ImageUri=$REGISTRY/$IMAGE:$PR_NUMBER \
               --description "$GITHUB_REPOSITORY/pull/$PR_NUMBER" \
-              --vpc-config SubnetIds=${{ secrets.PR_REVIEW_ENV_SUBNET_IDS }},SecurityGroupIds=${{ secrets.PR_REVIEW_ENV_SECURITY_GROUP_IDS }} > /dev/null 2>&1
+              --vpc-config SubnetIds=${{ secrets.PR_REVIEW_ENV_SUBNET_IDS }},SecurityGroupIds=${{ secrets.PR_REVIEW_ENV_SECURITY_GROUP_IDS }} 
 
             aws lambda wait function-active --function-name $FUNCTION_NAME-$PR_NUMBER
             aws lambda add-permission \
               --function-name $FUNCTION_NAME-$PR_NUMBER \
-              --statement-id FunctionURLAllowPublicAccess \
+              --statement-id AllowPublicInvokeFunctionUrl \
               --action lambda:InvokeFunctionUrl \
               --principal "*" \
-              --function-url-auth-type NONE > /dev/null 2>&1
+              --function-url-auth-type NONE 
+            aws lambda add-permission \
+              --function-name $FUNCTION_NAME-$PR_NUMBER \
+              --statement-id AllowPublicInvokeFunction \
+              --action lambda:InvokeFunction \
+              --principal "*" 
 
             URL="$(aws lambda create-function-url-config --function-name $FUNCTION_NAME-$PR_NUMBER --auth-type NONE | jq .FunctionUrl)"
             echo "URL=$URL" >> $GITHUB_ENV
@@ -124,10 +135,10 @@ jobs:
                 API_HOST_NAME=https://api.staging.notification.cdssandbox.xyz,\
                 ADMIN_BASE_URL=$URL,\
                 AWS_XRAY_SDK_ENABLED=False
-              }" > /dev/null 2>&1
+              }" 
 
-            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER > /dev/null 2>&1
-            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 > /dev/null 2>&1
+            aws logs create-log-group --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER 
+            aws logs put-retention-policy --log-group-name /aws/lambda/$FUNCTION_NAME-$PR_NUMBER --retention-in-days 14 
           fi
 
           aws lambda wait function-updated --function-name $FUNCTION_NAME-$PR_NUMBER

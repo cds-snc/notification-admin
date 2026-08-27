@@ -2,11 +2,11 @@ import copy
 import re
 from datetime import datetime
 
+from app.main.views.providers import add_monthly_traffic
 from bs4 import BeautifulSoup
 from flask import url_for
 
 import app
-from app.main.views.providers import add_monthly_traffic
 
 stub_providers = {
     "provider_details": [

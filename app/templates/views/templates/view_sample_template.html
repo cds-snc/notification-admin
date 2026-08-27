@@ -1,0 +1,42 @@
+{% extends "admin_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
+{% from "components/folder-path.html" import folder_path, page_title_folder_path %}
+
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/api-key.html" import api_key %}
+{% from "components/page-header.html" import multi_line_page_header %}
+
+{% block service_page_title %}
+    {{ (page_title | join(' ')) | e }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    {{ multi_line_page_header(
+        page_title,
+        back_link=back_link,
+        sub_text=_("Step 1 of 2")
+    ) }}
+        <!-- Instructions -->
+    <div class="mb-12">
+        <div class="mb-4">
+        {{ _('The From line shows your service as the sender. To change your service name, visit Settings.') }}
+        </div>
+        <div>
+        {{ _("We've filled the subject line and message body with sample content. You can change this content to meet your needs. Continue to the next screen to learn how to edit this sample template.") }}
+        </div>
+    </div>
+
+    <div class="w-full template-container mt-10">
+    {{ template|string|translate_preview_template }}
+    </div>
+
+
+    <div role='group' id="add_new_template_form" class="mt-8 js-stick-at-bottom-when-scrolling">
+        <a class="button" href="{{ url_for('.create_from_sample_template', service_id=current_service.id, template_id=template.id, template_type=template.template_type, template_folder_id=None) }}">
+            {{ _('Edit this template') }}
+        </a>
+    </div>
+
+{% endblock %}

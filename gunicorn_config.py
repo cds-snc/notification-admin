@@ -1,19 +1,36 @@
+import gc
 import os
 import sys
 import time
 import traceback
 
 import gunicorn  # type: ignore
-import newrelic.agent  # See https://bit.ly/2xBVKBH
 
+# Check if OpenTelemetry is enabled via feature flag
+enable_otel = os.getenv("ENABLE_OTEL", "False").lower() == "true"
 environment = os.environ.get("NOTIFY_ENVIRONMENT")
-newrelic.agent.initialize(environment=environment)  # noqa: E402
+
+print(f"[GUNICORN CONFIG] ENABLE_OTEL={os.getenv('ENABLE_OTEL')}, enable_otel={enable_otel}")  # noqa: T201
 
 # Guincorn sets the server type on our app. We don't want to show it in the header in the response.
 gunicorn.SERVER = "Undisclosed"
 
-workers = 5
-worker_class = "gevent"
+preload_app = os.getenv("GUNICORN_PRELOAD_APP", "False").lower() == "true"
+
+workers = int(os.getenv("GUNICORN_WORKER_CONFIG", "5"))
+default_worker_class = os.getenv("GUNICORN_WORKER_CLASS", "gevent").strip()
+
+# Use custom worker that detects OpenTelemetry to avoid monkey-patching conflicts
+# when gevent is configured with OpenTelemetry enabled.
+# automatically override to use OTelAwareGeventWorker to prevent boot failures
+if enable_otel and default_worker_class == "gevent":
+    worker_class = "gevent_otel_worker.OTelAwareGeventWorker"
+    print(f"[GUNICORN CONFIG] Auto-overriding worker_class from 'gevent' to '{worker_class}' due to ENABLE_OTEL=true")  # noqa: T201
+else:
+    worker_class = default_worker_class
+
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CLASS={os.getenv('GUNICORN_WORKER_CLASS')}, resolved_worker_class={worker_class}")  # noqa: T201
+print(f"[GUNICORN CONFIG] GUNICORN_WORKER_CONFIG={os.getenv('GUNICORN_WORKER_CONFIG')}, workers={workers}")  # noqa: T201
 bind = "0.0.0.0:{}".format(os.getenv("PORT"))
 accesslog = "-"
 
@@ -36,9 +53,7 @@ if on_aws:
     # will not be able to finish processing the request. This can lead to
     # 502 errors being returned to the client.
     #
-    # Also, some libraries such as NewRelic might need some time to finish
-    # initialization before the worker can start processing requests. The
-    # timeout values should consider these factors.
+    # The timeout values should consider initialization time for libraries.
     #
     # Gunicorn config:
     # https://docs.gunicorn.org/en/stable/settings.html#graceful-timeout
@@ -54,6 +69,19 @@ start_time = time.time()
 
 def on_starting(server):
     server.log.info("Starting Notifications Admin")
+
+
+def when_ready(server):
+    # Freeze all GC-tracked objects into the permanent generation while still in the
+    # master process, before any workers are forked. This preserves copy-on-write
+    # sharing of preloaded app memory across workers — the GC will never scan frozen
+    # objects, so their reference counts won't be touched and the OS pages stay shared.
+    # Must run in the master (here) rather than post_fork, because calling gc.freeze()
+    # in a worker would itself dirty CoW pages after the fork.
+    # https://docs.python.org/3/library/gc.html#gc.freeze
+    if preload_app:
+        gc.freeze()
+        server.log.info(f"GC frozen in master: {gc.get_freeze_count()} objects")
 
 
 def worker_abort(worker):

@@ -1,20 +1,18 @@
 import json
 import uuid
-from functools import partial
 from urllib.parse import parse_qs, urlparse
 
 import pytest
+from app.main.views.jobs import get_available_until_date, get_status_filters
+from app.models.service import Service
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_available_until_date, get_status_filters
-from app.models.service import Service
 from tests import notification_json
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_active_caseworking_user,
     create_active_user_view_permissions,
-    create_active_user_with_permissions,
     create_notifications,
     normalize_spaces,
 )
@@ -194,65 +192,6 @@ def test_can_show_notifications_if_data_retention_not_available(
     assert page.h1.text.strip() == "Messages   in the past 7 days"
 
 
-@pytest.mark.parametrize(
-    "user, query_parameters, expected_download_link",
-    [
-        (
-            create_active_user_with_permissions(),
-            {},
-            partial(
-                url_for,
-                ".download_notifications_csv",
-                message_type=None,
-            ),
-        ),
-        (
-            create_active_user_with_permissions(),
-            {"status": "failed"},
-            partial(url_for, ".download_notifications_csv", status="failed"),
-        ),
-        (
-            create_active_user_with_permissions(),
-            {"message_type": "sms"},
-            partial(
-                url_for,
-                ".download_notifications_csv",
-                message_type="sms",
-            ),
-        ),
-        (
-            create_active_user_view_permissions(),
-            {},
-            partial(
-                url_for,
-                ".download_notifications_csv",
-            ),
-        ),
-        (
-            create_active_caseworking_user(),
-            {},
-            lambda service_id: None,
-        ),
-    ],
-)
-def test_link_to_download_notifications(
-    client_request,
-    fake_uuid,
-    mock_get_notifications,
-    mock_get_service_statistics,
-    mock_get_service_data_retention,
-    mock_has_no_jobs,
-    mock_get_reports,
-    user,
-    query_parameters,
-    expected_download_link,
-):
-    client_request.login(user)
-    page = client_request.get("main.view_notifications", service_id=SERVICE_ONE_ID, **query_parameters)
-    download_link = page.select_one("a[download=download]")
-    assert (download_link["href"] if download_link else None) == expected_download_link(service_id=SERVICE_ONE_ID)
-
-
 def test_download_not_available_to_users_without_dashboard(
     client_request,
     active_caseworking_user,
@@ -331,13 +270,13 @@ def test_shows_message_when_no_notifications(
         message_type="sms",
     )
 
-    assert normalize_spaces(page.select("tbody tr")[0].text) == (
+    assert normalize_spaces(page.select("[data-testid='empty-list']")[0].text) == (
         "You have not sent messages recently Messages sent within the last 7 days will show up here. Start with one of your templates to send messages. Go to your templates"
     )
 
 
 @pytest.mark.parametrize(
-    ("initial_query_arguments," "form_post_data," "expected_search_box_label," "expected_search_box_contents"),
+    ("initial_query_arguments,form_post_data,expected_search_box_label,expected_search_box_contents"),
     [
         (
             {},
@@ -647,10 +586,10 @@ def test_big_numbers_and_search_show_for_email_sms(
             "sms",
             "temporary-failure",
             None,
-            "Carrier issue 16:31:00",
+            "Tech issue 16:31:00",
             False,
         ),
-        ("sms", "permanent-failure", None, "No such number 16:31:00", False),
+        ("sms", "permanent-failure", None, "Tech issue 16:31:00", False),
         (
             "sms",
             "provider-failure",

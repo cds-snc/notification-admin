@@ -4,14 +4,14 @@ import { getHostname, getConfig } from "./utils";
 
 import LoginPage from "../Notify/Admin/Pages/LoginPage";
 
-const CONFIG = getConfig();
+const CONFIG = Cypress.testingType === 'component' ? {} : getConfig();
 
 // keep track of what we test so we dont test the same thing twice
 let links_checked = [];
 let svgs_checked = [];
 
 // if the tests failed, reset the arrays so the links are re-checked and a link failure is treated as a real failure
-afterEach(function() {
+afterEach(function () {
     if (this.currentTest.state === 'failed') {
         links_checked = [];
         svgs_checked = [];
@@ -19,8 +19,19 @@ afterEach(function() {
 });
 
 Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: true, deadLinks: true, mimeTypes: true, axeConfig: false }) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("a11yScan is not supported in component tests. Run this check in an e2e test instead.");
+    }
     const current_hostname = getHostname('Admin');
-    
+    const ignoreLinks = [
+        'documentation.staging.notification.cdssandbox.xyz', 
+        'https://blog.lastpass.com/fr/posts/security-incident-update-recommended-actions', 
+        'https://blog.lastpass.com/2023/03/security-incident-update-recommended-actions/',
+        'https://www.w3.org',
+        'https://w3.org',
+        'laws-lois.justice.gc.ca'
+    ];
+
     if (url) {
         cy.visit(url);
     }
@@ -45,7 +56,10 @@ Cypress.Commands.add('a11yScan', (url, options = { a11y: true, htmlValidate: tru
             let checked = 0;
 
             cy.get('a').each((link) => {
-                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url) || link.prop('href').includes('documentation.staging.notification.cdssandbox.xyz')) return;
+                // if the link is in the ignore list, skip it
+                if (ignoreLinks.some(ignore => link.prop('href').includes(ignore))) return;
+
+                if (link.prop('href').startsWith('mailto') || link.prop('href').includes('/set-lang') || link.prop('href').includes(url)) return;
 
                 const check_url = link.prop('href');
 
@@ -106,37 +120,54 @@ Cypress.Commands.add('getByTestId', (selector, ...args) => {
 
 
 Cypress.Commands.add('login', (agreeToTerms = true) => {
-    cy.task('createAccount', { 
-        baseUrl: CONFIG.Hostnames.API, 
-        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
-        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+    if (Cypress.testingType === 'component') {
+        throw new Error("login is not supported in component tests. Use e2e tests for authenticating against the backend.");
+    }
+    cy.task('createAccount', {
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
     }).then((acct) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.regular.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            if (CONFIG.ENV === 'LOCAL' || CONFIG.ENV === 'STAGING') {
+                LoginPage.LoginLocal(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            } else {
+                LoginPage.Login(acct.regular.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            }
         });
     });
 });
 
 
 Cypress.Commands.add('loginAsPlatformAdmin', (agreeToTerms = true) => {
+    if (Cypress.testingType === 'component') {
+        throw new Error("loginAsPlatformAdmin is not supported in component tests. Use e2e tests for authenticating against the backend.");
+    }
     cy.task('createAccount', {
-        baseUrl: CONFIG.Hostnames.API, 
-        username: CONFIG.CYPRESS_AUTH_USER_NAME, 
-        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET 
+        baseUrl: CONFIG.Hostnames.API,
+        username: CONFIG.CYPRESS_AUTH_USER_NAME,
+        secret: CONFIG.CYPRESS_AUTH_CLIENT_SECRET
     }).then((acct) => {
         Cypress.env('ADMIN_USER_ID', acct.admin.id);
         Cypress.env('REGULAR_USER_ID', acct.regular.id);
         cy.session([acct.admin.email_address, agreeToTerms], () => {
-            LoginPage.Login(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            if (CONFIG.ENV === 'LOCAL' || CONFIG.ENV === 'STAGING') {
+                LoginPage.LoginLocal(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            } else {
+                LoginPage.Login(acct.admin.email_address, CONFIG.CYPRESS_USER_PASSWORD, agreeToTerms);
+            }
         });
     });
 });
 
 // this adds the waf-secret to cy.visit()'s that target the admin hostname
 Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
-     // Get full URL by combining baseUrl with path
+    if (Cypress.testingType === 'component') {
+        throw new Error("visit is not supported in component tests. Component tests mount isolated components and cannot perform full navigation.");
+    }
+    // Get full URL by combining baseUrl with path
     const fullUrl = url.startsWith('http')
         ? url
         : `${Cypress.config('baseUrl')}${url}`;
@@ -155,3 +186,73 @@ Cypress.Commands.overwrite('visit', (originalFn, url, options = {}) => {
 
     return originalFn(url, options);
 });
+
+
+Cypress.Commands.add('setSelection', { prevSubject: true }, (subject, query, endQuery) => {
+  return cy.wrap(subject).selection($el => {
+    if (typeof query === 'string') {
+      const anchorNode = getTextNode($el[0], query);
+      const focusNode = endQuery ? getTextNode($el[0], endQuery) : anchorNode;
+      const anchorOffset = anchorNode.wholeText.indexOf(query);
+      const focusOffset = endQuery
+        ? focusNode.wholeText.indexOf(endQuery) + endQuery.length
+        : anchorOffset + query.length;
+      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+    } else if (typeof query === 'object') {
+      const el = $el[0];
+      const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
+      const anchorOffset = query.anchorOffset || 0;
+      const focusNode = query.focusQuery
+        ? getTextNode(el.querySelector(query.focusQuery))
+        : anchorNode;
+      const focusOffset = query.focusOffset || 0;
+      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+    }
+  });
+});
+
+Cypress.Commands.add('setCursor', { prevSubject: true }, (subject, query, atStart) => {
+  return cy.wrap(subject).selection($el => {
+    const node = getTextNode($el[0], query);
+    const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
+    const document = node.ownerDocument;
+    document.getSelection().removeAllRanges();
+    document.getSelection().collapse(node, offset);
+  });
+});
+
+Cypress.Commands.add('setCursorBefore', { prevSubject: true }, (subject, query) => {
+  cy.wrap(subject).setCursor(query, true);
+});
+
+Cypress.Commands.add('setCursorAfter', { prevSubject: true }, (subject, query) => {
+  cy.wrap(subject).setCursor(query);
+});
+Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
+  cy.wrap(subject)
+    .trigger('mousedown')
+    .then(fn)
+    .trigger('mouseup');
+
+  cy.document().trigger('selectionchange');
+  return cy.wrap(subject);
+});
+
+function getTextNode(el, match) {
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  if (!match) {
+    return walk.nextNode();
+  }
+
+  let node;
+  while ((node = walk.nextNode())) {
+    if (node.wholeText.includes(match)) {
+      return node;
+    }
+  }
+}
+function setBaseAndExtent(...args) {
+  const document = args[0].ownerDocument;
+  document.getSelection().removeAllRanges();
+  document.getSelection().setBaseAndExtent(...args);
+}

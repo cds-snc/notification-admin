@@ -7,10 +7,6 @@ from unittest.mock import ANY, call
 import pyexcel
 import pytest
 import requests_mock
-from bs4 import BeautifulSoup
-from flask import current_app, url_for
-from freezegun import freeze_time
-
 from app.main.views.platform_admin import (
     create_global_stats,
     format_stats_by_service,
@@ -18,6 +14,10 @@ from app.main.views.platform_admin import (
     is_over_threshold,
     sum_service_usage,
 )
+from bs4 import BeautifulSoup
+from flask import current_app, url_for
+from freezegun import freeze_time
+
 from tests import service_json
 from tests.conftest import SERVICE_ONE_ID, SERVICE_TWO_ID, normalize_spaces
 
@@ -95,7 +95,9 @@ def test_should_show_research_and_restricted_mode(
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     # get first column in first row, which contains service name and flags as a span in a single th.
     table_body = page.find_all("table")[0].find_all("tbody")[0]
-    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].find_all("th")[0].find_all("span")[0].text.strip()
+    service_mode = table_body.find_all("tbody")[0].find_all("tr")[0].find_all("th")[0]
+    service_mode_span = service_mode.find("span")
+    service_mode = service_mode_span.text.strip() if service_mode_span else ""
     assert service_mode == displayed
 
 
@@ -1051,7 +1053,7 @@ def test_clear_cache_requires_option(client_request, platform_admin_user, mocker
 
     page = client_request.post("main.clear_cache", _data={}, _expected_status=200)
 
-    assert normalize_spaces(page.find("span", class_="error-message").text) == "You need to choose an option"
+    assert normalize_spaces(page.find("span", class_="error-message").text) == "Error: You need to choose an option"
     assert not redis.delete_cache_keys_by_pattern.called
 
 

@@ -30,6 +30,7 @@ before(() => {
       if (req.url.includes(getHostname('Admin'))) {
         req.headers['waf-secret'] = Cypress.env(Cypress.env('ENV')).WAF_SECRET;
       }
+      req.continue();
     }).as('allRequests');
     
 });

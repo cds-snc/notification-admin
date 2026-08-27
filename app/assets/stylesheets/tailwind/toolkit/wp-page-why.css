@@ -1,0 +1,16 @@
+@layer components {
+  #why-notify .wp-block-group .wp-block-heading:first-child {
+    @apply mt-0 mb-gutter;
+  }
+
+  #why-notify {
+    @apply gap-gutterAndAHalf my-doubleGutter;
+  }
+  #why-notify .wp-block-group:has(> p, > h2) {
+    @apply block;
+  }
+
+  #why-notify p {
+    @apply text-balance max-w-80ch;
+  }
+}

@@ -69,6 +69,35 @@ class TestAssetFingerprint(object):
         assert fingerprinter.get_url("application.css") == "a1a1a1"
         fingerprinter.get_asset_file_contents.assert_called_once_with("app/static/application.css")
 
+    def test_debug_mode_bypasses_cache_on_every_call(self, mocker):
+        """In debug mode get_url() must recompute the fingerprint each time
+        and must never consult or populate _cache."""
+        get_file_content_mock = mocker.patch.object(AssetFingerprinter, "get_asset_file_contents")
+        get_file_content_mock.return_value = b"body { color: red; }"
+        fingerprinter = AssetFingerprinter(debug=True)
+
+        url1 = fingerprinter.get_url("application.css")
+        url2 = fingerprinter.get_url("application.css")
+
+        # Both calls must return a real fingerprinted URL, not a cached sentinel.
+        assert url1.startswith("/static/application.css?")
+        assert url2 == url1
+
+        # get_asset_file_contents must have been called twice — once per get_url call —
+        # proving the fingerprint was recomputed each time rather than read from cache.
+        assert get_file_content_mock.call_count == 2
+
+    def test_debug_mode_does_not_populate_cache(self, mocker):
+        """In debug mode _cache must remain empty after get_url() calls,
+        so a later non-debug instance is not tainted."""
+        mocker.patch.object(AssetFingerprinter, "get_asset_file_contents", return_value=b"body {}")
+        fingerprinter = AssetFingerprinter(debug=True)
+
+        fingerprinter.get_url("application.css")
+        fingerprinter.get_url("other.css")
+
+        assert fingerprinter._cache == {}
+
     def test_s3_url(self):
         fingerprinter = AssetFingerprinter(cdn_domain="assets.example.com")
 

@@ -14,11 +14,14 @@ export const Day = ({ day }) => {
   const { translate } = useContext(I18nContext);
   const { $D: dayNum = 0 } = day;
   const { $D: todayDayNum = 0 } = today;
-  const tabIndex = dayNum !== todayDayNum ? { tabIndex: -1 } : {};
+  const tabIndex =
+    Number(dayNum) === Number(focusedDayNum)
+      ? { tabIndex: 0 }
+      : { tabIndex: -1 };
   const isDisabled = isBlockedDay(day);
   const isCurrent = day.isSame(today);
   const formattedDate = yearMonthDay(day);
-  const pressed = isSelected(selected, formattedDate);
+  const pressed = isSelected(selected, formattedDate) == -1 ? false : true;
   const bthState = isDisabled
     ? "Calendar-item--unavailable"
     : "Calendar-item--active";
@@ -39,8 +42,9 @@ export const Day = ({ day }) => {
     <button
       ref={inputEl}
       type="button"
+      role="gridcell"
       aria-label={label}
-      aria-pressed={pressed === -1 ? false : true}
+      {...(pressed && { "aria-selected": true })}
       className={["Calendar-item", bthState].join(" ")}
       data-timestamp={day.unix()}
       data-day={`${dayNum}`}

@@ -2,6 +2,10 @@
 {% extends "content_template.html" %}
 
 
+{% macro sentence_case(text) %}
+    {{ text[0]|upper}}{{text[1:] }}
+{% endmacro %}
+
 {% block per_page_title %}
   {{ _('Activity on GC Notify') }}
 {% endblock %}
@@ -15,14 +19,14 @@
 
   <div class="flex flex-col lg:flex-row mb-20">
     <div class="w-full lg:w-1/2 bg-gray py-10 px-6 mb-6 lg:mb-0 lg:mr-3">
-      <div class="font-bold text-title extra-tight font-sans h-24">{{ _('Total notifications sent') }}</div>
+      <div class="font-bold text-title extra-tight font-sans h-24">{{ sentence_case(_('total notifications sent')) }}</div>
       <div data-test-id="totals" class="font-sans text-lg lg:text-xxl font-bold mb-4">{{ notifications_total | format_number }}</div>
       <div class="w-56 h-1 bg-gray-border mb-6"></div>
       <div class="font-sans">{{ _('This includes status updates, appointment reminders, and password resets sent by email and text message.') }}</div>
     </div>
 
     <div class="w-full lg:w-1/2 bg-gray py-10 px-6 lg:ml-3">
-      <div class="font-bold text-title extra-tight font-sans h-24">{{ _('Programs and services using GC Notify') }}</div>
+      <div class="font-bold text-title extra-tight font-sans h-24">{{ sentence_case(_('programs and services using GC Notify'))  }}</div>
       <div data-test-id="services" class="font-sans text-lg lg:text-xxl font-bold mb-4">{{ live_services | format_number }}</div>
       <div class="w-56 h-1 bg-gray-border mb-6"></div>
       <div class="font-sans">{{ _('This includes services offered by federal departments, and provinces and territories.') }}</div>
@@ -39,8 +43,8 @@
       <div class="font-sans text-lg font-bold">{{ sms_total | format_number }}</div>
     </div>
   </div>
-
-  <h2 class="heading-medium">{{ _('Notifications sent over time') }}</h2>
+  {% set heading_text = _('Notifications sent over time') %}
+  <h2 class="heading-medium">{{ heading_text }}</h2>
 
   <div class="text-right">
     <a id="link-activity-download" href="{{ url_for('main.activity_download') }}" class="text-small">
@@ -49,6 +53,7 @@
   </div>
 
   {% call mapping_table(
+    caption=heading_text,
     field_headings=[
       _('Month'),
       _('Total'),
@@ -57,7 +62,7 @@
     ],
     field_headings_visible=True,
     equal_length=True,
-    caption_visible=False
+    caption_visible=False,
   ) %}
 
     {% for month, data in monthly_stats.items() %}

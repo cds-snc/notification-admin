@@ -7,10 +7,11 @@
 ><!--<![endif]-->
 <head>
   <meta charset="utf-8"/>
+  <meta name="format-detection" content="telephone=no"/>
   <title>{% block page_title %}Notification{% endblock %}</title>
-  {% include 'partials/newrelic-head.html' %}
   {% include 'partials/google-tag-manager-head.html' %}
-  {% include 'partials/qualtrics-head.html' %}
+  {% from "components/indicator.html" import indicator %}
+  {% from "components/badge.html" import badge %}
 
   <link
     rel="stylesheet"
@@ -24,15 +25,9 @@
     type="image/x-icon"
   />
 
-  <link
-    href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap"
-    rel="stylesheet"
-  />
-  <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Noto+Sans+Arabic:wght@400..700&family=Noto+Sans+Canadian+Aboriginal:wght@400..700&family=Noto+Sans+Mono:wdth,wght@75,400..700&family=Noto+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   <meta name="theme-color" content="#0b0c0c"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta
@@ -41,16 +36,28 @@
   />
   <script nonce="{{ request_nonce }}">
     window.APP_LANG = "{{ current_lang }}"
+    window.APP_COMPONENTS = {
+      sample_template_button: `
+      {% set badge_text = _('New') %}
+      {{ indicator(
+        '<a href="${window.location.href}/sample-library" id="sample-library-link" class="button button-secondary border-y-0 cursor-pointer"></a>',
+        badge(badge_text, variant='blue')
+      )}}`,
+    }
     window.APP_PHRASES = {
       now: "{{ _('Now') }}",
+      new: "{{ _('New') }}",
       done: "{{ _('Done') }}",
       new_template_button: "{{ _('Create template') }}",
-      copy_template_button: "{{ _('Copy template') }}",
       new_folder_button: "{{ _('New folder') }}",
+      sample_library_button: "{{ _('Sample library')  }}",
+      copy_template_button: "{{ _('Copy template') }}",
       nothing_selected: "{{ _('Nothing selected') }}",
+      sample_library_url: "{% if current_service and current_service.id %}{{ url_for('.view_sample_library', service_id=current_service.id) }}{% else %}/sample-library{% endif %}",
       create_template_legend: "{{ _('You are browsing templates. Create and copy template or add new folder.') }}",
       selecting_templates_legend: "{{ _('You are selecting templates. Move templates into a new or existing folder.') }}",
       move_template_legend: "{{ _('Move templates to a new or existing folder') }}",
+      templates_found_sr_status: "{{ _('templates found') }}",
       selection: "{{ _('selection') }}",
       selections: "{{ _('selections') }}",
       chosen_time_button: "{{ _('Choose a different time') }}",
@@ -82,7 +89,7 @@
       folder: "{{ _('folder') }}",
       folders: "{{ _('folders') }}",
       all_folders: "{{ _('All folders') }}",
-      choose_folders: "{{ _('Choose folders') }}",
+      choose_folders: "{{ _('Show folders') }}",
       "choosing folders": "{{ _('choosing folders') }}",
       "choosing team members": "{{ _('choosing team members') }}",
       no_folders_only_outside_folder: "{{ _('No folders (only templates outside a folder)') }}",
@@ -101,6 +108,55 @@
       branding_request_display_size: "{{ _('display size:') }}",
       branding_request_brand_error:  "{{ _('Enter the name of the logo') }}",
       branding_request_logo_error:  "{{ _('You must select a file to continue') }}",
+      address_en: "{{ _('Address') }}",
+      address_fr: "{{ _('Address') }}",
+      api_key_gc_notify: "{{ _('API key (GC Notify)') }}",
+      bank_account_canada: "{{ _('Canadian bank account') }}",
+      credit_card: "{{ _('Credit card') }}",
+      drivers_license_alberta: "{{ _('Driver’s license (Alberta)') }}",
+      drivers_license_manitoba: "{{ _('Driver’s license (Manitoba)') }}",
+      drivers_license_newfoundland: "{{ _('Driver’s license (Newfoundland)') }}",
+      drivers_license_nova_scotia: "{{ _('Driver’s license (Nova Scotia)') }}",
+      drivers_license_ontario: "{{ _('Driver’s license (Ontario)') }}",
+      drivers_license_quebec: "{{ _('Driver’s license (Quebec)') }}",
+      health_card_alberta: "{{ _('Health card (Alberta)') }}",
+      health_card_newfoundland: "{{ _('Health card (Newfoundland)') }}",
+      health_card_nova_scotia: "{{ _('Health card (Nova Scotia)') }}",
+      health_card_nwt: "{{ _('Health card (NWT)') }}",
+      health_card_ontario: "{{ _('Health card (Ontario)') }}",
+      health_card_quebec: "{{ _('Health card (Quebec)') }}",
+      ip_address: "{{ _('IP address') }}",
+      passport_canada: "{{ _('Canadian passport') }}",
+      phone_number: "{{ _('Phone number') }}",
+      po_box: "{{ _('P.O. Box') }}",
+      postal_code: "{{ _('Postal code') }}",
+      sin: "{{ _('Social insurance number') }}",
+      pri: "{{ _('Personal record identifier') }}",
+      "7+_digit_number": "{{ _('Possible identifier') }}",
+      sms_estimate: "{{ _('Estimate: {} text message parts.') }}",
+      sms_estimate_one: "{{ _('Estimate: 1 text message part.') }}",
+      sms_variables_warning: "{{ _('Variables may increase number of messages.') }}",
+      sms_count: "{{ _('Total: {} text message parts.') }}",
+      sms_one: "{{ _('Total: 1 text message part.') }}",
+      sms_part_count: "{{ _('{} parts') }}",
+      sms_part_count_one: "{{ _('1 part') }}",
+      sms_part_count_estimated: "{{ _('{} parts estimated') }}",
+      sms_part_count_one_estimated: "{{ _('1 part estimated') }}",
+      sms_characters_per_part: "{{ _('{} characters per part') }}",
+      sms_recipient_one: "{{ _('recipient') }}",
+      sms_recipient_many: "{{ _('recipients') }}",
+      sms_character_count_over_limit: "{{ _('{} too many characters') }}",
+      sms_one_character_count_over_limit: "{{ _('1 too many characters') }}"
+    }
+    window.OTEL_CONFIG = {
+      enabled: {{ 'true' if enable_client_side_otel else 'false' }},
+      endpoint: "{{ otlp_endpoint }}",
+      serviceName: "{{ otel_client_service_name }}",
+      authToken: {{ otel_auth_token | tojson }},
+      authMode: "{{ otel_auth_mode }}",
+      propagateTraceHeaderCorsUrls: {{ otel_propagate_cors_urls|tojson }},
+      userId: "{{ otel_user_id }}",
+      traceparent: "{{ otel_traceparent }}"
     }
 
   </script>
@@ -125,14 +181,6 @@
 
 {% block body_start %}{% endblock %}
 
-<div id="skiplink-container">
-  <div>
-    <a
-      href="#main_content"
-      class="skiplink"
-    >{{ _('Skip to main content') }}</a>
-  </div>
-</div>
 {% block gc_header %}
 
 {% if g.preview_url %}
@@ -167,8 +215,16 @@
 {% include 'partials/google-analytics.html' %}
 
 {% block page_script %}
-<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/index.min.js') }}"></script>
-<script nonce="{{ request_nonce }}" type="text/javascript" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% if vite_dev_server %}
+  {# HMR dev mode — React entries served from Vite dev server; legacy bundle from built static file #}
+  <script nonce="{{ request_nonce }}" type="module" src="http://localhost:5173/@vite/client"></script>
+  <script nonce="{{ request_nonce }}" type="module" src="http://localhost:5173/app/assets/javascripts/index.js"></script>
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% else %}
+  {# index.min.js is an ES module; all.min.js is a classic IIFE (jQuery/legacy) #}
+  <script nonce="{{ request_nonce }}" type="module" src="{{ asset_url('javascripts/index.min.js') }}"></script>
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/all.min.js') }}"></script>
+{% endif %}
 
 {% if current_user.is_authenticated %}
   <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/sessionRedirect.min.js') }}"></script>

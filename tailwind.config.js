@@ -7,6 +7,8 @@ module.exports = {
     "phone",
     "bottom-2",
     "bg-red",
+    "bg-gray-200",
+    "neutral-light",
     "list-entry-remove",
     "shim",
     "content-fixed",
@@ -37,6 +39,13 @@ module.exports = {
     "sm:bg-emptyFlower",
     "sm:bg-emptyTruck",
     "sm:bg-emptyBirdCurious",
+    "lg:flex-nowrap",
+    "grid-cols-2",
+    "grid-cols-4",
+    "col-start-2",
+    "col-span-3",
+    "font-arabic",
+    "font-aboriginal",
   ],
   content: [
     "./app/**/*.{html,css,js}",
@@ -124,7 +133,7 @@ module.exports = {
         lightblue25: "#d5e8f3",
         lightblue: "#0154B0",
         slightlight: "#284162",
-        /* trying to slowly implement a more consistent scale below */
+        100: "#AEE4FE",
         200: "#D7E5F5",
         300: "#71A7F3",
         500: "#004AB2",
@@ -132,6 +141,14 @@ module.exports = {
         700: "#425A76",
         800: "#31455C",
         900: "#26374A",
+      },
+      brand: {
+        DEFAULT: "#B3E4FB",
+        100: "#B3E4FB",
+        300: "#509DC4",
+        500: "#427D9F",
+        700: "#2C5E79",
+        900: "#0E2A3C",
       },
       gray: {
         DEFAULT: "#eee",
@@ -160,8 +177,11 @@ module.exports = {
       yellow: {
         DEFAULT: "#ffbf47",
         light: "#FFE7BB",
-        300: "#c18b00",
-        500: "#986200",
+        100: "#FFDA3D",
+        300: "#B79000",
+        500: "#977100",
+        700: "#755300",
+        900: "#392300",
       },
       green: {
         DEFAULT: "#00672F",
@@ -169,7 +189,10 @@ module.exports = {
         hover: "#00692f",
         border: "#003618",
         green: "#006435",
+        100: "#8CF39C",
         300: "#29A35A",
+        500: "#308741",
+        700: "#1E662D",
       },
       black: "#000",
       lime: {
@@ -180,6 +203,12 @@ module.exports = {
       orange: {
         light: "#fef9f6",
         DEFAULT: "#C86117",
+      },
+      purple: {
+        300: "#9D8CF2"
+      },
+      rose: {
+        300: "#DF93EC"
       }
     },
     extend: {
@@ -201,6 +230,7 @@ module.exports = {
         emptyFlower: "url('/static/images/empty-flower.svg')",
         emptyTruck: "url('/static/images/empty-truck.svg')",
         emptyBirdCurious: "url('/static/images/empty-bird-curious.svg')",
+        tryRte: "url('/static/images/try-rte.svg')",
       },
       backgroundSize: {
         19: "19px",
@@ -210,9 +240,11 @@ module.exports = {
         10: "10px",
       },
       fontFamily: {
-        sans: ["lato"],
+        sans: ["Lato", "Arial", "sans-serif"],
         body: ["Noto Sans", "Arial", "sans-serif"],
-        monospace: ["monospace"],
+        monospace: ["Noto Mono", "monospace"],
+        arabic: ["Noto Sans Arabic", "Arial", "sans-serif"],
+        aboriginal: ["Noto Sans Canadian Aboriginal", "Arial", "sans-serif"],
       },
       inset: {
         2: "2px",

@@ -4,7 +4,7 @@
 {% from "components/is-problem-email.html" import is_probem_email %}
 {% from "components/empty-list.html" import empty_list  %}
 
-<div class="ajax-block-container" id='pill-selected-item'>
+<div class="ajax-block-container">
   {% set empty_txt = empty_list(_('You have not sent messages recently'), _('Messages sent within the last {} days will show up here. Start with one of your templates to send messages.').format(limit_days), 'emptyFlower', url_for('main.choose_template', service_id=service_id), _('Go to your templates')) %}
   {% set heading_1 = _('Recipient') %}
   {% set heading_2 = _('Review Address') %}

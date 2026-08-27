@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/table.html" import mapping_table, row, settings_row, text_field, optional_text_field, edit_field, field, boolean_field with context %}
+{% from "components/table.html" import mapping_table, row, settings_row, empty_field, text_field, optional_text_field, edit_field, field, boolean_field with context %}
 
 {% block service_page_title %}
   {{ _('Settings') }}
@@ -7,6 +7,7 @@
 
 {% set change_txt = _('Change') %}
 {% set display_email_from = current_service.email_from + '@' + sending_domain %}
+{% set empty_col_label =  _("No value") %}
 
 {% block maincolumn_content %}
 
@@ -76,31 +77,11 @@
         {% endcall %}
 
         {% call row() %}
-          {% set txt = _('Sign-in method') %}
-          {{ text_field(txt) }}
-          {% set value = _('Email code or text message code') %}
-          {% set else_value = _('Text message code') %}
-          {{ text_field(
-            value
-            if 'email_auth' in current_service.permissions
-            else else_value
-          ) }}
-          {{ edit_field(
-              change_txt,
-              url_for('.service_set_auth_type',
-              service_id=current_service.id),
-              permissions=['manage_service'],
-              for=txt
-            )
-          }}
-        {% endcall %}
-
-        {% call row() %}
           {% set txt = _('API rate limit per minute') %}
           {{ text_field(txt) }}
           {% set minute_limit = _('{} calls').format(current_service.rate_limit | format_number) %}
           {{ text_field(minute_limit) }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -172,7 +153,7 @@
         {% call settings_row(if_has_permission='email') %}
           {% set txt = _('Send files by email') %}
           {{ text_field(txt) }}
-          {{ boolean_field('upload_document' in current_service.permissions, suffix=_('(API-only)')) }}
+          {{ boolean_field('upload_document' in current_service.permissions) }}
           {{ edit_field(
             change_txt,
             url_for('.service_switch_upload_document', service_id=current_service.id),
@@ -186,7 +167,7 @@
           {{ text_field(txt)}}
           {% set message_limit = _('{} emails').format(current_service.message_limit | format_number) %}
           {{ text_field(message_limit) }}
-          {{ text_field('') }}
+          {{ empty_field() }}
         {% endcall %}
 
         {% call settings_row(if_has_permission='email') %}
@@ -194,7 +175,7 @@
           {{ text_field(txt) }}
           {% set annual_limit = _('{} emails').format((current_service.email_annual_limit) | format_number) %}
           {{ text_field(annual_limit, attributes="data-testid=email-annual-limit") }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -254,21 +235,21 @@
           )
           }}
         {% endcall %}
-
+        {% set sms_units = '{} text message parts' if config['FF_USE_BILLABLE_UNITS'] else '{} text messages' %}
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Daily maximum') %}
           {{ text_field(txt)}}
-          {% set txt_msg_limit = _('{} text messages').format(current_service.sms_daily_limit | format_number) %}
+          {% set txt_msg_limit = _(sms_units).format(current_service.sms_daily_limit | format_number) %}
           {{ text_field(txt_msg_limit) }}
-          {{ text_field('') }}
+          {{ empty_field() }}
         {% endcall %}
 
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Annual maximum</br>(April 1 to March 31)') %}
           {{ text_field(txt) }}
-          {% set annual_sms_limit = _('{} text messages').format((current_service.sms_annual_limit) | format_number) %}
+          {% set annual_sms_limit = _(sms_units).format((current_service.sms_annual_limit) | format_number) %}
           {{ text_field(annual_sms_limit, attributes="data-testid=sms-annual-limit") }}
-          {{ text_field('')}}
+          {{ empty_field() }}
         {% endcall %}
 
       {% endcall %}
@@ -363,7 +344,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily text message limit') %}
+            {% set txt = _('Daily text message parts limit') if config['FF_USE_BILLABLE_UNITS'] else _('Daily text message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_daily_limit | format_number) }}
             {{ edit_field(
@@ -386,7 +367,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Annual text message limit') %}
+            {% set txt = _('Annual text message parts limit') if config['FF_USE_BILLABLE_UNITS'] else _('Annual text message limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_annual_limit | format_number) }}
             {{ edit_field(
@@ -401,7 +382,7 @@
             {% set txt = _('API rate limit per minute') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.rate_limit | format_number) }}
-            {{ text_field('')}}
+            {{ empty_field() }}
           {% endcall %}
 
           {% call row() %}
@@ -542,7 +523,7 @@
 
     {% endif %}
 
-    {% if current_service.active and (current_service.trial_mode or current_user.platform_admin) %}
+    {% if current_service.active and current_user.has_permissions("manage_service") %}
       <p class="mt-gutterHalf block clear-both contain-floats">
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="{{ url_for('.archive_service', service_id=current_service.id) }}">
@@ -573,4 +554,3 @@
 
 
 {% endblock %}
-}

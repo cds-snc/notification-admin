@@ -30,7 +30,8 @@
   }
 
   .table-font-xsmall th,
-  .table-font-xsmall td.table-field-index {
+  .table-font-xsmall td.table-field-index,
+  .table-font-xsmall th.table-field-index {
     @apply font-bold;
   }
   .table-font-xsmall td {
@@ -261,14 +262,6 @@
   }
   .spreadsheet .fullscreen-fixed-table .table-field-heading-first {
     @apply bg-gray-grey4;
-  }
-
-  .body-copy-table table th,
-  .body-copy-table table td {
-    @apply text-smaller leading-tight font-normal break-words;
-  }
-  .body-copy-table table thead th {
-    @apply text-smaller leading-tight font-bold;
   }
 
   /*

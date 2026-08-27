@@ -2,14 +2,13 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock
 
 import pytest
+from app.main.views.reports import get_report_totals, set_report_expired
 from bs4 import BeautifulSoup
 from freezegun import freeze_time
 
-from app.main.views.reports import get_report_totals, set_report_expired
 
-
-def test_reports_page_requires_platform_admin(client_request, platform_admin_user, service_one, mocker):
-    client_request.login(platform_admin_user)
+def test_reports_page_requires_active_user_with_permissions(client_request, active_user_with_permissions, service_one, mocker):
+    client_request.login(active_user_with_permissions)
     mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
     client_request.get(
         "main.reports",
@@ -18,14 +17,9 @@ def test_reports_page_requires_platform_admin(client_request, platform_admin_use
     )
 
 
-def test_reports_page_forbidden_for_non_platform_admin(client_request, mocker, service_one):
-    mocker.patch("app.reports_api_client.get_reports_for_service", return_value=[])
-    client_request.get("main.reports", service_id=service_one["id"], _expected_status=403)
-
-
 @freeze_time("2025-01-01 00:01:00.000000")
-def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
-    client_request.login(platform_admin_user)
+def test_get_reports_shows_list_of_reports(client_request, active_user_with_permissions, mock_get_reports, mocker, service_one):
+    client_request.login(active_user_with_permissions)
 
     response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
 
@@ -41,9 +35,37 @@ def test_get_reports_shows_list_of_reports(client_request, platform_admin_user, 
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
+def test_get_reports_shows_requesting_api_key_when_requested_via_api(
+    client_request, active_user_with_permissions, mocker, service_one
+):
+    client_request.login(active_user_with_permissions)
+    mocker.patch(
+        "app.reports_api_client.get_reports_for_service",
+        return_value=[
+            {
+                "id": "report-1",
+                "status": "ready",
+                "language": "en",
+                "expires_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+                "requested_at": datetime.now(timezone.utc).isoformat(),
+                "requesting_user": None,
+                "api_key": {"id": "api-key-1", "name": "Test API Key"},
+                "url": "https://example.com/report-1.csv",
+            }
+        ],
+    )
+
+    response = client_request.get("main.reports", service_id=service_one["id"], _expected_status=200)
+
+    reports_table = response.find("table")
+    row = reports_table.find_all("tr")[1]
+    assert "Requested by API key: Test API Key" in row.text
+
+
+@freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_streams_the_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
@@ -55,7 +77,10 @@ def test_download_report_csv_streams_the_report(
     mock_response.iter_content.return_value = [b"csv,content,here"]
     mock_requests_get = mocker.patch("requests.get", return_value=mock_response)
 
-    client_request.login(platform_admin_user)
+    # Mock the s3download_report_chunks function to avoid S3 calls
+    mock_s3_download = mocker.patch("app.main.views.reports.s3download_report_chunks", return_value=[b"csv,content,here"])
+
+    client_request.login(active_user_with_permissions)
 
     response = client_request.get(
         "main.download_report_csv",
@@ -70,18 +95,20 @@ def test_download_report_csv_streams_the_report(
     assert "2024-12-31 19.01.00 EST [en]" in response.headers["Content-Disposition"]
 
     mock_get_reports.assert_called_once_with(service_one["id"])
-    mock_requests_get.assert_called_once_with("https://example.com/report-1.csv", stream=True)
+    mock_s3_download.assert_called_once_with(service_one["id"], "report-1")
+    # The requests.get mock should not be called since we're mocking the S3 download
+    mock_requests_get.assert_not_called()
 
 
 @freeze_time("2025-01-01 00:01:00.000000")
 def test_download_report_csv_returns_404_for_nonexistent_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
 ):
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     client_request.get(
         "main.download_report_csv",
@@ -92,30 +119,20 @@ def test_download_report_csv_returns_404_for_nonexistent_report(
     )
 
 
-@freeze_time("2025-01-01 00:01:00.000000")
-def test_download_report_csv_forbidden_for_non_platform_admin(
-    client_request,
-    mock_get_reports,
-    mocker,
-    service_one,
-):
-    client_request.get("main.download_report_csv", service_id=service_one["id"], report_id="report-1", _expected_status=403)
-
-
 def test_generate_report_creates_new_report(
     client_request,
-    platform_admin_user,
+    active_user_with_permissions,
     mock_get_reports,
     mocker,
     service_one,
 ):
     mock_request_report = mocker.patch("app.reports_api_client.request_report")
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     client_request.post("main.generate_report", service_id=service_one["id"], _expected_status=200)
 
     mock_request_report.assert_called_once_with(
-        user_id=platform_admin_user["id"], service_id=service_one["id"], report_type="email", language="en"
+        user_id=active_user_with_permissions["id"], service_id=service_one["id"], report_type="email", language="en"
     )
 
 
@@ -204,12 +221,12 @@ def test_get_report_totals_marks_expired_reports_correctly():
     ["notifications/email?status=sending,delivered,failed", "notifications/email?status=sending", "jobs/12345"],
 )
 def test_reports_sets_back_link_when_navigating_from_different_page(
-    client_request, platform_admin_user, mock_get_reports, mocker, service_one, referrer_page
+    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one, referrer_page
 ):
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     # Simulate coming from the dashboard page
-    referring_url = f'http://localhost/services/{service_one["id"]}/{referrer_page}'
+    referring_url = f"http://localhost/services/{service_one['id']}/{referrer_page}"
 
     # Make a request to the reports page with the dashboard as referer
     response = client_request.get(
@@ -223,23 +240,25 @@ def test_reports_sets_back_link_when_navigating_from_different_page(
 
     # Verify that the back_link was set in the session
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == referring_url
+        assert session[f"back_link_{service_one['id']}_reports"] == referring_url
 
     # Verify the back link is present in the page content
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
     assert referring_url in str(page)
 
 
-def test_reports_uses_session_back_link_after_refresh(client_request, platform_admin_user, mock_get_reports, mocker, service_one):
+def test_reports_uses_session_back_link_after_refresh(
+    client_request, active_user_with_permissions, mock_get_reports, mocker, service_one
+):
     # Set up an initial back link in the session
     expected_back_link = "http://localhost/services/{}/dashboard".format(service_one["id"])
-    client_request.login(platform_admin_user)
+    client_request.login(active_user_with_permissions)
 
     with client_request.session_transaction() as session:
-        session[f'back_link_{service_one["id"]}_reports'] = expected_back_link
+        session[f"back_link_{service_one['id']}_reports"] = expected_back_link
 
     # Make the request with the same URL as referer to simulate a refresh
-    current_url = f'http://localhost/services/{service_one["id"]}/reports'
+    current_url = f"http://localhost/services/{service_one['id']}/reports"
     response = client_request.get(
         "main.reports",
         service_id=service_one["id"],
@@ -251,7 +270,7 @@ def test_reports_uses_session_back_link_after_refresh(client_request, platform_a
 
     # Verify the session still contains the original back link
     with client_request.session_transaction() as session:
-        assert session[f'back_link_{service_one["id"]}_reports'] == expected_back_link
+        assert session[f"back_link_{service_one['id']}_reports"] == expected_back_link
 
     # The page should still have access to the back_link
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")

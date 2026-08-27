@@ -1,0 +1,27 @@
+@layer components {
+  .is-layout-grid,
+  .is-grid {
+    /* Columns are defined in GCA with the `grid-cols-x` utility class */
+    @apply grid gap-gutter;
+  }
+
+  .columns-2 {
+    @apply md:grid-cols-2;
+  }
+
+  .is-layout-flex {
+    @apply flex flex-wrap gap-gutter;
+  }
+  .is-layout-flex.wp-block-columns {
+    @apply lg:flex-nowrap;
+  }
+  .is-layout-flex.is-vertical {
+    @apply flex-col items-start;
+  }
+  .is-layout-flex.is-content-justification-stretch {
+    @apply items-stretch;
+  }
+  .is-layout-flex.is-nowrap {
+    @apply flex-nowrap;
+  }
+}

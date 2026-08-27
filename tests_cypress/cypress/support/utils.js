@@ -58,8 +58,20 @@ export const getConfig = () => {
             .reduce((acc, [key, value]) => {
                 acc[key] = value;
                 return acc;
-            }, {})
+            }, {}),
+        // 4. Always include ENV property for downstream code
+        ENV: envName
     };
 
     return config;
 };
+
+/**
+ * Converts key_like_strings into "Human Readable" strings.
+ * Example: `SOME_KEY_NAME` -> `Some Key Name`
+ */
+export const humanize = (key) =>
+    String(key)
+        .toLowerCase()
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());

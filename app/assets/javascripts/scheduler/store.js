@@ -37,6 +37,11 @@ export const defaultState = (
 ) => {
   let { today, firstDay } = data.defaultState ? data.defaultState : data;
 
+  if (!firstDay) {
+    console.warn("firstDay is undefined, falling back to default");
+    firstDay = defautFirstDay;
+  }
+
   const blockedDay = (day) => {
     const beforeFirstDay = firstDay ? dayjs(day).isBefore(firstDay) : false;
     return (
@@ -212,6 +217,20 @@ export const StateProvider = ({ value, children }) => {
         newState = {
           ...state,
           ...getNextDay(Number(state.focusedDayNum) - 1, state, "left"),
+        };
+        break;
+      case "SELECT_FIRST":
+        // Navigate to first available day
+        newState = {
+          ...state,
+          ...getNextDay(Number(state.focusedDayNum), state, "first"),
+        };
+        break;
+      case "SELECT_LAST":
+        // Navigate to last available day
+        newState = {
+          ...state,
+          ...getNextDay(Number(state.focusedDayNum), state, "last"),
         };
         break;
       default:

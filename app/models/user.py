@@ -46,6 +46,8 @@ class User(JSONModel, UserMixin):
         "state",
         "blocked",
         "password_expired",
+        "verified_phonenumber",
+        "default_editor_is_rte",
     }
 
     def __init__(self, _dict):
@@ -145,12 +147,13 @@ class User(JSONModel, UserMixin):
         if not self.is_active:
             return False
 
-        if self.email_auth and len(self.security_keys) == 0:
+        if self.email_auth:
             user_api_client.send_verify_code(self.id, "email", None, request.args.get("next"))
             user_api_client.register_last_email_login_datetime(self.id)
             return True
-        if self.sms_auth and len(self.security_keys) == 0:
+        if self.sms_auth:
             user_api_client.send_verify_code(self.id, "sms", self.mobile_number)
+            return True
 
         return True
 
@@ -161,6 +164,10 @@ class User(JSONModel, UserMixin):
     @property
     def email_auth(self):
         return self.auth_type == "email_auth" or self.requires_email_login
+
+    @property
+    def security_key_auth(self):
+        return self.auth_type == "security_key_auth"
 
     @property
     def requires_email_login(self):

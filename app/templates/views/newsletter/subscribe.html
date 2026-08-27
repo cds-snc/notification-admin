@@ -1,0 +1,21 @@
+{% extends "admin_template.html" %}
+
+{% set page_title = _('Subscribe to our newsletter') %}
+{% block per_page_title %}
+  {{ page_title }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+<h1 class="heading-large">{{ page_title }}</h1>
+
+<p class="mt-6">
+  {{ _("Get updates on new features, helpful tips and opportunities to improve GC Notify.") }}
+</p>
+
+<div class="mt-6">
+  {% set newsletter_subscribed = False %}
+  {% include 'partials/newsletter/subscribe_form.html' %}
+</div>
+
+{% endblock %}

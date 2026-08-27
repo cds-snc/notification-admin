@@ -1,0 +1,11 @@
+@layer components {
+  .wp-block-media-text {
+    @apply flex flex-wrap md:grid gap-gutter items-start mt-doubleGutter py-gutterHalf border-t-1 border-gray-300;
+  }
+  .wp-block-media-text :is(p, li) {
+    @apply text-balance;
+  }
+  .wp-block-media-text .wp-block-heading:first-child {
+    @apply mt-0 mb-gutterAndAHalf;
+  }
+}

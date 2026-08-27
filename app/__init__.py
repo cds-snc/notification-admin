@@ -3,10 +3,11 @@ import os
 import re
 import secrets
 import urllib
+import uuid
 from datetime import datetime, timedelta, timezone
 from numbers import Number
 from time import monotonic
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import timeago
 from flask import (
@@ -21,10 +22,11 @@ from flask import (
 )
 from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
+from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
-from flask_wtf.csrf import CSRFError
-from itsdangerous import BadSignature
+from flask_wtf.csrf import CSRFError, generate_csrf
+from itsdangerous import BadSignature, URLSafeTimedSerializer
 from notifications_python_client.errors import HTTPError
 from notifications_utils import formatters, logging, request_helper
 from notifications_utils.formatters import formatted_list
@@ -45,6 +47,7 @@ from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
+from app.enums import NotifyEnv
 from app.extensions import (
     antivirus_client,
     bounce_rate_client,
@@ -68,11 +71,13 @@ from app.notify_client.billing_api_client import billing_api_client
 from app.notify_client.complaint_api_client import complaint_api_client
 from app.notify_client.email_branding_client import email_branding_client
 from app.notify_client.events_api_client import events_api_client
+from app.notify_client.file_api_client import file_api_client
 from app.notify_client.inbound_number_client import inbound_number_client
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.job_api_client import job_api_client
 from app.notify_client.letter_branding_client import letter_branding_client
 from app.notify_client.letter_jobs_client import letter_jobs_client
+from app.notify_client.newsletter_api_client import newsletter_api_client
 from app.notify_client.notification_api_client import notification_api_client
 from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
@@ -117,13 +122,24 @@ def get_current_locale(application):
     if request.args.get("lang") and request.args.get("lang") in ["en", "fr"]:
         lang = request.args.get("lang")
     else:
-        lang = session.get("userlang", requestLang)
+        stored = session.get("userlang", requestLang)
+        lang = stored if stored in application.config["LANGUAGES"] else requestLang
 
     session["userlang"] = lang
     return lang
 
 
 def create_app(application):
+    def random_id(n=None):
+        prefix = "a"
+        rid = prefix + uuid.uuid4().hex
+        if n is not None:
+            try:
+                n = int(n)
+            except Exception:
+                n = None
+        return rid[:n] if n else rid
+
     setup_commands(application)
 
     notify_environment = os.environ["NOTIFY_ENVIRONMENT"]
@@ -132,6 +148,7 @@ def create_app(application):
     application.config.from_object(config)
     asset_fingerprinter._cdn_domain = application.config["ASSET_DOMAIN"]
     asset_fingerprinter._asset_root = urljoin(application.config["ADMIN_BASE_URL"], application.config["ASSET_PATH"])
+    asset_fingerprinter._debug = application.config.get("VITE_HMR_ENABLED", False)
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
     babel = Babel(application)
@@ -155,11 +172,13 @@ def create_app(application):
         complaint_api_client,
         email_branding_client,
         events_api_client,
+        file_api_client,
         inbound_number_client,
         invite_api_client,
         job_api_client,
         letter_branding_client,
         letter_jobs_client,
+        newsletter_api_client,
         notification_api_client,
         org_invite_api_client,
         organisations_client,
@@ -230,6 +249,10 @@ def create_app(application):
     application.jinja_env.globals["events_key"] = EVENTS_KEY
     application.jinja_env.globals["now"] = datetime.utcnow
 
+    # helper functions for templates
+    application.jinja_env.globals["random_id"] = random_id
+    application.jinja_env.globals["NotifyEnv"] = NotifyEnv
+
     # Initialize the GC Organisation list
     if application.config["FF_SALESFORCE_CONTACT"]:
         application.config["CRM_ORG_LIST"] = get_gc_organisations(application)
@@ -283,18 +306,24 @@ def init_app(application):
 
     @application.context_processor
     def inject_global_template_variables():
+        from app.utils import get_limit_reset_time_et
+
         nonce = safe_get_request_nonce()
         current_app.logger.debug(f"Injecting nonce {nonce} in request")
+
         return {
             "admin_base_url": application.config["ADMIN_BASE_URL"],
             "asset_url": asset_fingerprinter.get_url,
             "asset_s3_url": asset_fingerprinter.get_s3_url,
+            "vite_dev_server": application.config.get("VITE_HMR_ENABLED", False),
             "current_lang": get_current_locale(application),
             "documentation_url": documentation_url,
             "google_analytics_id": application.config["GOOGLE_ANALYTICS_ID"],
             "google_tag_manager_id": application.config["GOOGLE_TAG_MANAGER_ID"],
+            "limit_reset_time_et": get_limit_reset_time_et(),
             "request_nonce": nonce,
             "sending_domain": application.config["SENDING_DOMAIN"],
+            **_get_otel_template_vars(application, nonce),
         }
 
 
@@ -309,6 +338,53 @@ def safe_get_request_nonce():
     except AttributeError:
         current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
+
+
+def _get_otel_template_vars(application, nonce):
+    otel_enabled = application.config["ENABLE_CLIENT_SIDE_OTEL"]
+    otel_upstream_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+    otel_endpoint = "/otlp-proxy" if otel_enabled else otel_upstream_endpoint
+    otel_client_service_name = os.environ.get("OTEL_CLIENT_SERVICE_NAME", "notification-admin-frontend")
+    otel_propagate_cors_urls = [
+        url.strip() for url in os.environ.get("OTEL_PROPAGATE_TRACE_HEADER_CORS_URLS", "").split(",") if url.strip()
+    ]
+    otel_user_id = str(current_user.id) if current_user.is_authenticated else ""
+    otel_traceparent = _get_current_traceparent() if otel_enabled else ""
+    otel_auth_token = ""
+    otel_auth_mode = ""
+    if otel_enabled:
+        if current_user.is_authenticated:
+            otel_auth_token = generate_csrf()
+            otel_auth_mode = "csrf"
+        else:
+            otel_auth_token = URLSafeTimedSerializer(application.config["SECRET_KEY"]).dumps(nonce or "", salt="otel-proxy")
+            otel_auth_mode = "signed"
+    return {
+        "enable_client_side_otel": otel_enabled,
+        "otlp_endpoint": otel_endpoint,
+        "otel_client_service_name": otel_client_service_name,
+        "otel_auth_token": otel_auth_token,
+        "otel_auth_mode": otel_auth_mode,
+        "otel_propagate_cors_urls": otel_propagate_cors_urls,
+        "otel_user_id": otel_user_id,
+        "otel_traceparent": otel_traceparent,
+    }
+
+
+def _get_current_traceparent():
+    # Build a W3C traceparent string from the active OTel span so the browser
+    # can attach its page_load span to the Flask request that served the HTML.
+    # opentelemetry-api is provided at runtime by the k8s sidecar; when absent
+    # (local dev, tests) we simply return "" and the frontend creates a root span.
+    try:
+        from opentelemetry import trace as otel_trace  # type: ignore[import-not-found]
+    except ImportError:
+        return ""
+
+    span_context = otel_trace.get_current_span().get_span_context()
+    if not span_context.is_valid:
+        return ""
+    return f"00-{span_context.trace_id:032x}-{span_context.span_id:016x}-{span_context.trace_flags:02x}"
 
 
 def linkable_name(value):
@@ -360,6 +436,26 @@ def format_date_numeric(date):
 
 def format_time_24h(date):
     return utc_string_to_aware_gmt_datetime(date).strftime("%H:%M")
+
+
+def format_datetime_full(dt):
+    """Format datetime for full display with locale support"""
+    if not dt or dt == "None":
+        return _("Never")
+
+    if isinstance(dt, str):
+        dt = utc_string_to_aware_gmt_datetime(dt)
+
+    if not isinstance(dt, datetime):
+        return dt
+
+    # Get current language from session
+    lang = session.get("userlang", "en")
+
+    if lang == "fr":
+        return f"{dt.day} {_l(dt.strftime('%B'))} {dt.year}, {dt.hour} h {dt.minute:02d}"
+    else:
+        return f"{dt.strftime('%B %d, %Y')}, {dt.strftime('%-I:%M %p')}"
 
 
 def get_human_day(time):
@@ -452,6 +548,10 @@ def format_notification_type(notification_type):
     return {"email": "Email", "sms": "SMS", "letter": "Letter"}[notification_type]
 
 
+def format_email_sms(notification_type):
+    return {"email": _("Email"), "sms": _("Text message")}[notification_type]
+
+
 def format_notification_status(status, template_type, provider_response=None, feedback_subtype=None, feedback_reason=None):
     if template_type == "sms" and provider_response:
         return _(provider_response)
@@ -478,6 +578,21 @@ def format_notification_status(status, template_type, provider_response=None, fe
         else:
             return _("No such number")
 
+    def _get_sms_status_by_provider_response():
+        if provider_response:
+            return {
+                "Phone number is opted out": _("No such number"),  #  technical-failure
+                "Phone is currently unreachable/unavailable": _("No such number"),  #  permanent-failure
+                "Phone carrier is currently unreachable/unavailable": _("Carrier issue"),  #  temporary-failure
+                "Phone carrier has blocked this message": _("Blocked by phone carrier"),  #  temporary-failure
+                "Phone has blocked SMS": _("Blocked"),  #  temporary-failure
+                "Phone is on a blocked list": _("Blocked"),  #  temporary-failure
+                "Invalid phone number": _("No such number"),  #  permanent-failure
+                "Destination is on a blocked list": _("Blocked"),  #  permanent-failure
+                "Blocked as spam by phone carrier": _("Carrier issue"),  #  permanent-failure
+            }.get(provider_response, _("Tech issue"))
+        return _("Tech issue")
+
     return {
         "email": {
             "failed": _("Failed"),
@@ -495,9 +610,9 @@ def format_notification_status(status, template_type, provider_response=None, fe
         },
         "sms": {
             "failed": _("Failed"),
-            "technical-failure": _("Tech issue"),
-            "temporary-failure": _("Carrier issue"),
-            "permanent-failure": _("No such number"),
+            "technical-failure": _get_sms_status_by_provider_response(),
+            "temporary-failure": _get_sms_status_by_provider_response(),
+            "permanent-failure": _get_sms_status_by_provider_response(),
             "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
@@ -679,6 +794,16 @@ def useful_headers_after_request(response):
     response.headers.add("Upgrade-Insecure-Requests", "1")
     nonce = safe_get_request_nonce()
     asset_domain = current_app.config["ASSET_DOMAIN"]
+    vite_dev = current_app.config.get("VITE_HMR_ENABLED", False)
+    vite_connect_src = " ws://localhost:5173 http://localhost:5173" if vite_dev else ""
+    vite_script_src = " http://localhost:5173" if vite_dev else ""
+    otlp_connect_src = ""
+    otel_enabled = current_app.config.get("ENABLE_CLIENT_SIDE_OTEL", False)
+    if otel_enabled:
+        otlp_endpoint = os.environ.get("OTLP_ENDPOINT", "")
+        parsed_otlp_endpoint = urlparse(otlp_endpoint)
+        if parsed_otlp_endpoint.scheme and parsed_otlp_endpoint.netloc:
+            otlp_connect_src = f"{parsed_otlp_endpoint.scheme}://{parsed_otlp_endpoint.netloc}"
     response.headers.add(
         "Report-To",
         """{"group":"default","max_age":1800,"endpoints":[{"url":"https://csp-report-to.security.cdssandbox.xyz/report"}]""",
@@ -687,17 +812,17 @@ def useful_headers_after_request(response):
         "Content-Security-Policy",
         (
             f"default-src 'self' {asset_domain} 'unsafe-inline';"
-            f"script-src 'self' {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            f"script-src-elem 'self' https://js-agent.newrelic.com *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com 'nonce-{nonce}' 'unsafe-eval' data:;"
-            "connect-src 'self' *.google-analytics.com *.googletagmanager.com https://bam.nr-data.net *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
+            f"script-src 'self'{vite_script_src} {asset_domain} *.google-analytics.com *.googletagmanager.com https://tagmanager.google.com 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"script-src-elem 'self'{vite_script_src} 'nonce-{nonce}' 'unsafe-eval' data:;"
+            f"connect-src 'self'{vite_connect_src}{' ' + otlp_connect_src if otlp_connect_src else ''} *.google-analytics.com *.googletagmanager.com;"
             "object-src 'self';"
             f"style-src 'self' fonts.googleapis.com https://tagmanager.google.com https://fonts.googleapis.com 'unsafe-inline';"
             f"font-src 'self' {asset_domain} fonts.googleapis.com fonts.gstatic.com *.gstatic.com data:;"
-            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com https://siteintercept.qualtrics.com data:;"  # noqa: E501
+            f"img-src 'self' blob: {asset_domain} *.canada.ca *.cdssandbox.xyz *.google-analytics.com *.googletagmanager.com *.notifications.service.gov.uk *.gstatic.com data:;"  # noqa: E501
             "media-src 'self' *.alpha.canada.ca;"
             "frame-ancestors 'self';"
-            "form-action 'self' *.siteintercept.qualtrics.com https://siteintercept.qualtrics.com;"
-            "frame-src 'self' www.googletagmanager.com https://cdssnc.qualtrics.com/;"
+            "form-action 'self' https://forms-formulaires.alpha.canada.ca;"
+            "frame-src 'self' www.googletagmanager.com;"
             "report-uri https://csp-report-to.security.cdssandbox.xyz/report;"
             "report-to default;"
         ),
@@ -864,6 +989,7 @@ def add_template_filters(application):
         translate_preview_template,
         format_notification_status,
         format_notification_type,
+        format_email_sms,
         format_notification_status_as_time,
         format_notification_status_as_field_status,
         format_notification_status_as_url,
@@ -873,5 +999,6 @@ def add_template_filters(application):
         format_phone_number_human_readable,
         format_thousands,
         id_safe,
+        format_datetime_full,
     ]:
         application.add_template_filter(fn)

@@ -76,8 +76,8 @@ const emailAccount = async () => {
             try {
                 connection = await imaps.connect(emailConfig);
 
-                // grab up to 50 emails from the inbox
-                await connection.openBox('INBOX');
+                // Open Gmail's All Mail folder instead of INBOX
+                await connection.openBox('[Gmail]/All Mail');
                 const searchCriteria = ['UNSEEN'];
                 const fetchOptions = {
                     bodies: [''],
@@ -93,8 +93,9 @@ const emailAccount = async () => {
                     for (const message of messages) {
                         const mail = await simpleParser(message.parts[0].body);
                         const to_address = mail.to.value[0].address;
+                        const subject = mail.subject;
 
-                        if (to_address == emailAddress) {
+                        if (to_address == emailAddress && subject === 'Sign in | Connectez-vous') {
                             uidsToDelete.push(message.attributes.uid);
                             latestMail = {
                                 subject: mail.subject,

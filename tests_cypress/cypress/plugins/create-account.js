@@ -67,8 +67,7 @@ const createAccount = async (baseUrl, username, secret) => {
     
     try {
         // First do cleanup
-        // TODO: figure out why this removes system templates (i.e SMOKE_TEST_EMAIL & SMOKE_TEST_SMS)
-        // await Utilities.makeRequest(cleanupUrl, { ...options, method: 'GET' });
+        await Utilities.makeRequest(cleanupUrl, { ...options, method: 'GET' });
         
         // Then create new account
         const generatedUsername = Utilities.GenerateID(10);

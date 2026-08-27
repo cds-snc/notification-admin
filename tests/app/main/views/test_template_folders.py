@@ -1,12 +1,12 @@
 import uuid
 
 import pytest
-from flask import abort, url_for
-from notifications_python_client.errors import HTTPError
-
 from app.main.forms import TC_PRIORITY_VALUE
 from app.models.service import Service
 from app.models.user import User
+from flask import abort, url_for
+from notifications_python_client.errors import HTTPError
+
 from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -50,8 +50,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
     ),
     [
         (
-            "Browse Templates - service one – Notify",
-            "Browse Templates",
+            "Your Templates - service one – Notify",
+            "Your Templates",
             [],
             {},
             [
@@ -97,8 +97,8 @@ def _folder(name, folder_id=None, parent=None, users_with_permission=None):
             None,
         ),
         (
-            "Browse Templates - service one – Notify",
-            "Browse Templates",
+            "Your Templates - service one – Notify",
+            "Your Templates",
             [],
             {"template_type": "sms"},
             [
@@ -401,6 +401,7 @@ def test_can_create_email_template_with_parent_folder(
         None,
         data["parent_folder_id"],
         data["template_category_id"],
+        use_custom_unsubscribe_url=False,
     )
 
 
@@ -839,13 +840,13 @@ def test_delete_template_folder_should_request_confirmation(
         _test_page_title=False,
     )
     assert normalize_spaces(page.select(".banner-dangerous")[0].text) == (
-        "Are you sure you want to delete the ‘sacrifice’ folder? " "Yes, delete"
+        "Are you sure you want to delete the ‘sacrifice’ folder? Yes, delete"
     )
 
     assert page.select_one("input[name=name]")["value"] == "sacrifice"
 
     assert len(page.select("form")) == 2
-    assert len(page.select("button")) == 6
+    assert len(page.select("form button")) == 2
 
     assert "action" not in page.select("form")[0]
     assert page.select("form button")[0].text == "Yes, delete"
@@ -1407,7 +1408,7 @@ def test_radio_button_with_no_value_shows_error_message(
         _expected_redirect=None,
     )
 
-    assert page.select_one("span.error-message").text.strip() == "You need to choose an option"
+    assert page.select_one("span.error-message").text.strip() == "Error: You need to choose an option"
 
 
 @pytest.mark.parametrize(
@@ -1469,7 +1470,7 @@ def test_show_custom_error_message(
 
 
 @pytest.mark.parametrize(
-    ("extra_args," "expected_displayed_items, " "expected_items, " "expected_empty_message "),
+    ("extra_args,expected_displayed_items, expected_items, expected_empty_message "),
     [
         (
             {},

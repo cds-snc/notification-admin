@@ -1,17 +1,31 @@
-from flask import redirect, render_template, request, session, url_for
+from flask import current_app, redirect, render_template, request, session, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 from notifications_python_client.errors import HTTPError
 
-from app import user_api_client
+from app import get_current_locale, user_api_client
 from app.main import main
 from app.main.forms import ContactMessageStep, ContactNotify
 
 SESSION_FORM_KEY = "contact_form"
 
 
+# /contact route: redirect to /<lang_code>/contact
 @main.route("/contact", methods=["GET", "POST"])
 def contact():
+    lang_code = get_current_locale(current_app)
+    return redirect(url_for("main.contact_lang", lang_code=lang_code), code=302)
+
+
+# /<lang_code>/contact route: real contact page
+@main.route("/<lang_code>/contact", methods=["GET", "POST"])
+def contact_lang(lang_code):
+    # Sync session language with lang_code in URL
+    if session.get("userlang") and session["userlang"] != lang_code:
+        session["userlang"] = lang_code
+        # Reload page to ensure translations update
+        return redirect(url_for("main.contact_lang", lang_code=lang_code))
+
     data = _form_data()
     form = ContactNotify(data=data)
     previous_step = None
@@ -19,13 +33,26 @@ def contact():
     next_step = ""
 
     if request.method == "POST" and form.validate_on_submit():
+        # If user selected a11y_feedback, redirect to external feedback form
+        if form.support_type.data == "a11y_feedback":
+            if lang_code == "fr":
+                return redirect(current_app.config["A11Y_FEEDBACK_URL_FR"])
+            else:
+                return redirect(current_app.config["A11Y_FEEDBACK_URL_EN"])
+
+        # If user selected newsletter_signup, redirect to newsletter subscription page
+        if form.support_type.data == "newsletter_signup":
+            # Pre-populate email: use logged-in user's email or form email
+            email = current_user.email_address if current_user.is_authenticated else form.email_address.data
+            return redirect(url_for("main.newsletter_subscription", email=email))
+
         session[SESSION_FORM_KEY] = form.data
-        return redirect(url_for(".message"))
+        return redirect(url_for("main.message_lang", lang_code=lang_code))
 
     return render_template(
         "views/contact/contact-us.html",
         form=form,
-        url=url_for(".contact"),
+        url=url_for("main.contact_lang", lang_code=lang_code),
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,
@@ -33,8 +60,9 @@ def contact():
     )
 
 
-@main.route("/contact/message", methods=["GET", "POST"])
-def message():
+# /<lang_code>/contact/message route: real message page
+@main.route("/<lang_code>/contact/message", methods=["GET", "POST"])
+def message_lang(lang_code):
     data = _form_data()
     form = ContactMessageStep(data=data)
     previous_step = "identity"
@@ -47,12 +75,12 @@ def message():
             "views/contact/thanks.html",
         )
     if not _validate_fields_present(current_step, data):
-        return redirect(url_for(".contact"))
+        return redirect(url_for("main.contact_lang", lang_code=lang_code))
 
     return render_template(
         "views/contact/message.html",
         form=form,
-        url=url_for("main.message"),
+        url=url_for("main.message_lang", lang_code=lang_code),
         current_step=current_step,
         next_step=next_step,
         previous_step=previous_step,

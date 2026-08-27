@@ -1,0 +1,39 @@
+.rte-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+.rte-tooltip-box {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 9999;
+  font-weight: 500;
+  @apply flex flex-col justify-center bg-gray-900 text-white py-4 px-6 text-small;
+}
+
+.rte-tooltip-label {
+  margin-bottom: 4px;
+}
+.rte-tooltip-label.no-shortcut {
+  margin-bottom: 0;
+}
+.rte-tooltip-shortcut {
+  @apply text-xs text-gray-200;
+}
+
+.rte-tooltip-caret {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #111827;
+  pointer-events: none;
+}

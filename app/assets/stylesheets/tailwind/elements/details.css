@@ -17,8 +17,9 @@
   details summary:hover {
     @apply text-blue-lightblue;
   }
-  details summary:focus {
-    @apply outline-yellow;
+  details summary:focus,
+  details summary:focus-visible {
+    @apply outline outline-yellow outline-4;
   }
 
   summary::-moz-details-marker,
@@ -49,7 +50,7 @@
     @apply text-small hidden;
   }
 
-  details [id^="details-content"] {
+  details .details-body {
     box-shadow: inset 5px 0 0 theme("colors.gray.border");
     @apply pl-gutter;
   }

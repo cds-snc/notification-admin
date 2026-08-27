@@ -100,7 +100,9 @@
               <button
                 class="button button-secondary inline-block w-auto"
                 aria-expanded="${expanded ? "true" : "false"}"
-                aria-controls="${this.fieldsetId}">
+                aria-controls="${this.fieldsetId}"
+                aria-describedby="${this.fieldsetId}-label"
+              >
               ${buttonContent}
               </button>
             </div>`);

@@ -16,9 +16,14 @@ def get_sitemap():
                     {"href": url_for("main.activity"), "link_text": _("Activity on GC Notify")},
                     {"href": url_for("main.contact"), "link_text": _("Contact us")},
                     {"href": gca_url_for("features"), "link_text": _("Features")},
+                    {"href": gca_url_for("roadmap"), "link_text": _("Roadmap")},
                     {"href": gca_url_for("new_features"), "link_text": _("New features")},
                     {"href": gca_url_for("register_for_demo"), "link_text": _("Register for a demo")},
-                    {"href": gca_url_for("whynotify"), "link_text": _("Why GC Notify")},
+                    {"href": gca_url_for("whynotify"), "link_text": _("By and for the Government of Canada")},
+                    {
+                        "href": current_app.config["A11Y_FEEDBACK_URL_FR" if lang == "fr" else "A11Y_FEEDBACK_URL_EN"],
+                        "link_text": _("Share accessibility feedback"),
+                    },
                 ],
             },
             {
@@ -37,11 +42,16 @@ def get_sitemap():
                     {"href": documentation_url(), "link_text": _("API documentation")},
                     {"href": gca_url_for("getting_started"), "link_text": _("Getting started")},
                     {"href": gca_url_for("guidance"), "link_text": _("Guidance")},
-                    {"href": gca_url_for("formatting_guide"), "link_text": _("Formatting emails")},
+                    {"href": gca_url_for("formatting_guide"), "link_text": _("Using markdown for email messages")},
                     {"href": gca_url_for("spreadsheets"), "link_text": _("Using a spreadsheet")},
                     {"href": gca_url_for("personalisation_guide"), "link_text": _("Sending custom content")},
                     {"href": gca_url_for("message_delivery_status"), "link_text": _("Understanding delivery and failure")},
                     {"href": gca_url_for("bounce_guidance"), "link_text": _("Updating contact information")},
+                    {
+                        "href": gca_url_for("counting_text_messages"),
+                        "link_text": _("Counting text message parts"),
+                        "show": current_app.config.get("FF_USE_BILLABLE_UNITS", False),
+                    },
                 ],
             },
             {

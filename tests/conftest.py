@@ -8,16 +8,17 @@ from uuid import UUID, uuid4
 
 import pytest
 import requests
+from app.tou import TERMS_KEY
+from app.types import EmailReplyTo
 from bs4 import BeautifulSoup
 from flask import Flask, template_rendered, url_for
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import generate_token
 from pytest_mock import MockerFixture
+from werkzeug.exceptions import NotFound
 
 from app import create_app
-from app.tou import TERMS_KEY
-from app.types import EmailReplyTo
 
 from . import (
     DEFAULT_TEMPLATE_CATEGORY_HIGH,
@@ -1032,7 +1033,17 @@ def mock_get_service_letter_template(mocker, content=None, subject=None, postage
 
 @pytest.fixture(scope="function")
 def mock_create_service_template(mocker, fake_uuid):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         template = template_json(
             service_id=service,
             id_=fake_uuid,
@@ -1066,6 +1077,7 @@ def mock_update_service_template(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         template = template_json(service, id_, name, type_, content, subject, process_type, postage, template_category_id)
         return {"data": template}
@@ -1075,7 +1087,18 @@ def mock_update_service_template(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_400_name_too_long(mocker):
-    def _update(id_, name, type_, content, service, subject=None, process_type=None, postage=None, template_category_id=None):
+    def _update(
+        id_,
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        postage=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"name": ["Template name must be less than 256 characters"]},
@@ -1102,6 +1125,7 @@ def mock_update_service_template_400_name_too_long(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
@@ -1118,7 +1142,17 @@ def mock_update_service_template_400_name_too_long(mocker):
 
 @pytest.fixture(scope="function")
 def mock_create_service_template_content_too_big(mocker):
-    def _create(name, type_, content, service, subject=None, process_type=None, parent_folder_id=None, template_category_id=None):
+    def _create(
+        name,
+        type_,
+        content,
+        service,
+        subject=None,
+        process_type=None,
+        parent_folder_id=None,
+        template_category_id=None,
+        use_custom_unsubscribe_url=None,
+    ):
         json_mock = Mock(
             return_value={
                 "message": {"content": ["Content has a character count greater than the limit of 459"]},
@@ -1148,6 +1182,7 @@ def mock_update_service_template_400_content_too_big(mocker):
         postage=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         json_mock = Mock(
             return_value={
@@ -1196,6 +1231,39 @@ def mock_get_limit_stats(mocker):
         }
 
     return mocker.patch("app.main.views.templates.notification_counts_client.get_limit_stats", side_effect=_get_data)
+
+
+@pytest.fixture(scope="function")
+def mock_get_limit_stats_send(mocker):
+    def _get_data(svc):
+        return {
+            "email": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+            "sms": {
+                "annual": {
+                    "limit": 1000,
+                    "sent": 10,
+                    "remaining": 990,
+                },
+                "daily": {
+                    "limit": 100,
+                    "sent": 5,
+                    "remaining": 95,
+                },
+            },
+        }
+
+    return mocker.patch("app.main.views.send.notification_counts_client.get_limit_stats", side_effect=_get_data)
 
 
 def create_template(
@@ -1404,6 +1472,7 @@ def api_user_pending(fake_uuid):
         "current_session_id": None,
         "password_changed_at": str(datetime.utcnow()),
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1439,6 +1508,7 @@ def platform_admin_user(fake_uuid):
         "current_session_id": None,
         "logged_in_at": None,
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1465,6 +1535,7 @@ def api_user_active(fake_uuid):
         "logged_in_at": None,
         "security_keys": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1489,8 +1560,46 @@ def api_user_active_email_auth(fake_uuid, email_address="test@user.canada.ca"):
         "current_session_id": None,
         "security_keys": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
+
+
+@pytest.fixture(scope="function")
+def api_user_active_security_key_auth(fake_uuid):
+    return {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "email_address": "test@user.canada.ca",
+        "mobile_number": "6502532222",
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {},
+        "platform_admin": False,
+        "auth_type": "security_key_auth",
+        "security_key_auth": True,
+        "email_auth": False,
+        "sms_auth": False,
+        "password_changed_at": str(datetime.utcnow()),
+        "services": [],
+        "organisations": [],
+        "current_session_id": None,
+        "logged_in_at": None,
+        "security_keys": [
+            {
+                "id": fake_uuid,
+                "user_id": fake_uuid,
+                "name": "Test Key",
+                "created_at": str(datetime.utcnow()),
+                "updated_at": str(datetime.utcnow()),
+            }
+        ],
+        "fido2_key_id": None,
+        "password_expired": False,
+        "default_editor_is_rte": False,
+    }
 
 
 @pytest.fixture(scope="function")
@@ -1522,6 +1631,7 @@ def api_nongov_user_active(fake_uuid):
         "services": [],
         "organisations": [],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1555,6 +1665,7 @@ def active_user_with_permissions(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1588,6 +1699,7 @@ def active_cds_user_with_permissions(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1624,6 +1736,7 @@ def active_user_with_permission_to_two_services(fake_uuid):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID, SERVICE_TWO_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -1651,6 +1764,42 @@ def active_caseworking_user(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
+    }
+    return user_data
+
+
+@pytest.fixture(scope="function")
+def active_user_with_unverified_mobile(fake_uuid):
+    user_data = {
+        "id": fake_uuid,
+        "name": "Test User",
+        "password": "somepassword",
+        "password_changed_at": str(datetime.utcnow()),
+        "email_address": "test@user.canada.ca",
+        "mobile_number": 6502532222,
+        "verified_phonenumber": False,
+        "blocked": False,
+        "state": "active",
+        "failed_login_count": 0,
+        "permissions": {
+            SERVICE_ONE_ID: [
+                "send_texts",
+                "send_emails",
+                "send_letters",
+                "manage_users",
+                "manage_templates",
+                "manage_settings",
+                "manage_api_keys",
+                "view_activity",
+            ]
+        },
+        "platform_admin": False,
+        "auth_type": "email_auth",
+        "organisations": [],
+        "services": [SERVICE_ONE_ID],
+        "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1684,6 +1833,7 @@ def active_user_no_mobile(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1706,6 +1856,7 @@ def active_user_view_permissions(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1728,6 +1879,7 @@ def active_user_empty_permissions(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1755,6 +1907,7 @@ def active_user_manage_template_permission(fake_uuid):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -1782,6 +1935,7 @@ def active_user_no_api_key_permission(fake_uuid):
         "organisations": [],
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
+        "default_editor_is_rte": False,
     }
 
 
@@ -1809,6 +1963,7 @@ def active_user_no_settings_permission(fake_uuid):
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
         "organisations": [],
+        "default_editor_is_rte": False,
     }
 
 
@@ -1830,6 +1985,7 @@ def api_user_locked(fake_uuid):
         "platform_admin": False,
         "services": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1853,6 +2009,7 @@ def api_user_request_password_reset(fake_uuid):
         "platform_admin": False,
         "services": [],
         "password_expired": False,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -1923,6 +2080,18 @@ def mock_get_user(mocker, api_user_active):
 def mock_get_user_email_auth(mocker, api_user_active_email_auth, user=None):
     if user is None:
         user = api_user_active_email_auth
+
+    def _get_user(id_):
+        user["id"] = id_
+        return user
+
+    return mocker.patch("app.user_api_client.get_user", side_effect=_get_user)
+
+
+@pytest.fixture(scope="function")
+def mock_get_user_security_key_auth(mocker, api_user_active_security_key_auth, user=None):
+    if user is None:
+        user = api_user_active_security_key_auth
 
     def _get_user(id_):
         user["id"] = id_
@@ -2253,9 +2422,17 @@ def mock_check_verify_code(mocker):
 
 
 @pytest.fixture(scope="function")
+def mock_validate_2fa_method(mocker):
+    def _verify(user_id, code, code_type):
+        return True, ""
+
+    return mocker.patch("app.user_api_client.validate_2fa_method", side_effect=_verify)
+
+
+@pytest.fixture(scope="function")
 def mock_check_verify_code_code_not_found(mocker):
     def _verify(user_id, code, code_type):
-        return False, "Code not found"
+        return False, "Try again. Something’s wrong with this code"
 
     return mocker.patch("app.user_api_client.check_verify_code", side_effect=_verify)
 
@@ -2370,6 +2547,22 @@ def mock_get_job_in_progress(mocker, api_user_active):
 
 
 @pytest.fixture(scope="function")
+def mock_get_job_sent_outside_retention_period(mocker, api_user_active):
+    def _get_job(service_id, job_id):
+        return {
+            "data": job_json(
+                service_id,
+                api_user_active,
+                job_id=job_id,
+                job_status="finished",
+                archived=True,
+            )
+        }
+
+    return mocker.patch("app.job_api_client.get_job", side_effect=_get_job)
+
+
+@pytest.fixture(scope="function")
 def mock_has_jobs(mocker):
     mocker.patch("app.job_api_client.has_jobs", return_value=True)
 
@@ -2381,7 +2574,7 @@ def mock_has_no_jobs(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_jobs(mocker, api_user_active):
-    def _get_jobs(service_id, limit_days=None, statuses=None, page=1):
+    def _get_jobs(service_id, limit_days=None, statuses=None, page=1, page_size=None):
         if statuses is None:
             statuses = ["", "scheduled", "pending", "cancelled", "finished"]
 
@@ -2413,6 +2606,7 @@ def mock_get_jobs(mocker, api_user_active):
             },
         }
 
+    mocker.patch("app.job_api_client.has_jobs", return_value=True)
     return mocker.patch("app.job_api_client.get_jobs", side_effect=_get_jobs)
 
 
@@ -2804,6 +2998,7 @@ def mock_get_users_by_service(mocker):
                 "failed_login_count": 0,
                 "organisations": [],
                 "platform_admin": False,
+                "default_editor_is_rte": False,
             }
         ]
         return [data[0]]
@@ -2839,6 +3034,11 @@ def mock_s3_download(mocker, content=None):
 @pytest.fixture(scope="function")
 def mock_s3_set_metadata(mocker, content=None):
     return mocker.patch("app.main.views.send.set_metadata_on_csv_upload")
+
+
+@pytest.fixture(scope="function", autouse=True)
+def mock_s3_get_metadata(mocker):
+    return mocker.patch("app.main.views.send.get_csv_metadata", return_value={})
 
 
 @pytest.fixture(scope="function")
@@ -2991,6 +3191,8 @@ def mock_get_template_categories(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_template_statistics(mocker, service_one, fake_uuid):
+    from flask import current_app
+
     template = template_json(
         service_one["id"],
         fake_uuid,
@@ -2998,16 +3200,19 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
         "sms",
         "Something very interesting",
     )
-    data = {
-        "count": 1,
-        "template_name": template["name"],
-        "template_type": template["template_type"],
-        "template_id": template["id"],
-        "is_precompiled_letter": False,
-        "status": "delivered",
-    }
 
     def _get_stats(service_id, limit_days=None):
+        data = {
+            "count": 1,
+            "template_name": template["name"],
+            "template_type": template["template_type"],
+            "template_id": template["id"],
+            "is_precompiled_letter": False,
+            "status": "delivered",
+        }
+        # Include billable_units if FF_USE_BILLABLE_UNITS is enabled
+        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
+            data["billable_units"] = 1
         return [data]
 
     return mocker.patch(
@@ -3018,8 +3223,8 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "template_id": fake_uuid,
                 "month": 4,
@@ -3029,6 +3234,15 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
                 "type": "sms",
             }
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 1,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",
@@ -3038,8 +3252,8 @@ def mock_get_monthly_template_usage(mocker, service_one, fake_uuid):
 
 @pytest.fixture(scope="function")
 def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fake_uuid):
-    def _stats(service_id, year):
-        return [
+    def _stats(service_id, year, page=None, page_size=None):
+        stats = [
             {
                 "count": 1101,
                 "is_precompiled_letter": False,
@@ -3068,6 +3282,15 @@ def mock_get_monthly_template_usage_with_multiple_months(mocker, service_one, fa
                 "year": 2023,
             },
         ]
+        if page is not None:
+            return {
+                "data": stats,
+                "total": 2,
+                "page": page,
+                "page_size": page_size or 50,
+                "links": {},
+            }
+        return {"stats": stats}
 
     return mocker.patch(
         "app.template_statistics_client.get_monthly_template_usage_for_service",
@@ -3553,6 +3776,70 @@ def mock_send_notification(mocker, fake_uuid):
         return {"id": fake_uuid}
 
     return mocker.patch("app.notification_api_client.send_notification", side_effect=_send_notification)
+
+
+@pytest.fixture
+def sample_email_id():
+    return "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+
+@pytest.fixture
+def sample_sms_id():
+    return "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+
+
+@pytest.fixture
+def sample_template(sample_email_id):
+    # Minimal structure expected by get_email_preview_template + create_from_sample_template
+    return {
+        "id": sample_email_id,
+        "name": "Account Verification",
+        "name_fr": "Vérification de compte",
+        "instruction_content": "Click the link to verify your account: ((link))",
+        "content": "Click the link to verify your account: ((link))",
+        "subject": "Verify your account",
+        "template_type": "email",
+        "template_category_id": "cat-auth",
+        "text_direction_rtl": False,
+    }
+
+
+@pytest.fixture
+def sample_sms_template(sample_sms_id):
+    return {
+        "id": sample_sms_id,
+        "name": "Two-Factor Code",
+        "name_fr": "Code à deux facteurs",
+        "instruction_content": "Your code is ((code))",
+        "content": "Your code is ((code))",
+        "subject": None,
+        "template_type": "sms",
+        "template_category_id": "cat-auth",
+        "text_direction_rtl": False,
+    }
+
+
+@pytest.fixture
+def mock_create_temporary_sample_template(mocker, sample_template, sample_sms_template):
+    """
+    Patch create_temporary_sample_template so tests are deterministic:
+    - Return email or sms sample
+    - Raise NotFound for unknown IDs (lets view translate to 404)
+    """
+    mapping = {
+        sample_template["id"]: sample_template,
+        sample_sms_template["id"]: sample_sms_template,
+    }
+
+    def _side_effect(template_id, current_user_id, preview=False):
+        if template_id not in mapping:
+            raise NotFound("sample not found")
+        return mapping[template_id]
+
+    return mocker.patch(
+        "app.main.views.templates.create_temporary_sample_template",
+        side_effect=_side_effect,
+    )
 
 
 @pytest.fixture(scope="function")
@@ -4313,6 +4600,11 @@ def mock_get_template_folders(mocker):
     return mocker.patch("app.template_folder_api_client.get_template_folders", return_value=[])
 
 
+@pytest.fixture(autouse=True)
+def mock_get_template_attachments(mocker):
+    return mocker.patch("app.models.service.file_api_client.get_files_by_template_id", return_value=[])
+
+
 @pytest.fixture
 def mock_move_to_template_folder(mocker):
     return mocker.patch("app.template_folder_api_client.move_to_folder")
@@ -4408,6 +4700,7 @@ def create_api_user_active(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4427,6 +4720,7 @@ def create_active_user_empty_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
     return user_data
 
@@ -4458,6 +4752,7 @@ def create_active_user_with_permissions(with_unique_id=False):
         "organisations": [ORGANISATION_ID],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4477,6 +4772,7 @@ def create_active_user_view_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4502,6 +4798,7 @@ def create_active_caseworking_user(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4527,6 +4824,7 @@ def create_active_user_no_api_key_permission(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
+        "default_editor_is_rte": False,
     }
 
 
@@ -4552,6 +4850,7 @@ def create_active_user_no_settings_permission(with_unique_id=False):
         "current_session_id": None,
         "services": [SERVICE_ONE_ID],
         "organisations": [],
+        "default_editor_is_rte": False,
     }
 
 
@@ -4576,6 +4875,7 @@ def create_active_user_manage_template_permissions(with_unique_id=False):
         "organisations": [],
         "services": [SERVICE_ONE_ID],
         "current_session_id": None,
+        "default_editor_is_rte": False,
     }
 
 
@@ -4607,6 +4907,7 @@ def create_platform_admin_user(with_unique_id=False):
         "organisations": [],
         "current_session_id": None,
         "logged_in_at": None,
+        "default_editor_is_rte": False,
     }
 
 

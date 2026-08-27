@@ -2,11 +2,11 @@ from unittest.mock import call
 from uuid import uuid4
 
 import pytest
+from app.notify_client.service_api_client import ServiceAPIClient
 from flask import g
 from freezegun import freeze_time
 
 from app import invite_api_client, service_api_client, user_api_client
-from app.notify_client.service_api_client import ServiceAPIClient
 from tests.conftest import SERVICE_ONE_ID
 
 FAKE_TEMPLATE_ID = uuid4()
@@ -344,8 +344,8 @@ def test_returns_value_from_cache(
             [SERVICE_ONE_ID],
             {"properties": {}},
         ),
-        (service_api_client, "archive_service", [SERVICE_ONE_ID], {}),
-        (service_api_client, "suspend_service", [SERVICE_ONE_ID], {}),
+        (service_api_client, "archive_service", [SERVICE_ONE_ID, "1"], {}),
+        (service_api_client, "suspend_service", [SERVICE_ONE_ID, "1"], {}),
         (service_api_client, "resume_service", [SERVICE_ONE_ID], {}),
         (service_api_client, "remove_user_from_service", [SERVICE_ONE_ID, ""], {}),
         (service_api_client, "update_safelist", [SERVICE_ONE_ID, {}], {}),

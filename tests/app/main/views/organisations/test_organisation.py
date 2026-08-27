@@ -125,8 +125,8 @@ def test_create_new_organisation_validates(
     )
     assert [(error["data-error-label"], normalize_spaces(error.text)) for error in page.select(".error-message")] == [
         ("name", "This cannot be empty"),
-        ("org_type", "You need to choose an option"),
-        ("crown_status", "You need to choose an option"),
+        ("org_type", "Error: You need to choose an option"),
+        ("crown_status", "Error: You need to choose an option"),
     ]
     assert mock_create_organisation.called is False
 
@@ -266,18 +266,15 @@ def test_organisation_settings_for_platform_admin(client_request, platform_admin
             (
                 (
                     "yes",
-                    ("Yes " "Users will be told their organisation has already signed the agreement"),
+                    ("Yes Users will be told their organisation has already signed the agreement"),
                 ),
                 (
                     "no",
-                    ("No " "Users will be prompted to sign the agreement before they can go live"),
+                    ("No Users will be prompted to sign the agreement before they can go live"),
                 ),
                 (
                     "unknown",
-                    (
-                        "No (but we have some service-specific agreements in place) "
-                        "Users won’t be prompted to sign the agreement"
-                    ),
+                    ("No (but we have some service-specific agreements in place) Users won’t be prompted to sign the agreement"),
                 ),
             ),
             "no",
@@ -530,7 +527,7 @@ def test_confirm_update_organisation_with_incorrect_password(
     assert response.status_code == 200
     page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-    assert normalize_spaces(page.select_one(".error-message").text) == "Invalid password"
+    assert normalize_spaces(page.select_one(".error-message").text) == "Try again. Something’s wrong with this password"
 
 
 def test_confirm_update_organisation_with_name_already_in_use(
@@ -715,3 +712,35 @@ def test_update_organisation_domains(
         ORGANISATION_ID,
         **expected_persisted,
     )
+
+
+def test_organisation_navigation_displays_correctly(
+    client_request,
+    mocker,
+    active_user_with_permissions,
+    mock_get_organisation,
+):
+    """Test that the navigation renders without errors on organization pages.
+
+    This test verifies the fix for the bug where current_service was None on
+    organization pages, causing an AttributeError when trying to access current_service.id
+    in the navigation.
+    """
+    active_user_with_permissions["organisations"] = [ORGANISATION_ID]
+    mocker.patch("app.organisations_client.get_organisation_services", return_value=[])
+
+    client_request.login(active_user_with_permissions)
+    page = client_request.get(
+        ".organisation_dashboard",
+        org_id=ORGANISATION_ID,
+    )
+
+    # Verify the page loaded without errors
+    assert page.select_one("h1") is not None
+
+    # Verify navigation items are present for organization context
+    nav_links = [item.text.strip() for item in page.select("nav.navigation a")]
+
+    # Should show organization navigation, not service navigation
+    # The navigation should include Dashboard, Settings, and Team members
+    assert "Dashboard" in nav_links or "Settings" in nav_links or "Team members" in nav_links

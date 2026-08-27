@@ -17,6 +17,13 @@ let Components = {
 
     // Common
     MessageBanner: () => cy.get("div[role='status']"),
+
+    // TODO: add `data-testids` to settings page
+    // File attachments setting
+    FileAttachmentsEnabledOption: () =>
+        cy.get('input[name="enabled"][value="True"]'),
+    FileAttachmentsDisabledOption: () =>
+        cy.get('input[name="enabled"][value="False"]'),
 };
 
 let Actions = {
@@ -39,6 +46,21 @@ let Actions = {
     },
     Submit: () => {
         return Components.SubmitButton().click();
+    },
+
+    // File attachments setting
+    VisitFileAttachmentsSettingPage: (serviceId) => {
+        cy.visit(`/services/${serviceId}/service-settings/switch-upload-document`);
+    },
+    SetAllowFileAttachments: (enabled) => {
+        if (enabled) {
+            Components.FileAttachmentsEnabledOption().check({ force: true });
+        } else {
+            Components.FileAttachmentsDisabledOption().check({ force: true });
+        }
+    },
+    SaveFileAttachmentsSetting: () => {
+        cy.contains("button", "Save").click();
     },
 };
 

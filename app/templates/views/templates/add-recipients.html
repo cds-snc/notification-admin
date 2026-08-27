@@ -1,5 +1,5 @@
 {% extends "admin_template.html" %}
-{% from "components/page-header.html" import page_header %}
+{% from "components/page-header.html" import govuk_back_link %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/select-input.html" import select %}
 {% from "components/form.html" import form_wrapper %}
@@ -13,7 +13,7 @@
   {% set choose_url = url_for('main.view_template', service_id=service_id, template_id=template_id) %}
   {% set dashboard_url = url_for('main.service_dashboard', service_id=service_id) %}
   {% set back_url = dashboard_url if request.args.get('source') == 'dashboard' else choose_url %}
-  {{ page_header(form.what_type.label.text | safe, back_link=back_url ) }}
+  {{ govuk_back_link(back_url) }}
 
   <div class="grid-row contain-floats">
 
@@ -27,7 +27,7 @@
       {% endif %}
 
       {% call form_wrapper() %}
-        {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals, hide_legend=True) }}
+        {{ select(form.what_type, disable=disabled_options, option_hints=option_hints, option_conditionals=option_conditionals, is_page_heading=True) }}
         {{ page_footer(_('Continue')) }}
       {% endcall %}
     </div>

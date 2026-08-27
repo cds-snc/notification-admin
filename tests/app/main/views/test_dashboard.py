@@ -3,18 +3,20 @@ import re
 from unittest.mock import ANY
 
 import pytest
-from bs4 import BeautifulSoup
-from flask import url_for
-from freezegun import freeze_time
-
 from app.main.views.dashboard import (
+    aggregate_by_type_daily,
     aggregate_notifications_stats,
     aggregate_status_types,
     aggregate_template_usage,
     format_monthly_stats_to_list,
+    get_annual_data,
     get_dashboard_totals,
     get_free_paid_breakdown_for_billable_units,
 )
+from bs4 import BeautifulSoup
+from flask import url_for
+from freezegun import freeze_time
+
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -33,6 +35,7 @@ stub_template_stats = [
         "template_id": "id-1",
         "status": "created",
         "count": 50,
+        "billable_units": 50,
         "is_precompiled_letter": False,
     },
     {
@@ -41,6 +44,7 @@ stub_template_stats = [
         "template_id": "id-2",
         "status": "created",
         "count": 100,
+        "billable_units": 100,
         "is_precompiled_letter": False,
     },
     {
@@ -49,6 +53,7 @@ stub_template_stats = [
         "template_id": "id-2",
         "status": "technical-failure",
         "count": 100,
+        "billable_units": 100,
         "is_precompiled_letter": False,
     },
     {
@@ -57,6 +62,7 @@ stub_template_stats = [
         "template_id": "id-1",
         "status": "delivered",
         "count": 50,
+        "billable_units": 50,
         "is_precompiled_letter": False,
     },
 ]
@@ -128,13 +134,14 @@ def test_redirect_caseworkers_to_templates(
 @pytest.mark.parametrize(
     "permissions, text_in_page, text_not_in_page",
     [
-        (["view_activity", "manage_templates"], ["Create template"], ["Select template"]),
-        (["view_activity", "send_messages"], ["Select template"], ["Create template"]),
-        (["view_activity"], [], ["Create template", "Select template"]),
-        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Select template"], []),
+        # Choose template, Create template, Explore
+        (["view_activity", "manage_templates", "send_messages"], ["Choose template", "Explore"], ["Create template"]),
+        (["view_activity", "manage_templates"], ["Choose template", "Explore"], ["Create template"]),
+        (["view_activity", "send_messages"], ["Choose template"], ["Create template", "Explore"]),
+        (["view_activity"], [], ["Create template", "Choose template", "Explore"]),
     ],
 )
-def test_task_shortcuts_are_visible_based_on_permissions(
+def test_task_shortcuts_are_visible_based_on_permissions_with_templates(
     client_request: ClientRequest,
     active_user_with_permissions,
     mock_get_service_templates,
@@ -144,6 +151,7 @@ def test_task_shortcuts_are_visible_based_on_permissions(
     permissions: list,
     text_in_page: list,
     text_not_in_page: list,
+    app_,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
     client_request.login(active_user_with_permissions)
@@ -161,26 +169,28 @@ def test_task_shortcuts_are_visible_based_on_permissions(
 
 
 @pytest.mark.parametrize(
-    "admin_url, is_widget_present",
+    "permissions, text_in_page, text_not_in_page",
     [
-        ("http://localhost:6012", True),
-        ("https://staging.notification.cdssandbox.xyz", True),
-        ("https://notification.canada.ca", True),
+        # Choose template, Create template, Explore
+        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Explore"], ["Choose template"]),
+        (["view_activity", "manage_templates"], ["Create template", "Explore"], ["Choose template"]),
+        (["view_activity", "send_messages"], [], ["Create template", "Choose template", "Explore"]),
+        (["view_activity"], [], ["Create template", "Choose template", "Explore"]),
     ],
 )
-def test_survey_widget_presence(
+def test_task_shortcuts_are_visible_based_on_permissions_with_no_templates(
     client_request: ClientRequest,
     active_user_with_permissions,
-    mock_get_service_templates,
+    mock_get_service_templates_when_no_templates_exist,
     mock_get_jobs,
     mock_get_template_statistics,
     mock_get_service_statistics,
-    mocker,
-    admin_url,
-    is_widget_present,
+    permissions: list,
+    text_in_page: list,
+    text_not_in_page: list,
+    app_,
 ):
-    mocker.patch.dict("app.current_app.config", values={"ADMIN_BASE_URL": admin_url})
-    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "manage_templates"]
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
     client_request.login(active_user_with_permissions)
 
     page = client_request.get(
@@ -188,8 +198,11 @@ def test_survey_widget_presence(
         service_id=SERVICE_ONE_ID,
     )
 
-    widget = page.select_one("#ZN_2nHmsSE63l43P0y")  # find by the qualtrics survey ID
-    assert bool(widget) == is_widget_present
+    for text in text_in_page:
+        assert text in page.text
+
+    for text in text_not_in_page:
+        assert text not in page.text
 
 
 def test_sending_link_has_query_param(
@@ -301,7 +314,7 @@ def test_should_show_monthly_breakdown_of_template_usage(
 ):
     page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, **extra_args)
 
-    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016)
+    mock_get_monthly_template_usage.assert_called_once_with(SERVICE_ONE_ID, 2016, page=1, page_size=50)
 
     table_rows = page.select("tbody tr")
 
@@ -311,10 +324,83 @@ def test_should_show_monthly_breakdown_of_template_usage(
     assert len(page.select(".table-no-data")) == len(["May", "June", "July"])
 
 
+def test_template_usage_shows_pagination_links(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 1,
+            "page_size": 50,
+            "links": {"next": "page 2"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".next-page") is not None
+    assert nav.select_one(".previous-page") is None
+
+
+def test_template_usage_page_2_shows_prev_link(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_monthly_template_usage_for_service",
+        return_value={
+            "data": [
+                {
+                    "template_id": fake_uuid,
+                    "month": 4,
+                    "year": 2016,
+                    "count": 5,
+                    "name": "Template",
+                    "type": "sms",
+                }
+            ],
+            "total": 75,
+            "page": 2,
+            "page_size": 50,
+            "links": {"prev": "page 1"},
+        },
+    )
+
+    page = client_request.get("main.template_usage", service_id=SERVICE_ONE_ID, page=2)
+
+    nav = page.select_one(".previous-and-next-navigation")
+    assert nav is not None
+    assert nav.select_one(".previous-page") is not None
+    assert nav.select_one(".next-page") is None
+
+
 def test_anyone_can_see_monthly_breakdown(
-    client, api_user_active, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client,
+    api_user_active,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     validate_route_permission_with_client(
         mocker,
         client,
@@ -327,16 +413,34 @@ def test_anyone_can_see_monthly_breakdown(
     )
 
 
+@pytest.mark.parametrize(
+    "use_billable_units, expected_sms_label",
+    [
+        (True, "text message parts"),
+        (False, "text messages"),
+    ],
+)
 def test_monthly_shows_letters_in_breakdown(
-    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    app_,
+    use_billable_units,
+    expected_sms_label,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
-    page = client_request.get("main.monthly", service_id=service_one["id"])
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", use_billable_units):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
 
     columns = page.select(".table-field-left-aligned .big-number-label")
 
     assert normalize_spaces(columns[2].text) == "emails"
-    assert normalize_spaces(columns[3].text) == "text messages"
+    assert normalize_spaces(columns[3].text) == expected_sms_label
 
 
 @pytest.mark.parametrize(
@@ -355,25 +459,149 @@ def test_stats_pages_show_last_3_years(
     mock_get_monthly_notification_stats,
     mock_get_monthly_template_usage,
     mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     page = client_request.get(
         endpoint,
         service_id=SERVICE_ONE_ID,
     )
 
     assert normalize_spaces(page.select_one(".pill").text) == (
-        "2012 to 2013 fiscal year " "2013 to 2014 fiscal year " "2014 to 2015 fiscal year"
+        "2012 to 2013 fiscal year 2013 to 2014 fiscal year 2014 to 2015 fiscal year"
     )
 
 
 def test_monthly_has_equal_length_tables(
-    client_request, service_one, mocker, mock_get_monthly_notification_stats, mock_get_service_statistics
+    client_request,
+    service_one,
+    mocker,
+    mock_get_monthly_notification_stats,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
 ):
     mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts", return_value={"data": service_one})
+    mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
     page = client_request.get("main.monthly", service_id=service_one["id"])
 
     assert page.select_one(".table-field-headings th")["style"] == "width: 33%"
+
+
+@freeze_time("2024-04-30 12:00:00")
+def test_monthly_shows_sms_billable_units_when_ff_enabled(
+    client_request,
+    service_one,
+    mocker,
+    mock_get_service_statistics,
+    app_,
+):
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    mocker.patch(
+        "app.service_api_client.get_monthly_notification_stats",
+        return_value={
+            "data": {
+                "2024-04": {
+                    "email": {"sending": 5, "delivered": 95},
+                    "sms": {"sending": 10, "delivered": 90},
+                    "letter": {},
+                }
+            }
+        },
+    )
+    # Redis is seeded with fiscal-year-to-yesterday totals (billable units for SMS).
+    # Daily delivered/failed counts are 0 (no new messages in the current period beyond yesterday).
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+        return_value={
+            "sms_delivered": 0,
+            "sms_failed": 0,
+            "email_delivered": 0,
+            "email_failed": 0,
+            "total_sms_billable_units_fiscal_year_to_yesterday": 225,
+            "total_email_fiscal_year_to_yesterday": 100,
+        },
+    )
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.was_seeded_today",
+        return_value=True,
+    )
+    # _get_daily_stats calls template_statistics_client; return empty list (no new messages today)
+    mocker.patch(
+        "app.template_statistics_client.get_template_statistics_for_service",
+        return_value=[],
+    )
+    mocker.patch(
+        "app.billing_api_client.get_billable_units",
+        return_value=[
+            {"month": "April", "notification_type": "sms", "rate": 0.0165, "billing_units": 150, "postage": "none"},
+            {"month": "April", "notification_type": "sms", "rate": 0.0165, "billing_units": 75, "postage": "none"},
+        ],
+    )
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True), set_config(app_, "REDIS_ENABLED", True):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    email_count = page.select_one('[data-testid="monthly-email-count"]')
+    sms_count = page.select_one('[data-testid="monthly-sms-count"]')
+
+    # Email column should still show requested count (100)
+    assert normalize_spaces(email_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(email_count.select_one(".big-number-label").text) == "emails"
+
+    # SMS column should show billable units (150 + 75 = 225), not requested count (100)
+    assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "225"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text message parts"
+
+    # Annual overview box for SMS should also show billable units total (225), not notification count (100).
+    # This is calculated identically to the dashboard: Redis fiscal-year-to-yesterday + today's template stats.
+    sms_annual_box = page.select_one('[data-testid="annual-sms-overview"]')
+    assert normalize_spaces(sms_annual_box.find(class_="rm-used").text) == "225"
+
+
+@freeze_time("2024-04-30 12:00:00")
+def test_monthly_shows_sms_requested_count_when_ff_disabled(
+    client_request,
+    service_one,
+    mocker,
+    mock_get_service_statistics,
+    app_,
+):
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    mocker.patch(
+        "app.service_api_client.get_monthly_notification_stats",
+        return_value={
+            "data": {
+                "2024-04": {
+                    "email": {"sending": 5, "delivered": 95},
+                    "sms": {"sending": 10, "delivered": 90},
+                    "letter": {},
+                }
+            }
+        },
+    )
+    mocker.patch(
+        "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+        return_value={"sms_delivered": 0, "sms_failed": 0, "email_delivered": 0, "email_failed": 0},
+    )
+    mock_billing = mocker.patch("app.billing_api_client.get_billable_units")
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+        page = client_request.get("main.monthly", service_id=service_one["id"])
+
+    # billing_api_client.get_billable_units should NOT be called when FF is disabled
+    mock_billing.assert_not_called()
+
+    email_count = page.select_one('[data-testid="monthly-email-count"]')
+    sms_count = page.select_one('[data-testid="monthly-sms-count"]')
+
+    # Email column shows requested count (100)
+    assert normalize_spaces(email_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(email_count.select_one(".big-number-label").text) == "emails"
+
+    # SMS column shows requested count (100), not billable units
+    assert normalize_spaces(sms_count.select_one(".big-number-number").text) == "100"
+    assert normalize_spaces(sms_count.select_one(".big-number-label").text) == "text messages"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -392,9 +620,9 @@ def test_should_show_upcoming_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    second_call = mock_get_jobs.call_args_list[1]
-    assert second_call[0] == (SERVICE_ONE_ID,)
-    assert second_call[1]["statuses"] == ["scheduled"]
+    first_call = mock_get_jobs.call_args_list[0]
+    assert first_call[0] == (SERVICE_ONE_ID,)
+    assert first_call[1]["statuses"] == ["scheduled"]
 
     table_rows = page.find_all("tbody")[0].find_all("tr")
     assert len(table_rows) == 2
@@ -446,7 +674,7 @@ def test_daily_usage_section_shown(
                 "email": {"requested": 1000000000, "delivered": 0, "failed": 0},
                 "sms": {"requested": 1000000, "delivered": 0, "failed": 0},
             },
-            ".big-number-dark",
+            ".big-number",
             3,
         ),
     ],
@@ -603,10 +831,10 @@ def test_should_show_recent_jobs_on_dashboard(
         service_id=SERVICE_ONE_ID,
     )
 
-    third_call = mock_get_jobs.call_args_list[2]
-    assert third_call[0] == (SERVICE_ONE_ID,)
-    assert third_call[1]["limit_days"] == 7
-    assert "scheduled" not in third_call[1]["statuses"]
+    second_call = mock_get_jobs.call_args_list[1]
+    assert second_call[0] == (SERVICE_ONE_ID,)
+    assert second_call[1]["limit_days"] == 7
+    assert "scheduled" not in second_call[1]["statuses"]
 
     table_rows = page.find_all("tbody")[2].find_all("tr")
 
@@ -1041,6 +1269,117 @@ def test_aggregate_notifications_stats():
     }
 
 
+def test_aggregate_template_stats_with_billable_units():
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    # When the API returns both count and billable_units, we use count for display
+    stub_template_stats_with_billable_units = [
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "created",
+            "count": 20,  # 20 messages
+            "billable_units": 60,  # 60 billable units (3x for long SMS)
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "created",
+            "count": 100,
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "technical-failure",
+            "count": 100,
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "delivered",
+            "count": 10,  # 10 messages
+            "billable_units": 40,  # 40 billable units
+            "is_precompiled_letter": False,
+        },
+    ]
+    expected = aggregate_template_usage(stub_template_stats_with_billable_units)
+    assert len(expected) == 2
+    assert expected[0]["template_name"] == "two"
+    assert expected[0]["count"] == 200  # Sum of count (not billable_units) for template_id id-2
+    assert expected[0]["template_id"] == "id-2"
+    assert expected[0]["template_type"] == "email"
+    assert expected[1]["template_name"] == "one"
+    assert expected[1]["count"] == 30  # Sum of count (20 + 10, not 60 + 40) for template_id id-1
+    assert expected[1]["template_id"] == "id-1"
+    assert expected[1]["template_type"] == "sms"
+
+
+def test_aggregate_notifications_stats_with_billable_units():
+    # TODO FF_USE_BILLABLE_UNITS removal - Remove this test when feature flag is removed
+    # When the API returns both count and billable_units:
+    # - use_billable_units=False uses count for display (messages sent)
+    # - use_billable_units=True uses billable_units for limit tracking
+    stub_template_stats_with_billable_units = [
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "created",
+            "count": 20,  # 20 messages
+            "billable_units": 60,  # 60 billable units (3x for long SMS)
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "created",
+            "count": 100,
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "email",
+            "template_name": "two",
+            "template_id": "id-2",
+            "status": "technical-failure",
+            "count": 100,
+            "billable_units": 100,
+            "is_precompiled_letter": False,
+        },
+        {
+            "template_type": "sms",
+            "template_name": "one",
+            "template_id": "id-1",
+            "status": "delivered",
+            "count": 10,  # 10 messages
+            "billable_units": 40,  # 40 billable units
+            "is_precompiled_letter": False,
+        },
+    ]
+    # Test with use_billable_units=False (for display)
+    expected_with_count = aggregate_notifications_stats(stub_template_stats_with_billable_units, use_billable_units=False)
+    assert expected_with_count == {
+        "sms": {"requested": 30, "delivered": 10, "failed": 0},  # Uses count (20 + 10)
+        "email": {"requested": 200, "delivered": 0, "failed": 100},
+    }
+
+    # Test with use_billable_units=True (for limits)
+    expected_with_billable = aggregate_notifications_stats(stub_template_stats_with_billable_units, use_billable_units=True)
+    assert expected_with_billable == {
+        "sms": {"requested": 100, "delivered": 40, "failed": 0},  # Uses billable_units (60 + 40)
+        "email": {"requested": 200, "delivered": 0, "failed": 100},
+    }
+
+
 def test_service_dashboard_updates_gets_dashboard_totals(
     mocker,
     client_request,
@@ -1418,18 +1757,17 @@ class TestAnnualLimits:
         mock_get_usage,
         app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            mocker.patch(
-                "app.template_statistics_client.get_template_statistics_for_service",
-                return_value=copy.deepcopy(stub_template_stats),
-            )
+        mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
 
-            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-            response = logged_in_client.get(url)
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+        response = logged_in_client.get(url)
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-            # ensure both email + sms widgets are muted
-            assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
+        # ensure both email + sms widgets are muted
+        assert len(page.select("[data-testid='daily-usage'] .remaining-messages.muted")) == 2
 
     def test_annual_usage_uses_muted_component(
         self,
@@ -1441,18 +1779,17 @@ class TestAnnualLimits:
         mock_get_usage,
         app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            mocker.patch(
-                "app.template_statistics_client.get_template_statistics_for_service",
-                return_value=copy.deepcopy(stub_template_stats),
-            )
+        mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=copy.deepcopy(stub_template_stats),
+        )
 
-            url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
-            response = logged_in_client.get(url)
-            page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+        url = url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+        response = logged_in_client.get(url)
+        page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
 
-            # ensure both email + sms widgets are muted
-            assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
+        # ensure both email + sms widgets are muted
+        assert len(page.select("[data-testid='annual-usage'] .remaining-messages.muted")) == 2
 
     @freeze_time("2024-11-25 12:12:12")
     @pytest.mark.parametrize(
@@ -1510,26 +1847,34 @@ class TestAnnualLimits:
         monthly_data,
         expected_data,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            # mock annual_limit_client.get_all_notification_counts
-            mocker.patch(
-                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value=redis_daily_data,
-            )
+        # mock annual_limit_client.get_all_notification_counts
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value=redis_daily_data,
+        )
 
-            mocker.patch(
-                "app.service_api_client.get_monthly_notification_stats",
-                return_value=copy.deepcopy(monthly_data),
-            )
+        mocker.patch(
+            "app.service_api_client.get_monthly_notification_stats",
+            return_value=copy.deepcopy(monthly_data),
+        )
+        mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
 
-            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
-            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        # Disable FF so the billing units override doesn't affect this aggregation test
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
             logged_in_client.get(url)
 
-            mock_render_template.assert_called_with(
-                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-            )
+        mock_render_template.assert_called_with(
+            ANY,
+            months=ANY,
+            years=ANY,
+            annual_data=expected_data,
+            selected_year=ANY,
+            current_financial_year=ANY,
+            use_billable_units=ANY,
+        )
 
     @freeze_time("2024-11-25 12:12:12")
     @pytest.mark.parametrize(
@@ -1578,28 +1923,361 @@ class TestAnnualLimits:
         monthly_data,
         expected_data,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            # mock annual_limit_client.get_all_notification_counts
-            mocker.patch(
-                "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
-                return_value={"sms_delivered": 0, "email_delivered": 0, "sms_failed": 0, "email_failed": 0},
-            )
+        # mock annual_limit_client.get_all_notification_counts
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value={"sms_delivered": 0, "email_delivered": 0, "sms_failed": 0, "email_failed": 0},
+        )
 
-            mocker.patch(
-                "app.service_api_client.get_service_statistics",
-                return_value=copy.deepcopy(daily_data),
-            )
+        mocker.patch(
+            "app.service_api_client.get_service_statistics",
+            return_value=copy.deepcopy(daily_data),
+        )
 
-            mocker.patch(
-                "app.service_api_client.get_monthly_notification_stats",
-                return_value=copy.deepcopy(monthly_data),
-            )
+        mocker.patch(
+            "app.service_api_client.get_monthly_notification_stats",
+            return_value=copy.deepcopy(monthly_data),
+        )
+        mocker.patch("app.billing_api_client.get_billable_units", return_value=[])
 
-            mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
+        mock_render_template = mocker.patch("app.main.views.dashboard.render_template")
 
-            url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        url = url_for("main.monthly", service_id=SERVICE_ONE_ID)
+        # Disable FF so the billing units override doesn't affect this aggregation test
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
             logged_in_client.get(url)
 
-            mock_render_template.assert_called_with(
-                ANY, months=ANY, years=ANY, annual_data=expected_data, selected_year=ANY, current_financial_year=ANY
-            )
+        mock_render_template.assert_called_with(
+            ANY,
+            months=ANY,
+            years=ANY,
+            annual_data=expected_data,
+            selected_year=ANY,
+            current_financial_year=ANY,
+            use_billable_units=ANY,
+        )
+
+
+class TestGetAnnualData:
+    @pytest.fixture
+    def mock_service_id(self):
+        return "service-id-12345"
+
+    @pytest.fixture
+    def mock_dashboard_totals_daily(self):
+        """Dashboard totals fixture for daily statistics"""
+        return {
+            "sms": {"requested": 10, "failed": 2, "failed_percentage": "20.0%", "show_warning": True},
+            "email": {"requested": 20, "failed": 1, "failed_percentage": "5.0%", "show_warning": True},
+        }
+
+    @pytest.mark.parametrize(
+        "redis_enabled,was_seeded_today",
+        [
+            (False, True),  # Redis not enabled
+            (True, False),  # Redis enabled but not seeded today
+        ],
+    )
+    def test_get_annual_data_when_redis_not_available_REMOVE_FF(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, redis_enabled, was_seeded_today, app_
+    ):
+        """Test getting annual data when Redis is not enabled or not seeded today"""
+        # Configure mocks
+        with app_.app_context():
+            mocker.patch.dict("app.main.views.dashboard.current_app.config", {"REDIS_ENABLED": redis_enabled})
+        mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+        mock_annual_limit_client.was_seeded_today.return_value = was_seeded_today
+
+        mock_annual_data = {
+            "data": {
+                "2023-04": {
+                    "sms": {"requested": 30, "delivered": 28, "failed": 2},
+                    "email": {"requested": 40, "delivered": 38, "failed": 2},
+                }
+            }
+        }
+        mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+        # get_annual_limit_stats is now always tried first in get_annual_data_api;
+        # returning None forces the fallback to monthly stats
+        mock_service_api_client.get_annual_limit_stats.return_value = None
+        mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
+
+        # Mock the aggregate function and current financial year
+        mock_aggregate = mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
+        mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
+
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+            # Call function
+            result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+            # get_annual_limit_stats is tried first
+            mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
+
+            # Falls back to monthly stats when get_annual_limit_stats returns None
+            mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
+
+            # Check aggregate function was called
+            mock_aggregate.assert_called_once_with(mock_annual_data, mock_dashboard_totals_daily)
+
+            # Verify result
+            assert result == {"sms": 40, "email": 60}
+
+    def test_get_annual_data_from_redis(self, mocker, mock_service_id, mock_dashboard_totals_daily, app_):
+        """Test getting annual data from Redis when enabled and seeded"""
+        with app_.app_context():
+            # Configure mocks
+            mocker.patch.dict("app.main.views.dashboard.current_app.config", {"REDIS_ENABLED": True})
+            mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+            mock_annual_limit_client.was_seeded_today.return_value = True
+            # Mock returns both standard and billable units keys when FF_USE_BILLABLE_UNITS is enabled
+            mock_annual_limit_client.get_all_notification_counts.return_value = {
+                "total_sms_fiscal_year_to_yesterday": 100,
+                "total_sms_billable_units_fiscal_year_to_yesterday": 100,  # Include billable units
+                "total_email_fiscal_year_to_yesterday": 200,
+            }
+
+            # Mock the service API client (shouldn't be called)
+            mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+
+            # Call function
+            result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+            # Check was_seeded_today was called
+            mock_annual_limit_client.was_seeded_today.assert_called_once_with(mock_service_id)
+
+            # Check get_all_notification_counts was called
+            mock_annual_limit_client.get_all_notification_counts.assert_called_once_with(mock_service_id)
+
+            # Check service_api_client was not called
+            mock_service_api_client.get_monthly_notification_stats.assert_not_called()
+
+            # Verify result combines Redis data with daily totals
+            assert result == {
+                "sms": mock_dashboard_totals_daily["sms"]["requested"] + 100,  # 10 + 100 = 110
+                "email": mock_dashboard_totals_daily["email"]["requested"] + 200,  # 20 + 200 = 220
+            }
+
+    def test_aggregate_by_type_daily(self, mock_dashboard_totals_daily, app_):
+        """Test that aggregate_by_type_daily correctly aggregates data"""
+        with app_.app_context():
+            # Sample input data structure
+            annual_data = {
+                "data": {
+                    "2023-04": {
+                        "sms": {"requested": 30, "delivered": 28, "failed": 2},
+                        "email": {"requested": 40, "delivered": 38, "failed": 2},
+                    },
+                    "2023-05": {
+                        "sms": {"requested": 50, "delivered": 48, "failed": 2},
+                        "email": {"requested": 60, "delivered": 58, "failed": 2},
+                        "letter": {"requested": 10, "delivered": 10},
+                    },
+                }
+            }
+
+            # Call the function
+            result = aggregate_by_type_daily(annual_data, mock_dashboard_totals_daily)
+
+            # Get the actual values from the output for more readable assertion errors
+            actual_sms = result["sms"]
+            actual_email = result["email"]
+
+            # In the function, all values in the dictionary are summed - not just 'requested'
+            # So each SMS message type has requested + delivered + failed values summed
+            expected_sms = 30 + 28 + 2 + 50 + 48 + 2 + 10  # From daily_data
+            expected_email = 40 + 38 + 2 + 60 + 58 + 2 + 20  # From daily_data
+
+            # Check individual values - note that these values are higher because all status types are summed
+            assert actual_sms == expected_sms, f"Expected SMS count to be {expected_sms}, got {actual_sms}"
+            assert actual_email == expected_email, f"Expected email count to be {expected_email}, got {actual_email}"
+
+            # Finally check the whole dictionary
+            assert result == {
+                "sms": expected_sms,  # All SMS values summed + daily data
+                "email": expected_email,  # All email values summed + daily data
+            }
+
+
+def test_new_badge_on_dashboard_when_no_templates(
+    client_request: ClientRequest,
+    mock_get_service_templates_when_no_templates_exist,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    app_,
+):
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+    assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
+
+
+def test_new_badge_on_dashboard_when_some_templates(
+    client_request: ClientRequest,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    app_,
+):
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+    assert len(page.select("[data-testid='dashboard-sample-library-badge']")) == 1
+
+
+class TestGetAnnualDataWithBillableUnits:
+    """Tests for get_annual_data with FF_USE_BILLABLE_UNITS feature flag"""
+
+    @pytest.fixture
+    def mock_service_id(self):
+        return "service-id-12345"
+
+    @pytest.fixture
+    def mock_dashboard_totals_daily(self):
+        """Dashboard totals fixture for daily statistics"""
+        return {
+            "sms": {"requested": 10, "failed": 2, "failed_percentage": "20.0%", "show_warning": True},
+            "email": {"requested": 20, "failed": 1, "failed_percentage": "5.0%", "show_warning": True},
+        }
+
+    def test_get_annual_data_uses_billable_units_when_ff_enabled(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Test that billable units are used instead of standard SMS counts when FF is enabled"""
+        with app_.app_context():
+            # Configure mocks with feature flag enabled
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = True
+                    mock_annual_limit_client.get_all_notification_counts.return_value = {
+                        "total_sms_fiscal_year_to_yesterday": 100,  # Standard count
+                        "total_sms_billable_units_fiscal_year_to_yesterday": 300,  # Billable units (3x for multi-part messages)
+                        "total_email_fiscal_year_to_yesterday": 200,
+                    }
+
+                    # Call function
+                    result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # Verify result uses billable units (300) instead of standard count (100)
+                    assert result == {
+                        "sms": 310,  # 10 (daily) + 300 (billable units from Redis)
+                        "email": 220,  # 20 (daily) + 200 (from Redis)
+                    }
+
+    def test_get_annual_data_uses_standard_count_when_ff_disabled(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Test that standard SMS counts are used when FF is disabled"""
+        with app_.app_context():
+            # Configure mocks with feature flag disabled
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = True
+                    mock_annual_limit_client.get_all_notification_counts.return_value = {
+                        "total_sms_fiscal_year_to_yesterday": 100,  # Standard count
+                        "total_sms_billable_units_fiscal_year_to_yesterday": 300,  # Billable units
+                        "total_email_fiscal_year_to_yesterday": 200,
+                    }
+
+                    # Call function
+                    result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # Verify result uses standard count (100) not billable units (300)
+                    assert result == {
+                        "sms": 110,  # 10 (daily) + 100 (standard count from Redis)
+                        "email": 220,  # 20 (daily) + 200 (from Redis)
+                    }
+
+    def test_get_annual_data_calls_annual_limit_stats_when_not_seeded(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Test that get_annual_limit_stats is called (and its data used) when Redis is not seeded, regardless of FF"""
+        with app_.app_context():
+            # Configure mocks
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = False
+
+                    mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+                    # After seeding is triggered, subsequent call should return data
+                    mock_annual_limit_client.get_all_notification_counts.return_value = {
+                        "total_sms_fiscal_year_to_yesterday": 50,
+                        "total_sms_billable_units_fiscal_year_to_yesterday": 150,
+                        "total_email_fiscal_year_to_yesterday": 75,
+                    }
+
+                    # Call function
+                    get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # Verify seeding was triggered
+                    mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
+
+    def test_get_annual_data_falls_back_to_monthly_when_annual_limit_stats_returns_none(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Test that monthly stats is used as a last resort when get_annual_limit_stats returns None (FF disabled)"""
+        with app_.app_context():
+            # Configure mocks
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = False
+
+                    mock_annual_data = {
+                        "data": {
+                            "2023-04": {
+                                "sms": {"requested": 30},
+                                "email": {"requested": 40},
+                            }
+                        }
+                    }
+                    mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+                    # get_annual_limit_stats is now always tried first (regardless of FF);
+                    # returning None forces fallback to monthly stats
+                    mock_service_api_client.get_annual_limit_stats.return_value = None
+                    mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
+                    mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
+                    mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
+
+                    # Call function
+                    get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # get_annual_limit_stats is always tried first (unified path for FF=True and FF=False)
+                    mock_service_api_client.get_annual_limit_stats.assert_called_once_with(mock_service_id)
+                    # Falls back to monthly stats when get_annual_limit_stats returns None
+                    mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
+
+    def test_get_annual_data_api_fallback_when_seeding_fails_with_ff_enabled(
+        self, mocker, mock_service_id, mock_dashboard_totals_daily, app_
+    ):
+        """Test that system falls back to API when seeding fails with FF enabled"""
+        with app_.app_context():
+            # Configure mocks - seeding fails, forcing API fallback
+            with set_config(app_, "REDIS_ENABLED", True):
+                with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                    mock_annual_limit_client = mocker.patch("app.main.views.dashboard.annual_limit_client")
+                    mock_annual_limit_client.was_seeded_today.return_value = False
+
+                    mock_service_api_client = mocker.patch("app.main.views.dashboard.service_api_client")
+                    # Simulate seeding failure
+                    mock_service_api_client.get_annual_limit_stats.side_effect = Exception("Seeding failed")
+
+                    mock_annual_data = {
+                        "data": {
+                            "2023-04": {
+                                "sms": {"requested": 30},
+                                "email": {"requested": 40},
+                            }
+                        }
+                    }
+                    mock_service_api_client.get_monthly_notification_stats.return_value = mock_annual_data
+                    mocker.patch("app.main.views.dashboard.aggregate_by_type_daily", return_value={"sms": 40, "email": 60})
+                    mocker.patch("app.main.views.dashboard.get_current_financial_year", return_value=2023)
+
+                    # Call function
+                    result = get_annual_data(mock_service_id, mock_dashboard_totals_daily)
+
+                    # Verify it fell back to API
+                    mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
+            # Result should still be returned from API fallback
+            assert result == {"sms": 40, "email": 60}

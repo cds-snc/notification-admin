@@ -24,8 +24,10 @@ const fullPageList = [
     fr: "/maintenir-a-jour-les-coordonnees",
   },
   { en: "/using-a-spreadsheet", fr: "/utiliser-une-feuille-de-calcul" },
-  { en: "/why-gc-notify", fr: "/pourquoi-notification-gc" },
+  { en: "/by-and-for-gc", fr: "/par-et-pour-gc" },
   { en: "/new-features", fr: "/nouvelles-fonctionnalites" },
+  { en: "/getting-started", fr: "/decouvrir-notification-gc" },
+  { en: "/register-for-a-demo", fr: "/sinscrire-a-une-demo" },
   { en: "/terms", fr: "/terms" },
 ];
 

@@ -186,12 +186,12 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.update_service(service_id, **properties)
 
     @cache.delete("service-{service_id}")
-    def archive_service(self, service_id):
-        return self.post("/service/{}/archive".format(service_id), data=None)
+    def archive_service(self, service_id, user_id):
+        return self.post("/service/{}/archive/{}".format(service_id, user_id), data=None)
 
     @cache.delete("service-{service_id}")
-    def suspend_service(self, service_id):
-        return self.post("/service/{}/suspend".format(service_id), data=None)
+    def suspend_service(self, service_id, user_id):
+        return self.post("/service/{}/suspend/{}".format(service_id, user_id), data=None)
 
     @cache.delete("service-{service_id}")
     def resume_service(self, service_id):
@@ -219,6 +219,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         parent_folder_id=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Create a service template.
@@ -230,16 +231,15 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "service": service_id,
             "process_type": process_type,
             "template_category_id": template_category_id,
+            "text_direction_rtl": text_direction_rtl,
         }
-
-        # Move this into `data` dictionary above 👆 when FF_RTL removed
-        if current_app.config["FF_RTL"]:
-            data["text_direction_rtl"] = text_direction_rtl
 
         if subject:
             data.update({"subject": subject})
         if parent_folder_id:
             data.update({"parent_folder_id": parent_folder_id})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template".format(service_id)
         return self.post(endpoint, data)
@@ -258,6 +258,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         process_type=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Update a service template.
@@ -273,12 +274,10 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             "text_direction_rtl": text_direction_rtl,
         }
 
-        # Move this into `data` dictionary above 👆 when FF_RTL removed
-        if current_app.config["FF_RTL"]:
-            data["text_direction_rtl"] = text_direction_rtl
-
         if subject:
             data.update({"subject": subject})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
 
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)
@@ -406,6 +405,19 @@ class ServiceAPIClient(NotifyAdminAPIClient):
                 financial_year,
             )
         )
+
+    def get_annual_limit_stats(self, service_id: str):
+        """
+        Retrieve annual limit statistics from Redis for a specific service.
+        This endpoint will automatically seed Redis with billable units data if FF_USE_BILLABLE_UNITS is enabled.
+
+        Args:
+            service_id (str): UUID of the service to get statistics for
+
+        Returns:
+            dict: Annual limit statistics including notification counts and billable units (when FF enabled)
+        """
+        return self.get(url=f"/service/{service_id}/annual-limit-stats")
 
     def get_safelist(self, service_id):
         return self.get(url="/service/{}/safelist".format(service_id))

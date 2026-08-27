@@ -6,7 +6,8 @@
 {% macro tou_dialog() %}
 <dialog id="tou-dialog"
   class="focus:outline-yellow overflow-y-scroll max-w-screen-lg p-0 flex flex-col w-full border-4 border-gray-300"
-  data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}" tabindex="0">
+  data-testid="tou-dialog" data-error-prefix="{{ _('Terms of use:') }}" data-error-msg="{{ error_msg }}" tabindex="0"
+  aria-labelledby="tou-dialog-title" aria-modal="true" role="dialog">
   <div class="dialog-header bg-gray-200 flex items-baseline gap-gutter p-gutter py-2">
     <button id="tou-close"
       class="focus:bg-yellow focus:outline-yellow focus:text-black flex gap-2 items-center min-h-target min-w-target text-blue"
@@ -15,8 +16,8 @@
       {{ _('Close') }}
     </button>
   </div>
-  <div id="tou-terms" class="dialog-content p-gutter mb-4 focus:outline-none" tabindex="0" data-testid="tou-terms">
-    {{ terms_of_use() }}
+  <div id="tou-terms" class="dialog-content p-gutter mb-4 focus:outline-none" tabindex="0" data-testid="tou-terms" role="document">
+    {{ terms_of_use(title_id="tou-dialog-title") }}
   </div>
   <div class="dialog-sticky-footer p-gutterHalf items-baseline" data-testid="tou-instruction">
     <i aria-hidden="true" class="fa-solid fa-lg fa-circle-info"></i>
@@ -48,8 +49,8 @@
   {% endif %}
   <ul class="task-list mt-6">
     <li class="task-list-item">
-      <a href="#" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status"
-        data-testid="tou-dialog-trigger">{{ button_text }}</a>
+      <button type="button" class="font-bold" id="tou-dialog-trigger" aria-describedby="tou-status{% if is_in_error_state %} tou-error-message{% endif %}"
+        data-testid="tou-dialog-trigger">{{ button_text }}</button>
       <span id="tou-status">
         {{ task_list_item_complete('tou-complete', testid='tou-complete') }}
         {{ task_list_item_not_complete('tou-not-complete', testid='tou-not-complete') }}

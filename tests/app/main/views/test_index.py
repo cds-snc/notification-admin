@@ -1,10 +1,10 @@
 import pytest
-from bs4 import BeautifulSoup
-from flask import current_app, url_for
-
 from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
+from bs4 import BeautifulSoup
+from flask import current_app, url_for
+
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 services = [
@@ -97,6 +97,32 @@ def test_logged_in_user_redirects_to_choose_account(
     )
 
 
+def test_logged_in_user_can_see_newsletter_confirmation(
+    mocker,
+    client,
+    api_user_active,
+    mock_get_user,
+    mock_calls_out_to_GCA,
+):
+    """Test that authenticated users can see the home page with newsletter confirmation"""
+    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services[0]})
+    mocker.patch(
+        "app.service_api_client.get_stats_by_month",
+        return_value={"data": [("2020-11-01", "email", 20)]},
+    )
+
+    client.login(api_user_active)
+
+    response = client.get(url_for("main.index", subscribed="1", email="user@cds-snc.ca"))
+
+    # Should render the home page, not redirect
+    assert response.status_code == 200
+
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    # Verify it's the home page
+    assert page.select_one("#gc-title")
+
+
 def test_robots(client):
     assert url_for("main.robots") == "/robots.txt"
     response = client.get(url_for("main.robots"))
@@ -119,7 +145,7 @@ def test_security_txt(client):
     security_policy = gca_url_for("security", _external=True)
 
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",
@@ -131,8 +157,6 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "pricing",
-        "roadmap",
         "email",
         "sms",
         "letters",
@@ -146,6 +170,14 @@ def test_static_pages(
 ):
     page = client_request.get("main.{}".format(view))
     assert not page.select_one("meta[name=description]")
+
+
+def test_pricing_page_requires_platform_admin(
+    platform_admin_client,
+    mock_get_organisation_by_domain,
+):
+    response = platform_admin_client.get(url_for("main.pricing"))
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -183,43 +215,8 @@ def test_activity_page(mocker, client, stats, services):
 
 
 @pytest.mark.parametrize(
-    "stats, services",
-    [
-        (
-            [  # Heartbeat's filtered
-                ("2020-11-01", "email", 20),
-                ("2020-11-01", "sms", 20),
-            ],
-            [
-                services[0],
-            ],
-        ),
-        (
-            [  # Heartbeat's not filtered
-                ("2020-11-01", "email", 170),
-                ("2020-11-01", "sms", 150),
-            ],
-            services,
-        ),
-    ],
-)
-def test_home_page_displays_activity(mocker, client, stats, services):
-    mocker.patch("app.service_api_client.get_live_services_data", return_value={"data": services})
-    mocker.patch(
-        "app.service_api_client.get_stats_by_month",
-        return_value={"data": stats},
-    )
-    response = client.get(url_for("main.index"))
-    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
-    assert response.status_code == 200
-    assert page.select("[data-test-id='count-services']")[0].text == str(len(services))
-    assert page.select("[data-test-id='count-notifications']")[0].text == str(sum(x[2] for x in stats))
-
-
-@pytest.mark.parametrize(
     "view, expected_view",
     [
-        ("redirect_roadmap", "roadmap"),
         ("redirect_email", "email"),
         ("redirect_sms", "sms"),
         ("redirect_letters", "letters"),
@@ -259,8 +256,8 @@ def test_terms_page_has_correct_content(client_request):
     "css_file_start",
     [
         "http://localhost:6012/static/stylesheets/index.css",
-        "https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap",
-        "https://fonts.googleapis.com/css?",
+        "https://fonts.googleapis.com/css2?family=Lato:wght@700",
+        "https://fonts.googleapis.com/css2?",
     ],
 )
 def test_css_is_served_from_correct_path(client_request, css_file_start):

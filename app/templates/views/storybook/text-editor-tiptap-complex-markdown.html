@@ -1,0 +1,15 @@
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
+
+<h2 class="heading-medium">
+  Tiptap Editor — Complex Markdown
+</h2>
+
+<label class="form-label" id="tiptap-editor-complex-label">Template content (complex)</label>
+
+{# Use the combined fixture value injected by the view when available. #}
+{{ tiptap_editor(
+  'tiptap-editor-complex',
+  'tiptap-editor-complex-label',
+  complex_markdown if complex_markdown else '## Complex sample not available\n\nAdd markdown fixtures to tests_cypress to populate this.'
+) }}
+

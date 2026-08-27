@@ -16,15 +16,23 @@
     {% if current_user.has_permissions('send_messages', restrict_admin_usage=True) %}
       <h2 class="heading-medium">{{ heading }}</h2>
 
-      {% if config["FF_ANNUAL_LIMIT"] %}
-        {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0) }}
-      {% endif %}
-      {% if not config["FF_ANNUAL_LIMIT"] or (yearlyRemaining > 0 and dailyRemaining > 0) %}
+      {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0, verbose=True, use_billable_units=config["FF_USE_BILLABLE_UNITS"]) }}
+      {% if yearlyRemaining > 0 and dailyRemaining > 0 %}
         <div class="mb-12 mt-12" data-testid="send-buttons">
           <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
             {{ _('Yes, add recipients') }}
           </a>
-          <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary">{{ _('No, send yourself this message') }}</a>
+          {% if template.template_type == 'sms' %}
+            {% if not current_user.mobile_number %}
+              <a href="{{ url_for('.user_profile_mobile_number', from_send_page='send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary" data-testid="send-test">{{ _('No, send yourself this message') }}</a>
+            {% elif not current_user.verified_phonenumber %}
+              <a href="{{ url_for('.verify_mobile_number_send', from_send_page='send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary" data-testid="send-test">{{ _('No, send yourself this message') }}</a>
+            {% else %}
+              <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary" data-testid="send-test">{{ _('No, send yourself this message') }}</a>
+            {% endif %}
+          {% else %}
+            <a href="{{ url_for('.send_test', service_id=current_service.id, template_id=template.id) }}" class="button button-secondary">{{ _('No, send yourself this message') }}</a>
+          {% endif %}
         </div>
       {% endif %}
     {% elif current_user.platform_admin %}

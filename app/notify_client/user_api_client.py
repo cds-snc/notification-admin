@@ -1,5 +1,6 @@
 import hashlib
 import os
+from contextlib import suppress
 from datetime import datetime, timedelta
 from typing import Dict
 
@@ -11,7 +12,17 @@ from app.models.roles_and_permissions import (
 )
 from app.notify_client import NotifyAdminAPIClient, cache
 
-ALLOWED_ATTRIBUTES = {"name", "email_address", "mobile_number", "auth_type", "updated_by", "blocked", "password_expired"}
+ALLOWED_ATTRIBUTES = {
+    "name",
+    "email_address",
+    "mobile_number",
+    "auth_type",
+    "verified_phonenumber",
+    "updated_by",
+    "blocked",
+    "password_expired",
+    "default_editor_is_rte",
+}
 
 
 class UserApiClient(NotifyAdminAPIClient):
@@ -30,6 +41,7 @@ class UserApiClient(NotifyAdminAPIClient):
             "mobile_number": mobile_number,
             "password": password,
             "auth_type": auth_type,
+            "default_editor_is_rte": True,
         }
         user_data = self.post("/user", data)
         return user_data["data"]
@@ -162,6 +174,17 @@ class UserApiClient(NotifyAdminAPIClient):
                 return False, e.message
             raise e
 
+    def validate_2fa_method(self, user_id, code, code_type):
+        data = {"code_type": code_type, "code": code}
+        endpoint = "/user/{}/verify-2fa".format(user_id)
+        try:
+            self.post(endpoint, data=data)
+            return True, ""
+        except HTTPError as e:
+            if e.status_code == 400 or e.status_code == 404:
+                return False, e.message
+            raise e
+
     def get_users_for_service(self, service_id):
         endpoint = "/service/{}/users".format(service_id)
         return self.get(endpoint)["data"]
@@ -239,9 +262,9 @@ class UserApiClient(NotifyAdminAPIClient):
         endpoint = "/user/{}/fido2_keys/register".format(user_id)
         return self.post(endpoint, {})
 
-    def add_security_key_user(self, user_id, payload):
+    def add_security_key_user(self, user_id, name, credential):
         endpoint = "/user/{}/fido2_keys".format(user_id)
-        data = {"payload": payload}
+        data = {"name": name, "credential": credential}
         return self.post(endpoint, data)
 
     def delete_security_key_user(self, user_id, key):
@@ -253,9 +276,9 @@ class UserApiClient(NotifyAdminAPIClient):
         return self.post(endpoint, {})
 
     @cache.delete("user-{user_id}")
-    def validate_security_keys(self, user_id, payload):
+    def validate_security_keys(self, user_id, credential):
         endpoint = "/user/{}/fido2_keys/validate".format(user_id)
-        data = {"payload": payload}
+        data = {"credential": credential}
         return self.post(endpoint, data)
 
     def get_login_events_for_user(self, user_id):
@@ -282,6 +305,59 @@ class UserApiClient(NotifyAdminAPIClient):
 
     def _create_message_digest(self, password):
         return hashlib.sha256((password + os.getenv("DANGEROUS_SALT")).encode("utf-8")).hexdigest()
+
+    @cache.delete("user-{user_id}")
+    def deactivate_user(self, user_id):
+        """This function sends an api request to deactivate a user account. The API suspends
+        services that now have 1 member and deactivates services that now have 0 members.
+        We delete certain redis data so that these service changes are visible immediately
+        """
+
+        endpoint = f"/user/{user_id}/deactivate"
+        api_response = self.post(endpoint, {})
+
+        # try to get the list of services that were affected by the deactivate call
+        service_ids = []
+        try:
+            # preferred: backend includes explicit list of suspended services
+            if isinstance(api_response, dict):
+                data = api_response.get("data") or api_response
+                if isinstance(data, dict) and data.get("services_suspended"):
+                    service_ids = data.get("services_suspended") or []
+
+            # fallback: query organisations and services for the user
+            if not service_ids:
+                try:
+                    orgs_and_services = self.get_organisations_and_services_for_user(user_id)
+                    if orgs_and_services and orgs_and_services.get("data"):
+                        for org in orgs_and_services["data"]:
+                            for service in org.get("services", []):
+                                sid = service.get("id")
+                                if sid:
+                                    service_ids.append(sid)
+                except Exception:
+                    # don't fail suspend if the lookup fails; best-effort cache invalidation
+                    service_ids = []
+
+            # delete related cache keys for affected services
+            for sid in set(service_ids):
+                try:
+                    # delete specific known keys
+                    redis_client.delete(
+                        f"service-{sid}",
+                        f"service-{sid}-templates",
+                        f"service-{sid}-template-folders",
+                        f"service-{sid}-data-retention",
+                    )
+                except Exception:
+                    # if delete of specific keys fails, try pattern delete as a fallback
+                    with suppress(Exception):
+                        redis_client.delete_cache_keys_by_pattern(f"service-{sid}*")
+        except Exception:
+            # anything went wrong in the cache invalidation path - don't block the suspend
+            pass
+
+        return api_response
 
 
 user_api_client = UserApiClient()

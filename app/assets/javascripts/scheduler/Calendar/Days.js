@@ -11,6 +11,7 @@ export const Days = ({ week }) => {
         <span
           key={yearMonthDay(day)}
           className="Calendar-item Calendar-item--empty"
+          tabIndex={-1}
         ></span>
       );
     }

@@ -1,4 +1,5 @@
-const { recurse } = require('cypress-recurse')
+import RegisterPage from "./RegisterPage";
+import { recurse } from 'cypress-recurse';
 
 
 let Components = {
@@ -51,6 +52,8 @@ let Actions = {
         Components.EmailAddress().type(email);
         Components.MobileNumber().type(mobile);
         Components.Password().type(password);
+        RegisterPage.Components.TOUTrigger().click();
+        RegisterPage.AgreeToTerms();
         Components.SubmitButton().click();
     }
 };

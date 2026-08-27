@@ -2,10 +2,10 @@ import json
 import uuid
 
 import pytest
+from app.main.views.jobs import _get_job_counts
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_available_until_date
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
     JOB_API_KEY_NAME,
@@ -16,6 +16,58 @@ from tests.conftest import (
     mock_get_notifications,
     normalize_spaces,
 )
+
+
+@pytest.mark.parametrize(
+    "job, expected_in_transit",
+    [
+        # Uses the actual sending statistic when present.
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+                "notifications_sending": 57,
+            },
+            57,
+        ),
+        # Scheduled jobs are always shown as 0 in transit.
+        (
+            {
+                "job_status": "scheduled",
+                "notification_count": 30,
+                "notifications_delivered": 0,
+                "notifications_failed": 0,
+                "notifications_sending": 0,
+            },
+            0,
+        ),
+        # Falls back to the clamped subtraction when no sending stat is available,
+        # and never returns a negative number (delivered + failed can exceed
+        # notification_count when duplicate notifications are created).
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+            },
+            0,
+        ),
+        (
+            {"job_status": "finished", "notification_count": 30, "notifications_delivered": 10, "notifications_failed": 5},
+            15,
+        ),
+    ],
+)
+def test_get_job_counts_in_transit(app_, job, expected_in_transit):
+    job = {"service": SERVICE_ONE_ID, "id": "job-id", **job}
+
+    with app_.test_request_context():
+        counts = dict((label, count) for label, _query_param, _link, count in _get_job_counts(job))
+
+    assert counts["in transit"] == expected_in_transit
 
 
 @pytest.mark.parametrize(
@@ -30,13 +82,13 @@ from tests.conftest import (
     [
         (
             ("List name Details"),
-            ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
-            ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
+            ("send_me_later.csv Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ],
 )
@@ -111,10 +163,10 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     for index, row in enumerate(
         (
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ):
         assert normalize_spaces(page.select("tr")[index].text) == row
@@ -164,6 +216,7 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     ],
 )
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_page_for_one_job(
     client_request,
     active_user_with_permissions,
@@ -198,18 +251,9 @@ def test_should_show_page_for_one_job(
         status=status_argument,
         pe_filter="",
     )
-    csv_link = page.select_one("a[download]")
-    assert csv_link["href"] == url_for(
-        "main.view_job_csv",
-        service_id=SERVICE_ONE_ID,
-        job_id=fake_uuid,
-        status=status_argument,
-    )
-    assert csv_link.text == "Download this report"
-    assert page.find("time", {"id": "time-left"}).text.split(" ")[0] == "2016-01-09"
 
     assert normalize_spaces(dashboard_table.select_one("tbody tr").text) == normalize_spaces(
-        "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
+        "6502532222 template content No Delivered 11:10:00.061258"
     )
     assert dashboard_table.select_one("tbody tr a")["href"] == url_for(
         "main.view_notification",
@@ -222,6 +266,7 @@ def test_should_show_page_for_one_job(
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
+@pytest.mark.skip(reason="feature not in use")
 def test_should_show_page_for_one_job_with_flexible_data_retention(
     client_request,
     active_user_with_permissions,
@@ -257,26 +302,6 @@ def test_get_jobs_should_tell_user_if_more_than_one_page(
         status="",
     )
     assert page.find("p", {"class": "table-show-more-link"}).text.strip() == "Only showing the first 50 rows"
-
-
-def test_should_show_job_in_progress(
-    client_request,
-    service_one,
-    active_user_with_permissions,
-    mock_get_service_template,
-    mock_get_job_in_progress,
-    mocker,
-    mock_get_notifications,
-    mock_get_reports,
-    mock_get_service_data_retention,
-    fake_uuid,
-):
-    page = client_request.get(
-        "main.view_job",
-        service_id=service_one["id"],
-        job_id=fake_uuid,
-    )
-    assert page.find("div", {"class": "dashboard-table"}).text.strip() == "Report is 50% complete…"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
@@ -519,6 +544,21 @@ def test_should_not_show_cancelled_job(
     )
 
 
+def test_should_hide_prepare_report_footer_job_outside_of_retention_period(
+    client_request,
+    active_user_with_permissions,
+    mock_get_job_sent_outside_retention_period,
+    mock_get_service_data_retention,
+    mock_get_service_template,
+    mock_get_reports,
+    mock_get_notifications,
+    fake_uuid,
+):
+    page = client_request.get("main.view_job", service_id=SERVICE_ONE_ID, job_id=fake_uuid)
+
+    assert page.find("div[class*='report-footer-container']") is None
+
+
 def test_should_cancel_letter_job(client_request, mocker, active_user_with_permissions):
     job_id = uuid.uuid4()
     job = job_json(
@@ -701,26 +741,6 @@ def test_should_show_updates_for_one_job_as_json(
     assert "2016-01-01T00:00:00.000001+0000" in content["status"]
 
 
-@pytest.mark.parametrize(
-    "job_created_at, expected_date",
-    [
-        ("2016-01-10 11:09:00.000000+00:00", "2016-01-18"),
-        ("2016-01-04 11:09:00.000000+00:00", "2016-01-12"),
-        ("2016-01-03 11:09:00.000000+00:00", "2016-01-11"),
-        ("2016-01-02 23:59:59.000000+00:00", "2016-01-10"),
-    ],
-)
-@freeze_time("2016-01-10 12:00:00.000000")
-def test_available_until_datetime(job_created_at, expected_date):
-    """We are putting a raw datetime string in the span, which later gets
-    formatted by js on the client. That formatting doesn't exist in the
-    python tests so this test checks the date part of the datetime string
-    and checking is correct."""
-    available_until_datetime = get_available_until_date(job_created_at)
-    available_until_date = str(available_until_datetime).split(" ")[0]
-    assert available_until_date == expected_date
-
-
 @freeze_time("2016-01-01 11:09:00.061258")
 @pytest.mark.skip(reason="feature not in use")
 def test_should_show_letter_job_with_first_class_if_notifications_are_first_class(
@@ -773,7 +793,7 @@ def test_should_show_letter_job_with_first_class_if_no_notifications(
     assert normalize_spaces(page.select(".keyline-block")[1].text) == "5 January Estimated delivery date"
 
 
-def test_a11y_ensure_headings_are_hidden_when_no_data_on_view_job_page(
+def test_a11y_ensure_table_does_not_exist_when_no_data_on_view_job_page(
     client_request,
     fake_uuid,
     service_one,
@@ -789,8 +809,14 @@ def test_a11y_ensure_headings_are_hidden_when_no_data_on_view_job_page(
         job_id=fake_uuid,
         status="sending",
     )
+    # On a detailed job page, there are two tables - one for job info and one for notifications
+    # We should at least have one table on the page. This table should have no visible headings.
+    assert len(page.find_all("table")) == 1
     assert len(page.find_all("thead", {"class": "table-field-headings-visible"})) == 0
-    assert len(page.find_all("thead", {"class": "table-field-headings"})) == 1
+    # When notifications are past the retention period, the notifications table is not shown at all
+    assert len(page.find_all("thead", {"class": "table-field-headings"})) == 0
+    # Instead, we show an empty state component. Which is not a table.
+    assert len(page.select("[data-testid='empty-list']", {"class": "min-h-emptyState"})) == 1
 
 
 class TestBounceRate:

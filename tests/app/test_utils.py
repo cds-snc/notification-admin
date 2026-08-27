@@ -6,11 +6,6 @@ from unittest.mock import Mock, patch
 from urllib.parse import unquote
 
 import pytest
-from flask import current_app, request
-from freezegun import freeze_time
-from pytest_mock import MockerFixture
-
-from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -20,6 +15,7 @@ from app.utils import (
     generate_previous_dict,
     get_latest_stats,
     get_letter_printing_statement,
+    get_limit_reset_time_et,
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
     get_remote_addr,
@@ -28,6 +24,11 @@ from app.utils import (
     printing_today_or_tomorrow,
     report_security_finding,
 )
+from flask import current_app, request
+from freezegun import freeze_time
+from pytest_mock import MockerFixture
+
+from app import format_datetime_relative
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_reply_to_email_address,
@@ -195,7 +196,7 @@ def test_can_create_spreadsheet_from_dict():
             foo="bar",
             name="Jane",
         )
-    ).as_csv_data == ("foo,name\r\n" "bar,Jane\r\n")
+    ).as_csv_data == ("foo,name\r\nbar,Jane\r\n")
 
 
 def test_can_create_spreadsheet_from_dict_with_filename():
@@ -776,6 +777,21 @@ def test_set_lang_external_route(client_request):
     assert len(page.findAll(text="/accounts-or-dashboard")) == 1
 
 
+def test_set_lang_preserves_query_string(client_request):
+    # test that query string parameters are preserved when changing language
+    response = client_request.get(
+        **{
+            "endpoint": "main.set_lang",
+            "from": "/newsletter/change-language?email=test@example.com&subscriber_id=123",
+            "_expected_status": 302,
+            "_follow_redirects": False,
+            "_return_response": True,
+        }
+    )
+    # The redirect location should preserve the query string
+    assert response.location == "/newsletter/change-language?email=test@example.com&subscriber_id=123"
+
+
 def test_get_new_default_reply_to_address_returns_next_in_list(mocker: MockerFixture, app_, service_one):
     reply_to_1 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_1@example.com", is_default=True)
     reply_to_2 = create_reply_to_email_address(service_id=service_one["id"], email_address="test_2@example.com", is_default=False)
@@ -852,3 +868,44 @@ class TestGetSESDomains:
 
             # Assert
             assert result == []
+
+
+class TestGetLimitResetTimeET:
+    @freeze_time("2024-01-15 12:00:00")  # January: EST (UTC-5)
+    def test_returns_7pm_during_est(self):
+        result = get_limit_reset_time_et()
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-07-15 12:00:00")  # July: EDT (UTC-4)
+    def test_returns_8pm_during_edt(self):
+        result = get_limit_reset_time_et()
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-03-10 12:00:00")  # Day clocks spring forward (2nd Sunday of March)
+    def test_spring_forward_day(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on March 11 falls in EDT (UTC-4), so 8PM ET
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-03-09 12:00:00")  # Day before spring forward
+    def test_day_before_spring_forward(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on March 10 is still EST (UTC-5), so 7PM ET
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-11-03 12:00:00")  # Day clocks fall back (1st Sunday of November)
+    def test_fall_back_day(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on Nov 4 falls in EST (UTC-5), so 7PM ET
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-11-02 12:00:00")  # Day before fall back
+    def test_day_before_fall_back(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on Nov 3 is still EDT (UTC-4), so 8PM ET
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-01-15 12:00:00")
+    def test_returns_dict_with_en_and_fr_keys(self):
+        result = get_limit_reset_time_et()
+        assert set(result.keys()) == {"en", "fr"}

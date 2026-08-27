@@ -2,7 +2,6 @@ from collections import namedtuple
 from unittest.mock import call
 
 import pytest
-
 from app.s3_client.s3_logo_client import (
     EMAIL_LOGO_LOCATION_STRUCTURE,
     LETTER_TEMP_LOGO_LOCATION,

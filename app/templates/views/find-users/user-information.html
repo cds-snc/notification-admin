@@ -58,10 +58,10 @@
         {{ user.failed_login_count }} {{ _('failed sign-in attempts') }}
       </p>
       {% endif %}
-      {% if user.state == 'active' %}
-        <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
-        <nav class="browse-list">
-          <ul>
+      <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
+        {% if user.state == 'active' %}
+          <nav class="browse-list">
+            <ul>
             <li class="browse-list-item delete-link">
               <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
                 {{ _('Archive user') }}
@@ -85,8 +85,40 @@
               {{ _('Request a password reset for this user') }}
             </a>
           </li>
-          </ul>
-        </nav>
+          <li class="browse-list-item">
+            <details>
+              <summary>{{ _('Change auth type') }}</summary>
+              {% set current_auth = user.auth_type or '' %}
+              {% set selected_auth_type = 'sms' if current_auth == 'sms_auth' else 'email' %}
+              <form method="post" action="{{ url_for('main.update_user_auth_type', user_id=user.id) }}" class="mt-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                  <label class="form-label" for="auth_type">
+                    {{ _('Authentication type') }}: {{ current_auth or 'unknown' }}
+                  </label>
+                  <select id="auth_type" name="auth_type" class="form-control">
+                    <option value="sms" {{ 'selected' if selected_auth_type == 'sms' else '' }}>sms</option>
+                    <option value="email" {{ 'selected' if selected_auth_type == 'email' else '' }}>email</option>
+                  </select>
+                </div>
+                <button type="submit" class="button">{{ _('Save') }}</button>
+              </form>
+            </details>
+          </li>
+        </ul>
+      </nav>
+      {% elif "_archived_" not in user.email_address %}
+      <nav>
+        <ul>
+          <li class="browse-list-item delete-link">
+            <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
+              {{ _('Archive inactive user') }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {% else %}
+        {{ _('No actions available for archived users') }}
       {% endif %}
       <hr>
     </div>

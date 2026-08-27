@@ -39,6 +39,7 @@ export const SetDateTime = () => {
     e.preventDefault();
     document.getElementById("js-schedule-send-at").classList.toggle("hidden");
     document.getElementById("js-schedule-button").classList.toggle("hidden");
+    document.getElementById("scheduler_instructions").focus();
     refreshSchedule(selected, time);
   };
 

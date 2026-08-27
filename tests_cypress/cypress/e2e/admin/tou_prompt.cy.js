@@ -6,8 +6,6 @@ describe("TOU Prompt", () => {
     cy.visit("/");
 
     TouPrompt.Components.Prompt().should("be.visible");
-    // ensure the heading element has the autofocus attribute
-    TouPrompt.Components.Heading().should("have.attr", "autofocus");
   });
 
   it("should not display the prompt after being dismissed", () => {

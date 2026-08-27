@@ -84,3 +84,22 @@ def reset_password(user_id):
             "request",
         )
         return user_information(user_id)
+
+
+@main.route("/users/<uuid:user_id>/update_auth_type", methods=["GET", "POST"])
+@user_is_platform_admin
+def update_user_auth_type(user_id):
+    user = User.from_id(user_id)
+
+    if request.method == "POST":
+        selected = (request.form.get("auth_type") or "").strip().lower()
+        mapping = {"sms": "sms_auth", "email": "email_auth"}
+
+        if selected not in mapping:
+            flash([_("Please choose a valid authentication type.")], "error")
+        else:
+            user.update(auth_type=mapping[selected], updated_by=current_user.id)
+        return redirect(url_for(".user_information", user_id=user_id))
+
+    # Do not render a new page for GET; just go back to the user page.
+    return redirect(url_for(".user_information", user_id=user_id))

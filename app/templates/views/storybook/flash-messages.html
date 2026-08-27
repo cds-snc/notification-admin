@@ -1,0 +1,142 @@
+{% from "components/banner.html" import banner %}
+
+<div class="heading-large mb-8">Flash Messages Examples</div>
+
+<p class="mb-8">This page demonstrates all variations of flash messages/banners and their focus behavior. Each variation is shown below with a link to test it in isolation.</p>
+
+<hr class="mb-8" />
+
+<!-- Navigation to individual test pages -->
+<div class="mb-12 p-6 bg-gray-50 rounded">
+  <h2 class="heading-medium mb-4">Test Focus Behavior Individually</h2>
+  <p class="mb-4">Click these links to test each flash message variation in isolation to verify focus behavior:</p>
+  <ul class="list list-bullet ml-8 space-y-2">
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-default') }}" class="text-blue-500 hover:underline">Default Message</a></li>
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-default-with-tick') }}" class="text-blue-500 hover:underline">Default with Tick</a></li>
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-dangerous') }}" class="text-blue-500 hover:underline">Dangerous/Error Message</a></li>
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-with-context') }}" class="text-blue-500 hover:underline">Message with Context</a></li>
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-with-button') }}" class="text-blue-500 hover:underline">Message with Action Button</a></li>
+    <li><a href="{{ url_for('main.storybook', component='flash-messages-with-subhead') }}" class="text-blue-500 hover:underline">Message with Subheading</a></li>
+  </ul>
+</div>
+
+<hr class="mb-8" />
+
+<!-- Examples of all variations -->
+<h2 class="heading-medium mb-6">All Variations Preview</h2>
+
+<div class="space-y-8">
+  <div>
+    <h3 class="heading-small mb-4">Default Message</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("Your service has been updated successfully.") }}
+      </div>
+      <h4 class="heading-small mb-2">Code</h4>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner("Your service has been updated successfully.") }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Default Message with Tick</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("Your template has been saved.", type="default", with_tick=True) }}
+      </div>
+      <h4 class="heading-small mb-2">Code</h4>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner("Your template has been saved.", type="default", with_tick=True) }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Dangerous/Error Message</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("There was a problem processing your request. Please try again.", type="dangerous") }}
+      </div>
+      <h4 class="heading-small mb-2">Code</h4>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner("There was a problem processing your request. Please try again.", type="dangerous") }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Message with Context</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("Your API key has been revoked.", context="You can generate a new API key in your service settings.") }}
+      </div>
+      <h4 class="heading-small mb-2">Code</h4>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner(
+  "Your API key has been revoked.", 
+  context="You can generate a new API key in your service settings."
+) }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Message with Action Button</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("Are you sure you want to delete this template?", type="dangerous", delete_button="Yes, delete") }}
+      </div>
+      <h4 class="heading-small mb-2">Code</h4>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner(
+  "Are you sure you want to delete this template?", 
+  type="dangerous", 
+  delete_button="Yes, delete"
+) }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Message with Subheading</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner("Check your settings and try again.", subhead="Upload Failed", type="dangerous") }}
+      </div>
+      <h3 class="heading-small mb-2">Code</h3>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner(
+  "Check your settings and try again.", 
+  subhead="Upload Failed", 
+  type="dangerous"
+) }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="heading-small mb-4">Complex Message (Multiple Features)</h3>
+    <div class="bg-gray-100 px-8 py-16 rounded-md">
+      <div class="mb-12 clear-both contain-floats">
+        {{ banner(
+          "This action cannot be undone. All data associated with this service will be permanently deleted.",
+          type="dangerous",
+          subhead="Delete Service",
+          context="This includes all templates, team members, and message history.",
+          delete_button="Yes, delete service"
+        ) }}
+      </div>
+      <h3 class="heading-small mb-2">Code</h3>
+      <div class="bg-gray-200 px-4 py-4 rounded-md border-1 border-gray-300 mb-8">
+        <pre><code>{% raw %}{{ banner(
+  "This action cannot be undone. All data associated with this service will be permanently deleted.",
+  type="dangerous",
+  subhead="Delete Service",
+  context="This includes all templates, team members, and message history.",
+  delete_button="Yes, delete service"
+) }}{% endraw %}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>

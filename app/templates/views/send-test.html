@@ -11,9 +11,9 @@
 {% endblock %}
 
 {% block maincolumn_content %}
+{% include "partials/template-attachments-warning.html" %}
 
 {{ govuk_back_link(back_link) }}
-
 {% call
   form_wrapper(
     class='stick-at-top-when-scrolling send-one-off-form' if template.template_type != 'sms' else 'send-one-off-form',
@@ -68,6 +68,7 @@
 {% endcall %}
 
 {{ template|string|translate_preview_template }}
+{% include "partials/template-attachments-list.html" %}
 
 <script nonce="{{ request_nonce }}">
   function isIE() {

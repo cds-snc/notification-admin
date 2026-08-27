@@ -1,12 +1,11 @@
 from unittest.mock import Mock
 
 import pytest
+from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
+from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
 from flask import g
 from wtforms import ValidationError
 from wtforms.validators import StopValidation
-
-from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
-from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail
 
 
 @pytest.mark.parametrize("password", ["notification", "11111111", "kittykat", "blackbox"])
@@ -23,7 +22,10 @@ def test_should_raise_validation_error_for_password(
 
     form.validate()
 
-    assert "A password that is hard to guess contains" in form.errors["password"][0]
+    assert (
+        "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space."
+        in form.errors["password"][0]
+    )
 
 
 def test_valid_email_not_in_valid_domains(
@@ -156,11 +158,11 @@ def test_sms_character_validation(client, msg):
     [
         (
             "∆ abc 📲 def 📵 ghi",
-            ("You can’t use ∆, 📲 or 📵 in text messages. " "They won’t show up properly on everyone’s phones."),
+            ("You can’t use ∆, 📲 or 📵 in text messages. They won’t show up properly on everyone’s phones."),
         ),
         (
             "📵",
-            ("You can’t use 📵 in text messages. " "It won’t show up properly on everyone’s phones."),
+            ("You can’t use 📵 in text messages. It won’t show up properly on everyone’s phones."),
         ),
     ],
 )
@@ -273,3 +275,35 @@ def test_optional_integer_range_custom_message():
     with pytest.raises(ValidationError) as exc:
         validator(form, field)
     assert str(exc.value) == "Custom error message"
+
+
+class TestIsLocalhostUrl:
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://localhost/callback",
+            "https://localhost:8080/callback",
+            "https://localhost./callback",
+            "https://127.0.0.1/callback",
+            "https://127.0.0.1:443/callback",
+            "https://127.0.0.2/callback",
+            "https://127.255.255.255/callback",
+            "https://[::1]/callback",
+            "https://[0:0:0:0:0:0:0:1]/callback",
+            "http://localhost/callback",
+            "https://sub.localhost/path",
+        ],
+    )
+    def test_detects_localhost_urls(self, url):
+        assert _is_localhost_url(url) is True
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://example.com/callback",
+            "https://my-service.gc.ca/callback",
+            "https://notlocalhost.com/callback",
+        ],
+    )
+    def test_allows_non_localhost_urls(self, url):
+        assert _is_localhost_url(url) is False

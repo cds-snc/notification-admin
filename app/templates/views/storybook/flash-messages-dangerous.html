@@ -1,0 +1,12 @@
+{% from "components/banner.html" import banner %}
+
+<div class="heading-large mb-8">Flash Message: Dangerous/Error</div>
+
+<p class="mb-8">
+  <a href="{{ url_for('main.storybook', component='flash-messages') }}" class="text-blue-500 hover:underline">&larr; Back to Flash Messages Overview</a>
+</p>
+
+<!-- The actual flash message to test -->
+<div class="mb-12 clear-both contain-floats">
+  {{ banner("There was a problem processing your request. Please check your input and try again.", type="dangerous") }}
+</div>

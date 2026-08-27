@@ -20,6 +20,11 @@
   const status_not_complete = document.getElementById("tou-not-complete");
   const validation_summary = document.getElementById("validation-summary");
 
+  // Variables for focus trap
+  let focusableElements = [];
+  let firstFocusableElement;
+  let lastFocusableElement;
+
   initUI();
 
   /**
@@ -85,9 +90,52 @@
     });
   }
 
+  /**
+   * Sets up the focus trap by finding all focusable elements within the dialog
+   */
+  function setupFocusTrap() {
+    // Get all focusable elements inside the dialog
+    focusableElements = dialog.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+
+    // If there are focusable elements, set the first and last ones
+    if (focusableElements.length) {
+      firstFocusableElement = focusableElements[0];
+      lastFocusableElement = focusableElements[focusableElements.length - 1];
+    }
+
+    // Add keydown event for focus trapping
+    dialog.addEventListener("keydown", trapFocus);
+  }
+
+  /**
+   * Traps focus within the dialog when Tab or Shift+Tab are pressed
+   * @param {KeyboardEvent} event - The keyboard event
+   */
+  function trapFocus(event) {
+    if (event.key !== "Tab") return;
+
+    // If Shift + Tab pressed and focus is on first element, move to last focusable element
+    if (event.shiftKey) {
+      if (document.activeElement === firstFocusableElement) {
+        event.preventDefault();
+        lastFocusableElement.focus();
+      }
+    }
+    // If Tab pressed and focus is on last element, move to first focusable element
+    else if (document.activeElement === lastFocusableElement) {
+      event.preventDefault();
+      firstFocusableElement.focus();
+    }
+  }
+
   function openModal() {
     document.body.style.overflow = "hidden";
     dialog.showModal();
+
+    // Set up focus trap for keyboard users
+    setupFocusTrap();
 
     // if the terms dont need to be scrolled, enable the submit button and remove the disabled class
     if (
@@ -101,12 +149,22 @@
       accept_button.classList.add("disabled");
     }
 
+    // Always focus on the terms div first as expected by tests
+    // This ensures the content is immediately accessible to screen readers
     terms.focus();
   }
 
   function closeModal() {
     document.body.style.overflow = "auto";
+
+    // Remove the focus trap keydown event listener
+    dialog.removeEventListener("keydown", trapFocus);
+
+    // Close the dialog
     dialog.close();
+
+    // Return focus to the trigger element that opened the dialog
+    trigger.focus();
   }
 
   function agreeToTerms() {

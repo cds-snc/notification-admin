@@ -11,6 +11,7 @@ from uuid import uuid4
 from zipfile import BadZipFile
 
 import pytest
+from app.main.views.send import daily_email_count, daily_sms_count
 from bs4 import BeautifulSoup
 from flask import url_for
 from notifications_python_client.errors import HTTPError
@@ -23,10 +24,10 @@ from notifications_utils.template import LetterImageTemplate, LetterPreviewTempl
 from xlrd.biffh import XLRDError
 from xlrd.xldate import XLDateAmbiguous, XLDateError, XLDateNegative, XLDateTooLarge
 
-from app.main.views.send import daily_email_count, daily_sms_fragment_count
 from tests import validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    TEMPLATE_ONE_ID,
     create_active_caseworking_user,
     create_active_user_with_permissions,
     create_email_template,
@@ -55,11 +56,11 @@ test_non_spreadsheet_files = glob(path.join("tests", "non_spreadsheet_files", "*
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
-def test_daily_sms_fragment_count(mocker, redis_value, expected_result):
+def test_daily_sms_count(mocker, redis_value, expected_result):
     mocker.patch(
         "app.extensions.redis_client.get", lambda x: redis_value if x == sms_daily_count_cache_key(SERVICE_ONE_ID) else None
     )
-    assert daily_sms_fragment_count(SERVICE_ONE_ID) == expected_result
+    assert daily_sms_count(SERVICE_ONE_ID) == expected_result
 
 
 @pytest.mark.parametrize("redis_value,expected_result", [(None, 0), ("3", 3)])
@@ -301,7 +302,7 @@ def test_upload_files_in_different_formats(
     else:
         assert not mock_s3_upload.called
         assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-            "Could not read {}. Try using a different file format.".format(filename)
+            "Could not read {}. Try using a different file format. Ensure your file is encoded as UTF-8.".format(filename)
         )
 
 
@@ -310,15 +311,15 @@ def test_upload_files_in_different_formats(
     [
         (
             partial(UnicodeDecodeError, "codec", b"", 1, 2, "reason"),
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             BadZipFile,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLRDError,
-            ("Could not read example.xlsx. Try using a different file format."),
+            ("Could not read example.xlsx. Try using a different file format. Ensure your file is encoded as UTF-8."),
         ),
         (
             XLDateError,
@@ -424,7 +425,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             telephone,name
             +16502532222
         """,
-            ("Your spreadsheet is missing a column called ‘phone number’. " "Add the missing column."),
+            ("Your spreadsheet is missing a column called ‘phone number’. Add the missing column."),
             "Check there’s a column for each variable",
         ),
         (
@@ -432,7 +433,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             phone number
             +16502532222
         """,
-            ("Your spreadsheet is missing a column called ‘name’. " "Add the missing column."),
+            ("Your spreadsheet is missing a column called ‘name’. Add the missing column."),
             "Check there’s a column for each variable",
         ),
         (
@@ -450,7 +451,7 @@ def test_upload_csv_file_with_errors_shows_check_page_with_errors(
             """
             phone number, name
         """,
-            ("Spreadsheets need at least 1 row with recipient information. " "Add a row for each recipient."),
+            ("Spreadsheets need at least 1 row with recipient information. Add a row for each recipient."),
             "Check there’s a column for each variable",
         ),
         (
@@ -530,9 +531,9 @@ def test_upload_csv_file_with_missing_columns_shows_error(
         (
             f"""
                 phone number, one, two, three
-                +16502532222, {'a' * 155}, {'a' * 155}, {'a' * 155}
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 50}, {'a' * 50}, {'a' * 50}
+                +16502532222, {"a" * 155}, {"a" * 155}, {"a" * 155}
+                +16502532222, {"a" * 613}, {"a" * 613}, {"a" * 613}
+                +16502532222, {"a" * 50}, {"a" * 50}, {"a" * 50}
             """,
             "Maximum 612 characters. Some messages may be too long due to custom content.",
             "Added custom content exceeds the 612 character limit in 1 row",
@@ -541,9 +542,9 @@ def test_upload_csv_file_with_missing_columns_shows_error(
         (
             f"""
                 phone number, one, two, three
-                +16502532222, {'a' * 613}, {'a' * 613}, {'a' * 613}
-                +16502532222, {'a' * 619}, {'a' * 619}, {'a' * 619}
-                +16502532222, {'a' * 700}, {'a' * 700}, {'a' * 700}
+                +16502532222, {"a" * 613}, {"a" * 613}, {"a" * 613}
+                +16502532222, {"a" * 619}, {"a" * 619}, {"a" * 619}
+                +16502532222, {"a" * 700}, {"a" * 700}, {"a" * 700}
             """,
             "Maximum 612 characters. Some messages may be too long due to custom content.",
             "Added custom content exceeds the 612 character limit in 3 rows",
@@ -756,7 +757,239 @@ def test_upload_valid_csv_shows_preview_and_table(
         for index, cell in enumerate(row):
             row = page.select("table tbody tr")[row_index]
             assert "id" not in row
-            assert normalize_spaces(str(row.select("td")[index + 1])) == cell
+            assert normalize_spaces(str(row.select("td")[index])) == cell
+
+
+def test_check_messages_ok_shows_template_attachments_and_scanning_warning(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    service_one,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
+    ]
+
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+        second@example.com
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is not None
+    assert "guide.pdf" in attachments_section.text
+    assert "pending.pdf" in attachments_section.text
+    size_labels = attachments_section.select("[data-testid='attachment-file-size']")
+    assert len(size_labels) == 2
+
+
+def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "terms.pdf", "status": "uploaded", "size": 2048},
+    ]
+
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+        second@example.com
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is None
+    assert "guide.pdf" in attachments_section.text
+    assert "terms.pdf" in attachments_section.text
+
+
+def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=False)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+    """,
+    )
+
+    page = client_request.get(
+        "main.check_messages",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        original_file_name="example.csv",
+    )
+
+    assert page.select_one("[data-testid='template-attachments-list']") is None
+
+
+def test_get_template_attachment_context_returns_empty_for_non_email_template(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_sms_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        phone number
+        +16505551234
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    assert page.select_one("[data-testid='template-attachments-list']") is None
+
+
+def test_get_template_attachment_context_excludes_deleted_and_virus_scan_failed(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "visible.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "gone.pdf", "status": "deleted", "size": 500},
+        {"id": "file-3", "name": "infected.pdf", "status": "virus_scan_failed", "size": 500},
+    ]
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        email address
+        first@example.com
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert "visible.pdf" in attachments_section.text
+    assert "gone.pdf" not in attachments_section.text
+    assert "infected.pdf" not in attachments_section.text
 
 
 def test_upload_valid_csv_only_sets_meta_if_filename_known(
@@ -985,6 +1218,7 @@ def test_send_test_doesnt_show_file_contents(
     mock_get_service_statistics,
     mock_get_template_statistics,
     mock_has_no_jobs,
+    mock_get_limit_stats_send,
     service_one,
     fake_uuid,
     user,
@@ -1008,7 +1242,7 @@ def test_send_test_doesnt_show_file_contents(
     assert page.select("h1")[0].text.strip() == "Review before sending"
     assert len(page.select("table")) == 0
     assert len(page.select(".banner-dangerous")) == 0
-    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+    assert "text message" in page.select_one("button[type=submit]").text
 
 
 @pytest.mark.parametrize(
@@ -1091,6 +1325,39 @@ def test_send_test_step_redirects_if_session_not_setup(
 
     with client_request.session_transaction() as session:
         assert session["recipient"] == expected_recipient
+
+
+def test_send_test_step_shows_template_attachments_and_scanning_warning(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_get_service_email_template,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "test@user.canada.ca"
+        session["placeholders"] = {}
+
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
+    ]
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get(
+            "main.send_test_step",
+            service_id=service_one["id"],
+            template_id=fake_uuid,
+            step_index=0,
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is not None
+    assert "guide.pdf" in attachments_section.text
+    assert "pending.pdf" in attachments_section.text
 
 
 def test_send_one_off_does_not_send_without_the_correct_permissions(
@@ -2068,7 +2335,7 @@ def test_download_example_csv(
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert response.get_data(as_text=True) == ("phone number,name,date\r\n" "6502532222,example,example\r\n")
+    assert response.get_data(as_text=True) == ("phone number,name,date\r\n6502532222,example,example\r\n")
     assert "text/csv" in response.headers["Content-Type"]
 
 
@@ -2406,6 +2673,7 @@ def test_route_permissions_send_check_notifications(
     mock_send_notification,
     mock_get_service_template,
     mock_get_template_statistics,
+    mock_get_limit_stats_send,
     fake_uuid,
     route,
     response_code,
@@ -2583,7 +2851,7 @@ def test_check_messages_shows_too_many_sms_messages_errors(
     )
 
     # remove excess whitespace from element
-    details = page.findAll("h2")[1]
+    details = page.findAll("h2")[0]
     details = " ".join([line.strip() for line in details.text.split("\n") if line.strip() != ""])
     assert details == expected_msg
 
@@ -2595,8 +2863,8 @@ def mock_notification_counts_client():
 
 
 @pytest.fixture
-def mock_daily_sms_fragment_count():
-    with patch("app.main.views.send.daily_sms_fragment_count") as mock:
+def mock_daily_sms_count():
+    with patch("app.main.views.send.daily_sms_count") as mock:
         yield mock
 
 
@@ -2673,6 +2941,104 @@ def test_check_messages_shows_too_many_email_messages_errors(
     # assert details == expected_msg
 
 
+def test_check_messages_column_errors_shows_template_attachments_and_scanning_warning(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    fake_uuid,
+    service_one,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
+    ]
+
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        name
+        Alice
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+            _test_page_title=False,
+        )
+
+    assert page.find("h1").text.strip() == "Check there’s a column for each variable"
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is not None
+    assert "guide.pdf" in attachments_section.text
+    assert "pending.pdf" in attachments_section.text
+
+
+def test_check_messages_column_errors_hides_attachment_warning_when_all_uploaded(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    fake_uuid,
+    app_,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "terms.pdf", "status": "uploaded", "size": 2048},
+    ]
+
+    mocker.patch(
+        "app.main.views.send.s3download",
+        return_value="""
+        name
+        Alice
+    """,
+    )
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+            _test_page_title=False,
+        )
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is None
+    assert "guide.pdf" in attachments_section.text
+    assert "terms.pdf" in attachments_section.text
+
+
 def test_check_messages_shows_trial_mode_error(
     client_request,
     mock_get_users_by_service,
@@ -2746,7 +3112,7 @@ def test_warns_if_file_sent_already(
     )
 
     assert normalize_spaces(page.select_one(".banner-dangerous").text) == (
-        "These messages have already been sent today " "If you need to re-send them, rename the file and upload it again."
+        "These messages have already been sent today If you need to re-send them, rename the file and upload it again."
     )
 
     mock_get_jobs.assert_called_once_with(SERVICE_ONE_ID, limit_days=0)
@@ -2790,6 +3156,56 @@ def test_check_messages_adds_sender_id_in_session_to_metadata(
         valid=True,
         original_file_name="example.csv",
     )
+
+
+def test_check_messages_adds_template_attachments_to_metadata(
+    client_request,
+    mocker,
+    mock_get_live_service,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_users_by_service,
+    mock_get_service_statistics,
+    mock_get_template_statistics,
+    mock_get_job_doesnt_exist,
+    mock_get_jobs,
+    mock_s3_set_metadata,
+    mock_get_template_attachments,
+    fake_uuid,
+    app_,
+):
+    mocker.patch("app.main.views.send.s3download", return_value=("email address,\ntest@example.com"))
+    mocker.patch("app.models.service.Service.has_permission", return_value=True)
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280, "mime_type": "application/pdf"},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+            _test_page_title=False,
+        )
+
+    call_kwargs = mock_s3_set_metadata.call_args[1]
+    assert call_kwargs["notification_count"] == 1
+    assert call_kwargs["template_id"] == fake_uuid
+    assert call_kwargs["valid"] is True
+    assert call_kwargs["original_file_name"] == "example.csv"
+    assert "template_attach_personalisation" in call_kwargs
+
+    import json
+
+    template_attach_personalisation = json.loads(call_kwargs["template_attach_personalisation"])
+    assert "_file_0" in template_attach_personalisation
+    assert template_attach_personalisation["_file_0"]["document"]["id"] == "file-1"
+    assert template_attach_personalisation["_file_0"]["document"]["filename"] == "guide.pdf"
+    assert template_attach_personalisation["_file_0"]["document"]["sending_method"] == "template_attach"
 
 
 def test_check_messages_shows_over_max_row_error(
@@ -2887,7 +3303,7 @@ def test_check_notification_redirects_with_help_if_session_not_populated(
 
 
 def test_check_notification_shows_preview(
-    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics
+    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
 ):
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
@@ -2908,6 +3324,186 @@ def test_check_notification_shows_preview(
         template_id=fake_uuid,
         help="0",
     )
+
+
+def test_check_notification_email_shows_template_attachments_and_scanning_warning(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "person@example.com"
+        session["placeholders"] = {}
+
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "status": "pending_virus_scan", "size": 10},
+    ]
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is not None
+    assert "guide.pdf" in attachments_section.text
+    assert "pending.pdf" in attachments_section.text
+
+
+def test_check_notification_email_hides_attachment_warning_when_all_uploaded(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_get_service_email_template_without_placeholders,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    mock_get_template_attachments,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "person@example.com"
+        session["placeholders"] = {}
+
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "terms.pdf", "status": "uploaded", "size": 2048},
+    ]
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    attachments_section = page.select_one("[data-testid='template-attachments-list']")
+    assert attachments_section is not None
+    assert page.select_one("[data-testid='template-attachments-warning']") is None
+    assert "guide.pdf" in attachments_section.text
+    assert "terms.pdf" in attachments_section.text
+
+
+def test_check_notification_sms_shows_limit_rows_without_links(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Daily and yearly remaining rows appear for SMS without request-increase links when FF is enabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    sms_info = page.select_one("[data-testid='sms-sending-info']")
+    assert sms_info is not None, "sms-sending-info block should be present for SMS templates"
+
+    # Limit rows (daily + yearly) rendered via remaining_messages_summary
+    rms_items = page.select("[data-testid='rms-item']")
+    assert len(rms_items) == 2
+
+    # No links inside the sending-info block
+    assert not sms_info.select("[data-testid='rms-daily-link']")
+    assert not sms_info.select("[data-testid='rms-yearly-link']")
+
+
+def test_check_notification_sms_shows_message_count_when_ff_enabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Count chip only appears when FF_USE_BILLABLE_UNITS is enabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    count_el = page.select_one("[data-testid='sms-message-count']")
+    assert count_el is not None
+    assert "text message" in count_el.text
+
+
+def test_check_notification_sms_hides_message_count_when_ff_disabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Count chip and limit rows are hidden when FF_USE_BILLABLE_UNITS is disabled."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert not page.select("[data-testid='sms-message-count']")
+    assert not page.select("[data-testid='sms-sending-info']")
+    # Button falls back to old label when FF is off
+    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
+
+
+def test_check_notification_sms_button_text_with_ff_enabled(
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_service_template,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    app_,
+):
+    """Button says 'Send text message' (no count) when FF_USE_BILLABLE_UNITS is on."""
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.select_one("button[type=submit]").text.strip() == "Send text message"
+
+
+def test_check_notification_sms_info_not_shown_on_error(
+    client_request,
+    service_one,
+    fake_uuid,
+    mocker,
+    mock_get_service_template_with_placeholders,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+):
+    """The SMS sending-info block is hidden when there is a send error."""
+
+    class MockHTTPError(HTTPError):
+        message = "service is in trial mode"
+
+    mocker.patch("app.notification_api_client.send_notification", side_effect=MockHTTPError())
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    page = client_request.post(
+        "main.send_notification", service_id=service_one["id"], template_id=fake_uuid, _expected_status=200
+    )
+
+    assert not page.select("[data-testid='sms-sending-info']")
 
 
 @pytest.mark.parametrize(
@@ -2954,6 +3550,89 @@ def test_send_notification_submits_data(
         template_id=fake_uuid,
         recipient=recipient,
         personalisation=expected_personalisation,
+        sender_id=None,
+    )
+
+
+def test_send_notification_includes_template_attachments_in_personalisation(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_send_notification,
+    mock_get_service_email_template,
+    mock_get_template_attachments,
+):
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "mime_type": "application/pdf", "status": "uploaded", "size": 1280},
+        {"id": "file-2", "name": "pending.pdf", "mime_type": "application/pdf", "status": "pending_virus_scan", "size": 512},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "test@example.com"
+        session["placeholders"] = {"email address": "test@example.com"}
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [service_one["id"]]):
+        client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    # Only the uploaded file should be injected; pending_virus_scan is skipped.
+    mock_send_notification.assert_called_once_with(
+        service_one["id"],
+        template_id=fake_uuid,
+        recipient="test@example.com",
+        personalisation={
+            "email address": "test@example.com",
+            "_file_0": {
+                "document": {
+                    "id": "file-1",
+                    "filename": "guide.pdf",
+                    "mime_type": "application/pdf",
+                    "file_size": 1280,
+                    "sending_method": "template_attach",
+                },
+            },
+        },
+        sender_id=None,
+    )
+
+
+def test_send_notification_includes_template_attachments_for_any_service(
+    client_request,
+    service_one,
+    fake_uuid,
+    app_,
+    mock_send_notification,
+    mock_get_service_email_template,
+    mock_get_template_attachments,
+):
+    service_one["permissions"].append("upload_document")
+    mock_get_template_attachments.return_value = [
+        {"id": "file-1", "name": "guide.pdf", "mime_type": "application/pdf", "status": "uploaded", "size": 1280},
+    ]
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "test@example.com"
+        session["placeholders"] = {"email address": "test@example.com"}
+
+    client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    mock_send_notification.assert_called_once_with(
+        service_one["id"],
+        template_id=fake_uuid,
+        recipient="test@example.com",
+        personalisation={
+            "email address": "test@example.com",
+            "_file_0": {
+                "document": {
+                    "id": "file-1",
+                    "filename": "guide.pdf",
+                    "mime_type": "application/pdf",
+                    "file_size": 1280,
+                    "sending_method": "template_attach",
+                },
+            },
+        },
         sender_id=None,
     )
 
@@ -3059,6 +3738,7 @@ def test_send_notification_shows_error_if_400(
     mocker,
     mock_get_service_template_with_placeholders,
     mock_get_template_statistics,
+    mock_get_limit_stats_send,
     exception_msg,
     expected_h1,
     expected_err_details,
@@ -3389,6 +4069,103 @@ def test_s3_send_shows_available_files(
     assert multiple_choise_options == expected_filenames
 
 
+class TestBulkCheckSmsSendingInfo:
+    """Tests for the SMS sending-info block on the bulk-send review page (ok.html)."""
+
+    CSV_CONTENT = """
+        phone number,name
+        6502532223, Alice
+        6502532224, Bob
+    """
+
+    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled, app_):
+        mocker.patch("app.main.views.send.s3download", return_value=self.CSV_CONTENT)
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
+        with set_config(app_, "FF_USE_BILLABLE_UNITS", ff_enabled):
+            return client_request.get(
+                "main.check_messages",
+                service_id=SERVICE_ONE_ID,
+                template_id=fake_uuid,
+                upload_id=fake_uuid,
+                original_file_name="test.csv",
+            )
+
+    def test_sms_sending_info_shown_when_ff_enabled(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        app_,
+        mocker,
+    ):
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
+
+        sms_info = page.select_one("[data-testid='sms-sending-info']")
+        assert sms_info is not None, "sms-sending-info block should appear for SMS when FF is on"
+
+        # Count chip present
+        assert sms_info.select_one("[data-testid='sms-message-count']") is not None
+
+        # Daily and yearly rms rows present
+        assert len(page.select("[data-testid='rms-item']")) == 2
+
+        # No request-increase links
+        assert not sms_info.select("[data-testid='rms-daily-link']")
+        assert not sms_info.select("[data-testid='rms-yearly-link']")
+
+    def test_sms_sending_info_hidden_when_ff_disabled(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        app_,
+        mocker,
+    ):
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=False, app_=app_)
+
+        assert not page.select("[data-testid='sms-sending-info']")
+        assert not page.select("[data-testid='sms-message-count']")
+        assert not page.select("[data-testid='rms-item']")
+
+    def test_sms_count_label_says_count_when_exact(
+        self,
+        client_request,
+        mock_get_live_service,
+        mock_get_service_template_with_placeholders,
+        mock_get_users_by_service,
+        mock_get_service_statistics,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        fake_uuid,
+        app_,
+        mocker,
+    ):
+        """≤1000 rows → exact count (no 'Estimated')."""
+        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
+
+        count_el = page.select_one("[data-testid='sms-message-count']")
+        assert count_el is not None
+        assert "Estimated" not in count_el.text
+        assert "parts" in count_el.text
+
+
 class TestAnnualLimitsSend:
     @pytest.mark.parametrize(
         "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
@@ -3426,7 +4203,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3436,62 +4213,65 @@ class TestAnnualLimitsSend:
         expect_to_see_daily_limit_msg,
         app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):
-            mocker.patch(
-                "app.main.views.send.s3download",
-                return_value=",\n".join(
-                    ["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_being_sent)
-                ),
-            )
+        mocker.patch(
+            "app.main.views.send.s3download",
+            return_value=",\n".join(["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_being_sent)),
+        )
 
-            mock_notification_counts_client.get_limit_stats.return_value = {
-                "email": {
-                    "annual": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": 10000
-                        - num_sent_this_year
-                        - num_sent_today,  # The number of email notifications remaining this year
-                    },
-                    "daily": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
-                    },
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": 10000
+                    - num_sent_this_year
+                    - num_sent_today,  # The number of email notifications remaining this year
+                },
+                "daily": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
+                },
+            }
+        }
+
+        # Mock get_all_notification_counts_for_today for billable units
+        mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+            "sms": 900,
+            "email": num_sent_today,
+        }
+
+        # mock that we've already sent `emails_sent_today` emails today
+        mock_daily_email_count.return_value = num_sent_today
+        mock_daily_sms_count.return_value = 900  # not used in test but needs a value
+
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {
+                fake_uuid: {
+                    "template_id": fake_uuid,
+                    "notification_count": 1,
+                    "valid": True,
                 }
             }
 
-            # mock that we've already sent `emails_sent_today` emails today
-            mock_daily_email_count.return_value = num_sent_today
-            mock_daily_sms_fragment_count.return_value = 900  # not used in test but needs a value
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
 
-            with client_request.session_transaction() as session:
-                session["file_uploads"] = {
-                    fake_uuid: {
-                        "template_id": fake_uuid,
-                        "notification_count": 1,
-                        "valid": True,
-                    }
-                }
+        if expect_to_see_annual_limit_msg:
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
 
-            page = client_request.get(
-                "main.check_messages",
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-                upload_id=fake_uuid,
-                original_file_name="valid.csv",
-                _test_page_title=False,
-            )
-
-            if expect_to_see_annual_limit_msg:
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
-            else:
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
-
-            if expect_to_see_daily_limit_msg:
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
-            else:
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+        if expect_to_see_daily_limit_msg:
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
 
     @pytest.mark.parametrize(
         "num_being_sent, num_sent_today, num_sent_this_year, expect_to_see_annual_limit_msg, expect_to_see_daily_limit_msg",
@@ -3529,7 +4309,7 @@ class TestAnnualLimitsSend:
         mock_get_jobs,
         mock_s3_set_metadata,
         mock_notification_counts_client,
-        mock_daily_sms_fragment_count,
+        mock_daily_sms_count,
         mock_daily_email_count,
         fake_uuid,
         num_being_sent,
@@ -3539,60 +4319,62 @@ class TestAnnualLimitsSend:
         expect_to_see_daily_limit_msg,
         app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            mocker.patch(
-                "app.main.views.send.s3download",
-                return_value=",\n".join(
-                    ["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * num_being_sent)
-                ),
-            )
-            mock_notification_counts_client.get_limit_stats.return_value = {
-                "sms": {
-                    "annual": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": 10000
-                        - num_sent_this_year
-                        - num_sent_today,  # The number of email notifications remaining this year
-                    },
-                    "daily": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
-                    },
+        mocker.patch(
+            "app.main.views.send.s3download",
+            return_value=",\n".join(["phone number"] + ([mock_get_users_by_service(None)[0]["mobile_number"]] * num_being_sent)),
+        )
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "sms": {
+                "annual": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": 10000
+                    - num_sent_this_year
+                    - num_sent_today,  # The number of email notifications remaining this year
+                },
+                "daily": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": 1000 - num_sent_today,  # The number of email notifications remaining today
+                },
+            }
+        }
+        # Mock get_all_notification_counts_for_today for billable units
+        mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+            "sms": num_sent_today,
+            "email": 900,
+        }
+        # mock that we've already sent `num_sent_today` emails today
+        mock_daily_email_count.return_value = 900  # not used in test but needs a value
+        mock_daily_sms_count.return_value = num_sent_today
+
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {
+                fake_uuid: {
+                    "template_id": fake_uuid,
+                    "notification_count": 1,
+                    "valid": True,
                 }
             }
-            # mock that we've already sent `num_sent_today` emails today
-            mock_daily_email_count.return_value = 900  # not used in test but needs a value
-            mock_daily_sms_fragment_count.return_value = num_sent_today
 
-            with client_request.session_transaction() as session:
-                session["file_uploads"] = {
-                    fake_uuid: {
-                        "template_id": fake_uuid,
-                        "notification_count": 1,
-                        "valid": True,
-                    }
-                }
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
 
-            page = client_request.get(
-                "main.check_messages",
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-                upload_id=fake_uuid,
-                original_file_name="valid.csv",
-                _test_page_title=False,
-            )
+        if expect_to_see_annual_limit_msg:
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
 
-            if expect_to_see_annual_limit_msg:
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
-            else:
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
-
-            if expect_to_see_daily_limit_msg:
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
-            else:
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+        if expect_to_see_daily_limit_msg:
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+        else:
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
 
     @pytest.mark.parametrize(
         "num_to_send, remaining_daily, remaining_annual, error_shown",
@@ -3623,63 +4405,60 @@ class TestAnnualLimitsSend:
         error_shown,
         app_,
     ):
-        with set_config(app_, "FF_ANNUAL_LIMIT", True):  # REMOVE LINE WHEN FF REMOVED
-            # mock that `num_sent_this_year` have already been sent this year
-            mock_notification_counts_client.get_limit_stats.return_value = {
-                "email": {
-                    "annual": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": remaining_annual,  # The number of email notifications remaining this year
-                    },
-                    "daily": {
-                        "limit": 1,  # doesn't matter for our test
-                        "sent": 1,  # doesn't matter for our test
-                        "remaining": remaining_daily,  # The number of email notifications remaining today
-                    },
+        # mock that `num_sent_this_year` have already been sent this year
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            "email": {
+                "annual": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_annual,  # The number of email notifications remaining this year
+                },
+                "daily": {
+                    "limit": 1,  # doesn't matter for our test
+                    "sent": 1,  # doesn't matter for our test
+                    "remaining": remaining_daily,  # The number of email notifications remaining today
+                },
+            }
+        }
+
+        # only change this value when we're expecting an error
+        if error_shown != "none":
+            mock_daily_email_count.return_value = 1000 - (
+                num_to_send - 1
+            )  # svc limit is 1000 - exceeding the daily limit is calculated based off of this
+        else:
+            mock_daily_email_count.return_value = 0  # none sent
+
+        mocker.patch(
+            "app.main.views.send.s3download",
+            return_value=",\n".join(["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_to_send)),
+        )
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {
+                fake_uuid: {
+                    "template_id": fake_uuid,
+                    "notification_count": 1,
+                    "valid": True,
                 }
             }
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
 
-            # only change this value when we're expecting an error
-            if error_shown != "none":
-                mock_daily_email_count.return_value = 1000 - (
-                    num_to_send - 1
-                )  # svc limit is 1000 - exceeding the daily limit is calculated based off of this
-            else:
-                mock_daily_email_count.return_value = 0  # none sent
-
-            mocker.patch(
-                "app.main.views.send.s3download",
-                return_value=",\n".join(
-                    ["email address"] + ([mock_get_users_by_service(None)[0]["email_address"]] * num_to_send)
-                ),
-            )
-            with client_request.session_transaction() as session:
-                session["file_uploads"] = {
-                    fake_uuid: {
-                        "template_id": fake_uuid,
-                        "notification_count": 1,
-                        "valid": True,
-                    }
-                }
-            page = client_request.get(
-                "main.check_messages",
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-                upload_id=fake_uuid,
-                original_file_name="valid.csv",
-                _test_page_title=False,
-            )
-
-            if error_shown == "annual":
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
-            elif error_shown == "daily":
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
-            elif error_shown == "none":
-                assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
-                assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+        if error_shown == "annual":
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+        elif error_shown == "daily":
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+        elif error_shown == "none":
+            assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
 
     @pytest.mark.parametrize(
         "notification_type, exception_msg_api, expected_error_msg_admin",
@@ -3696,6 +4475,7 @@ class TestAnnualLimitsSend:
         mocker,
         mock_get_service_template_with_placeholders,
         mock_get_template_statistics,
+        mock_get_limit_stats_send,
         notification_type,
         exception_msg_api,
         expected_error_msg_admin,
@@ -3778,3 +4558,80 @@ class TestAnnualLimitsSend:
         )
 
         assert normalize_spaces(page.select("h1")[0].text) == expected_error_msg_admin
+
+
+def test_send_test_redirects_to_user_profile_if_no_mobile_and_ff_on(
+    client_request,
+    app_,
+    active_user_no_mobile,
+    mocker,
+    mock_get_service_template,
+):
+    service_id = SERVICE_ONE_ID
+    template_id = TEMPLATE_ONE_ID
+
+    client_request.login(active_user_no_mobile)
+    mock_get_service_template.return_value = {"data": {"id": template_id, "template_type": "sms", "name": "Test Template"}}
+
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+
+    assert url_for("main.user_profile_mobile_number") in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert session["from_send_page"] == "send_test"
+        assert session["send_page_service_id"] == service_id
+        assert session["send_page_template_id"] == template_id
+
+
+def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff_on(
+    client_request,
+    app_,
+    active_user_no_mobile,
+    mocker,
+    mock_get_service_email_template_without_placeholders,
+):
+    service_id = SERVICE_ONE_ID
+    template_id = TEMPLATE_ONE_ID
+
+    client_request.login(active_user_no_mobile)
+    mock_get_service_email_template_without_placeholders.return_value = {
+        "data": {"id": template_id, "template_type": "email", "name": "Test Template"}
+    }
+
+    response = client_request.get("main.send_test", service_id=service_id, template_id=template_id, _expected_status=302)
+
+    assert url_for("main.user_profile_mobile_number") not in normalize_spaces(response.contents)
+    with client_request.session_transaction() as session:
+        assert "from_send_page" not in session
+        assert "send_page_service_id" not in session
+        assert "send_page_template_id" not in session
+
+
+class TestBillableUnitsInSendViews:
+    """Tests for billable units functionality in send views when FF_USE_BILLABLE_UNITS is enabled"""
+
+    def test_daily_sms_billable_units_count_returns_count_when_ff_enabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns billable units from notification_counts_client when FF is enabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+                mock_notification_counts.get_all_notification_counts_for_today.return_value = {"sms": 150, "email": 100}
+
+                result = daily_sms_billable_units_count("service-123")
+
+                assert result == 150
+                mock_notification_counts.get_all_notification_counts_for_today.assert_called_once_with("service-123")
+
+    def test_daily_sms_billable_units_count_returns_zero_when_ff_disabled(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns 0 when FF is disabled"""
+        from app.main.views.send import daily_sms_billable_units_count
+
+        with app_.app_context():
+            with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+
+                result = daily_sms_billable_units_count("service-123")
+
+                assert result == 0
+                mock_notification_counts.get_all_notification_counts_for_today.assert_not_called()

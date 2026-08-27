@@ -1,0 +1,8 @@
+{% macro indicator(content, corner) %}
+  <div class="indicator-relative">
+    {{ content | safe }}
+    <span class="indicator-corner">
+      {{ corner | safe }}
+    </span>
+  </div>
+{% endmacro %}

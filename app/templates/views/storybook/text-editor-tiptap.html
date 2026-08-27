@@ -1,0 +1,18 @@
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
+
+<h2 class="heading-medium">
+  Tiptap Editor
+</h2>
+
+<label class="form-label" id="tiptap-editor-label">Template content</label>
+{{ tiptap_editor('tiptap-editor', 'tiptap-editor-label', '## Welcome to the Editor
+
+This is a simple editor with the controls you need. Try formatting some text:
+
+- Make text **bold** or *italic*
+- Create bullet or numbered lists  
+- Add headings and links
+
+Start editing to see it in action!') }}
+
+<p class="mt-4"><a href="{{ url_for('main.storybook', component='text-editor-tiptap-complex-markdown') }}" class="text-blue-500 hover:underline">Open complex markdown test</a></p>

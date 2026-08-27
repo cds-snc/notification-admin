@@ -1,8 +1,10 @@
 from itertools import chain
 
-from flask import request, url_for
+from flask import g, request, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
+
+from app.models.user import _get_org_id_from_view_args, _get_service_id_from_view_args
 
 
 class Navigation:
@@ -63,6 +65,18 @@ class Navigation:
                 "view": "choose_template",
                 "url": url_for("main.choose_template", service_id=current_service.id),
             },
+            "sent-messages": {
+                "label": _l("Sent messages"),
+                "view": "view_notifications",
+                "context": not current_user.has_permissions("view_activity"),
+                "url": url_for("main.view_notifications", service_id=current_service.id, status="sending,delivered,failed"),
+            },
+            "bulk-sends": {
+                "label": _l("Bulk sends"),
+                "view": "view_jobs",
+                "context": not current_user.has_permissions("view_activity") and current_service.has_jobs,
+                "url": url_for("main.view_jobs", service_id=current_service.id),
+            },
             "api-integration": {
                 "label": _l("API integration"),
                 "view": "api_integration",
@@ -85,7 +99,29 @@ class Navigation:
     def get_user_nav(self):
         return {
             "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
-            "choose_account": {"label": _l("Your services"), "view": "choose_account"},
+            "choose_account": {"label": _l("Your services"), "view": "choose_account", "id_key": "choose_account"},
+        }
+
+    def get_org_nav(self):
+        from app import current_organisation
+
+        return {
+            "platform_admin": {"label": _l("Admin panel"), "view": "live_services", "context": current_user.platform_admin},
+            "dashboard": {
+                "label": _l("Dashboard"),
+                "view": "organisation_dashboard",
+                "url": url_for("main.organisation_dashboard", org_id=current_organisation.id),
+            },
+            "settings": {
+                "label": _l("Settings"),
+                "view": "organisation_settings",
+                "url": url_for("main.organisation_settings", org_id=current_organisation.id),
+            },
+            "team-members": {
+                "label": _l("Team members"),
+                "view": "manage_org_users",
+                "url": url_for("main.manage_org_users", org_id=current_organisation.id),
+            },
         }
 
     def get_contact_nav(self):
@@ -104,18 +140,25 @@ class Navigation:
         from app.utils import documentation_url
 
         return {
-            "home": {"label": _l("Home"), "url": gca_url_for(_l("home"))},
-            "why-notify": {"label": _l("Why GC Notify"), "url": gca_url_for(_l("why-gc-notify"))},
-            "features": {"label": _l("Features"), "url": gca_url_for(_l("features"))},
-            "documentation": {"label": _l("API documentation"), "url": documentation_url()},
-            "guidance": {"label": _l("Guidance"), "url": gca_url_for(_l("guidance"))},
+            "home": {"label": _l("Home"), "url": gca_url_for("home")},
+            "why-notify": {"label": _l("By and for the GC"), "url": gca_url_for("whynotify")},
+            "features": {"label": _l("Features"), "url": gca_url_for("features")},
+            "documentation": {"label": _l("API documentation"), "url": documentation_url(), "external": True},
+            "guidance": {"label": _l("Guidance"), "url": gca_url_for("guidance")},
             "contact": {"label": _l("Contact us"), "view": "contact"},
         }
 
     def get_nav(self):
         if current_user.is_authenticated:
             if current_user.has_permissions():
-                return self.get_service_nav()
+                # Check if we're in an organization context or service context
+                service_id = _get_service_id_from_view_args()
+                org_id = _get_org_id_from_view_args()
+                if org_id and not service_id:
+                    return self.get_org_nav()
+                if service_id and g.get("current_service"):
+                    return self.get_service_nav()
+                return self.get_user_nav()
             return self.get_user_nav()
         return self.get_public_nav()
 
@@ -272,6 +315,8 @@ class HeaderNavigation(Navigation):
             "set_sender",
             "set_template_sender",
             "preview_template",
+            "view_sample_template",
+            "view_sample_library",
             "view_template",
             "view_template_version",
             "view_template_versions",
@@ -519,6 +564,8 @@ class MainNavigation(Navigation):
             "send_test_step",
             "set_sender",
             "set_template_sender",
+            "view_sample_template",
+            "view_sample_library",
             "view_template",
             "view_template_version",
             "view_template_versions",

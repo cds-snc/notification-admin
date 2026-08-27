@@ -10,7 +10,7 @@
 {% set heading_2 = _('Review Address') %}
 {% set heading_3 = right_aligned_field_heading(_('Status')) %}
 
-<div class="ajax-block-container" aria-labelledby='pill-selected-item'>
+<div class="ajax-block-container">
   {% if job.job_status != 'scheduled' %} 
     <div class="dashboard-table">
       {% call(item, row_number) list_table(

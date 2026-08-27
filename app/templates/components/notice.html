@@ -30,10 +30,12 @@
       <span class="sr-only" data-testid="notice-icon-text">{{ display[type]['label'] }}: </span>
     </div>
     <div class="notice-content text-black flex flex-col gap-gutterHalf pt-gutterHalf">
-        {% if headingLevel is number and headingLevel >= 1 and headingLevel <= 3 %}
-            <h{{ headingLevel }} class="text-title" >{{ title }}</h{{ headingLevel }} data-testid="notice-heading">
-        {% else %}
-            <div class="text-large" data-testid="notice-heading">{{ title }}</div>
+        {% if title %}
+          {% if headingLevel is number and headingLevel >= 1 and headingLevel <= 3 %}
+              <h{{ headingLevel }} class="text-title" >{{ title }}</h{{ headingLevel }} data-testid="notice-heading">
+          {% else %}
+              <div class="text-large" data-testid="notice-heading">{{ title }}</div>
+          {% endif %}
         {% endif %}
         <div class="*:last:mb-0" data-testid="notice-message">{{ caller() }}</div>
     </div>

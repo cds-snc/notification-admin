@@ -68,6 +68,15 @@
   ScrollArea.prototype.focusHandler = function (e) {
     var $focusedElement = $(document.activeElement);
     var nodeName = $focusedElement.get(0).nodeName.toLowerCase();
+    // Ignore focus events originating from the rich text editor toolbar or editor chrome.
+    // Clicking toolbar controls shouldn't trigger sticky scroll adjustments.
+    if (
+      $focusedElement.closest(
+        ".tiptap, .editor-wrapper, .rte-toolbar, .tiptap-menubar, .menu-bar, .menu-bar__button",
+      ).length
+    ) {
+      return;
+    }
     var endOfFurthestEl = focusOverlap.endOfFurthestEl(this._els, this.edge);
     var isInSticky = function () {
       return $focusedElement.closest(this.selector).length > 0;
@@ -1015,10 +1024,14 @@
     $el.css({
       // element will be absolutely positioned so cannot rely on parent element for width
       width: window.innerWidth + "px",
+      // padding-left must align the sticky element's content with the main content area.
+      // The element has CSS margin-left: -gutterHalf which, combined with left: 0 in fixed
+      // positioning, shifts the border-box 15px to the left of the viewport edge.
+      // We compensate by using the main element's actual left offset from the viewport
+      // (via getBoundingClientRect) plus twice the padding to account for both the
+      // main's own left padding and the element's negative margin offset.
       "padding-left":
-        (window.innerWidth - (main.offsetWidth - mainPaddingLeft)) / 2 +
-        mainPaddingLeft +
-        "px",
+        main.getBoundingClientRect().left + 2 * mainPaddingLeft + "px",
     });
   };
   stickAtBottom.stick = function (el) {

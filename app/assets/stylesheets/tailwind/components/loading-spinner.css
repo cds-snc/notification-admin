@@ -8,7 +8,7 @@
     margin-right: 10px;
     border: 3px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    border-top-color: #00703c; /* Green color from the image */
+    border-top-color: #fff;
     animation: spin 1s ease-in-out infinite;
     vertical-align: middle;
   }

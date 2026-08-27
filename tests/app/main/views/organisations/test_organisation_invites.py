@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 from unittest.mock import ANY
 
 import pytest
+from app.models.user import InvitedOrgUser
 from bs4 import BeautifulSoup
 from flask import url_for
-from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces, set_config
-
-from app.models.user import InvitedOrgUser
+from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
 
 
 def test_view_team_members(
@@ -213,7 +212,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "not good",
                 "password": "validPassword!",
             },
-            "Not a valid phone number",
+            "Number must have 10 digits",
         ],
         [
             {
@@ -221,7 +220,7 @@ def test_registration_from_org_invite_404s_if_user_not_in_session(
                 "mobile_number": "+4966921809",
                 "password": "password",
             },
-            "A password that is hard to guess contains",
+            "Use a mix of at least 8 numbers, special characters, upper and lower case letters. Separate any words with a space.",
         ],
     ],
 )
@@ -329,12 +328,7 @@ def test_org_user_registration(
         session["invited_org_user"]["email_address"],
         "+16502532222",
         "validPassword!",
-        "sms_auth",
-    )
-    mock_send_verify_code.assert_called_once_with(
-        "6ce466d0-fd6a-11e5-82f5-e0accb9d11a6",
-        "sms",
-        "+16502532222",
+        "email_auth",
     )
 
 
@@ -375,10 +369,9 @@ class TestOrgInvite:
         fake_uuid,
         app_,
     ):
-        with set_config(app_, "FF_OPTIONAL_PHONE", True):
-            page = client_request.get(
-                ".manage_org_users",
-                org_id=ORGANISATION_ID,
-            )
-            link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
-            assert link is None
+        page = client_request.get(
+            ".manage_org_users",
+            org_id=ORGANISATION_ID,
+        )
+        link = page.find("a", class_="button button-secondary", text=lambda x: x and "Invite team member" in x.strip())
+        assert link is None

@@ -54,6 +54,10 @@ def view_notification(service_id, notification_id):
 
     personalisation = get_all_personalisation_from_notification(notification)
 
+    # Get attachments from personalisation after redaction is applied
+    methods = ["attach", "template_attach"]
+    attachments = list(get_attachments(notification, methods).values())
+
     if notification["template"]["is_precompiled_letter"]:
         try:
             file_contents = view_letter_notification_as_preview(service_id, notification_id, "pdf")
@@ -145,7 +149,8 @@ def view_notification(service_id, notification_id):
         sent_with_test_key=(notification.get("key_type") == KEY_TYPE_TEST),
         back_link=back_link,
         just_sent=request.args.get("just_sent"),
-        attachments=get_attachments(notification, "attach").values(),
+        attachments=attachments,
+        billable_units=notification.get("billable_units"),
     )
 
 
@@ -214,13 +219,24 @@ def get_single_notification_partials(notification):
     }
 
 
-def get_attachments(notification, sending_method):
-    if sending_method not in ["attach", "link"]:
-        raise NotImplementedError
+def get_attachments(notification, sending_methods):
+    """Return personalisation documents with any of the given sending methods.
+
+    Args:
+        notification: The notification dict
+        sending_methods: Either a string (e.g., "attach") or a list of strings (e.g., ["attach", "template_attach"])
+
+    Returns:
+        Dict of {key: document_dict} for matching documents
+    """
+    # Accept single string for backwards compatibility
+    if isinstance(sending_methods, str):
+        sending_methods = [sending_methods]
+
     return {
         k: v["document"]
         for k, v in (notification.get("personalisation", {})).items()
-        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") == sending_method
+        if isinstance(v, dict) and "document" in v and v["document"].get("sending_method") in sending_methods
     }
 
 

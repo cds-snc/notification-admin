@@ -61,7 +61,7 @@ export const YearMonth = () => {
         }}
         disabled={prevMonthEnabled(date, firstAvailableDate) ? false : true}
       >
-        <i aria-hidden="true" class="fa-solid fa-arrow-left"></i>
+        <i aria-hidden="true" className="fa-solid fa-arrow-left"></i>
       </button>
       <div className="Nav--month">{dayjs(date).format("MMMM")}</div>
       <button
@@ -80,7 +80,7 @@ export const YearMonth = () => {
         }}
         disabled={nextMonthEnabled(date, lastAvailableDate) ? false : true}
       >
-        <i aria-hidden="true" class="fa-solid fa-arrow-right"></i>
+        <i aria-hidden="true" className="fa-solid fa-arrow-right"></i>
       </button>
     </section>
   );

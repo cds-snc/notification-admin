@@ -1,0 +1,12 @@
+/* indicator.css - styles for the indicator component */
+
+.indicator-relative {
+  position: relative;
+  display: flex;
+  overflow: visible;
+}
+
+.indicator-corner {
+  margin-left: -30px;
+  margin-top: -15px;
+}

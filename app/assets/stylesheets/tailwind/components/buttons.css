@@ -85,7 +85,7 @@
     @apply opacity-50 cursor-default;
   }
 
-  a.button:not(.button-link) {
+  a.button:not(.button-link):not(.cursor-pointer) {
     user-select: none;
     cursor: default;
   }

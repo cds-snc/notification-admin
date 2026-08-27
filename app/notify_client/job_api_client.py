@@ -45,15 +45,18 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 
-    def get_jobs(self, service_id, limit_days=None, statuses=None, page=1):
+    def get_jobs(self, service_id, limit_days=None, statuses=None, page=1, page_size=None):
         params = {"page": page}
         if limit_days is not None:
             params["limit_days"] = limit_days
         if statuses is not None:
             params["statuses"] = ",".join(statuses)
+        if page_size is not None:
+            params["page_size"] = page_size
 
         jobs = self.get(url="/service/{}/job".format(service_id), params=params)
         for job in jobs["data"]:
@@ -62,6 +65,7 @@ class JobApiClient(NotifyAdminAPIClient):
             job["notifications_delivered"] = stats["delivered"]
             job["notifications_failed"] = stats["failed"]
             job["notifications_requested"] = stats["requested"]
+            job["notifications_sending"] = stats["sending"]
 
         return jobs
 
@@ -83,11 +87,12 @@ class JobApiClient(NotifyAdminAPIClient):
             page=page,
         )
 
-    def get_immediate_jobs(self, service_id, limit_days=7):
+    def get_immediate_jobs(self, service_id, limit_days=7, page_size=None):
         return self.get_jobs(
             service_id,
             limit_days=limit_days,
             statuses=self.NON_SCHEDULED_JOB_STATUSES,
+            page_size=page_size,
         )["data"]
 
     def get_scheduled_jobs(self, service_id):
@@ -98,7 +103,8 @@ class JobApiClient(NotifyAdminAPIClient):
 
     @cache.set("has_jobs-{service_id}")
     def has_jobs(self, service_id):
-        return bool(self.get_jobs(service_id)["data"])
+        response = self.get(url="/service/{}/job/has_jobs".format(service_id))
+        return bool(response["data"]["has_jobs"])
 
     def create_job(self, job_id, service_id, scheduled_for=None):
         data = {"id": job_id}
@@ -120,6 +126,7 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 
@@ -132,6 +139,7 @@ class JobApiClient(NotifyAdminAPIClient):
         job["data"]["notifications_delivered"] = stats["delivered"]
         job["data"]["notifications_failed"] = stats["failed"]
         job["data"]["notifications_requested"] = stats["requested"]
+        job["data"]["notifications_sending"] = stats["sending"]
 
         return job
 

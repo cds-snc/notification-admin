@@ -1,0 +1,9 @@
+{% from "components/notice.html" import notice %}
+
+{% if template.template_type == 'email' and has_incomplete_template_attachments %}
+  <div class="mb-8" data-testid="template-attachments-warning">
+    {% call notice('warning', _('Some files are not yet attached')) %}
+      <p>{{ _('GC Notify is still scanning your files.') }}</p>
+    {% endcall %}
+  </div>
+{% endif %}

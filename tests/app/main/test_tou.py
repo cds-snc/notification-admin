@@ -1,5 +1,4 @@
 import pytest
-
 from app.articles.routing import GC_ARTICLES_ROUTES
 from app.tou import show_tou_prompt
 

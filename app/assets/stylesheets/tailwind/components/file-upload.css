@@ -24,7 +24,9 @@
   }
 
   .js-enabled .file-upload-group:focus-within .file-upload-button {
-    @apply outline-yellow;
+    outline: 3px solid theme("colors.yellow.DEFAULT");
+    outline-offset: 0;
+    @apply border-transparent shadow-outline;
   }
 
   .js-enabled #file-upload-button {

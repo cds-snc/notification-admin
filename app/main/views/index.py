@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from flask import (
     abort,
@@ -13,10 +13,11 @@ from flask import (
 )
 from flask_babel import _
 from flask_login import current_user
+from markupsafe import Markup
 from notifications_utils.international_billing_rates import INTERNATIONAL_BILLING_RATES
 from notifications_utils.template import HTMLEmailTemplate, LetterImageTemplate
 
-from app import email_branding_client, get_current_locale, letter_branding_client
+from app import cache, email_branding_client, get_current_locale, letter_branding_client
 from app.articles import (
     _get_alt_locale,
     get_lang_url,
@@ -34,6 +35,7 @@ from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
     FieldWithNoneOption,
+    NewsletterSubscriptionForm,
     SearchByNameForm,
 )
 from app.main.sitemap import get_sitemap
@@ -45,12 +47,15 @@ from app.utils import (
     get_logo_cdn_domain,
     is_safe_redirect_url,
     user_is_logged_in,
+    user_is_platform_admin,
 )
 
 
 @main.route("/")
 def index():
-    if current_user and current_user.is_authenticated:
+    # If user is authenticated and they have not just signed up to the newsletter,
+    # redirect to their choose_account page
+    if current_user and current_user.is_authenticated and not request.args.get("subscribed"):
         return redirect(url_for("main.choose_account"))
 
     path = "home" if get_current_locale(current_app) == "en" else "accueil"
@@ -72,7 +77,7 @@ def robots():
 def security_txt():
     security_policy = gca_url_for("security", _external=True)
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",
@@ -95,14 +100,34 @@ def verify_mobile():
 
 
 @main.route("/pricing")
+@user_is_platform_admin
 def pricing():
+    lang = get_current_locale(current_app)
+
+    def _country_display_name(country):
+        names = country.get("names")
+        if isinstance(names, dict):
+            return names.get(lang) or names.get("en") or next(iter(names.values()))
+        if isinstance(names, (list, tuple)):
+            return Markup("<br />").join(Markup.escape(n) for n in names)
+        return names
+
+    entries = []
+    for cc, country in INTERNATIONAL_BILLING_RATES.items():
+        if not country.get("attributes", {}).get("can_send", False):
+            continue
+        display = _country_display_name(country)
+        # strip HTML for sorting (e.g. remove <br />)
+        sort_key = re.sub(r"<[^>]+>", "", str(display) or "").strip().lower()
+        entries.append((cc, display, country.get("billable_units"), sort_key))
+
+    # sort by country display name
+    international_sms_rates = [(cc, display, units) for cc, display, units, _ in sorted(entries, key=lambda x: x[3])]
+
     return render_template(
         "views/pricing/index.html",
         sms_rate=0.0158,
-        international_sms_rates=sorted(
-            [(cc, country["names"], country["billable_units"]) for cc, country in INTERNATIONAL_BILLING_RATES.items()],
-            key=lambda x: x[0],
-        ),
+        international_sms_rates=international_sms_rates,
         search_form=SearchByNameForm(),
     )
 
@@ -240,11 +265,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/roadmap", endpoint="roadmap")
-def roadmap():
-    return render_template("views/roadmap.html")
-
-
 @main.route("/email", endpoint="email")
 def features_email():
     return render_template("views/emails.html")
@@ -289,6 +309,33 @@ def sitemap():
 @main.route("/activity", endpoint="activity")
 def activity():
     return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
+
+
+@cache.memoize(timeout=12 * 60 * 60)
+@main.route("/activity/atom", endpoint="activity_atom")
+def activity_atom():
+    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    now = datetime.now(timezone.utc)
+    updated_total = now.isoformat()
+    updated_services = (now - timedelta(minutes=2)).isoformat()
+    updated_emails = (now - timedelta(minutes=3)).isoformat()
+    updated_sms = (now - timedelta(minutes=4)).isoformat()
+
+    response = make_response(
+        render_template(
+            "views/activity-atom.xml",
+            **stats,
+            updated_total=updated_total,
+            updated_services=updated_services,
+            updated_emails=updated_emails,
+            updated_sms=updated_sms,
+        ),
+        200,
+    )
+    response.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
+    response.headers["Content-Disposition"] = 'attachment; filename="activity.atom"'
+
+    return response
 
 
 @main.route("/activity/download", endpoint="activity_download")
@@ -340,6 +387,8 @@ def old_page_redirects():
 @main.route("/format", endpoint="formatting_guide")
 @main.route("/messages-status", endpoint="message_delivery_status")
 @main.route("/pourquoi-gc-notification", endpoint="whynotify")
+@main.route("/why-gc-notify", endpoint="whynotify")
+@main.route("/pourquoi-notification-gc", endpoint="whynotify")
 def gca_redirects():
     return redirect(gca_url_for(request.endpoint.replace("main.", "")), code=301)
 
@@ -390,7 +439,7 @@ def page_content(path=""):
     return _render_articles_page(response)
 
 
-def _render_articles_page(response):
+def _render_articles_page(response, newsletter_form=None):
     title = response["title"]["rendered"]
     slug_en = response["slug_en"]
     html_content = response["content"]["rendered"]
@@ -398,6 +447,9 @@ def _render_articles_page(response):
 
     nav_items = get_nav_items()
     set_active_nav_item(nav_items, request.path)
+
+    if newsletter_form is None:
+        newsletter_form = NewsletterSubscriptionForm()
 
     return render_template(
         "views/page-content.html",
@@ -408,6 +460,9 @@ def _render_articles_page(response):
         lang_url=get_lang_url(response, bool(page_id)),
         stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
+        newsletter_form=newsletter_form,
+        newsletter_subscribed=request.args.get("subscribed") == "1",
+        newsletter_subscribed_email=request.args.get("email"),
     )
 
 

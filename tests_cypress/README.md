@@ -7,10 +7,13 @@ This folder contains Cypress tests suites.  In order to run them, you'll need to
 ### In your devcontainer
 There are some issues getting the cypress UI to launch within the devcontainer.  For now, you can run the headless tests inside the dev container but if you want to launch the cypress UI you will need to do that outside of the dev container.  
 
-There are 3 helper scripts in `package.json` to run 2 of the test suites.  Run these from the `tests_cypress/` folder:
+There are helper scripts in `package.json` to run CI and accessibility suites.  Run these from the `tests_cypress/` folder:
 - `npm run cypress`:  this will open Cypress with its UI and you can choose any test suite to run
 - `npm run a11y`: this will run the accessibility tests in headless mode using the electron browser
 - `npm run ci`: this will run the headless CI tests in headless mode using the electron browser
+- `npm run ci:shard:1`: runs shard 1 (profile and auth-adjacent flows)
+- `npm run ci:shard:2`: runs shard 2 (template and editor/component-heavy flows)
+- `npm run ci:shard:3`: runs shard 3 (a11y/navigation/branding flows)
 
 ### Outside of your devcontainer
 To launch the cypress UI, where you can choose your test suite and visually debug and inspect tests, run (from the `tests_cypress/` folder):
@@ -32,22 +35,33 @@ npx cypress install
 
 #### Top-level values, same between environments
 
-| key                           | description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| ENV                           | The environment to run the tests against        |
-| NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests          |
-| NOTIFY_PASSWORD               | Password of NOTIFY_USER (gmail)                 |
-| IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER  |
+| key                           | description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| ENV                           | The environment to run the tests against               |
+| NOTIFY_UI_TEST_EMAIL_ADDRESS  | Notify email account used by the tests to check email  |
+| IMAP_PASSWORD                 | IMAP password of gmail account for NOTIFY_USER         |
 
 ### Environment-specific values
+Get those from admin and api .env files
 
-| key                           | description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| ADMIN_SECRET                  | Secret admin uses to authenticate against API   |
-| CYPRESS_AUTH_CLIENT_SECRET    | Secret for the Cypress auth client              |
-| CYPRESS_USER_PASSWORD         | Password for the cypress notify user            |
-| CACHE_CLEAR_CLIENT_SECRET     | Secret for the cache clearing auth client       |
-| WAF_SECRET                    | Secret to bypass WAF rate limits                |
+TODO: CYPRESS_USER_PASSWORD is called CYPRESS_USER_PW_SECRET in the .env files
+
+| key                           | description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| ADMIN_SECRET                  | Secret admin uses to authenticate against API          |
+| CYPRESS_AUTH_CLIENT_SECRET    | Secret for the Cypress auth client                     |
+| CYPRESS_USER_PASSWORD         | Password for the cypress notify users                  |
+| CACHE_CLEAR_CLIENT_SECRET     | Secret for the cache clearing auth client              |
+| WAF_SECRET                    | Secret to bypass WAF rate limits                       |
+
+### Test user creation
+- When cypress starts, it makes a call to API to create new test users (one regular, and one platform admin).  
+- It does this via the `/cypress` route on API, and uses the `CYPRESS_AUTH_CLIENT_SECRET` to create a JWT.  
+- When it creates the user, it uses the password stored in `CYPRESS_USER_PASSWORD`.
+  
+**IMPORTANT:**
+- **Your API `.env` must have the same value for `CYPRESS_AUTH_CLIENT_SECRET` as `cypress.env.json` in order for cypress to be able to authenticate with API.**
+- **Your API `.env` must have the same value for `CYPRESS_USER_PASSWORD` as `cypress.env.json` in order for API to use the correct password when creating the user accounts.**
 
 ### Setting target environment 🎯
 

@@ -1,7 +1,15 @@
 {% macro validation_summary(form=None, field_order=None) %}
   {% if form and form.errors %}
-    <div role="alert" tabindex="-1" class="border-4 border-red focus:outline-yellow mb-gutter p-gutter space-y-gutterHalf" id="validation-summary" data-testid="validation_summary" autofocus>
-      <h2 class="heading-medium m-0">{{ _('There was a problem') }}</h2>
+    <div 
+      role="alert" 
+      tabindex="-1"
+      autofocus
+      class="border-4 border-red focus:outline-yellow mb-gutter p-gutter space-y-gutterHalf"
+      id="validation-summary"
+      data-testid="validation_summary"
+      aria-labelledby="validation-summary-heading"
+    >
+      <h2 id="validation-summary-heading" class="heading-medium m-0">{{ _('There was a problem') }}</h2>
       <ol class="list list-number list-outside m-0">
         {# Get a list of error keys #}
         {% set error_fields = form.errors.keys()|list %}
@@ -20,13 +28,13 @@
           {% if form[field].type != 'HiddenField' %}
             <li>
               <a class="link:text-red text-red visited:text-red" href="#{{ field }}">
-                <span class="font-bold">{{ form[field].label.text}}</span>: 
+                <span class="font-bold">{{ form[field].label.text}}</span>:
                 {{ form.errors[field][0] }}
               </a>
             </li>
           {% endif %}
         {% endfor %}
-      </ul>
+      </ol>
     </div>
   {% endif %}
 {% endmacro %}

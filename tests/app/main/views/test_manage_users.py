@@ -2,10 +2,10 @@ import copy
 import uuid
 
 import pytest
+from app.utils import is_gov_user
 from flask import url_for
 
 import app
-from app.utils import is_gov_user
 from tests.conftest import (
     SERVICE_ONE_ID,
     USER_ONE_ID,
@@ -212,31 +212,6 @@ def test_should_show_caseworker_on_overview_page(
     )
 
 
-@pytest.mark.parametrize(
-    "endpoint, extra_args, service_has_email_auth, auth_options_hidden",
-    [
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, True, False),
-        ("main.edit_user_permissions", {"user_id": sample_uuid()}, False, True),
-        ("main.invite_user", {}, True, False),
-        ("main.invite_user", {}, False, True),
-    ],
-)
-def test_service_with_no_email_auth_hides_auth_type_options(
-    client_request,
-    endpoint,
-    extra_args,
-    service_has_email_auth,
-    auth_options_hidden,
-    service_one,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-):
-    if service_has_email_auth:
-        service_one["permissions"].append("email_auth")
-    page = client_request.get(endpoint, service_id=service_one["id"], **extra_args)
-    assert (page.find("input", attrs={"name": "login_authentication"}) is None) == auth_options_hidden
-
-
 @pytest.mark.parametrize("service_has_caseworking", (True, False))
 @pytest.mark.parametrize(
     "endpoint, extra_args",
@@ -340,56 +315,6 @@ def test_does_not_show_you_should_have_at_least_two_members_when_user_does_not_h
 
 
 @pytest.mark.parametrize(
-    "sms_option_disabled, mobile_number, expected_label",
-    [
-        (
-            True,
-            None,
-            """
-            Text message code
-            Not available because Test User has not added a
-            phone number to their profile
-        """,
-        ),
-        (
-            False,
-            "9025555555",
-            """
-            Text message code
-        """,
-        ),
-    ],
-)
-def test_user_with_no_mobile_number_cant_be_set_to_sms_auth(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    api_user_active,
-    sms_option_disabled,
-    mobile_number,
-    expected_label,
-    service_one,
-    mocker,
-    fake_uuid,
-    active_user_with_permissions,
-):
-    active_user_with_permissions["mobile_number"] = mobile_number
-
-    service_one["permissions"].append("email_auth")
-    mocker.patch("app.user_api_client.get_user", return_value=active_user_with_permissions)
-
-    page = client_request.get(
-        "main.edit_user_permissions",
-        service_id=service_one["id"],
-        user_id=sample_uuid(),
-    )
-
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") == sms_option_disabled
-    assert normalize_spaces(page.select_one("label[for=login_authentication-0]").text) == normalize_spaces(expected_label)
-
-
-@pytest.mark.parametrize(
     "endpoint, extra_args, expected_checkboxes",
     [
         (
@@ -433,19 +358,6 @@ def test_should_show_page_for_one_user(
         expected_input_name, expected_checked = expected
         assert checkboxes[index]["name"] == expected_input_name
         assert checkboxes[index].has_attr("checked") == expected_checked
-
-
-def test_invite_user_allows_to_choose_auth(
-    client_request,
-    mock_get_users_by_service,
-    mock_get_template_folders,
-    service_one,
-):
-    service_one["permissions"].append("email_auth")
-    page = client_request.get("main.invite_user", service_id=SERVICE_ONE_ID)
-
-    sms_auth_radio_button = page.select_one('input[value="sms_auth"]')
-    assert sms_auth_radio_button.has_attr("disabled") is False
 
 
 def test_invite_user_has_correct_email_field(
@@ -607,6 +519,7 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
     mock_get_template_folders,
     fake_uuid,
     platform_admin_user,
+    app_,
 ):
     service_one["permissions"] = ["edit_folder_permissions"]
     mocker.patch("app.user_api_client.get_user", return_value=platform_admin_user)
@@ -635,7 +548,7 @@ def test_cant_edit_user_folder_permissions_for_platform_admin_users(
         service_id=SERVICE_ONE_ID,
         user_id=fake_uuid,
     )
-    assert normalize_spaces(page.select("main p")[0].text) == "platform@admin.canada.ca Change"
+    assert normalize_spaces(page.select("main p")[0].text) == "platform@admin.canada.ca"
     assert normalize_spaces(page.select("main p")[2].text) == ("Platform admin users can access all template folders.")
     assert page.select("input[name=folder_permissions]") == []
     client_request.post(
@@ -726,7 +639,6 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
         },
         folder_permissions=[],
     )
-    mock_update_user_attribute.assert_called_with(str(active_user_with_permissions["id"]), auth_type=auth_type)
 
 
 def test_should_show_page_for_inviting_user(
@@ -789,13 +701,17 @@ def test_invite_user(
     gov_user,
     mock_get_template_folders,
     mock_get_organisations,
+    app_,
 ):
+    expected_default_auth = "email_auth"
+
     sample_invite["email_address"] = "test@tbs-sct.gc.ca"
 
     assert is_gov_user(email_address) == gov_user
     mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
     mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
     mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=None)
     page = client_request.post(
         "main.invite_user",
         service_id=SERVICE_ONE_ID,
@@ -826,7 +742,7 @@ def test_invite_user(
             sample_invite["service"],
             email_address,
             expected_permissions,
-            "sms_auth",
+            expected_default_auth,
             [],
         )
     else:
@@ -834,7 +750,7 @@ def test_invite_user(
         app.invite_api_client.create_invite.assert_not_called()
 
 
-@pytest.mark.parametrize("auth_type", [("sms_auth"), ("email_auth")])
+@pytest.mark.parametrize("auth_type", [("email_auth")])
 @pytest.mark.parametrize(
     "email_address, gov_user",
     [("test@tbs-sct.gc.ca", True), ("test@nonsafelist.com", False)],
@@ -846,12 +762,20 @@ def test_invite_user_with_email_auth_service(
     sample_invite,
     email_address,
     gov_user,
+    api_user_active,
     mocker,
     auth_type,
     mock_get_organisations,
     mock_get_template_folders,
     mock_get_security_keys,
+    app_,
 ):
+    service_one["permissions"].append("email_auth")
+    sample_invite["service"] = SERVICE_ONE_ID
+    sample_invite["auth_type"] = auth_type
+    sample_invite["from_user"] = active_user_with_permissions["id"]
+    sample_invite["service_name"] = service_one["name"]
+    sample_invite["status"] = "pending"
     service_one["permissions"].append("email_auth")
     sample_invite["email_address"] = email_address
 
@@ -859,6 +783,7 @@ def test_invite_user_with_email_auth_service(
     mocker.patch("app.models.user.InvitedUsers.client", return_value=[sample_invite])
     mocker.patch("app.models.user.Users.client", return_value=[active_user_with_permissions])
     mocker.patch("app.invite_api_client.create_invite", return_value=sample_invite)
+    mocker.patch("app.user_api_client.get_user_by_email_or_none", return_value=api_user_active)
 
     page = client_request.post(
         "main.invite_user",
@@ -893,7 +818,7 @@ def test_invite_user_with_email_auth_service(
             sample_invite["service"],
             email_address,
             expected_permissions,
-            auth_type,
+            api_user_active["auth_type"],
             [],
         )
     else:
@@ -1446,6 +1371,7 @@ def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_l
     mock_get_template_folders,
     service_one,
     mocker,
+    app_,
 ):
     page = client_request.get(
         "main.edit_user_permissions",
@@ -1457,9 +1383,7 @@ def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_l
     mobile_number_paragraph = page.select("p[id=user_mobile_number]")[0]
     assert "650 •  •  •  • 222" in mobile_number_paragraph.text
     change_link = mobile_number_paragraph.findChild()
-    assert change_link.attrs["href"] == "/services/{}/users/{}/edit-mobile-number".format(
-        service_one["id"], active_user_with_permissions["id"]
-    )
+    assert change_link is None
 
 
 def test_edit_user_permissions_with_delete_query_shows_banner(

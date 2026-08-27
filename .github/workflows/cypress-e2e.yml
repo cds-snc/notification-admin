@@ -3,9 +3,28 @@ name: Cypress E2E Tests
 on:
   push:
 
+env:
+  AWS_DEFAULT_REGION: ca-central-1
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
 jobs:
   cypress-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+        - name: shard-1
+          spec: cypress/e2e/admin/ci-shard-1.cy.js
+        - name: shard-2
+          spec: cypress/e2e/admin/ci-shard-2.cy.js
+        - name: shard-3
+          spec: cypress/e2e/admin/ci-shard-3.cy.js
     services:
       postgres:
         image: postgres:11.17-bullseye
@@ -13,9 +32,14 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: chummy
           POSTGRES_DB: notification_api
+          AWS_XRAY_SDK_ENABLED: "false"
         ports:
         - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd "pg_isready -U postgres -d notification_api"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis:6.2@sha256:9e75c88539241ad7f61bc9c39ea4913b354064b8a75ca5fc40e1cef41b645bc0
         ports:
@@ -34,7 +58,7 @@ jobs:
 
     - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
-        node-version: '16.x'
+        node-version: '22.22.3'
         cache: 'npm'
 
     - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
@@ -54,7 +78,7 @@ jobs:
 
     # Now checkout the API repo
     - name: Checkout API repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
       with:
         repository: cds-snc/notification-api
         path: api
@@ -93,12 +117,19 @@ jobs:
         printf '__commit_sha__ = "09cfe03100443fb9071bba88d5c8775ff54a9ebc"\n__time__ = "2022-07-25:15:11:05"\n' > version.py
         cp version.py "${{ github.workspace }}/api/app/"
 
+    - name: Configure credentials to Notify using OIDC
+      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+      with:
+        role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-admin-cypress-e2e-tests
+        role-session-name: NotifyAdminCypressE2ETests
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
     - name: Setup API .env
       working-directory: api
       run: |
         echo 'NOTIFICATION_QUEUE_PREFIX=api-pr-notification-canada-ca' > .env
-        echo 'AWS_ACCESS_KEY_ID=${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}' >> .env
-        echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}' >> .env
+        echo 'AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID' >> .env
+        echo 'AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY' >> .env
         echo ''
         echo 'AWS_REGION=ca-central-1' >> .env
         echo 'ASSET_DOMAIN=example.com' >> .env
@@ -196,18 +227,18 @@ jobs:
         config: "video=true,screenshotOnRunFailure=true"
         build: npx cypress info
         working-directory: tests_cypress
-        spec: |
-          cypress/e2e/admin/ci.cy.js
+        spec: ${{ matrix.shard.spec }}
 
     - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: always()
       with:
-        name: cypress-artifacts
+        name: cypress-artifacts-${{ matrix.shard.name }}
         path: |
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
-        retention-days: 30
+          tests_cypress/cypress/results
+        retention-days: 7
 
     - name: Output API logs on failure
       if: failure()
@@ -226,3 +257,40 @@ jobs:
       run: |
         echo "==== FRONTEND LOGS ===="
         cat frontend.log || echo "No frontend logs available"
+
+  cypress-component-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      with:
+        node-version: '22.22.3'
+        cache: 'npm'
+
+    - name: Install root dependencies
+      run: npm ci
+
+    - name: Install Cypress dependencies
+      working-directory: tests_cypress
+      run: npm ci
+
+    - name: Run Cypress component tests
+      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+      with:
+        record: false
+        config: "video=true,screenshotOnRunFailure=true"
+        build: npx cypress info
+        working-directory: tests_cypress
+        component: true
+
+    - name: Upload component test artifacts
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      if: always()
+      with:
+        name: cypress-component-artifacts 
+        path: |
+          tests_cypress/cypress/videos
+          tests_cypress/cypress/screenshots
+        retention-days: 7

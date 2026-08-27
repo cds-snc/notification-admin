@@ -1,14 +1,17 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% macro banner(body, type=None, with_tick=False, delete_button=None, subhead=None, context=None, action=None) %}
+  {% set t = type %}
   <div
-    class='banner{% if type %}-{{ type }}{% endif %}{% if with_tick %}-with-tick{% else %} banner{% endif %}'
+    class="banner{% if t %} banner-{{ t }}{% endif %}{% if with_tick and not t %} banner-with-tick{% elif with_tick and t %} banner-{{ t }}-with-tick{% endif %}"
     {% if type == "dangerous" %}
       role="alert"
-      tabindex="-1"
     {% else %}
       role="status"
     {% endif %}
+    tabindex="-1"
+    autofocus
+    data-testid="flash_message"
   >
     {% if subhead -%}
       <h2 class='banner-title'>{{ subhead }}</h2>

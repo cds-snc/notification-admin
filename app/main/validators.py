@@ -1,5 +1,8 @@
+import ipaddress
 import re
 import time
+from email.utils import formataddr
+from urllib.parse import urlparse
 
 import pwnedpasswords
 import requests
@@ -76,7 +79,7 @@ class ValidTeamMemberDomain:
             safelist_domains_to_display = ["canada.ca", "*.gc.ca"]
             safelist_domains_to_display.extend(g.team_member_email_domains)
             message = _("{} is not a government or team email address</br>Use one of the following domains:</br>{}").format(
-                email_domain, "<br>".join([f"@{domain}" for domain in safelist_domains_to_display])
+                email_domain.replace("%", "%%"), "<br>".join([f"@{domain}" for domain in safelist_domains_to_display])
             )
 
             raise ValidationError(message)
@@ -98,7 +101,7 @@ class ValidGovEmail:
 
         contact_text = _("contact us")
         message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
-            domain, contact_text
+            domain.replace("%", "%%"), contact_text
         )
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
@@ -173,6 +176,21 @@ class ValidCallbackUrl:
             validate_callback_url(field.data, form.bearer_token.data)
 
 
+def _is_localhost_url(url):
+    """Check if a URL references localhost or a loopback address."""
+    try:
+        parsed = urlparse(url)
+        hostname = (parsed.hostname or "").rstrip(".")
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            return True
+        try:
+            return ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            return False
+    except Exception:
+        return False
+
+
 def validate_callback_url(service_callback_url, bearer_token):
     """Validates a callback URL, checking that it is https and by sending a POST request to the URL with a health_check parameter.
     4xx responses are considered invalid. 5xx responses are considered valid as it indicates there is at least a service running
@@ -185,6 +203,12 @@ def validate_callback_url(service_callback_url, bearer_token):
     Raises:
         ValidationError: If the URL is not HTTPS or the http response is 4xx.
     """
+    if _is_localhost_url(service_callback_url):
+        current_app.logger.warning(
+            f"Unable to create callback for service: {current_service.id}. Error: Localhost callback URLs are not allowed: URL: {service_callback_url}"
+        )
+        raise ValidationError(_l("Enter a public URL. Localhost URLs cannot be used for callbacks."))
+
     if not validators.url(service_callback_url):
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id}. Error: Invalid callback URL format: URL: {service_callback_url}"
@@ -204,15 +228,23 @@ def validate_callback_url(service_callback_url, bearer_token):
 
         if response.status_code < 500 and response.status_code >= 400:
             current_app.logger.warning(
-                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url}"
+                f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Response Code: {response.status_code}"
             )
-            raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
+            raise ValidationError(
+                _l("Check your service is running and not using a proxy we cannot access. Received {} response").format(
+                    response.status_code
+                )
+            )
 
     except requests.RequestException as e:
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id} Error: Callback URL not reachable URL: {service_callback_url} Exception: {e}"
         )
-        raise ValidationError(_l("Check your service is running and not using a proxy we cannot access"))
+        raise ValidationError(
+            _l("Check your service is running and not using a proxy we cannot access. Received {} response").format(
+                getattr(e.response, "status_code", "unknown")
+            )
+        )
 
 
 def validate_email_from(form, field):
@@ -243,3 +275,52 @@ def validate_service_name(form, field):
     )
     if not unique_name:
         raise ValidationError(_l("This service name is already in use"))
+
+
+def validate_combined_email_header_length(form, field):
+    """
+    Validate that the combined email header (service name + email address) doesn't exceed 320 characters.
+    When a service name contains unicode characters, it gets MIME-encoded in the email header,
+    which can significantly increase its length.
+    """
+    # At least one of name or email_from must be on the form for this
+    # validator to be meaningful.
+    if not hasattr(form, "name") and not hasattr(form, "email_from"):
+        return
+
+    if hasattr(form, "name"):
+        service_name = form.name.data if form.name.data else ""
+    else:
+        service_name = getattr(current_service, "name", "") or ""
+
+    # If the form does not include an email_from field (e.g. when renaming an
+    # existing service), fall back to the current service's email_from so we
+    # still validate the combined header length when only the name is being
+    # edited.
+    if hasattr(form, "email_from"):
+        email_from = form.email_from.data if form.email_from.data else ""
+    else:
+        email_from = getattr(current_service, "email_from", "") or ""
+
+    # If either field is empty, skip this validation (let other validators handle it)
+    if not service_name or not email_from:
+        return
+
+    # Construct the full email address: email_from@domain
+    sending_domain = current_app.config["SENDING_DOMAIN"]
+    full_email = f"{email_from}@{sending_domain}"
+
+    # Use formataddr to encode the header as it would be in an actual email
+    # This properly handles unicode characters by MIME-encoding them
+    try:
+        from_header = formataddr((service_name, full_email))
+
+        # Check if the total length exceeds 320 characters
+        if len(from_header) > 320:
+            raise ValidationError(_l("Your service name and email address combined are too long."))
+    except ValidationError:
+        # Re-raise validation errors
+        raise
+    except Exception as e:
+        # If encoding fails for some reason, log it but don't block the user
+        current_app.logger.warning(f"Error validating email header length: {e}")

@@ -1,14 +1,14 @@
 {% macro task_list_item(status, label, link, link_id=None) %}
   <li class="task-list-item">
-    <span aria-describedby="{{ label|id_safe }}">
+    <span>
       {% if link %}
-        <a href="{{ link }}" {% if link_id %}id="{{ link_id }}"{% endif %}>{{ label }}</a>
+        <a href="{{ link }}" aria-describedby="{{ label|id_safe }}" {% if link_id %}id="{{ link_id }}"{% endif %}>{{ label }}</a>
       {% else %}
         {{ label }}
       {% endif %}
     </span>
     {% if status == "in-progress" %}
-      <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}">
+      <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}" aria-live="polite">
         {{ _('In progress') }}
       </strong>
     {% elif status %}
@@ -26,14 +26,14 @@
 {% endmacro %}
 
 {% macro task_list_item_complete(label, testid=None) %}
-  <strong class="task-list-indicator-completed" id="{{ label|id_safe }}"{%if testid %} data-testid="{{ testid }}"{% endif %}>
+  <strong class="task-list-indicator-completed" id="{{ label|id_safe }}" aria-live="polite"{%if testid %} data-testid="{{ testid }}"{% endif %}>
     <img aria-hidden="true" src="{{ asset_url('images/tick.svg') }}" class="w-6 h-6 inline-block mr-2 -mt-1" alt="">
     {{ _('Completed') }}
   </strong>
 {% endmacro %}
 
 {% macro task_list_item_not_complete(label, testid=None) %}
-  <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}"{%if testid %} data-testid="{{ testid }}"{% endif %}>
+  <strong class="task-list-indicator-not-completed" id="{{ label|id_safe }}" aria-live="polite"{%if testid %} data-testid="{{ testid }}"{% endif %}>
     {{ _('Not completed') }}
   </strong>
 {% endmacro %}

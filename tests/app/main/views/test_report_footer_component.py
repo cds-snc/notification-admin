@@ -16,7 +16,7 @@ def test_report_footer_example_1(client_request):
     button = example_section.select_one("button")
     assert "Prepare report" in button.text
     assert "disabled" not in button.attrs
-    assert example_section.select_one(".loading-spinner-large") is None
+    assert "hidden" in example_section.select_one(".loading-spinner-large").attrs.get("class", "")
 
 
 def test_report_footer_example_2(client_request):
@@ -33,7 +33,7 @@ def test_report_footer_example_2(client_request):
     # Check that the button is disabled and the loading spinner is shown
     button = example_section.select_one("button")
     assert "disabled" in button.attrs
-    assert example_section.select_one(".loading-spinner-large") is not None
+    assert "hidden" not in example_section.select_one(".loading-spinner-large").attrs.get("class", "")
 
 
 def test_report_footer_example_3(client_request):
@@ -51,7 +51,7 @@ def test_report_footer_example_3(client_request):
     # Check button state or other attributes specific to this example
     button = example_section.select_one("button")
     assert "disabled" in button.attrs
-    assert example_section.select_one(".loading-spinner-large") is not None
+    assert "hidden" not in example_section.select_one(".loading-spinner-large").attrs.get("class", "")
 
 
 def test_report_footer_example_4(client_request):
@@ -70,7 +70,7 @@ def test_report_footer_example_4(client_request):
     assert "disabled" not in button.attrs
 
     # Check that the loading spinner is not shown
-    assert example_section.select_one(".loading-spinner-large") is None
+    assert "hidden" in example_section.select_one(".loading-spinner-large").attrs.get("class", "")
 
 
 def test_report_footer_example_5(client_request):

@@ -4,50 +4,15 @@ on:
   schedule:
     - cron: 0 */3 * * *
   workflow_dispatch:
-defaults:
-  run:
-    shell: bash
 
 jobs:
-  cypress-tests:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
-        with:
-          node-version: 16.x
+  run:
+    uses: ./.github/workflows/_cypress-staging-run.yaml
+    secrets: inherit
+    with:
+      spec: |
+        cypress/e2e/admin/a11y/app_pages.cy.js
+        cypress/e2e/admin/a11y/gca_pages.cy.js
+        cypress/e2e/admin/a11y/sitemap_links.cy.js
+      slack_failure_message: Staging a11y tests failed
 
-      - name: Write the cypress.env.json file
-        # use quotes around the secret, as its value
-        # is simply inserted as a string into the command
-        run: |
-          echo '${{ secrets.CYPRESS_ENV_JSON }}' > tests_cypress/cypress.env.json 
-
-      - name: Run the cypress tests
-        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
-        with:
-          record: false
-          config: "video=true,screenshotOnRunFailure=true"
-          build: npx cypress info
-          working-directory: tests_cypress
-          spec: |
-            cypress/e2e/admin/a11y/app_pages.cy.js
-            cypress/e2e/admin/a11y/gca_pages.cy.js
-
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-artifacts
-          path: |
-            tests_cypress/cypress/videos
-            tests_cypress/cypress/screenshots
-          retention-days: 30
-
-      - name: Notify Slack channel if this job failed
-        if: ${{ failure() }}
-        run: |
-          json='{"text": "<!here> Staging a11y tests failed: <https://github.com/cds-snc/notification-admin/actions/runs/'${{ github.run_id }}'|see failure details> !"}'
-          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

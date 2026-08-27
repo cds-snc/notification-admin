@@ -33,5 +33,35 @@
 
   <h2 class="heading-medium">{{ _('Text messages') }}</h2>
   <p>{{ _('Each service you set up in GC Notify has a free annual allowance.') }}</p>
+  <h3 class="heading-small">{{ _('International SMS rates') }}</h3>
+
+  {{ live_search(target_selector='#international-rates tbody tr', show=True, form=search_form, label=_('Search by country name'), hint=False) }}
+
+  <table id="international-rates" class="table">
+    <colgroup>
+      <col class="col-code" />
+      <col class="col-country" />
+      <col class="col-rate" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>{{ _('Country code') }}</th>
+        <th>{{ _('Country') }}</th>
+        <th>{{ _('Rate multiplier') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cc, country_name, billable_units in international_sms_rates %}
+      <tr>
+        <td>
+          +{{ cc }}
+          <span class="live-search-relevant visually-hidden">{{ cc }} {{ country_name }} {{ billable_units }}</span>
+        </td>
+        <td>{{ country_name }}</td>
+        <td>{{ billable_units }}x</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}
