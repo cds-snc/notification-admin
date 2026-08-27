@@ -201,15 +201,43 @@ class TestTemplate:
 </div>"""
 
 
-@main.route("/_test-template")
-def test_template():
+@main.route("/_template-a")
+def test_template_a():
     template = TestTemplate()
 
     def test_template_url_for(*args, **kwargs):
         return "#"
 
     return render_template(
-        "views/templates/test-template.html",
+        "views/templates/template-a.html",
+        current_service=TestTemplateService(),
+        current_user=TestTemplateUser(),
+        template=template,
+        url_for=test_template_url_for,
+        fragment_count=1,
+        file_attachments_enabled_for_service=True,
+        template_attachments=[],
+        user_has_template_permission=True,
+        heading="Ready to send?",
+        notification_type="email",
+        dailyLimit=1000,
+        dailyUsed=120,
+        dailyRemaining=880,
+        yearlyLimit=100000,
+        yearlyUsed=12000,
+        yearlyRemaining=88000,
+    )
+
+
+@main.route("/_template-b")
+def test_template_b():
+    template = TestTemplate()
+
+    def test_template_url_for(*args, **kwargs):
+        return "#"
+
+    return render_template(
+        "views/templates/template-b.html",
         current_service=TestTemplateService(),
         current_user=TestTemplateUser(),
         template=template,
