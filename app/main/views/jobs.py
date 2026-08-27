@@ -60,6 +60,11 @@ def _truncate_text_preserving_markup(text, length):
     """Truncate text while preserving Markup type if present."""
     is_markup = isinstance(text, Markup)
     truncated = unicode_truncate(str(text), length)
+
+    # If truncation ends between '<' and '>', discard the incomplete tag.
+    if truncated.rfind("<") > truncated.rfind(">"):
+        truncated = truncated[: truncated.rfind("<")]
+
     return Markup(truncated) if is_markup else truncated
 
 
