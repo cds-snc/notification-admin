@@ -67,7 +67,6 @@ from app.utils import (
     PermanentRedirect,
     Spreadsheet,
     email_or_sms_not_enabled,
-    file_attachments_enabled_for_service,
     filter_attachments,
     get_errors_for_csv,
     get_help_argument,
@@ -113,11 +112,7 @@ def build_template_attachment_personalisation(template_id, template_type):
     and the service has the upload_document permission. Only attachments with
     'uploaded' status and valid id/name are included with contiguous _file_N keys.
     """
-    if (
-        not file_attachments_enabled_for_service(current_service.id)
-        or template_type != "email"
-        or not current_service.has_permission("upload_document")
-    ):
+    if template_type != "email" or not current_service.has_permission("upload_document"):
         return {}
 
     attachments = filter_attachments(
@@ -154,11 +149,7 @@ def get_template_attachment_context(template_id, template_type):
         "has_incomplete_template_attachments": False,
     }
 
-    if (
-        not file_attachments_enabled_for_service(current_service.id)
-        or template_type != "email"
-        or not current_service.has_permission("upload_document")
-    ):
+    if template_type != "email" or not current_service.has_permission("upload_document"):
         return context
 
     attachments = current_service.get_template_attachments(template_id)
