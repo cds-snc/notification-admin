@@ -254,6 +254,20 @@
 
       {% endcall %}
 
+      {% if 'email' in current_service.permissions and current_user.has_permissions('manage_service') %}
+        <div class="mt-12 border border-gray-300 p-gutterHalf md:p-gutter">
+          <h2 class="heading-medium mt-0">{{ _('Email suppression list') }}</h2>
+          <p>
+            {{ _('Remove an email address from the GC Notify suppression list if it was incorrectly blocked and your service has previously sent to it.') }}
+          </p>
+          <p class="mb-0">
+            <a href="{{ url_for('.service_remove_email_from_suppression_list', service_id=current_service.id) }}">
+              {{ _('Remove an email address from the suppression list') }}
+            </a>
+          </p>
+        </div>
+      {% endif %}
+
       <p class="mt-12">
         {{ _("Problems, questions, or comments? <a href='{}'>Contact us</a>.").format(url_for('.contact')) }}
       </p>
