@@ -372,7 +372,6 @@ def agree_terms():
 
 
 # --- Internal Redirects --- #
-@main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
 @main.route("/features/letters", endpoint="redirect_letters")
