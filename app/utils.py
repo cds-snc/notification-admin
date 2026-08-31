@@ -122,7 +122,7 @@ def get_latest_stats(lang):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data()["data"])
+    live_services = get_live_services_count()
 
     return {
         "monthly_stats": monthly_stats,
@@ -135,7 +135,7 @@ def get_latest_stats(lang):
 
 @cache.memoize(timeout=24 * 60 * 60)
 def get_live_services_count():
-    return len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
+    return len(service_api_client.get_live_services_data()["data"])
 
 
 def user_has_permissions(*permissions, **permission_kwargs):
