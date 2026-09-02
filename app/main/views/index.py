@@ -314,7 +314,7 @@ def activity():
 @cache.memoize(timeout=12 * 60 * 60)
 @main.route("/activity/atom", endpoint="activity_atom")
 def activity_atom():
-    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    stats = get_latest_stats(get_current_locale(current_app))
     now = datetime.now(timezone.utc)
     updated_total = now.isoformat()
     updated_services = (now - timedelta(minutes=2)).isoformat()
