@@ -2281,3 +2281,117 @@ class TestGetAnnualDataWithBillableUnits:
                     mock_service_api_client.get_monthly_notification_stats.assert_called_once_with(mock_service_id, 2023)
             # Result should still be returned from API fallback
             assert result == {"sms": 40, "email": 60}
+
+
+class TestGetDailyStats:
+    """Unit tests for _get_daily_stats Redis-first + DB-fallback logic."""
+
+    @pytest.fixture(autouse=True)
+    def _import(self):
+        from app.main.views.dashboard import _get_daily_stats
+
+        self._get_daily_stats = _get_daily_stats
+
+    def test_returns_from_redis_when_seeded(self, mocker, app_):
+        """When annual_limit_client has today's counts, return them without calling the API."""
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value={
+                "sms_delivered_today": 7,
+                "sms_failed_today": 3,
+                "email_delivered_today": 15,
+                "email_failed_today": 5,
+            },
+        )
+        mock_api = mocker.patch("app.template_statistics_client.get_template_statistics_for_service")
+
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", True), set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                totals, highest, all_stats = self._get_daily_stats("service-id")
+
+        mock_api.assert_not_called()
+        assert all_stats == []
+        assert totals["sms"]["requested"] == 10
+        assert totals["sms"]["delivered"] == 7
+        assert totals["sms"]["failed"] == 3
+        assert totals["email"]["requested"] == 20
+        assert totals["email"]["delivered"] == 15
+        assert totals["email"]["failed"] == 5
+        assert highest == 20  # max(10, 20)
+
+    def test_returns_billable_units_fields_when_ff_enabled(self, mocker, app_):
+        """When FF_USE_BILLABLE_UNITS is on, billable-unit fields drive the SMS totals."""
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value={
+                "sms_delivered_today": 7,
+                "sms_failed_today": 3,
+                "sms_billable_units_delivered_today": 12,
+                "sms_billable_units_failed_today": 4,
+                "email_delivered_today": 15,
+                "email_failed_today": 5,
+            },
+        )
+        mocker.patch("app.template_statistics_client.get_template_statistics_for_service")
+
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", True), set_config(app_, "FF_USE_BILLABLE_UNITS", True):
+                totals, highest, all_stats = self._get_daily_stats("svc-123")
+
+        assert totals["sms"]["requested"] == 16  # 12 + 4 billable units
+        assert totals["sms"]["delivered"] == 12
+        assert totals["sms"]["failed"] == 4
+
+    def test_falls_back_to_api_when_counts_empty(self, mocker, app_):
+        """When annual_limit_client returns {} (not yet seeded), fall back to the API."""
+        mocker.patch(
+            "app.main.views.dashboard.annual_limit_client.get_all_notification_counts",
+            return_value={},
+        )
+        mock_api = mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=[],
+        )
+
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", True), set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                self._get_daily_stats("service-id")
+
+        mock_api.assert_called_once_with("service-id", limit_days=1)
+
+    def test_skips_redis_and_calls_api_when_redis_disabled(self, mocker, app_):
+        """When REDIS_ENABLED is False, never touch Redis."""
+        mock_annual_limit = mocker.patch("app.main.views.dashboard.annual_limit_client.get_all_notification_counts")
+        mock_api = mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=[],
+        )
+
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", False), set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                self._get_daily_stats("service-id")
+
+        mock_annual_limit.assert_not_called()
+        mock_api.assert_called_once_with("service-id", limit_days=1)
+
+    def test_db_fallback_returns_correct_shape(self, mocker, app_):
+        """DB-fallback path aggregates template stats correctly into the totals shape."""
+        mocker.patch(
+            "app.template_statistics_client.get_template_statistics_for_service",
+            return_value=[
+                {"template_type": "sms", "status": "delivered", "count": 30, "billable_units": 30},
+                {"template_type": "sms", "status": "permanent-failure", "count": 5, "billable_units": 5},
+                {"template_type": "email", "status": "delivered", "count": 40, "billable_units": 0},
+                {"template_type": "email", "status": "permanent-failure", "count": 2, "billable_units": 0},
+            ],
+        )
+
+        with app_.app_context():
+            with set_config(app_, "REDIS_ENABLED", False), set_config(app_, "FF_USE_BILLABLE_UNITS", False):
+                totals, highest, all_stats = self._get_daily_stats("service-id")
+
+        assert totals["sms"]["requested"] == 35
+        assert totals["sms"]["failed"] == 5
+        assert totals["email"]["requested"] == 42
+        assert totals["email"]["failed"] == 2
+        assert len(all_stats) == 4
