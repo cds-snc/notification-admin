@@ -618,6 +618,7 @@ class InvitedOrgUser(JSONModel):
 
 class AnonymousUser(AnonymousUserMixin):
     # set the anonymous user so that if a new browser hits us we don't error http://stackoverflow.com/a/19275188
+    platform_admin = False
 
     def logged_in_elsewhere(self):
         return False

@@ -15,26 +15,6 @@
 
 {% block maincolumn_content %}
 
-  {% if show_redaction_message %}
-    <div class="mb-12">
-      {% set question_txt = _('Are you sure you want to redact personalised variable content?') %}
-      {% call banner_wrapper(type='dangerous', subhead=question_txt) %}
-        <ul class="list list-bullet banner-list-bullet">
-          <li>
-            {{ _("This protects recipients' information by hiding it in the dashboard and message log.") }}
-          </li>
-          <li>
-            {{ _('You cannot undo this action.') }}
-          </li>
-        </ul>
-        <form method='post'>
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <button type="submit" class="button button-red" name="delete">{{ _('Confirm') }}</button>
-        </form>
-      {% endcall %}
-    </div>
-  {% endif %}
-
   <div>
     {{ folder_path(
       folders=current_service.get_template_path(template._template),
@@ -52,7 +32,7 @@
     <div class="{% if template.template_type == 'email' %}w-1/2{% else %}mb-6{% endif %}">
       {% if current_user.has_permissions('manage_templates') and not template._template.archived %}
         <p class="flex items-center gap-2 pb-2 {% if template.template_type == 'sms' %}max-w-[464px]{% endif %} mb-4">
-          <a href="{{ url_for(".edit_service_template", service_id=current_service.id, template_id=template.id) }}" data-testid="edit-template">
+          <a href="#" data-testid="edit-template">
             <i aria-hidden="true" class="fa-solid fa-pen-to-square pr-4"></i>{{ _('Edit this template') }}
           </a>
         </p>
@@ -67,7 +47,7 @@
             {{ template._template.updated_at|format_delta }}
           </span>
           {% set version_txt = _('See previous versions') %}
-          <a href="{{ url_for('.view_template_versions', service_id=current_service.id, template_id=template.id) }}">{{ version_txt }}</a>
+          <a href="#">{{ version_txt }}</a>
         </div>
       </div>
       {% endif %}
@@ -91,24 +71,23 @@
       {% endif %}
     </div>
   </div>  
-    <div class="mb-16">
-      {% if template.template_type == 'email' %}
-        {% if current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
+    <div class="mb-16 relative">
+      {% if file_attachments_enabled_for_service %} 
+        {% if template.template_type == 'email' and current_service.has_permission("upload_document") and current_user.has_permissions('manage_templates') %}
           {{ attachments_widget(
             "template-attachments",
             template_attachments,
-            url_for('main.terms'),
-            url_for('main.attach_files', service_id=current_service.id, template_id=template.id),
-            url_for('main.remove_files', service_id=current_service.id, template_id=template.id),
-            url_for('main.template_attachment_status', service_id=current_service.id, template_id=template.id),
-            url_for('main.download_template_attachment', service_id=current_service.id, template_id=template.id)
+            '#',
+            '#',
+            '#',
+            '#',
+            '#'
           ) }}
           {{ new_feature(
               title=_("Upload attachments without the API"),
               cta=_("About file attachments"),
               cta_link="/new-features",
-              anchored_to="new-feature-attachments",
-              lifespan="2026-10-15"
+              anchored_to="new-feature-attachments"
           ) }}
         {% else %}
           <h2 class="heading-medium" data-testid="attached-files-heading">{{ _('Attached files') }}</h2>
@@ -116,9 +95,9 @@
             {% call notice('info') %}
               <p data-testid="file-attachments-enable-notice">
                 {{ _('To send attachments, turn on file sending in') }}
-                <a href="{{ url_for('main.service_settings', service_id=current_service.id) }}">{{ _('settings') }}</a>.
+                <a href="#">{{ _('settings') }}</a>.
               </p>
-              <form method="post" action="{{ url_for('main.enable_file_attachments', service_id=current_service.id) }}" data-testid="file-attachments-enable-form">
+              <form method="post" action="#" data-testid="file-attachments-enable-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <button type="submit" class="button-link" data-testid="file-attachments-enable-button">{{ _('Turn on file sending') }}</button>
               </form>
@@ -140,7 +119,7 @@
     {% if template.template_type != 'letter' %}
       {% if not template._template.redact_personalisation %}
         <div class="page-footer-delete-link block page-footer-delete-link-without-button mb-6">
-          <a href="{{ url_for('.confirm_redact_template', service_id=current_service.id, template_id=template.id) }}">{{ _('Redact personalised variable content after sending') }}</a>
+          <a href="#">{{ _('Redact personalised variable content after sending') }}</a>
         </div>
       {% else %}
         <p class="hint">
@@ -151,7 +130,7 @@
     {% if not template._template.archived %}
       {% set delete_txt = _('Delete this template') %}
       <div class="page-footer-delete-link block page-footer-delete-link-without-button">
-        <a href="{{ url_for('.delete_service_template', service_id=current_service.id, template_id=template.id) }}">{{ delete_txt }}</a>
+        <a href="#">{{ delete_txt }}</a>
       </div>
       &emsp;
     {% endif %}

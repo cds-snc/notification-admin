@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from uuid import UUID
 
 from flask import Response, jsonify, render_template, request
 from flask_wtf import FlaskForm as Form
@@ -113,6 +114,147 @@ class ExampleFullForm(Form):
             ("none", "Do not contact"),
         ]
         self.autocomplete.choices = ["Halifax", "Montreal", "Ottawa", "Toronto"]
+
+
+class TestTemplateUser:
+    is_authenticated = True
+    platform_admin = False
+    mobile_number = None
+    verified_phonenumber = False
+
+    def has_permissions(self, *permissions, **kwargs):
+        return True
+
+    def has_template_folder_permission(self, folder, service=None):
+        return True
+
+
+class TestTemplateService:
+    id = "test-service"
+    name = "GC Notify prototype service"
+    email_from = "notify"
+    prefix_sms = ""
+    trial_mode = False
+    pending_live = False
+
+    def get_template_path(self, template):
+        return [
+            {"id": None, "name": "Templates", "template_type": None},
+            template,
+        ]
+
+    def has_permission(self, permission):
+        return permission == "upload_document"
+
+
+class TestTemplate:
+    id = UUID("8f4db2e2-7b89-4c2d-9f70-2f3d6e4b9a11")
+    template_type = "email"
+    placeholders = True
+
+    def __init__(self):
+        self._template = {
+            "id": str(self.id),
+            "name": "Service update: your application",
+            "folder": None,
+            "template_type": self.template_type,
+            "archived": False,
+            "updated_at": "2026-08-20T14:30:00.000000Z",
+            "redact_personalisation": False,
+        }
+
+    def __str__(self):
+        return """<div class="email-message mb-12">
+    <table class="email-message-meta mb-12 leading-tight font-normal border border-solid border-gray-grey2">
+        <tbody>
+            <tr>
+                <th class="email-message-table pl-doubleGutter text-gray-grey1" scope="row">From</th>
+                <td class="email-message-table">GC Notify prototype service</td>
+            </tr>
+            <tr>
+                <th class="email-message-table pl-doubleGutter text-gray-grey1" scope="row">To</th>
+                <td class="email-message-table"><mark class="placeholder">((email address))</mark></td>
+            </tr>
+            <tr class="email-message-meta m-0 text-smaller leading-tight font-normal">
+                <th class="email-message-table pl-doubleGutter text-gray-grey1" scope="row">Subject</th>
+                <td class="email-message-table">Service update: your application</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="email-message-body w-full relative break-words box-border px-doubleGutter border-gray-grey2 border">
+        <div style="max-width: 580px; margin: 0 auto;">
+            <div style="margin: 20px auto 30px auto;">
+                <img src="https://assets.notification.canada.ca/gc-logo-en.png" alt="Government of Canada" height="55" width="281">
+            </div>
+
+            <div style="padding: 0 10px" dir="ltr">
+                <p style="Margin: 0 0 20px 0; font-size: 19px; line-height: 25px; color: #0B0C0C;">Your application has been received and is now being reviewed.</p>
+            </div>
+
+            <div style="margin: 10px 0 20px 0; float: right">
+                <img src="https://assets.notification.canada.ca/canada-logo.png" alt="Symbol of the Government of Canada / Symbole du gouvernement du Canada" height="55" width="123">
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+</div>"""
+
+
+@main.route("/_template-a")
+def test_template_a():
+    template = TestTemplate()
+
+    def test_template_url_for(*args, **kwargs):
+        return "#"
+
+    return render_template(
+        "views/templates/template-a.html",
+        current_service=TestTemplateService(),
+        current_user=TestTemplateUser(),
+        template=template,
+        url_for=test_template_url_for,
+        fragment_count=1,
+        file_attachments_enabled_for_service=True,
+        template_attachments=[],
+        user_has_template_permission=True,
+        heading="Ready to send?",
+        notification_type="email",
+        dailyLimit=1000,
+        dailyUsed=120,
+        dailyRemaining=880,
+        yearlyLimit=100000,
+        yearlyUsed=12000,
+        yearlyRemaining=88000,
+    )
+
+
+@main.route("/_template-b")
+def test_template_b():
+    template = TestTemplate()
+
+    def test_template_url_for(*args, **kwargs):
+        return "#"
+
+    return render_template(
+        "views/templates/template-b.html",
+        current_service=TestTemplateService(),
+        current_user=TestTemplateUser(),
+        template=template,
+        url_for=test_template_url_for,
+        fragment_count=1,
+        file_attachments_enabled_for_service=True,
+        template_attachments=[],
+        user_has_template_permission=True,
+        heading="Ready to send?",
+        notification_type="email",
+        dailyLimit=1000,
+        dailyUsed=120,
+        dailyRemaining=880,
+        yearlyLimit=100000,
+        yearlyUsed=12000,
+        yearlyRemaining=88000,
+    )
 
 
 @main.route("/_storybook", methods=["GET", "POST"])

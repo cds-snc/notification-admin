@@ -92,5 +92,17 @@
     @apply mx-0 pb-0;
   }
 
+  .new-feature-banner {
+    anchor-name: --new-feature-container;
+  }
+  .new-feature-banner::after {
+    content: "";
+    position: fixed;
+    position-anchor: var(--anchored-to);
+    left: anchor(var(--anchored-to) center);
+    top: anchor(--new-feature-container top);
+    @apply w-10 h-10 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-brand-100;
+  }
+
   /*! purgecss end ignore */
 }
