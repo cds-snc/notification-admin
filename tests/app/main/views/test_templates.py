@@ -2979,7 +2979,7 @@ def test_should_not_create_sms_template_with_api_key_prefix(
         },
         _expected_status=200,
     )
-    assert "You can not store API keys in a template." in page.text
+    assert "You cannot store API keys in a template." in page.text
     assert mock_create_service_template.called is False
 
 
@@ -3009,7 +3009,7 @@ def test_should_not_update_email_template_with_api_key_prefix_in_subject_or_body
         },
         _expected_status=200,
     )
-    assert "You can not store API keys in a template." in page.text
+    assert "You cannot store API keys in a template." in page.text
     assert mock_update_service_template.called is False
 
 
