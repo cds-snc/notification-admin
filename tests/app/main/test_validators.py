@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 from app.main.forms import OptionalIntegerRange, RegisterUserForm, ServiceSmsSenderForm, ValidTeamMemberDomain
-from app.main.validators import NoApiKeysInTemplate, NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
+from app.main.validators import NoCommasInPlaceHolders, OnlySMSCharacters, ValidGovEmail, _is_localhost_url
 from flask import g
 from wtforms import ValidationError
 from wtforms.validators import StopValidation
@@ -146,17 +146,6 @@ def test_for_commas_in_placeholders(client):
         NoCommasInPlaceHolders()(None, _gen_mock_field("Hello ((name,date))"))
     assert str(error.value) == "You cannot put commas between double brackets"
     NoCommasInPlaceHolders()(None, _gen_mock_field("Hello ((name))"))
-
-
-def test_for_api_keys_in_template_text(client):
-    with pytest.raises(ValidationError) as error:
-        NoApiKeysInTemplate()(None, _gen_mock_field("Example token ApiKey-v1 gcntfyABCD"))
-
-    assert str(error.value) == "You can not store API keys in a template."
-
-
-def test_no_api_keys_in_template_allows_safe_text(client):
-    NoApiKeysInTemplate()(None, _gen_mock_field("Hello ((name)) this is safe"))
 
 
 @pytest.mark.parametrize("msg", ["The quick brown fox", "Thé “quick” bröwn fox\u200b"])

@@ -130,15 +130,6 @@ class NoCommasInPlaceHolders:
             raise ValidationError(self.message)
 
 
-class NoApiKeysInTemplate:
-    def __init__(self, message=_("You can not store API keys in a template.")):
-        self.message = message
-
-    def __call__(self, form, field):
-        if field.data and "ApiKey-v1 gcntfy" in field.data:
-            raise ValidationError(self.message)
-
-
 class OnlySMSCharacters:
     def __call__(self, form, field):
         non_sms_characters = sorted(list(SanitiseSMS.get_non_compatible_characters(field.data)))

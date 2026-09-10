@@ -49,7 +49,6 @@ from app.main.validators import (
     CsvFileValidator,
     DoesNotStartWithDoubleZero,
     LettersNumbersAndFullStopsOnly,
-    NoApiKeysInTemplate,
     NoCommasInPlaceHolders,
     OnlySMSCharacters,
     ValidCallbackUrl,
@@ -893,7 +892,8 @@ class BaseTemplateFormWithCategory(BaseTemplateForm):
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
-        NoApiKeysInTemplate()(None, field)
+        if field.data and "ApiKey-v1 gcntfy" in field.data:
+            raise ValidationError(_l("You can not store API keys in a template."))
         OnlySMSCharacters()(None, field)
 
     template_content = TextAreaField(
@@ -907,10 +907,12 @@ class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
-        NoApiKeysInTemplate()(None, field)
+        if field.data and "ApiKey-v1 gcntfy" in field.data:
+            raise ValidationError(_l("You can not store API keys in a template."))
 
     def validate_subject(self, field):
-        NoApiKeysInTemplate()(None, field)
+        if field.data and "ApiKey-v1 gcntfy" in field.data:
+            raise ValidationError(_l("You can not store API keys in a template."))
 
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
