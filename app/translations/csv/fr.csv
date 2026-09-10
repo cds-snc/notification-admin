@@ -88,6 +88,7 @@
 "This email address already has a GC Notify account","Cette adresse courriel est déjà associée à un compte Notification GC."
 "When should we send these messages?","À quel moment devrions-nous envoyer ces messages?"
 "Type of API key","Type de clé API"
+"You cannot store API keys in a template.","Vous ne pouvez pas stocker de clés API dans un gabarit."
 "You need to give the key a name","Vous devez nommer la clé"
 "A key with this name already exists","Il existe déjà une clé ayant ce nom"
 "Inbound SMS number","Numéro SMS entrant"
