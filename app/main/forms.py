@@ -892,7 +892,7 @@ class BaseTemplateFormWithCategory(BaseTemplateForm):
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
-        if field.data and "ApiKey-v1 gcntfy" in field.data:
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
             raise ValidationError(_l("You can not store API keys in a template."))
         OnlySMSCharacters()(None, field)
 
@@ -907,11 +907,11 @@ class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
-        if field.data and "ApiKey-v1 gcntfy" in field.data:
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
             raise ValidationError(_l("You can not store API keys in a template."))
 
     def validate_subject(self, field):
-        if field.data and "ApiKey-v1 gcntfy" in field.data:
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
             raise ValidationError(_l("You can not store API keys in a template."))
 
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
