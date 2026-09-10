@@ -2960,6 +2960,54 @@ def test_should_not_update_sms_template_with_emoji(
     assert mock_update_service_template.called is False
 
 
+def test_should_not_create_sms_template_with_api_key_prefix(
+    client_request, mock_create_service_template, mock_get_template_categories, app_
+):
+    page = client_request.post(
+        ".add_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_type="sms",
+        _data={
+            "name": "new name",
+            "template_content": "Do not store this ApiKey-v1 gcntfyabcd token",
+            "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "service": SERVICE_ONE_ID,
+            "process_type": None,
+        },
+        _expected_status=200,
+    )
+    assert "You can not store API keys in a template." in page.text
+    assert mock_create_service_template.called is False
+
+
+def test_should_not_update_email_template_with_api_key_prefix_in_subject_or_body(
+    client_request,
+    mock_get_service_template,
+    mock_update_service_template,
+    mock_get_template_categories,
+    fake_uuid,
+):
+    page = client_request.post(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "id": fake_uuid,
+            "name": "new name",
+            "subject": "ApiKey-v1 gcntfysecret",
+            "template_content": "Body with ApiKey-v1 gcntfyanothersecret",
+            "service": SERVICE_ONE_ID,
+            "template_type": "email",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "process_type": DEFAULT_PROCESS_TYPE,
+        },
+        _expected_status=200,
+    )
+    assert "You can not store API keys in a template." in page.text
+    assert mock_update_service_template.called is False
+
+
 def test_should_create_sms_template_without_downgrading_unicode_characters(
     client_request, mock_create_service_template, mock_get_template_categories, app_
 ):
