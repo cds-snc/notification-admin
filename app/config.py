@@ -54,6 +54,10 @@ class Config(object):
     # Bounce Rate parameters
     BR_DISPLAY_VOLUME_MINIMUM = 1000
 
+    BLOCKED_SIGNUP_EMAIL_DOMAINS = (
+        os.getenv("BLOCKED_SIGNUP_EMAIL_DOMAINS", "").split(",") if os.getenv("BLOCKED_SIGNUP_EMAIL_DOMAINS") else []
+    )
+
     BULK_SEND_AWS_BUCKET = os.getenv("BULK_SEND_AWS_BUCKET")
 
     CHECK_PROXY_HEADER = False

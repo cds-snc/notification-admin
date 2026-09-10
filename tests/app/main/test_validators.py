@@ -141,6 +141,24 @@ def test_invalid_list_of_white_list_email_domains(
         email_domain_validators(None, _gen_mock_field(email))
 
 
+@pytest.mark.parametrize(
+    "email",
+    [
+        "test@parl.gc.ca",
+        "test@notify.parl.gc.ca",
+    ],
+)
+def test_blocked_signup_email_domains_are_rejected(client, app_, email):
+    with app_.app_context():
+        app_.config["BLOCKED_SIGNUP_EMAIL_DOMAINS"] = ["parl.gc.ca"]
+
+        email_domain_validator = ValidGovEmail()
+        with pytest.raises(ValidationError) as error:
+            email_domain_validator(None, _gen_mock_field(email))
+
+        assert "not on our list of government domains" in str(error.value)
+
+
 def test_for_commas_in_placeholders(client):
     with pytest.raises(ValidationError) as error:
         NoCommasInPlaceHolders()(None, _gen_mock_field("Hello ((name,date))"))

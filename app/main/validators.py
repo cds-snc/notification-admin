@@ -18,7 +18,7 @@ from wtforms.validators import Email
 
 from app import current_service, formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
-from app.utils import Spreadsheet, email_safe, email_safe_name, is_gov_user
+from app.utils import Spreadsheet, email_address_ends_with, email_safe, email_safe_name, is_gov_user
 
 
 class Blocklist:
@@ -103,6 +103,8 @@ class ValidGovEmail:
         message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
             domain.replace("%", "%%"), contact_text
         )
+        if email_address_ends_with(field.data.lower(), current_app.config.get("BLOCKED_SIGNUP_EMAIL_DOMAINS", [])):
+            raise ValidationError(message)
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
