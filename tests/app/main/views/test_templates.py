@@ -2963,13 +2963,15 @@ def test_should_not_update_sms_template_with_emoji(
 def test_should_not_create_sms_template_with_api_key_prefix(
     client_request, mock_create_service_template, mock_get_template_categories, app_
 ):
+    api_key_prefix = app_.config["API_KEY_PREFIX"]
+
     page = client_request.post(
         ".add_service_template",
         service_id=SERVICE_ONE_ID,
         template_type="sms",
         _data={
             "name": "new name",
-            "template_content": "Do not store this ApiKey-v1 gcntfyabcd token",
+            "template_content": f"Do not store this {api_key_prefix}abcd token",
             "template_type": "sms",
             "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
             "service": SERVICE_ONE_ID,
@@ -2987,7 +2989,10 @@ def test_should_not_update_email_template_with_api_key_prefix_in_subject_or_body
     mock_update_service_template,
     mock_get_template_categories,
     fake_uuid,
+    app_,
 ):
+    api_key_prefix = app_.config["API_KEY_PREFIX"]
+
     page = client_request.post(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
@@ -2995,8 +3000,8 @@ def test_should_not_update_email_template_with_api_key_prefix_in_subject_or_body
         _data={
             "id": fake_uuid,
             "name": "new name",
-            "subject": "ApiKey-v1 gcntfysecret",
-            "template_content": "Body with ApiKey-v1 gcntfyanothersecret",
+            "subject": f"{api_key_prefix}secret",
+            "template_content": f"Body with {api_key_prefix}anothersecret",
             "service": SERVICE_ONE_ID,
             "template_type": "email",
             "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
