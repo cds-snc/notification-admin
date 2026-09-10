@@ -174,6 +174,8 @@ class Config(object):
     NOTIFY_SERVICE_ID = "d6aa2c68-a2d9-4437-ab19-3ae8eb202553"
     NO_BRANDING_ID = os.environ.get("NO_BRANDING_ID", "0af93cf1-2c49-485f-878f-f3e662e651ef")
 
+    API_KEY_PREFIX = "gcntfy-"
+
     @classmethod
     def get_sensitive_config(cls) -> list[str]:
         "List of config keys that contain sensitive information"
