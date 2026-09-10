@@ -180,6 +180,30 @@ def test_should_return_200_when_email_is_not_gov_uk(
     assert "is not on our list of government domains" in response.get_data(as_text=True)
 
 
+def test_should_return_200_when_email_domain_is_in_blocked_signup_list(
+    client,
+    mock_send_verify_code,
+    mock_get_user_by_email,
+    mock_get_organisations,
+    mock_login,
+    app_,
+):
+    app_.config["BLOCKED_SIGNUP_EMAIL_DOMAINS"] = ["parl.gc.ca"]
+
+    response = client.post(
+        url_for("main.register"),
+        data={
+            "name": "Blocked Domain",
+            "email_address": "bad_mobile@notify.parl.gc.ca",
+            "mobile_number": "+16502532222",
+            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        },
+    )
+
+    assert response.status_code == 200
+    assert "is not on our list of government domains" in response.get_data(as_text=True)
+
+
 @pytest.mark.parametrize(
     "email_address",
     (
