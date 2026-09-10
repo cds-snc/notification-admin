@@ -157,7 +157,6 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "roadmap",
         "email",
         "sms",
         "letters",
@@ -218,7 +217,6 @@ def test_activity_page(mocker, client, stats, services):
 @pytest.mark.parametrize(
     "view, expected_view",
     [
-        ("redirect_roadmap", "roadmap"),
         ("redirect_email", "email"),
         ("redirect_sms", "sms"),
         ("redirect_letters", "letters"),

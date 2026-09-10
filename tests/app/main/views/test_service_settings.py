@@ -1104,7 +1104,7 @@ def test_request_to_go_live_use_case_page(
 
 
 @pytest.mark.parametrize(
-    "salesforce_feature_flag, organisation_notes, organisation_question_visible",
+    "is_gc_organisations, organisation_notes, organisation_question_visible",
     (
         (False, "Some department > Some group", True),
         (False, "", True),
@@ -1117,11 +1117,11 @@ def test_request_to_go_live_use_case_page_hides_organisation(
     mocker: MockerFixture,
     app_: Flask,
     service_one: Service,
-    salesforce_feature_flag: bool,
+    is_gc_organisations: bool,
     organisation_notes: str,
     organisation_question_visible: bool,
 ):
-    with set_config(app_, "FF_SALESFORCE_CONTACT", salesforce_feature_flag):
+    with set_config(app_, "IS_GC_ORGANISATIONS", is_gc_organisations):
         use_case_data_mock = mocker.patch("app.service_api_client.get_use_case_data")
         use_case_data_mock.return_value = None
         service_one.organisation_notes = organisation_notes  # type: ignore
@@ -3437,18 +3437,17 @@ def test_service_switch_upload_document(
     assert mocked_fn.call_args[0][0] == service_one["id"]
 
 
-def test_service_switch_upload_document_shows_api_only_help_when_service_not_allowlisted(
+def test_service_switch_upload_document_shows_template_help_for_any_service(
     client_request,
     service_one,
     app_,
 ):
-    with set_config(app_, "FILE_ATTACH_SERVICES", []):
-        page = client_request.get(
-            "main.service_switch_upload_document",
-            service_id=service_one["id"],
-        )
-        paragraph = page.select_one("#main_content p").text.strip()
-        assert "This feature is only available when sending through the API" in paragraph
+    page = client_request.get(
+        "main.service_switch_upload_document",
+        service_id=service_one["id"],
+    )
+    paragraph = page.select_one("#main_content p").text.strip()
+    assert "Allow files to be attached to email notifications" in paragraph
 
 
 def test_enable_file_attachments_turns_on_permission_and_redirects_to_next(

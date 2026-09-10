@@ -25,6 +25,9 @@ import {
 } from "./icons";
 import { shortcuts } from "./localization";
 import { useEditorContext } from "./EditorContext";
+import CustomContentInfoPane from "./InfoPane/CustomContent";
+import MultipleLanguagesInfoPane from "./InfoPane/MultipleLanguages";
+import EmailLinksInfoPane from "./InfoPane/EmailLinks";
 
 /**
  * AccessibleToolbar component that wraps any toolbar content with proper ARIA accessibility.
@@ -259,6 +262,8 @@ const ToolbarButton = ({
   );
 };
 
+const infoPaneTargets = ["custom-content", "multiple-languages", "email-links"];
+
 const MenuBar = ({
   editor,
   openLinkModal,
@@ -274,6 +279,40 @@ const MenuBar = ({
   const { t } = useEditorContext();
   const [liveMessage, setLiveMessage] = useState("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [infoPaneTarget, setInfoPaneTarget] = useState("custom-content");
+
+  const updateInfoPaneTarget = (target) => {
+    if (!infoPaneTargets.includes(target)) return;
+    setInfoPaneTarget(target);
+  };
+
+  const handleInfoPaneLinkClick = (event, target) => {
+    event.preventDefault();
+    updateInfoPaneTarget(target);
+  };
+
+  const handleMarkdownToggle = () => {
+    setIsInfoOpen(false);
+    onToggleMarkdownView();
+  };
+
+  const infoPaneSections = [
+    {
+      id: "custom-content",
+      tabLabel: t.infoPane1.label,
+      Component: CustomContentInfoPane,
+    },
+    {
+      id: "multiple-languages",
+      tabLabel: t.infoPane2.label,
+      Component: MultipleLanguagesInfoPane,
+    },
+    {
+      id: "email-links",
+      tabLabel: t.infoPane3.label,
+      Component: EmailLinksInfoPane,
+    },
+  ];
 
   // Helper to run an editor action and announce the resulting state change.
   // We perform the action (which usually pulls focus to the editor) immediately,
@@ -765,7 +804,14 @@ const MenuBar = ({
           {!isMarkdownView && (
             <ToolbarButton
               testId="rte-info"
-              onClick={() => setIsInfoOpen(!isInfoOpen)}
+              onClick={() => {
+                const nextIsInfoOpen = !isInfoOpen;
+                setIsInfoOpen(nextIsInfoOpen);
+
+                if (nextIsInfoOpen) {
+                  updateInfoPaneTarget("custom-content");
+                }
+              }}
               isActive={isInfoOpen}
               labels={t.info}
             >
@@ -783,7 +829,7 @@ const MenuBar = ({
               <button
                 type="button"
                 data-testid="rte-toggle-markdown"
-                onClick={onToggleMarkdownView}
+                onClick={handleMarkdownToggle}
                 className="toolbar-button toolbar-button-mode"
                 aria-pressed={isMarkdownView}
               >
@@ -796,7 +842,7 @@ const MenuBar = ({
             <button
               type="button"
               data-testid="rte-toggle-markdown"
-              onClick={onToggleMarkdownView}
+              onClick={handleMarkdownToggle}
               className="toolbar-button toolbar-button-mode toolbar-switch-group"
               aria-pressed={isMarkdownView}
             >
@@ -806,32 +852,32 @@ const MenuBar = ({
           )}
         </div>
       </AccessibleToolbar>
-      {isInfoOpen && (
-        <div className="info-pane">
-          <p>
-            {t.infoPane1} <br />
-            {t.infoPane2}{" "}
-            <Icon iconNode={variableIcon} aria-label="Variable icon" />{" "}
-            <p>{t.infoPane3}</p>
-            <ul className="list list-bullet ml-10">
-              <li>
-                {t.infoPane4}{" "}
-                <Icon
-                  iconNode={conditionalInlineIcon}
-                  aria-label="inline conditional icon"
-                />
+      <div
+        className={`info-pane${isInfoOpen ? " is-open" : ""}`}
+        data-active-section={infoPaneTarget}
+        aria-hidden={isInfoOpen ? undefined : true}
+        inert={isInfoOpen ? undefined : ""}
+      >
+        <nav aria-label={t.infoTabsLabel}>
+          <ul>
+            {infoPaneSections.map(({ id, tabLabel }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  aria-current={infoPaneTarget === id ? "page" : undefined}
+                  onClick={(event) => handleInfoPaneLinkClick(event, id)}
+                >
+                  {tabLabel}
+                </a>
               </li>
-              <li>
-                {t.infoPane5}{" "}
-                <Icon
-                  iconNode={conditionalBlockIcon}
-                  aria-label="block conditional icon"
-                />
-              </li>
-            </ul>
-          </p>
-        </div>
-      )}
+            ))}
+          </ul>
+        </nav>
+
+        {infoPaneSections.map(({ id, Component }) => (
+          <Component key={id} t={t} isActive={infoPaneTarget === id} />
+        ))}
+      </div>
     </>
   );
 };

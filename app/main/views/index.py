@@ -265,11 +265,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/roadmap", endpoint="roadmap")
-def roadmap():
-    return render_template("views/roadmap.html")
-
-
 @main.route("/email", endpoint="email")
 def features_email():
     return render_template("views/emails.html")
@@ -313,13 +308,13 @@ def sitemap():
 
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
 
 
 @cache.memoize(timeout=12 * 60 * 60)
 @main.route("/activity/atom", endpoint="activity_atom")
 def activity_atom():
-    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    stats = get_latest_stats(get_current_locale(current_app))
     now = datetime.now(timezone.utc)
     updated_total = now.isoformat()
     updated_services = (now - timedelta(minutes=2)).isoformat()
@@ -377,7 +372,6 @@ def agree_terms():
 
 
 # --- Internal Redirects --- #
-@main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
 @main.route("/features/letters", endpoint="redirect_letters")
@@ -463,7 +457,7 @@ def _render_articles_page(response, newsletter_form=None):
         nav_items=nav_items,
         slug=slug_en,
         lang_url=get_lang_url(response, bool(page_id)),
-        stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
+        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
         newsletter_form=newsletter_form,
         newsletter_subscribed=request.args.get("subscribed") == "1",

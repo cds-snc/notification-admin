@@ -95,8 +95,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=12 * 60 * 60)
-def get_latest_stats(lang, filter_heartbeats=None):
-    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
+def get_latest_stats(lang):
+    results = service_api_client.get_stats_by_month()["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -135,7 +135,7 @@ def get_latest_stats(lang, filter_heartbeats=None):
 
 @cache.memoize(timeout=24 * 60 * 60)
 def get_live_services_count():
-    return len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
+    return len(service_api_client.get_live_services_data()["data"])
 
 
 def user_has_permissions(*permissions, **permission_kwargs):
@@ -175,10 +175,6 @@ def user_is_platform_admin(f):
         return f(*args, **kwargs)
 
     return wrapped
-
-
-def file_attachments_enabled_for_service(service_id: str) -> bool:
-    return str(service_id) in current_app.config.get("FILE_ATTACH_SERVICES", [])
 
 
 def redirect_to_sign_in(f):

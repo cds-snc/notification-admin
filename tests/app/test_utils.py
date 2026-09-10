@@ -598,7 +598,7 @@ def test_get_remote_addr(app_, forwarded_for, remote_addr, expected):
 
 
 def test_get_latest_stats_k8s(mocker, app_):
-    mocker.patch(
+    mock_get_stats_by_month = mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={
             "data": [
@@ -629,6 +629,7 @@ def test_get_latest_stats_k8s(mocker, app_):
                 "September 2020": {"sms": 3, "total": 3, "year_month": "2020-09"},
             },
         }
+    mock_get_stats_by_month.assert_called_once_with()
 
 
 def test_get_latest_stats_lambda(mocker, app_):

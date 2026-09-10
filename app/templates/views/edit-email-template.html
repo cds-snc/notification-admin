@@ -86,7 +86,7 @@
         initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
       }}
 
-      {% if file_attachments_enabled_for_service and attachments %}
+      {% if attachments %}
         <section class="mb-16">
           <h2 id="attachments-heading" class="heading-medium">
             {{ _("Attachments") }}

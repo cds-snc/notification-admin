@@ -12,6 +12,18 @@
     }
   }
 
+  /* Toolbar guide */
+  /* Toolbar is a block-media-text with an additional .guide-toolbar class.  */
+  .guide-toolbar {
+    @apply flex mt-0;
+  }
+  .guide-toolbar .wp-block-media-text__media {
+    @apply w-gutterAndAHalf;
+  }
+  .guide-toolbar .wp-block-media-text__content :last-child {
+    @apply mb-0;
+  }
+
   /* Symbols list */
   .page-content ul.guide-symbols-list {
     @apply p-0 flex flex-wrap lg:flex-nowrap items-stretch;

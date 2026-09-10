@@ -2,9 +2,10 @@ import json
 import uuid
 
 import pytest
-from app.main.views.jobs import _get_job_counts
+from app.main.views.jobs import NOTIFICATION_PREVIEW_MAX_LENGTH, _get_job_counts, _truncate_text_preserving_markup
 from flask import url_for
 from freezegun import freeze_time
+from markupsafe import Markup
 
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
@@ -16,6 +17,76 @@ from tests.conftest import (
     mock_get_notifications,
     normalize_spaces,
 )
+
+
+@pytest.mark.parametrize(
+    "content, length, expected",
+    [
+        ("Hello world", 200, "Hello world"),
+        ("Hello world", 5, "Hello"),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            20,
+            "Hello ",
+        ),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            50,
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>',
+        ),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            60,
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This',
+        ),
+        ("Résumé", 5, "Résu"),
+        # The production limit is bytes, not characters; this is plain content over the limit.
+        ("x" * 205, NOTIFICATION_PREVIEW_MAX_LENGTH, "x" * 200),
+        (
+            # Byte 200 lands inside the opening <mark> tag, so the partial tag is discarded.
+            "x" * 177 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 177,
+        ),
+        (
+            # Byte 200 lands inside the [hidden] text, so the open <mark> is closed again.
+            "x" * 160 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 160 + '<mark class="placeholder-redacted">[hidd</mark>',
+        ),
+        (
+            # Byte 200 lands inside the closing </mark> tag, so the complete tag is restored.
+            "x" * 155 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 155 + '<mark class="placeholder-redacted">[hidden]</mark>',
+        ),
+    ],
+)
+# Covers the existing truncation behavior as well as each possible position within a redaction tag.
+def test_truncate_text_preserving_markup(content, length, expected):
+    result = _truncate_text_preserving_markup(Markup(content), length)
+
+    assert result == Markup(expected)
+    assert isinstance(result, Markup)
+
+
+# Uses the real notification shape to ensure multiple redaction tags remain balanced at the production limit.
+def test_truncate_redacted_production_message_at_production_limit():
+    content = (
+        "New Features Service: bc-parks-reservations: Hello "
+        '<mark class="placeholder-redacted">[hidden]</mark>\n\n'
+        "This is a reminder that you have reserved "
+        '<mark class="placeholder-redacted">[hidden]</mark> day-use pass tomorrow for '
+        '<mark class="placeholder-redacted">[hidden]</mark> - '
+        '<mark class="placeholder-redacted">[hidden]</mark>.'
+    )
+
+    result = _truncate_text_preserving_markup(Markup(content), NOTIFICATION_PREVIEW_MAX_LENGTH)
+    result_as_text = str(result)
+
+    assert len(result_as_text.encode("utf-8")) <= 200 + len("</mark>")
+    assert result_as_text.count("<mark ") == result_as_text.count("</mark>")
+    assert result_as_text.rfind("<") <= result_as_text.rfind(">")
 
 
 @pytest.mark.parametrize(
