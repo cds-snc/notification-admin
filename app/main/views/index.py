@@ -418,6 +418,14 @@ def preview_content():
 
 @main.route("/<path:path>")
 def page_content(path=""):
+    """
+    Validate that the path contains only valid slug characters.
+    Valid characters: alphanumeric, hyphens, underscores, and forward slashes (for nested paths).
+    This prevents malformed paths like '/newsletter/?foo=bar/change-language' from reaching the API.
+    """
+    if not re.match(r"^[a-zA-Z0-9_\-/]+$", path):
+        abort(404)
+
     endpoint = "wp/v2/pages"
     lang = get_current_locale(current_app)
 

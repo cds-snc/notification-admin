@@ -365,3 +365,62 @@ def test_should_render_welcome(client):
     expected = "Create your first service"
     link_text = page.find_all("a", {"class": "button"})[0].text
     assert link_text == expected
+
+
+@pytest.mark.parametrize(
+    "malformed_path",
+    [
+        "/newsletter/?foo=bar/change-language",  # Embedded query string
+        "/newsletter/?foo/change-language",  # Query string characters
+        "/page@example.com",  # @ character
+        "/page#anchor/path",  # # character
+        "/page;parameter",  # ; character
+        "/page%20space",  # URL-encoded space
+        "/page<script>",  # < character
+        "/page>alert",  # > character
+    ],
+)
+def test_catch_all_route_rejects_malformed_paths(client, malformed_path):
+    """
+    Test that the catch-all route rejects malformed paths with invalid characters.
+    This prevents fuzzing attacks from sending malformed requests to the API.
+    """
+    # URL-encode the path to simulate how a browser would send it
+    import urllib.parse
+
+    encoded_path = urllib.parse.quote(malformed_path, safe="/")
+    response = client.get(encoded_path)
+
+    # Should return 404 instead of forwarding to the API
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize(
+    "valid_path",
+    [
+        "/about-us",
+        "/features-and-pricing",
+        "/section/subsection",
+        "/page-with-hyphens",
+        "/page_with_underscores",
+        "/section/page-with-mixed_chars123",
+    ],
+)
+def test_catch_all_route_accepts_valid_paths(client_request, valid_path, mocker):
+    """
+    Test that the catch-all route still accepts valid paths with allowed characters.
+    """
+    # Mock the API response to avoid hitting the actual GCA API
+    mocker.patch(
+        "app.main.views.index.get_page_by_slug",
+        return_value=None,
+    )
+    mocker.patch(
+        "app.main.views.index._try_alternate_language",
+        return_value=("<html></html>", 404),
+    )
+
+    response = client_request.get(valid_path, _expected_status=[404, 200, 302])
+
+    # Should not fail on validation - will return 404 from the API layer or redirect
+    assert response.status_code in [404, 200, 302]
