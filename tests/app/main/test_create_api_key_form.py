@@ -74,8 +74,7 @@ class TestCreateApiKeyView:
         mock_get_live_service,
         mock_has_permissions,
     ):
-        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
-            page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
+        page = client_request.get("main.create_api_key", service_id=SERVICE_ONE_ID)
 
         checkbox = page.find("input", {"name": "permissions", "type": "checkbox"})
         assert checkbox is not None
@@ -99,17 +98,16 @@ class TestCreateApiKeyView:
             return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
         )
 
-        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
-            client_request.post(
-                "main.create_api_key",
-                service_id=SERVICE_ONE_ID,
-                _data={
-                    "key_name": key_name_from_user,
-                    "key_type": "normal",
-                    "permissions": "manage_templates",
-                },
-                _expected_status=200,
-            )
+        client_request.post(
+            "main.create_api_key",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "key_name": key_name_from_user,
+                "key_type": "normal",
+                "permissions": "manage_templates",
+            },
+            _expected_status=200,
+        )
 
         post.assert_called_once_with(
             url="/service/{}/api-key".format(SERVICE_ONE_ID),
@@ -140,16 +138,15 @@ class TestCreateApiKeyView:
             return_value={"data": {"key": fake_uuid, "key_name": key_name_fixed}},
         )
 
-        with set_config(app_, "FF_ADD_TEMPLATE_PERM", True):
-            client_request.post(
-                "main.create_api_key",
-                service_id=SERVICE_ONE_ID,
-                _data={
-                    "key_name": key_name_from_user,
-                    "key_type": "normal",
-                },
-                _expected_status=200,
-            )
+        client_request.post(
+            "main.create_api_key",
+            service_id=SERVICE_ONE_ID,
+            _data={
+                "key_name": key_name_from_user,
+                "key_type": "normal",
+            },
+            _expected_status=200,
+        )
 
         post.assert_called_once_with(
             url="/service/{}/api-key".format(SERVICE_ONE_ID),
