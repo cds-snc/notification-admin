@@ -225,6 +225,10 @@ def create_app(application):
     # Log the application configuration
     application.logger.info(f"Notify config: {config.get_safe_config()}")
 
+    from app.url_converters import SafeIdConverter
+
+    application.url_map.converters["safe_id"] = SafeIdConverter
+
     from app.main import main as main_blueprint
 
     application.register_blueprint(main_blueprint)
