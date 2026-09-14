@@ -179,6 +179,28 @@ def test_newsletter_subscription_successful_submission(client, mocker, mock_call
     mock_newsletter_client.assert_called_once_with("test@cds-snc.ca", language)
 
 
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/newsletter/{}/confirm",
+        "/newsletter/confirm/{}",
+        "/newsletter/{}/subscribed",
+        "/newsletter/{}/send-latest",
+        "/newsletter/{}/change-language",
+        "/newsletter/{}/unsubscribe",
+    ],
+)
+@pytest.mark.parametrize("subscriber_id", ["%3Ffoo%3Dbar", "?foo=bar", "../../etc/passwd", "foo/bar", "foo bar"])
+def test_newsletter_routes_reject_malformed_subscriber_id(client, mocker, route, subscriber_id):
+    """Malformed/encoded subscriber_id values should 404 at the routing level, never reaching the API"""
+    mock_get_subscriber = mocker.patch("app.notify_client.newsletter_api_client.newsletter_api_client.get_subscriber")
+
+    response = client.get(route.format(subscriber_id))
+
+    assert response.status_code == 404
+    mock_get_subscriber.assert_not_called()
+
+
 def test_confirm_newsletter_subscriber_redirects_to_subscribed_page(client, mocker):
     """Test that confirming a newsletter subscriber redirects to the subscribed page with email"""
     subscriber_id = "test-subscriber-123"
