@@ -358,14 +358,16 @@
 }
 
 .info-pane {
-  height: auto;
+  max-height: 0;
   overflow: hidden;
-  transition: height 0.4s ease-out;
-
-  /* 3. The initial state of the element upon insertion into the DOM */
-  @starting-style {
-    height: 0;
-  }
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  visibility: hidden;
+  transition:
+    max-height 220ms ease,
+    opacity 180ms ease,
+    transform 220ms ease,
+    visibility 0s linear 220ms;
 
   @apply bg-gray-200;
 
@@ -379,6 +381,17 @@
     height: 1.2em;
     vertical-align: middle;
   }
+}
+.info-pane.is-open {
+  max-height: 1000px;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition:
+    max-height 300ms ease,
+    opacity 260ms ease,
+    transform 280ms ease,
+    visibility 0s linear 0s;
 }
 .info-pane section {
   box-shadow: 0 -2px 0 0 theme("colors.gray.700");

@@ -45,7 +45,7 @@ describe("Info pane", () => {
       .click()
       .should("have.attr", "aria-pressed", "false");
 
-    RichTextEditor.Components.InfoPane().should("not.exist");
+    RichTextEditor.Components.InfoPaneClosed();
   });
 
   it("keeps navigation items and sections in sync", () => {
@@ -109,6 +109,6 @@ describe("Info pane", () => {
 
     RichTextEditor.Components.ViewMarkdownButton().click();
 
-    RichTextEditor.Components.InfoPane().should("not.exist");
+    RichTextEditor.Components.InfoPaneClosed();
   });
 });

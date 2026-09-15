@@ -60,6 +60,16 @@ def _truncate_text_preserving_markup(text, length):
     """Truncate text while preserving Markup type if present."""
     is_markup = isinstance(text, Markup)
     truncated = unicode_truncate(str(text), length)
+
+    # If truncation ends between '<' and '>', discard the incomplete tag.
+    if truncated.rfind("<") > truncated.rfind(">"):
+        truncated = truncated[: truncated.rfind("<")]
+
+    # The redaction tag may still be open if its closing tag was truncated.
+    open_marks = truncated.count("<mark ") - truncated.count("</mark>")
+    if open_marks > 0:
+        truncated += "</mark>" * open_marks
+
     return Markup(truncated) if is_markup else truncated
 
 

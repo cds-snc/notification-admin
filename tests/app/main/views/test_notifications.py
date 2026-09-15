@@ -418,14 +418,13 @@ def test_notification_status_page_template_attach_personalisation_wins_over_live
     assert "live-file.pdf" not in str(page)
 
 
-def test_notification_status_page_hides_template_attach_when_service_not_safelisted(
+def test_notification_status_page_shows_template_attach_for_any_service(
     client_request,
     mocker,
     service_one,
     fake_uuid,
     app_,
 ):
-    # template_attach personalisation should not be shown when service is not safelisted.
     notification = create_notification(
         template_type="email",
         personalisation={
@@ -440,25 +439,23 @@ def test_notification_status_page_hides_template_attach_when_service_not_safelis
     )
     mocker.patch("app.notification_api_client.get_notification", return_value=notification)
 
-    with set_config(app_, "FILE_ATTACH_SERVICES", []):
-        page = client_request.get(
-            "main.view_notification",
-            service_id=service_one["id"],
-            notification_id=fake_uuid,
-        )
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+    )
 
-    assert "Attachments" not in [h2.text for h2 in page.select("h2")]
-    assert "flagged-file.pdf" not in str(page)
+    assert "Attachments" in [h2.text for h2 in page.select("h2")]
+    assert "flagged-file.pdf" in str(page)
 
 
-def test_notification_status_page_does_not_call_live_api_when_service_not_safelisted(
+def test_notification_status_page_does_not_call_live_api_for_any_service(
     client_request,
     mocker,
     service_one,
     fake_uuid,
     app_,
 ):
-    # The just_sent live API fallback should not fire when service is not safelisted.
     notification = create_notification(template_type="email", personalisation={"name": "Jo"})
     mocker.patch("app.notification_api_client.get_notification", return_value=notification)
     mock_live_api = mocker.patch(
@@ -466,13 +463,12 @@ def test_notification_status_page_does_not_call_live_api_when_service_not_safeli
         return_value=[{"name": "live-file.pdf", "file_size": 694807, "status": "uploaded"}],
     )
 
-    with set_config(app_, "FILE_ATTACH_SERVICES", []):
-        page = client_request.get(
-            "main.view_notification",
-            service_id=service_one["id"],
-            notification_id=fake_uuid,
-            just_sent=True,
-        )
+    page = client_request.get(
+        "main.view_notification",
+        service_id=service_one["id"],
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
 
     mock_live_api.assert_not_called()
     assert "live-file.pdf" not in str(page)

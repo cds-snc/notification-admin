@@ -291,6 +291,11 @@ const MenuBar = ({
     updateInfoPaneTarget(target);
   };
 
+  const handleMarkdownToggle = () => {
+    setIsInfoOpen(false);
+    onToggleMarkdownView();
+  };
+
   const infoPaneSections = [
     {
       id: "custom-content",
@@ -824,7 +829,7 @@ const MenuBar = ({
               <button
                 type="button"
                 data-testid="rte-toggle-markdown"
-                onClick={onToggleMarkdownView}
+                onClick={handleMarkdownToggle}
                 className="toolbar-button toolbar-button-mode"
                 aria-pressed={isMarkdownView}
               >
@@ -837,7 +842,7 @@ const MenuBar = ({
             <button
               type="button"
               data-testid="rte-toggle-markdown"
-              onClick={onToggleMarkdownView}
+              onClick={handleMarkdownToggle}
               className="toolbar-button toolbar-button-mode toolbar-switch-group"
               aria-pressed={isMarkdownView}
             >
@@ -847,29 +852,32 @@ const MenuBar = ({
           )}
         </div>
       </AccessibleToolbar>
-      {isInfoOpen && (
-        <div className="info-pane" data-active-section={infoPaneTarget}>
-          <nav aria-label={t.infoTabsLabel}>
-            <ul>
-              {infoPaneSections.map(({ id, tabLabel }) => (
-                <li key={id}>
-                  <a
-                    href={`#${id}`}
-                    aria-current={infoPaneTarget === id ? "page" : undefined}
-                    onClick={(event) => handleInfoPaneLinkClick(event, id)}
-                  >
-                    {tabLabel}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+      <div
+        className={`info-pane${isInfoOpen ? " is-open" : ""}`}
+        data-active-section={infoPaneTarget}
+        aria-hidden={isInfoOpen ? undefined : true}
+        inert={isInfoOpen ? undefined : ""}
+      >
+        <nav aria-label={t.infoTabsLabel}>
+          <ul>
+            {infoPaneSections.map(({ id, tabLabel }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  aria-current={infoPaneTarget === id ? "page" : undefined}
+                  onClick={(event) => handleInfoPaneLinkClick(event, id)}
+                >
+                  {tabLabel}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          {infoPaneSections.map(({ id, tabLabel, Component }) => (
-            <Component key={id} t={t} isActive={infoPaneTarget === id} />
-          ))}
-        </div>
-      )}
+        {infoPaneSections.map(({ id, Component }) => (
+          <Component key={id} t={t} isActive={infoPaneTarget === id} />
+        ))}
+      </div>
     </>
   );
 };

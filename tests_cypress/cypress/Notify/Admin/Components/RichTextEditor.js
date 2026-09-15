@@ -28,6 +28,9 @@ let Components = {
     InfoPaneTab: (id) => cy.get(`.info-pane nav a[href="#${id}"]`),
     InfoPaneSections: () => cy.get('.info-pane section'),
     InfoPaneSection: (id) => cy.get(`.info-pane section#${id}`),
+    InfoPaneClosed: () => cy.get('.info-pane')
+        .should('have.attr', 'aria-hidden', 'true')
+        .and('have.attr', 'inert'),
     // toolbar buttons
     ToolbarButtons: () => {
         // loop thtought FORMATTING_OPTIONS and get a list of cypress elements for each and return them

@@ -874,6 +874,32 @@ def test_should_show_attached_files_heading_and_notice_when_upload_document_perm
     assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
 
 
+def test_should_not_show_attachment_section_on_sms_template(
+    client_request,
+    mock_get_template_folders,
+    mock_get_limit_stats,
+    fake_uuid,
+    app_,
+    mocker,
+):
+    current_user.verified_phonenumber = True
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="sms")},
+    )
+
+    page = client_request.get(
+        ".view_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _test_page_title=False,
+    )
+
+    assert page.select_one("[data-testid='attached-files-heading']") is None
+    assert page.select_one("[data-testid='file-attachments-enable-notice']") is None
+    assert page.select_one("[data-testid='file-attachments-ask-manager-notice']") is None
+
+
 def test_should_show_ask_manager_notice_without_manage_service_permission(
     client_request,
     mock_get_template_folders,
@@ -2931,6 +2957,59 @@ def test_should_not_update_sms_template_with_emoji(
         _expected_status=200,
     )
     assert "You can’t use 🍔 in text messages." in page.text
+    assert mock_update_service_template.called is False
+
+
+def test_should_not_create_sms_template_with_api_key_prefix(
+    client_request, mock_create_service_template, mock_get_template_categories, app_
+):
+    api_key_prefix = app_.config["API_KEY_PREFIX"]
+
+    page = client_request.post(
+        ".add_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_type="sms",
+        _data={
+            "name": "new name",
+            "template_content": f"Do not store this {api_key_prefix}abcd token",
+            "template_type": "sms",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "service": SERVICE_ONE_ID,
+            "process_type": None,
+        },
+        _expected_status=200,
+    )
+    assert "You cannot store API keys in a template." in page.text
+    assert mock_create_service_template.called is False
+
+
+def test_should_not_update_email_template_with_api_key_prefix_in_subject_or_body(
+    client_request,
+    mock_get_service_template,
+    mock_update_service_template,
+    mock_get_template_categories,
+    fake_uuid,
+    app_,
+):
+    api_key_prefix = app_.config["API_KEY_PREFIX"]
+
+    page = client_request.post(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={
+            "id": fake_uuid,
+            "name": "new name",
+            "subject": f"{api_key_prefix}secret",
+            "template_content": f"Body with {api_key_prefix}anothersecret",
+            "service": SERVICE_ONE_ID,
+            "template_type": "email",
+            "template_category_id": DEFAULT_TEMPLATE_CATEGORY_LOW,
+            "process_type": DEFAULT_PROCESS_TYPE,
+        },
+        _expected_status=200,
+    )
+    assert "You cannot store API keys in a template." in page.text
     assert mock_update_service_template.called is False
 
 

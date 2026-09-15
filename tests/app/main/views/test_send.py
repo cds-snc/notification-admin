@@ -861,13 +861,6 @@ def test_check_messages_ok_hides_attachment_warning_when_all_uploaded(
     assert "terms.pdf" in attachments_section.text
 
 
-@pytest.mark.parametrize(
-    "file_attach_services, has_permission",
-    [
-        ([], True),  # service not safelisted → no attachments
-        ([SERVICE_ONE_ID], False),  # no upload_document permission → no attachments
-    ],
-)
 def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
     client_request,
     mocker,
@@ -882,13 +875,11 @@ def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
     fake_uuid,
     app_,
     mock_get_template_attachments,
-    file_attach_services,
-    has_permission,
 ):
     with client_request.session_transaction() as session:
         session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
 
-    mocker.patch("app.models.service.Service.has_permission", return_value=has_permission)
+    mocker.patch("app.models.service.Service.has_permission", return_value=False)
     mock_get_template_attachments.return_value = [
         {"id": "file-1", "name": "guide.pdf", "status": "uploaded", "size": 1280},
     ]
@@ -900,14 +891,13 @@ def test_get_template_attachment_context_returns_empty_when_conditions_not_met(
     """,
     )
 
-    with set_config(app_, "FILE_ATTACH_SERVICES", file_attach_services):
-        page = client_request.get(
-            "main.check_messages",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            upload_id=fake_uuid,
-            original_file_name="example.csv",
-        )
+    page = client_request.get(
+        "main.check_messages",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        upload_id=fake_uuid,
+        original_file_name="example.csv",
+    )
 
     assert page.select_one("[data-testid='template-attachments-list']") is None
 
@@ -3607,7 +3597,7 @@ def test_send_notification_includes_template_attachments_in_personalisation(
     )
 
 
-def test_send_notification_does_not_include_template_attachments_when_service_not_safelisted(
+def test_send_notification_includes_template_attachments_for_any_service(
     client_request,
     service_one,
     fake_uuid,
@@ -3625,14 +3615,24 @@ def test_send_notification_does_not_include_template_attachments_when_service_no
         session["recipient"] = "test@example.com"
         session["placeholders"] = {"email address": "test@example.com"}
 
-    with set_config(app_, "FILE_ATTACH_SERVICES", []):
-        client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
+    client_request.post("main.send_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     mock_send_notification.assert_called_once_with(
         service_one["id"],
         template_id=fake_uuid,
         recipient="test@example.com",
-        personalisation={"email address": "test@example.com"},
+        personalisation={
+            "email address": "test@example.com",
+            "_file_0": {
+                "document": {
+                    "id": "file-1",
+                    "filename": "guide.pdf",
+                    "mime_type": "application/pdf",
+                    "file_size": 1280,
+                    "sending_method": "template_attach",
+                },
+            },
+        },
         sender_id=None,
     )
 

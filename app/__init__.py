@@ -225,6 +225,10 @@ def create_app(application):
     # Log the application configuration
     application.logger.info(f"Notify config: {config.get_safe_config()}")
 
+    from app.url_converters import SafeIdConverter
+
+    application.url_map.converters["safe_id"] = SafeIdConverter
+
     from app.main import main as main_blueprint
 
     application.register_blueprint(main_blueprint)
@@ -254,7 +258,10 @@ def create_app(application):
     application.jinja_env.globals["NotifyEnv"] = NotifyEnv
 
     # Initialize the GC Organisation list
-    if application.config["FF_SALESFORCE_CONTACT"]:
+    application.config["IS_GC_ORGANISATIONS"] = bool(
+        application.config["GC_ORGANISATIONS_BUCKET_NAME"] and application.config["GC_ORGANISATIONS_FILENAME"]
+    )
+    if application.config["IS_GC_ORGANISATIONS"]:
         application.config["CRM_ORG_LIST"] = get_gc_organisations(application)
 
     # Specify packages to be traced by MonkeyType. This can be overriden

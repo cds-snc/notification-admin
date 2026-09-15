@@ -3,7 +3,10 @@ import {
   BatchSpanProcessor,
 } from "@opentelemetry/sdk-trace-web";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { Resource } from "@opentelemetry/resources";
+import {
+  defaultResource,
+  resourceFromAttributes,
+} from "@opentelemetry/resources";
 import {
   SEMRESATTRS_SERVICE_NAME,
   SEMRESATTRS_SERVICE_VERSION,
@@ -327,8 +330,8 @@ const initTelemetry = () => {
   installOtlpXhrLogging(otlpEndpoint);
 
   // Create resource with service metadata
-  const resource = Resource.default().merge(
-    new Resource({
+  const resource = defaultResource().merge(
+    resourceFromAttributes({
       [SEMRESATTRS_SERVICE_NAME]: otelServiceName,
       [SEMRESATTRS_SERVICE_VERSION]: "0.0.1",
       environment: import.meta.env.VITE_ENV || "development",
@@ -346,22 +349,24 @@ const initTelemetry = () => {
   const contextManager = new ZoneContextManager();
   contextManager.enable();
 
-  const tracerProvider = new BasicTracerProvider({ resource });
-
-  otelContext.setGlobalContextManager(contextManager);
-  propagation.setGlobalPropagator(propagator);
-  trace.setGlobalTracerProvider(tracerProvider);
-
-  tracerProvider.addSpanProcessor(
-    createSessionAttributeSpanProcessor(sessionId, userId),
-  );
-
+  // In the 2.x SDK, span processors must be supplied to the constructor
+  // rather than added afterwards via addSpanProcessor (removed in 2.x).
   const traceUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/traces`;
   const traceExporter = new OTLPTraceExporter({
     url: traceUrl,
     headers: otelAuthHeaders,
   });
-  tracerProvider.addSpanProcessor(new BatchSpanProcessor(traceExporter));
+  const tracerProvider = new BasicTracerProvider({
+    resource,
+    spanProcessors: [
+      createSessionAttributeSpanProcessor(sessionId, userId),
+      new BatchSpanProcessor(traceExporter),
+    ],
+  });
+
+  otelContext.setGlobalContextManager(contextManager);
+  propagation.setGlobalPropagator(propagator);
+  trace.setGlobalTracerProvider(tracerProvider);
 
   // Initialize Metrics Provider
   const metricsUrl = `${otlpEndpoint.replace(/\/$/, "")}/v1/metrics`;

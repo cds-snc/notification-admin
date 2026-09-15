@@ -73,8 +73,8 @@ def newsletter_subscription():
 
 
 # keep support for the old confirm route until we update the email
-@main.route("/newsletter/confirm/<subscriber_id>", methods=["GET"])
-@main.route("/newsletter/<subscriber_id>/confirm", methods=["GET"])
+@main.route("/newsletter/confirm/<safe_id:subscriber_id>", methods=["GET"])
+@main.route("/newsletter/<safe_id:subscriber_id>/confirm", methods=["GET"])
 def confirm_newsletter_subscriber(subscriber_id):
     # send an api request with the subscriber_id
     newsletter_api_client.confirm_subscriber(subscriber_id=subscriber_id)
@@ -95,7 +95,7 @@ def newsletter_check_email():
     return render_template("views/newsletter/check_email.html", email=email)
 
 
-@main.route("/newsletter/<subscriber_id>/subscribed", methods=["GET", "POST"])
+@main.route("/newsletter/<safe_id:subscriber_id>/subscribed", methods=["GET", "POST"])
 def newsletter_subscribed(subscriber_id):
     """Newsletter subscription confirmation page"""
     language_form = NewsletterLanguageForm()
@@ -106,7 +106,7 @@ def newsletter_subscribed(subscriber_id):
     return render_template("views/newsletter/subscribed.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/<subscriber_id>/send-latest", methods=["GET"])
+@main.route("/newsletter/<safe_id:subscriber_id>/send-latest", methods=["GET"])
 def send_latest_newsletter(subscriber_id):
     """Send the latest newsletter to a subscriber"""
 
@@ -123,7 +123,7 @@ def send_latest_newsletter(subscriber_id):
     return redirect(url_for("main.newsletter_subscribed", subscriber_id=subscriber_id))
 
 
-@main.route("/newsletter/<subscriber_id>/change-language", methods=["GET", "POST"])
+@main.route("/newsletter/<safe_id:subscriber_id>/change-language", methods=["GET", "POST"])
 def newsletter_change_language(subscriber_id):
     """Newsletter subscription management page"""
     language_form = NewsletterLanguageForm()
@@ -153,7 +153,7 @@ def newsletter_change_language(subscriber_id):
     return render_template("views/newsletter/change_language.html", form=language_form, email=email, subscriber_id=subscriber_id)
 
 
-@main.route("/newsletter/<subscriber_id>/unsubscribe", methods=["GET"])
+@main.route("/newsletter/<safe_id:subscriber_id>/unsubscribe", methods=["GET"])
 def newsletter_unsubscribe(subscriber_id):
     """Newsletter unsubscribe confirmation page"""
 
