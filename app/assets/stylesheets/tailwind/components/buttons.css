@@ -106,5 +106,11 @@
     @apply bg-yellow text-blue outline-none border-white no-underline;
   }
 
+  .bg-brand-100 .button,
+  .bg-brand-100 a.button {
+    box-shadow: 0 2px 0 theme("colors.brand.300");
+    @apply bg-white text-black;
+  }
+
   /*! purgecss end ignore */
 }
