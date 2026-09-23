@@ -252,7 +252,7 @@ export const AttachmentsWidget = ({
         <button
           ref={attachMoreButtonRef}
           type="button"
-          className="button button-secondary"
+          className="button button-secondary [anchor-name:--new-feature-attachments]"
           data-testid="attachments-open-modal"
           aria-labelledby={`${buttonLabelId} ${statusId}`}
           onClick={() => setAttachModalOpen(true)}
