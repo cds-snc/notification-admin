@@ -59,6 +59,8 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "email_address": "notfound@example.canada.ca",
         "mobile_number": phone_number_to_register_with,
         "password": password,
+        # auth_type is a hidden field with no UI control - the server must ignore this and
+        # always register as email_auth, regardless of what a client sends.
         "auth_type": "sms_auth",
     }
     user_data["tou_agreed"] = "true"
@@ -75,7 +77,7 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         user_data["email_address"],
         user_data["mobile_number"],
         user_data["password"],
-        user_data["auth_type"],
+        "email_auth",
     )
 
 

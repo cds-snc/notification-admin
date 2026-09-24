@@ -21,6 +21,11 @@ def register():
     form = RegisterUserFormOptional()
 
     if form.validate_on_submit():
+        # auth_type is a hidden field with no UI control; every registration path (this one,
+        # register-from-invite, register-from-org-invite) forces email_auth, so never trust
+        # a client-submitted value for it. Users can only switch to SMS 2FA later, once
+        # active, via their account profile.
+        form.auth_type.data = "email_auth"
         _do_registration(form)
         return redirect(url_for("main.registration_continue"))
 
