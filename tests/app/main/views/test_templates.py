@@ -963,7 +963,7 @@ def test_template_attachment_status_route_returns_file_status(
         )
 
     assert response.get_json() == {"status": "pending_virus_scan", "document_id": "file-1"}
-    mock_get_file_status.assert_called_once_with(UUID(fake_uuid), "file-1")
+    mock_get_file_status.assert_called_once_with(SERVICE_ONE_ID, UUID(fake_uuid), "file-1")
 
 
 def test_template_attachment_download_route_returns_file(
@@ -1004,7 +1004,7 @@ def test_template_attachment_download_route_returns_file(
     assert response.mimetype == "text/plain"
     assert response.data == b"example content"
     assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
-    mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
+    mock_get_file_contents.assert_called_once_with(SERVICE_ONE_ID, UUID(fake_uuid), "file-1")
 
 
 @pytest.mark.parametrize(
@@ -1063,6 +1063,7 @@ def test_template_attachment_download_route_returns_file(
 )
 def test_template_attachment_upload_route_maps_api_errors(
     client_request,
+    mock_get_template_folders,
     fake_uuid,
     service_one,
     app_,
@@ -1073,6 +1074,10 @@ def test_template_attachment_upload_route_maps_api_errors(
 ):
     current_user.verified_phonenumber = True
     service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
 
     error_response = Mock(status_code=status_code)
     error_response.text = json.dumps(error_payload)
@@ -1094,6 +1099,7 @@ def test_template_attachment_upload_route_maps_api_errors(
 
 def test_template_attachment_upload_continues_after_first_error(
     client_request,
+    mock_get_template_folders,
     fake_uuid,
     service_one,
     app_,
@@ -1101,6 +1107,10 @@ def test_template_attachment_upload_continues_after_first_error(
 ):
     current_user.verified_phonenumber = True
     service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        return_value={"data": template_json(SERVICE_ONE_ID, fake_uuid, type_="email")},
+    )
 
     error_response = Mock(status_code=400)
     error_response.text = json.dumps(
@@ -1132,6 +1142,7 @@ def test_template_attachment_upload_continues_after_first_error(
         )
 
     assert create_file_mock.call_count == 2
+    create_file_mock.assert_any_call(SERVICE_ONE_ID, UUID(fake_uuid), "template_attach", "first.pdf", ANY, ANY, ANY)
     assert response.status_code == 400
     assert response.get_json() == {
         "error": "over_file_limit",
@@ -1140,6 +1151,50 @@ def test_template_attachment_upload_continues_after_first_error(
         "limit": 6291456,
         "created_files": [{"id": "second-file", "status": "pending_virus_scan"}],
     }
+
+
+@pytest.mark.parametrize(
+    "route_name, method, route_params, file_api_method",
+    [
+        (".attach_files", "post", {}, "create_file"),
+        (".remove_files", "post", {"file_id": "file-1"}, "delete_file"),
+        (".template_attachment_status", "get", {"file_id": "file-1"}, "get_file_status"),
+        (".download_template_attachment", "get", {"file_id": "file-1"}, "get_file_contents"),
+    ],
+)
+def test_template_attachment_routes_return_404_when_template_not_in_service(
+    client_request,
+    mock_get_template_folders,
+    fake_uuid,
+    service_one,
+    app_,
+    mocker,
+    route_name,
+    method,
+    route_params,
+    file_api_method,
+):
+    current_user.verified_phonenumber = True
+    service_one["permissions"].append("upload_document")
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        side_effect=HTTPError(response=Mock(status_code=404), message="Template not found"),
+    )
+    mock_file_api = mocker.patch(f"app.main.views.templates.file_api_client.{file_api_method}")
+
+    with set_config(app_, "FILE_ATTACH_SERVICES", [SERVICE_ONE_ID]):
+        url = url_for(f"main{route_name}", service_id=SERVICE_ONE_ID, template_id=fake_uuid, **route_params)
+        if method == "post":
+            response = client_request.logged_in_client.post(
+                url,
+                data={"files": (io.BytesIO(b"POC file"), "idor-poc-test.txt")},
+                content_type="multipart/form-data",
+            )
+        else:
+            response = client_request.logged_in_client.get(url)
+
+    assert response.status_code == 404
+    mock_file_api.assert_not_called()
 
 
 @pytest.mark.parametrize(

@@ -8,10 +8,10 @@ class TestFileApiClient:
         client = FileApiClient()
         mock_get = mocker.patch.object(client, "get", return_value=[])
 
-        ret = client.get_files_by_template_id("template-id")
+        ret = client.get_files_by_template_id("service-id", "template-id")
 
         assert ret == []
-        mock_get.assert_called_once_with("/templates/template-id/files")
+        mock_get.assert_called_once_with("/service/service-id/template/template-id/files")
 
     def test_create_file(self, mocker):
         client = FileApiClient()
@@ -19,6 +19,7 @@ class TestFileApiClient:
         mock_post = mocker.patch.object(client, "post", return_value={"id": "file-id"})
 
         ret = client.create_file(
+            "service-id",
             "template-id",
             "upload_document",
             "report.pdf",
@@ -29,9 +30,8 @@ class TestFileApiClient:
 
         assert ret == {"id": "file-id"}
         mock_post.assert_called_once_with(
-            "/templates/template-id/files",
+            "/service/service-id/template/template-id/files",
             {
-                "template_id": "template-id",
                 "type": "upload_document",
                 "name": "report.pdf",
                 "mime_type": "application/pdf",
@@ -54,6 +54,7 @@ class TestFileApiClient:
 
         with pytest.raises(HTTPError) as excinfo:
             client.create_file(
+                "service-id",
                 "template-id",
                 "upload_document",
                 "large-file.pdf",
@@ -68,19 +69,19 @@ class TestFileApiClient:
         client = FileApiClient()
         mock_delete = mocker.patch.object(client, "delete", return_value=None)
 
-        client.delete_file("template-id", "file-id")
+        client.delete_file("service-id", "template-id", "file-id")
 
-        mock_delete.assert_called_once_with("/templates/template-id/files/file-id", {})
+        mock_delete.assert_called_once_with("/service/service-id/template/template-id/files/file-id", {})
 
     def test_update_file_status(self, mocker):
         client = FileApiClient()
         mock_post = mocker.patch.object(client, "post", return_value={"status": "uploaded"})
 
-        ret = client.update_file_status("template-id", "file-id", "uploaded")
+        ret = client.update_file_status("service-id", "template-id", "file-id", "uploaded")
 
         assert ret == {"status": "uploaded"}
         mock_post.assert_called_once_with(
-            "/templates/template-id/files/file-id/status",
+            "/service/service-id/template/template-id/files/file-id/status",
             {"status": "uploaded"},
         )
 
@@ -101,12 +102,12 @@ class TestFileApiClient:
             },
         )
 
-        ret = client.get_file_contents("template-id", "file-id")
+        ret = client.get_file_contents("service-id", "template-id", "file-id")
 
         assert ret["filename"] == "example-file-id.txt"
         assert ret["mime_type"] == "text/plain"
         assert ret["content"] == expected_content
-        mock_get.assert_called_once_with("/templates/template-id/files/file-id/download")
+        mock_get.assert_called_once_with("/service/service-id/template/template-id/files/file-id/download")
 
 
 def test_singleton_client_exposes_methods():
