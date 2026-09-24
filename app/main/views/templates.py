@@ -319,7 +319,6 @@ def attach_files(service_id, template_id):
         try:
             created_files.append(
                 file_api_client.create_file(
-                    service_id,
                     template_id,
                     "template_attach",
                     uploaded_file.filename,
@@ -362,7 +361,7 @@ def remove_files(service_id, template_id, file_id=None):
 
     current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
-    file_api_client.delete_file(service_id, template_id, file_id)
+    file_api_client.delete_file(template_id, file_id)
     return ("", 204)
 
 
@@ -384,7 +383,7 @@ def template_attachment_status(service_id, template_id, file_id=None):
 
     current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
-    return jsonify(file_api_client.get_file_status(service_id, template_id, file_id))
+    return jsonify(file_api_client.get_file_status(template_id, file_id))
 
 
 @main.route(
@@ -406,7 +405,7 @@ def download_template_attachment(service_id, template_id, file_id=None):
         abort(400)
 
     try:
-        file_payload = file_api_client.get_file_contents(service_id, template_id, file_id)
+        file_payload = file_api_client.get_file_contents(template_id, file_id)
     except HTTPError as e:
         if e.status_code == 409:
             # File not ready (e.g., virus scan pending)

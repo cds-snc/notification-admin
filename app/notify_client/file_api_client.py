@@ -6,12 +6,9 @@ from app.notify_client import NotifyAdminAPIClient
 
 
 class FileApiClient(NotifyAdminAPIClient):
-    @staticmethod
-    def _url(service_id, template_id, suffix=""):
-        return f"/service/{service_id}/template/{template_id}/files{suffix}"
-
-    def create_file(self, service_id, template_id, type_, name, mime_type, file_size, file_data):
+    def create_file(self, template_id, type_, name, mime_type, file_size, file_data):
         data = {
+            "template_id": str(template_id),
             "type": type_,
             "name": name,
             "mime_type": mime_type,
@@ -19,16 +16,16 @@ class FileApiClient(NotifyAdminAPIClient):
             "file_data": file_data,
             "created_by": current_user.id,
         }
-        return self.post(self._url(service_id, template_id), data)
+        return self.post(f"/templates/{template_id}/files", data)
 
-    def get_files_by_template_id(self, service_id, template_id):
-        return self.get(self._url(service_id, template_id))
+    def get_files_by_template_id(self, template_id):
+        return self.get(f"/templates/{template_id}/files")
 
-    def get_file_status(self, service_id, template_id, file_id):
-        return self.get(self._url(service_id, template_id, f"/{file_id}/status"))
+    def get_file_status(self, template_id, file_id):
+        return self.get(f"/templates/{template_id}/files/{file_id}/status")
 
-    def get_file_contents(self, service_id, template_id, file_id):
-        response = self.get(self._url(service_id, template_id, f"/{file_id}/download"))
+    def get_file_contents(self, template_id, file_id):
+        response = self.get(f"/templates/{template_id}/files/{file_id}/download")
 
         return {
             "filename": response["name"],
@@ -36,11 +33,11 @@ class FileApiClient(NotifyAdminAPIClient):
             "content": base64.b64decode(response["file_data"]),
         }
 
-    def delete_file(self, service_id, template_id, file_id):
-        return self.delete(self._url(service_id, template_id, f"/{file_id}"), {})
+    def delete_file(self, template_id, file_id):
+        return self.delete(f"/templates/{template_id}/files/{file_id}", {})
 
-    def update_file_status(self, service_id, template_id, file_id, status):
-        return self.post(self._url(service_id, template_id, f"/{file_id}/status"), {"status": status})
+    def update_file_status(self, template_id, file_id, status):
+        return self.post(f"/templates/{template_id}/files/{file_id}/status", {"status": status})
 
 
 file_api_client = FileApiClient()
