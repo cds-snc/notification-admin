@@ -24,6 +24,11 @@ def check_and_resend_text_code():
         # this is a verified user and therefore redirect to page to request resend without edit mobile
         return render_template("views/verification-not-received.html")
 
+    # A pending email_auth user must verify their inbox first (see verify.py) -
+    # don't let them set a mobile number and send themselves an SMS code instead.
+    if user.state == "pending" and user.auth_type == "email_auth" and not session.get("invited_org_user"):
+        return redirect(url_for("main.resend_email_verification"))
+
     form = TextNotReceivedForm(mobile_number=user.mobile_number)
     if form.validate_on_submit():
         user.send_verify_code(to=form.mobile_number.data)

@@ -11,6 +11,7 @@ from tests.conftest import normalize_spaces
 def test_should_return_verify_template(
     client,
     api_user_active,
+    mock_get_user,
     mock_send_verify_code,
 ):
     # TODO this lives here until we work out how to

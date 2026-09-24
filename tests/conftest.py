@@ -1464,6 +1464,7 @@ def api_user_pending(fake_uuid):
         "mobile_number": "6502532222",
         "blocked": False,
         "state": "pending",
+        "auth_type": "sms_auth",
         "failed_login_count": 0,
         "platform_admin": False,
         "permissions": {},

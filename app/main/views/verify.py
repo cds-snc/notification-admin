@@ -17,6 +17,13 @@ from app.utils import redirect_to_sign_in
 @redirect_to_sign_in
 def verify():
     user_id = session["user_details"]["id"]
+    user = User.from_id(user_id)
+
+    # A pending email_auth user must prove ownership of their inbox via the signed
+    # link in verify_email before they can be activated. The only exception is an
+    # org invite, which already proves ownership through its own signed token.
+    if user.state == "pending" and user.auth_type == "email_auth" and not session.get("invited_org_user"):
+        return redirect(url_for("main.resend_email_verification"))
 
     def _check_code(code):
         return user_api_client.check_verify_code(user_id, code, "sms")
