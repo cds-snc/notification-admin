@@ -18,6 +18,11 @@ def register():
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.show_accounts_or_dashboard"))
 
+    # plain self-registration must never inherit invite trust left over in this
+    # session from an earlier, unrelated invite acceptance (see verify.py's guard)
+    session.pop("invited_org_user", None)
+    session.pop("invited_user", None)
+
     form = RegisterUserFormOptional()
 
     if form.validate_on_submit():
