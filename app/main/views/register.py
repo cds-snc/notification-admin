@@ -18,9 +18,19 @@ def register():
     if current_user and current_user.is_authenticated:
         return redirect(url_for("main.show_accounts_or_dashboard"))
 
+    # plain self-registration must never inherit invite trust left over in this
+    # session from an earlier, unrelated invite acceptance (see verify.py's guard)
+    session.pop("invited_org_user", None)
+    session.pop("invited_user", None)
+
     form = RegisterUserFormOptional()
 
     if form.validate_on_submit():
+        # auth_type is a hidden field with no UI control; every registration path (this one,
+        # register-from-invite, register-from-org-invite) forces email_auth, so never trust
+        # a client-submitted value for it. Users can only switch to SMS 2FA later, once
+        # active, via their account profile.
+        form.auth_type.data = "email_auth"
         _do_registration(form)
         return redirect(url_for("main.registration_continue"))
 
