@@ -466,7 +466,9 @@ def user_profile_complete_security_keys():
     # Don't deauthnticate if they're adding from the 2FA page. We only deauth once they leave the 2FA page / flows
     if not from_send_page == "user_profile_2fa":
         session.pop(HAS_AUTHENTICATED, None)
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not data or not data.get("credential") or not data.get("name"):
+        abort(400)
     resp = user_api_client.add_security_key_user(current_user.id, data["name"], data["credential"])
     return jsonify(
         {
@@ -480,20 +482,26 @@ def user_profile_complete_security_keys():
 def user_profile_authenticate_security_keys():
     if session.get("user_details"):
         user_id = session["user_details"]["id"]
-    else:
+    elif current_user.is_authenticated:
         user_id = current_user.id
+    else:
+        abort(401)
     result = user_api_client.authenticate_security_keys(user_id)
     return jsonify(result["data"])
 
 
 @main.route("/user-profile/security_keys/validate", methods=["POST"])
 def user_profile_validate_security_keys():
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not data or not data.get("credential"):
+        abort(400)
 
     if session.get("user_details"):
         user_id = session["user_details"]["id"]
-    else:
+    elif current_user.is_authenticated:
         user_id = current_user.id
+    else:
+        abort(401)
 
     resp = user_api_client.validate_security_keys(user_id, data["credential"])
     user = User.from_id(user_id)

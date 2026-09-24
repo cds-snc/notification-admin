@@ -348,6 +348,34 @@ def test_authenticate_security_key(client_request, api_nongov_user_active, mocke
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 
+def test_authenticate_security_key_anonymous_returns_401(client, mocker):
+    mock = mocker.patch("app.user_api_client.authenticate_security_keys")
+    resp = client.post(url_for("main.user_profile_authenticate_security_keys"))
+    assert resp.status_code == 401
+    assert not mock.called
+
+
+def test_validate_security_key_anonymous_returns_401(client, mocker):
+    mock = mocker.patch("app.user_api_client.validate_security_keys")
+    resp = client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json={"credential": {"rawId": "abc"}},
+    )
+    assert resp.status_code == 401
+    assert not mock.called
+
+
+@pytest.mark.parametrize("body", [None, {}, {"credential": None}])
+def test_validate_security_key_missing_credential_returns_400(client_request, api_nongov_user_active, mocker, body):
+    mock = mocker.patch("app.user_api_client.validate_security_keys")
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json=body,
+    )
+    assert resp.status_code == 400
+    assert not mock.called
+
+
 def test_user_profile_add_security_keys_shows_duplicate_message(
     client_request,
     mock_get_user,
