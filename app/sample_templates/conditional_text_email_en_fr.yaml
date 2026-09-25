@@ -1,0 +1,53 @@
+id: "e5d54233-b7cf-4900-961f-b7f856df0cc3"
+template_name:
+  en: "EN|fr Conditional text example"
+  fr: "EN|fr Exemple de texte conditionnel"
+notification_type: "email"
+template_category: "general communication"
+pinned: false
+subject: "You can now enroll in the program | Vous pouvez maintenant vous inscrire au programme"
+example_subject: "You can now enroll in the program | Vous pouvez maintenant vous inscrire au programme"
+content: |
+  [[fr]]
+  *La version française suit*
+  [[/fr]]
+
+  [[en]]
+  Hi ((name)),
+
+  We’re happy to announce that you can now enroll in the program.
+
+  ((under18??Please get your application signed by a parent or guardian.))
+  [[/en]]
+
+  ---
+
+  [[fr]]
+  Bonjour ((name)),
+
+  Nous sommes heureux de vous annoncer que vous pouvez maintenant vous inscrire au programme.
+
+  ((under18??Veuillez faire signer votre demande par un parent ou un tuteur.))
+  [[/fr]]
+example_content: |
+  [[fr]]
+  *La version française suit*
+  [[/fr]]
+
+  [[en]]
+  Hi Jane Smith,
+
+  We’re happy to announce that you can now enroll in the program.
+
+  Please get your application signed by a parent or guardian.
+  [[/en]]
+
+  ---
+
+  [[fr]]
+  Bonjour Jane Smith,
+
+  Nous sommes heureux de vous annoncer que vous pouvez maintenant vous inscrire au programme.
+
+  Veuillez faire signer votre demande par un parent ou un tuteur.
+  [[/fr]]
