@@ -478,10 +478,10 @@ def user_profile_complete_security_keys():
 
 @main.route("/user-profile/security_keys/authenticate-fido2", methods=["POST"])
 def user_profile_authenticate_security_keys():
-    if session.get("user_details"):
-        user_id = session["user_details"]["id"]
-    else:
-        user_id = current_user.id
+    user_id = _get_security_key_user_id()
+    if user_id is None:
+        return current_app.login_manager.unauthorized()
+
     result = user_api_client.authenticate_security_keys(user_id)
     return jsonify(result["data"])
 
@@ -490,10 +490,9 @@ def user_profile_authenticate_security_keys():
 def user_profile_validate_security_keys():
     data = request.get_json()
 
-    if session.get("user_details"):
-        user_id = session["user_details"]["id"]
-    else:
-        user_id = current_user.id
+    user_id = _get_security_key_user_id()
+    if user_id is None:
+        return current_app.login_manager.unauthorized()
 
     resp = user_api_client.validate_security_keys(user_id, data["credential"])
     user = User.from_id(user_id)
@@ -506,6 +505,14 @@ def user_profile_validate_security_keys():
     user.login()
 
     return resp["status"]
+
+
+def _get_security_key_user_id():
+    if session.get("user_details"):
+        return session["user_details"]["id"]
+    if current_user.is_authenticated:
+        return current_user.id
+    return None
 
 
 @main.route("/user-profile/disable-platform-admin-view", methods=["GET", "POST"])

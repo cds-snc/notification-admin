@@ -403,6 +403,20 @@ def test_validate_security_key_api_error(client_request, api_nongov_user_active,
     assert mock_login.called is False
 
 
+def test_validate_security_key_redirects_anonymous_user_to_sign_in(client, mocker):
+    mock_validate = mocker.patch("app.user_api_client.validate_security_keys")
+    credential = {"rawId": "abc", "response": {}, "type": "public-key"}
+
+    resp = client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json={"credential": credential},
+    )
+
+    assert resp.status_code == 302
+    assert resp.location.endswith("/sign-in?next=/user-profile/security_keys/validate")
+    mock_validate.assert_not_called()
+
+
 @pytest.mark.parametrize("password_changed", [True, False])
 def test_validate_security_key(
     client_request,
