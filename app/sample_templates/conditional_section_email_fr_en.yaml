@@ -1,0 +1,97 @@
+id: "f9c2eba0-da65-453a-af25-7c9c0f939dc4"
+template_name:
+  en: "FR|en Conditional section example"
+  fr: "FR|en Exemple de section conditionnelle"
+notification_type: "email"
+template_category: "general communication"
+pinned: false
+subject: "Mise à jour de votre demande ((reference_number)) | Update on your application ((reference_number))"
+example_subject: "Mise à jour de votre demande A123456789 | Update on your application A123456789"
+content: |
+  [[en]]
+  *The English version follows*
+  [[/en]]
+
+  [[fr]]
+  Bonjour ((name)),
+
+  Merci d’avoir soumis votre demande. Votre numéro de référence est ((reference_number)).
+
+  ((missing_documents??
+  # Documents requis
+
+  Il nous manque des documents pour compléter votre demande. Veuillez nous faire parvenir les documents suivants dès que possible :
+
+  * -document 1-
+  * -document 2-
+  * -document 3-
+
+  Vous pouvez téléverser ces documents en vous connectant à votre compte.
+  ))
+
+  Nous communiquerons avec vous une fois votre demande traitée.
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi ((name)),
+
+  Thank you for submitting your application. Your reference number is ((reference_number)).
+
+  ((missing_documents??
+  # Documents required
+
+  We’re missing some documents to complete your application. Please send us the following as soon as possible:
+
+  * -document 1-
+  * -document 2-
+  * -document 3-
+
+  You can upload these documents by signing in to your account.
+  ))
+
+  We’ll be in touch once your application has been processed.
+  [[/en]]
+example_content: |
+  [[en]]
+  *The English version follows*
+  [[/en]]
+
+  [[fr]]
+  Bonjour Jane Smith,
+
+  Merci d’avoir soumis votre demande. Votre numéro de référence est A123456789.
+
+  # Documents requis
+
+  Il nous manque des documents pour compléter votre demande. Veuillez nous faire parvenir les documents suivants dès que possible :
+
+  * Preuve d’adresse
+  * Pièce d’identité avec photo délivrée par le gouvernement
+  * Formulaire de consentement signé
+
+  Vous pouvez téléverser ces documents en vous connectant à votre compte.
+
+  Nous communiquerons avec vous une fois votre demande traitée.
+  [[/fr]]
+
+  ---
+
+  [[en]]
+  Hi Jane Smith,
+
+  Thank you for submitting your application. Your reference number is A123456789.
+
+  # Documents required
+
+  We’re missing some documents to complete your application. Please send us the following as soon as possible:
+
+  * Proof of address
+  * Government-issued photo ID
+  * Signed consent form
+
+  You can upload these documents by signing in to your account.
+
+  We’ll be in touch once your application has been processed.
+  [[/en]]
