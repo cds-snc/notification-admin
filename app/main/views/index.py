@@ -31,6 +31,7 @@ from app.articles.pages import (
     get_page_by_slug_with_cache,
 )
 from app.articles.routing import gca_url_for
+from app.enums import ERROR_TEMPLATE_STATUS_CODES
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -88,7 +89,8 @@ def security_txt():
 
 @main.route("/error/<int:status_code>")
 def error(status_code):
-    if status_code >= 500:
+    # Only codes with a matching template in app/templates/error/ are supported
+    if status_code not in ERROR_TEMPLATE_STATUS_CODES or status_code == 500:
         abort(404)
     abort(status_code)
 
