@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang|default('en') }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ _('I’m a teapot') }} - {{ _('Notify') }}</title>
+  <link rel="stylesheet" href="{{ asset_url('stylesheets/index.css') }}">
+  <style>
+    .teapot-page { min-height: 100vh; display: flex; flex-direction: column; background: #fff; color: #26374a; }
+    .teapot-header, .teapot-footer { border-bottom: 1px solid #d6d9dd; }
+    .teapot-header-inner, .teapot-footer-inner, .teapot-content { width: min(100% - 2rem, 1200px); margin: 0 auto; }
+    .teapot-footer-inner { display: flex; justify-content: flex-end; padding: 2.5rem 0; }
+    .teapot-header-inner { padding: 1.25rem 0; }
+    .teapot-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3rem 0; text-align: center; transform: translateY(-5vh); }
+    .teapot-content h1 { font-size: 2.25rem; line-height: 1.2; margin: 0 0 1rem; }
+    .teapot-content p { max-width: 42rem; font-size: 1.125rem; }
+    .teapot-container { position: relative; height: 220px; margin: 0 auto 2rem; }
+    .teapot { position: absolute; top: 40px; left: calc(50% - 100px); width: 200px; height: 150px; background: #000; border-radius: 50% 50% 0 0; }
+    .teapot .line { position: absolute; top: 86%; width: 200px; height: 10px; background: wheat; }
+    .teapot .treflection { position: absolute; top: 3%; left: 37%; width: 50px; height: 16px; background: wheat; border-radius: 50%; }
+    .teapot .top { position: absolute; top: -4%; left: 44.5%; width: 20px; height: 20px; background: #000; border-radius: 5px; }
+    .teapot .mreflection { position: absolute; top: 19%; left: 30%; width: 100px; height: 80px; border: 10px solid wheat; border-color: transparent transparent transparent #fff; border-radius: 250px 0 0 260px; transform: rotate(153deg); }
+    .teapot .handle { position: absolute; top: -30%; left: 7.5%; width: 150px; height: 150px; border: 10px solid #000; border-radius: 35px; }
+    .teapot .hold { position: absolute; top: -34%; left: 31%; width: 75px; height: 30px; background: #000; border-radius: 10px; }
+    .teapot .extend { position: absolute; top: 4%; left: -11%; width: 30px; height: 90px; background: #000; transform: rotate(303deg); }
+    .teapot .inner { position: absolute; top: 12%; left: -11%; width: 15px; height: 55px; background: wheat; border-radius: 0 0 5px 5px; transform: rotate(303deg); }
+  </style>
+</head>
+<body class="teapot-page">
+  <header class="teapot-header">
+    <div class="teapot-header-inner">
+      <img alt="{{ _('Government of Canada') }}" width="250" src="{{ asset_s3_url(_('gov-canada-en.svg')) }}">
+    </div>
+  </header>
+  <main id="main_content" class="teapot-content" tabindex="-1">
+    <div class="teapot-container">
+      <div class="teapot">
+        <div class="handle"></div>
+        <div class="hold"></div>
+        <div class="line"></div>
+        <div class="treflection"></div>
+        <div class="top"></div>
+        <div class="mreflection"></div>
+        <div class="extend"></div>
+        <div class="inner"></div>
+      </div>
+    </div>
+    <h1>{{ _('418: I’m a teapot') }}</h1>
+      <p>{{ _('You asked this server to brew coffee. It only knows how to steep tea.') }}</p>
+    <p>{{ _('This has been a known limitation since 1998, and we have no plans to fix it.') }}</p>
+  </main>
+  <footer class="teapot-footer">
+    <div class="teapot-footer-inner">
+      <img alt="{{ _('Government of Canada') }}" width="150" src="{{ asset_s3_url('goc--footer-logo.svg') }}">
+    </div>
+  </footer>
+</body>
+</html>
