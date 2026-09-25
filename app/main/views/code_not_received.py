@@ -3,6 +3,7 @@ from flask import redirect, render_template, session, url_for
 from app import user_api_client
 from app.main import main
 from app.main.forms import TextNotReceivedForm
+from app.main.views.verify import has_matching_org_invite
 from app.models.user import User
 from app.utils import redirect_to_sign_in
 
@@ -26,7 +27,7 @@ def check_and_resend_text_code():
 
     # A pending email_auth user must verify their inbox first (see verify.py) -
     # don't let them set a mobile number and send themselves an SMS code instead.
-    if user.state == "pending" and user.auth_type == "email_auth" and not session.get("invited_org_user"):
+    if user.state == "pending" and user.auth_type == "email_auth" and not has_matching_org_invite(user):
         return redirect(url_for("main.resend_email_verification"))
 
     form = TextNotReceivedForm(mobile_number=user.mobile_number)
@@ -45,7 +46,7 @@ def check_and_resend_verification_code():
 
     # A pending email_auth user must verify their inbox first (see verify.py) -
     # don't send them (or a number they typed in at registration) an SMS code.
-    if user.state == "pending" and user.auth_type == "email_auth" and not session.get("invited_org_user"):
+    if user.state == "pending" and user.auth_type == "email_auth" and not has_matching_org_invite(user):
         return redirect(url_for("main.resend_email_verification"))
 
     user.send_verify_code()
