@@ -963,7 +963,7 @@ def test_template_attachment_status_route_returns_file_status(
         )
 
     assert response.get_json() == {"status": "pending_virus_scan", "document_id": "file-1"}
-    mock_get_file_status.assert_called_once_with(UUID(fake_uuid), "file-1")
+    mock_get_file_status.assert_called_once_with(SERVICE_ONE_ID, UUID(fake_uuid), "file-1")
 
 
 def test_template_attachment_download_route_returns_file(
@@ -1004,7 +1004,7 @@ def test_template_attachment_download_route_returns_file(
     assert response.mimetype == "text/plain"
     assert response.data == b"example content"
     assert response.headers["Content-Disposition"] == 'attachment; filename="example-file-1.txt"'
-    mock_get_file_contents.assert_called_once_with(UUID(fake_uuid), "file-1")
+    mock_get_file_contents.assert_called_once_with(SERVICE_ONE_ID, UUID(fake_uuid), "file-1")
 
 
 @pytest.mark.parametrize(
