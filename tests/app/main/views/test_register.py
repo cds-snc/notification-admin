@@ -59,6 +59,8 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "email_address": "notfound@example.canada.ca",
         "mobile_number": phone_number_to_register_with,
         "password": password,
+        # auth_type is a hidden field with no UI control - the server must ignore this and
+        # always register as email_auth, regardless of what a client sends.
         "auth_type": "sms_auth",
     }
     user_data["tou_agreed"] = "true"
@@ -75,8 +77,53 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         user_data["email_address"],
         user_data["mobile_number"],
         user_data["password"],
-        user_data["auth_type"],
+        "email_auth",
     )
+
+
+def test_register_clears_stale_invite_session_keys_on_get(client):
+    with client.session_transaction() as session:
+        session["invited_org_user"] = {"email_address": "someone-else@example.canada.ca"}
+        session["invited_user"] = {"email_address": "someone-else@example.canada.ca"}
+
+    response = client.get(url_for("main.register"))
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        assert "invited_org_user" not in session
+        assert "invited_user" not in session
+
+
+def test_register_clears_stale_invite_session_keys_on_post(
+    client,
+    mock_send_verify_code,
+    mock_register_user,
+    mock_get_user_by_email_not_found,
+    mock_email_is_not_already_in_use,
+    mock_send_verify_email,
+    mock_login,
+):
+    # simulate a carve-out left over in this session from an earlier, unrelated
+    # invite acceptance - it must not apply to this unrelated registration attempt
+    with client.session_transaction() as session:
+        session["invited_org_user"] = {"email_address": "someone-else@example.canada.ca"}
+        session["invited_user"] = {"email_address": "someone-else@example.canada.ca"}
+
+    user_data = {
+        "name": "Some One Valid",
+        "email_address": "notfound@example.canada.ca",
+        "mobile_number": "+16502532222",
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "auth_type": "sms_auth",
+    }
+    user_data["tou_agreed"] = "true"
+
+    response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        assert "invited_org_user" not in session
+        assert "invited_user" not in session
 
 
 @pytest.mark.parametrize(
