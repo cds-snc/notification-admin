@@ -32,6 +32,12 @@ def _make_key(key_format, client_method, args, kwargs):
     )
 
 
+def _belongs_to_service(response, service_id):
+    data = response.get("data") if isinstance(response, dict) else None
+    items = data if isinstance(data, list) else [data]
+    return all(isinstance(item, dict) and str(item.get("service")) == str(service_id) for item in items)
+
+
 def set_service_template(key_format):
     def _set(client_method):
         @wraps(client_method)
@@ -45,6 +51,11 @@ def set_service_template(key_format):
             """
             redis_key = _make_key(key_format, client_method, args, kwargs)
             cached_template = redis_client.get(redis_key)
+            service_id = _get_argument("service_id", client_method, args, kwargs)
+
+            # Cache keys aren't service-scoped, so a cached template from another service must be treated as a miss
+            if cached_template and not _belongs_to_service(json.loads(cached_template.decode("utf-8")), service_id):
+                cached_template = None
 
             if cached_template:
                 template_category = json.loads(cached_template.decode("utf-8")).get("template_category")
@@ -80,6 +91,31 @@ def set(key_format):
             cached = redis_client.get(redis_key)
             if cached:
                 return json.loads(cached.decode("utf-8"))
+            api_response = client_method(client_instance, *args, **kwargs)
+            redis_client.set(
+                redis_key,
+                json.dumps(api_response),
+                ex=TTL,
+            )
+            return api_response
+
+        return new_client_method
+
+    return _set
+
+
+def set_service_owned(key_format):
+    """Like `set`, but ignores cached responses whose data doesn't belong to the `service_id` argument."""
+
+    def _set(client_method):
+        @wraps(client_method)
+        def new_client_method(client_instance, *args, **kwargs):
+            redis_key = _make_key(key_format, client_method, args, kwargs)
+            cached = redis_client.get(redis_key)
+            if cached:
+                cached = json.loads(cached.decode("utf-8"))
+                if _belongs_to_service(cached, _get_argument("service_id", client_method, args, kwargs)):
+                    return cached
             api_response = client_method(client_instance, *args, **kwargs)
             redis_client.set(
                 redis_key,
