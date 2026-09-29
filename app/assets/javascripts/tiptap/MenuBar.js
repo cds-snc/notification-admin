@@ -271,11 +271,13 @@ const MenuBar = ({
   isMarkdownView,
   toggleLabel,
   useUnifiedConditionalButton = false,
+  templateType = "email",
 }) => {
   if (!editor) {
     return null;
   }
 
+  const isSms = templateType === "sms";
   const { t } = useEditorContext();
   const [liveMessage, setLiveMessage] = useState("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -531,7 +533,8 @@ const MenuBar = ({
           {liveMessage}
         </div>
 
-        {/* First group: Headings */}
+        {/* First group: Headings - not available in SMS */}
+        {!isSms && (
         <div className="toolbar-group">
           <ToolbarButton
             testId="rte-heading_1"
@@ -578,8 +581,10 @@ const MenuBar = ({
             <Minus />
           </ToolbarButton>
         </div>
+        )}
 
-        {/* Second group: Bold, Italic, Link */}
+        {/* Second group: Bold, Italic, Link - not available in SMS */}
+        {!isSms && (
         <div className="toolbar-group">
           <ToolbarButton
             testId="rte-bold"
@@ -625,8 +630,10 @@ const MenuBar = ({
             <Link />
           </ToolbarButton>
         </div>
+        )}
 
-        {/* Third group: Bullet list, Numbered list, Blockquote */}
+        {/* Third group: Bullet list, Numbered list, Blockquote - not available in SMS */}
+        {!isSms && (
         <div className="toolbar-group">
           <ToolbarButton
             testId="rte-bullet_list"
@@ -673,6 +680,7 @@ const MenuBar = ({
             <TextQuote />
           </ToolbarButton>
         </div>
+        )}
 
         {/* Fourth group: Variable, Conditional block, Conditional inline */}
         <div className="toolbar-group">
@@ -748,7 +756,8 @@ const MenuBar = ({
           </ToolbarButton>
         </div>
 
-        {/* Fifth group: English, French, RTL */}
+        {/* Fifth group: English, French, RTL - not available in SMS */}
+        {!isSms && (
         <div className="toolbar-group">
           <ToolbarButton
             testId="rte-english_block"
@@ -795,6 +804,7 @@ const MenuBar = ({
             <Icon iconNode={rightToLeftIcon} />
           </ToolbarButton>
         </div>
+        )}
 
         {/* Sixth group: Info button */}
         <div
@@ -858,25 +868,32 @@ const MenuBar = ({
         aria-hidden={isInfoOpen ? undefined : true}
         inert={isInfoOpen ? undefined : ""}
       >
-        <nav aria-label={t.infoTabsLabel}>
-          <ul>
-            {infoPaneSections.map(({ id, tabLabel }) => (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  aria-current={infoPaneTarget === id ? "page" : undefined}
-                  onClick={(event) => handleInfoPaneLinkClick(event, id)}
-                >
-                  {tabLabel}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* SMS only supports variables/conditionals, so there's nothing to switch between */}
+        {!isSms && (
+          <nav aria-label={t.infoTabsLabel}>
+            <ul>
+              {infoPaneSections.map(({ id, tabLabel }) => (
+                <li key={id}>
+                  <a
+                    href={`#${id}`}
+                    aria-current={infoPaneTarget === id ? "page" : undefined}
+                    onClick={(event) => handleInfoPaneLinkClick(event, id)}
+                  >
+                    {tabLabel}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
-        {infoPaneSections.map(({ id, Component }) => (
-          <Component key={id} t={t} isActive={infoPaneTarget === id} />
-        ))}
+        {isSms ? (
+          <CustomContentInfoPane t={t} isActive={isInfoOpen} />
+        ) : (
+          infoPaneSections.map(({ id, Component }) => (
+            <Component key={id} t={t} isActive={infoPaneTarget === id} />
+          ))
+        )}
       </div>
     </>
   );

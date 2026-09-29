@@ -23,6 +23,7 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
+import SmsPlainTextMarkdown from "./CustomComponents/SmsPlainTextMarkdown";
 import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
@@ -60,7 +61,9 @@ const SimpleEditor = ({
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  templateType = "email",
 }) => {
+  const isSms = templateType === "sms";
   const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
@@ -141,46 +144,54 @@ const SimpleEditor = ({
       // Universal announcer for all nodes and marks
       AnnouncerPlugin(t, announcerRef),
 
-      // Node extensions that match toolbar features
-      Heading.configure({
-        levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
-      }),
-      Blockquote.configure({
-        content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
-      }),
-      BulletList.configure({
-        HTMLAttributes: {
-          role: "list",
-        },
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          role: "list",
-        },
-      }),
-      ListItem,
-      HorizontalRule.configure({
-        HTMLAttributes: {
-          role: "separator",
-        },
-      }),
+      // Node extensions that match toolbar features - not available in SMS
+      ...(!isSms
+        ? [
+            Heading.configure({
+              levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
+            }),
+            Blockquote.configure({
+              content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
+            }),
+            BulletList.configure({
+              HTMLAttributes: {
+                role: "list",
+              },
+            }),
+            OrderedList.configure({
+              HTMLAttributes: {
+                role: "list",
+              },
+            }),
+            ListItem,
+            HorizontalRule.configure({
+              HTMLAttributes: {
+                role: "separator",
+              },
+            }),
+          ]
+        : []),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
-      // Mark extensions that match toolbar features
-      Bold.configure({
-        HTMLAttributes: {
-          role: "status",
-        },
-      }),
-      Italic.configure({
-        HTMLAttributes: {
-          role: "status",
-        },
-      }),
+      // Mark extensions that match toolbar features - not available in SMS
+      ...(!isSms
+        ? [
+            Bold.configure({
+              HTMLAttributes: {
+                role: "status",
+              },
+            }),
+            Italic.configure({
+              HTMLAttributes: {
+                role: "status",
+              },
+            }),
+          ]
+        : []),
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -188,19 +199,21 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
-      MarkdownLink.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: "link",
-        },
-      }),
-      // TextAlign.configure({
-      //   types: ["heading", "paragraph"],
-      // }),
-      EnglishBlock.configure({}),
+      // Links and language/RTL blocks are not available in SMS
+      ...(!isSms
+        ? [
+            MarkdownLink.configure({
+              openOnClick: false,
+              HTMLAttributes: {
+                class: "link",
+              },
+            }),
+            EnglishBlock.configure({}),
+            FrenchBlock.configure({}),
+            RTLBlock,
+          ]
+        : []),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock.configure({}),
-      RTLBlock,
       MenubarShortcut,
 
       // Add Markdown extension with paste handling enabled
@@ -214,8 +227,9 @@ const SimpleEditor = ({
         transformPastedText: true, // Transform pasted text to markdown
         transformCopiedText: true, // Transform copied text to markdown
       }),
-      // Custom blockquote markdown handling (accept '^' inbound)
-      BlockquoteMarkdown,
+      // Custom blockquote markdown handling (accept '^' inbound) - not needed in SMS
+      // SMS has no formatting extensions, so markdown syntax must render as literal text
+      ...(!isSms ? [BlockquoteMarkdown] : [SmsPlainTextMarkdown]),
     ],
     editorProps: {
       attributes: {
@@ -236,7 +250,10 @@ const SimpleEditor = ({
           // Normalize pasted blockquote markers: convert leading '>' to '^'
           // for storage/markdown consistency while allowing the RTE to
           // render normal blockquotes via inbound normalization on parse.
-          const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
+          // SMS has no blockquote support, so pasted text is left as-is.
+          const normalizedForStorage = isSms
+            ? text
+            : text.replace(/^(\s*)>/gm, "$1^");
 
           // Use the same markdown conversion logic as the markdown switch handler
           // This ensures pasted markdown is processed consistently
@@ -407,10 +424,10 @@ const SimpleEditor = ({
     // Convert inbound stored caret markers '^' back to '>' so the RTE
     // renders normal blockquotes. We then set the markdownValue to the
     // original stored content (so Markdown view shows '^').
-    const inboundForEditor = (initialContent || "").replace(
-      /^(\s*)\^/gm,
-      "$1>",
-    );
+    // SMS has no blockquote support, so caret markers are left untouched.
+    const inboundForEditor = isSms
+      ? initialContent || ""
+      : (initialContent || "").replace(/^(\s*)\^/gm, "$1>");
     editor.commands.setContent(inboundForEditor);
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
@@ -524,7 +541,10 @@ const SimpleEditor = ({
         // Clean up HardBreak backslash continuations
         markdown = cleanMarkdownSerialization(markdown);
 
-        markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+        // SMS has no blockquote support, so a leading '>' is literal text.
+        if (!isSms) {
+          markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+        }
         updateHiddenInputValue(markdown);
       } catch (error) {
         console.error("Error getting markdown:", error);
@@ -579,8 +599,11 @@ const SimpleEditor = ({
       return;
     }
 
-    // Convert caret markers '^' to '>' so the editor renders blockquotes
-    const convertedForEditor = markdownText.replace(/^(\s*)\^/gm, "$1>");
+    // Convert caret markers '^' to '>' so the editor renders blockquotes.
+    // SMS has no blockquote support, so caret markers are left untouched.
+    const convertedForEditor = isSms
+      ? markdownText
+      : markdownText.replace(/^(\s*)\^/gm, "$1>");
 
     // Normalize multi-line conditional markers to ensure they start and end
     // on their own paragraph when converting from markdown to rich content.
@@ -635,17 +658,20 @@ const SimpleEditor = ({
     // Only matches when there's NO space already (so `# heading` is left alone)
     // This only happens during markdown-to-editor conversion, not during typing
     // TODO: When no more templates contain these typos, we can remove this code
+    // SMS has no heading support, so leading '#' characters are literal text.
     let fixedHeadingSpacing = normalizedForEditor;
-    // Process ## first to avoid backtracking issues with single #
-    fixedHeadingSpacing = fixedHeadingSpacing.replace(
-      /^##(?! )(\S)/gm,
-      "## $1",
-    );
-    // Then process single #, but exclude cases where it's followed by another #
-    fixedHeadingSpacing = fixedHeadingSpacing.replace(
-      /^#(?!#)(?! )(\S)/gm,
-      "# $1",
-    );
+    if (!isSms) {
+      // Process ## first to avoid backtracking issues with single #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^##(?! )(\S)/gm,
+        "## $1",
+      );
+      // Then process single #, but exclude cases where it's followed by another #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^#(?!#)(?! )(\S)/gm,
+        "# $1",
+      );
+    }
 
     // For content with conditionals, use insertContent directly with markdown
     // (don't convert to HTML spans - let the markdown parser handle everything)
@@ -728,8 +754,11 @@ const SimpleEditor = ({
       });
       // Clean up HardBreak backslash continuations
       markdown = cleanMarkdownSerialization(markdown);
-      // Normalize outgoing markdown to use '^' instead of '>'
-      markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+      // Normalize outgoing markdown to use '^' instead of '>'.
+      // SMS has no blockquote support, so a leading '>' is literal text.
+      if (!isSms) {
+        markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+      }
       setMarkdownValue(markdown);
     }
 
@@ -781,6 +810,7 @@ const SimpleEditor = ({
           isMarkdownView={isMarkdownView}
           toggleLabel={toggleLabel}
           useUnifiedConditionalButton={useUnifiedConditionalButton}
+          templateType={templateType}
         />
         <div className="editor-content">
           <div
