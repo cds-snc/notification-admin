@@ -167,3 +167,78 @@ def test_verify_redirects_to_sign_in_if_not_logged_in(client):
 
     assert response.location == url_for("main.sign_in")
     assert response.status_code == 302
+
+
+def test_verify_does_not_activate_pending_email_auth_user_with_someone_elses_org_invite(
+    client,
+    mocker,
+    api_user_pending,
+    mock_check_verify_code,
+    mock_activate_user,
+):
+    api_user_pending["auth_type"] = "email_auth"
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
+    mock_add_to_org = mocker.patch("app.user_api_client.add_user_to_organisation")
+
+    with client.session_transaction() as session:
+        session["user_details"] = {"email": api_user_pending["email_address"], "id": api_user_pending["id"]}
+        session["invited_org_user"] = {"email_address": "someone-else@canada.ca", "organisation": "org-id"}
+
+    response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"})
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.resend_email_verification")
+    mock_check_verify_code.assert_not_called()
+    mock_activate_user.assert_not_called()
+    mock_add_to_org.assert_not_called()
+
+
+def test_verify_activates_pending_email_auth_user_with_their_own_org_invite(
+    client,
+    mocker,
+    api_user_pending,
+    mock_check_verify_code,
+    mock_activate_user,
+    mock_login,
+):
+    api_user_pending["auth_type"] = "email_auth"
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
+    mock_add_to_org = mocker.patch("app.user_api_client.add_user_to_organisation")
+
+    with client.session_transaction() as session:
+        session["user_details"] = {"email": api_user_pending["email_address"], "id": api_user_pending["id"]}
+        session["invited_org_user"] = {
+            "email_address": api_user_pending["email_address"].upper(),
+            "organisation": "org-id",
+        }
+
+    response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"})
+
+    assert response.status_code == 302
+    assert mock_activate_user.called
+    mock_add_to_org.assert_called_once_with("org-id", api_user_pending["id"])
+
+
+def test_verify_email_does_not_add_user_to_someone_elses_org_invite(
+    client,
+    mocker,
+    api_user_pending,
+    mock_activate_user,
+    mock_login,
+):
+    api_user_pending["auth_type"] = "email_auth"
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
+    mocker.patch(
+        "app.main.views.verify.check_token",
+        return_value=json.dumps({"user_id": api_user_pending["id"], "secret_code": "UNUSED"}),
+    )
+    mock_add_to_org = mocker.patch("app.user_api_client.add_user_to_organisation")
+
+    with client.session_transaction() as session:
+        session["invited_org_user"] = {"email_address": "someone-else@canada.ca", "organisation": "org-id"}
+
+    response = client.get(url_for("main.verify_email", token="notreal"))
+
+    assert response.status_code == 302
+    assert mock_activate_user.called
+    mock_add_to_org.assert_not_called()

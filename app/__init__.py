@@ -47,7 +47,7 @@ from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
 from app.config import configs
-from app.enums import NotifyEnv
+from app.enums import ERROR_TEMPLATE_STATUS_CODES, NotifyEnv
 from app.extensions import (
     antivirus_client,
     bounce_rate_client,
@@ -850,6 +850,9 @@ def useful_headers_after_request(response):
 
 def register_errorhandlers(application):  # noqa (C901 too complex)
     def _error_response(error_code):
+        # Fall back to the generic 500 page if there's no template for this specific status code
+        if error_code not in ERROR_TEMPLATE_STATUS_CODES:
+            error_code = 500
         resp = make_response(render_template("error/{0}.html".format(error_code)), error_code)
         return useful_headers_after_request(resp)
 

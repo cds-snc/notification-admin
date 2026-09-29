@@ -1,3 +1,4 @@
+import json
 from unittest.mock import call
 from uuid import uuid4
 
@@ -10,6 +11,9 @@ from app import invite_api_client, service_api_client, user_api_client
 from tests.conftest import SERVICE_ONE_ID
 
 FAKE_TEMPLATE_ID = uuid4()
+OTHER_SERVICE_ID = str(uuid4())
+CACHED_TEMPLATE = json.dumps({"data": {"service": SERVICE_ONE_ID}}).encode()
+CACHED_TEMPLATE_VERSIONS = json.dumps({"data": [{"service": SERVICE_ONE_ID}, {"service": SERVICE_ONE_ID}]}).encode()
 
 
 @pytest.fixture(autouse=True)
@@ -211,10 +215,10 @@ def test_client_returns_count_of_service_templates(
             service_api_client.get_service_template,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
             [call("template-{}-version-None".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            CACHED_TEMPLATE,
             [],
             [],
-            {"data_from": "cache"},
+            json.loads(CACHED_TEMPLATE),
         ),
         (
             service_api_client.get_service_template,
@@ -235,10 +239,10 @@ def test_client_returns_count_of_service_templates(
             service_api_client.get_service_template,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID, 1],
             [call("template-{}-version-1".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            CACHED_TEMPLATE,
             [],
             [],
-            {"data_from": "cache"},
+            json.loads(CACHED_TEMPLATE),
         ),
         (
             service_api_client.get_service_template,
@@ -283,10 +287,10 @@ def test_client_returns_count_of_service_templates(
             service_api_client.get_service_template_versions,
             [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
             [call("template-{}-versions".format(FAKE_TEMPLATE_ID))],
-            b'{"data_from": "cache"}',
+            CACHED_TEMPLATE_VERSIONS,
             [],
             [],
-            {"data_from": "cache"},
+            json.loads(CACHED_TEMPLATE_VERSIONS),
         ),
         (
             service_api_client.get_service_template_versions,
@@ -332,6 +336,54 @@ def test_returns_value_from_cache(
     assert mock_redis_get.call_args_list == expected_cache_get_calls
     assert mock_api_get.call_args_list == expected_api_calls
     assert mock_redis_set.call_args_list == expected_cache_set_calls
+
+
+@pytest.mark.parametrize(
+    "client_method, extra_args, cache_value, expected_api_url",
+    [
+        (
+            service_api_client.get_service_template,
+            [OTHER_SERVICE_ID, FAKE_TEMPLATE_ID],
+            CACHED_TEMPLATE,
+            "/service/{}/template/{}".format(OTHER_SERVICE_ID, FAKE_TEMPLATE_ID),
+        ),
+        (
+            service_api_client.get_service_template,
+            [OTHER_SERVICE_ID, FAKE_TEMPLATE_ID, 1],
+            CACHED_TEMPLATE,
+            "/service/{}/template/{}/version/1".format(OTHER_SERVICE_ID, FAKE_TEMPLATE_ID),
+        ),
+        (
+            service_api_client.get_service_template_versions,
+            [OTHER_SERVICE_ID, FAKE_TEMPLATE_ID],
+            CACHED_TEMPLATE_VERSIONS,
+            "/service/{}/template/{}/versions".format(OTHER_SERVICE_ID, FAKE_TEMPLATE_ID),
+        ),
+        (
+            service_api_client.get_service_template_versions,
+            [OTHER_SERVICE_ID, FAKE_TEMPLATE_ID],
+            json.dumps({"data": [{"service": OTHER_SERVICE_ID}, {"service": SERVICE_ONE_ID}]}).encode(),
+            "/service/{}/template/{}/versions".format(OTHER_SERVICE_ID, FAKE_TEMPLATE_ID),
+        ),
+    ],
+    ids=["template", "template_version", "template_versions", "template_versions_mixed_services"],
+)
+def test_does_not_return_cached_template_belonging_to_another_service(
+    mocker,
+    client_method,
+    extra_args,
+    cache_value,
+    expected_api_url,
+):
+    mocker.patch("app.extensions.RedisClient.get", return_value=cache_value)
+    mocker.patch("app.extensions.RedisClient.set")
+    mock_api_get = mocker.patch(
+        "app.notify_client.NotifyAdminAPIClient.get",
+        return_value={"data_from": "api"},
+    )
+
+    assert client_method(*extra_args) == {"data_from": "api"}
+    mock_api_get.assert_called_once_with(expected_api_url)
 
 
 @pytest.mark.parametrize(

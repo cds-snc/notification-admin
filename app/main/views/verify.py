@@ -21,8 +21,8 @@ def verify():
 
     # A pending email_auth user must prove ownership of their inbox via the signed
     # link in verify_email before they can be activated. The only exception is an
-    # org invite, which already proves ownership through its own signed token.
-    if user.state == "pending" and user.auth_type == "email_auth" and not session.get("invited_org_user"):
+    # org invite sent to this user's address, which proves ownership through its own signed token.
+    if user.state == "pending" and user.auth_type == "email_auth" and not has_matching_org_invite(user):
         return redirect(url_for("main.resend_email_verification"))
 
     def _check_code(code):
@@ -84,14 +84,20 @@ def activate_user(user_id):
         session["service_id"] = service_id
         return redirect(url_for("main.service_dashboard", service_id=service_id))
 
-    invited_org_user = session.get("invited_org_user")
-    if invited_org_user:
-        user_api_client.add_user_to_organisation(invited_org_user["organisation"], session["user_details"]["id"])
+    if has_matching_org_invite(user):
+        user_api_client.add_user_to_organisation(session["invited_org_user"]["organisation"], session["user_details"]["id"])
 
     if organisation_id:
         return redirect(url_for("main.organisation_dashboard", org_id=organisation_id))
     else:
         return redirect(url_for("main.welcome"))
+
+
+def has_matching_org_invite(user):
+    invited_org_user = session.get("invited_org_user")
+    if not invited_org_user:
+        return False
+    return (invited_org_user.get("email_address") or "").lower() == user.email_address.lower()
 
 
 def _add_invited_user_to_service(invited_user):
