@@ -212,6 +212,8 @@ class Development(Config):
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
+    FF_SMS_RTE = True
+    FF_USE_BILLABLE_UNITS = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
