@@ -292,21 +292,6 @@ def test_client_returns_count_of_service_templates(
             [],
             json.loads(CACHED_TEMPLATE_VERSIONS),
         ),
-        (
-            service_api_client.get_service_template_versions,
-            [SERVICE_ONE_ID, FAKE_TEMPLATE_ID],
-            [call("template-{}-versions".format(FAKE_TEMPLATE_ID))],
-            None,
-            [call("/service/{}/template/{}/versions".format(SERVICE_ONE_ID, FAKE_TEMPLATE_ID))],
-            [
-                call(
-                    "template-{}-versions".format(FAKE_TEMPLATE_ID),
-                    '{"data_from": "api"}',
-                    ex=604800,
-                )
-            ],
-            {"data_from": "api"},
-        ),
     ],
 )
 def test_returns_value_from_cache(
@@ -384,6 +369,48 @@ def test_does_not_return_cached_template_belonging_to_another_service(
 
     assert client_method(*extra_args) == {"data_from": "api"}
     mock_api_get.assert_called_once_with(expected_api_url)
+
+
+def test_caches_template_versions_from_api_when_owned_by_service(mocker):
+    api_response = json.loads(CACHED_TEMPLATE_VERSIONS)
+    mocker.patch("app.extensions.RedisClient.get", return_value=None)
+    mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
+    mocker.patch("app.notify_client.NotifyAdminAPIClient.get", return_value=api_response)
+
+    assert service_api_client.get_service_template_versions(SERVICE_ONE_ID, FAKE_TEMPLATE_ID) == api_response
+    mock_redis_set.assert_called_once_with(
+        "template-{}-versions".format(FAKE_TEMPLATE_ID),
+        json.dumps(api_response),
+        ex=604800,
+    )
+
+
+@pytest.mark.parametrize(
+    "api_response",
+    [
+        {"data": []},
+        {"data": [{"service": SERVICE_ONE_ID}]},
+    ],
+    ids=["empty", "other_service"],
+)
+def test_does_not_cache_template_versions_not_owned_by_requesting_service(mocker, api_response):
+    mocker.patch("app.extensions.RedisClient.get", return_value=None)
+    mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
+    mocker.patch("app.notify_client.NotifyAdminAPIClient.get", return_value=api_response)
+
+    assert service_api_client.get_service_template_versions(OTHER_SERVICE_ID, FAKE_TEMPLATE_ID) == api_response
+    mock_redis_set.assert_not_called()
+
+
+def test_ignores_cached_empty_template_versions(mocker):
+    api_response = json.loads(CACHED_TEMPLATE_VERSIONS)
+    mocker.patch("app.extensions.RedisClient.get", return_value=json.dumps({"data": []}).encode())
+    mock_redis_set = mocker.patch("app.extensions.RedisClient.set")
+    mock_api_get = mocker.patch("app.notify_client.NotifyAdminAPIClient.get", return_value=api_response)
+
+    assert service_api_client.get_service_template_versions(SERVICE_ONE_ID, FAKE_TEMPLATE_ID) == api_response
+    mock_api_get.assert_called_once_with("/service/{}/template/{}/versions".format(SERVICE_ONE_ID, FAKE_TEMPLATE_ID))
+    mock_redis_set.assert_called_once()
 
 
 @pytest.mark.parametrize(

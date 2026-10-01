@@ -72,6 +72,16 @@ def test_client_activates_if_pending(mocker, api_user_pending):
     mock_post.assert_called_once_with("/user/{}/activate".format(api_user_pending["id"]), data=None)
 
 
+def test_client_sends_email_verification_token_when_activating(mocker, api_user_pending):
+    mock_post = mocker.patch("app.notify_client.user_api_client.UserApiClient.post")
+
+    user_api_client.activate_user(api_user_pending["id"], email_verification_token="a-token")
+
+    mock_post.assert_called_once_with(
+        "/user/{}/activate".format(api_user_pending["id"]), data={"email_verification_token": "a-token"}
+    )
+
+
 def test_client_passes_admin_url_when_sending_email_auth(
     app_,
     mocker,

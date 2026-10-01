@@ -130,9 +130,9 @@ class User(JSONModel, UserMixin):
         # if the current user (ie: db object) has no session, they've never logged in before
         return self.current_session_id is not None and session.get("current_session_id") != self.current_session_id
 
-    def activate(self):
+    def activate(self, email_verification_token=None):
         if self.state == "pending":
-            user_data = user_api_client.activate_user(self.id)
+            user_data = user_api_client.activate_user(self.id, email_verification_token=email_verification_token)
             return self.__class__(user_data["data"])
         else:
             return self
