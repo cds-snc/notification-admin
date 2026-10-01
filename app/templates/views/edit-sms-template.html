@@ -82,7 +82,8 @@
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), testid="template-name") }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {% if config['FF_SMS_RTE'] %}
+        {# Hidden in production only (not ready for real services yet). #}
+        {% if config['NOTIFY_ENVIRONMENT'] != NotifyEnv.PRODUCTION.value %}
           {{ tiptap_editor(
             editorId='template_content',
             labelId='template_content-label',

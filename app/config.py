@@ -212,7 +212,6 @@ class Development(Config):
     DEBUG_KEY = "debug"
     FF_ADD_TEMPLATE_PERM = True
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
-    FF_SMS_RTE = True
     FF_USE_BILLABLE_UNITS = True
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
@@ -234,8 +233,6 @@ class Test(Development):
     DANGEROUS_SALT = os.environ.get("DANGEROUS_SALT", "dev-notify-salt")
     DEBUG = True
     DEBUG_KEY = "debug"
-    # Development hardcodes this True for manual testing; tests opt in per-test instead.
-    FF_SMS_RTE = env.bool("FF_SMS_RTE", False)
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.TEST.value
     SECRET_KEY = ["dev-notify-secret-key"]
