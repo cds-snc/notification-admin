@@ -84,6 +84,7 @@ let Actions = {
 
 let RichTextEditor = {
     URL: '/_storybook?component=text-editor-tiptap',
+    URL_SMS: '/_storybook?component=text-editor-tiptap-sms',
     Components,
     ...Actions
 };
