@@ -35,7 +35,8 @@ def _make_key(key_format, client_method, args, kwargs):
 def _belongs_to_service(response, service_id):
     data = response.get("data") if isinstance(response, dict) else None
     items = data if isinstance(data, list) else [data]
-    return all(isinstance(item, dict) and str(item.get("service")) == str(service_id) for item in items)
+    # An empty list proves nothing about ownership (the API returns [] for another service's template)
+    return bool(items) and all(isinstance(item, dict) and str(item.get("service")) == str(service_id) for item in items)
 
 
 def set_service_template(key_format):
@@ -111,17 +112,20 @@ def set_service_owned(key_format):
         @wraps(client_method)
         def new_client_method(client_instance, *args, **kwargs):
             redis_key = _make_key(key_format, client_method, args, kwargs)
+            service_id = _get_argument("service_id", client_method, args, kwargs)
             cached = redis_client.get(redis_key)
             if cached:
                 cached = json.loads(cached.decode("utf-8"))
-                if _belongs_to_service(cached, _get_argument("service_id", client_method, args, kwargs)):
+                if _belongs_to_service(cached, service_id):
                     return cached
             api_response = client_method(client_instance, *args, **kwargs)
-            redis_client.set(
-                redis_key,
-                json.dumps(api_response),
-                ex=TTL,
-            )
+            # Keys aren't service-scoped, so never let a caller overwrite another service's entry
+            if _belongs_to_service(api_response, service_id):
+                redis_client.set(
+                    redis_key,
+                    json.dumps(api_response),
+                    ex=TTL,
+                )
             return api_response
 
         return new_client_method
