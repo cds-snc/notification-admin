@@ -17,6 +17,7 @@ from notifications_utils.url_safe_token import check_token
 from app.main import main
 from app.main.forms import NewPasswordForm
 from app.main.views.two_factor import log_in_user
+from app.main.views.verify import must_verify_email_first
 from app.models.user import User
 from app.utils import _constructLoginData
 
@@ -53,6 +54,11 @@ def new_password(token):
 
     if form.validate_on_submit():
         user.reset_failed_login_count()
+        if must_verify_email_first(user):
+            user.update_password(form.new_password.data, _constructLoginData(request))
+            session["user_details"] = {"id": user.id, "email": user.email_address}
+            return redirect(url_for("main.resend_email_verification"))
+
         session["user_details"] = {
             "id": user.id,
             "email": user.email_address,
