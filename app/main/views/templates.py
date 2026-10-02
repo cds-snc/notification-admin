@@ -1464,6 +1464,8 @@ def redact_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/versions")
 @user_has_permissions("view_activity")
 def view_template_versions(service_id, template_id):
+    # The versions endpoint returns [] for another service's template, so check ownership first (404s if not owned)
+    current_service.get_template(template_id)
     return render_template(
         "views/templates/choose_history.html",
         versions=[

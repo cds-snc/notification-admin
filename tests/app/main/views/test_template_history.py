@@ -1,4 +1,5 @@
 from flask import url_for
+from notifications_python_client.errors import HTTPError
 
 
 def test_view_template_version(
@@ -56,3 +57,26 @@ def test_view_template_versions(
     assert api_user_active["name"] in resp_data
     assert versions["data"][0]["content"] in resp_data
     mock_get_template_versions.assert_called_with(service_id, template_id)
+
+
+def test_view_template_versions_404s_for_template_in_another_service(
+    mocker,
+    logged_in_client,
+    api_user_active,
+    mock_login,
+    mock_get_service,
+    mock_get_template_versions,
+    mock_get_user,
+    mock_get_user_by_email,
+    mock_has_permissions,
+    fake_uuid,
+):
+    response = mocker.Mock(status_code=404)
+    mocker.patch(
+        "app.service_api_client.get_service_template",
+        side_effect=HTTPError(response=response, message="No result found"),
+    )
+    resp = logged_in_client.get(url_for(".view_template_versions", service_id=fake_uuid, template_id=fake_uuid))
+
+    assert resp.status_code == 404
+    assert not mock_get_template_versions.called
