@@ -146,3 +146,36 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
     mock_update_user_password.assert_called_once_with(user["id"], "a-new_password", {"location": None, "user-agent": mock.ANY})
 
     assert not mock_send_verify_code.called
+
+
+@pytest.mark.parametrize("auth_type", ["email_auth", "sms_auth"])
+def test_password_reset_for_pending_user_sends_them_to_verify_email(
+    app_,
+    client,
+    mocker,
+    api_user_pending,
+    mock_send_verify_code,
+    mock_reset_failed_login_count,
+    mock_update_user_password,
+    mock_activate_user,
+    auth_type,
+):
+    api_user_pending["auth_type"] = auth_type
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
+    data = json.dumps({"email": api_user_pending["email_address"], "created_at": str(datetime.utcnow())})
+    token = generate_token(data, app_.config["SECRET_KEY"])
+
+    response = client.post(
+        url_for_endpoint_with_token(".new_password", token=token),
+        data={"new_password": "a-new_password"},
+    )
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.resend_email_verification")
+    mock_update_user_password.assert_called_once_with(
+        api_user_pending["id"], "a-new_password", {"location": None, "user-agent": mock.ANY}
+    )
+    mock_send_verify_code.assert_not_called()
+    mock_activate_user.assert_not_called()
+    with client.session_transaction() as session:
+        assert session["user_details"] == {"id": api_user_pending["id"], "email": api_user_pending["email_address"]}

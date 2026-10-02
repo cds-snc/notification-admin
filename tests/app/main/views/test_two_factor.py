@@ -406,7 +406,8 @@ def test_email_two_factor_should_redirect_to_sign_in_if_user_not_in_session(
     assert response.location == url_for("main.sign_in")
 
 
-def test_sms_two_factor_should_activate_pending_user(
+@pytest.mark.parametrize("endpoint", ["main.two_factor_sms_sent", "main.two_factor_email_sent"])
+def test_two_factor_should_activate_pending_user_with_their_own_org_invite(
     client,
     mocker,
     api_user_pending,
@@ -415,6 +416,7 @@ def test_sms_two_factor_should_activate_pending_user(
     mock_activate_user,
     mock_get_security_keys,
     mock_get_login_events,
+    endpoint,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
     mocker.patch("app.service_api_client.get_services", return_value={"data": []})
@@ -423,31 +425,32 @@ def test_sms_two_factor_should_activate_pending_user(
             "id": api_user_pending["id"],
             "email_address": api_user_pending["email_address"],
         }
-    client.post(url_for("main.two_factor_sms_sent"), data={"two_factor_code": "12345"})
+        session["invited_org_user"] = {"email_address": api_user_pending["email_address"], "organisation": "org-id"}
+    client.post(url_for(endpoint), data={"two_factor_code": "12345"})
 
     assert mock_activate_user.called
 
 
-def test_email_two_factor_should_activate_pending_user(
+@pytest.mark.parametrize("endpoint", ["main.two_factor_sms_sent", "main.two_factor_email_sent"])
+def test_two_factor_sends_pending_user_without_org_invite_to_verify_email(
     client,
     mocker,
     api_user_pending,
     mock_check_verify_code,
-    mock_create_event,
     mock_activate_user,
-    mock_get_security_keys,
-    mock_get_login_events,
+    endpoint,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
-    mocker.patch("app.service_api_client.get_services", return_value={"data": []})
     with client.session_transaction() as session:
         session["user_details"] = {
             "id": api_user_pending["id"],
-            "email_address": api_user_pending["email_address"],
+            "email": api_user_pending["email_address"],
         }
-    client.post(url_for("main.two_factor_email_sent"), data={"two_factor_code": "12345"})
+    response = client.post(url_for(endpoint), data={"two_factor_code": "12345"})
 
-    assert mock_activate_user.called
+    assert response.status_code == 302
+    assert response.location == url_for("main.resend_email_verification")
+    mock_activate_user.assert_not_called()
 
 
 def test_two_factor_email_link_has_expired(
