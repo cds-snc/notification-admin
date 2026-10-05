@@ -569,7 +569,7 @@ def test_big_numbers_and_search_show_for_email_sms(
 @pytest.mark.parametrize(
     "message_type, status, feedback_reason, expected_hint_status, single_line",
     [
-        ("email", "created", None, "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("email", "created", None, "Scheduled since 2017-09-27T16:30:00+00:00", True),
         ("email", "sending", None, "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "email",
@@ -580,7 +580,7 @@ def test_big_numbers_and_search_show_for_email_sms(
         ),
         ("email", "permanent-failure", None, "No such address 16:31:00", False),
         ("email", "delivered", None, "Delivered 16:31:00", True),
-        ("sms", "created", None, "In transit since 2017-09-27T16:30:00+00:00", True),
+        ("sms", "created", None, "Scheduled since 2017-09-27T16:30:00+00:00", True),
         ("sms", "sending", None, "In transit since 2017-09-27T16:30:00+00:00", True),
         (
             "sms",
@@ -633,6 +633,33 @@ def test_sending_status_hint_displays_correctly_on_notifications_page_new_status
 
     assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == expected_hint_status
     assert bool(page.select(".align-with-message-body")) is single_line
+
+
+@freeze_time("2017-09-27 16:30:00.000000")
+def test_scheduled_created_notification_displays_scheduled_time(
+    client_request,
+    service_one,
+    active_user_with_permissions,
+    mock_get_service_statistics,
+    mock_get_service_data_retention,
+    mock_get_reports,
+    mocker,
+    app_,
+):
+    notifications = create_notifications(
+        template_type="email",
+        status="created",
+        scheduled_for="2017-09-27T17:30:00+00:00",
+    )
+    mocker.patch("app.notification_api_client.get_notifications_for_service", return_value=notifications)
+
+    page = client_request.get(
+        "main.view_notifications",
+        service_id=service_one["id"],
+        message_type="email",
+    )
+
+    assert normalize_spaces(page.select(".table-field-right-aligned")[0].text) == ("Scheduled for 2017-09-27T17:30:00+00:00")
 
 
 @pytest.mark.parametrize("message_type", [("email"), ("sms")])

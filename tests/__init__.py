@@ -508,6 +508,7 @@ def notification_json(
     created_by_name=None,
     postage=None,
     api_key=None,
+    scheduled_for=None,
 ):
     if template is None:
         template = template_json(service_id, str(generate_uuid()), type_=template_type)
@@ -556,6 +557,7 @@ def notification_json(
                 "created_at": created_at,
                 "created_by": None,
                 "updated_at": updated_at,
+                "scheduled_for": scheduled_for,
                 "job_row_number": job_row_number,
                 "service": service_id,
                 "template_version": template["version"],

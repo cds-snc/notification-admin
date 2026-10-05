@@ -609,7 +609,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
             "permanent-failure": _getStatusByBounceSubtype(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
-            "created": _("In transit"),
+            "created": _("Scheduled"),
             "sent": _("Delivered"),
             "pending": _("In transit"),
             "pending-virus-check": _("In transit"),
@@ -623,7 +623,7 @@ def format_notification_status(status, template_type, provider_response=None, fe
             "provider-failure": _get_sms_status_by_feedback_reason(),
             "delivered": _("Delivered"),
             "sending": _("In transit"),
-            "created": _("In transit"),
+            "created": _("Scheduled"),
             "pending": _("In transit"),
             "sent": _("In transit"),
         },
@@ -647,7 +647,10 @@ def format_notification_status(status, template_type, provider_response=None, fe
     }[template_type].get(status, status)
 
 
-def format_notification_status_as_time(status, created, updated):
+def format_notification_status_as_time(status, created, updated, scheduled_for=None):
+    if scheduled_for:
+        return " " + _("for") + ' <time class="local-datetime-short">{}</time>'.format(scheduled_for)
+
     return dict.fromkeys(
         {"created", "pending", "sending"},
         " " + _("since") + ' <time class="local-datetime-short">{}</time>'.format(created),

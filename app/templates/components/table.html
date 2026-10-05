@@ -208,7 +208,8 @@
         {% else %}
           {{ notification.status|format_notification_status_as_time(
             notification.created_at,
-            (notification.updated_at or notification.created_at)
+            (notification.updated_at or notification.created_at),
+            scheduled_for=notification.scheduled_for
           )|safe }}
         {% endif %}
       </span>

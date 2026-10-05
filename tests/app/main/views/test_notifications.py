@@ -23,7 +23,7 @@ from tests.conftest import (
 @pytest.mark.parametrize(
     "key_type, notification_status, provider_response, feedback_reason, expected_status",
     [
-        (None, "created", None, None, "In transit"),
+        (None, "created", None, None, "Scheduled"),
         (None, "sending", None, None, "In transit"),
         (None, "delivered", None, None, "Delivered"),
         (None, "failed", None, None, "Failed"),

@@ -73,6 +73,39 @@ def test_get_notification(mocker):
     mock_get.assert_called_once_with(url="/service/foo/notifications/bar")
 
 
+def test_get_notification_maps_scheduled_for(mocker):
+    mocker.patch(
+        "app.notify_client.notification_api_client.NotificationApiClient.get",
+        return_value={
+            "id": "notification-id",
+            "scheduled_notification": {"scheduled_for": "2026-10-03T14:00:00+00:00"},
+        },
+    )
+
+    notification = NotificationApiClient().get_notification("service-id", "notification-id")
+
+    assert notification["scheduled_for"] == "2026-10-03T14:00:00+00:00"
+
+
+def test_get_notifications_maps_scheduled_for(mocker):
+    mocker.patch(
+        "app.notify_client.notification_api_client.NotificationApiClient.get",
+        return_value={
+            "notifications": [
+                {
+                    "id": "notification-id",
+                    "scheduled_notification": {"scheduled_for": "2026-10-03T14:00:00+00:00"},
+                }
+            ],
+            "total": 1,
+        },
+    )
+
+    response = NotificationApiClient().get_notifications_for_service("service-id")
+
+    assert response["notifications"][0]["scheduled_for"] == "2026-10-03T14:00:00+00:00"
+
+
 @pytest.mark.parametrize(
     "letter_status, expected_status",
     [

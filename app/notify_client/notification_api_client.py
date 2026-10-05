@@ -2,6 +2,18 @@ from app.notify_client import NotifyAdminAPIClient, _attach_current_user
 
 
 class NotificationApiClient(NotifyAdminAPIClient):
+    @staticmethod
+    def _map_notification(notification):
+        scheduled_notification = notification.get("scheduled_notification")
+        if notification.get("scheduled_for") is None and isinstance(scheduled_notification, dict):
+            notification["scheduled_for"] = scheduled_notification.get("scheduled_for")
+        return notification
+
+    @classmethod
+    def _map_notifications_response(cls, response):
+        response["notifications"] = [cls._map_notification(notification) for notification in response["notifications"]]
+        return response
+
     def get_notifications_for_service(
         self,
         service_id,
@@ -35,14 +47,15 @@ class NotificationApiClient(NotifyAdminAPIClient):
         params = {k: v for k, v in params.items() if v is not None}
 
         if job_id:
-            return self.get(
+            response = self.get(
                 url="/service/{}/job/{}/notifications".format(service_id, job_id),
                 params=params,
             )
         else:
             if limit_days is not None:
                 params["limit_days"] = limit_days
-            return self.get(url="/service/{}/notifications".format(service_id), params=params)
+            response = self.get(url="/service/{}/notifications".format(service_id), params=params)
+        return self._map_notifications_response(response)
 
     def send_notification(self, service_id, *, template_id, recipient, personalisation, sender_id):
         data = {
@@ -56,7 +69,8 @@ class NotificationApiClient(NotifyAdminAPIClient):
         return self.post(url="/service/{}/send-notification".format(service_id), data=data)
 
     def get_notification(self, service_id, notification_id):
-        return self.get(url="/service/{}/notifications/{}".format(service_id, notification_id))
+        response = self.get(url="/service/{}/notifications/{}".format(service_id, notification_id))
+        return self._map_notification(response)
 
     def get_api_notifications_for_service(self, service_id):
         ret = self.get_notifications_for_service(

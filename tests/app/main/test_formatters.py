@@ -1,6 +1,6 @@
 import pytest
 
-from app import format_notification_status, format_notification_status_as_url
+from app import format_notification_status, format_notification_status_as_time, format_notification_status_as_url
 
 
 @pytest.mark.parametrize(
@@ -70,7 +70,7 @@ def test_format_notification_status_as_url(
         ("email", "permanent-failure", "on-account-suppression-list", "Blocked"),
         ("email", "delivered", None, "Delivered"),
         ("email", "sending", None, "In transit"),
-        ("email", "created", None, "In transit"),
+        ("email", "created", None, "Scheduled"),
         ("email", "sent", None, "Delivered"),
         ("email", "pending", None, "In transit"),
         ("email", "pending-virus-check", None, "In transit"),
@@ -79,3 +79,23 @@ def test_format_notification_status_as_url(
 )
 def test_format_notification_status_uses_correct_labels(client, template_type, status, feedback_subtype, expected, app_):
     assert format_notification_status(status, template_type, None, feedback_subtype) == expected
+
+
+@pytest.mark.parametrize(
+    "status, scheduled_for, expected",
+    [
+        ("created", "2026-09-30T14:00:00+00:00", ' for <time class="local-datetime-short">2026-09-30T14:00:00+00:00</time>'),
+        ("created", None, ' since <time class="local-datetime-short">2026-09-28T12:00:00+00:00</time>'),
+        ("delivered", None, '<time class="local-datetime-short">2026-09-29T13:00:00+00:00</time>'),
+    ],
+)
+def test_format_notification_status_as_time_uses_scheduled_or_updated_time(client, status, scheduled_for, expected, app_):
+    assert (
+        format_notification_status_as_time(
+            status,
+            "2026-09-28T12:00:00+00:00",
+            "2026-09-29T13:00:00+00:00",
+            scheduled_for=scheduled_for,
+        )
+        == expected
+    )
