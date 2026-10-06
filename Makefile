@@ -9,6 +9,7 @@ GIT_BRANCH ?= $(shell git symbolic-ref --short HEAD 2> /dev/null || echo "detach
 GIT_COMMIT ?= $(shell git rev-parse HEAD 2> /dev/null || echo "")
 AWS_PROFILE ?= notify-staging
 AWS_CLI ?= /usr/local/bin/aws
+AWS_PROFILE_ENV = $(if $(and $(AWS_ACCESS_KEY_ID),$(AWS_SECRET_ACCESS_KEY)),,AWS_PROFILE="$(AWS_PROFILE)")
 
 
 .PHONY: help
@@ -57,7 +58,7 @@ coverage: venv ## Create coverage report
 run-dev: aws-login
 	@npm run watch & WATCH_PID=$$!; \
 	trap 'kill $$WATCH_PID 2>/dev/null || true' EXIT INT TERM; \
-	AWS_PROFILE="$(AWS_PROFILE)" FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=0.0.0.0
+	$(AWS_PROFILE_ENV) FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=0.0.0.0
 
 .PHONY: aws-login
 aws-login: ## Log in to AWS SSO for local staging development
@@ -81,7 +82,7 @@ watch:
 
 .PHONY: run-gunicorn
 run-gunicorn: aws-login
-	AWS_PROFILE="$(AWS_PROFILE)" PORT=6012 poetry run gunicorn -c gunicorn_config.py application
+	$(AWS_PROFILE_ENV) PORT=6012 poetry run gunicorn -c gunicorn_config.py application
 
 .PHONY: format
 format:
