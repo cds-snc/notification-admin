@@ -51,6 +51,8 @@ version of Node.
 
 ### Local installation instruction
 
+For local AWS access, configure the `notify-staging` SSO profile in your host `~/.aws/config` before opening the devcontainer. The container mounts this configuration and keeps the SSO session cache in a persistent Docker volume. Remove `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from your `.env`; local app startup uses `make aws-login` to authenticate and select the `notify-staging` profile. Rebuild and reopen the devcontainer after adding or changing the host profile.
+
 On OS X:
 
 1. Install PyEnv with Homebrew. This will preserve your sanity.
