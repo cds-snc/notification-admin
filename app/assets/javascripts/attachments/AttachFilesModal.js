@@ -152,11 +152,24 @@ export const AttachFilesModal = ({
       ? onValidateSelection(files)
       : { acceptedFiles: files, issues: [] };
 
+    // Check for duplicates against files already selected in this modal session
+    const updatedIssues = [...validation.issues];
+    const filteredAcceptedFiles = validation.acceptedFiles.filter((file) => {
+      const isDuplicateInSession = selectedFiles.some(
+        (pendingFile) => pendingFile.file.name === file.name,
+      );
+      if (isDuplicateInSession) {
+        updatedIssues.push(copy.duplicateFilename(file.name));
+        return false;
+      }
+      return true;
+    });
+
     if (typeof onIssuesChange === "function") {
-      onIssuesChange(validation.issues);
+      onIssuesChange(Array.from(new Set(updatedIssues)));
     }
 
-    const normalizedFiles = validation.acceptedFiles.map((file) => ({
+    const normalizedFiles = filteredAcceptedFiles.map((file) => ({
       id: `${file.name}-${file.size}-${file.lastModified || 0}-${Math.random()}`,
       file,
     }));
@@ -326,7 +339,7 @@ export const AttachFilesModal = ({
           ref={submitButtonRef}
           type="button"
           className={`button ${
-            isLoading || selectedFiles.length === 0 || issues.length > 0
+            isLoading || selectedFiles.length === 0
               ? "bg-gray-400 hover:bg-gray-400 cursor-wait pointer-events-none"
               : ""
           }`}
@@ -336,12 +349,8 @@ export const AttachFilesModal = ({
               ? `${copy.modalAttachToTemplate}, ${copy.modalFilesSelected(selectedFiles.length)}`
               : copy.modalAttachToTemplate
           }
-          onClick={
-            selectedFiles.length > 0 && issues.length === 0 ? submit : undefined
-          }
-          aria-disabled={
-            isLoading || selectedFiles.length === 0 || issues.length > 0
-          }
+          onClick={selectedFiles.length > 0 ? submit : undefined}
+          aria-disabled={isLoading || selectedFiles.length === 0}
         >
           {isLoading && (
             <div
