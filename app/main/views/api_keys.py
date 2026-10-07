@@ -117,7 +117,7 @@ def create_api_key(service_id):
         form=form,
         disabled_options=disabled_options,
         option_hints=option_hints,
-        show_manage_templates=current_app.config["FF_ADD_TEMPLATE_PERM"] and current_user.has_permissions("manage_api_keys"),
+        show_manage_templates=current_user.has_permissions("manage_api_keys"),
         show_manage_reports=current_app.config["FF_REPORT_API"] and current_user.has_permissions("manage_api_keys"),
     )
 
