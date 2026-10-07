@@ -1,0 +1,42 @@
+{% extends "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Remove email from suppression list') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Remove email from suppression list'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+
+  <div class="form-group">
+    <p>{{ _('If an email address is on the suppression list, GC Notify will not send emails to it. This can happen if:') }}</p>
+    <ul class="list list-bullet">
+      <li>{{ _('the email server was down when we tried to send') }}</li>
+      <li>{{ _('the email server gave an incorrect response') }}</li>
+      <li>{{ _('an overactive spam filter blocked the email') }}</li>
+    </ul>
+
+    <p>{{ _('You can remove an email address from the suppression list if your service has previously sent to it.') }}</p>
+
+    <div class="banner banner-warning mt-8 mb-8">
+      <p class="mb-0">
+        <strong>{{ _('Only remove email addresses that you know are valid.') }}</strong>
+        {{ _('Repeatedly sending to invalid addresses can affect your service\'s sending reputation.') }}
+      </p>
+    </div>
+  </div>
+
+  {% call form_wrapper() %}
+    {% set hint_txt = _('Enter the email address to remove from the suppression list') %}
+    {{ textbox(form.email_address, hint=hint_txt) }}
+    {{ page_footer(_('Remove from suppression list')) }}
+  {% endcall %}
+
+{% endblock %}
