@@ -188,8 +188,22 @@ jobs:
       run: |
         python -m poetry install
         make run-dev > frontend.log 2>&1 &
-        # Wait for the app to start
-        sleep 10
+        frontend_pid=$!
+        for attempt in {1..30}; do
+          if curl --fail --silent --output /dev/null http://localhost:6012/_status; then
+            echo "Frontend is ready"
+            exit 0
+          fi
+          if ! kill -0 "$frontend_pid" 2>/dev/null; then
+            echo "Frontend process exited before becoming ready"
+            cat frontend.log
+            exit 1
+          fi
+          sleep 1
+        done
+        echo "Frontend did not become ready within 30 seconds"
+        cat frontend.log
+        exit 1
 
     - name: Check if services are running
       run: |
@@ -198,7 +212,7 @@ jobs:
         
         echo ""
         echo "Checking frontend status..."
-        curl http://localhost:6012/_status || echo "Frontend service is not running properly"
+        curl --fail --silent --show-error http://localhost:6012/_status
 
         echo ""
         echo "Frontend logs:"
