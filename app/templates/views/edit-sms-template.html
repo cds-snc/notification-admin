@@ -9,6 +9,7 @@
 {% from "components/links.html" import content_link %}
 {% from "components/template-category.html" import template_category %}
 {% from "components/sms-character-info.html" import sms_character_info %}
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -81,7 +82,18 @@
         {{ textbox(form.name, width='w-full', hint=_('This will not show in the message. Use a name that helps you find the template when you need it.'), testid="template-name") }}
       </div>
       <div class="md:w-2/3 px-gutterHalf">
-        {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('<span id="sms-char-count-current"></span> of {} characters maximum.').format(sms_char_count_limit)|safe, testid="template-content") }}
+        {# Hidden in production only (not ready for real services yet). #}
+        {% if config['NOTIFY_ENVIRONMENT'] != NotifyEnv.PRODUCTION.value %}
+          {{ tiptap_editor(
+            editorId='template_content',
+            labelId='template_content-label',
+            initialContent=form.template_content.data,
+            templateType='sms',
+            hint=_('<span id="sms-char-count-current"></span> of {} characters maximum.').format(sms_char_count_limit)|safe,
+            initialMode="rte" if current_user.default_editor_is_rte else "markdown") }}
+        {% else %}
+          {{ textbox(form.template_content, highlight_tags=True, width='w-full', rows=5, hint=_('<span id="sms-char-count-current"></span> of {} characters maximum.').format(sms_char_count_limit)|safe, testid="template-content") }}
+        {% endif %}
 
         {% if config['FF_USE_BILLABLE_UNITS'] %}
           {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name if current_service.prefix_sms else '', sms_char_count_limit) }}
