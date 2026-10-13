@@ -321,7 +321,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             endpoint = "{base}/version/{version}".format(base=endpoint, version=version)
         return self.get(endpoint)
 
-    @cache.set("template-{template_id}-versions")
+    @cache.set_service_owned("template-{template_id}-versions")
     def get_service_template_versions(self, service_id, template_id):
         """
         Retrieve a list of versions for a template

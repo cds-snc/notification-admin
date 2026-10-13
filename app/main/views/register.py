@@ -32,6 +32,8 @@ def register():
         # active, via their account profile.
         form.auth_type.data = "email_auth"
         _do_registration(form)
+        # Set for new and existing emails alike so the response doesn't reveal which accounts exist.
+        session["registration_email"] = form.email_address.data
         return redirect(url_for("main.registration_continue"))
 
     return render_template("views/register.html", form=form)
@@ -51,7 +53,8 @@ def register_from_invite():
         if form.service.data != invited_user.service or form.email_address.data != invited_user.email_address:
             abort(400)
 
-        _do_registration(form, send_email=False)
+        if not _do_registration(form, send_email=False):
+            return redirect(url_for("main.sign_in"))
 
         invited_user.accept_invite()
 
@@ -74,11 +77,12 @@ def register_from_org_invite():
     if form.validate_on_submit():
         if form.organisation.data != invited_org_user.organisation or form.email_address.data != invited_org_user.email_address:
             abort(400)
-        _do_registration(
+        if not _do_registration(
             form,
             send_email=False,
             organisation_id=invited_org_user.organisation,
-        )
+        ):
+            return redirect(url_for("main.sign_in"))
         invited_org_user.accept_invite()
 
         return redirect(url_for("main.verify"))
@@ -94,28 +98,30 @@ def _do_registration(form, send_email=True, organisation_id=None):
     if user:
         if send_email:
             user.send_already_registered_email()
-        session["expiry_date"] = str(datetime.utcnow() + timedelta(hours=1))
-        session["user_details"] = {"email": user.email_address, "id": user.id}
-    else:
-        user = User.register(
-            name=form.name.data,
-            email_address=form.email_address.data,
-            mobile_number=form.mobile_number.data,
-            password=form.password.data,
-            auth_type=form.auth_type.data,
-        )
+        # user_details means "password verified" to the 2FA views; existing accounts must sign in instead.
+        session.pop("user_details", None)
+        return None
 
-        if send_email:
-            user.send_verify_email()
+    user = User.register(
+        name=form.name.data,
+        email_address=form.email_address.data,
+        mobile_number=form.mobile_number.data,
+        password=form.password.data,
+        auth_type=form.auth_type.data,
+    )
 
-        session["expiry_date"] = str(datetime.utcnow() + timedelta(hours=1))
-        session["user_details"] = {"email": user.email_address, "id": user.id}
+    if send_email:
+        user.send_verify_email()
+
+    session["expiry_date"] = str(datetime.utcnow() + timedelta(hours=1))
+    session["user_details"] = {"email": user.email_address, "id": user.id}
     if organisation_id:
         session["organisation_id"] = organisation_id
+    return user
 
 
 @main.route("/registration-continue")
 def registration_continue():
-    if not session.get("user_details"):
+    if not session.get("registration_email"):
         return redirect(url_for(".show_accounts_or_dashboard"))
     return render_template("views/registration-continue.html")
