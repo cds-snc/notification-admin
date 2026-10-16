@@ -92,16 +92,35 @@
     @apply mx-0 pb-0;
   }
 
+  .new-feature-container {
+    anchor-scope: --new-feature-container;
+  }
+
   .new-feature-banner {
     anchor-name: --new-feature-container;
+    position: relative;
+    z-index: 0;
   }
-  .new-feature-banner::after {
+  .new-feature-banner[data-position="before"]::after,
+  .new-feature-banner[data-position="after"]::after {
     content: "";
     position: fixed;
+    z-index: -1;
     position-anchor: var(--anchored-to);
     left: anchor(var(--anchored-to) center);
-    top: anchor(--new-feature-container top);
     @apply w-10 h-10 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-brand-100;
+  }
+  .new-feature-banner[data-position="before"] {
+    @apply mb-gutter;
+  }
+  .new-feature-banner[data-position="after"] {
+    @apply mt-gutter;
+  }
+  .new-feature-banner[data-position="before"]::after {
+    top: anchor(--new-feature-container bottom);
+  }
+  .new-feature-banner[data-position="after"]::after {
+    top: anchor(--new-feature-container top);
   }
 
   /*! purgecss end ignore */
