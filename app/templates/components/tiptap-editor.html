@@ -41,14 +41,14 @@
                     script.onload = function() {
                         window.tiptapLoaded = true;
                         if (window.Tiptap) {
-                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
+                            Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson  }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken, '{{ templateType }}');
                         }
                     };
                     document.head.appendChild(script);
                 } else {
                     // TipTap already loaded, initialize immediately
                     if (window.Tiptap) {
-                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken);
+                        Tiptap.load(document.getElementById('tiptap-editor-{{ editorId }}'), '{{ editorId }}', '{{ labelId }}', {{ initialContent | tojson }}, '{{ current_lang }}', '{{ editorId }}_mode', initialMode, preferenceUpdateUrl, csrfToken, '{{ templateType }}');
                     }
                 }
             </script>
