@@ -164,8 +164,8 @@ jobs:
       working-directory: api
       run: |
         poetry run flask db upgrade
-        poetry run make run > api.log 2>&1 &
-        poetry run make run-celery-local-filtered > celery.log 2>&1 &
+        poetry run make run-ci > api.log 2>&1 &
+        poetry run make run-celery-local-filtered-ci > celery.log 2>&1 &
         # Give the processes a moment to start up and log initial output
         sleep 5
 
