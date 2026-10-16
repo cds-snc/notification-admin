@@ -93,15 +93,16 @@
     <h3 class="heading-small mb-2">Code</h3>
     <div class="bg-gray-200 px-8 pb-8 border-1 border-gray-300 overflow-scroll">
         <pre><code>{% raw %}
-&lt;button type="button" class="button [anchor-name:--new-feature-example]" id="new-feature-example"&gt;Anchoring element&lt;/button&gt;
-{{ new_feature(
+{% call new_feature(
     title=_("You can do something with this new thing"), # required
     anchored_to="new-feature-example", # required
     cta=_("About this new thing"),
     cta_link="/new-features",
-    lifespan="2100-12-31"
-    position="after"
-) }}
+    lifespan="2100-12-31",
+    position="after" # none (default) | after | before
+) %}
+    &lt;button type="button" class="button [anchor-name:--new-feature-example]" id="new-feature-example"&gt;Anchoring element&lt;/button&gt;
+{% endcall %}
 {% endraw %}</code></pre>
     </div>
 </div>
