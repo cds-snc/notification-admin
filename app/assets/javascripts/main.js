@@ -158,6 +158,44 @@ $(() => GOVUK.modules.start());
     return null;
   };
 }).call(this);
+
+document.querySelectorAll("[data-new-feature]").forEach(function (banner) {
+  var featureId = banner.dataset.newFeature;
+  var lifespan = banner.dataset.lifespan;
+  var expirationDate = lifespan && new Date(lifespan + "T00:00:00Z");
+
+  if (
+    expirationDate &&
+    !isNaN(expirationDate) &&
+    expirationDate <= new Date()
+  ) {
+    banner.remove();
+    return;
+  }
+
+  if (featureId && GOVUK.cookie("new-feature-" + featureId)) {
+    banner.remove();
+  } else {
+    banner.classList.remove("hidden");
+  }
+});
+
+document.addEventListener("click", function (event) {
+  var hideButton = event.target.closest("[data-dismiss-notice]");
+  if (!hideButton) {
+    return;
+  }
+
+  var banner = hideButton.closest("[data-new-feature]");
+  var featureId = banner && banner.dataset.newFeature;
+  if (!featureId) {
+    return;
+  }
+
+  GOVUK.cookie("new-feature-" + featureId, "hidden", { days: 365 });
+  banner.remove();
+});
+
 (function () {
   "use strict";
   var root = this || window;
