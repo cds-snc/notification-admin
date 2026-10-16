@@ -2266,7 +2266,7 @@ def mock_update_user_attribute(mocker, api_user_active):
 
 @pytest.fixture
 def mock_activate_user(mocker, api_user_active):
-    def _activate(user_id):
+    def _activate(user_id, email_verification_token=None):
         api_user_active["id"] = user_id
         return {"data": api_user_active}
 

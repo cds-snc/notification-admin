@@ -1,6 +1,7 @@
 import json
 import uuid
 
+import pytest
 from bs4 import BeautifulSoup
 from flask import redirect, url_for
 from itsdangerous import SignatureExpired
@@ -60,7 +61,7 @@ def test_should_redirect_to_welcome_screen_when_two_factor_code_is_correct(
     mock_check_verify_code.assert_called_once_with(api_user_active["id"], "12345", "sms")
 
 
-def test_should_activate_user_after_verify(
+def test_should_activate_user_after_verify_with_their_own_org_invite(
     client,
     mocker,
     api_user_pending,
@@ -70,13 +71,37 @@ def test_should_activate_user_after_verify(
     mock_activate_user,
 ):
     mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
+    mocker.patch("app.user_api_client.add_user_to_organisation")
     with client.session_transaction() as session:
         session["user_details"] = {
             "email_address": api_user_pending["email_address"],
             "id": api_user_pending["id"],
         }
+        session["invited_org_user"] = {"email_address": api_user_pending["email_address"], "organisation": "org-id"}
     client.post(url_for("main.verify"), data={"two_factor_code": "12345"})
     assert mock_activate_user.called
+
+
+@pytest.mark.parametrize("auth_type", ["email_auth", "sms_auth"])
+def test_verify_does_not_activate_pending_user_without_org_invite(
+    client,
+    mocker,
+    api_user_pending,
+    mock_check_verify_code,
+    mock_activate_user,
+    auth_type,
+):
+    api_user_pending["auth_type"] = auth_type
+    mocker.patch("app.user_api_client.get_user", return_value=api_user_pending)
+    with client.session_transaction() as session:
+        session["user_details"] = {"email": api_user_pending["email_address"], "id": api_user_pending["id"]}
+
+    response = client.post(url_for("main.verify"), data={"two_factor_code": "12345"})
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.resend_email_verification")
+    mock_check_verify_code.assert_not_called()
+    mock_activate_user.assert_not_called()
 
 
 def test_should_return_200_when_two_factor_code_is_wrong(
@@ -127,8 +152,8 @@ def test_verify_email_redirects_to_verify_if_token_valid(
             "email": api_user_pending["email_address"],
             "id": api_user_pending["id"],
         }
-    # Ensure activate_user was called
-    mock_activate_user.assert_called()
+    # Ensure activate_user was called with the token so the API can check it
+    mock_activate_user.assert_called_once_with(api_user_pending["id"], email_verification_token="notreal")
 
 
 def test_verify_email_redirects_to_email_sent_if_token_expired(

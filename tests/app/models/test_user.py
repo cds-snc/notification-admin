@@ -47,7 +47,12 @@ def test_user(app_):
 
 def test_activate_user(app_, api_user_pending, mock_activate_user):
     assert User(api_user_pending).activate() == User(api_user_pending)
-    mock_activate_user.assert_called_once_with(api_user_pending["id"])
+    mock_activate_user.assert_called_once_with(api_user_pending["id"], email_verification_token=None)
+
+
+def test_activate_user_passes_email_verification_token(app_, api_user_pending, mock_activate_user):
+    User(api_user_pending).activate(email_verification_token="a-token")
+    mock_activate_user.assert_called_once_with(api_user_pending["id"], email_verification_token="a-token")
 
 
 def test_activate_user_already_active(app_, api_user_active, mock_activate_user):

@@ -7,6 +7,7 @@ from app import user_api_client
 from app.main import main
 from app.main.forms import TwoFactorForm
 from app.main.views.authenticator import Authenticator
+from app.main.views.verify import must_verify_email_first
 from app.tou import EVENTS_KEY
 from app.utils import is_safe_redirect_url, redirect_to_sign_in
 
@@ -56,7 +57,12 @@ def two_factor_sms_sent():
 
 
 def log_in_user(user_id):
-    with Authenticator(user_id) as user:
+    authenticator = Authenticator(user_id)
+    # The API won't activate a pending user without the verify-email token, so send them to get one.
+    if must_verify_email_first(authenticator.user):
+        return redirect(url_for("main.resend_email_verification"))
+
+    with authenticator as user:
         return redirect_when_logged_in(user=user, platform_admin=user.platform_admin)
 
 

@@ -19,10 +19,10 @@ def verify():
     user_id = session["user_details"]["id"]
     user = User.from_id(user_id)
 
-    # A pending email_auth user must prove ownership of their inbox via the signed
-    # link in verify_email before they can be activated. The only exception is an
-    # org invite sent to this user's address, which proves ownership through its own signed token.
-    if user.state == "pending" and user.auth_type == "email_auth" and not has_matching_org_invite(user):
+    # A pending user must prove ownership of their inbox via the signed link in verify_email
+    # before they can be activated, whatever their auth_type. The only exception is an org
+    # invite sent to this user's address, which proves ownership through its own signed token.
+    if must_verify_email_first(user):
         return redirect(url_for("main.resend_email_verification"))
 
     def _check_code(code):
@@ -63,19 +63,15 @@ def verify_email(token):
 
     session["user_details"] = {"email": user.email_address, "id": user.id}
 
-    # if the user has no mobile number, they can be activated straight away
-    if not user.mobile_number:
-        return activate_user(user.id)
-
-    return activate_user(user.id)
+    return activate_user(user.id, email_verification_token=token)
 
 
-def activate_user(user_id):
+def activate_user(user_id, email_verification_token=None):
     user = User.from_id(user_id)
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
     session["current_session_id"] = user.current_session_id
     organisation_id = session.get("organisation_id")
-    activated_user = user.activate()
+    activated_user = user.activate(email_verification_token=email_verification_token)
     activated_user.login()
 
     invited_user = session.get("invited_user")
@@ -98,6 +94,10 @@ def has_matching_org_invite(user):
     if not invited_org_user:
         return False
     return (invited_org_user.get("email_address") or "").lower() == user.email_address.lower()
+
+
+def must_verify_email_first(user):
+    return user.state == "pending" and not has_matching_org_invite(user)
 
 
 def _add_invited_user_to_service(invited_user):
