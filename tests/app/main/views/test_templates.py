@@ -516,8 +516,9 @@ def test_should_show_page_for_one_template(
         template_id=template_id,
     )
 
+    content_field = page.select_one("textarea[name=template_content]") or page.select_one("input[name=template_content]")
     assert page.select_one("input[type=text]")["value"] == "Two week reminder"
-    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(page.select_one("textarea"))
+    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(content_field)
     assert "priority" not in str(page.select_one("main"))
     mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
 
@@ -1427,10 +1428,64 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
         template_id=template_id,
     )
 
+    content_field = page.select_one("textarea[name=template_content]") or page.select_one("input[name=template_content]")
     assert page.select_one("input[type=text]")["value"] == "Two week reminder"
-    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(page.select_one("textarea"))
+    assert "Template &lt;em&gt;content&lt;/em&gt; with &amp; entity" in str(content_field)
     assert "Select a priority queue" in str(page.select_one("main"))
     mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
+
+
+def test_should_show_rich_text_editor_for_sms_template_by_default_in_tests(
+    client_request,
+    mock_get_service_template,
+    fake_uuid,
+):
+    page = client_request.get(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+    )
+
+    assert page.select_one("#tiptap-editor-template_content") is not None
+    assert page.select_one("input[name=template_content]") is not None
+    assert page.select_one("textarea[name=template_content]") is None
+
+
+def test_should_show_plain_textarea_for_sms_template_in_production(
+    client_request,
+    mock_get_service_template,
+    fake_uuid,
+    app_,
+):
+    app_.config["NOTIFY_ENVIRONMENT"] = "production"
+
+    page = client_request.get(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+    )
+
+    assert page.select_one("textarea[name=template_content]") is not None
+    assert page.select_one("#tiptap-editor-template_content") is None
+
+
+def test_should_show_rich_text_editor_for_sms_template_outside_production(
+    client_request,
+    mock_get_service_template,
+    fake_uuid,
+    app_,
+):
+    app_.config["NOTIFY_ENVIRONMENT"] = "staging"
+
+    page = client_request.get(
+        ".edit_service_template",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+    )
+
+    assert page.select_one("#tiptap-editor-template_content") is not None
+    assert page.select_one("input[name=template_content]") is not None
+    assert page.select_one("textarea[name=template_content]") is None
 
 
 @pytest.mark.parametrize("filetype", ["pdf", "png"])

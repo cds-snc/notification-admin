@@ -271,11 +271,13 @@ const MenuBar = ({
   isMarkdownView,
   toggleLabel,
   useUnifiedConditionalButton = false,
+  templateType = "email",
 }) => {
   if (!editor) {
     return null;
   }
 
+  const isSms = templateType === "sms";
   const { t } = useEditorContext();
   const [liveMessage, setLiveMessage] = useState("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -531,148 +533,156 @@ const MenuBar = ({
           {liveMessage}
         </div>
 
-        {/* First group: Headings */}
-        <div className="toolbar-group">
-          <ToolbarButton
-            testId="rte-heading_1"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-                () => editor.isActive("heading", { level: 1 }),
-                t.heading1,
-              )
-            }
-            isActive={editor.isActive("heading", { level: 1 })}
-            labels={t.heading1}
-          >
-            <Heading1 />
-          </ToolbarButton>
+        {/* First group: Headings - not available in SMS */}
+        {!isSms && (
+          <div className="toolbar-group">
+            <ToolbarButton
+              testId="rte-heading_1"
+              onClick={() =>
+                announceToggle(
+                  () =>
+                    editor.chain().focus().toggleHeading({ level: 1 }).run(),
+                  () => editor.isActive("heading", { level: 1 }),
+                  t.heading1,
+                )
+              }
+              isActive={editor.isActive("heading", { level: 1 })}
+              labels={t.heading1}
+            >
+              <Heading1 />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-heading_2"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-                () => editor.isActive("heading", { level: 2 }),
-                t.heading2,
-              )
-            }
-            isActive={editor.isActive("heading", { level: 2 })}
-            labels={t.heading2}
-          >
-            <Heading2 />
-          </ToolbarButton>
+            <ToolbarButton
+              testId="rte-heading_2"
+              onClick={() =>
+                announceToggle(
+                  () =>
+                    editor.chain().focus().toggleHeading({ level: 2 }).run(),
+                  () => editor.isActive("heading", { level: 2 }),
+                  t.heading2,
+                )
+              }
+              isActive={editor.isActive("heading", { level: 2 })}
+              labels={t.heading2}
+            >
+              <Heading2 />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-horizontal_rule"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().setHorizontalRule().run(),
-                () => editor.isActive("horizontalRule"),
-                t.horizontalRule,
-              )
-            }
-            isActive={editor.isActive("horizontalRule")}
-            labels={t.horizontalRule}
-          >
-            <Minus />
-          </ToolbarButton>
-        </div>
+            <ToolbarButton
+              testId="rte-horizontal_rule"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().setHorizontalRule().run(),
+                  () => editor.isActive("horizontalRule"),
+                  t.horizontalRule,
+                )
+              }
+              isActive={editor.isActive("horizontalRule")}
+              labels={t.horizontalRule}
+            >
+              <Minus />
+            </ToolbarButton>
+          </div>
+        )}
 
-        {/* Second group: Bold, Italic, Link */}
-        <div className="toolbar-group">
-          <ToolbarButton
-            testId="rte-bold"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleBold().run(),
-                () => editor.isActive("bold"),
-                t.bold,
-              )
-            }
-            isActive={editor.isActive("bold")}
-            isDisabled={!editor.can().chain().focus().toggleBold().run()}
-            labels={t.bold}
-          >
-            <Bold />
-          </ToolbarButton>
+        {/* Second group: Bold, Italic, Link - not available in SMS */}
+        {!isSms && (
+          <div className="toolbar-group">
+            <ToolbarButton
+              testId="rte-bold"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBold().run(),
+                  () => editor.isActive("bold"),
+                  t.bold,
+                )
+              }
+              isActive={editor.isActive("bold")}
+              isDisabled={!editor.can().chain().focus().toggleBold().run()}
+              labels={t.bold}
+            >
+              <Bold />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-italic"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleItalic().run(),
-                () => editor.isActive("italic"),
-                t.italic,
-              )
-            }
-            isActive={editor.isActive("italic")}
-            isDisabled={!editor.can().chain().focus().toggleItalic().run()}
-            labels={t.italic}
-          >
-            <Italic />
-          </ToolbarButton>
+            <ToolbarButton
+              testId="rte-italic"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleItalic().run(),
+                  () => editor.isActive("italic"),
+                  t.italic,
+                )
+              }
+              isActive={editor.isActive("italic")}
+              isDisabled={!editor.can().chain().focus().toggleItalic().run()}
+              labels={t.italic}
+            >
+              <Italic />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-link"
-            onClick={() => {
-              openLinkModal();
-              setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
-            }}
-            isActive={editor.isActive("link")}
-            labels={t.link}
-          >
-            <Link />
-          </ToolbarButton>
-        </div>
+            <ToolbarButton
+              testId="rte-link"
+              onClick={() => {
+                openLinkModal();
+                setTimeout(() => setLiveMessage(t.linkDialogOpened), 0);
+              }}
+              isActive={editor.isActive("link")}
+              labels={t.link}
+            >
+              <Link />
+            </ToolbarButton>
+          </div>
+        )}
 
-        {/* Third group: Bullet list, Numbered list, Blockquote */}
-        <div className="toolbar-group">
-          <ToolbarButton
-            testId="rte-bullet_list"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleBulletList().run(),
-                () => editor.isActive("bulletList"),
-                t.bulletList,
-              )
-            }
-            isActive={editor.isActive("bulletList")}
-            labels={t.bulletList}
-          >
-            <List />
-          </ToolbarButton>
+        {/* Third group: Bullet list, Numbered list, Blockquote - not available in SMS */}
+        {!isSms && (
+          <div className="toolbar-group">
+            <ToolbarButton
+              testId="rte-bullet_list"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBulletList().run(),
+                  () => editor.isActive("bulletList"),
+                  t.bulletList,
+                )
+              }
+              isActive={editor.isActive("bulletList")}
+              labels={t.bulletList}
+            >
+              <List />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-numbered_list"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleOrderedList().run(),
-                () => editor.isActive("orderedList"),
-                t.orderedList,
-              )
-            }
-            isActive={editor.isActive("orderedList")}
-            labels={t.orderedList}
-          >
-            <ListOrdered />
-          </ToolbarButton>
+            <ToolbarButton
+              testId="rte-numbered_list"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleOrderedList().run(),
+                  () => editor.isActive("orderedList"),
+                  t.orderedList,
+                )
+              }
+              isActive={editor.isActive("orderedList")}
+              labels={t.orderedList}
+            >
+              <ListOrdered />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-blockquote"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleBlockquote().run(),
-                () => editor.isActive("blockquote"),
-                t.blockquote,
-              )
-            }
-            isActive={editor.isActive("blockquote")}
-            labels={t.blockquote}
-          >
-            <TextQuote />
-          </ToolbarButton>
-        </div>
+            <ToolbarButton
+              testId="rte-blockquote"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleBlockquote().run(),
+                  () => editor.isActive("blockquote"),
+                  t.blockquote,
+                )
+              }
+              isActive={editor.isActive("blockquote")}
+              labels={t.blockquote}
+            >
+              <TextQuote />
+            </ToolbarButton>
+          </div>
+        )}
 
         {/* Fourth group: Variable, Conditional block, Conditional inline */}
         <div className="toolbar-group">
@@ -748,53 +758,55 @@ const MenuBar = ({
           </ToolbarButton>
         </div>
 
-        {/* Fifth group: English, French, RTL */}
-        <div className="toolbar-group">
-          <ToolbarButton
-            testId="rte-english_block"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleEnglishBlock().run(),
-                () => editor.isActive("englishBlock"),
-                t.englishBlock,
-              )
-            }
-            isActive={editor.isActive("englishBlock")}
-            labels={t.englishBlock}
-          >
-            <Icon iconNode={englishBlockIcon} />
-          </ToolbarButton>
+        {/* Fifth group: English, French, RTL - not available in SMS */}
+        {!isSms && (
+          <div className="toolbar-group">
+            <ToolbarButton
+              testId="rte-english_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleEnglishBlock().run(),
+                  () => editor.isActive("englishBlock"),
+                  t.englishBlock,
+                )
+              }
+              isActive={editor.isActive("englishBlock")}
+              labels={t.englishBlock}
+            >
+              <Icon iconNode={englishBlockIcon} />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-french_block"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleFrenchBlock().run(),
-                () => editor.isActive("frenchBlock"),
-                t.frenchBlock,
-              )
-            }
-            isActive={editor.isActive("frenchBlock")}
-            labels={t.frenchBlock}
-          >
-            <Icon iconNode={frenchBlockIcon} />
-          </ToolbarButton>
+            <ToolbarButton
+              testId="rte-french_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleFrenchBlock().run(),
+                  () => editor.isActive("frenchBlock"),
+                  t.frenchBlock,
+                )
+              }
+              isActive={editor.isActive("frenchBlock")}
+              labels={t.frenchBlock}
+            >
+              <Icon iconNode={frenchBlockIcon} />
+            </ToolbarButton>
 
-          <ToolbarButton
-            testId="rte-rtl_block"
-            onClick={() =>
-              announceToggle(
-                () => editor.chain().focus().toggleRtlBlock().run(),
-                () => editor.isActive("rtlBlock"),
-                t.rtlBlock,
-              )
-            }
-            isActive={editor.isActive("rtlBlock")}
-            labels={t.rtlBlock}
-          >
-            <Icon iconNode={rightToLeftIcon} />
-          </ToolbarButton>
-        </div>
+            <ToolbarButton
+              testId="rte-rtl_block"
+              onClick={() =>
+                announceToggle(
+                  () => editor.chain().focus().toggleRtlBlock().run(),
+                  () => editor.isActive("rtlBlock"),
+                  t.rtlBlock,
+                )
+              }
+              isActive={editor.isActive("rtlBlock")}
+              labels={t.rtlBlock}
+            >
+              <Icon iconNode={rightToLeftIcon} />
+            </ToolbarButton>
+          </div>
+        )}
 
         {/* Sixth group: Info button */}
         <div
@@ -858,25 +870,32 @@ const MenuBar = ({
         aria-hidden={isInfoOpen ? undefined : true}
         inert={isInfoOpen ? undefined : ""}
       >
-        <nav aria-label={t.infoTabsLabel}>
-          <ul>
-            {infoPaneSections.map(({ id, tabLabel }) => (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  aria-current={infoPaneTarget === id ? "page" : undefined}
-                  onClick={(event) => handleInfoPaneLinkClick(event, id)}
-                >
-                  {tabLabel}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* SMS only supports variables/conditionals, so there's nothing to switch between */}
+        {!isSms && (
+          <nav aria-label={t.infoTabsLabel}>
+            <ul>
+              {infoPaneSections.map(({ id, tabLabel }) => (
+                <li key={id}>
+                  <a
+                    href={`#${id}`}
+                    aria-current={infoPaneTarget === id ? "page" : undefined}
+                    onClick={(event) => handleInfoPaneLinkClick(event, id)}
+                  >
+                    {tabLabel}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
-        {infoPaneSections.map(({ id, Component }) => (
-          <Component key={id} t={t} isActive={infoPaneTarget === id} />
-        ))}
+        {isSms ? (
+          <CustomContentInfoPane t={t} isActive={isInfoOpen} />
+        ) : (
+          infoPaneSections.map(({ id, Component }) => (
+            <Component key={id} t={t} isActive={infoPaneTarget === id} />
+          ))
+        )}
       </div>
     </>
   );
