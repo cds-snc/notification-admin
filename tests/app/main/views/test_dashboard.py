@@ -635,6 +635,69 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
 
 
+def test_should_show_scheduled_notifications_on_dashboard(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    mock_get_scheduled_notifications,
+):
+    mock_get_scheduled_notifications.return_value = {
+        "notifications": [
+            {
+                "id": "11111111-1111-1111-1111-111111111111",
+                "to": "test@example.com",
+                "notification_type": "email",
+                "scheduled_for": "2016-01-02T15:00:00.000000+00:00",
+                "template": {"name": "Email template"},
+            },
+            {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "to": "6502532222",
+                "notification_type": "sms",
+                "scheduled_for": "2016-01-03T15:00:00.000000+00:00",
+                "template": {"name": "SMS template"},
+            },
+        ],
+        "total": 12,
+        "page_size": 10,
+    }
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    mock_get_scheduled_notifications.assert_called_once_with(SERVICE_ONE_ID, page_size=10)
+    assert "Scheduled individual messages" in [normalize_spaces(h2.text) for h2 in page.select("h2")]
+
+    table = page.select_one("table:-soup-contains('Scheduled individual messages')")
+    rows = table.select("tbody tr")
+    assert len(rows) == 2
+    assert normalize_spaces(rows[0].select_one("th").text) == ("test@example.com Scheduled for 2016-01-02T15:00:00.000000+00:00")
+    assert rows[0].select_one("th a")["href"] == url_for(
+        "main.view_notification", service_id=SERVICE_ONE_ID, notification_id="11111111-1111-1111-1111-111111111111"
+    )
+    assert normalize_spaces(rows[0].select_one("td").text) == "Email ‘Email template’"
+    assert normalize_spaces(rows[1].select_one("td").text) == "Text message ‘SMS template’"
+    assert "Showing the next 2 of 12 scheduled messages" in normalize_spaces(page.text)
+
+
+def test_should_not_show_scheduled_notifications_section_when_there_are_none(
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+):
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    assert "Scheduled individual messages" not in normalize_spaces(page.text)
+
+
 def test_daily_usage_section_shown(
     client_request,
     mocker,

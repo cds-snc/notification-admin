@@ -6,7 +6,7 @@ from unittest.mock import mock_open
 import pytest
 from flask import url_for
 from freezegun import freeze_time
-from notifications_python_client.errors import APIError
+from notifications_python_client.errors import APIError, HTTPError
 from PyPDF2.utils import PdfReadError
 
 from tests.conftest import (
@@ -1132,3 +1132,141 @@ def test_cancelling_a_letter_calls_the_api(
     )
 
     assert cancel_endpoint.called
+
+
+def _scheduled_notification(template_type, scheduled_for="2099-01-22T20:52:00.000000+00:00"):
+    notification = create_notification(template_type=template_type, notification_status="created")
+    notification["scheduled_for"] = scheduled_for
+    return notification
+
+
+@pytest.mark.parametrize(
+    "template_type, expected_title, expected_button",
+    [
+        ("email", "Email scheduled", "Cancel scheduled email"),
+        ("sms", "Text message scheduled", "Cancel scheduled text message"),
+    ],
+)
+def test_notification_page_shows_scheduled_notification(
+    client_request,
+    mocker,
+    fake_uuid,
+    template_type,
+    expected_title,
+    expected_button,
+):
+    mocker.patch("app.notification_api_client.get_notification", return_value=_scheduled_notification(template_type))
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+    )
+
+    assert normalize_spaces(page.select_one("h1").text) == expected_title
+    assert "was scheduled by Test User" in normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+    assert normalize_spaces(page.select_one(".notification-status").text) == ("Scheduled for 2099-01-22T20:52:00.000000+00:00")
+    assert page.select_one(".notification-status time.local-datetime-short")
+
+    form = page.select_one("form[action$='/cancel-scheduled']")
+    assert form["action"] == url_for("main.cancel_scheduled_notification", service_id=SERVICE_ONE_ID, notification_id=fake_uuid)
+    assert normalize_spaces(form.select_one("button").text) == expected_button
+    assert page.select_one(".back-link")["href"] == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+
+def test_notification_page_hides_cancel_scheduled_button_without_send_messages_permission(
+    client_request,
+    mocker,
+    fake_uuid,
+    active_user_view_permissions,
+):
+    client_request.login(active_user_view_permissions)
+    mocker.patch("app.notification_api_client.get_notification", return_value=_scheduled_notification("email"))
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+    )
+
+    assert "Scheduled for" in normalize_spaces(page.select_one(".notification-status").text)
+    assert not page.select("form[action$='/cancel-scheduled']")
+
+
+def test_notification_page_does_not_show_scheduled_ui_for_sent_notifications(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    notification = create_notification(template_type="email", notification_status="sending")
+    notification["scheduled_for"] = None
+    mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+    )
+
+    assert normalize_spaces(page.select_one("h1").text) == "Email sent"
+    assert normalize_spaces(page.select_one(".notification-status").text) == "In transit"
+    assert not page.select("form[action$='/cancel-scheduled']")
+
+
+def test_cancel_scheduled_notification_redirects_to_dashboard(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mock_cancel = mocker.patch("app.notification_api_client.cancel_scheduled_notification")
+
+    client_request.post(
+        "main.cancel_scheduled_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+        _expected_redirect=url_for("main.service_dashboard", service_id=SERVICE_ONE_ID),
+    )
+
+    mock_cancel.assert_called_once_with(SERVICE_ONE_ID, fake_uuid)
+    with client_request.session_transaction() as session:
+        assert session["_flashes"] == [("default_with_tick", "Scheduled message cancelled")]
+
+
+def test_cancel_scheduled_notification_shows_error_if_already_sent(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch(
+        "app.notification_api_client.cancel_scheduled_notification",
+        side_effect=HTTPError(response=mocker.Mock(status_code=400, json=dict), message="already sent"),
+    )
+
+    client_request.post(
+        "main.cancel_scheduled_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+        _expected_redirect=url_for("main.view_notification", service_id=SERVICE_ONE_ID, notification_id=fake_uuid),
+    )
+
+    with client_request.session_transaction() as session:
+        assert session["_flashes"] == [("error", "This message has already been sent and can no longer be cancelled.")]
+
+
+def test_cancel_scheduled_notification_requires_send_messages_permission(
+    client_request,
+    mocker,
+    fake_uuid,
+    active_user_view_permissions,
+):
+    client_request.login(active_user_view_permissions)
+    mock_cancel = mocker.patch("app.notification_api_client.cancel_scheduled_notification")
+
+    client_request.post(
+        "main.cancel_scheduled_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+        _expected_status=403,
+    )
+
+    mock_cancel.assert_not_called()

@@ -4,8 +4,13 @@
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
 
-{% if template.template_type == 'email' %}
+{% if scheduled_for and template.template_type == 'email' %}
+  {% set page_title = _('Email scheduled') %}
+{% elif scheduled_for and template.template_type == 'sms' %}
+  {% set page_title = _('Text message scheduled') %}
+{% elif template.template_type == 'email' %}
   {% set page_title = _('Email sent') %}
 {% elif template.template_type == 'sms' %}
   {% set page_title = _('Text message sent') %}
@@ -24,6 +29,16 @@
       back_link=back_link
     ) }}
 
+    {% if scheduled_for and current_user.has_permissions('send_messages') %}
+      {% call form_wrapper(action=url_for('main.cancel_scheduled_notification', service_id=current_service.id, notification_id=notification_id)) %}
+        {{ page_footer(
+          button_text=_('Cancel scheduled email') if template.template_type == 'email' else _('Cancel scheduled text message'),
+          destructive=True,
+          testid='cancel-scheduled-notification'
+        ) }}
+      {% endcall %}
+    {% endif %}
+
     <div class="{% if just_sent %}banner-default-with-tick{% endif %}">
       <p class="{% if just_sent %}mb-0{% endif %}">
         {% if is_precompiled_letter %}
@@ -34,7 +49,7 @@
           {% else %}
             <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">‘{{ template.name }}’</a>
           {% endif %}
-          {{ _('was sent') }}
+          {{ _('was scheduled') if scheduled_for else _('was sent') }}
         {% endif %}
         {% if job and job.original_file_name != 'Report' %}
           {% set destination =

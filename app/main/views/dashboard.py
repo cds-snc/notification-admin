@@ -407,6 +407,9 @@ def aggregate_notifications_stats(template_statistics, use_billable_units=False)
     return notifications
 
 
+SCHEDULED_NOTIFICATIONS_DASHBOARD_LIMIT = 10
+
+
 def get_dashboard_partials(service_id):
     timings = {}
 
@@ -434,6 +437,12 @@ def get_dashboard_partials(service_id):
         start = time.time()
         immediate_jobs = [add_rate_to_job(job) for job in immediate_jobs_raw]
         timings["add_rate_to_job"] = (time.time() - start) * 1000
+
+    start = time.time()
+    scheduled_notifications = notification_api_client.get_scheduled_notifications(
+        service_id, page_size=SCHEDULED_NOTIFICATIONS_DASHBOARD_LIMIT
+    )
+    timings["get_scheduled_notifications"] = (time.time() - start) * 1000
 
     # get the daily stats
     start = time.time()
@@ -469,6 +478,11 @@ def get_dashboard_partials(service_id):
 
     return {
         "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
+        "upcoming_notifications": render_template(
+            "views/dashboard/_upcoming_notifications.html",
+            scheduled_notifications=scheduled_notifications["notifications"],
+            total_scheduled_notifications=scheduled_notifications["total"],
+        ),
         "daily_totals": render_template(
             "views/dashboard/_totals_daily.html",
             service_id=service_id,
@@ -502,6 +516,7 @@ def get_dashboard_partials(service_id):
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_jobs": bool(scheduled_jobs),
+        "has_scheduled_notifications": bool(scheduled_notifications["notifications"]),
         "debug_timings": timings,  # Include timings in the response for debugging
     }
 

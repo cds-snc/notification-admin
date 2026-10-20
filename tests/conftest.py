@@ -4605,6 +4605,14 @@ def mock_get_template_attachments(mocker):
     return mocker.patch("app.models.service.file_api_client.get_files_by_template_id", return_value=[])
 
 
+@pytest.fixture(autouse=True)
+def mock_get_scheduled_notifications(mocker):
+    return mocker.patch(
+        "app.notification_api_client.get_scheduled_notifications",
+        return_value={"notifications": [], "total": 0, "page_size": 10},
+    )
+
+
 @pytest.fixture
 def mock_move_to_template_folder(mocker):
     return mocker.patch("app.template_folder_api_client.move_to_folder")

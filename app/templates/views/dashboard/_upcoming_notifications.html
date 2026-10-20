@@ -1,0 +1,35 @@
+{% from "components/table.html" import list_table, field, row_heading %}
+
+<div class="ajax-block-container">
+  <div class='dashboard-table'>
+    {% call(item, row_number) list_table(
+      scheduled_notifications,
+      caption=_("Scheduled individual messages"),
+      caption_visible=False,
+      empty_message=_("You have no scheduled messages at the moment"),
+      field_headings=[
+        _("Recipient"),
+        _("Details")
+      ],
+      field_headings_visible=False
+    ) %}
+      {% call row_heading() %}
+        <div class="file-list">
+          <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.id) }}">{{ item.to }}</a>
+          <span class="file-list-hint">
+            {{ _("Scheduled for") }} <time class="local-datetime-short">{{ item.scheduled_for }}</time>
+          </span>
+        </div>
+      {% endcall %}
+      {% call field() %}
+        {{ _("Email") if item.notification_type == 'email' else _("Text message") }}
+        <span class="file-list-hint">‘{{ item.template.name }}’</span>
+      {% endcall %}
+    {% endcall %}
+    {% if total_scheduled_notifications > scheduled_notifications|length %}
+      <p class="text-small text-gray-700 mt-4">
+        {{ _("Showing the next {} of {} scheduled messages").format(scheduled_notifications|length, total_scheduled_notifications|format_number) }}
+      </p>
+    {% endif %}
+  </div>
+</div>

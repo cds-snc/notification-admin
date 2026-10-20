@@ -16,7 +16,8 @@ from flask import (
     stream_with_context,
     url_for,
 )
-from notifications_python_client.errors import APIError
+from flask_babel import _
+from notifications_python_client.errors import APIError, HTTPError
 from notifications_utils.letter_timings import (
     get_letter_timings,
     letter_can_be_cancelled,
@@ -99,6 +100,8 @@ def view_notification(service_id, notification_id):
         notification["status"], notification_created
     )
 
+    scheduled_for = notification.get("scheduled_for")
+
     if get_help_argument() or request.args.get("help") == "0":
         # help=0 is set when you’ve just sent a notification. We
         # only want to show the back link when you’ve navigated to a
@@ -110,6 +113,9 @@ def view_notification(service_id, notification_id):
             service_id=current_service.id,
             job_id=request.args.get("from_job"),
         )
+    elif scheduled_for:
+        # Scheduled notifications aren't listed with sent messages until they're sent
+        back_link = url_for("main.service_dashboard", service_id=current_service.id)
     else:
         back_link = url_for(
             "main.view_notifications",
@@ -121,6 +127,7 @@ def view_notification(service_id, notification_id):
     return render_template(
         "views/notifications/notification.html",
         finished=(notification["status"] in (DELIVERED_STATUSES + FAILURE_STATUSES)),
+        scheduled_for=scheduled_for,
         notification_status=notification["status"],
         uploaded_file_name="Report",
         template=template,
@@ -172,6 +179,24 @@ def cancel_letter(service_id, notification_id):
 
     flash("Are you sure you want to cancel sending this letter?", "cancel")
     return view_notification(service_id, notification_id)
+
+
+@main.route(
+    "/services/<service_id>/notification/<uuid:notification_id>/cancel-scheduled",
+    methods=["POST"],
+)
+@user_has_permissions("send_messages")
+def cancel_scheduled_notification(service_id, notification_id):
+    try:
+        notification_api_client.cancel_scheduled_notification(service_id, str(notification_id))
+    except HTTPError as e:
+        if e.status_code != 400:
+            raise
+        flash(_("This message has already been sent and can no longer be cancelled."), "error")
+        return redirect(url_for("main.view_notification", service_id=service_id, notification_id=notification_id))
+
+    flash(_("Scheduled message cancelled"), "default_with_tick")
+    return redirect(url_for("main.service_dashboard", service_id=service_id))
 
 
 def get_preview_error_image():
