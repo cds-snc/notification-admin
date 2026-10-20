@@ -112,7 +112,7 @@ def delete_unused_translations(csv_path, unused_keys):
     temp_path = csv_path + ".tmp"
     with open(csv_path, mode="r", encoding="utf-8") as f_in, open(temp_path, mode="w", encoding="utf-8", newline="") as f_out:
         reader = csv.DictReader(f_in)
-        writer = csv.DictWriter(f_out, fieldnames=reader.fieldnames)
+        writer = csv.DictWriter(f_out, fieldnames=reader.fieldnames, quoting=csv.QUOTE_ALL)
         writer.writeheader()
 
         count = 0
