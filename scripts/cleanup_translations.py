@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from scripts.test_translations import extra_keys_in_app
+else:
+    from test_translations import extra_keys_in_app
 
 
 def get_translation_keys(csv_path):
@@ -60,11 +62,13 @@ def get_keys_from_babel():
     finally:
         # Resource cleanup in finally block to prevent file leaks
         for temp_file in [messages_po, messages_csv]:
-            if temp_file and os.path.exists(temp_file):
+            if temp_file:
                 try:
                     os.remove(temp_file)
-                except Exception:
+                except FileNotFoundError:
                     pass
+                except OSError as e:
+                    print(f"Warning: unable to remove temporary file {temp_file}: {e}", file=sys.stderr)
 
 
 def find_unused_translations(keys, search_dirs):
