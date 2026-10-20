@@ -4,7 +4,8 @@
  * Displays live SMS fragment count estimate below the template content textarea
  * on the SMS template edit/add pages.
  *
- * This component listens to `input` events on the #template_content textarea and
+ * This component listens to `input` and `change` events on the #template_content
+ * field (a plain textarea, or a hidden input synced by the rich text editor) and
  * updates text content in pre-existing HTML elements:
  *   1. #sms-fragment-count-text / #sms-fragment-count-suffix (legacy hidden text)
  *   2. Summary metrics cards (#sms-message-size-value, #sms-characters-per-part, #sms-max-daily-send-value)
@@ -422,7 +423,10 @@
   // ── Initialise ──────────────────────────────────────────────────────────
 
   var debouncedUpdate = debounce(update, 150);
+  // The rich text editor (Tiptap) syncs to this field via a hidden input
+  // "change" event rather than real keystroke "input" events, so listen to both.
   textarea.addEventListener("input", debouncedUpdate);
+  textarea.addEventListener("change", debouncedUpdate);
 
   // Run once on page load to show initial state
   update();

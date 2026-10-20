@@ -182,18 +182,9 @@ describe("Live region announces context as user navigates the editor", () => {
   });
 
   it("announces Variable when cursor is inside a variable mark", () => {
-    // Use a minimal document so the click target is unambiguous.
-    RichTextEditor.Components.ViewMarkdownButton().click();
-    RichTextEditor.Components.MarkdownEditor().clear().type("((variable))", {
-      delay: 0,
-    });
-    RichTextEditor.Components.ViewMarkdownButton().click();
-
-    // Place the cursor inside the variable mark to trigger announcement.
-    RichTextEditor.Components.Editor()
-      .find('span[data-type="variable"]')
-      .first()
-      .realClick();
+    // Type the variable, then move the caret into the mark from its end.
+    RichTextEditor.Components.Editor().clear().type("((variable))");
+    RichTextEditor.Components.Editor().realPress("ArrowLeft");
     RichTextEditor.Components.EditorAnnouncer().should(
       "contain.text",
       "Variable",

@@ -304,6 +304,8 @@ def _build_file_upload_error_response(http_error):
 def attach_files(service_id, template_id):
     _abort_if_attachments_disabled_for_service()
 
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
     uploaded_files = request.files.getlist("files")
     created_files = []
     error = None
@@ -357,7 +359,9 @@ def remove_files(service_id, template_id, file_id=None):
     if not file_id:
         abort(400)
 
-    file_api_client.delete_file(template_id, file_id)
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    file_api_client.delete_file(current_service.id, template_id, file_id)
     return ("", 204)
 
 
@@ -377,7 +381,9 @@ def template_attachment_status(service_id, template_id, file_id=None):
     if not file_id:
         abort(400)
 
-    return jsonify(file_api_client.get_file_status(template_id, file_id))
+    current_service.get_template_with_user_permission_or_403(template_id, current_user)
+
+    return jsonify(file_api_client.get_file_status(current_service.id, template_id, file_id))
 
 
 @main.route(
@@ -399,7 +405,7 @@ def download_template_attachment(service_id, template_id, file_id=None):
         abort(400)
 
     try:
-        file_payload = file_api_client.get_file_contents(template_id, file_id)
+        file_payload = file_api_client.get_file_contents(current_service.id, template_id, file_id)
     except HTTPError as e:
         if e.status_code == 409:
             # File not ready (e.g., virus scan pending)
@@ -1458,6 +1464,8 @@ def redact_template(service_id, template_id):
 @main.route("/services/<service_id>/templates/<template_id>/versions")
 @user_has_permissions("view_activity")
 def view_template_versions(service_id, template_id):
+    # The versions endpoint returns [] for another service's template, so check ownership first (404s if not owned)
+    current_service.get_template(template_id)
     return render_template(
         "views/templates/choose_history.html",
         versions=[

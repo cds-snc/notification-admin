@@ -59,6 +59,8 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         "email_address": "notfound@example.canada.ca",
         "mobile_number": phone_number_to_register_with,
         "password": password,
+        # auth_type is a hidden field with no UI control - the server must ignore this and
+        # always register as email_auth, regardless of what a client sends.
         "auth_type": "sms_auth",
     }
     user_data["tou_agreed"] = "true"
@@ -75,8 +77,53 @@ def test_register_creates_new_user_and_redirects_to_continue_page(
         user_data["email_address"],
         user_data["mobile_number"],
         user_data["password"],
-        user_data["auth_type"],
+        "email_auth",
     )
+
+
+def test_register_clears_stale_invite_session_keys_on_get(client):
+    with client.session_transaction() as session:
+        session["invited_org_user"] = {"email_address": "someone-else@example.canada.ca"}
+        session["invited_user"] = {"email_address": "someone-else@example.canada.ca"}
+
+    response = client.get(url_for("main.register"))
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        assert "invited_org_user" not in session
+        assert "invited_user" not in session
+
+
+def test_register_clears_stale_invite_session_keys_on_post(
+    client,
+    mock_send_verify_code,
+    mock_register_user,
+    mock_get_user_by_email_not_found,
+    mock_email_is_not_already_in_use,
+    mock_send_verify_email,
+    mock_login,
+):
+    # simulate a carve-out left over in this session from an earlier, unrelated
+    # invite acceptance - it must not apply to this unrelated registration attempt
+    with client.session_transaction() as session:
+        session["invited_org_user"] = {"email_address": "someone-else@example.canada.ca"}
+        session["invited_user"] = {"email_address": "someone-else@example.canada.ca"}
+
+    user_data = {
+        "name": "Some One Valid",
+        "email_address": "notfound@example.canada.ca",
+        "mobile_number": "+16502532222",
+        "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+        "auth_type": "sms_auth",
+    }
+    user_data["tou_agreed"] = "true"
+
+    response = client.post(url_for("main.register"), data=user_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    with client.session_transaction() as session:
+        assert "invited_org_user" not in session
+        assert "invited_user" not in session
 
 
 @pytest.mark.parametrize(
@@ -277,6 +324,106 @@ def test_register_with_existing_email_sends_emails(
     response = client.post(url_for("main.register"), data=user_data)
     assert response.status_code == 302
     assert response.location == url_for("main.registration_continue")
+    mock_send_already_registered_email.assert_called_once()
+
+    with client.session_transaction() as session:
+        assert "user_details" not in session
+
+    response = client.get(url_for("main.registration_continue"))
+    assert response.status_code == 200
+    page = BeautifulSoup(response.data.decode("utf-8"), "html.parser")
+    assert page.select("main p")[0].text == f"We’ve sent a link to {api_user_active['email_address']}."
+
+
+@pytest.mark.parametrize(
+    "endpoint",
+    [
+        "main.check_and_resend_verification_code",
+        "main.resend_email_link",
+        "main.two_factor_sms_sent",
+        "main.two_factor_email_sent",
+        "main.verify",
+    ],
+)
+def test_register_with_existing_email_does_not_allow_2fa_without_password(
+    client,
+    api_user_active,
+    mock_get_user_by_email,
+    mock_send_already_registered_email,
+    mock_send_verify_code,
+    endpoint,
+):
+    with client.session_transaction() as session:
+        session["user_details"] = {"email": "stale@example.canada.ca", "id": "stale-id"}
+
+    client.post(
+        url_for("main.register"),
+        data={
+            "name": "Already Hasaccount",
+            "email_address": api_user_active["email_address"],
+            "mobile_number": "+16502532222",
+            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+            "tou_agreed": "true",
+        },
+    )
+
+    response = client.get(url_for(endpoint))
+    assert response.status_code == 302
+    assert response.location == url_for("main.sign_in")
+    assert mock_send_verify_code.called is False
+
+
+def test_register_from_invite_with_existing_email_redirects_to_sign_in(
+    client,
+    api_user_active,
+    mock_get_user_by_email,
+    mock_register_user,
+    mock_login,
+    mock_activate_user,
+    mock_accept_invite,
+):
+    mock_check_verify_code, mock_get_services = mock_login
+
+    invited_user = InvitedUser(
+        {
+            "id": api_user_active["id"],
+            "service": api_user_active["id"],
+            "from_user": "",
+            "email_address": api_user_active["email_address"],
+            "permissions": ["manage_users"],
+            "status": "pending",
+            "created_at": datetime.utcnow(),
+            "auth_type": "email_auth",
+            "folder_permissions": [],
+            "blocked": False,
+        }
+    )
+    with client.session_transaction() as session:
+        session["invited_user"] = invited_user.serialize()
+
+    response = client.post(
+        url_for("main.register_from_invite"),
+        data={
+            "name": "Already Hasaccount",
+            "email_address": api_user_active["email_address"],
+            "mobile_number": api_user_active["mobile_number"],
+            "service": str(api_user_active["id"]),
+            "password": "rZXdoBkuz6U37DDXIaAfpBR1OTJcSZOGICLCz4dMtmopS3KsVauIrtcgqs1eU02",
+            "auth_type": "email_auth",
+            "tou_agreed": "true",
+        },
+    )
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.sign_in")
+    assert mock_register_user.called is False
+    assert mock_accept_invite.called is False
+    assert mock_activate_user.called is False
+    assert mock_check_verify_code.called is False
+    assert mock_get_services.called is False
+    with client.session_transaction() as session:
+        assert "user_details" not in session
+        assert "user_id" not in session
 
 
 @pytest.mark.parametrize(

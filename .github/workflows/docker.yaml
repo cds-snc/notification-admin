@@ -42,9 +42,7 @@ jobs:
 
     - name: Build
       run: |
-        docker pull $DOCKER_SLUG:latest
         docker build \
-        --cache-from $DOCKER_SLUG:latest \
         --build-arg GIT_SHA=${GITHUB_SHA::7} \
         -t $DOCKER_SLUG:${GITHUB_SHA::7} \
         -t $DOCKER_SLUG:latest \
@@ -78,12 +76,18 @@ jobs:
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
+    - name: Set Docker Tag
+      id: image-tag
+      run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_SHA: ${{ github.sha }}
+
     - name: Docker generate SBOM
       uses: cds-snc/security-tools/.github/actions/generate-sbom@12a0cdea1c5a515dfcbe353693db804a1793c0ed # v4.0.1
       env:
         TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
       with:
-        docker_image: "${{ env.DOCKER_SLUG }}:latest"
+        docker_image: "${{ env.DOCKER_SLUG }}:${{ steps.image-tag.outputs.tag }}"
         dockerfile_path: "ci/Dockerfile"
         sbom_name: "notification-admin"
         token: "${{ secrets.GITHUB_TOKEN }}"

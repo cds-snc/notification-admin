@@ -1,0 +1,19 @@
+{% macro new_feature(title, anchored_to, cta="", cta_link="", lifespan="", position="") %}
+<div style="--anchored-to:--{{ anchored_to }};" class="new-feature-container">
+{% if position == 'after' %}
+    {{ caller() }}
+{% endif %}
+<div class="new-feature-banner hidden bg-brand-100 flex flex-col gap-4 p-gutterHalf" data-position="{{ position }}" data-new-feature="{{ anchored_to }}" data-lifespan="{{ lifespan }}">
+    <p class="max-w-[80ch] mb-4"><span class="font-[600]">{{ _("New:") }}</span> {{ title }}</p>
+    <div class="flex gap-4">
+        {% if cta and cta_link %}
+        <a class="button" href="{{ cta_link }}">{{ cta }}</a>
+        {% endif %}
+        <button type="button" class="button-link" data-dismiss-notice>{{ _('Dismiss') }}</button>
+    </div>
+</div>
+{% if position == 'before' %}
+    {{ caller() }}
+{% endif %}
+</div>
+{% endmacro %}
