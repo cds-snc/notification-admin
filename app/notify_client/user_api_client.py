@@ -242,8 +242,9 @@ class UserApiClient(NotifyAdminAPIClient):
         return users
 
     @cache.delete("user-{user_id}")
-    def activate_user(self, user_id):
-        return self.post("/user/{}/activate".format(user_id), data=None)
+    def activate_user(self, user_id, email_verification_token=None):
+        data = {"email_verification_token": email_verification_token} if email_verification_token else None
+        return self.post("/user/{}/activate".format(user_id), data=data)
 
     def send_change_email_verification(self, user_id, new_email):
         endpoint = "/user/{}/change-email-verification".format(user_id)

@@ -60,6 +60,7 @@ def test_should_render_correct_resend_template_for_pending_user(
             "id": api_user_pending["id"],
             "email": api_user_pending["email_address"],
         }
+        session["invited_org_user"] = {"email_address": api_user_pending["email_address"], "organisation": "org-id"}
     response = client.get(url_for("main.check_and_resend_text_code"))
     assert response.status_code == 200
 
@@ -94,6 +95,7 @@ def test_should_resend_verify_code_and_update_mobile_for_pending_user(
             "id": api_user_pending["id"],
             "email": api_user_pending["email_address"],
         }
+        session["invited_org_user"] = {"email_address": api_user_pending["email_address"], "organisation": "org-id"}
     response = client.post(
         url_for("main.check_and_resend_text_code"),
         data={"mobile_number": phone_number_to_register_with},
@@ -142,25 +144,31 @@ def test_check_and_redirect_to_verify_if_user_pending(
             "id": api_user_pending["id"],
             "email": api_user_pending["email_address"],
         }
+        session["invited_org_user"] = {"email_address": api_user_pending["email_address"], "organisation": "org-id"}
     response = client.get(url_for("main.check_and_resend_verification_code"))
     assert response.status_code == 302
     assert response.location == url_for("main.verify")
 
 
 @pytest.mark.parametrize("endpoint", ["main.check_and_resend_verification_code", "main.check_and_resend_text_code"])
-def test_pending_email_auth_user_with_someone_elses_org_invite_cannot_get_sms_code(
+@pytest.mark.parametrize("auth_type", ["email_auth", "sms_auth"])
+@pytest.mark.parametrize("invited_org_user", [None, {"email_address": "someone-else@canada.ca", "organisation": "org-id"}])
+def test_pending_user_without_their_own_org_invite_cannot_get_sms_code(
     client,
     mocker,
     api_user_pending,
     mock_send_verify_code,
     endpoint,
+    auth_type,
+    invited_org_user,
 ):
-    api_user_pending["auth_type"] = "email_auth"
+    api_user_pending["auth_type"] = auth_type
     mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
 
     with client.session_transaction() as session:
         session["user_details"] = {"id": api_user_pending["id"], "email": api_user_pending["email_address"]}
-        session["invited_org_user"] = {"email_address": "someone-else@canada.ca", "organisation": "org-id"}
+        if invited_org_user:
+            session["invited_org_user"] = invited_org_user
 
     response = client.get(url_for(endpoint))
 
