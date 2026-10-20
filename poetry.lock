@@ -187,13 +187,13 @@ files = [
 
 [[package]]
 name = "certifi"
-version = "2024.8.30"
+version = "2026.10.19"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "certifi-2024.8.30-py3-none-any.whl", hash = "sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8"},
-    {file = "certifi-2024.8.30.tar.gz", hash = "sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9"},
+    {file = "certifi-2026.10.19-py3-none-any.whl", hash = "sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b"},
+    {file = "certifi-2026.10.19.tar.gz", hash = "sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae"},
 ]
 
 [[package]]
@@ -1677,7 +1677,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "notifications-utils"
-version = "53.2.32"
+version = "53.2.35"
 description = "Shared python code for Notification - Provides logging utils etc."
 optional = false
 python-versions = "~3.12.7"
@@ -1689,7 +1689,7 @@ awscli = "1.45.59"
 bleach = "6.3.0"
 boto3 = "1.43.54"
 cachetools = "4.2.4"
-certifi = "^2024.0.0"
+certifi = "^2026.10.19"
 cryptography = "^46.0.5"
 Flask = "2.3.3"
 Flask-Redis = "0.4.0"
@@ -1713,8 +1713,8 @@ werkzeug = "3.1.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "53.2.33"
-resolved_reference = "5433763d09073838bd85b51a62c4cc64fab9d103"
+reference = "task/update-packages"
+resolved_reference = "f9b6611a3be52f8353aec8c81aa532d67b187379"
 
 [[package]]
 name = "openpyxl"
@@ -2979,4 +2979,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "0ccc9b2441db430229401194f2b4d807af01710a2d98da22ef87b6240d49ef31"
+content-hash = "e511e373ba3ef91b087df442b2fbbcb6075b76d82dc42e6b3aae592482115e1f"
