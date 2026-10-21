@@ -1,4 +1,5 @@
 import { Extension } from "@tiptap/core";
+import Text from "@tiptap/extension-text";
 
 // SMS supports no markdown formatting at all (no headings, emphasis, lists,
 // blockquotes, rules, links, code or raw HTML) - only variables and
@@ -7,6 +8,8 @@ import { Extension } from "@tiptap/core";
 // would silently consume characters like #, *, _, -, > as syntax markers
 // even though the schema has nowhere to put the resulting formatting,
 // corrupting existing plain-text SMS content that happens to contain them.
+// `escape` and `entity` are disabled too so that backslashes and HTML
+// entities (e.g. `\#`, `&amp;`) are kept as typed rather than decoded.
 const STRUCTURAL_MARKDOWN_RULES = [
   "table",
   "code",
@@ -26,7 +29,28 @@ const STRUCTURAL_MARKDOWN_RULES = [
   "image",
   "autolink",
   "html_inline",
+  "escape",
+  "entity",
 ];
+
+// SMS content is sent verbatim, so text must be serialized exactly as typed.
+// The default tiptap-markdown text serializer HTML-escapes `<`/`>` and
+// markdown-escapes characters like #, -, *, _ with backslashes, which would
+// then show up in the delivered text message.
+export const SmsText = Text.extend({
+  addStorage() {
+    return {
+      markdown: {
+        serialize(state, node) {
+          state.text(node.text, false);
+        },
+        parse: {
+          // handled by markdown-it
+        },
+      },
+    };
+  },
+});
 
 export default Extension.create({
   name: "smsPlainTextMarkdown",
