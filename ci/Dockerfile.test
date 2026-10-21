@@ -5,4 +5,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Install deps bump
 RUN apk add --no-cache build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev chromium=79.0.3945.130-r0 chromium-chromedriver && rm -rf /var/cache/apk/*
 
+# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
+RUN apk add --no-cache ca-certificates && \
+    sed -i \
+      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      /etc/ca-certificates.conf && \
+    update-ca-certificates
+
 CMD ["/bin/sh"]

@@ -18,6 +18,13 @@ RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git g++ make libf
 # update pip
 RUN python -m pip install wheel poetry==${POETRY_VERSION} virtualenv==20.30.0
 
+# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
+RUN apk add --no-cache ca-certificates && \
+    sed -i \
+      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      /etc/ca-certificates.conf && \
+    update-ca-certificates
+
 # -- Install Application into container:
 RUN set -ex && mkdir /app
 
