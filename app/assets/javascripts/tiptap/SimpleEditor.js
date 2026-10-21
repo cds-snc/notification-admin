@@ -23,7 +23,9 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
-import SmsPlainTextMarkdown from "./CustomComponents/SmsPlainTextMarkdown";
+import SmsPlainTextMarkdown, {
+  SmsText,
+} from "./CustomComponents/SmsPlainTextMarkdown";
 import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
@@ -51,20 +53,6 @@ const isEditorViewMounted = (editor) => {
     return false;
   }
 };
-
-// prosemirror-markdown's serializer backslash-escapes punctuation (`*_~[]#>-+.)
-// that would otherwise be read back as formatting syntax, and tiptap-markdown's
-// own default text-node serializer additionally HTML-entity-escapes < and >
-// (so markdown-to-HTML email rendering doesn't misread them as tags). SMS has
-// no formatting extensions to interpret any of that syntax and no HTML
-// rendering step to decode the entities, so both forms of escaping are pure
-// noise that would otherwise be sent to recipients as literal backslashes or
-// "&lt;"/"&gt;" text.
-const unescapeSmsMarkdown = (markdown) =>
-  markdown
-    .replace(/\\([`*\\~[\]_\-#>+.])/g, "$1")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
 
 const SimpleEditor = ({
   inputId,
@@ -151,7 +139,7 @@ const SimpleEditor = ({
       // Core extensions - required for basic functionality
       Document,
       Paragraph,
-      Text,
+      isSms ? SmsText : Text,
       HardBreak,
       History,
 
@@ -558,8 +546,6 @@ const SimpleEditor = ({
         // SMS has no blockquote support, so a leading '>' is literal text.
         if (!isSms) {
           markdown = markdown.replace(/^(\s*)>/gm, "$1^");
-        } else {
-          markdown = unescapeSmsMarkdown(markdown);
         }
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -774,8 +760,6 @@ const SimpleEditor = ({
       // SMS has no blockquote support, so a leading '>' is literal text.
       if (!isSms) {
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
-      } else {
-        markdown = unescapeSmsMarkdown(markdown);
       }
       setMarkdownValue(markdown);
     }
