@@ -66,7 +66,8 @@ def get_keys_from_babel():
                 try:
                     os.remove(temp_file)
                 except FileNotFoundError:
-                    pass
+                    # File may already be removed; cleanup is best-effort.
+                    continue
                 except OSError as e:
                     print(f"Warning: unable to remove temporary file {temp_file}: {e}", file=sys.stderr)
 
