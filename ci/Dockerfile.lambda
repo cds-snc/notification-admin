@@ -70,6 +70,13 @@ COPY --from=node-build ${APP_DIR}/app/static ${APP_DIR}/app/static
 RUN . ${APP_VENV}/bin/activate \
     && poetry run make babel \
     && make generate-version-file
+    
+# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
+RUN apk add --no-cache ca-certificates && \
+    sed -i \
+      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      /etc/ca-certificates.conf && \
+    update-ca-certificates
 
 # Final image
 FROM python:3.12-alpine3.20@sha256:5049c050bdc68575a10bcb1885baa0689b6c15152d8a56a7e399fb49f783bf98 as lambda
@@ -91,6 +98,14 @@ ENV PORT=6012
 ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apk add --no-cache libstdc++
+
+# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
+RUN apk add --no-cache ca-certificates && \
+    sed -i \
+      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
+      /etc/ca-certificates.conf && \
+    update-ca-certificates --fresh
 
 WORKDIR ${APP_DIR}
 
