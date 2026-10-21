@@ -22,8 +22,9 @@ RUN python -m pip install wheel poetry==${POETRY_VERSION} virtualenv==20.30.0
 RUN apk add --no-cache ca-certificates && \
     sed -i \
       -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
       /etc/ca-certificates.conf && \
-    update-ca-certificates
+    update-ca-certificates --fresh
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app

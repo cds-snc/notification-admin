@@ -9,7 +9,8 @@ RUN apk add --no-cache build-base libxml2-dev libxslt-dev git nodejs npm g++ mak
 RUN apk add --no-cache ca-certificates && \
     sed -i \
       -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
       /etc/ca-certificates.conf && \
-    update-ca-certificates
+    update-ca-certificates --fresh
 
 CMD ["/bin/sh"]
