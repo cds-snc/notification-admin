@@ -18,13 +18,13 @@
 <p>{{ _("GC Notify also shows the service name at the start of every text message.") }}</p>
 <div data-module="url-typer" class="form-wrap">
   {% call form_wrapper() %}
-    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
+    {% set hint_txt = _('Use a name that recipients will recognize. The name and email address share a character limit, so a longer email address means a shorter name. Letters with accents, like é, count as 2 characters.') %}
 
     {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
 
     <h2 class="heading-medium">{{ _("Email address") }}</h2>
     <p>{{ _("The email address always ends with ‘@{}’.").format(sending_domain) }}
-      {% set hint_txt = _('Maximum 64 characters with no spaces. Characters can include letters, numbers, dots, dashes, and underscores.') %}
+      {% set hint_txt = _('Maximum 64 characters, or fewer if your service name is long. No spaces. Characters can include letters, numbers, dots, dashes, and underscores.') %}
 
       {{ textbox(form.email_from, hint=hint_txt, suffix=suffix_txt, width='1-2', maxlength=64) }}
 

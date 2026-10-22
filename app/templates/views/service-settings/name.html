@@ -31,7 +31,7 @@
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
+    {% set hint_txt = _('Use a name that recipients will recognize. Maximum {} characters with your current email address. Letters with accents, like é, count as 2 characters.').format(max_name_length) %}
 
     {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
     {{ page_footer(save_txt) }}
