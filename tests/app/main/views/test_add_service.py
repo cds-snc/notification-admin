@@ -4,7 +4,7 @@ from app.utils import is_gov_user
 from flask import Flask, url_for
 
 from tests import organisation_json
-from tests.conftest import mock_get_organisation_by_domain, normalize_spaces
+from tests.conftest import mock_get_organisation_by_domain, normalize_spaces, set_config
 
 
 def test_non_gov_user_cannot_see_add_service_button(
@@ -654,6 +654,7 @@ def test_non_safelist_user_cannot_create_service(
 
 def test_should_return_form_errors_when_service_name_and_email_combined_too_long(
     client_request,
+    app_,
     mock_get_organisation_by_domain,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
@@ -667,18 +668,48 @@ def test_should_return_form_errors_when_service_name_and_email_combined_too_long
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
 
-    page = client_request.post(
-        "main.add_service",
-        _data={
-            "name": long_service_name,
-            "email_from": email_from,
-        },
-        current_step="choose_service_name",
-        _expected_status=200,
-    )
+    with set_config(app_, "SENDING_DOMAIN", "notify.example.com"):
+        page = client_request.post(
+            "main.add_service",
+            _data={
+                "name": long_service_name,
+                "email_from": email_from,
+            },
+            current_step="choose_service_name",
+            _expected_status=200,
+        )
 
-    # Check that the error message is displayed
-    assert "Your service name and email address combined are too long" in page.text
+    # The name is 353 bytes in UTF-8 and only 189 fit with this email address. Shortening the
+    # email address alone can't fix it, so both fields ask for a shorter name.
+    expected_error = (
+        "Your service name and email address are too long together. Remove 164 characters from the service name. "
+        "Letters with accents, like é, count as 2 characters."
+    )
+    assert expected_error in normalize_spaces(page.select_one("#name-error-message").text)
+    assert expected_error in normalize_spaces(page.select_one("#email_from-error-message").text)
+
+
+def test_should_return_field_specific_errors_when_service_name_and_email_combined_too_long(
+    client_request,
+    app_,
+    mock_get_organisation_by_domain,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
+    with set_config(app_, "SENDING_DOMAIN", "notify.example.com"):
+        page = client_request.post(
+            "main.add_service",
+            _data={"name": "a" * 200, "email_from": "b" * 20},
+            current_step="choose_service_name",
+            _expected_status=200,
+        )
+
+    # '"=?utf-8?B?' (11) + 268 + '?=" <' (5) + 20 + '@' + 'notify.example.com' (18) + '>' = 324
+    assert "Remove 2 characters from the service name." in normalize_spaces(page.select_one("#name-error-message").text)
+    assert "Remove 4 characters from the email address." in normalize_spaces(page.select_one("#email_from-error-message").text)
 
 
 def test_should_allow_service_name_and_email_when_combined_length_is_acceptable(
