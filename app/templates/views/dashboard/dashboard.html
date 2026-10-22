@@ -19,14 +19,9 @@
       {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
 
-    {% if partials['has_scheduled_jobs'] %}
+    {% if partials['has_scheduled_sends'] %}
       <h2 class="heading-medium mt-8">{{ _("Scheduled sends") }}</h2>
       {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
-    {% endif %}
-
-    {% if partials['has_scheduled_notifications'] %}
-      <h2 class="heading-medium mt-8">{{ _("Scheduled individual messages") }}</h2>
-      {{ ajax_block(partials, updates_url, 'upcoming_notifications', interval=5) }}
     {% endif %}
 
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}

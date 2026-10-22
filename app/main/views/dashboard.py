@@ -1,9 +1,10 @@
 import calendar
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import partial
 from itertools import groupby
 
+from dateutil import parser
 from flask import (
     abort,
     current_app,
@@ -410,6 +411,21 @@ def aggregate_notifications_stats(template_statistics, use_billable_units=False)
 SCHEDULED_NOTIFICATIONS_DASHBOARD_LIMIT = 10
 
 
+def _scheduled_for_utc(scheduled_for):
+    scheduled_for = parser.parse(scheduled_for)
+    if scheduled_for.tzinfo:
+        scheduled_for = scheduled_for.astimezone(timezone.utc).replace(tzinfo=None)
+    return scheduled_for
+
+
+def get_scheduled_sends(scheduled_jobs, scheduled_notifications=()):
+    """Scheduled bulk sends and individual messages in one list, soonest first."""
+    scheduled_sends = [{"job": job, "scheduled_for": job["scheduled_for"]} for job in scheduled_jobs] + [
+        {"notification": notification, "scheduled_for": notification["scheduled_for"]} for notification in scheduled_notifications
+    ]
+    return sorted(scheduled_sends, key=lambda scheduled_send: _scheduled_for_utc(scheduled_send["scheduled_for"]))
+
+
 def get_dashboard_partials(service_id):
     timings = {}
 
@@ -443,6 +459,7 @@ def get_dashboard_partials(service_id):
         service_id, page_size=SCHEDULED_NOTIFICATIONS_DASHBOARD_LIMIT
     )
     timings["get_scheduled_notifications"] = (time.time() - start) * 1000
+    scheduled_sends = get_scheduled_sends(scheduled_jobs, scheduled_notifications["notifications"])
 
     # get the daily stats
     start = time.time()
@@ -477,10 +494,10 @@ def get_dashboard_partials(service_id):
     current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
     return {
-        "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
-        "upcoming_notifications": render_template(
-            "views/dashboard/_upcoming_notifications.html",
-            scheduled_notifications=scheduled_notifications["notifications"],
+        "upcoming": render_template(
+            "views/dashboard/_upcoming.html",
+            scheduled_sends=scheduled_sends,
+            scheduled_notifications_shown=len(scheduled_notifications["notifications"]),
             total_scheduled_notifications=scheduled_notifications["total"],
         ),
         "daily_totals": render_template(
@@ -515,8 +532,7 @@ def get_dashboard_partials(service_id):
         "has_template_statistics": bool(template_statistics_weekly),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
-        "has_scheduled_jobs": bool(scheduled_jobs),
-        "has_scheduled_notifications": bool(scheduled_notifications["notifications"]),
+        "has_scheduled_sends": bool(scheduled_sends),
         "debug_timings": timings,  # Include timings in the response for debugging
     }
 
