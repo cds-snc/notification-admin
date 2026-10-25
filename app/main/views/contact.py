@@ -8,6 +8,7 @@ from app.main import main
 from app.main.forms import ContactMessageStep, ContactNotify
 
 SESSION_FORM_KEY = "contact_form"
+MESSAGE_STEP_SUPPORT_TYPES = {"ask_question", "technical_support", "give_feedback", "other"}
 
 
 # /contact route: redirect to /<lang_code>/contact
@@ -68,6 +69,10 @@ def message_lang(lang_code):
     previous_step = "identity"
     current_step = "message"
     next_step = None
+
+    # Posted data can override the support_type chosen on the identity step
+    if form.support_type.data not in MESSAGE_STEP_SUPPORT_TYPES:
+        return redirect(url_for("main.contact_lang", lang_code=lang_code))
 
     if request.method == "POST" and form.validate_on_submit():
         send_contact_request(form)
