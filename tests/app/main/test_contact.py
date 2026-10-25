@@ -123,6 +123,32 @@ def test_message_step_validates(client_request, support_type, mocker):
     mock_send_contact_request.assert_not_called()
 
 
+@pytest.mark.parametrize("support_type", ["not_a_choice", "a11y_feedback", "newsletter_signup", ""])
+def test_message_step_redirects_to_identity_step_for_unsupported_support_type(client_request, support_type, mocker):
+    mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
+
+    client_request.post(
+        ".contact_lang",
+        lang_code="en",
+        _expected_status=200,
+        _follow_redirects=True,
+        _data={
+            "name": "John",
+            "email_address": "john@example.com",
+            "support_type": "other",
+        },
+    )
+
+    client_request.post(
+        ".message_lang",
+        lang_code="en",
+        _data={"message": "hello", "support_type": support_type},
+        _expected_redirect=url_for("main.contact_lang", lang_code="en"),
+    )
+
+    mock_send_contact_request.assert_not_called()
+
+
 def test_saves_form_to_session(client_request, mocker):
     mock_send_contact_request = mocker.patch("app.user_api_client.send_contact_request")
 
