@@ -145,6 +145,7 @@ def service_name_change(service_id):
     return render_template(
         "views/service-settings/name.html",
         form=form,
+        sending_domain=get_effective_sending_domain(),
         max_name_length=get_max_service_name_length(current_service.email_from, get_effective_sending_domain()),
     )
 

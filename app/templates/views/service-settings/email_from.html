@@ -1,5 +1,6 @@
 {% extends "admin_template.html" %}
 {% from "components/textbox.html" import textbox %}
+{% from "components/from-header-character-count.html" import from_header_character_count %}
 {% from "components/page-header.html" import page_header %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
@@ -23,8 +24,9 @@
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {% set hint_txt = _('Maximum {} characters with your current service name. No spaces. Characters can include letters, numbers, dots, dashes, and underscores.').format(max_email_from_length) %}
-    {{ textbox(form.email_from, hint=hint_txt) }}
+    {% set hint_txt = _('With your current service name, the email address can be up to {} characters. No spaces. Characters can include letters, numbers, dots, dashes, and underscores.').format(max_email_from_length) %}
+    {% set character_count = from_header_character_count('email_from', sending_domain, email_from_input='email_from', service_name=current_service.name) %}
+    {{ textbox(form.email_from, hint=hint_txt, after_field=character_count) }}
     <div id="preview" class="focus:outline-yellow mb-gutter" tabindex="0">
       {% call confirmation_preview() %}
       <p class="m-0">{{_("Check that your email address is formatted correctly.")}}</p>

@@ -358,8 +358,8 @@ def test_should_show_service_name(
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
     # 320 - ('"=?utf-8?B?' + '?=" <' + 'test.service' + '@' + 'notify.example.com' + '>') = 272 base64 characters = 204 bytes
     assert normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text) == (
-        "Use a name that recipients will recognize. Maximum 204 characters with your current email address. "
-        "Letters with accents, like é, count as 2 characters."
+        "Use a name that recipients will recognize. With your current email address, the service name can be up to "
+        "204 characters. Letters with accents, like é, count as 2 characters."
     )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
@@ -374,8 +374,8 @@ def test_should_show_service_name_with_no_prefixing(
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
     assert normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text) == (
-        "Use a name that recipients will recognize. Maximum 204 characters with your current email address. "
-        "Letters with accents, like é, count as 2 characters."
+        "Use a name that recipients will recognize. With your current email address, the service name can be up to "
+        "204 characters. Letters with accents, like é, count as 2 characters."
     )
 
 
@@ -457,9 +457,42 @@ def test_should_show_max_email_from_length_for_current_service_name(client_reque
 
     # 320 - ('"=?utf-8?B?' + 268 base64 characters + '?=" <' + '@' + 'notify.example.com' + '>') = 16
     assert normalize_spaces(page.select_one("span[id='email_from-hint']").text) == (
-        "Maximum 16 characters with your current service name. No spaces. "
+        "With your current service name, the email address can be up to 16 characters. No spaces. "
         "Characters can include letters, numbers, dots, dashes, and underscores."
     )
+
+
+def test_service_name_page_renders_live_character_count(client_request, service_one):
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
+
+    counter = page.select_one("[data-module='from-header-character-count']")
+    assert counter["id"] == "name-character-count"
+    assert counter["aria-live"] == "polite"
+    assert counter["data-counts"] == "name"
+    assert counter["data-sending-domain"] == "notify.example.com"
+    assert counter["data-name-input"] == "name"
+    assert counter["data-email-from"] == service_one["email_from"]
+    assert not counter.has_attr("data-email-from-input")
+    # Filled in by JavaScript
+    assert counter.text == ""
+    # Rendered under the name input, inside the same form group
+    assert counter.find_parent("div", class_="form-group").select_one("input#name")
+
+
+def test_service_email_from_page_renders_live_character_count(client_request, service_one):
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.get("main.service_email_from_change", service_id=SERVICE_ONE_ID)
+
+    counter = page.select_one("[data-module='from-header-character-count']")
+    assert counter["id"] == "email_from-character-count"
+    assert counter["data-counts"] == "email_from"
+    assert counter["data-sending-domain"] == "notify.example.com"
+    assert counter["data-email-from-input"] == "email_from"
+    assert counter["data-service-name"] == service_one["name"]
+    assert not counter.has_attr("data-name-input")
 
 
 def test_should_reject_email_from_change_when_combined_email_header_is_too_long(
