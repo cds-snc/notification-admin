@@ -350,13 +350,16 @@ def test_escapes_letter_contact_block(
 
 def test_should_show_service_name(
     client_request,
+    service_one,
 ):
+    service_one["sending_domain"] = "notify.example.com"
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
-    assert (
-        normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 255 characters."
+    # 320 - ('"=?utf-8?B?' + '?=" <' + 'test.service' + '@' + 'notify.example.com' + '>') = 272 base64 characters = 204 bytes
+    assert normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text) == (
+        "Use a name that recipients will recognize. With your current email address, the service name can be up to "
+        "204 characters. Letters with accents, like é, count as 2 characters."
     )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
@@ -367,11 +370,12 @@ def test_should_show_service_name_with_no_prefixing(
     service_one,
 ):
     service_one["prefix_sms"] = False
+    service_one["sending_domain"] = "notify.example.com"
     page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
     assert page.find("h1").text == "Change your service name"
-    assert (
-        normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 255 characters."
+    assert normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text) == (
+        "Use a name that recipients will recognize. With your current email address, the service name can be up to "
+        "204 characters. Letters with accents, like é, count as 2 characters."
     )
 
 
@@ -396,11 +400,13 @@ def test_should_redirect_after_change_service_name(
 
 def test_should_reject_service_name_change_when_combined_email_header_is_too_long(
     client_request,
+    service_one,
     mock_update_service,
     mock_service_name_is_unique,
 ):
     """Renaming a service to a very long unicode name should fail validation
     so we don't end up with an SES `from` header longer than 320 characters."""
+    service_one["sending_domain"] = "notify.example.com"
     long_service_name = (
         "Message de Jimmy Royééééééééé – Gestionnaire principal responsable des urgences "
         "et des évacuations du BIN // Message from Jimmy Royééééééééé – NPB Lead senior "
@@ -414,7 +420,101 @@ def test_should_reject_service_name_change_when_combined_email_header_is_too_lon
         _expected_status=200,
     )
 
-    assert "Your service name and email address combined are too long" in page.text
+    # 222 bytes in UTF-8, and 204 bytes fit with 'test.service@notify.example.com'
+    assert (
+        "Your service name and email address are too long together. Remove 18 characters from the service name. "
+        "Letters with accents, like é, count as 2 characters."
+    ) in normalize_spaces(page.text)
+    assert mock_update_service.called is False
+
+
+def test_should_reject_service_name_change_using_the_services_own_sending_domain(
+    client_request,
+    service_one,
+    mock_update_service,
+    mock_service_name_is_unique,
+):
+    # Fits with a short sending domain, but not with this longer one
+    service_one["email_from"] = "b" * 20
+    service_one["sending_domain"] = "a-much-longer-sending-domain.example.com"
+
+    page = client_request.post(
+        "main.service_name_change",
+        service_id=SERVICE_ONE_ID,
+        _data={"name": "a" * 190},
+        _expected_status=200,
+    )
+
+    assert "Remove 10 characters from the service name." in normalize_spaces(page.text)
+    assert mock_update_service.called is False
+
+
+def test_should_show_max_email_from_length_for_current_service_name(client_request, service_one):
+    service_one["name"] = "a" * 200
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.get("main.service_email_from_change", service_id=SERVICE_ONE_ID)
+
+    # 320 - ('"=?utf-8?B?' + 268 base64 characters + '?=" <' + '@' + 'notify.example.com' + '>') = 16
+    assert normalize_spaces(page.select_one("span[id='email_from-hint']").text) == (
+        "With your current service name, the email address can be up to 16 characters. No spaces. "
+        "Characters can include letters, numbers, dots, dashes, and underscores."
+    )
+
+
+def test_service_name_page_renders_live_character_count(client_request, service_one):
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.get("main.service_name_change", service_id=SERVICE_ONE_ID)
+
+    counter = page.select_one("[data-module='from-header-character-count']")
+    assert counter["id"] == "name-character-count"
+    assert counter["aria-live"] == "polite"
+    assert counter["data-counts"] == "name"
+    assert counter["data-sending-domain"] == "notify.example.com"
+    assert counter["data-name-input"] == "name"
+    assert counter["data-email-from"] == service_one["email_from"]
+    assert not counter.has_attr("data-email-from-input")
+    # Filled in by JavaScript
+    assert counter.text == ""
+    # Rendered under the name input, inside the same form group
+    assert counter.find_parent("div", class_="form-group").select_one("input#name")
+
+
+def test_service_email_from_page_renders_live_character_count(client_request, service_one):
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.get("main.service_email_from_change", service_id=SERVICE_ONE_ID)
+
+    counter = page.select_one("[data-module='from-header-character-count']")
+    assert counter["id"] == "email_from-character-count"
+    assert counter["data-counts"] == "email_from"
+    assert counter["data-sending-domain"] == "notify.example.com"
+    assert counter["data-email-from-input"] == "email_from"
+    assert counter["data-service-name"] == service_one["name"]
+    assert not counter.has_attr("data-name-input")
+
+
+def test_should_reject_email_from_change_when_combined_email_header_is_too_long(
+    client_request,
+    service_one,
+    mock_update_service,
+    mock_service_email_from_is_unique,
+):
+    service_one["name"] = "a" * 200
+    service_one["sending_domain"] = "notify.example.com"
+
+    page = client_request.post(
+        "main.service_email_from_change",
+        service_id=SERVICE_ONE_ID,
+        _data={"email_from": "b" * 20},
+        _expected_status=200,
+    )
+
+    assert (
+        "Your service name and email address are too long together. Remove 4 characters from the email address."
+        in normalize_spaces(page.text)
+    )
     assert mock_update_service.called is False
 
 
@@ -4582,3 +4682,71 @@ class TestSendingDomain:
 
     def test_sending_domain_page_404s_for_non_platform_admin(self, client_request, mock_get_service_settings_page_common, mocker):
         client_request.get("main.service_sending_domain", service_id=SERVICE_ONE_ID, _expected_status=403)
+
+    @pytest.mark.parametrize(
+        "service_name, email_from, expected_error",
+        [
+            # '"=?utf-8?B?' + 256 base64 characters + '?=" <' + 20 + '@' + 40 character domain + '>' = 334
+            (
+                "a" * 190,
+                "b" * 20,
+                "The service name and email address are too long to use with this sending domain. "
+                "Remove 10 characters from the service name, or 14 characters from the email address.",
+            ),
+            # 340 characters
+            (
+                "a" * 190,
+                "b" * 26,
+                "The service name and email address are too long to use with this sending domain. "
+                "Remove 13 characters from the service name, or 20 characters from the email address.",
+            ),
+            # 399 characters: shortening a 5 character email address can't make up 79 characters
+            (
+                "a" * 250,
+                "b" * 5,
+                "The service name and email address are too long to use with this sending domain. "
+                "Remove 58 characters from the service name.",
+            ),
+            # exactly 320 characters
+            ("a" * 190, "b" * 6, None),
+        ],
+    )
+    def test_sending_domain_page_rejects_domain_that_makes_from_header_too_long(
+        self,
+        client_request,
+        platform_admin_user,
+        mock_get_service_settings_page_common,
+        mocker,
+        service_one,
+        mock_update_service,
+        service_name,
+        email_from,
+        expected_error,
+    ):
+        long_domain = "a-much-longer-sending-domain.example.com"
+        service_one["name"] = service_name
+        service_one["email_from"] = email_from
+        mocker.patch("app.main.views.service_settings.get_verified_ses_domains", return_value=["example.com", long_domain])
+
+        client_request.login(platform_admin_user)
+        if expected_error is None:
+            client_request.post(
+                "main.service_sending_domain",
+                service_id=SERVICE_ONE_ID,
+                _data={"sending_domain": long_domain},
+                _expected_redirect=url_for("main.service_settings", service_id=SERVICE_ONE_ID),
+                _test_page_title=False,
+            )
+            mock_update_service.assert_called_once_with(service_one["id"], sending_domain=long_domain)
+            return
+
+        page = client_request.post(
+            "main.service_sending_domain",
+            service_id=SERVICE_ONE_ID,
+            _data={"sending_domain": long_domain},
+            _expected_status=200,
+            _test_page_title=False,
+        )
+
+        assert expected_error in normalize_spaces(page.text)
+        assert mock_update_service.called is False

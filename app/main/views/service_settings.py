@@ -63,6 +63,11 @@ from app.main.forms import (
     SMSMessageLimit,
     SMSPrefixForm,
 )
+from app.main.validators import (
+    get_effective_sending_domain,
+    get_max_email_from_length,
+    get_max_service_name_length,
+)
 from app.main.views.email_branding import get_preview_template
 from app.s3_client.s3_logo_client import upload_email_logo
 from app.utils import (
@@ -140,6 +145,8 @@ def service_name_change(service_id):
     return render_template(
         "views/service-settings/name.html",
         form=form,
+        sending_domain=get_effective_sending_domain(),
+        max_name_length=get_max_service_name_length(current_service.email_from, get_effective_sending_domain()),
     )
 
 
@@ -195,6 +202,7 @@ def service_email_from_change(service_id):
         "views/service-settings/email_from.html",
         form=form,
         sending_domain=current_service.sending_domain or current_app.config["SENDING_DOMAIN"],
+        max_email_from_length=get_max_email_from_length(current_service.name, get_effective_sending_domain()),
     )
 
 
