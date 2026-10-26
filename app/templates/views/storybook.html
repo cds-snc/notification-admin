@@ -4,6 +4,7 @@
 {% block page_title %} Storybook {% endblock %}
 
 {% block maincolumn_content %}
+{% set full_width = component in ['bilingual-template-editor', 'bilingual-send-preview'] %}
 <style>
   .container {
     max-width: 1536px;
@@ -11,14 +12,19 @@
 </style>
 
 <div class="flex">
+  {% if not full_width %}
   <!-- Left Column -->
   <div class="w-1/4 p-4 bg-gray-100">
     <h1 class="text-lg font-bold mb-4">Components</h1>
     {{ storybook_menu() }}
   </div>
+  {% endif %}
 
   <!-- Main Content Area -->
-  <div class="w-3/4 p-4">
+  <div class="{{ 'w-full px-2 py-4' if full_width else 'w-3/4 p-4' }}">
+    {% if full_width %}
+      <p class="mb-4"><a href="{{ url_for('main.storybook') }}" class="text-blue-500 hover:underline">All components</a></p>
+    {% endif %}
     {% if component %}
       {% include 'views/storybook/' ~ component ~ '.html' %}
     {% else %}
