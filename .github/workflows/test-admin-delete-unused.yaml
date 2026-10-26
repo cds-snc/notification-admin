@@ -11,6 +11,9 @@ env:
   FUNCTION_PREFIX: "notify-admin-pr"
   IMAGE: notify/admin
   ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
 
 permissions:
   id-token: write
@@ -21,6 +24,8 @@ jobs:
   delete-unused-test-admin:
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Configure credentials to Notify using OIDC
         uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
