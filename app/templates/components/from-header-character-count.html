@@ -1,0 +1,19 @@
+{#
+  Live character count for the service name / sending email address fields.
+  Filled in by fromHeaderCharacterCount.js; empty (and hidden) without JavaScript.
+
+  counts: "name" or "email_from" - which field the count is for.
+  Pass name_input / email_from_input (input ids) for fields on the page, and
+  service_name / email_from for values that aren't editable on the page.
+#}
+{% macro from_header_character_count(counts, sending_domain, name_input=None, email_from_input=None, service_name=None, email_from=None) %}
+<p id="{{ counts }}-character-count"
+   class="form-hint empty:hidden mt-2 mb-0"
+   aria-live="polite"
+   data-module="from-header-character-count"
+   data-testid="{{ counts }}-character-count"
+   data-counts="{{ counts }}"
+   data-sending-domain="{{ sending_domain }}"
+   {% if name_input %}data-name-input="{{ name_input }}"{% else %}data-service-name="{{ service_name or '' }}"{% endif %}
+   {% if email_from_input %}data-email-from-input="{{ email_from_input }}"{% else %}data-email-from="{{ email_from or '' }}"{% endif %}></p>
+{% endmacro %}

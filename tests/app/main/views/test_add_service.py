@@ -120,6 +120,33 @@ def test_wizard_flow_with_step_2_should_display_email_from(
     assert page.select_one("h2").text.strip() == "Service name"
 
 
+def test_create_service_name_step_renders_live_character_counts(
+    client_request,
+    app_,
+    mock_service_email_from_is_unique,
+    mock_service_name_is_unique,
+):
+    with client_request.session_transaction() as session:
+        session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
+
+    with set_config(app_, "SENDING_DOMAIN", "notify.example.com"):
+        page = client_request.post(
+            "main.add_service",
+            _data={},
+            current_step="choose_service_name",
+            _expected_status=200,
+        )
+
+    counters = page.select("[data-module='from-header-character-count']")
+    assert [counter["data-counts"] for counter in counters] == ["name", "email_from"]
+    for counter in counters:
+        # Both fields are on the page, so each count updates when either field changes
+        assert counter["data-name-input"] == "name"
+        assert counter["data-email-from-input"] == "email_from"
+        assert counter["data-sending-domain"] == "notify.example.com"
+        assert counter["aria-live"] == "polite"
+
+
 def test_wizard_flow_with_step_2_should_correct_invalid_email_from(
     client_request,
     mock_service_email_from_is_unique,

@@ -146,7 +146,11 @@
       sms_recipient_one: "{{ _('recipient') }}",
       sms_recipient_many: "{{ _('recipients') }}",
       sms_character_count_over_limit: "{{ _('{} too many characters') }}",
-      sms_one_character_count_over_limit: "{{ _('1 too many characters') }}"
+      sms_one_character_count_over_limit: "{{ _('1 too many characters') }}",
+      from_header_remaining: "{{ _('{} characters remaining') }}",
+      from_header_remaining_one: "{{ _('1 character remaining') }}",
+      from_header_over: "{{ _('{} characters too many') }}",
+      from_header_over_one: "{{ _('1 character too many') }}"
     }
     window.OTEL_CONFIG = {
       enabled: {{ 'true' if enable_client_side_otel else 'false' }},
