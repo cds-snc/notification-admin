@@ -833,7 +833,9 @@ const MenuBar = ({
 
           {isMarkdownView && (
             <p class="m-0 text-xs font-bold">
-              <span>{t.markdownEditorMessage}</span>
+              <span>
+                {isSms ? t.smsMarkdownEditorMessage : t.markdownEditorMessage}
+              </span>
             </p>
           )}
           {!isMarkdownView && (
