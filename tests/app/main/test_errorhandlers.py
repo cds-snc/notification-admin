@@ -63,3 +63,25 @@ def test_csrf_redirects_to_sign_in_page_if_not_signed_in(client, mocker):
 
     assert response.status_code == 302
     assert response.location == url_for("main.sign_in", next="/accounts")
+
+
+@pytest.mark.parametrize(
+    "api_body, expected_heading",
+    [
+        ({"error": "No security keys registered"}, "Bad Request"),
+        ({"errors": [{"error": "BadRequest", "message": "oops"}]}, "Bad Request"),
+        ({"message": "Some error"}, "Some error"),
+        ({"message": {"name": "Name is required"}}, "Name is required"),
+    ],
+)
+def test_api_400_errors_render_400_page_regardless_of_message_shape(client_request, mocker, api_body, expected_heading):
+    response = mocker.Mock(status_code=400, url="http://api/user/1/fido2_keys/authenticate")
+    response.json.return_value = api_body
+    mocker.patch(
+        "app.user_api_client.authenticate_security_keys",
+        side_effect=HTTPError(response),
+    )
+
+    page = client_request.post("main.user_profile_authenticate_security_keys", _expected_status=200)
+
+    assert page.h1.string.strip() == expected_heading
