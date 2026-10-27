@@ -263,6 +263,21 @@ def test_should_list_security_keys(app_, client_request, api_nongov_user_active,
         assert page.select("tr")[-1].text.split() == ["Name", "Key", "Remove"]
 
 
+def test_security_keys_page_shows_test_keys_button_when_user_has_keys(
+    client_request, api_nongov_user_active, mock_get_security_keys_with_key
+):
+    page = client_request.get("main.user_profile_security_keys")
+    assert page.select_one("#test-fido2-keys") is not None
+
+
+def test_security_keys_page_hides_test_keys_button_when_user_has_no_keys(
+    client_request, api_nongov_user_active, mock_get_security_keys
+):
+    page = client_request.get("main.user_profile_security_keys")
+    assert page.select_one("#test-fido2-keys") is None
+    assert page.select_one("[data-testid=2fa_add_security_key]") is not None
+
+
 def test_deleting_security_key(
     app_,
     client_request,
