@@ -275,7 +275,7 @@ def test_security_keys_page_hides_test_keys_button_when_user_has_no_keys(
 ):
     page = client_request.get("main.user_profile_security_keys")
     assert page.select_one("#test-fido2-keys") is None
-    assert page.select_one("[data-testid=2fa_add_security_key]") is not None
+    assert page.select_one('[data-testid="2fa_add_security_key"]') is not None
 
 
 def test_deleting_security_key(
