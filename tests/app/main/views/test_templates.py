@@ -1449,34 +1449,14 @@ def test_should_show_rich_text_editor_for_sms_template_by_default_in_tests(
     assert page.select_one("#tiptap-editor-template_content") is not None
     assert page.select_one("input[name=template_content]") is not None
     assert page.select_one("textarea[name=template_content]") is None
+    assert "var initialMode = 'rte';" in str(page)
 
 
-def test_should_show_plain_textarea_for_sms_template_in_production(
+def test_should_show_rich_text_editor_in_rte_mode_for_sms_template_in_every_environment(
     client_request,
     mock_get_service_template,
     fake_uuid,
-    app_,
 ):
-    app_.config["NOTIFY_ENVIRONMENT"] = "production"
-
-    page = client_request.get(
-        ".edit_service_template",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-    )
-
-    assert page.select_one("textarea[name=template_content]") is not None
-    assert page.select_one("#tiptap-editor-template_content") is None
-
-
-def test_should_show_rich_text_editor_for_sms_template_outside_production(
-    client_request,
-    mock_get_service_template,
-    fake_uuid,
-    app_,
-):
-    app_.config["NOTIFY_ENVIRONMENT"] = "staging"
-
     page = client_request.get(
         ".edit_service_template",
         service_id=SERVICE_ONE_ID,
@@ -1486,6 +1466,7 @@ def test_should_show_rich_text_editor_for_sms_template_outside_production(
     assert page.select_one("#tiptap-editor-template_content") is not None
     assert page.select_one("input[name=template_content]") is not None
     assert page.select_one("textarea[name=template_content]") is None
+    assert 'id="tiptap-editor-template_content"' in str(page)
 
 
 @pytest.mark.parametrize("filetype", ["pdf", "png"])
