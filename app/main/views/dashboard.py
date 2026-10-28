@@ -522,10 +522,46 @@ def aggregate_by_type_daily(data, daily_data: DashboardTotals) -> AnnualData:
 
 
 def _get_daily_stats(service_id):
-    # TODO: get from redis, else fallback to template_statistics_client.get_template_statistics_for_service
+    """Get today's notification stats, preferring Redis for speed with DB fallback.
+
+    When Redis has today's daily counts (seeded by the annual-limit send path), we can
+    derive the dashboard totals without hitting the template-statistics API endpoint,
+    saving a full DB round-trip.
+
+    Returns:
+        (dashboard_totals_daily, highest_notification_count_daily, all_statistics_daily)
+        When served from Redis, all_statistics_daily will be an empty list (it is not
+        used by the main dashboard rendering path).
+    """
+    use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
+
+    # Try Redis first via the annual_limit_client
+    if current_app.config.get("REDIS_ENABLED"):
+        counts = annual_limit_client.get_all_notification_counts(service_id)
+        if counts:
+            if use_billable_units:
+                sms_delivered = counts.get("sms_billable_units_delivered_today", 0)
+                sms_failed = counts.get("sms_billable_units_failed_today", 0)
+            else:
+                sms_delivered = counts.get("sms_delivered_today", 0)
+                sms_failed = counts.get("sms_failed_today", 0)
+
+            email_delivered = counts.get("email_delivered_today", 0)
+            email_failed = counts.get("email_failed_today", 0)
+            sms_requested = sms_delivered + sms_failed
+            email_requested = email_delivered + email_failed
+
+            stats = {
+                "sms": {"requested": sms_requested, "delivered": sms_delivered, "failed": sms_failed},
+                "email": {"requested": email_requested, "delivered": email_delivered, "failed": email_failed},
+            }
+            dashboard_totals_daily = get_dashboard_totals(stats)
+            highest_notification_count_daily = max(sms_requested, email_requested)
+            return dashboard_totals_daily, highest_notification_count_daily, []
+
+    # Fallback to the DB if Redis isn't available or data doesn't exist yet.
     all_statistics_daily = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-    # Use billable_units for daily stats (used for limit tracking)
-    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=True)
+    stats_daily = aggregate_notifications_stats(all_statistics_daily, use_billable_units=use_billable_units)
     dashboard_totals_daily = get_dashboard_totals(stats_daily)
 
     highest_notification_count_daily = max(
