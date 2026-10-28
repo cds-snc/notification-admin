@@ -1435,23 +1435,6 @@ def test_should_show_page_template_with_priority_select_if_platform_admin(
     mock_get_service_template.assert_called_with(SERVICE_ONE_ID, template_id, None)
 
 
-def test_should_show_rich_text_editor_for_sms_template_by_default_in_tests(
-    client_request,
-    mock_get_service_template,
-    fake_uuid,
-):
-    page = client_request.get(
-        ".edit_service_template",
-        service_id=SERVICE_ONE_ID,
-        template_id=fake_uuid,
-    )
-
-    assert page.select_one("#tiptap-editor-template_content") is not None
-    assert page.select_one("input[name=template_content]") is not None
-    assert page.select_one("textarea[name=template_content]") is None
-    assert "var initialMode = 'rte';" in str(page)
-
-
 def test_should_show_rich_text_editor_in_rte_mode_for_sms_template_in_every_environment(
     client_request,
     mock_get_service_template,
