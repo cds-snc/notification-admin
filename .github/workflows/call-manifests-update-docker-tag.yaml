@@ -7,11 +7,18 @@ on:
       MANIFESTS_WORKFLOW_TOKEN:
         required: true
 
+env: # temporary CA mitigation
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
+
 jobs:
   update-docker-tag-in-manifests:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Checkout repository
         uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
