@@ -871,8 +871,11 @@ def register_errorhandlers(application):  # noqa (C901 too complex)
             # Need to make sure all of them have translations in the csv files
             if isinstance(error.message, str):
                 msg = [_(error.message)]
-            else:
+            elif isinstance(error.message, dict):
                 msg = list(itertools.chain(_(error.message[x]) for x in error.message.keys()))
+            else:
+                # e.g. the API responded with a body that has no "message"/"errors" key
+                msg = [_("Bad Request")]
 
             resp = make_response(render_template("error/400.html", message=msg))
             return useful_headers_after_request(resp)

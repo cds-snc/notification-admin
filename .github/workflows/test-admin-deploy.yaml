@@ -17,6 +17,9 @@ env:
   REGISTRY: 239043911459.dkr.ecr.ca-central-1.amazonaws.com
   ROLE_ARN: arn:aws:iam::239043911459:role/notify-admin-pr
   ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
 
 permissions:
   id-token: write
@@ -28,6 +31,8 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'Renovate') }}
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Set envs
         run: echo "PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
 
@@ -79,6 +84,8 @@ jobs:
       LAMBDA_URL: ${{ steps.create-update-lambda.outputs.pr_url }}
     needs: build-and-push-container
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Set envs
         run: echo "PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
 
