@@ -57,6 +57,7 @@ from app.main.validators import (
     ValidTeamMemberDomain,
     validate_combined_email_header_length,
     validate_email_from,
+    validate_sending_domain_fits_from_header,
     validate_service_name,
 )
 from app.models.enum.template_categories import DefaultTemplateCategories
@@ -597,7 +598,7 @@ class SendingDomainForm(StripWhitespaceForm):
         super().__init__(*args, **kwargs)
         self.sending_domain.choices = kwargs["sending_domain_choices"]
 
-    sending_domain = SelectField(_l("Sending domain"), validators=[])
+    sending_domain = SelectField(_l("Sending domain"), validators=[validate_sending_domain_fits_from_header])
 
 
 class RenameOrganisationForm(StripWhitespaceForm):

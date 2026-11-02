@@ -1,7 +1,6 @@
 import ipaddress
 import re
 import time
-from email.utils import formataddr
 from urllib.parse import urlparse
 
 import pwnedpasswords
@@ -281,9 +280,11 @@ def validate_service_name(form, field):
 
 def validate_combined_email_header_length(form, field):
     """
-    Validate that the combined email header (service name + email address) doesn't exceed 320 characters.
-    When a service name contains unicode characters, it gets MIME-encoded in the email header,
-    which can significantly increase its length.
+    Validate that the From header the API will send to SES (service name + email address + sending
+    domain) doesn't exceed MAX_FROM_HEADER_LENGTH characters.
+
+    The error is specific to the field being validated: the name field says how many characters to
+    remove from the name, and the email_from field says how many to remove from the email address.
     """
     # At least one of name or email_from must be on the form for this
     # validator to be meaningful.
@@ -308,21 +309,138 @@ def validate_combined_email_header_length(form, field):
     if not service_name or not email_from:
         return
 
-    # Construct the full email address: email_from@domain
-    sending_domain = current_app.config["SENDING_DOMAIN"]
-    full_email = f"{email_from}@{sending_domain}"
+    sending_domain = get_effective_sending_domain()
+    if not is_from_header_too_long(service_name, email_from, sending_domain):
+        return
 
-    # Use formataddr to encode the header as it would be in an actual email
-    # This properly handles unicode characters by MIME-encoding them
-    try:
-        from_header = formataddr((service_name, full_email))
+    if field.name == "email_from":
+        raise ValidationError(_from_header_too_long_email_from_message(service_name, email_from, sending_domain))
+    raise ValidationError(_from_header_too_long_name_message(service_name, email_from, sending_domain))
 
-        # Check if the total length exceeds 320 characters
-        if len(from_header) > 320:
-            raise ValidationError(_l("Your service name and email address combined are too long."))
-    except ValidationError:
-        # Re-raise validation errors
-        raise
-    except Exception as e:
-        # If encoding fails for some reason, log it but don't block the user
-        current_app.logger.warning(f"Error validating email header length: {e}")
+
+def validate_sending_domain_fits_from_header(form, field):
+    """
+    Validate that the current service's name and email address still fit in the From header
+    when the service is switched to the selected sending domain.
+    """
+    service_name = getattr(current_service, "name", "") or ""
+    email_from = getattr(current_service, "email_from", "") or ""
+    if not field.data or not service_name or not email_from:
+        return
+    if not is_from_header_too_long(service_name, email_from, field.data):
+        return
+
+    name_chars = characters_to_remove_from_name(service_name, email_from, field.data)
+    email_chars = characters_to_remove_from_email_from(service_name, email_from, field.data)
+    if name_chars is not None and email_chars is not None:
+        raise ValidationError(
+            _l(
+                "The service name and email address are too long to use with this sending domain. "
+                "Remove {} characters from the service name, or {} characters from the email address."
+            ).format(name_chars, email_chars)
+        )
+    if name_chars is not None:
+        raise ValidationError(
+            _l(
+                "The service name and email address are too long to use with this sending domain. "
+                "Remove {} characters from the service name."
+            ).format(name_chars)
+        )
+    if email_chars is None:
+        raise ValidationError(_l("Your service name and email address are too long together. Shorten the email address."))
+    raise ValidationError(
+        _l(
+            "The service name and email address are too long to use with this sending domain. "
+            "Remove {} characters from the email address."
+        ).format(email_chars)
+    )
+
+
+# AWS SES rejects a From header (Source) longer than this.
+MAX_FROM_HEADER_LENGTH = 320
+MAX_SERVICE_NAME_LENGTH = 255
+MAX_EMAIL_FROM_LENGTH = 64
+# The API sends the From header as '"=?utf-8?B?<base64 service name>?=" <email_from@sending_domain>'.
+# See get_from_address in notification-api app/delivery/send_to_providers.py.
+_ENCODED_NAME_PREFIX = '"=?utf-8?B?'
+_ENCODED_NAME_SUFFIX = '?=" <'
+
+
+def get_effective_sending_domain():
+    return getattr(current_service, "sending_domain", None) or current_app.config["SENDING_DOMAIN"]
+
+
+def _encoded_name_length(name_bytes: int) -> int:
+    return 4 * -(-name_bytes // 3)  # base64 length: 4 characters per 3 bytes, rounded up
+
+
+def _from_header_length_without_name(email_from: str, sending_domain: str) -> int:
+    return len(_ENCODED_NAME_PREFIX) + len(_ENCODED_NAME_SUFFIX) + len(email_from) + 1 + len(sending_domain) + 1
+
+
+def get_from_header_length(service_name: str, email_from: str, sending_domain: str) -> int:
+    """Length of the From header exactly as the API builds it."""
+    name_bytes = len(service_name.encode("utf-8"))
+    return _encoded_name_length(name_bytes) + _from_header_length_without_name(email_from, sending_domain)
+
+
+def is_from_header_too_long(service_name: str, email_from: str, sending_domain: str) -> bool:
+    return get_from_header_length(service_name, email_from, sending_domain) > MAX_FROM_HEADER_LENGTH
+
+
+def _max_name_bytes(email_from: str, sending_domain: str) -> int:
+    room_for_encoded_name = MAX_FROM_HEADER_LENGTH - _from_header_length_without_name(email_from, sending_domain)
+    return max((room_for_encoded_name // 4) * 3, 0)
+
+
+def get_max_service_name_length(email_from: str, sending_domain: str) -> int:
+    """Longest service name (in characters without accents) that fits with this email address and domain."""
+    return min(MAX_SERVICE_NAME_LENGTH, _max_name_bytes(email_from, sending_domain))
+
+
+def get_max_email_from_length(service_name: str, sending_domain: str) -> int:
+    """Longest email address (part before the @) that fits with this service name and domain."""
+    room = MAX_FROM_HEADER_LENGTH - get_from_header_length(service_name, "", sending_domain)
+    return max(min(MAX_EMAIL_FROM_LENGTH, room), 0)
+
+
+def characters_to_remove_from_name(service_name: str, email_from: str, sending_domain: str):
+    """
+    Exact number of characters to remove from the service name so the From header fits, counting
+    letters with accents (2 bytes in UTF-8) as 2. Removing that many plain characters (or fewer
+    accented ones) is guaranteed to be enough. Returns None if shortening the name can't fix it.
+    """
+    max_name_bytes = _max_name_bytes(email_from, sending_domain)
+    if max_name_bytes <= 0:
+        return None
+    return max(len(service_name.encode("utf-8")) - max_name_bytes, 0)
+
+
+def characters_to_remove_from_email_from(service_name: str, email_from: str, sending_domain: str):
+    """
+    Exact number of characters to remove from the email address so the From header fits.
+    Returns None if shortening the email address can't fix it.
+    """
+    overflow = get_from_header_length(service_name, email_from, sending_domain) - MAX_FROM_HEADER_LENGTH
+    if overflow >= len(email_from):
+        return None
+    return max(overflow, 0)
+
+
+def _from_header_too_long_name_message(service_name, email_from, sending_domain):
+    name_chars = characters_to_remove_from_name(service_name, email_from, sending_domain)
+    if name_chars is None:
+        return _l("Your service name and email address are too long together. Shorten the email address.")
+    return _l(
+        "Your service name and email address are too long together. Remove {} characters from the service name. "
+        "Letters with accents, like é, count as 2 characters."
+    ).format(name_chars)
+
+
+def _from_header_too_long_email_from_message(service_name, email_from, sending_domain):
+    email_chars = characters_to_remove_from_email_from(service_name, email_from, sending_domain)
+    if email_chars is None:
+        return _from_header_too_long_name_message(service_name, email_from, sending_domain)
+    return _l("Your service name and email address are too long together. Remove {} characters from the email address.").format(
+        email_chars
+    )

@@ -15,7 +15,8 @@
   required=true,
   is_page_heading=false,
   testid=None,
-  label_class=None
+  label_class=None,
+  after_field=None
 ) %}
   <div
     class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter{% if field.errors %} form-group-error{% endif %}"
@@ -83,6 +84,9 @@
 
     {% if suffix %}
       <span>{{ suffix }}</span>
+    {% endif %}
+    {% if after_field %}
+      {{ after_field }}
     {% endif %}
     {% if help_link and help_link_text %}
       <p class="textbox-help-link m-0 mt-4">
