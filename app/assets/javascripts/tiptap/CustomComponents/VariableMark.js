@@ -1,4 +1,50 @@
-import { Mark, InputRule } from "@tiptap/core";
+import { Mark, InputRule, getMarkRange } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Decoration, DecorationSet } from "@tiptap/pm/view";
+
+const variablePlaceholderKey = new PluginKey("variablePlaceholder");
+
+const createBracketWidget = (text) => () => {
+  const el = document.createElement("span");
+  el.className = "variable-placeholder";
+  el.textContent = text;
+  // Purely visual; the "Variable" state is announced via the AnnouncerPlugin.
+  el.setAttribute("aria-hidden", "true");
+  el.setAttribute("contenteditable", "false");
+  return el;
+};
+
+const isPendingVariable = (state, markType) =>
+  state.selection.empty &&
+  !!state.storedMarks &&
+  markType.isInSet(state.storedMarks) !== undefined;
+
+// Deleting the last character of a variable would otherwise remove the mark
+// (and its CSS brackets). Instead, keep the mark as a stored mark so the next
+// typed text becomes the variable again.
+const deleteLastVariableChar = (editor, markType, direction) => {
+  const { state, view } = editor;
+  const { selection, doc } = state;
+  if (!selection.empty) return false;
+
+  const pos = selection.from;
+  const charPos = direction === "backward" ? pos - 1 : pos;
+  if (charPos < 0 || charPos >= doc.content.size) return false;
+
+  const $char = doc.resolve(charPos);
+  const range = getMarkRange($char, markType);
+  if (!range || range.to - range.from !== 1 || range.from !== charPos) {
+    return false;
+  }
+
+  const node = $char.parent.childAfter($char.parentOffset).node;
+  if (!node || !node.isText) return false;
+
+  const tr = state.tr.delete(range.from, range.to);
+  tr.setStoredMarks(node.marks);
+  view.dispatch(tr);
+  return true;
+};
 
 const VariableMark = Mark.create({
   name: "variable",
@@ -80,6 +126,43 @@ const VariableMark = Mark.create({
 
             tr.replaceWith(start, end, nodes);
           }
+        },
+      }),
+    ];
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: () =>
+        deleteLastVariableChar(this.editor, this.type, "backward"),
+      Delete: () => deleteLastVariableChar(this.editor, this.type, "forward"),
+    };
+  },
+
+  addProseMirrorPlugins() {
+    const markType = this.type;
+
+    return [
+      new Plugin({
+        key: variablePlaceholderKey,
+        props: {
+          decorations(state) {
+            if (!isPendingVariable(state, markType)) return null;
+
+            const pos = state.selection.from;
+            return DecorationSet.create(state.doc, [
+              Decoration.widget(pos, createBracketWidget("(("), {
+                side: -1,
+                key: "variable-placeholder-open",
+                ignoreSelection: true,
+              }),
+              Decoration.widget(pos, createBracketWidget("))"), {
+                side: 1,
+                key: "variable-placeholder-close",
+                ignoreSelection: true,
+              }),
+            ]);
+          },
         },
       }),
     ];

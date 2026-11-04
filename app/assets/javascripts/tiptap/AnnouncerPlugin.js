@@ -30,15 +30,19 @@ export const AnnouncerPlugin = (t, announcerRef) => {
         new Plugin({
           key: new PluginKey("announcer"),
           appendTransaction(transactions, oldState, newState) {
-            // Only process if the selection changed
-            if (!transactions.some((tr) => tr.selectionSet)) return null;
+            // Only process if the selection or pending (stored) marks changed
+            if (
+              !transactions.some((tr) => tr.selectionSet || tr.storedMarksSet)
+            )
+              return null;
 
             const { selection } = newState;
             const { $from } = selection;
             const stack = [];
 
-            // 1. Process active marks at current selection
-            const marks = $from.marks();
+            // 1. Process active marks at current selection, including pending
+            // stored marks (e.g. an emptied variable awaiting new text)
+            const marks = newState.storedMarks || $from.marks();
             marks.forEach((mark) => {
               const label = t[mark.type.name]?.label;
               if (label) stack.push(label);
