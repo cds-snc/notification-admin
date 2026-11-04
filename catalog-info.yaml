@@ -9,6 +9,7 @@ metadata:
   description: Notification Admin web application for end users.
   annotations:
     github.com/project-slug: cds-snc/notification-admin
+    backstage.io/source-location: url:https://github.com/cds-snc/notification-admin/tree/main/
   labels:
     license: MIT
 spec:
@@ -16,4 +17,4 @@ spec:
   lifecycle: production
   owner: group:cds-snc/notify-dev
   system: gc-notification
-  
+
