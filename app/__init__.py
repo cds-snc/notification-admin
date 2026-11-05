@@ -11,7 +11,6 @@ from urllib.parse import urljoin, urlparse
 
 import timeago
 from flask import (
-    Markup,
     current_app,
     flash,
     g,
@@ -27,6 +26,7 @@ from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError, generate_csrf
 from itsdangerous import BadSignature, URLSafeTimedSerializer
+from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils import formatters, logging, request_helper
 from notifications_utils.formatters import formatted_list
