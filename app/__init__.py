@@ -339,9 +339,7 @@ def safe_get_request_nonce():
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
     except AttributeError:
-        current_app.logger.warning(
-            "Request nonce could not be safely retrieved; returning empty string."
-        )
+        current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
         return ""
 
 
