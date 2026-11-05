@@ -65,5 +65,17 @@ def test_get_safe_config(mocker, reload_config):
 def test_get_sensitive_config():
     sensitive_config = config.Config.get_sensitive_config()
     assert sensitive_config
+    assert "SECRET_KEY_FALLBACKS" in sensitive_config
     for key in sensitive_config:
         assert key
+
+
+def test_secret_key_rotation_uses_flask_fallbacks_and_itsdangerous_order():
+    current_key, fallback_keys = config.split_secret_keys(["old-key", "current-key"])
+
+    assert current_key == "current-key"
+    assert fallback_keys == ["old-key"]
+    assert config.get_secret_keys({"SECRET_KEY": current_key, "SECRET_KEY_FALLBACKS": fallback_keys}) == [
+        "old-key",
+        "current-key",
+    ]

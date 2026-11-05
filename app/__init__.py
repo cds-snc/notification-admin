@@ -45,7 +45,7 @@ from app import proxy_fix
 from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
-from app.config import configs
+from app.config import configs, get_secret_keys
 from app.enums import ERROR_TEMPLATE_STATUS_CODES, NotifyEnv
 from app.extensions import (
     antivirus_client,
@@ -360,7 +360,7 @@ def _get_otel_template_vars(application, nonce):
             otel_auth_token = generate_csrf()
             otel_auth_mode = "csrf"
         else:
-            otel_auth_token = URLSafeTimedSerializer(application.config["SECRET_KEY"]).dumps(nonce or "", salt="otel-proxy")
+            otel_auth_token = URLSafeTimedSerializer(get_secret_keys(application.config)).dumps(nonce or "", salt="otel-proxy")
             otel_auth_mode = "signed"
     return {
         "enable_client_side_otel": otel_enabled,
