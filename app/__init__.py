@@ -150,11 +150,11 @@ def create_app(application):
     asset_fingerprinter._debug = application.config.get("VITE_HMR_ENABLED", False)
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
-    babel = Babel(application)
 
-    @babel.localeselector
     def get_locale():
         return get_current_locale(application)
+
+    Babel(application, locale_selector=get_locale)
 
     init_app(application)
 
