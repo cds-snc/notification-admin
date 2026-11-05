@@ -19,7 +19,6 @@ from flask import (
     request,
     session,
 )
-from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
@@ -335,15 +334,14 @@ def init_app(application):
 
 
 def safe_get_request_nonce():
-    # Using hasattr() won't work when digging into the request stack with
-    # inexistent attribute as the request stack overrides the normal behavior
-    # and will deviate from expected behavior.
     try:
-        nonce = _request_ctx_stack.top.nonce
+        nonce = g.nonce
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
     except AttributeError:
-        current_app.logger.warning("Request nonce could not be safely retrieved; returning empty string.")
+        current_app.logger.warning(
+            "Request nonce could not be safely retrieved; returning empty string."
+        )
         return ""
 
 
@@ -770,10 +768,10 @@ def load_organisation_before_request():
 
 def load_request_nonce():
     if "/static/" in request.url:
-        _request_ctx_stack.top.nonce = None
-    elif _request_ctx_stack.top is not None:
+        g.nonce = None
+    else:
         token = secrets.token_urlsafe()
-        _request_ctx_stack.top.nonce = token
+        g.nonce = token
         current_app.logger.debug(f"Set request nonce to {token}")
 
 
