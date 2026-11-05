@@ -7,6 +7,7 @@ from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
 from app import user_api_client
+from app.config import get_secret_keys
 from app.main import main
 from app.main.forms import TwoFactorForm
 from app.models.user import InvitedUser, User
@@ -44,7 +45,7 @@ def verify_email(token):
     try:
         token_data = check_token(
             token=token,
-            secret=current_app.config["SECRET_KEY"],
+            secret=get_secret_keys(current_app.config),
             max_age_seconds=current_app.config["EMAIL_EXPIRY_SECONDS"],
         )
     except SignatureExpired:

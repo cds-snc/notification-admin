@@ -7,6 +7,7 @@ from flask_wtf.csrf import CSRFError, validate_csrf
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from app import csrf
+from app.config import get_secret_keys
 from app.main import main
 
 OTLP_PROXY_TIMEOUT = 10
@@ -35,7 +36,7 @@ def otlp_proxy(signal_type):
     else:
         token = request.headers.get("X-OTEL-Token", "")
         try:
-            URLSafeTimedSerializer(current_app.config["SECRET_KEY"]).loads(
+            URLSafeTimedSerializer(get_secret_keys(current_app.config)).loads(
                 token, salt="otel-proxy", max_age=current_app.config["OTEL_CLIENT_SIDE_TOKEN_TTL"]
             )
         except (BadSignature, SignatureExpired):

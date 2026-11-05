@@ -13,7 +13,7 @@ from functools import wraps
 from io import BytesIO, StringIO
 from itertools import chain
 from os import path
-from typing import Any, List
+from typing import Any, Iterable, List
 
 import boto3
 import dateutil
@@ -412,7 +412,13 @@ def get_remote_addr(request):
 class Spreadsheet:
     allowed_file_extensions = ["csv", "xlsx", "xls", "ods", "xlsm", "tsv"]
 
-    def __init__(self, csv_data=None, rows=None, filename="", json_data=None):
+    def __init__(
+        self,
+        csv_data: str | None = None,
+        rows: Iterable[Iterable[Any]] | None = None,
+        filename: str = "",
+        json_data: list[dict[str, str]] | None = None,
+    ) -> None:
         self.filename = filename
 
         if csv_data and rows:
@@ -420,7 +426,7 @@ class Spreadsheet:
 
         self.json_data: list[dict[str, str]] = json_data or []
         self._csv_data: str = csv_data or ""
-        self._rows: list = rows or []
+        self._rows: Iterable[Iterable[Any]] = rows or []
 
     @property
     def as_dict(self):

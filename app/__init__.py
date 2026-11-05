@@ -11,7 +11,6 @@ from urllib.parse import urljoin, urlparse
 
 import timeago
 from flask import (
-    Markup,
     current_app,
     flash,
     g,
@@ -20,13 +19,13 @@ from flask import (
     request,
     session,
 )
-from flask.globals import _request_ctx_stack  # type: ignore
 from flask_babel import Babel, _
 from flask_babel import lazy_gettext as _l
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError, generate_csrf
 from itsdangerous import BadSignature, URLSafeTimedSerializer
+from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils import formatters, logging, request_helper
 from notifications_utils.formatters import formatted_list
@@ -46,7 +45,7 @@ from app import proxy_fix
 from app.articles.routing import gca_url_for
 from app.asset_fingerprinter import asset_fingerprinter
 from app.commands import setup_commands
-from app.config import configs
+from app.config import configs, get_secret_keys
 from app.enums import ERROR_TEMPLATE_STATUS_CODES, NotifyEnv
 from app.extensions import (
     antivirus_client,
@@ -151,11 +150,11 @@ def create_app(application):
     asset_fingerprinter._debug = application.config.get("VITE_HMR_ENABLED", False)
 
     application.config["BABEL_DEFAULT_LOCALE"] = "en"
-    babel = Babel(application)
 
-    @babel.localeselector
     def get_locale():
         return get_current_locale(application)
+
+    Babel(application, locale_selector=get_locale)
 
     init_app(application)
 
@@ -335,11 +334,8 @@ def init_app(application):
 
 
 def safe_get_request_nonce():
-    # Using hasattr() won't work when digging into the request stack with
-    # inexistent attribute as the request stack overrides the normal behavior
-    # and will deviate from expected behavior.
     try:
-        nonce = _request_ctx_stack.top.nonce
+        nonce = g.nonce
         current_app.logger.debug(f"Safe get request nonce of {nonce}.")
         return nonce
     except AttributeError:
@@ -364,7 +360,7 @@ def _get_otel_template_vars(application, nonce):
             otel_auth_token = generate_csrf()
             otel_auth_mode = "csrf"
         else:
-            otel_auth_token = URLSafeTimedSerializer(application.config["SECRET_KEY"]).dumps(nonce or "", salt="otel-proxy")
+            otel_auth_token = URLSafeTimedSerializer(get_secret_keys(application.config)).dumps(nonce or "", salt="otel-proxy")
             otel_auth_mode = "signed"
     return {
         "enable_client_side_otel": otel_enabled,
@@ -770,10 +766,10 @@ def load_organisation_before_request():
 
 def load_request_nonce():
     if "/static/" in request.url:
-        _request_ctx_stack.top.nonce = None
-    elif _request_ctx_stack.top is not None:
+        g.nonce = None
+    else:
         token = secrets.token_urlsafe()
-        _request_ctx_stack.top.nonce = token
+        g.nonce = token
         current_app.logger.debug(f"Set request nonce to {token}")
 
 
