@@ -3,6 +3,8 @@ import os
 from unittest import mock
 
 import pytest
+from itsdangerous import URLSafeTimedSerializer
+from notifications_utils.url_safe_token import check_token
 
 from app import config
 
@@ -79,3 +81,13 @@ def test_secret_key_rotation_uses_flask_fallbacks_and_itsdangerous_order():
         "old-key",
         "current-key",
     ]
+
+
+def test_secret_key_rotation_accepts_tokens_signed_with_fallback_key():
+    secret_keys = config.get_secret_keys({"SECRET_KEY": "current-key", "SECRET_KEY_FALLBACKS": ["old-key"]})
+
+    token = URLSafeTimedSerializer("old-key").dumps("payload", salt="token")
+    assert check_token(token=token, secret=secret_keys, max_age_seconds=60) == "payload"
+
+    otlp_token = URLSafeTimedSerializer("old-key").dumps("nonce", salt="otel-proxy")
+    assert URLSafeTimedSerializer(secret_keys).loads(otlp_token, salt="otel-proxy", max_age=60) == "nonce"
