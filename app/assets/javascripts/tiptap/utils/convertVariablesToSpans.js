@@ -5,14 +5,48 @@ export default function convertVariablesToSpans(text) {
   // Extract and temporarily replace markdown link destinations ](...) to
   // prevent variable conversion inside link hrefs.
   const linkPlaceholders = [];
-  let processedText = text.replace(
-    /\]\(([^)]*(?:\([^)]*\))*[^)]*)\)/g,
-    (match) => {
+  let processedText = text;
+  
+  // Find and replace links by properly balancing parentheses.
+  // The regex finds ]( and we then manually balance the parens.
+  let result = "";
+  let i = 0;
+  
+  while (i < processedText.length) {
+    const idx = processedText.indexOf("](", i);
+    if (idx === -1) {
+      result += processedText.slice(i);
+      break;
+    }
+    
+    // Add everything up to but not including ](
+    result += processedText.slice(i, idx);
+    
+    // Now find the matching closing )
+    let parenDepth = 1;
+    let j = idx + 2; // Start after ](
+    
+    while (j < processedText.length && parenDepth > 0) {
+      if (processedText[j] === "(") parenDepth++;
+      if (processedText[j] === ")") parenDepth--;
+      j++;
+    }
+    
+    if (parenDepth === 0) {
+      // Found a complete link - save the entire ](...) match
+      const linkMatch = processedText.slice(idx, j);
       const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
-      linkPlaceholders.push(match);
-      return placeholder;
-    },
-  );
+      linkPlaceholders.push(linkMatch);
+      result += placeholder;
+      i = j;
+    } else {
+      // Unmatched parens, just add ]( and continue
+      result += processedText.slice(idx, idx + 2);
+      i = idx + 2;
+    }
+  }
+  
+  processedText = result;
 
   let output = "";
   let cursor = 0;

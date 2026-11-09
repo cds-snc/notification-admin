@@ -516,4 +516,115 @@ describe("Link tests", () => {
       "[link text](https://new.example.com)",
     );
   });
+
+  context("Links with multiple variables in URL", () => {
+    it("should preserve URL with multiple variables without adding mark tags", () => {
+      // This is a regression test for a bug where URLs with multiple variables
+      // would get wrapped with <mark class='placeholder'> tags
+      const linkText = "View the proposal on the DSA";
+      const linkUrl =
+        "(((DsaUrl))/Admin/Proposal/ManageProposals?GoCTemplateCulture=fr-CA&ProposalId=((ProposalId)))";
+      const markdown = `[${linkText}]${linkUrl}`;
+
+      // Switch to markdown view and paste the link
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor()
+        .clear()
+        .type(markdown, { parseSpecialCharSequences: false });
+
+      // Switch back to editor view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Verify the link is rendered correctly
+      RichTextEditor.Components.Editor()
+        .find(`a[href*="DsaUrl"]`)
+        .should("exist")
+        .and("contain.text", linkText);
+
+      // Verify the href contains both variables and no mark tags
+      RichTextEditor.Components.Editor()
+        .find(`a`)
+        .each(($link) => {
+          const href = $link.attr("href");
+          // Should contain both variables
+          expect(href).to.include("DsaUrl");
+          expect(href).to.include("ProposalId");
+          // Should NOT contain mark tags (URL-encoded as %3Cmark)
+          expect(href).not.to.include("%3Cmark");
+          expect(href).not.to.include("<mark");
+        });
+
+      // Switch back to markdown to verify URL is not corrupted
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor()
+        .invoke("val")
+        .should("include", "DsaUrl")
+        .and("include", "ProposalId")
+        .and("not.include", "%3Cmark")
+        .and("not.include", "<mark");
+    });
+
+    it("should handle URL with three variables in same link", () => {
+      const linkText = "Multi-variable link";
+      const linkUrl =
+        "(((base))/path?first=((var1))&second=((var2))&third=((var3)))";
+      const markdown = `[${linkText}]${linkUrl}`;
+
+      // Switch to markdown view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor()
+        .clear()
+        .type(markdown, { parseSpecialCharSequences: false });
+
+      // Switch back to editor
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Verify link is present
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .should("exist");
+
+      // Verify href has all variables
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .invoke("attr", "href")
+        .should("include", "base")
+        .and("include", "var1")
+        .and("include", "var2")
+        .and("include", "var3");
+    });
+
+    it("should handle multiple links each with variables in URLs", () => {
+      const markdown =
+        "[Link 1](((url1))/path?id=((id1))) and [Link 2](((url2))/other?id=((id2)))";
+
+      // Switch to markdown view
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor()
+        .clear()
+        .type(markdown, { parseSpecialCharSequences: false });
+
+      // Switch back to editor
+      RichTextEditor.Components.ViewMarkdownButton().click();
+
+      // Should have two links
+      RichTextEditor.Components.Editor().find("a").should("have.length", 2);
+
+      // First link should have url1 and id1
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .eq(0)
+        .invoke("attr", "href")
+        .should("include", "url1")
+        .and("include", "id1");
+
+      // Second link should have url2 and id2
+      RichTextEditor.Components.Editor()
+        .find("a")
+        .eq(1)
+        .invoke("attr", "href")
+        .should("include", "url2")
+        .and("include", "id2");
+    });
+  });
 });
