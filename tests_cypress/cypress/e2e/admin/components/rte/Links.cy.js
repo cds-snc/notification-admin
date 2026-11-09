@@ -580,9 +580,7 @@ describe("Link tests", () => {
       RichTextEditor.Components.ViewMarkdownButton().click();
 
       // Verify link is present
-      RichTextEditor.Components.Editor()
-        .find("a")
-        .should("exist");
+      RichTextEditor.Components.Editor().find("a").should("exist");
 
       // Verify href has all variables
       RichTextEditor.Components.Editor()
