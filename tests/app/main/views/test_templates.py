@@ -20,6 +20,7 @@ from flask import url_for
 from flask_login import current_user
 from freezegun import freeze_time
 from notifications_python_client.errors import HTTPError
+from notifications_utils.email_assets import email_asset_urls
 
 from tests import (
     TESTING_TEMPLATE_CATEGORY,
@@ -1358,8 +1359,9 @@ def test_should_show_logos_on_template_page(
     assert service_one["email_branding"] is None
 
     email_body = str(page.select_one(".email-message-body"))
-    assert f"https://{app_.config['ASSET_DOMAIN']}/gc-logo-en.png" in email_body
-    assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
+    email_assets = email_asset_urls(app_.config["ASSET_DOMAIN"])
+    assert email_assets["gc-logo-en.png"] in email_body
+    assert email_assets["canada-logo.png"] in email_body
 
 
 def test_should_not_show_send_buttons_on_template_page_for_user_without_permission(
@@ -2415,8 +2417,9 @@ def test_preview_page_contains_preview(
     assert "test content" in page.text
 
     email_body = str(page.select_one(".email-message-body"))
-    assert f"https://{app_.config['ASSET_DOMAIN']}/gc-logo-en.png" in email_body
-    assert f"https://{app_.config['ASSET_DOMAIN']}/canada-logo.png" in email_body
+    email_assets = email_asset_urls(app_.config["ASSET_DOMAIN"])
+    assert email_assets["gc-logo-en.png"] in email_body
+    assert email_assets["canada-logo.png"] in email_body
 
 
 def test_preview_edit_button_should_redirect_to_edit_page(

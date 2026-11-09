@@ -222,7 +222,7 @@ def create_app(application):
     redis_client.redis_store.decode_responses = True
 
     # Log the application configuration
-    application.logger.info(f"Notify config: {config.get_safe_config()}")
+    application.logger.info("Notify config: %s", config.get_safe_config())
 
     from app.url_converters import SafeIdConverter
 
