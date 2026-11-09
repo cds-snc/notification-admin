@@ -1,5 +1,5 @@
 {# suffix_plural was added for fr strings https://github.com/cds-snc/notification-admin/pull/480 #}
-{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='') -%}
+{% macro message_count_label(count, template_type, suffix='sent', suffix_plural='', use_billable_units=False) -%}
   {% if template_type == None %}
     {%- if count == 1 -%}
       {{ _('message') }}
@@ -10,14 +10,14 @@
   {%- if template_type == 'sms' -%}
     {%- if count == 0 -%}
       {%- if session["userlang"] == "fr" -%}
-        {{ _('text message') }}
+        {{ _('text message part') if use_billable_units else _('text message') }}
       {%- else -%}
-        {{ _('text-messages') }}
+        {{ _('text-message-parts') if use_billable_units else _('text-messages') }}
       {%- endif -%}
     {%- elif count == 1  -%}
-      {{ _('text message') }}
+        {{ _('text message part') if use_billable_units else _('text message') }}
     {%- else -%}
-      {{ _('text-messages') }}
+        {{ _('text-message-parts') if use_billable_units else _('text-messages') }}
     {%- endif -%}
   {%- elif template_type == 'email' -%}
     {%- if count == 0 -%}

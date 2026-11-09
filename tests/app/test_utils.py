@@ -6,11 +6,6 @@ from unittest.mock import Mock, patch
 from urllib.parse import unquote
 
 import pytest
-from flask import current_app, request
-from freezegun import freeze_time
-from pytest_mock import MockerFixture
-
-from app import format_datetime_relative
 from app.utils import (
     Spreadsheet,
     documentation_url,
@@ -20,6 +15,7 @@ from app.utils import (
     generate_previous_dict,
     get_latest_stats,
     get_letter_printing_statement,
+    get_limit_reset_time_et,
     get_logo_cdn_domain,
     get_new_default_reply_to_address,
     get_remote_addr,
@@ -28,6 +24,11 @@ from app.utils import (
     printing_today_or_tomorrow,
     report_security_finding,
 )
+from flask import current_app, request
+from freezegun import freeze_time
+from pytest_mock import MockerFixture
+
+from app import format_datetime_relative
 from tests.conftest import (
     SERVICE_ONE_ID,
     create_reply_to_email_address,
@@ -195,7 +196,7 @@ def test_can_create_spreadsheet_from_dict():
             foo="bar",
             name="Jane",
         )
-    ).as_csv_data == ("foo,name\r\n" "bar,Jane\r\n")
+    ).as_csv_data == ("foo,name\r\nbar,Jane\r\n")
 
 
 def test_can_create_spreadsheet_from_dict_with_filename():
@@ -597,7 +598,7 @@ def test_get_remote_addr(app_, forwarded_for, remote_addr, expected):
 
 
 def test_get_latest_stats_k8s(mocker, app_):
-    mocker.patch(
+    mock_get_stats_by_month = mocker.patch(
         "app.service_api_client.get_stats_by_month",
         return_value={
             "data": [
@@ -628,6 +629,7 @@ def test_get_latest_stats_k8s(mocker, app_):
                 "September 2020": {"sms": 3, "total": 3, "year_month": "2020-09"},
             },
         }
+    mock_get_stats_by_month.assert_called_once_with()
 
 
 def test_get_latest_stats_lambda(mocker, app_):
@@ -867,3 +869,44 @@ class TestGetSESDomains:
 
             # Assert
             assert result == []
+
+
+class TestGetLimitResetTimeET:
+    @freeze_time("2024-01-15 12:00:00")  # January: EST (UTC-5)
+    def test_returns_7pm_during_est(self):
+        result = get_limit_reset_time_et()
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-07-15 12:00:00")  # July: EDT (UTC-4)
+    def test_returns_8pm_during_edt(self):
+        result = get_limit_reset_time_et()
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-03-10 12:00:00")  # Day clocks spring forward (2nd Sunday of March)
+    def test_spring_forward_day(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on March 11 falls in EDT (UTC-4), so 8PM ET
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-03-09 12:00:00")  # Day before spring forward
+    def test_day_before_spring_forward(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on March 10 is still EST (UTC-5), so 7PM ET
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-11-03 12:00:00")  # Day clocks fall back (1st Sunday of November)
+    def test_fall_back_day(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on Nov 4 falls in EST (UTC-5), so 7PM ET
+        assert result == {"en": "7PM", "fr": "19"}
+
+    @freeze_time("2024-11-02 12:00:00")  # Day before fall back
+    def test_day_before_fall_back(self):
+        result = get_limit_reset_time_et()
+        # Next midnight UTC on Nov 3 is still EDT (UTC-4), so 8PM ET
+        assert result == {"en": "8PM", "fr": "20"}
+
+    @freeze_time("2024-01-15 12:00:00")
+    def test_returns_dict_with_en_and_fr_keys(self):
+        result = get_limit_reset_time_et()
+        assert set(result.keys()) == {"en", "fr"}

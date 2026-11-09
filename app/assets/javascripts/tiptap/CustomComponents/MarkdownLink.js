@@ -175,6 +175,9 @@ const MarkdownLink = Link.extend({
     };
   },
 
+  inclusive() {
+    return false;
+  },
   addInputRules() {
     return [
       new InputRule({

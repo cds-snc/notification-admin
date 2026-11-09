@@ -1,12 +1,12 @@
 import uuid
 
 import pytest
-from flask import abort, url_for
-from notifications_python_client.errors import HTTPError
-
 from app.main.forms import TC_PRIORITY_VALUE
 from app.models.service import Service
 from app.models.user import User
+from flask import abort, url_for
+from notifications_python_client.errors import HTTPError
+
 from tests import TESTING_TEMPLATE_CATEGORY, sample_uuid
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -401,6 +401,7 @@ def test_can_create_email_template_with_parent_folder(
         None,
         data["parent_folder_id"],
         data["template_category_id"],
+        use_custom_unsubscribe_url=False,
     )
 
 

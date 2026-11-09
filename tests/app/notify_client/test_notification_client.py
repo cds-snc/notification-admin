@@ -1,8 +1,8 @@
 import uuid
 
 import pytest
-
 from app.notify_client.notification_api_client import NotificationApiClient
+
 from tests import notification_json, single_notification_json
 
 

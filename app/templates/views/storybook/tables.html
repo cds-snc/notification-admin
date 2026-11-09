@@ -1,0 +1,31 @@
+{% from "components/table.html" import mapping_table, list_table, row, field, row_heading, index_field, text_field %}
+
+    <h1 class="heading-large">Table Components</h1>
+
+    <h2 class="heading-medium">List Table</h2>
+    <p>A higher-level macro <code>list_table</code> that iterates over a list of items.</p>
+
+    {% set example_items = [
+        {'name': 'Service A', 'status': 'Active'},
+        {'name': 'Service B', 'status': 'Inactive'},
+        {'name': 'Service C', 'status': 'Active'}
+    ] %}
+
+    <div class="spreadsheet fullscreen-content" data-module="fullscreen-table">
+        {% call(item, index) list_table(
+            items=example_items,
+            caption='List of services',
+            caption_visible=False,
+            field_headings=['', 'Service name', 'Status']
+        ) %}
+            {% if 1 == index %}
+                {{ index_field('') }}
+            {% else %}
+                {{ index_field(index - 1) }}
+            {% endif %}
+            {% for column in item %}
+                {{ text_field(column) }}
+            {% endfor %}
+        {% endcall %}
+    </div>
+

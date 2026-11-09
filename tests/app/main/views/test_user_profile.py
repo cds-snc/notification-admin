@@ -263,6 +263,21 @@ def test_should_list_security_keys(app_, client_request, api_nongov_user_active,
         assert page.select("tr")[-1].text.split() == ["Name", "Key", "Remove"]
 
 
+def test_security_keys_page_shows_test_keys_button_when_user_has_keys(
+    client_request, api_nongov_user_active, mock_get_security_keys_with_key
+):
+    page = client_request.get("main.user_profile_security_keys")
+    assert page.select_one("#test-fido2-keys") is not None
+
+
+def test_security_keys_page_hides_test_keys_button_when_user_has_no_keys(
+    client_request, api_nongov_user_active, mock_get_security_keys
+):
+    page = client_request.get("main.user_profile_security_keys")
+    assert page.select_one("#test-fido2-keys") is None
+    assert page.select_one('[data-testid="2fa_add_security_key"]') is not None
+
+
 def test_deleting_security_key(
     app_,
     client_request,
@@ -296,7 +311,10 @@ def test_deleting_security_key(
 
 
 def test_adding_security_key(app_, client_request, api_nongov_user_active, mocker):
-    register_mock = mocker.patch("app.user_api_client.register_security_key", return_value={"data": "blob"})
+    register_mock = mocker.patch(
+        "app.user_api_client.register_security_key",
+        return_value={"data": base64.b64encode(json.dumps({"challenge": "abc"}).encode()).decode()},
+    )
 
     with client_request.session_transaction() as session:
         session["has_authenticated"] = True
@@ -318,20 +336,30 @@ def test_adding_security_key(app_, client_request, api_nongov_user_active, mocke
 
 def test_complete_adding_security_key(client_request, api_nongov_user_active, mocker):
     mock = mocker.patch("app.user_api_client.add_security_key_user", return_value={"id": "fake"})
-    client_request.post(("main.user_profile_complete_security_keys"), _data="fake", _expected_status=200)
+    credential = {"rawId": "abc", "response": {"attestationObject": "def", "clientDataJSON": "ghi"}, "type": "public-key"}
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_complete_security_keys"),
+        json={"name": "my-key", "credential": credential},
+    )
+    assert resp.status_code == 200
     mock.assert_called_once_with(
         api_nongov_user_active["id"],
-        base64.b64encode("fake".encode("utf-8")).decode("utf-8"),
+        "my-key",
+        credential,
     )
 
 
 def test_authenticate_security_key(client_request, api_nongov_user_active, mocker):
+    auth_data = {"challenge": "abc"}
     mock = mocker.patch(
         "app.user_api_client.authenticate_security_keys",
-        return_value={"data": base64.b64encode("fake".encode("utf-8"))},
+        return_value={"data": auth_data},
     )
-    response = client_request.post(("main.user_profile_authenticate_security_keys"), _expected_status=200)
-    assert response.text == "fake"
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_authenticate_security_keys"),
+    )
+    assert resp.status_code == 200
+    assert resp.get_json() == auth_data
     mock.assert_called_once_with(api_nongov_user_active["id"])
 
 
@@ -374,11 +402,34 @@ def test_validate_security_key_api_error(client_request, api_nongov_user_active,
         "app.user_api_client.validate_security_keys",
         side_effect=HTTPError(response=Mock(status_code=500)),
     )
+    credential = {
+        "rawId": "abc",
+        "response": {"authenticatorData": "def", "clientDataJSON": "ghi", "signature": "jkl"},
+        "type": "public-key",
+    }
 
-    client_request.post(("main.user_profile_validate_security_keys"), _data="fake", _expected_status=500)
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json={"credential": credential},
+    )
+    assert resp.status_code == 500
 
     assert mock_validate.called
     assert mock_login.called is False
+
+
+def test_validate_security_key_redirects_anonymous_user_to_sign_in(client, mocker):
+    mock_validate = mocker.patch("app.user_api_client.validate_security_keys")
+    credential = {"rawId": "abc", "response": {}, "type": "public-key"}
+
+    resp = client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json={"credential": credential},
+    )
+
+    assert resp.status_code == 302
+    assert resp.location.endswith("/sign-in?next=/user-profile/security_keys/validate")
+    mock_validate.assert_not_called()
 
 
 @pytest.mark.parametrize("password_changed", [True, False])
@@ -396,6 +447,12 @@ def test_validate_security_key(
     new_user["current_session_id"] = fake_uuid
     mocker.patch("app.user_api_client.get_user", return_value=new_user)
 
+    credential = {
+        "rawId": "abc",
+        "response": {"authenticatorData": "def", "clientDataJSON": "ghi", "signature": "jkl"},
+        "type": "public-key",
+    }
+
     if password_changed:
         with client_request.session_transaction() as session:
             session["user_details"] = {
@@ -403,7 +460,11 @@ def test_validate_security_key(
                 "password": "somepassword",
             }
 
-    client_request.post(("main.user_profile_validate_security_keys"), _data="fake", _expected_status=200)
+    resp = client_request.logged_in_client.post(
+        url_for("main.user_profile_validate_security_keys"),
+        json={"credential": credential},
+    )
+    assert resp.status_code == 200
 
     with client_request.session_transaction() as session:
         assert api_nongov_user_active["current_session_id"] is None

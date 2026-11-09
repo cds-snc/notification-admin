@@ -1,6 +1,8 @@
+import ipaddress
 import re
 import time
 from email.utils import formataddr
+from urllib.parse import urlparse
 
 import pwnedpasswords
 import requests
@@ -16,7 +18,7 @@ from wtforms.validators import Email
 
 from app import current_service, formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
-from app.utils import Spreadsheet, email_safe, email_safe_name, is_gov_user
+from app.utils import Spreadsheet, email_address_ends_with, email_safe, email_safe_name, is_gov_user
 
 
 class Blocklist:
@@ -101,6 +103,8 @@ class ValidGovEmail:
         message = _("{} is not on our list of government domains. If it’s a government email address, {}.").format(
             domain.replace("%", "%%"), contact_text
         )
+        if email_address_ends_with(field.data.lower(), current_app.config.get("BLOCKED_SIGNUP_EMAIL_DOMAINS", [])):
+            raise ValidationError(message)
         if not is_gov_user(field.data.lower()):
             raise ValidationError(message)
 
@@ -174,6 +178,21 @@ class ValidCallbackUrl:
             validate_callback_url(field.data, form.bearer_token.data)
 
 
+def _is_localhost_url(url):
+    """Check if a URL references localhost or a loopback address."""
+    try:
+        parsed = urlparse(url)
+        hostname = (parsed.hostname or "").rstrip(".")
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            return True
+        try:
+            return ipaddress.ip_address(hostname).is_loopback
+        except ValueError:
+            return False
+    except Exception:
+        return False
+
+
 def validate_callback_url(service_callback_url, bearer_token):
     """Validates a callback URL, checking that it is https and by sending a POST request to the URL with a health_check parameter.
     4xx responses are considered invalid. 5xx responses are considered valid as it indicates there is at least a service running
@@ -186,6 +205,12 @@ def validate_callback_url(service_callback_url, bearer_token):
     Raises:
         ValidationError: If the URL is not HTTPS or the http response is 4xx.
     """
+    if _is_localhost_url(service_callback_url):
+        current_app.logger.warning(
+            f"Unable to create callback for service: {current_service.id}. Error: Localhost callback URLs are not allowed: URL: {service_callback_url}"
+        )
+        raise ValidationError(_l("Enter a public URL. Localhost URLs cannot be used for callbacks."))
+
     if not validators.url(service_callback_url):
         current_app.logger.warning(
             f"Unable to create callback for service: {current_service.id}. Error: Invalid callback URL format: URL: {service_callback_url}"
@@ -260,12 +285,24 @@ def validate_combined_email_header_length(form, field):
     When a service name contains unicode characters, it gets MIME-encoded in the email header,
     which can significantly increase its length.
     """
-    # Only validate if both name and email_from are present
-    if not hasattr(form, "name") or not hasattr(form, "email_from"):
+    # At least one of name or email_from must be on the form for this
+    # validator to be meaningful.
+    if not hasattr(form, "name") and not hasattr(form, "email_from"):
         return
 
-    service_name = form.name.data if form.name.data else ""
-    email_from = form.email_from.data if form.email_from.data else ""
+    if hasattr(form, "name"):
+        service_name = form.name.data if form.name.data else ""
+    else:
+        service_name = getattr(current_service, "name", "") or ""
+
+    # If the form does not include an email_from field (e.g. when renaming an
+    # existing service), fall back to the current service's email_from so we
+    # still validate the combined header length when only the name is being
+    # edited.
+    if hasattr(form, "email_from"):
+        email_from = form.email_from.data if form.email_from.data else ""
+    else:
+        email_from = getattr(current_service, "email_from", "") or ""
 
     # If either field is empty, skip this validation (let other validators handle it)
     if not service_name or not email_from:

@@ -1,8 +1,8 @@
 import pytest
-from flask import Flask, url_for
-
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import is_gov_user
+from flask import Flask, url_for
+
 from tests import organisation_json
 from tests.conftest import mock_get_organisation_by_domain, normalize_spaces
 
@@ -183,13 +183,13 @@ def test_wizard_flow_with_step_2_should_call_email_from_is_unique(
     assert mock_create_or_update_free_sms_fragment_limit.called is True
 
 
-def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_ff(
+def test_wizard_flow_with_step_2_post_should_go_to_step_3_with_gc_organisations(
     app_: Flask,
     client_request,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
@@ -227,7 +227,7 @@ def test_wizard_flow_with_step_3_should_create_service(
 ):
     mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
     mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -259,7 +259,7 @@ def test_wizard_flow_with_step_3_should_not_create_service_no_parent_org(
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -287,7 +287,7 @@ def test_wizard_flow_with_step_3b_should_create_service(
 ):
     mocker.patch("app.service_api_client.is_service_name_unique", return_value=True)
     mocker.patch("app.service_api_client.is_service_email_from_unique", return_value=True)
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -316,7 +316,7 @@ def test_wizard_flow_with_step_3b_create_service_no_org(
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-    app_.config["FF_SALESFORCE_CONTACT"] = True
+    app_.config["IS_GC_ORGANISATIONS"] = True
     app_.config["CRM_ORG_LIST"] = {"en": ["CDS", "TBS"]}
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(
@@ -448,7 +448,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
     mock_create_service_template.assert_called_once_with(
         "Example text message template",
         "sms",
-        ("Hey ((name)), I’m trying out GC Notify. Today is " "((day of week)) and my favourite colour is ((colour))."),
+        ("Hey ((name)), I’m trying out GC Notify. Today is ((day of week)) and my favourite colour is ((colour))."),
         101,
     )
 
@@ -514,7 +514,7 @@ def test_get_should_only_show_nhs_org_types_radios_if_user_has_nhs_email(
     ]
 
 
-@pytest.mark.parametrize("organisation_type, free_allowance", [("central", 25 * 1000)])
+@pytest.mark.parametrize("organisation_type, free_allowance", [("central", 100 * 1000)])
 def test_should_add_service_and_redirect_to_dashboard_along_with_proper_side_effects(
     app_,
     client_request,

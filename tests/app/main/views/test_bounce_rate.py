@@ -1,7 +1,7 @@
 import pytest
+from app.models.enum.notification_statuses import NotificationStatuses
 from freezegun import freeze_time
 
-from app.models.enum.notification_statuses import NotificationStatuses
 from tests.conftest import ClientRequest, create_notification
 
 successful_job_1 = {

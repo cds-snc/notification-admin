@@ -1,5 +1,4 @@
 import pytest
-
 from app.statistics_utils import (
     add_rate_to_job,
     add_rates_to,

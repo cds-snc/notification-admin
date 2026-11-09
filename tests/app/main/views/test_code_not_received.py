@@ -147,6 +147,51 @@ def test_check_and_redirect_to_verify_if_user_pending(
     assert response.location == url_for("main.verify")
 
 
+@pytest.mark.parametrize("endpoint", ["main.check_and_resend_verification_code", "main.check_and_resend_text_code"])
+def test_pending_email_auth_user_with_someone_elses_org_invite_cannot_get_sms_code(
+    client,
+    mocker,
+    api_user_pending,
+    mock_send_verify_code,
+    endpoint,
+):
+    api_user_pending["auth_type"] = "email_auth"
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
+
+    with client.session_transaction() as session:
+        session["user_details"] = {"id": api_user_pending["id"], "email": api_user_pending["email_address"]}
+        session["invited_org_user"] = {"email_address": "someone-else@canada.ca", "organisation": "org-id"}
+
+    response = client.get(url_for(endpoint))
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.resend_email_verification")
+    mock_send_verify_code.assert_not_called()
+
+
+def test_pending_email_auth_user_with_their_own_org_invite_can_get_sms_code(
+    client,
+    mocker,
+    api_user_pending,
+    mock_send_verify_code,
+):
+    api_user_pending["auth_type"] = "email_auth"
+    mocker.patch("app.user_api_client.get_user_by_email", return_value=api_user_pending)
+
+    with client.session_transaction() as session:
+        session["user_details"] = {"id": api_user_pending["id"], "email": api_user_pending["email_address"]}
+        session["invited_org_user"] = {
+            "email_address": api_user_pending["email_address"].upper(),
+            "organisation": "org-id",
+        }
+
+    response = client.get(url_for("main.check_and_resend_verification_code"))
+
+    assert response.status_code == 302
+    assert response.location == url_for("main.verify")
+    mock_send_verify_code.assert_called_once()
+
+
 @pytest.mark.parametrize(
     "endpoint",
     [

@@ -4,10 +4,10 @@ from collections import OrderedDict
 from unittest.mock import Mock, call
 
 import pytest
+from app.utils import documentation_url
 from bs4 import BeautifulSoup
 from flask import url_for
 
-from app.utils import documentation_url
 from tests import sample_uuid, validate_route_permission
 from tests.conftest import SERVICE_ONE_ID, create_notifications, normalize_spaces
 

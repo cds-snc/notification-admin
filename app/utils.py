@@ -80,7 +80,7 @@ CSV_COLUMN_HEADER_MAPPINGS = [
 REQUESTED_STATUSES = SENDING_STATUSES + DELIVERED_STATUSES + FAILURE_STATUSES
 
 with open("{}/email_domains.txt".format(os.path.dirname(os.path.realpath(__file__)))) as email_domains:
-    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains]
+    GOVERNMENT_EMAIL_DOMAIN_NAMES = [line.strip() for line in email_domains if not line.strip().startswith("#")]
 
 
 user_is_logged_in = login_required
@@ -95,8 +95,8 @@ def from_lambda_api(line):
 
 
 @cache.memoize(timeout=12 * 60 * 60)
-def get_latest_stats(lang, filter_heartbeats=None):
-    results = service_api_client.get_stats_by_month(filter_heartbeats=filter_heartbeats)["data"]
+def get_latest_stats(lang):
+    results = service_api_client.get_stats_by_month()["data"]
 
     monthly_stats = {}
     emails_total = 0
@@ -122,7 +122,7 @@ def get_latest_stats(lang, filter_heartbeats=None):
         elif notification_type == "email":
             emails_total += count
 
-    live_services = len(service_api_client.get_live_services_data({"filter_heartbeats": True})["data"])
+    live_services = get_live_services_count()
 
     return {
         "monthly_stats": monthly_stats,
@@ -131,6 +131,11 @@ def get_latest_stats(lang, filter_heartbeats=None):
         "notifications_total": sms_total + emails_total,
         "live_services": live_services,
     }
+
+
+@cache.memoize(timeout=24 * 60 * 60)
+def get_live_services_count():
+    return len(service_api_client.get_live_services_data()["data"])
 
 
 def user_has_permissions(*permissions, **permission_kwargs):
@@ -224,6 +229,42 @@ def get_errors_for_csv(recipients, template_type):
         # TODO Update the inline cell error messages
 
     return errors
+
+
+def get_warnings_for_csv(recipients, template_type):
+    """
+    Return a list of non-blocking warning messages for a CSV upload.
+
+    Currently this surfaces duplicate-recipient warnings for issue #3319:
+    duplicate detection is case-insensitive, ignores leading/trailing
+    whitespace, and (for SMS) treats phone numbers in different formats as
+    equivalent. Letters are intentionally excluded because multiple recipients
+    can legitimately share an address.
+    """
+    warnings = []
+
+    if template_type == TemplateType.LETTER.value:
+        return warnings
+
+    if recipients.has_duplicate_recipients:
+        unique_duplicates = recipients.count_of_unique_duplicate_recipients
+        duplicate_rows = recipients.count_of_duplicate_recipient_rows
+        if unique_duplicates == 1:
+            warnings.append(
+                _("1 recipient appears more than once in your list. They will receive the notification multiple times.")
+            )
+        else:
+            warnings.append(
+                _("{} recipients appear more than once in your list. They will receive the notification multiple times.").format(
+                    unique_duplicates
+                )
+            )
+        # Provide a secondary line so that the count of *rows* affected is also visible
+        # (useful when one recipient appears many times).
+        if duplicate_rows != unique_duplicates:
+            warnings.append(_("{} rows are duplicates of an earlier row.").format(duplicate_rows))
+
+    return warnings
 
 
 def localize_and_format_csv_headers(column_headers: list) -> list:
@@ -646,6 +687,21 @@ def guess_name_from_email_address(email_address):
     )
 
 
+def filter_attachments(attachments, exclude_statuses=None, include_statuses=None):
+    if exclude_statuses and include_statuses:
+        raise ValueError("Cannot specify both exclude_statuses and include_statuses")
+
+    filtered = []
+    for attachment in attachments:
+        status = attachment.get("status") or "uploaded"
+        if include_statuses is not None and status not in include_statuses:
+            continue
+        if exclude_statuses is not None and status in exclude_statuses:
+            continue
+        filtered.append(attachment)
+    return filtered
+
+
 def should_skip_template_page(template_type):
     return (
         current_user.has_permissions("send_messages")
@@ -712,7 +768,7 @@ def report_security_finding(
 
     account = response["Account"]
 
-    product = f'arn:aws:securityhub:{current_app.config["AWS_REGION"].lower()}:{account}:product/{account}/default'
+    product = f"arn:aws:securityhub:{current_app.config['AWS_REGION'].lower()}:{account}:product/{account}/default"
     client = boto3.client("securityhub", region_name=current_app.config["AWS_REGION"].lower())
     client.batch_import_findings(
         Findings=[

@@ -3,7 +3,6 @@ from unittest.mock import mock_open, patch
 
 import pytest
 import yaml
-
 from app.sample_template_utils import (
     _load_sample_templates_from_files,
     clear_sample_template_cache,

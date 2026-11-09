@@ -61,6 +61,17 @@ def set_metadata_on_csv_upload(service_id, upload_id, **kwargs):
     )
 
 
+def get_csv_metadata(service_id, upload_id):
+    try:
+        return get_csv_upload(service_id, upload_id).metadata or {}
+    except Exception as e:
+        # Metrics/observability reads must never break the calling request.
+        current_app.logger.warning(
+            "Unable to read metadata for s3 file {}: {}".format(FILE_LOCATION_STRUCTURE.format(service_id, upload_id), e)
+        )
+        return {}
+
+
 def list_bulk_send_uploads():
     s3 = resource("s3")
     bulk_send_bucket = s3.Bucket(current_app.config["BULK_SEND_AWS_BUCKET"])
@@ -103,6 +114,6 @@ def s3download_report_chunks(service_id, report_id, chunk_size=CHUNK_SIZE):
             chunk = body.read(chunk_size)
     except botocore.exceptions.ClientError as e:
         current_app.logger.error(
-            f"Unable to stream S3 file {current_app.config["REPORTS_BUCKET_NAME"]}/{get_report_location(service_id, report_id)}"
+            f"Unable to stream S3 file {current_app.config['REPORTS_BUCKET_NAME']}/{get_report_location(service_id, report_id)}"
         )
         raise e

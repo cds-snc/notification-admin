@@ -1,6 +1,6 @@
 from itertools import chain
 
-from flask import request, url_for
+from flask import g, request, url_for
 from flask_babel import lazy_gettext as _l
 from flask_login import current_user
 
@@ -156,7 +156,9 @@ class Navigation:
                 org_id = _get_org_id_from_view_args()
                 if org_id and not service_id:
                     return self.get_org_nav()
-                return self.get_service_nav()
+                if service_id and g.get("current_service"):
+                    return self.get_service_nav()
+                return self.get_user_nav()
             return self.get_user_nav()
         return self.get_public_nav()
 
@@ -455,7 +457,6 @@ class HeaderNavigation(Navigation):
         "redirect_contact",
         "redirect_service_dashboard",
         "redirect_terms",
-        "redirect_roadmap",
         "redirect_email",
         "redirect_sms",
         "redirect_letters",
@@ -819,7 +820,6 @@ class OrgNavigation(Navigation):
         "new_password",
         "notifications_sent_by_service",
         "redirect_contact",
-        "redirect_roadmap",
         "redirect_service_dashboard",
         "redirect_terms",
         "redirect_email",

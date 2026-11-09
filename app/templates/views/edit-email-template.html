@@ -10,6 +10,7 @@
 {% from "components/template-content.html" import template_content with context %}
 {% from "components/links.html" import content_link with context %}
 {% from "components/tiptap-editor.html" import tiptap_editor with context %}
+{% from "components/notice.html" import notice %}
 
 {% block service_page_title %}
   {{ heading }}
@@ -77,15 +78,31 @@
         {{ textbox(form.subject, width='w-full', highlight_tags=True, rows=2, hint=_("Tell recipients what the email is about. Try to use less than 10 words.", testid="template-subject")) }}
       </div>
       {% set link_html = content_link(label=_('Formatting emails'), href=gca_url_for('formatting_guide'), is_external_link=True, is_sentence_end=True) %}
-      {% set hint = _('GC Notify uses markdown to format emails. This screen shows sample content in markdown. After editing content, select preview for the formatted version.<br/><br/>For help adding or changing formatting, read Guidance on {}').format(link_html) %}
       {{ tiptap_editor(
         editorId='template_content',
         labelId='template_content-label',
         initialContent=form.template_content.data,
         templateType=template_type if template_type else template.template_type,
-        hint=hint,
         initialMode="rte" if current_user.default_editor_is_rte else "markdown") 
       }}
+
+      {% if attachments %}
+        <section class="mb-16">
+          <h2 id="attachments-heading" class="heading-medium">
+            {{ _("Attachments") }}
+          </h2>
+
+          {% call notice('info') %}
+            <p data-testid="file-attachments-edit-template-notice">
+              {{ _('To edit attachments, save changes to your template or press back.') }}
+            </p>
+          {% endcall %}
+
+          {% set template_attachments = attachments %}
+          {% set attachment_list_classes = 'mt-4' %}
+          {% include "partials/template-attachments-list.html" %}
+        </section>
+      {% endif %}
 
       <h2 class="heading-medium">{{ _('Template category') }}</h2>
       {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}
@@ -94,6 +111,24 @@
 
       {% if current_user.platform_admin %}
         {{ radios(form.process_type, hint=_('This is only manageable by platform admins'), use_aria_labelledby=false) }}
+      {% endif %}
+
+      {% if one_click_unsub_enabled and form.use_custom_unsubscribe_url is defined %}
+        <div id="custom-unsub-url-setting" class="form-group mb-8 {{ 'hidden' if '((unsubscribe_url))' not in (form.template_content.data or '') and '((unsub_link))' not in (form.template_content.data or '') else '' }}">
+          <div class="multiple-choice float-none">
+            {{ form.use_custom_unsubscribe_url(class="multiple-choice__input") }}
+            <label class="multiple-choice__label"
+                   for="{{ form.use_custom_unsubscribe_url.id }}"
+                   data-label-unsubscribe-url="{{ _('Use ((unsubscribe_url)) for one-click unsubscribe') }}"
+                   data-label-unsub-link="{{ _('Use ((unsub_link)) for one-click unsubscribe') }}">
+              {% if '((unsub_link))' in (form.template_content.data or '') and '((unsubscribe_url))' not in (form.template_content.data or '') %}
+                {{ _('Use ((unsub_link)) for one-click unsubscribe') }}
+              {% else %}
+                {{ _('Use ((unsubscribe_url)) for one-click unsubscribe') }}
+              {% endif %}
+            </label>
+          </div>
+        </div>
       {% endif %}
       {{ sticky_page_footer_two_submit_buttons(_('Save'), "save", _("Preview"), "preview") }}
     </div>

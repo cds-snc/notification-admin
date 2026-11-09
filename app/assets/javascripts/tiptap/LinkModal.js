@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ExternalLink, Unlink, Check } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
+import { useEditorContext } from "./EditorContext";
 
 const LinkModal = ({
   editor,
@@ -17,6 +18,7 @@ const LinkModal = ({
   const [isCta, setIsCta] = useState(false);
   const modalRef = useRef(null);
   const inputRef = useRef(null);
+  const { t } = useEditorContext();
 
   useEffect(() => {
     // When the modal becomes visible, populate the input with the current
@@ -116,13 +118,19 @@ const LinkModal = ({
     if (formattedUrl) {
       const { from, to } = editor.state.selection;
 
-      // When there's no selection (cursor only), insert the URL as text
-      // and create a markdown link [url](url) so MarkdownLink extension
-      // will convert it to a proper link mark.
-      if (from === to) {
-        const markdownLink = isCta
-          ? `[[cta]][${formattedUrl}](${formattedUrl})[[/cta]]`
-          : `[${formattedUrl}](${formattedUrl})`;
+      // When the cursor is inside an existing link (collapsed selection),
+      // update the link's href across its full range rather than inserting.
+      // When there is no selection and no existing link, insert the URL as
+      // markdown [url](url) so MarkdownLink converts it to a link mark.
+      if (from === to && editor.isActive("link")) {
+        editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          .setLink({ href: formattedUrl })
+          .run();
+      } else if (from === to) {
+        const markdownLink = `[${formattedUrl}](${formattedUrl})`;
         editor.chain().focus().insertContent(markdownLink).run();
       } else {
         // Selection exists, apply link mark to selected text
@@ -217,20 +225,8 @@ const LinkModal = ({
       style={{ top: position.top, left: position.left }}
       data-testid="link-modal"
     >
-      {/* {outline && (
-        <div
-          className="fixed border-2 border-dashed border-blue-500 pointer-events-none bg-blue-500/10"
-          style={{
-            width: outline.width + 4,
-            height: outline.height,
-            left: outline.left - 2,
-            top: position.top - outline.height - 8,
-          }}
-          aria-hidden="true"
-        ></div>
-      )} */}
       <label htmlFor="link-input" className="sr-only">
-        {labelText}
+        {t.enterLink}
       </label>
       <div className="link-modal-row">
         <input

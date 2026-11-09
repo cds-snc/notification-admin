@@ -101,6 +101,7 @@ const ConditionalNodeView = ({
       className="conditional-block has-conditional-label"
       data-type="conditional"
       data-condition={conditionValue}
+      role="group"
     >
       <div className="conditional-trigger" contentEditable={false}>
         <span className="conditional-trigger-text">{prefix}</span>

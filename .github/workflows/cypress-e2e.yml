@@ -6,6 +6,9 @@ on:
 env:
   AWS_DEFAULT_REGION: ca-central-1
   ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
 
 permissions:
   id-token: write
@@ -15,6 +18,16 @@ permissions:
 jobs:
   cypress-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+        - name: shard-1
+          spec: cypress/e2e/admin/ci-shard-1.cy.js
+        - name: shard-2
+          spec: cypress/e2e/admin/ci-shard-2.cy.js
+        - name: shard-3
+          spec: cypress/e2e/admin/ci-shard-3.cy.js
     services:
       postgres:
         image: postgres:11.17-bullseye
@@ -22,15 +35,22 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: chummy
           POSTGRES_DB: notification_api
+          AWS_XRAY_SDK_ENABLED: "false"
         ports:
         - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd "pg_isready -U postgres -d notification_api"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis:6.2@sha256:9e75c88539241ad7f61bc9c39ea4913b354064b8a75ca5fc40e1cef41b645bc0
         ports:
         - 6379:6379
 
     steps:
+    - name: Prepare Ubuntu CA trust
+      uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
     - name: Install system dependencies
       run: sudo apt-get update && sudo apt-get install libssl-dev libcurl4-openssl-dev
 
@@ -43,7 +63,7 @@ jobs:
 
     - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
       with:
-        node-version: '16.x'
+        node-version: '22.23.4'
         cache: 'npm'
 
     - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
@@ -63,7 +83,7 @@ jobs:
 
     # Now checkout the API repo
     - name: Checkout API repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
       with:
         repository: cds-snc/notification-api
         path: api
@@ -125,7 +145,6 @@ jobs:
         echo 'NOTIFY_EMAIL_DOMAIN=staging.notification.cdssandbox.xyz' >> .env
         echo 'ADMIN_CLIENT_SECRET=local_app' >> .env
         echo 'REDIS_URL=redis://localhost:6379' >> .env
-        echo 'REDIS_PUBLISH_URL=redis://localhost:6379' >> .env
         echo 'SQLALCHEMY_DATABASE_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
         echo 'SQLALCHEMY_DATABASE_READER_URI=postgresql://postgres:chummy@localhost:5432/notification_api' >> .env
         echo 'DOCUMENT_DOWNLOAD_API_HOST=http://host.docker.internal:7000' >> .env
@@ -150,8 +169,8 @@ jobs:
       working-directory: api
       run: |
         poetry run flask db upgrade
-        poetry run make run > api.log 2>&1 &
-        poetry run make run-celery-local-filtered > celery.log 2>&1 &
+        poetry run make run-ci > api.log 2>&1 &
+        poetry run make run-celery-local-filtered-ci > celery.log 2>&1 &
         # Give the processes a moment to start up and log initial output
         sleep 5
 
@@ -174,8 +193,22 @@ jobs:
       run: |
         python -m poetry install
         make run-dev > frontend.log 2>&1 &
-        # Wait for the app to start
-        sleep 10
+        frontend_pid=$!
+        for attempt in {1..30}; do
+          if curl --fail --silent --output /dev/null http://localhost:6012/_status; then
+            echo "Frontend is ready"
+            exit 0
+          fi
+          if ! kill -0 "$frontend_pid" 2>/dev/null; then
+            echo "Frontend process exited before becoming ready"
+            cat frontend.log
+            exit 1
+          fi
+          sleep 1
+        done
+        echo "Frontend did not become ready within 30 seconds"
+        cat frontend.log
+        exit 1
 
     - name: Check if services are running
       run: |
@@ -184,7 +217,7 @@ jobs:
         
         echo ""
         echo "Checking frontend status..."
-        curl http://localhost:6012/_status || echo "Frontend service is not running properly"
+        curl --fail --silent --show-error http://localhost:6012/_status
 
         echo ""
         echo "Frontend logs:"
@@ -212,14 +245,13 @@ jobs:
         config: "video=true,screenshotOnRunFailure=true"
         build: npx cypress info
         working-directory: tests_cypress
-        spec: |
-          cypress/e2e/admin/ci.cy.js
+        spec: ${{ matrix.shard.spec }}
 
     - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: always()
       with:
-        name: cypress-artifacts
+        name: cypress-artifacts-${{ matrix.shard.name }}
         path: |
           tests_cypress/cypress/videos
           tests_cypress/cypress/screenshots
@@ -243,3 +275,42 @@ jobs:
       run: |
         echo "==== FRONTEND LOGS ===="
         cat frontend.log || echo "No frontend logs available"
+
+  cypress-component-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Prepare Ubuntu CA trust
+      uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      with:
+        node-version: '22.23.4'
+        cache: 'npm'
+
+    - name: Install root dependencies
+      run: npm ci
+
+    - name: Install Cypress dependencies
+      working-directory: tests_cypress
+      run: npm ci
+
+    - name: Run Cypress component tests
+      uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
+      with:
+        record: false
+        config: "video=true,screenshotOnRunFailure=true"
+        build: npx cypress info
+        working-directory: tests_cypress
+        component: true
+
+    - name: Upload component test artifacts
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      if: always()
+      with:
+        name: cypress-component-artifacts 
+        path: |
+          tests_cypress/cypress/videos
+          tests_cypress/cypress/screenshots
+        retention-days: 7

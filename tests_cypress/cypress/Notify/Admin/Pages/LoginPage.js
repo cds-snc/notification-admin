@@ -1,6 +1,5 @@
 import TouPrompt from './TouPrompt';
-
-const { recurse } = require('cypress-recurse')
+import { recurse } from 'cypress-recurse';
 const ADMIN_COOKIE = "notify_admin_session";
 
 // Parts of the page a user can interact with

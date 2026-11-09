@@ -570,6 +570,7 @@ class RenameServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -586,6 +587,7 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
+            validate_combined_email_header_length,
         ],
     )
 
@@ -890,6 +892,8 @@ class BaseTemplateFormWithCategory(BaseTemplateForm):
 
 class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
     def validate_template_content(self, field):
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
+            raise ValidationError(_l("You cannot store API keys in a template."))
         OnlySMSCharacters()(None, field)
 
     template_content = TextAreaField(
@@ -902,6 +906,14 @@ class SMSTemplateFormWithCategory(BaseTemplateFormWithCategory):
 
 
 class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
+    def validate_template_content(self, field):
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
+            raise ValidationError(_l("You cannot store API keys in a template."))
+
+    def validate_subject(self, field):
+        if field.data and current_app.config.get("API_KEY_PREFIX", "") in field.data:
+            raise ValidationError(_l("You cannot store API keys in a template."))
+
     subject = TextAreaField(_l("Subject line of the email"), validators=[DataRequired(message=_l("This cannot be empty"))])
 
     template_content = TextAreaField(
@@ -911,6 +923,8 @@ class EmailTemplateFormWithCategory(BaseTemplateFormWithCategory):
             NoCommasInPlaceHolders(),
         ],
     )
+
+    use_custom_unsubscribe_url = BooleanField(_l("Use ((unsubscribe_url)) for one-click unsubscribe"))
 
 
 class LetterTemplateFormWithCategory(EmailTemplateFormWithCategory):
@@ -1010,9 +1024,13 @@ class ChooseTimeForm(StripWhitespaceForm):
 
 
 class CreateKeyForm(StripWhitespaceForm):
-    def __init__(self, existing_keys, *args, **kwargs):
+    def __init__(self, existing_keys, ff_report_api=False, *args, **kwargs):
         self.existing_key_names = [key["name"].lower() for key in existing_keys if not key["expiry_date"]]
         super().__init__(*args, **kwargs)
+        if ff_report_api:
+            self.permissions.choices = list(self.permissions.choices) + [
+                ("manage_reports", _l("Allow this key to create and download delivery reports"))
+            ]
 
     key_type = RadioField(
         _l("Type of API key"),
@@ -1021,6 +1039,11 @@ class CreateKeyForm(StripWhitespaceForm):
     key_name = StringField(
         "Description of key",
         validators=[DataRequired(message=_l("You need to give the key a name")), Length(max=255)],
+    )
+
+    permissions = SelectMultipleField(
+        _l("API key permissions"),
+        choices=[("manage_templates", _l("Allow this key to manage templates (create, update, or delete)"))],
     )
 
     def validate_key_name(self, key_name):

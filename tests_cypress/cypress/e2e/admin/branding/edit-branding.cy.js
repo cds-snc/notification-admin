@@ -10,9 +10,6 @@ const CYPRESS_SERVICE_ID = getServiceID("CYPRESS");
 
 describe("Edit Branding", () => {
   beforeEach(() => {
-    // stop the recurring dashboard fetch requests
-    cy.intercept("GET", "**/dashboard.json", {});
-
     cy.login();
 
     cy.visit(`/services/${CYPRESS_SERVICE_ID}/edit-branding`);
@@ -59,11 +56,7 @@ describe("Edit Branding", () => {
       .and("contain", "Setting updated");
     BrandingSettingsPage.Components.TemplatePreview()
       .first()
-      .should(
-        "have.attr",
-        "alt",
-        "Government of Canada / Gouvernement du Canada",
-      );
+      .should("have.attr", "alt", "Government of Canada");
   });
 
   it("Saves French-first logo when selected", () => {
@@ -74,11 +67,7 @@ describe("Edit Branding", () => {
       .and("contain", "Setting updated");
     BrandingSettingsPage.Components.TemplatePreview()
       .first()
-      .should(
-        "have.attr",
-        "alt",
-        "Gouvernement du Canada / Government of Canada",
-      );
+      .should("have.attr", "alt", "Gouvernement du Canada");
   });
 
   it("Navigates to branding pool when select another logo from test link is clicked", () => {

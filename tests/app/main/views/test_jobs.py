@@ -2,8 +2,10 @@ import json
 import uuid
 
 import pytest
+from app.main.views.jobs import NOTIFICATION_PREVIEW_MAX_LENGTH, _get_job_counts, _truncate_text_preserving_markup
 from flask import url_for
 from freezegun import freeze_time
+from markupsafe import Markup
 
 from tests import job_json, notification_json, sample_uuid
 from tests.conftest import (
@@ -18,6 +20,128 @@ from tests.conftest import (
 
 
 @pytest.mark.parametrize(
+    "content, length, expected",
+    [
+        ("Hello world", 200, "Hello world"),
+        ("Hello world", 5, "Hello"),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            20,
+            "Hello ",
+        ),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            50,
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>',
+        ),
+        (
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This is a reminder',
+            60,
+            'Hello <mark class="placeholder-redacted">[hidden]</mark>This',
+        ),
+        ("Résumé", 5, "Résu"),
+        # The production limit is bytes, not characters; this is plain content over the limit.
+        ("x" * 205, NOTIFICATION_PREVIEW_MAX_LENGTH, "x" * 200),
+        (
+            # Byte 200 lands inside the opening <mark> tag, so the partial tag is discarded.
+            "x" * 177 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 177,
+        ),
+        (
+            # Byte 200 lands inside the [hidden] text, so the open <mark> is closed again.
+            "x" * 160 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 160 + '<mark class="placeholder-redacted">[hidd</mark>',
+        ),
+        (
+            # Byte 200 lands inside the closing </mark> tag, so the complete tag is restored.
+            "x" * 155 + '<mark class="placeholder-redacted">[hidden]</mark>',
+            NOTIFICATION_PREVIEW_MAX_LENGTH,
+            "x" * 155 + '<mark class="placeholder-redacted">[hidden]</mark>',
+        ),
+    ],
+)
+# Covers the existing truncation behavior as well as each possible position within a redaction tag.
+def test_truncate_text_preserving_markup(content, length, expected):
+    result = _truncate_text_preserving_markup(Markup(content), length)
+
+    assert result == Markup(expected)
+    assert isinstance(result, Markup)
+
+
+# Uses the real notification shape to ensure multiple redaction tags remain balanced at the production limit.
+def test_truncate_redacted_production_message_at_production_limit():
+    content = (
+        "New Features Service: bc-parks-reservations: Hello "
+        '<mark class="placeholder-redacted">[hidden]</mark>\n\n'
+        "This is a reminder that you have reserved "
+        '<mark class="placeholder-redacted">[hidden]</mark> day-use pass tomorrow for '
+        '<mark class="placeholder-redacted">[hidden]</mark> - '
+        '<mark class="placeholder-redacted">[hidden]</mark>.'
+    )
+
+    result = _truncate_text_preserving_markup(Markup(content), NOTIFICATION_PREVIEW_MAX_LENGTH)
+    result_as_text = str(result)
+
+    assert len(result_as_text.encode("utf-8")) <= 200 + len("</mark>")
+    assert result_as_text.count("<mark ") == result_as_text.count("</mark>")
+    assert result_as_text.rfind("<") <= result_as_text.rfind(">")
+
+
+@pytest.mark.parametrize(
+    "job, expected_in_transit",
+    [
+        # Uses the actual sending statistic when present.
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+                "notifications_sending": 57,
+            },
+            57,
+        ),
+        # Scheduled jobs are always shown as 0 in transit.
+        (
+            {
+                "job_status": "scheduled",
+                "notification_count": 30,
+                "notifications_delivered": 0,
+                "notifications_failed": 0,
+                "notifications_sending": 0,
+            },
+            0,
+        ),
+        # Falls back to the clamped subtraction when no sending stat is available,
+        # and never returns a negative number (delivered + failed can exceed
+        # notification_count when duplicate notifications are created).
+        (
+            {
+                "job_status": "finished",
+                "notification_count": 33169,
+                "notifications_delivered": 33006,
+                "notifications_failed": 166,
+            },
+            0,
+        ),
+        (
+            {"job_status": "finished", "notification_count": 30, "notifications_delivered": 10, "notifications_failed": 5},
+            15,
+        ),
+    ],
+)
+def test_get_job_counts_in_transit(app_, job, expected_in_transit):
+    job = {"service": SERVICE_ONE_ID, "id": "job-id", **job}
+
+    with app_.test_request_context():
+        counts = dict((label, count) for label, _query_param, _link, count in _get_job_counts(job))
+
+    assert counts["in transit"] == expected_in_transit
+
+
+@pytest.mark.parametrize(
     "user",
     [
         create_active_user_with_permissions(),
@@ -29,13 +153,13 @@ from tests.conftest import (
     [
         (
             ("List name Details"),
-            ("send_me_later.csv " "Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
-            ("even_later.csv " "Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
+            ("send_me_later.csv Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ],
 )
@@ -110,10 +234,10 @@ def test_jobs_page_doesnt_show_scheduled_on_page_2(
     for index, row in enumerate(
         (
             ("List name Sending Delivered Failed"),
-            ("export 1/1/2016.xls " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("all email addresses.xlsx " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("applicants.ods " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
-            ("thisisatest.csv " "Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("applicants.ods Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
+            ("thisisatest.csv Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
         )
     ):
         assert normalize_spaces(page.select("tr")[index].text) == row
@@ -200,7 +324,7 @@ def test_should_show_page_for_one_job(
     )
 
     assert normalize_spaces(dashboard_table.select_one("tbody tr").text) == normalize_spaces(
-        "6502532222 " "template content " "No " "Delivered 11:10:00.061258"
+        "6502532222 template content No Delivered 11:10:00.061258"
     )
     assert dashboard_table.select_one("tbody tr a")["href"] == url_for(
         "main.view_notification",

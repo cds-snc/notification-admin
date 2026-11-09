@@ -1,9 +1,8 @@
 from unittest.mock import call
 
 import pytest
-from requests import HTTPError
-
 from app.notify_client.template_category_api_client import TemplateCategoryClient
+from requests import HTTPError
 
 
 @pytest.fixture

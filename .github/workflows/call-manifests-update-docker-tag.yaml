@@ -7,16 +7,24 @@ on:
       MANIFESTS_WORKFLOW_TOKEN:
         required: true
 
+env: # temporary CA mitigation
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
+
 jobs:
   update-docker-tag-in-manifests:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
       - name: Set Docker Tag
-        run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        id: image-tag
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
         env:
           GITHUB_SHA: ${{ github.sha }}
 
@@ -28,4 +36,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.MANIFESTS_WORKFLOW_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/cds-snc/notification-manifests/dispatches \
-            -d '{"event_type":"update-docker-image","client_payload":{"component":"ADMIN","docker_tag":"${{ env.DOCKER_TAG }}"}}'
+            -d '{"event_type":"update-docker-image","client_payload":{"component":"ADMIN","docker_tag":"${{ steps.image-tag.outputs.tag }}"}}'

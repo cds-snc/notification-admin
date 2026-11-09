@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from app.cloudfoundry_config import extract_cloudfoundry_config
 
 

@@ -1,5 +1,4 @@
 import pytest
-
 from app.notify_client.newsletter_api_client import NewsletterAPIClient
 
 

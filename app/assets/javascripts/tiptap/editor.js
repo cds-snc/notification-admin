@@ -1,5 +1,10 @@
+import initTelemetry from "../telemetry/init.js";
+
+// Initialize telemetry first, before anything else.
+initTelemetry();
+
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import SimpleEditor from "./SimpleEditor";
 
 /**
@@ -17,8 +22,10 @@ export const load = function (
   preferenceUpdateUrl,
   csrfToken,
   features,
+  templateType = "email",
 ) {
-  ReactDOM.render(
+  const root = createRoot(element);
+  root.render(
     <SimpleEditor
       inputId={id}
       labelId={labelId}
@@ -29,7 +36,12 @@ export const load = function (
       preferenceUpdateUrl={preferenceUpdateUrl}
       csrfToken={csrfToken}
       features={features}
+      templateType={templateType}
     />,
-    element,
   );
 };
+
+// Expose as window global for dynamic script loading compatibility
+if (typeof window !== "undefined") {
+  window.Tiptap = { load };
+}

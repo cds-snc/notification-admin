@@ -11,35 +11,31 @@ content: |
   [[fr]]
   *La version française suit*
   [[/fr]]
+
   [[en]]
   Hi ((name)),
   [[/en]]
-  [[fr]]
-  *Fin de la version anglaise*
-  [[/fr]]
+
   ---
+
   [[fr]]
   Bonjour ((name)),
-
-  *Fin de la version française*
   [[/fr]]
 example_content: |
   [[fr]]
   *La version française suit*
   [[/fr]]
+
   [[en]]
   Hi Jane Smith,
 
   This section of the message is marked as English content. Screen readers will read this section with an English voice. 
   [[/en]]
-  [[fr]]
-  *Fin de la version anglaise*
-  [[/fr]]
+
   ---
+
   [[fr]]
   Bonjour Jane Smith,
 
   Cette portion du message est balisé pour être en français. Les lecteurs d'écran lirons cette portion avec une voix française. 
-
-  *Fin de la version française*
   [[/fr]]

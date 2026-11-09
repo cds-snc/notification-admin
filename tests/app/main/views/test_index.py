@@ -1,10 +1,10 @@
 import pytest
-from bs4 import BeautifulSoup
-from flask import current_app, url_for
-
 from app.articles.routing import gca_url_for
 from app.main.forms import FieldWithLanguageOptions
 from app.utils import documentation_url
+from bs4 import BeautifulSoup
+from flask import current_app, url_for
+
 from tests.conftest import a11y_test, normalize_spaces, sample_uuid
 
 services = [
@@ -145,7 +145,7 @@ def test_security_txt(client):
     security_policy = gca_url_for("security", _external=True)
 
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",
@@ -157,8 +157,6 @@ def test_security_txt(client):
 @pytest.mark.parametrize(
     "view",
     [
-        "pricing",
-        "roadmap",
         "email",
         "sms",
         "letters",
@@ -172,6 +170,14 @@ def test_static_pages(
 ):
     page = client_request.get("main.{}".format(view))
     assert not page.select_one("meta[name=description]")
+
+
+def test_pricing_page_requires_platform_admin(
+    platform_admin_client,
+    mock_get_organisation_by_domain,
+):
+    response = platform_admin_client.get(url_for("main.pricing"))
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -211,7 +217,6 @@ def test_activity_page(mocker, client, stats, services):
 @pytest.mark.parametrize(
     "view, expected_view",
     [
-        ("redirect_roadmap", "roadmap"),
         ("redirect_email", "email"),
         ("redirect_sms", "sms"),
         ("redirect_letters", "letters"),
@@ -291,6 +296,36 @@ def test_email_branding_preview(
 ):
     client_request.get("main.email_template", _test_page_title=False, **extra_args)
     assert mock_get_email_branding.called is email_branding_retrieved
+
+
+@pytest.mark.parametrize(
+    "branding_style",
+    [
+        "..",
+        "%2e%2e",
+        "..\t/_status",
+        "..\r/_status",
+        "..\n/_status",
+        "..\t/organisations",
+        "..\t/email-branding",
+        "..#zzz",
+        "..?zzz",
+        "not-a-uuid",
+        "",
+    ],
+)
+def test_email_branding_preview_rejects_invalid_branding_style(
+    client_request,
+    mock_get_email_branding,
+    branding_style,
+):
+    client_request.get(
+        "main.email_template",
+        _expected_status=400,
+        _test_page_title=False,
+        branding_style=branding_style,
+    )
+    assert mock_get_email_branding.called is False
 
 
 @pytest.mark.skip(reason="feature not in use")

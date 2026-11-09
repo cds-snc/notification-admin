@@ -65,11 +65,11 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         """
         return self.get("/service", params=params_dict)
 
-    def get_stats_by_month(self, filter_heartbeats=False):
+    def get_stats_by_month(self):
         """
         Retrieve notifications stats by month.
         """
-        return self.get("/service/delivered-notifications-stats-by-month-data", params={"filter_heartbeats": filter_heartbeats})
+        return self.get("/service/delivered-notifications-stats-by-month-data")
 
     def find_services_by_name(self, service_name):
         return self.get("/service/find-services-by-name", params={"service_name": service_name})
@@ -186,8 +186,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         return self.update_service(service_id, **properties)
 
     @cache.delete("service-{service_id}")
-    def archive_service(self, service_id):
-        return self.post("/service/{}/archive".format(service_id), data=None)
+    def archive_service(self, service_id, user_id):
+        return self.post("/service/{}/archive/{}".format(service_id, user_id), data=None)
 
     @cache.delete("service-{service_id}")
     def suspend_service(self, service_id, user_id):
@@ -219,6 +219,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         parent_folder_id=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Create a service template.
@@ -237,6 +238,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             data.update({"subject": subject})
         if parent_folder_id:
             data.update({"parent_folder_id": parent_folder_id})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template".format(service_id)
         return self.post(endpoint, data)
@@ -255,6 +258,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
         process_type=None,
         template_category_id=None,
         text_direction_rtl=False,
+        use_custom_unsubscribe_url=None,
     ):
         """
         Update a service template.
@@ -272,6 +276,8 @@ class ServiceAPIClient(NotifyAdminAPIClient):
 
         if subject:
             data.update({"subject": subject})
+        if use_custom_unsubscribe_url is not None:
+            data.update({"use_custom_unsubscribe_url": use_custom_unsubscribe_url})
 
         data = _attach_current_user(data)
         endpoint = "/service/{0}/template/{1}".format(service_id, id_)
@@ -315,7 +321,7 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             endpoint = "{base}/version/{version}".format(base=endpoint, version=version)
         return self.get(endpoint)
 
-    @cache.set("template-{template_id}-versions")
+    @cache.set_service_owned("template-{template_id}-versions")
     def get_service_template_versions(self, service_id, template_id):
         """
         Retrieve a list of versions for a template

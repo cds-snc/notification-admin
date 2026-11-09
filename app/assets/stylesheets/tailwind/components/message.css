@@ -1,7 +1,7 @@
 @layer components {
   /*! purgecss start ignore */
   .message-name {
-    @apply m-0 leading-tight font-bold text-title;
+    @apply m-0 leading-tight text-title;
   }
   @media (min-width: theme("screens.sm")) {
     .message-name {

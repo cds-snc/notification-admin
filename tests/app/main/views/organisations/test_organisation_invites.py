@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 from unittest.mock import ANY
 
 import pytest
+from app.models.user import InvitedOrgUser
 from bs4 import BeautifulSoup
 from flask import url_for
 from tests.conftest import ORGANISATION_ID, captured_templates, normalize_spaces
-
-from app.models.user import InvitedOrgUser
 
 
 def test_view_team_members(
@@ -287,11 +286,14 @@ def test_org_user_registers_with_email_already_in_use(
     )
 
     assert response.status_code == 302
-    assert response.location == url_for("main.verify")
+    assert response.location == url_for("main.sign_in")
 
     mock_get_user_by_email.assert_called_once_with(session["invited_org_user"]["email_address"])
     assert mock_register_user.called is False
     assert mock_send_already_registered_email.called is False
+    assert mock_accept_org_invite.called is False
+    with client.session_transaction() as session:
+        assert "user_details" not in session
 
 
 def test_org_user_registration(

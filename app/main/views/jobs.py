@@ -60,6 +60,16 @@ def _truncate_text_preserving_markup(text, length):
     """Truncate text while preserving Markup type if present."""
     is_markup = isinstance(text, Markup)
     truncated = unicode_truncate(str(text), length)
+
+    # If truncation ends between '<' and '>', discard the incomplete tag.
+    if truncated.rfind("<") > truncated.rfind(">"):
+        truncated = truncated[: truncated.rfind("<")]
+
+    # The redaction tag may still be open if its closing tag was truncated.
+    open_marks = truncated.count("<mark ") - truncated.count("</mark>")
+    if open_marks > 0:
+        truncated += "</mark>" * open_marks
+
     return Markup(truncated) if is_markup else truncated
 
 
@@ -404,7 +414,7 @@ def get_status_filters(service, message_type, statistics):
         }
     else:
         stats = statistics[message_type]
-    stats["sending"] = stats["requested"] - stats["delivered"] - stats["failed"]
+    stats["sending"] = max(0, stats["requested"] - stats["delivered"] - stats["failed"])
 
     filters = [
         # key, label, option
@@ -431,11 +441,20 @@ def get_status_filters(service, message_type, statistics):
 
 
 def _get_job_counts(job):
-    sending = (
-        0
-        if job["job_status"] == "scheduled"
-        else (job.get("notification_count", 0) - job.get("notifications_delivered", 0) - job.get("notifications_failed", 0))
-    )
+    # "in transit" is the number of notifications still being sent. Use the
+    # actual sending/pending/created count from the job statistics rather than
+    # deriving it as (notification_count - delivered - failed): a job can create
+    # more notifications than notification_count (e.g. duplicate rows from task
+    # retries), which made the derived value go negative.
+    if job["job_status"] == "scheduled":
+        sending = 0
+    elif "notifications_sending" in job:
+        sending = job["notifications_sending"]
+    else:
+        sending = max(
+            0,
+            job.get("notification_count", 0) - job.get("notifications_delivered", 0) - job.get("notifications_failed", 0),
+        )
     return [
         (
             label,

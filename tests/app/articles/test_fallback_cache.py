@@ -3,12 +3,12 @@ from unittest.mock import MagicMock, Mock
 
 import requests
 import requests_mock
+from app.articles.api import get_content
 
 from app.articles import (
     GC_ARTICLES_FALLBACK_CACHE_PREFIX,
     GC_ARTICLES_FALLBACK_CACHE_TTL,
 )
-from app.articles.api import get_content
 from tests import MockRedis
 
 gc_articles_api = "articles.alpha.canada.ca/notification-gc-notify"

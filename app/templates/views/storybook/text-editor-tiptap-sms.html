@@ -1,0 +1,23 @@
+{% from "components/tiptap-editor.html" import tiptap_editor with context %}
+
+<h2 class="heading-medium">
+  Tiptap Editor — SMS (restricted)
+</h2>
+
+<p>SMS only supports variables and conditional text/sections. Markdown-style characters like <code>#</code>, <code>*</code>, <code>-</code> and <code>&gt;</code> have no formatting extensions registered, so they should stay as literal text rather than becoming headings, lists, emphasis or blockquotes.</p>
+{{ tiptap_editor(
+  'tiptap-editor-sms',
+  'tiptap-editor-sms-label',
+  'Hi ((name)), your appointment is on ((date)).
+
+((eligible??You qualify for a refund.))
+
+# not a heading
+* not a bullet
+- not a bullet either
+> not a blockquote
+**not bold** and _not italic_',
+  templateType='sms'
+) }}
+
+<p class="mt-4"><a href="{{ url_for('main.storybook', component='text-editor-tiptap') }}" class="text-blue-500 hover:underline">&larr; Back to Tiptap Editor</a></p>

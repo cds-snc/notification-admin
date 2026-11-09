@@ -7,6 +7,9 @@ APP_VERSION_FILE = app/version.py
 
 GIT_BRANCH ?= $(shell git symbolic-ref --short HEAD 2> /dev/null || echo "detached")
 GIT_COMMIT ?= $(shell git rev-parse HEAD 2> /dev/null || echo "")
+AWS_PROFILE ?= notify-staging
+AWS_CLI ?= /usr/local/bin/aws
+AWS_PROFILE_ENV = $(if $(and $(AWS_ACCESS_KEY_ID),$(AWS_SECRET_ACCESS_KEY)),,AWS_PROFILE="$(AWS_PROFILE)")
 
 
 .PHONY: help
@@ -25,7 +28,7 @@ test:
 test-translations: babel
 	poetry run pybabel extract -F babel.cfg -k _l -o /tmp/messages.po . && poetry run po2csv /tmp/messages.po /tmp/messages.csv
 	rm /tmp/messages.po
-	python scripts/test-translations.py /tmp/messages.csv
+	python scripts/test_translations.py /tmp/messages.csv
 	rm /tmp/messages.csv
 
 .PHONY: babel
@@ -38,6 +41,10 @@ babel:
 .PHONY: search-csv
 search-csv:
 	python scripts/search_csv.py
+
+.PHONY: cleanup-translations
+cleanup-translations: ## Find unused translations in fr.csv
+	poetry run python scripts/cleanup_translations.py
 
 .PHONY: freeze-requirements
 freeze-requirements:
@@ -52,17 +59,34 @@ coverage: venv ## Create coverage report
 	. venv/bin/activate && coveralls
 
 .PHONY: run-dev
-run-dev:
-	npm run watch & \
-    poetry run flask run -p 6012 --host=localhost
+run-dev: aws-login
+	@npm run watch & WATCH_PID=$$!; \
+	trap 'kill $$WATCH_PID 2>/dev/null || true' EXIT INT TERM; \
+	$(AWS_PROFILE_ENV) FLASK_DEBUG=1 poetry run python -m debugpy --listen localhost:5678 -m flask run -p 6012 --host=0.0.0.0
+
+.PHONY: aws-login
+aws-login: ## Log in to AWS SSO for local staging development
+	@if [[ -n "$${AWS_ACCESS_KEY_ID:-}" && -n "$${AWS_SECRET_ACCESS_KEY:-}" ]]; then \
+		echo "AWS environment credentials detected; skipping SSO login"; \
+	else \
+		test -x "$(AWS_CLI)" || { echo "AWS CLI v2 is required; rebuild the dev container"; exit 1; }; \
+		"$(AWS_CLI)" --version 2>&1 | grep -q 'aws-cli/2\.' || { echo "AWS CLI v2 is required; rebuild the dev container"; exit 1; }; \
+		if identity_output=$$("$(AWS_CLI)" sts get-caller-identity --profile "$(AWS_PROFILE)" 2>&1); then \
+		echo "AWS SSO session already active for $(AWS_PROFILE)"; \
+		else \
+		printf '%s\n' "$$identity_output"; \
+		echo "AWS SSO session missing or expired; starting login"; \
+		"$(AWS_CLI)" sso login --profile "$(AWS_PROFILE)"; \
+		fi; \
+	fi
 
 .PHONY: watch
 watch:
 	npm run watch
 
 .PHONY: run-gunicorn
-run-gunicorn:
-	PORT=6012 poetry run gunicorn -c gunicorn_config.py application
+run-gunicorn: aws-login
+	$(AWS_PROFILE_ENV) PORT=6012 poetry run gunicorn -c gunicorn_config.py application
 
 .PHONY: format
 format:

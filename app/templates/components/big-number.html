@@ -50,7 +50,7 @@
             </div>
             <div class="px-6 flex justify-between items-end ">
               <span class="underline">{{_('Review reports') }}</span>
-              <i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i>
+              <i aria-hidden="true" class="p-1 fa-solid fa-arrow-right"></i>
             </div>
           {% else %}
             {{ "{:,}".format(failures) }}
@@ -99,7 +99,7 @@
       <div class="p-6 flex flex-col gap-4 no-underline text-current">
         <span class="review-email-label">{{ detailed_label }}</span>
         {% if failure_link %}
-          <span class="w-full no-underline border-b-1 border-current flex gap-4 justify-between items-end">{{ failure_link_label }}<i aria-hidden="true" class="p-1 fa-solid fa-fas fa-arrow-right"></i></span>
+          <span class="w-full no-underline border-b-1 border-current flex gap-4 justify-between items-end">{{ failure_link_label }}<i aria-hidden="true" class="p-1 fa-solidfa-arrow-right"></i></span>
         {% endif %}
       </div>
       {% if failure_link %}

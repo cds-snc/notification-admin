@@ -2,15 +2,15 @@ import ast
 import inspect
 
 import pytest
-from flask import request
-from werkzeug.exceptions import Forbidden, Unauthorized
-
 from app.main.views.index import index
 from app.models.roles_and_permissions import (
     translate_permissions_from_admin_roles_to_db,
     translate_permissions_from_db_to_admin_roles,
 )
 from app.utils import user_has_permissions
+from flask import request
+from werkzeug.exceptions import Forbidden, Unauthorized
+
 from tests import service_json
 from tests.conftest import (
     ORGANISATION_ID,

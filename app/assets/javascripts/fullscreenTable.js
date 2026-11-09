@@ -50,7 +50,7 @@
             top: this.topOffset,
           }),
         )
-        .css("position", "absolute");
+        .css("position", "relative");
 
       this.$scrollableTable = this.$component.find(
         ".fullscreen-scrollable-table",
@@ -73,9 +73,12 @@
         .find(".table-field-index")
         .outerWidth();
 
+      const containerWidth = this.$component.parent().width();
+      const scrollableWidth = containerWidth - indexColumnWidth;
+
       this.$scrollableTable.css({
-        width: this.$component.parent().width() - indexColumnWidth,
-        "margin-left": indexColumnWidth,
+        width: scrollableWidth + "px",
+        "margin-left": indexColumnWidth + "px",
       });
 
       this.$fixedTable.width(indexColumnWidth + 4);

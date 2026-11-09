@@ -32,25 +32,26 @@ https://github.com/alphagov/notifications-admin
 
 Languages needed
 - Python 3.12
-- [Node](https://nodejs.org/) 10.15.3 or greater
-- [npm](https://www.npmjs.com/) 6.4.1 or greater
+- [Node](https://nodejs.org/) 22.22.3
+- [npm](https://www.npmjs.com/)
 
 ```shell
     brew install node
 ```
 
 [NPM](npmjs.org) is Node's package management tool. `n` is a tool for managing
-different versions of Node. The following installs `n` and uses the long term support (LTS)
+different versions of Node. The following installs `n` and uses the repo's pinned
 version of Node.
 
 ```shell
     npm install -g n
-    n lts
-    npm rebuild node-sass
+    n 22.22.3
 ```
 
 
 ### Local installation instruction
+
+For local AWS access, configure the `notify-staging` SSO profile in your host `~/.aws/config` before opening the devcontainer. The container mounts this configuration and keeps the SSO session cache in a persistent Docker volume. Remove `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from your `.env`; local app startup uses `make aws-login` to authenticate and select the `notify-staging` profile. Rebuild and reopen the devcontainer after adding or changing the host profile.
 
 On OS X:
 
@@ -331,19 +332,18 @@ https://github.com/alphagov/notifications-admin
 
 Langages nécessaires
 - Python 3.12
-- [Node](https://nodejs.org/) 10.15.3 ou supérieur
-- [npm](https://www.npmjs.com/) 6.4.1 ou plus
+- [Node](https://nodejs.org/) 22.22.3
+- [npm](https://www.npmjs.com/)
 ```shell
 brew install node
 ```
 
 [NPM](npmjs.org) est l'outil de gestion des paquets de Node. `n` est un outil de gestion des
-différentes versions de Node. Ce qui suit installe `n` et utilise le support à long terme (LTS)
-version de Node.
+différentes versions de Node. Ce qui suit installe `n` et utilise la version de Node
+épinglée pour ce dépôt.
 ```shell
 npm install -g n
-n lts
-npm rebuild node-sass
+n 22.22.3
 ```
 
 ### Instruction d'installation locale

@@ -27,3 +27,11 @@
   </div>
 
   {% endblock %}
+
+{% block page_script %}
+  {{ super() }}
+  
+  {% if component == 'scheduler' %}
+    <script nonce="{{ request_nonce }}" type="module" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/scheduler/scheduler.js{% else %}{{ asset_url('javascripts/scheduler.min.js') }}{% endif %}"></script>
+  {% endif %}
+{% endblock %}

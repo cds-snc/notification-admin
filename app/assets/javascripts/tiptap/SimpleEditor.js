@@ -31,12 +31,48 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
+import SmsPlainTextMarkdown from "./CustomComponents/SmsPlainTextMarkdown";
 import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
-import "./editor.compiled.css";
 import LinkModal from "./LinkModal";
 import MenubarShortcut from "./MenubarShortcut";
+import { EditorProvider } from "./EditorContext";
+import { AnnouncerPlugin } from "./AnnouncerPlugin";
+import { shortcuts, translations } from "./localization";
+
+// In TipTap 3, `editor.view` returns a Proxy stub (which is truthy) until the
+// underlying ProseMirror view is actually mounted. Accessing most properties on
+// that stub — e.g. `dom`, `coordsAtPos`, `posAtDOM` — THROWS:
+//   "[tiptap error]: The editor view is not available. Cannot access
+//    view['dom']. The editor may not be mounted yet."
+// Optional chaining (`editor?.view?.dom`) does NOT protect against this because
+// the `.dom` getter on the stub is what throws. Effects can run after the
+// editor instance exists but before its view is mounted (timing-dependent,
+// which is why this surfaces intermittently on some browsers), so we must guard
+// every real view access with this helper.
+const isEditorViewMounted = (editor) => {
+  if (!editor || editor.isDestroyed) return false;
+  try {
+    return !!editor.view?.dom;
+  } catch {
+    return false;
+  }
+};
+
+// prosemirror-markdown's serializer backslash-escapes punctuation (`*_~[]#>-+.)
+// that would otherwise be read back as formatting syntax, and tiptap-markdown's
+// own default text-node serializer additionally HTML-entity-escapes < and >
+// (so markdown-to-HTML email rendering doesn't misread them as tags). SMS has
+// no formatting extensions to interpret any of that syntax and no HTML
+// rendering step to decode the entities, so both forms of escaping are pure
+// noise that would otherwise be sent to recipients as literal backslashes or
+// "&lt;"/"&gt;" text.
+const unescapeSmsMarkdown = (markdown) =>
+  markdown
+    .replace(/\\([`*\\~[\]_\-#>+.])/g, "$1")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
 
 const SimpleEditor = ({
   inputId,
@@ -48,24 +84,37 @@ const SimpleEditor = ({
   preferenceUpdateUrl,
   csrfToken,
   features = {},
+  templateType = "email",
 }) => {
+  const isSms = templateType === "sms";
+  const t = translations[lang] || translations.en;
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-  const [selectionHighlight, setSelectionHighlight] = useState(null);
   const [isMarkdownView, setIsMarkdownView] = useState(
     initialMode === "markdown",
   );
   const [markdownValue, setMarkdownValue] = useState(initialContent || "");
-  const [justOpenedLink, setJustOpenedLink] = useState(false);
-  const currentLinkRef = useRef(null); // Track current link href to avoid repeated opens
-  const lastUserEventRef = useRef({ type: null, key: null, time: 0 });
   const hasTrackedEditRef = useRef({ rte: false, markdown: false }); // GA: fire editor_content_changed once per mode per page load
+  const shortcutHintId = labelId
+    ? `${labelId}-shortcut-hint`
+    : "rte-shortcut-hint";
+  const toolbarShortcutDisplay = shortcuts.toolbarFocusDisplay;
+  const localized = translations[lang] || translations.en;
+  const shortcutHintTemplate =
+    localized.toolbarShortcutHintTemplate ||
+    translations.en.toolbarShortcutHintTemplate;
+  const shortcutHintText = shortcutHintTemplate.replace(
+    "{shortcut}",
+    toolbarShortcutDisplay,
+  );
   const viewToggleLabels = {
     en: { markdown: "Edit markdown", rte: "Return to rich text" },
     fr: { markdown: "Modifier le Markdown", rte: "Revenir à l'éditeur riche" },
   };
   const viewLabel = viewToggleLabels[lang] || viewToggleLabels.en;
   const toggleLabel = isMarkdownView ? viewLabel.rte : viewLabel.markdown;
+
+  const announcerRef = useRef(null);
 
   const conditionalLabels = {
     en: {
@@ -110,39 +159,6 @@ const SimpleEditor = ({
     }
   }, [isMarkdownView, modeInputId]);
 
-  // Helper function to get selection bounds for highlighting relative to modal position
-  const getSelectionBounds = () => {
-    try {
-      const selection = window.getSelection();
-      if (!selection.rangeCount) return null;
-
-      const range = selection.getRangeAt(0);
-
-      // For empty/collapsed selections, create a small highlight at cursor position
-      if (range.collapsed) {
-        const rect = range.getBoundingClientRect();
-        return {
-          top: rect.top,
-          left: Math.max(0, rect.left - 2), // Small margin for visibility
-          width: 4, // Small width for cursor highlight
-          height: rect.height || 20, // Fallback height
-        };
-      }
-
-      // For text selections, get the full bounding rectangle
-      const rect = range.getBoundingClientRect();
-      return {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      };
-    } catch (err) {
-      console.warn("Error getting selection bounds:", err);
-      return null;
-    }
-  };
-
   const editor = useEditor({
     shouldRerenderOnTransaction: true,
     extensions: [
@@ -153,18 +169,37 @@ const SimpleEditor = ({
       HardBreak,
       History,
 
-      // Node extensions that match toolbar features
-      Heading.configure({
-        levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
-      }),
-      Blockquote.configure({
-        content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
-      }),
-      BulletList,
-      OrderedList,
-      ListItem,
-      HorizontalRule,
-      ...(featureTables
+      // Universal announcer for all nodes and marks
+      AnnouncerPlugin(t, announcerRef),
+
+      // Node extensions that match toolbar features - not available in SMS
+      ...(!isSms
+        ? [
+            Heading.configure({
+              levels: [1, 2], // Only allow H2 and H3 as shown in toolbar
+            }),
+            Blockquote.configure({
+              content: "block+", // Allow any block content inside blockquotes (paragraphs, lists, etc.)
+            }),
+            BulletList.configure({
+              HTMLAttributes: {
+                role: "list",
+              },
+            }),
+            OrderedList.configure({
+              HTMLAttributes: {
+                role: "list",
+              },
+            }),
+            ListItem,
+            HorizontalRule.configure({
+              HTMLAttributes: {
+                role: "separator",
+              },
+            }),
+          ]
+        : []),
+      ...(!isSms && featureTables
         ? [TableNode, TableRowNode, TableHeaderNode, TableCellNode]
         : []),
       ConditionalNode.configure({
@@ -174,9 +209,22 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       // Mark extensions that match toolbar features
-      Bold,
-      Italic,
       EmojiPicker,
+      // Mark extensions that match toolbar features - not available in SMS
+      ...(!isSms
+        ? [
+            Bold.configure({
+              HTMLAttributes: {
+                role: "status",
+              },
+            }),
+            Italic.configure({
+              HTMLAttributes: {
+                role: "status",
+              },
+            }),
+          ]
+        : []),
       ConditionalInlineMark.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
@@ -184,21 +232,26 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
-      MarkdownLink.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: "link",
-        },
-        enableCta: featureCta,
-      }),
       // TextAlign.configure({
       //   types: ["heading", "paragraph"],
       // }),
-      EnglishBlock,
-      ...(featureCallouts ? [CalloutBlock] : []),
+      // Links and language/RTL blocks are not available in SMS
+      ...(!isSms
+        ? [
+            MarkdownLink.configure({
+              openOnClick: false,
+              HTMLAttributes: {
+                class: "link",
+              },
+              enableCta: featureCta,
+            }),
+            EnglishBlock.configure({}),
+            FrenchBlock.configure({}),
+            RTLBlock,
+          ]
+        : []),
+      ...(!isSms && featureCallouts ? [CalloutBlock] : []),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
-      FrenchBlock,
-      RTLBlock,
       MenubarShortcut,
 
       // Add Markdown extension with paste handling enabled
@@ -212,8 +265,9 @@ const SimpleEditor = ({
         transformPastedText: true, // Transform pasted text to markdown
         transformCopiedText: true, // Transform copied text to markdown
       }),
-      // Custom blockquote markdown handling (accept '^' inbound)
-      BlockquoteMarkdown,
+      // Custom blockquote markdown handling (accept '^' inbound) - not needed in SMS
+      // SMS has no formatting extensions, so markdown syntax must render as literal text
+      ...(!isSms ? [BlockquoteMarkdown] : [SmsPlainTextMarkdown]),
     ],
     editorProps: {
       attributes: {
@@ -221,25 +275,8 @@ const SimpleEditor = ({
         lang: lang,
         role: "textbox",
         "aria-labelledby": labelId,
+        "aria-describedby": `toolbar-liveregion ${shortcutHintId}`,
         "aria-multiline": "true",
-      },
-      handleClickOn(view, pos, node, nodePos, event) {
-        if (node.type.name === "link") {
-          const { left, bottom } = event.target.getBoundingClientRect();
-          setModalPosition({ top: bottom + 8, left });
-          setLinkModalVisible(true);
-          // record current link so transaction listener won't re-open redundantly
-          try {
-            currentLinkRef.current = editor.getAttributes("link").href || null;
-          } catch (e) {
-            console.error(
-              "[SimpleEditor] Error getting link attributes in handleClickOn:",
-              e,
-            );
-          }
-          return true;
-        }
-        return false;
       },
       handlePaste: (view, event, slice) => {
         const text = event.clipboardData?.getData("text/plain");
@@ -251,7 +288,10 @@ const SimpleEditor = ({
           // Normalize pasted blockquote markers: convert leading '>' to '^'
           // for storage/markdown consistency while allowing the RTE to
           // render normal blockquotes via inbound normalization on parse.
-          const normalizedForStorage = text.replace(/^(\s*)>/gm, "$1^");
+          // SMS has no blockquote support, so pasted text is left as-is.
+          const normalizedForStorage = isSms
+            ? text
+            : text.replace(/^(\s*)>/gm, "$1^");
 
           // Use the same markdown conversion logic as the markdown switch handler
           // This ensures pasted markdown is processed consistently
@@ -267,15 +307,11 @@ const SimpleEditor = ({
   });
 
   const openLinkModal = () => {
-    // Capture selection bounds for highlighting
-    const bounds = getSelectionBounds();
-    setSelectionHighlight(bounds);
-
     try {
       // Prefer TipTap's view coordsAtPos if available — it's reliable for
       // collapsed selections and complex node structures.
       const sel = editor?.state?.selection;
-      if (editor?.view && sel) {
+      if (isEditorViewMounted(editor) && sel) {
         const pos = sel.from;
         const coords = editor.view.coordsAtPos(pos);
         if (coords) {
@@ -327,7 +363,9 @@ const SimpleEditor = ({
       // If anything goes wrong computing the rect, fall back to opening
       // the modal roughly in the editor area (center top) so it remains usable.
       try {
-        const edRect = editor?.view?.dom?.getBoundingClientRect?.();
+        const edRect = isEditorViewMounted(editor)
+          ? editor.view.dom.getBoundingClientRect?.()
+          : null;
         const left = (edRect?.left || 0) + 20;
         const top = (edRect?.top || 0) + 40;
         setModalPosition({ top, left });
@@ -344,7 +382,7 @@ const SimpleEditor = ({
   const computeModalPosition = () => {
     try {
       const selState = editor?.state?.selection;
-      if (editor?.view && selState) {
+      if (isEditorViewMounted(editor) && selState) {
         const pos = selState.from;
         const coords = editor.view.coordsAtPos(pos);
         if (coords) {
@@ -424,10 +462,10 @@ const SimpleEditor = ({
     // Convert inbound stored caret markers '^' back to '>' so the RTE
     // renders normal blockquotes. We then set the markdownValue to the
     // original stored content (so Markdown view shows '^').
-    const inboundForEditor = (initialContent || "").replace(
-      /^(\s*)\^/gm,
-      "$1>",
-    );
+    // SMS has no blockquote support, so caret markers are left untouched.
+    const inboundForEditor = isSms
+      ? initialContent || ""
+      : (initialContent || "").replace(/^(\s*)\^/gm, "$1>");
     editor.commands.setContent(inboundForEditor);
     setMarkdownValue(initialContent || "");
   }, [editor, initialContent]);
@@ -438,7 +476,7 @@ const SimpleEditor = ({
   // select-all matches mouse select-all for block toggles.
   // Hopefully tiptap will fix this upstream one day! (https://github.com/ueberdosis/tiptap/issues/6260)
   React.useEffect(() => {
-    if (!editor || !editor.view || !editor.view.dom) return;
+    if (!isEditorViewMounted(editor)) return;
     const dom = editor.view.dom;
 
     const onCaptureKeyDown = (e) => {
@@ -491,72 +529,12 @@ const SimpleEditor = ({
 
     dom.addEventListener("keydown", onCaptureKeyDown, true);
     return () => dom.removeEventListener("keydown", onCaptureKeyDown, true);
-  }, [editor]);
-
-  // Listen to keyboard arrow events and check for link transitions
-  React.useEffect(() => {
-    if (!editor) return;
-
-    const handleTransaction = () => {
-      // This fires after every editor transaction, including arrow key navigation
-      const isOnLink = editor.isActive("link");
-      const linkHref = editor.getAttributes("link").href || null;
-
-      const now = Date.now();
-      const lastEvent = lastUserEventRef.current;
-
-      const recentArrowOrClick =
-        lastEvent &&
-        (lastEvent.type === "arrow" || lastEvent.type === "click") &&
-        now - lastEvent.time < 800;
-
-      // Only auto-open on transitions caused by recent arrow navigation or clicks
-      if (
-        isOnLink &&
-        linkHref !== currentLinkRef.current &&
-        recentArrowOrClick
-      ) {
-        openLinkModal();
-        currentLinkRef.current = linkHref;
-
-        setTimeout(() => {
-          setJustOpenedLink(true);
-          setTimeout(() => setJustOpenedLink(false), 2500);
-        }, 600);
-      } else if (!isOnLink && currentLinkRef.current) {
-        // Left a link - close modal
-        setLinkModalVisible(false);
-        currentLinkRef.current = null;
-        setJustOpenedLink(false);
-      }
-    };
-
-    editor.on("transaction", handleTransaction);
-
-    // listen to DOM keydown/clicks to record recent arrow or click events
-    const dom = editor.view.dom;
-    const onKeyDown = (e) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
-        lastUserEventRef.current = {
-          type: "arrow",
-          key: e.key,
-          time: Date.now(),
-        };
-      }
-    };
-    const onClick = () => {
-      lastUserEventRef.current = { type: "click", time: Date.now() };
-    };
-
-    dom.addEventListener("keydown", onKeyDown);
-    dom.addEventListener("click", onClick);
-
-    return () => {
-      editor.off("transaction", handleTransaction);
-      dom.removeEventListener("keydown", onKeyDown);
-      dom.removeEventListener("click", onClick);
-    };
-  }, [editor]);
+    // `isMarkdownView` is a dependency because the ProseMirror view is only
+    // mounted while the RTE (EditorContent) is rendered. When starting in — or
+    // switching to — markdown mode the view is unmounted, so this effect must
+    // re-run when the mode changes to (re)attach the listener once the view is
+    // available again.
+  }, [editor, isMarkdownView]);
 
   // Update hidden input field when content changes
   React.useEffect(() => {
@@ -601,7 +579,12 @@ const SimpleEditor = ({
         // Clean up HardBreak backslash continuations
         markdown = cleanMarkdownSerialization(markdown);
 
-        markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+        // SMS has no blockquote support, so a leading '>' is literal text.
+        if (!isSms) {
+          markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+        } else {
+          markdown = unescapeSmsMarkdown(markdown);
+        }
         updateHiddenInputValue(markdown);
       } catch (error) {
         console.error("Error getting markdown:", error);
@@ -656,8 +639,11 @@ const SimpleEditor = ({
       return;
     }
 
-    // Convert caret markers '^' to '>' so the editor renders blockquotes
-    const convertedForEditor = markdownText.replace(/^(\s*)\^/gm, "$1>");
+    // Convert caret markers '^' to '>' so the editor renders blockquotes.
+    // SMS has no blockquote support, so caret markers are left untouched.
+    const convertedForEditor = isSms
+      ? markdownText
+      : markdownText.replace(/^(\s*)\^/gm, "$1>");
 
     // Normalize multi-line conditional markers to ensure they start and end
     // on their own paragraph when converting from markdown to rich content.
@@ -712,17 +698,20 @@ const SimpleEditor = ({
     // Only matches when there's NO space already (so `# heading` is left alone)
     // This only happens during markdown-to-editor conversion, not during typing
     // TODO: When no more templates contain these typos, we can remove this code
+    // SMS has no heading support, so leading '#' characters are literal text.
     let fixedHeadingSpacing = normalizedForEditor;
-    // Process ## first to avoid backtracking issues with single #
-    fixedHeadingSpacing = fixedHeadingSpacing.replace(
-      /^##(?! )(\S)/gm,
-      "## $1",
-    );
-    // Then process single #, but exclude cases where it's followed by another #
-    fixedHeadingSpacing = fixedHeadingSpacing.replace(
-      /^#(?!#)(?! )(\S)/gm,
-      "# $1",
-    );
+    if (!isSms) {
+      // Process ## first to avoid backtracking issues with single #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^##(?! )(\S)/gm,
+        "## $1",
+      );
+      // Then process single #, but exclude cases where it's followed by another #
+      fixedHeadingSpacing = fixedHeadingSpacing.replace(
+        /^#(?!#)(?! )(\S)/gm,
+        "# $1",
+      );
+    }
 
     // For content with conditionals, use insertContent directly with markdown
     // (don't convert to HTML spans - let the markdown parser handle everything)
@@ -805,8 +794,13 @@ const SimpleEditor = ({
       });
       // Clean up HardBreak backslash continuations
       markdown = cleanMarkdownSerialization(markdown);
-      // Normalize outgoing markdown to use '^' instead of '>'
-      markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+      // Normalize outgoing markdown to use '^' instead of '>'.
+      // SMS has no blockquote support, so a leading '>' is literal text.
+      if (!isSms) {
+        markdown = markdown.replace(/^(\s*)>/gm, "$1^");
+      } else {
+        markdown = unescapeSmsMarkdown(markdown);
+      }
       setMarkdownValue(markdown);
     }
 
@@ -844,68 +838,72 @@ const SimpleEditor = ({
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
+
   return (
-    <div className="editor-wrapper">
-      <MenuBar
-        editor={editor}
-        openLinkModal={openLinkModal}
-        lang={lang}
-        onToggleMarkdownView={toggleViewMode}
-        isMarkdownView={isMarkdownView}
-        toggleLabel={toggleLabel}
-        useUnifiedConditionalButton={useUnifiedConditionalButton}
-        featureTables={featureTables}
-        featureCallouts={featureCallouts}
-      />
-      <div className="editor-content">
-        {isMarkdownView ? (
-          <textarea
-            value={markdownValue}
-            onChange={(event) => {
-              setMarkdownValue(event.target.value);
-              if (
-                !hasTrackedEditRef.current.markdown &&
-                typeof gtag === "function"
-              ) {
-                hasTrackedEditRef.current.markdown = true;
-                gtag("event", "editor_content_changed", {
-                  event_category: "Template Editor",
-                  event_label: "Content change in markdown mode",
-                  editor_mode: "markdown",
-                });
-              }
-            }}
-            onKeyDown={onMarkdownKeyDown}
-            className="markdown-view"
-            aria-label={viewLabel.markdown}
-            spellCheck="false"
-            data-testid="template-content"
-          ></textarea>
-        ) : (
-          <EditorContent editor={editor} data-testid="rte-editor" />
-        )}
+    <EditorProvider lang={lang}>
+      <div className="editor-wrapper">
+        <span id={shortcutHintId} className="sr-only">
+          {shortcutHintText}
+        </span>
+        <MenuBar
+          editor={editor}
+          openLinkModal={openLinkModal}
+          onToggleMarkdownView={toggleViewMode}
+          isMarkdownView={isMarkdownView}
+          toggleLabel={toggleLabel}
+          useUnifiedConditionalButton={useUnifiedConditionalButton}
+          templateType={templateType}
+          featureTables={featureTables}
+          featureCallouts={featureCallouts}
+        />
+        <div className="editor-content">
+          <div
+            ref={announcerRef}
+            data-testid={`${labelId}-cursor-announcer`}
+            className="sr-only"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
+          {isMarkdownView ? (
+            <textarea
+              value={markdownValue}
+              onChange={(event) => {
+                setMarkdownValue(event.target.value);
+                if (
+                  !hasTrackedEditRef.current.markdown &&
+                  typeof gtag === "function"
+                ) {
+                  hasTrackedEditRef.current.markdown = true;
+                  gtag("event", "editor_content_changed", {
+                    event_category: "Template Editor",
+                    event_label: "Content change in markdown mode",
+                    editor_mode: "markdown",
+                  });
+                }
+              }}
+              onKeyDown={onMarkdownKeyDown}
+              className="markdown-view"
+              aria-describedby={shortcutHintId}
+              aria-label={viewLabel.markdown}
+              spellCheck="false"
+              data-testid="template-content"
+            ></textarea>
+          ) : (
+            <EditorContent editor={editor} data-testid="rte-editor" />
+          )}
+        </div>
+        <LinkModal
+          editor={editor}
+          isVisible={isLinkModalVisible}
+          position={modalPosition}
+          onClose={() => {
+            setLinkModalVisible(false);
+          }}
+          showCta={featureCta}
+          onSavedLink={() => {}}
+        />
       </div>
-      <LinkModal
-        editor={editor}
-        isVisible={isLinkModalVisible}
-        position={modalPosition}
-        outline={selectionHighlight}
-        onClose={() => {
-          setLinkModalVisible(false);
-          setSelectionHighlight(null);
-        }}
-        lang={lang}
-        justOpened={justOpenedLink}
-        showCta={featureCta}
-        onSavedLink={(href) => {
-          try {
-            currentLinkRef.current = href || null;
-          } catch (e) {
-            console.error("[SimpleEditor] Error in onSavedLink callback:", e);
-          }
-        }}
-      />
-    </div>
+    </EditorProvider>
   );
 };
 

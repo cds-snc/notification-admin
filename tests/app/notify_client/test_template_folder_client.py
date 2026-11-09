@@ -2,9 +2,8 @@ import uuid
 from unittest.mock import call
 
 import pytest
-from ordered_set import OrderedSet
-
 from app.notify_client.template_folder_api_client import TemplateFolderAPIClient
+from ordered_set import OrderedSet
 
 
 @pytest.mark.parametrize("parent_id", [uuid.uuid4(), None])

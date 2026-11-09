@@ -34,7 +34,7 @@ class JSONModel:
             return super().__getattribute__("_dict")[attr]
 
         raise AttributeError(
-            ("'{}' object has no attribute '{}' and '{}' is not a field " "in the underlying JSON").format(
+            ("'{}' object has no attribute '{}' and '{}' is not a field in the underlying JSON").format(
                 self.__class__.__name__, attr, attr
             )
         )

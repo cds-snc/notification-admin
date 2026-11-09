@@ -33,9 +33,13 @@
         {% endif %}
         <div class="file-list-hint">
           <p>
-            <span>{{ _("Requested by") }} {{ item.requesting_user.name }}</span>
-            {% if item.requesting_user_id == current_user.id %}
-              <span>({{ _("You") }})</span>
+            {% if item.requesting_user %}
+              <span>{{ _("Requested by") }} {{ item.requesting_user.name }}</span>
+              {% if item.requesting_user_id == current_user.id %}
+                <span>({{ _("You") }})</span>
+              {% endif %}
+            {% elif item.api_key %}
+              <span>{{ _("Requested by API key:") }} {{ item.api_key.name }}</span>
             {% endif %}
           </p>
         </div>

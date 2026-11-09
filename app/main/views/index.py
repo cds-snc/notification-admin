@@ -1,4 +1,5 @@
 import re
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from flask import (
@@ -31,6 +32,7 @@ from app.articles.pages import (
     get_page_by_slug_with_cache,
 )
 from app.articles.routing import gca_url_for
+from app.enums import ERROR_TEMPLATE_STATUS_CODES
 from app.main import main
 from app.main.forms import (
     FieldWithLanguageOptions,
@@ -47,6 +49,7 @@ from app.utils import (
     get_logo_cdn_domain,
     is_safe_redirect_url,
     user_is_logged_in,
+    user_is_platform_admin,
 )
 
 
@@ -76,7 +79,7 @@ def robots():
 def security_txt():
     security_policy = gca_url_for("security", _external=True)
     security_info = [
-        f'Contact: mailto:{current_app.config["SECURITY_EMAIL"]}',
+        f"Contact: mailto:{current_app.config['SECURITY_EMAIL']}",
         "Preferred-Languages: en, fr",
         f"Policy: {security_policy}",
         "Hiring: https://digital.canada.ca/join-our-team/",
@@ -87,7 +90,8 @@ def security_txt():
 
 @main.route("/error/<int:status_code>")
 def error(status_code):
-    if status_code >= 500:
+    # Only codes with a matching template in app/templates/error/ are supported
+    if status_code not in ERROR_TEMPLATE_STATUS_CODES or status_code == 500:
         abort(404)
     abort(status_code)
 
@@ -99,6 +103,7 @@ def verify_mobile():
 
 
 @main.route("/pricing")
+@user_is_platform_admin
 def pricing():
     lang = get_current_locale(current_app)
 
@@ -154,6 +159,12 @@ def email_template():
         branding_style = None
 
     if branding_style is not None:
+        # branding_style is interpolated into the API URL, so only accept a UUID
+        # to prevent path traversal to other API endpoints.
+        try:
+            branding_style = str(uuid.UUID(branding_style))
+        except ValueError:
+            abort(400)
         email_branding = email_branding_client.get_email_branding(branding_style)["email_branding"]
         branding_type = email_branding["brand_type"]
 
@@ -263,11 +274,6 @@ def callbacks():
     return redirect(documentation_url("callbacks"), code=301)
 
 
-@main.route("/roadmap", endpoint="roadmap")
-def roadmap():
-    return render_template("views/roadmap.html")
-
-
 @main.route("/email", endpoint="email")
 def features_email():
     return render_template("views/emails.html")
@@ -311,13 +317,13 @@ def sitemap():
 
 @main.route("/activity", endpoint="activity")
 def activity():
-    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app), filter_heartbeats=True))
+    return render_template("views/activity.html", **get_latest_stats(get_current_locale(current_app)))
 
 
 @cache.memoize(timeout=12 * 60 * 60)
 @main.route("/activity/atom", endpoint="activity_atom")
 def activity_atom():
-    stats = get_latest_stats(get_current_locale(current_app), filter_heartbeats=True)
+    stats = get_latest_stats(get_current_locale(current_app))
     now = datetime.now(timezone.utc)
     updated_total = now.isoformat()
     updated_services = (now - timedelta(minutes=2)).isoformat()
@@ -375,7 +381,6 @@ def agree_terms():
 
 
 # --- Internal Redirects --- #
-@main.route("/features/roadmap", endpoint="redirect_roadmap")
 @main.route("/features/email", endpoint="redirect_email")
 @main.route("/features/sms", endpoint="redirect_sms")
 @main.route("/features/letters", endpoint="redirect_letters")
@@ -461,7 +466,7 @@ def _render_articles_page(response, newsletter_form=None):
         nav_items=nav_items,
         slug=slug_en,
         lang_url=get_lang_url(response, bool(page_id)),
-        stats=get_latest_stats(get_current_locale(current_app), filter_heartbeats=True) if slug_en == "home" else None,
+        stats=get_latest_stats(get_current_locale(current_app)) if slug_en == "home" else None,
         isHome=True if slug_en == "home" else None,
         newsletter_form=newsletter_form,
         newsletter_subscribed=request.args.get("subscribed") == "1",

@@ -3,11 +3,11 @@ import uuid
 from urllib.parse import parse_qs, urlparse
 
 import pytest
+from app.main.views.jobs import get_available_until_date, get_status_filters
+from app.models.service import Service
 from flask import url_for
 from freezegun import freeze_time
 
-from app.main.views.jobs import get_available_until_date, get_status_filters
-from app.models.service import Service
 from tests import notification_json
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -276,7 +276,7 @@ def test_shows_message_when_no_notifications(
 
 
 @pytest.mark.parametrize(
-    ("initial_query_arguments," "form_post_data," "expected_search_box_label," "expected_search_box_contents"),
+    ("initial_query_arguments,form_post_data,expected_search_box_label,expected_search_box_contents"),
     [
         (
             {},

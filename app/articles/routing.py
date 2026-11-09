@@ -29,6 +29,7 @@ GC_ARTICLES_ROUTES = {
     "register_for_demo": {"en": "/register-for-a-demo", "fr": "/sinscrire-a-une-demo"},
     "getting_started": {"en": "/getting-started", "fr": "/decouvrir-notification-gc"},
     "counting_text_messages": {"en": "/counting-text-messages", "fr": "/compter-les-messages-texte"},
+    "roadmap": {"en": "/roadmap-2026-2027", "fr": "/feuille-de-route-2026-2027"},
 }
 
 

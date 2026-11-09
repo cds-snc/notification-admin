@@ -62,3 +62,25 @@ def test_should_redirect_to_password_reset_sent_for_missing_email(
     assert response.status_code == 200
     assert "Use the link in the email to reset your password." in response.get_data(as_text=True)
     app.user_api_client.send_reset_password_url.assert_called_once_with(api_user_active["email_address"])
+
+
+def test_should_redirect_to_password_reset_sent_for_blocked_user(
+    client,
+    api_user_active,
+    mocker,
+):
+    blocked_response = type("Response", (), {"status_code": 400, "content": b"user blocked"})()
+    mocker.patch(
+        "app.user_api_client.send_reset_password_url",
+        side_effect=HTTPError(blocked_response, "Bad request"),
+    )
+
+    response = client.post(
+        url_for(".forgot_password"),
+        data={"email_address": api_user_active["email_address"]},
+    )
+
+    assert response.status_code == 200
+    assert "Use the link in the email to reset your password." in response.get_data(as_text=True)
+    assert "You cannot reset your password as your account has been blocked." not in response.get_data(as_text=True)
+    app.user_api_client.send_reset_password_url.assert_called_once_with(api_user_active["email_address"])

@@ -7,9 +7,11 @@
             <h2 class="w-full sm:w-2/5 heading-medium m-0" data-testid="sitemap-group">{{ group.title }}</h2>
             <ul class="w-full sm:w-3/5 flex flex-wrap items-baseline gap-y-gutterHalf">
               {% for page in group.pages|sort(attribute='link_text') %}
-                <li class="w-full md:w-1/2 pr-gutter">
-                  <a class="inline-flex text-balance" href="{{ page.href }}">{{ page.link_text | safe }}</a>
-                </li>
+                {% if page.show is not defined or page.show %}
+                  <li class="w-full md:w-1/2 pr-gutter">
+                    <a class="inline-flex text-balance" href="{{ page.href }}">{{ page.link_text | safe }}</a>
+                  </li>
+                {% endif %}
               {% endfor %}
               </ul>
             </li>

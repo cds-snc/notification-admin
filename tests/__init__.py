@@ -5,15 +5,14 @@ from urllib.parse import parse_qs, urlparse
 
 import freezegun
 import pytest
-from flask import session as flask_session
-from flask import url_for
-from flask.testing import FlaskClient
-from flask_login import login_user
-
 from app.models.enum.template_process_types import TemplateProcessTypes
 from app.models.service import Service
 from app.models.user import User
 from app.tou import TERMS_KEY
+from flask import session as flask_session
+from flask import url_for
+from flask.testing import FlaskClient
+from flask_login import login_user
 
 DEFAULT_TEMPLATE_CATEGORY_LOW = "0dda24c2-982a-4f44-9749-0e38b2607e89"
 DEFAULT_TEMPLATE_CATEGORY_MEDIUM = "f75d6706-21b7-437e-b93a-2c0ab771e28e"
@@ -685,5 +684,5 @@ def assert_url_expected(actual: str, expected: str):
             assert parse_qs(expected_parts.query) == parse_qs(actual_parts.query)
         else:
             assert getattr(actual_parts, attribute) == getattr(expected_parts, attribute), (
-                "Expected redirect: {}\n" "Actual redirect: {}"
+                "Expected redirect: {}\nActual redirect: {}"
             ).format(expected, actual)

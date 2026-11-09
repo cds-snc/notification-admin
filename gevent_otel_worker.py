@@ -20,7 +20,7 @@ class OTelAwareGeventWorker(GeventWorker):
         from gevent import monkey  # type: ignore
 
         # Check if OpenTelemetry is enabled via feature flag
-        enable_otel = env.bool("FF_ENABLE_OTEL", False)
+        enable_otel = env.bool("ENABLE_OTEL", False)
 
         if enable_otel:
             # OpenTelemetry is active - avoid patching SSL which OTel already patched

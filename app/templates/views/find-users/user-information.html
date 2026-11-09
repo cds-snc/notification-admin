@@ -58,10 +58,10 @@
         {{ user.failed_login_count }} {{ _('failed sign-in attempts') }}
       </p>
       {% endif %}
-      {% if user.state == 'active' %}
-        <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
-        <nav class="browse-list">
-          <ul>
+      <h2 class="heading-medium">{{ _('Admin tools') }}</h2>
+        {% if user.state == 'active' %}
+          <nav class="browse-list">
+            <ul>
             <li class="browse-list-item delete-link">
               <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
                 {{ _('Archive user') }}
@@ -105,8 +105,20 @@
               </form>
             </details>
           </li>
-          </ul>
-        </nav>
+        </ul>
+      </nav>
+      {% elif "_archived_" not in user.email_address %}
+      <nav>
+        <ul>
+          <li class="browse-list-item delete-link">
+            <a href="{{ url_for('main.archive_user', user_id=user.id) }}">
+              {{ _('Archive inactive user') }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {% else %}
+        {{ _('No actions available for archived users') }}
       {% endif %}
       <hr>
     </div>

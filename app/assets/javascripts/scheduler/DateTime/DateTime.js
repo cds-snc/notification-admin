@@ -17,8 +17,8 @@ export const DateTime = () => {
       <div className="selected-date-time-box">
         <div className="triangle"></div>
         <div className="date-time-box">
-          <div classNAme="form-group">
-            <label className="form-label" for="time">
+          <div className="form-group">
+            <label className="form-label" htmlFor="time">
               <span>
                 {translate("select_time_label")} <Date />
               </span>
