@@ -298,6 +298,36 @@ def test_email_branding_preview(
     assert mock_get_email_branding.called is email_branding_retrieved
 
 
+@pytest.mark.parametrize(
+    "branding_style",
+    [
+        "..",
+        "%2e%2e",
+        "..\t/_status",
+        "..\r/_status",
+        "..\n/_status",
+        "..\t/organisations",
+        "..\t/email-branding",
+        "..#zzz",
+        "..?zzz",
+        "not-a-uuid",
+        "",
+    ],
+)
+def test_email_branding_preview_rejects_invalid_branding_style(
+    client_request,
+    mock_get_email_branding,
+    branding_style,
+):
+    client_request.get(
+        "main.email_template",
+        _expected_status=400,
+        _test_page_title=False,
+        branding_style=branding_style,
+    )
+    assert mock_get_email_branding.called is False
+
+
 @pytest.mark.skip(reason="feature not in use")
 @pytest.mark.parametrize(
     "branding_style, filename",
