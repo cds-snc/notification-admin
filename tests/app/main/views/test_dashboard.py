@@ -17,9 +17,10 @@ from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
 
-from tests import validate_route_permission, validate_route_permission_with_client
+from tests import job_json, validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    TEMPLATE_ONE_ID,
     ClientRequest,
     a11y_test,
     create_active_caseworking_user,
@@ -628,15 +629,17 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
-    assert "Starting 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
+    assert "Scheduled for 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
     assert table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
-    assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
+    assert "Scheduled for 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
     assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
 
 
 @freeze_time("2016-01-01 11:09:00.061258")
 def test_should_show_scheduled_jobs_and_notifications_together_on_dashboard(
+    mocker,
+    api_user_active,
     client_request,
     mock_get_service_templates,
     mock_get_template_statistics,
@@ -646,6 +649,28 @@ def test_should_show_scheduled_jobs_and_notifications_together_on_dashboard(
     mock_get_inbound_sms_summary,
     mock_get_scheduled_notifications,
 ):
+    mocker.patch(
+        "app.job_api_client.get_scheduled_jobs",
+        return_value=[
+            {
+                **job_json(
+                    SERVICE_ONE_ID,
+                    api_user_active,
+                    job_id=job_id,
+                    template_id=TEMPLATE_ONE_ID,
+                    original_file_name=file_name,
+                    notification_count=30,
+                    job_status="scheduled",
+                    scheduled_for=scheduled_for,
+                ),
+                "template_type": "sms",
+            }
+            for job_id, file_name, scheduled_for in (
+                ("33333333-3333-3333-3333-333333333333", "send_me_later.csv", "2016-01-01 11:09:00.061258"),
+                ("44444444-4444-4444-4444-444444444444", "even_later.csv", "2016-01-01 23:09:00.061258"),
+            )
+        ],
+    )
     mock_get_scheduled_notifications.return_value = {
         "notifications": [
             {
@@ -678,18 +703,22 @@ def test_should_show_scheduled_jobs_and_notifications_together_on_dashboard(
     assert normalize_spaces(page.select_one("table:-soup-contains('Scheduled sends') thead").text) == (
         "List name or recipient Details"
     )
+    # Bulk sends and individual messages are displayed the same way
     assert [normalize_spaces(row.select_one("th").text) for row in rows] == [
-        "send_me_later.csv Starting 2016-01-01 11:09:00.061258",
+        "send_me_later.csv Scheduled for 2016-01-01 11:09:00.061258",
         "test@example.com Scheduled for 2016-01-01T15:00:00.000000+00:00",
-        "even_later.csv Starting 2016-01-01 23:09:00.061258",
+        "even_later.csv Scheduled for 2016-01-01 23:09:00.061258",
         "6502532222 Scheduled for 2016-01-02T15:00:00.000000+00:00",
     ]
     assert [normalize_spaces(row.select_one("td").text) for row in rows] == [
-        "Scheduled to send to 30 recipients",
-        "Email ‘Email template’",
-        "Scheduled to send to 30 recipients",
-        "Text message ‘SMS template’",
+        "Text message to 30 recipients Template: sms_template_one",
+        "Email to 1 recipient Template: Email template",
+        "Text message to 30 recipients Template: sms_template_one",
+        "Text message to 1 recipient Template: SMS template",
     ]
+    assert rows[0].select_one("th a")["href"] == url_for(
+        "main.view_job", service_id=SERVICE_ONE_ID, job_id="33333333-3333-3333-3333-333333333333"
+    )
     assert rows[1].select_one("th a")["href"] == url_for(
         "main.view_notification", service_id=SERVICE_ONE_ID, notification_id="11111111-1111-1111-1111-111111111111"
     )

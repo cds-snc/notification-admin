@@ -419,9 +419,37 @@ def _scheduled_for_utc(scheduled_for):
 
 
 def get_scheduled_sends(scheduled_jobs, scheduled_notifications=()):
-    """Scheduled bulk sends and individual messages in one list, soonest first."""
-    scheduled_sends = [{"job": job, "scheduled_for": job["scheduled_for"]} for job in scheduled_jobs] + [
-        {"notification": notification, "scheduled_for": notification["scheduled_for"]} for notification in scheduled_notifications
+    """Scheduled bulk sends and individual messages in one list, soonest first.
+
+    Jobs and notifications are normalised to the same shape so they're displayed consistently.
+    """
+    template_names = {}
+    if scheduled_jobs:
+        # Jobs only reference their template by id; the service's templates are cached
+        template_names = {template["id"]: template["name"] for template in current_service.all_templates}
+
+    scheduled_sends = [
+        {
+            "name": job["original_file_name"],
+            "url": url_for("main.view_job", service_id=current_service.id, job_id=job["id"]),
+            "scheduled_for": job["scheduled_for"],
+            "template_type": job.get("template_type"),
+            "template_name": template_names.get(job.get("template")),
+            "recipient_count": job.get("notification_count", 0),
+            "is_bulk": True,
+        }
+        for job in scheduled_jobs
+    ] + [
+        {
+            "name": notification["to"],
+            "url": url_for("main.view_notification", service_id=current_service.id, notification_id=notification["id"]),
+            "scheduled_for": notification["scheduled_for"],
+            "template_type": notification.get("notification_type"),
+            "template_name": (notification.get("template") or {}).get("name"),
+            "recipient_count": 1,
+            "is_bulk": False,
+        }
+        for notification in scheduled_notifications
     ]
     return sorted(scheduled_sends, key=lambda scheduled_send: _scheduled_for_utc(scheduled_send["scheduled_for"]))
 

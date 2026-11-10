@@ -5,7 +5,7 @@
 <div class="ajax-block-container">
   
     <div class='dashboard-table'>
-      {% set has_scheduled_notifications = scheduled_sends|selectattr("notification")|list|length > 0 %}
+      {% set has_scheduled_notifications = scheduled_sends|rejectattr("is_bulk")|list|length > 0 %}
       {% call(item, row_number) list_table(
         scheduled_sends,
         caption=_("Scheduled sends"),
@@ -17,36 +17,26 @@
         ],
         field_headings_visible=False
       ) %}
-        {% if item.job %}
-          {% call row_heading() %}
-            <div class="file-list">
-              <a class="file-list-filename" href="{{ url_for('.view_job', service_id=current_service.id, job_id=item.job.id) }}">{{ item.job.original_file_name }}</a>
-              <span class="file-list-hint">
-                {{ _("Starting") }} <time class="local-datetime-short">{{ item.scheduled_for }}</time>
-              </span>
-            </div>
-          {% endcall %}
-          {% call field() %}
-            {% if item.job.notification_count > 1 %}
-              {{ _("Scheduled to send to {} recipients").format(item.job.notification_count | format_number) }}
-            {% else %}
-              {{ _("Scheduled to send to 1 recipient") }}
-            {% endif %}
-          {% endcall %}
-        {% else %}
-          {% call row_heading() %}
-            <div class="file-list">
-              <a class="file-list-filename" href="{{ url_for('.view_notification', service_id=current_service.id, notification_id=item.notification.id) }}">{{ item.notification.to }}</a>
-              <span class="file-list-hint">
-                {{ _("Scheduled for") }} <time class="local-datetime-short">{{ item.scheduled_for }}</time>
-              </span>
-            </div>
-          {% endcall %}
-          {% call field() %}
-            {{ _("Email") if item.notification.notification_type == 'email' else _("Text message") }}
-            <span class="file-list-hint">‘{{ item.notification.template.name }}’</span>
-          {% endcall %}
-        {% endif %}
+        {% call row_heading() %}
+          <div class="file-list">
+            <a class="file-list-filename" href="{{ item.url }}">{{ item.name }}</a>
+            <span class="file-list-hint">
+              {{ _("Scheduled for") }} <time class="local-datetime-short">{{ item.scheduled_for }}</time>
+            </span>
+          </div>
+        {% endcall %}
+        {% call field() %}
+          {% if item.template_type == 'email' %}
+            {% if item.recipient_count == 1 %}{{ _("Email to 1 recipient") }}{% else %}{{ _("Email to {} recipients").format(item.recipient_count | format_number) }}{% endif %}
+          {% elif item.template_type == 'sms' %}
+            {% if item.recipient_count == 1 %}{{ _("Text message to 1 recipient") }}{% else %}{{ _("Text message to {} recipients").format(item.recipient_count | format_number) }}{% endif %}
+          {% else %}
+            {% if item.recipient_count == 1 %}{{ _("Scheduled to send to 1 recipient") }}{% else %}{{ _("Scheduled to send to {} recipients").format(item.recipient_count | format_number) }}{% endif %}
+          {% endif %}
+          {% if item.template_name %}
+            <span class="file-list-hint">{{ _("Template:") }} {{ item.template_name }}</span>
+          {% endif %}
+        {% endcall %}
       {% endcall %}
       {% if total_scheduled_notifications and total_scheduled_notifications > scheduled_notifications_shown %}
         <p class="text-small text-gray-700 mt-4">
