@@ -363,7 +363,7 @@ const MenuBar = ({
       markdownButton: "Retour à l'éditeur de markdown",
       richTextButton: "Essayez les outils de mise en forme",
       markdownEditorMessage: "Nouvelle expérience courriel",
-    }
+    },
   };
   const [infoPaneTarget, setInfoPaneTarget] = useState("custom-content");
 
