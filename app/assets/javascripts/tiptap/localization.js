@@ -145,6 +145,7 @@ export const translations = {
     save: "Apply link",
     goTo: "Visit link",
     remove: "Unlink",
+    cta: "Call to action",
   },
   fr: {
     // Shared
@@ -266,6 +267,7 @@ export const translations = {
     save: "Appliquer le lien",
     goTo: "Visiter le lien",
     remove: "Effacer le lien",
+    cta: "Appel à l'action",
   },
 };
 

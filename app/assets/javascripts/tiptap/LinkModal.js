@@ -192,26 +192,6 @@ const LinkModal = ({
   };
 
   if (!isVisible) return null;
-  const labels = {
-    en: {
-      enterLink: "Enter URL",
-      placeholder: "URL",
-      cta: "Call to action",
-      save: "Apply link",
-      goTo: "Visit link",
-      remove: "Unlink",
-    },
-    fr: {
-      enterLink: "Entrez l'URL",
-      placeholder: "URL",
-      cta: "Appel à l'action",
-      save: "Appliquer le lien",
-      goTo: "Visiter le lien",
-      remove: "Effacer le lien",
-    },
-  };
-
-  const t = labels[lang] || labels.en;
 
   // When the modal just opened, include announcement in label for screen readers
   const labelText = justOpened
