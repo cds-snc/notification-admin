@@ -1143,8 +1143,8 @@ def _scheduled_notification(template_type, scheduled_for="2099-01-22T20:52:00.00
 @pytest.mark.parametrize(
     "template_type, expected_title, expected_button",
     [
-        ("email", "Email scheduled", "Cancel scheduled email"),
-        ("sms", "Text message scheduled", "Cancel scheduled text message"),
+        ("email", "Scheduled email", "Cancel scheduled email"),
+        ("sms", "Scheduled text message", "Cancel scheduled text message"),
     ],
 )
 def test_notification_page_shows_scheduled_notification(

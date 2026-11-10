@@ -7,9 +7,9 @@
 {% from "components/form.html" import form_wrapper %}
 
 {% if scheduled_for and template.template_type == 'email' %}
-  {% set page_title = _('Email scheduled') %}
+  {% set page_title = _('Scheduled email') %}
 {% elif scheduled_for and template.template_type == 'sms' %}
-  {% set page_title = _('Text message scheduled') %}
+  {% set page_title = _('Scheduled text message') %}
 {% elif template.template_type == 'email' %}
   {% set page_title = _('Email sent') %}
 {% elif template.template_type == 'sms' %}
@@ -29,17 +29,7 @@
       back_link=back_link
     ) }}
 
-    {% if scheduled_for and current_user.has_permissions('send_messages') %}
-      {% call form_wrapper(action=url_for('main.cancel_scheduled_notification', service_id=current_service.id, notification_id=notification_id)) %}
-        {{ page_footer(
-          button_text=_('Cancel scheduled email') if template.template_type == 'email' else _('Cancel scheduled text message'),
-          destructive=True,
-          testid='cancel-scheduled-notification'
-        ) }}
-      {% endcall %}
-    {% endif %}
-
-    <div class="{% if just_sent %}banner-default-with-tick{% endif %}">
+    <div class="mt-6 {% if just_sent %}banner-default-with-tick{% endif %}">
       <p class="{% if just_sent %}mb-0{% endif %}">
         {% if is_precompiled_letter %}
           Provided as PDF
@@ -69,6 +59,16 @@
         {% endif %}
       </p>
     </div>
+
+    {% if scheduled_for and current_user.has_permissions('send_messages') %}
+      {% call form_wrapper(action=url_for('main.cancel_scheduled_notification', service_id=current_service.id, notification_id=notification_id)) %}
+        {{ page_footer(
+          button_text=_('Cancel scheduled email') if template.template_type == 'email' else _('Cancel scheduled text message'),
+          destructive=True,
+          testid='cancel-scheduled-notification'
+        ) }}
+      {% endcall %}
+    {% endif %}
 
     {% if template.template_type == 'letter' %}
       {% if notification_status in ('permanent-failure', 'cancelled') %}
