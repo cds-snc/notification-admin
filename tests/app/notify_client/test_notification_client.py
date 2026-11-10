@@ -147,3 +147,12 @@ def test_update_notification_to_cancelled(mocker):
         url="/service/foo/notifications/bar/cancel",
         data={},
     )
+
+
+def test_cancel_scheduled_notification(mocker):
+    mock_post = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.post")
+    NotificationApiClient().cancel_scheduled_notification("foo", "bar")
+    mock_post.assert_called_once_with(
+        url="/service/foo/notifications/bar/cancel-scheduled",
+        data={},
+    )

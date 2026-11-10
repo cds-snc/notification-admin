@@ -107,6 +107,12 @@ class NotificationApiClient(NotifyAdminAPIClient):
             data={},
         )
 
+    def cancel_scheduled_notification(self, service_id, notification_id):
+        return self.post(
+            url="/service/{}/notifications/{}/cancel-scheduled".format(service_id, notification_id),
+            data={},
+        )
+
     def get_notification_status_by_service(self, start_date, end_date):
         return self.get(
             url="service/monthly-data-by-service",
