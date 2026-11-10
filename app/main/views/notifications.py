@@ -101,6 +101,7 @@ def view_notification(service_id, notification_id):
     )
 
     scheduled_for = notification.get("scheduled_for")
+    scheduled_in_future = bool(scheduled_for) and parser.parse(scheduled_for).replace(tzinfo=None) > datetime.utcnow()
 
     if get_help_argument() or request.args.get("help") == "0":
         # help=0 is set when you’ve just sent a notification. We
@@ -128,6 +129,7 @@ def view_notification(service_id, notification_id):
         "views/notifications/notification.html",
         finished=(notification["status"] in (DELIVERED_STATUSES + FAILURE_STATUSES)),
         scheduled_for=scheduled_for,
+        scheduled_in_future=scheduled_in_future,
         notification_status=notification["status"],
         uploaded_file_name="Report",
         template=template,

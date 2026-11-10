@@ -1164,7 +1164,10 @@ def test_notification_page_shows_scheduled_notification(
     )
 
     assert normalize_spaces(page.select_one("h1").text) == expected_title
-    assert "was scheduled by Test User" in normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+    assert (
+        normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00"
+    )
     assert normalize_spaces(page.select_one(".notification-status").text) == ("Scheduled for 2099-01-22T20:52:00.000000+00:00")
     assert page.select_one(".notification-status time.local-datetime-short")
 

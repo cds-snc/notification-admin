@@ -49,9 +49,14 @@
           {% else %}
             <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">‘{{ template.name }}’</a>
           {% endif %}
-          {{ _('was scheduled') if scheduled_for else _('was sent') }}
+          {% if scheduled_in_future %}
+            {{ _('is scheduled for') }} <time class="local-datetime-short">{{ scheduled_for }}</time>
+          {% else %}
+            {{ _('was scheduled') if scheduled_for else _('was sent') }}
+          {% endif %}
         {% endif %}
-        {% if job and job.original_file_name != 'Report' %}
+        {% if scheduled_in_future %}
+        {% elif job and job.original_file_name != 'Report' %}
           {% set destination =
             {'letter': _('an address'), 'email': _('an email address'), 'sms': _('a phone number')} %}
           {{ _('to') }} {{ destination[template.template_type] }} {{ _('from') }}
@@ -59,7 +64,9 @@
         {% elif created_by %}
           {{ _('by') }} {{ created_by.name }}
         {% endif %}
-        {{ _('on') }} <time class="local-datetime-short">{{ created_at }}</time>
+        {% if not scheduled_in_future %}
+          {{ _('on') }} <time class="local-datetime-short">{{ created_at }}</time>
+        {% endif %}
       </p>
     </div>
 
