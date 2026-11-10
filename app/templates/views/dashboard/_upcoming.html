@@ -38,15 +38,15 @@
           {% endif %}
         {% endcall %}
       {% endcall %}
-      {% if total_scheduled_notifications and total_scheduled_notifications > scheduled_notifications_shown %}
+      {% if total_scheduled_sends and total_scheduled_sends > scheduled_sends|length %}
         <p class="text-small text-gray-700 mt-4">
-          {{ _("Showing the next {} of {} scheduled individual messages").format(scheduled_notifications_shown, total_scheduled_notifications|format_number) }}
+          {{ _("Showing the next {} of {} scheduled sends").format(scheduled_sends|length, total_scheduled_sends|format_number) }}
         </p>
       {% endif %}
       {% if not hide_show_more %}
         {{ show_more(
-          url_for('.view_jobs', service_id=current_service.id),
-          _('See all bulk sends')
+          url_for('.view_scheduled_sends', service_id=current_service.id),
+          _('See all scheduled sends')
         ) }}
       {% endif %}
     </div>
