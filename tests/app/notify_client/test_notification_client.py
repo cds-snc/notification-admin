@@ -149,6 +149,19 @@ def test_update_notification_to_cancelled(mocker):
     )
 
 
+@pytest.mark.parametrize(
+    "page_size, expected_params",
+    [
+        (None, None),
+        (10, {"page_size": 10}),
+    ],
+)
+def test_get_scheduled_notifications(mocker, page_size, expected_params):
+    mock_get = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.get")
+    NotificationApiClient().get_scheduled_notifications("foo", page_size=page_size)
+    mock_get.assert_called_once_with(url="/service/foo/notifications/scheduled", params=expected_params)
+
+
 def test_cancel_scheduled_notification(mocker):
     mock_post = mocker.patch("app.notify_client.notification_api_client.NotificationApiClient.post")
     NotificationApiClient().cancel_scheduled_notification("foo", "bar")

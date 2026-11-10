@@ -37,6 +37,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import SearchNotificationsForm
+from app.main.views.dashboard import get_scheduled_sends
 from app.main.views.reports import get_reports_partials
 from app.statistics_utils import add_rate_to_job
 from app.utils import (
@@ -96,7 +97,7 @@ def view_jobs(service_id):
         scheduled_jobs=(
             render_template(
                 "views/dashboard/_upcoming.html",
-                scheduled_jobs=job_api_client.get_scheduled_jobs(service_id),
+                scheduled_sends=get_scheduled_sends(job_api_client.get_scheduled_jobs(service_id)),
                 hide_show_more=True,
                 title=_("Scheduled messages"),
             )
