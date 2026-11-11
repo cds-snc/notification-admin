@@ -10,6 +10,7 @@ import {
   List,
   ListOrdered,
   TextQuote,
+  Table2,
 } from "lucide-react";
 import TooltipWrapper from "./TooltipWrapper";
 import { NodeSelection } from "@tiptap/pm/state";
@@ -271,6 +272,8 @@ const MenuBar = ({
   isMarkdownView,
   toggleLabel,
   useUnifiedConditionalButton = false,
+  featureTables = true,
+  featureCallouts = true,
   templateType = "email",
 }) => {
   if (!editor) {
@@ -281,6 +284,87 @@ const MenuBar = ({
   const { t } = useEditorContext();
   const [liveMessage, setLiveMessage] = useState("");
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const labels = {
+    en: {
+      toolbar: "Editor toolbar",
+      toggleMd: "View source",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
+      linkDialogOpened: "Link dialog opened",
+      applied: "applied.",
+      removed: "removed.",
+      applyPrefix: "Apply ",
+      removePrefix: "Remove ",
+      heading1: "Heading",
+      heading2: "Subheading",
+      variable: "Variable",
+      bold: "Bold",
+      italic: "Italic",
+      bulletList: "Bulleted List",
+      numberedList: "Numbered List",
+      link: "Link",
+      horizontalRule: "Section break",
+      horizontalRuleInsert: "Insert Section Break",
+      blockquote: "Blockquote",
+      englishBlock: "English content",
+      frenchBlock: "French content",
+      calloutBlock: "Callout",
+      table: "Table",
+      conditionalBlock: "Conditional section",
+      conditionalInline: "Conditional text",
+      conditional: "Conditional",
+      rtlBlock: "Right-to-left text",
+      infoPane1: "Focus on a button for its function and shortcut. ",
+      infoPane2: "Custom content",
+      infoPane3: "Conditional content:",
+      infoPane4: "Within a paragraph",
+      infoPane5: "As a separate section",
+      info: "Help",
+      markdownButton: "Back to the markdown editor",
+      richTextButton: "Try toolbar formatting",
+      markdownEditorMessage: "New email experience",
+    },
+    fr: {
+      toolbar: "Barre d'outils de l'éditeur",
+      toggleMd: "Voir la source",
+      shortcutBold: "⌘+B",
+      shortcutItalic: "⌘+I",
+      linkDialogOpened: "Boîte de dialogue du lien ouverte",
+      applied: "appliqué.",
+      removed: "supprimé.",
+      applyPrefix: "Appliquer ",
+      removePrefix: "Supprimer ",
+      heading1: "Titre",
+      heading2: "Sous titre",
+      variable: "Variable",
+      bold: "Gras",
+      italic: "Italique",
+      bulletList: "Liste à puces",
+      numberedList: "Liste numérotée",
+      link: "Lien",
+      horizontalRule: "Saut de section",
+      horizontalRuleInsert: "Insérer un saut de section",
+      blockquote: "Bloc en retrait",
+      englishBlock: "Contenu en anglais",
+      frenchBlock: "Contenu en français",
+      calloutBlock: "Encadré",
+      table: "Tableau",
+      conditionalBlock: "Section conditionnelle",
+      conditionalInline: "Texte conditionnel",
+      conditional: "Conditionnel",
+      rtlBlock: "Afficher de droite à gauche",
+      infoPane1:
+        "Sélectionnez un bouton pour découvrir sa fonction et son raccourci.",
+      infoPane2: "Contenu personnalisé",
+      infoPane3: "Contenu conditionnel :",
+      infoPane4: "À l'intérieur d'un paragraphe",
+      infoPane5: "Section entière",
+      info: "Aide",
+      markdownButton: "Retour à l'éditeur de markdown",
+      richTextButton: "Essayez les outils de mise en forme",
+      markdownEditorMessage: "Nouvelle expérience courriel",
+    },
+  };
   const [infoPaneTarget, setInfoPaneTarget] = useState("custom-content");
 
   const updateInfoPaneTarget = (target) => {
@@ -805,6 +889,69 @@ const MenuBar = ({
             >
               <Icon iconNode={rightToLeftIcon} />
             </ToolbarButton>
+          </div>
+        )}
+
+        {/* Sixth group: Callout and Table */}
+        {(featureCallouts || featureTables) && (
+          <div className="toolbar-group">
+            {featureCallouts && (
+              <TooltipWrapper label={t.calloutBlock}>
+                <button
+                  type="button"
+                  data-testid="rte-callout_block"
+                  onClick={() =>
+                    announceToggle(
+                      () => editor.chain().focus().toggleCalloutBlock().run(),
+                      () => editor.isActive("calloutBlock"),
+                      t.calloutBlock,
+                    )
+                  }
+                  className={
+                    "toolbar-button" +
+                    (editor.isActive("calloutBlock") ? " is-active" : "")
+                  }
+                  title={t.calloutBlock}
+                  aria-pressed={editor.isActive("calloutBlock")}
+                >
+                  <span className="sr-only">
+                    {editor.isActive("calloutBlock")
+                      ? t.removePrefix
+                      : t.applyPrefix}
+                    {t.calloutBlock}
+                  </span>
+                  <TextQuote size={16} />
+                </button>
+              </TooltipWrapper>
+            )}
+            {featureTables && (
+              <TooltipWrapper label={t.table}>
+                <button
+                  type="button"
+                  data-testid="rte-table"
+                  onClick={() => {
+                    if (editor.isActive("table")) {
+                      return;
+                    }
+
+                    editor
+                      .chain()
+                      .focus()
+                      .insertTable({ rows: 2, cols: 2, withHeaderRow: true })
+                      .run();
+                  }}
+                  className={
+                    "toolbar-button" +
+                    (editor.isActive("table") ? " is-active" : "")
+                  }
+                  title={t.table}
+                  aria-pressed={editor.isActive("table")}
+                >
+                  <span className="sr-only">{t.table}</span>
+                  <Table2 size={16} />
+                </button>
+              </TooltipWrapper>
+            )}
           </div>
         )}
 

@@ -15,8 +15,16 @@ import Italic from "@tiptap/extension-italic";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import HardBreak from "@tiptap/extension-hard-break";
 import History from "@tiptap/extension-history";
+import EmojiPicker from "./Extensions/EmojiPicker";
 
 import { EnglishBlock, FrenchBlock } from "./CustomComponents/LanguageNode";
+import { CalloutBlock } from "./CustomComponents/CalloutBlock";
+import {
+  TableNode,
+  TableRowNode,
+  TableCellNode,
+  TableHeaderNode,
+} from "./CustomComponents/TableNode";
 import ConditionalNode from "./CustomComponents/ConditionalNode";
 import ConditionalInlineMark from "./CustomComponents/ConditionalInlineNode";
 import { RTLBlock } from "./CustomComponents/RTLNode";
@@ -75,6 +83,7 @@ const SimpleEditor = ({
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  features = {},
   templateType = "email",
 }) => {
   const isSms = templateType === "sms";
@@ -122,6 +131,11 @@ const SimpleEditor = ({
     },
   };
   const conditionalText = conditionalLabels[lang] || conditionalLabels.en;
+
+  // Derive individual feature flags; default all to enabled if not supplied
+  const featureTables = features.tables !== false;
+  const featureCta = features.cta !== false;
+  const featureCallouts = features.callouts !== false;
 
   const updateHiddenInputValue = useCallback(
     (value = "") => {
@@ -185,12 +199,17 @@ const SimpleEditor = ({
             }),
           ]
         : []),
+      ...(!isSms && featureTables
+        ? [TableNode, TableRowNode, TableHeaderNode, TableCellNode]
+        : []),
       ConditionalNode.configure({
         prefix: conditionalText.prefix,
         suffix: conditionalText.suffix,
         defaultCondition: conditionalText.defaultCondition,
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
+      // Mark extensions that match toolbar features
+      EmojiPicker,
       // Mark extensions that match toolbar features - not available in SMS
       ...(!isSms
         ? [
@@ -213,6 +232,9 @@ const SimpleEditor = ({
         conditionAriaLabel: conditionalText.conditionAriaLabel,
       }),
       VariableMark,
+      // TextAlign.configure({
+      //   types: ["heading", "paragraph"],
+      // }),
       // Links and language/RTL blocks are not available in SMS
       ...(!isSms
         ? [
@@ -221,12 +243,14 @@ const SimpleEditor = ({
               HTMLAttributes: {
                 class: "link",
               },
+              enableCta: featureCta,
             }),
             EnglishBlock.configure({}),
             FrenchBlock.configure({}),
             RTLBlock,
           ]
         : []),
+      ...(!isSms && featureCallouts ? [CalloutBlock] : []),
       // Register our Alt+F10 shortcut extension so it only fires when the editor is focused
       MenubarShortcut,
 
@@ -829,6 +853,8 @@ const SimpleEditor = ({
           toggleLabel={toggleLabel}
           useUnifiedConditionalButton={useUnifiedConditionalButton}
           templateType={templateType}
+          featureTables={featureTables}
+          featureCallouts={featureCallouts}
         />
         <div className="editor-content">
           <div
@@ -873,6 +899,7 @@ const SimpleEditor = ({
           onClose={() => {
             setLinkModalVisible(false);
           }}
+          showCta={featureCta}
           onSavedLink={() => {}}
         />
       </div>

@@ -69,6 +69,32 @@ describe("Link tests", () => {
       .and("contain.text", "hello world");
   });
 
+  it("CTA checkbox wraps markdown links with cta markers and styles the link", () => {
+    RichTextEditor.Components.Editor().type("hello world{selectall}");
+    RichTextEditor.Components.LinkButton().click();
+
+    cy.scrollTo("top");
+    RichTextEditor.Components.LinkModal.URLInput().type("https://example.com");
+    RichTextEditor.Components.LinkModal.CTACheckbox().check();
+    RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://example.com"][data-cta="true"]')
+      .should("exist")
+      .and("contain.text", "hello world");
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "contain.value",
+      "[[cta]][hello world](https://example.com)[[/cta]]",
+    );
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find('a[href="https://example.com"][data-cta="true"]')
+      .should("exist");
+  });
+
   it("Link modal with no text selected inserts URL as link text with markdown syntax", () => {
     // Position cursor in editor without selecting any text
     // RichTextEditor.Components.Editor().focus().type("start");

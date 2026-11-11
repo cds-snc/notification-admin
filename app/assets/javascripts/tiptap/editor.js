@@ -21,6 +21,7 @@ export const load = function (
   initialMode,
   preferenceUpdateUrl,
   csrfToken,
+  features,
   templateType = "email",
 ) {
   const root = createRoot(element);
@@ -34,6 +35,7 @@ export const load = function (
       initialMode={initialMode}
       preferenceUpdateUrl={preferenceUpdateUrl}
       csrfToken={csrfToken}
+      features={features}
       templateType={templateType}
     />,
   );

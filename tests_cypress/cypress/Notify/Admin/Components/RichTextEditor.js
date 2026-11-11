@@ -69,6 +69,7 @@ let Components = {
             { RemoveButton: () => cy.getByTestId('link-modal-remove-button') },
         ],
         URLInput: () => cy.getByTestId('link-modal-input'),
+        CTACheckbox: () => cy.getByTestId('link-modal-cta-checkbox'),
     },
 
 

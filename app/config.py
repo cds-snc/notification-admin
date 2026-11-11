@@ -94,6 +94,9 @@ class Config(object):
     # FEATURE FLAGS
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
+    FF_EMAIL_TABLES = env.bool("FF_EMAIL_TABLES", False)
+    FF_EMAIL_CTA = env.bool("FF_EMAIL_CTA", False)
+    FF_EMAIL_CALLOUTS = env.bool("FF_EMAIL_CALLOUTS", False)
     FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
 
@@ -221,6 +224,9 @@ class Development(Config):
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
+    FF_EMAIL_TABLES = True
+    FF_EMAIL_CTA = True
+    FF_EMAIL_CALLOUTS = True
 
 
 class Test(Development):

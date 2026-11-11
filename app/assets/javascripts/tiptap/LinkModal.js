@@ -8,9 +8,14 @@ const LinkModal = ({
   isVisible,
   position,
   onClose,
+  outline,
+  lang = "en",
+  justOpened = false,
+  showCta = true,
   onSavedLink = () => {},
 }) => {
   const [url, setUrl] = useState("");
+  const [isCta, setIsCta] = useState(false);
   const modalRef = useRef(null);
   const inputRef = useRef(null);
   const { t } = useEditorContext();
@@ -21,8 +26,10 @@ const LinkModal = ({
     // focus to the input. Using a short timeout ensures focus occurs after
     // the modal is mounted into the DOM.
     if (isVisible) {
-      const currentUrl = editor.getAttributes("link").href || "";
+      const linkAttrs = editor.getAttributes("link") || {};
+      const currentUrl = linkAttrs.href || "";
       setUrl(currentUrl);
+      setIsCta(showCta && Boolean(linkAttrs.cta));
 
       // Focus on the input field when the modal becomes visible
       setTimeout(() => {
@@ -131,7 +138,7 @@ const LinkModal = ({
           .chain()
           .focus()
           .extendMarkRange("link")
-          .setLink({ href: formattedUrl })
+          .setLink({ href: formattedUrl, cta: isCta })
           .run();
       }
 
@@ -186,6 +193,11 @@ const LinkModal = ({
 
   if (!isVisible) return null;
 
+  // When the modal just opened, include announcement in label for screen readers
+  const labelText = justOpened
+    ? `Link editor opened. ${t.enterLink}`
+    : t.enterLink;
+
   return (
     <div
       ref={modalRef}
@@ -196,52 +208,66 @@ const LinkModal = ({
       <label htmlFor="link-input" className="sr-only">
         {t.enterLink}
       </label>
-      <input
-        id="link-input"
-        ref={inputRef}
-        type="text"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        onKeyDown={handleInputKeyDown} // Scoped Enter key handling
-        placeholder={t.placeholder}
-        className="form-control w-full min-h-target input"
-        data-testid="link-modal-input"
-      />
-      <TooltipWrapper label={t.save}>
-        <button
-          onClick={saveLink}
-          title={t.save}
-          aria-label={t.save}
-          className="toolbar-button toolbar-green"
-          data-testid="link-modal-save-button"
-        >
-          <Check />
-        </button>
-      </TooltipWrapper>
-      <TooltipWrapper label={t.goTo}>
-        <button
-          onClick={goToLink}
-          onKeyDown={(e) => e.key === "Enter" && goToLink()} // Handle Enter for Go to Link
-          title={t.goTo}
-          aria-label={t.goTo}
-          className="toolbar-button"
-          data-testid="link-modal-go-to-button"
-        >
-          <ExternalLink />
-        </button>
-      </TooltipWrapper>
-      <TooltipWrapper label={t.remove}>
-        <button
-          onClick={removeLink}
-          onKeyDown={(e) => e.key === "Enter" && removeLink()} // Handle Enter for Remove Link
-          title={t.remove}
-          aria-label={t.remove}
-          className="toolbar-button"
-          data-testid="link-modal-remove-button"
-        >
-          <Unlink />
-        </button>
-      </TooltipWrapper>
+      <div className="link-modal-row">
+        <input
+          id="link-input"
+          ref={inputRef}
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={handleInputKeyDown} // Scoped Enter key handling
+          placeholder={t.placeholder}
+          className="form-control min-h-target input link-modal-input"
+          data-testid="link-modal-input"
+        />
+        <TooltipWrapper label={t.save}>
+          <button
+            onClick={saveLink}
+            title={t.save}
+            aria-label={t.save}
+            className="toolbar-button toolbar-green"
+            data-testid="link-modal-save-button"
+          >
+            <Check />
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.goTo}>
+          <button
+            onClick={goToLink}
+            onKeyDown={(e) => e.key === "Enter" && goToLink()} // Handle Enter for Go to Link
+            title={t.goTo}
+            aria-label={t.goTo}
+            className="toolbar-button"
+            data-testid="link-modal-go-to-button"
+          >
+            <ExternalLink />
+          </button>
+        </TooltipWrapper>
+        <TooltipWrapper label={t.remove}>
+          <button
+            onClick={removeLink}
+            onKeyDown={(e) => e.key === "Enter" && removeLink()} // Handle Enter for Remove Link
+            title={t.remove}
+            aria-label={t.remove}
+            className="toolbar-button"
+            data-testid="link-modal-remove-button"
+          >
+            <Unlink />
+          </button>
+        </TooltipWrapper>
+      </div>
+      {showCta && (
+        <label className="link-modal-checkbox" htmlFor="link-cta-checkbox">
+          <input
+            id="link-cta-checkbox"
+            type="checkbox"
+            checked={isCta}
+            onChange={(e) => setIsCta(e.target.checked)}
+            data-testid="link-modal-cta-checkbox"
+          />
+          <span>{t.cta}</span>
+        </label>
+      )}
     </div>
   );
 };
