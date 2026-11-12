@@ -45,8 +45,8 @@
       {% endif %}
       {% if not hide_show_more %}
         {{ show_more(
-          url_for('.view_jobs', service_id=current_service.id),
-          _('See all bulk sends')
+          url_for('.view_scheduled_sends', service_id=current_service.id),
+          _('See all scheduled sends')
         ) }}
       {% endif %}
     </div>
