@@ -1,4 +1,5 @@
 import re
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from flask import (
@@ -158,6 +159,12 @@ def email_template():
         branding_style = None
 
     if branding_style is not None:
+        # branding_style is interpolated into the API URL, so only accept a UUID
+        # to prevent path traversal to other API endpoints.
+        try:
+            branding_style = str(uuid.UUID(branding_style))
+        except ValueError:
+            abort(400)
         email_branding = email_branding_client.get_email_branding(branding_style)["email_branding"]
         branding_type = email_branding["brand_type"]
 

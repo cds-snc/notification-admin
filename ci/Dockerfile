@@ -1,6 +1,6 @@
 # Node.js build stage — Node 22 on Alpine (musl) so Rolldown's musl native
 # binding resolves correctly. npm install re-resolves platform optional deps.
-FROM node:22.23.1-alpine AS node-build
+FROM node:22.23.4-alpine AS node-build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
@@ -17,6 +17,14 @@ RUN apk add --no-cache bash build-base libxml2-dev libxslt-dev git g++ make libf
 
 # update pip
 RUN python -m pip install wheel poetry==${POETRY_VERSION} virtualenv==20.30.0
+
+# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
+RUN apk add --no-cache ca-certificates && \
+    sed -i \
+      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
+      /etc/ca-certificates.conf && \
+    update-ca-certificates --fresh
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
