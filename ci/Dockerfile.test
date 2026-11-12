@@ -1,16 +1,8 @@
-FROM python:3.12-alpine3.20@sha256:5049c050bdc68575a10bcb1885baa0689b6c15152d8a56a7e399fb49f783bf98
+FROM python:3.12.16-alpine3.24@sha256:44bf3bcc455e0c9ccd912b78f39019b2f7e9d2f4fb47c6d6973c7638a99aff14
 
 ENV PYTHONDONTWRITEBYTECODE 1
 
 # Install deps bump
-RUN apk add --no-cache build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev chromium=79.0.3945.130-r0 chromium-chromedriver && rm -rf /var/cache/apk/*
-
-# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 --
-RUN apk add --no-cache ca-certificates && \
-    sed -i \
-      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
-      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
-      /etc/ca-certificates.conf && \
-    update-ca-certificates --fresh
+RUN apk add --no-cache build-base libxml2-dev libxslt-dev git nodejs npm g++ make libffi-dev chromium chromium-chromedriver && rm -rf /var/cache/apk/*
 
 CMD ["/bin/sh"]
