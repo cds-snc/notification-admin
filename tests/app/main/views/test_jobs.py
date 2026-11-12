@@ -153,8 +153,8 @@ def test_get_job_counts_in_transit(app_, job, expected_in_transit):
     [
         (
             ("List name Details"),
-            ("send_me_later.csv Starting 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
-            ("even_later.csv Starting 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
+            ("send_me_later.csv Scheduled for 2016-01-01 11:09:00.061258 Scheduled to send to 30 recipients"),
+            ("even_later.csv Scheduled for 2016-01-01 23:09:00.061258 Scheduled to send to 30 recipients"),
             ("List name Sending Delivered Failed"),
             ("export 1/1/2016.xls Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
             ("all email addresses.xlsx Sent 2012-12-12T12:12:00.000000+0000 30 0 0"),
@@ -170,6 +170,7 @@ def test_jobs_page_shows_scheduled_jobs(
     service_one,
     active_user_with_permissions,
     mock_get_jobs,
+    mock_get_service_templates,
     fake_uuid,
     user,
     expected_rows,
@@ -202,6 +203,7 @@ def test_get_jobs_shows_page_links(
     client_request,
     active_user_with_permissions,
     mock_get_jobs,
+    mock_get_service_templates,
     user,
     fake_uuid,
 ):

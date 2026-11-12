@@ -1,4 +1,12 @@
 <div class="ajax-block-container">
+  {% if notification.scheduled_for %}
+  <p class="notification-status">
+    {{ _('Scheduled for') }} <time class="local-datetime-short">{{ notification.scheduled_for }}</time>
+    {% if sent_with_test_key %}
+      ({{_('test') }})
+    {% endif %}
+  </p>
+  {% else %}
   <p class="notification-status {{ notification.status|format_notification_status_as_field_status(notification.notification_type) }}">
     {% if notification.status|format_notification_status_as_url(notification.notification_type) %}
       <a href="{{ notification.status|format_notification_status_as_url(notification.notification_type) }}">
@@ -13,4 +21,5 @@
       ({{_('test') }})
     {% endif %}
   </p>
+  {% endif %}
 </div>
