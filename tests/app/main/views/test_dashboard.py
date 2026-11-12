@@ -725,8 +725,8 @@ def test_should_show_scheduled_jobs_and_notifications_together_on_dashboard(
     # 2 jobs + 12 individual messages, of which only the 2 returned are shown
     assert "Showing the next 4 of 14 scheduled sends" in normalize_spaces(page.text)
     assert (
-        normalize_spaces(page.select_one(f"a[href='{url_for('main.view_jobs', service_id=SERVICE_ONE_ID)}']").text)
-        == "See all bulk sends"
+        normalize_spaces(page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']").text)
+        == "See all scheduled sends"
     )
 
 
@@ -803,7 +803,59 @@ def test_dashboard_only_shows_the_next_few_scheduled_sends_of_either_type(
         "even_later.csv",
     ]
     assert "Showing the next 3 of 4 scheduled sends" in normalize_spaces(page.text)
-    assert page.select_one(f"a[href='{url_for('main.view_jobs', service_id=SERVICE_ONE_ID)}']")
+    assert page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
+
+
+def test_scheduled_sends_page_shows_jobs_and_notifications_together(
+    client_request,
+    mock_get_service_templates,
+    mock_scheduled_sends,
+):
+    page = client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID)
+
+    mock_scheduled_sends.assert_called_once_with(SERVICE_ONE_ID, page_size=50)
+    assert normalize_spaces(page.select_one("h1").text) == "Scheduled sends"
+    assert [normalize_spaces(row.select_one("th a").text) for row in page.select("tbody tr")] == [
+        "send_me_later.csv",
+        "one@example.com",
+        "even_later.csv",
+        "two@example.com",
+    ]
+    assert "See all scheduled sends" not in page.text
+    assert not page.select("a[rel=previous], a[rel=next]")
+
+
+@pytest.mark.parametrize(
+    "page_number, expected_rows, expected_page_size, has_prev, has_next",
+    [
+        (1, ["send_me_later.csv", "one@example.com", "even_later.csv"], 3, False, True),
+        (2, ["two@example.com"], 6, True, False),
+    ],
+)
+def test_scheduled_sends_page_is_paginated(
+    mocker,
+    client_request,
+    mock_get_service_templates,
+    mock_scheduled_sends,
+    page_number,
+    expected_rows,
+    expected_page_size,
+    has_prev,
+    has_next,
+):
+    mocker.patch("app.main.views.dashboard.SCHEDULED_SENDS_PAGE_SIZE", 3)
+
+    page = client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID, page=page_number)
+
+    mock_scheduled_sends.assert_called_once_with(SERVICE_ONE_ID, page_size=expected_page_size)
+    assert [normalize_spaces(row.select_one("th a").text) for row in page.select("tbody tr")] == expected_rows
+    assert bool(page.select_one("a[rel=previous]")) == has_prev
+    assert bool(page.select_one("a[rel=next]")) == has_next
+
+
+@pytest.mark.parametrize("page_number", ["0", "foo"])
+def test_scheduled_sends_page_404s_for_invalid_page(client_request, page_number):
+    client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID, page=page_number, _expected_status=404)
 
 
 def test_should_show_scheduled_notifications_on_dashboard_when_there_are_no_jobs(
@@ -837,7 +889,7 @@ def test_should_show_scheduled_notifications_on_dashboard_when_there_are_no_jobs
     assert "test@example.com" in rows[0].text
     assert "Showing the next" not in normalize_spaces(page.text)
     # The link is always shown, for consistency with the rest of the dashboard
-    assert page.select_one(f"a[href='{url_for('main.view_jobs', service_id=SERVICE_ONE_ID)}']")
+    assert page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
 
 
 def test_should_not_show_scheduled_sends_section_when_there_are_none(

@@ -454,6 +454,40 @@ def get_scheduled_sends(scheduled_jobs, scheduled_notifications=()):
     return sorted(scheduled_sends, key=lambda scheduled_send: _scheduled_for_utc(scheduled_send["scheduled_for"]))
 
 
+SCHEDULED_SENDS_PAGE_SIZE = 50
+
+
+@main.route("/services/<service_id>/scheduled-sends")
+@user_has_permissions()
+def view_scheduled_sends(service_id):
+    page = get_page_from_request()
+    if page is None or page < 1:
+        abort(404, "Invalid page argument ({}).".format(request.args.get("page")))
+
+    scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
+    # Both lists come back soonest first, so the first `page * page size` notifications
+    # are all that's needed to build this page of the combined list
+    scheduled_notifications = notification_api_client.get_scheduled_notifications(
+        service_id, page_size=page * SCHEDULED_SENDS_PAGE_SIZE
+    )
+    scheduled_sends = get_scheduled_sends(scheduled_jobs, scheduled_notifications["notifications"])
+    total = len(scheduled_jobs) + scheduled_notifications["total"]
+
+    start = (page - 1) * SCHEDULED_SENDS_PAGE_SIZE
+    end = start + SCHEDULED_SENDS_PAGE_SIZE
+
+    return render_template(
+        "views/dashboard/scheduled-sends.html",
+        scheduled_sends=render_template(
+            "views/dashboard/_upcoming.html",
+            scheduled_sends=scheduled_sends[start:end],
+            hide_show_more=True,
+        ),
+        prev_page=generate_previous_dict("main.view_scheduled_sends", service_id, page) if page > 1 else None,
+        next_page=generate_next_dict("main.view_scheduled_sends", service_id, page) if total > end else None,
+    )
+
+
 def get_dashboard_partials(service_id):
     timings = {}
 
