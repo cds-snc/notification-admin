@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { DOMParser } from "@tiptap/pm/model";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -675,16 +676,34 @@ const SimpleEditor = ({
       );
     }
 
-    // For content with conditionals, use insertContent directly with markdown
-    // (don't convert to HTML spans - let the markdown parser handle everything)
+    // SMS text must always go through its markdown parser so literal HTML and
+    // entities are preserved as text. Conditionals also require markdown
+    // parsing so their custom nodes are created.
     const hasConditionals = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/.test(
       fixedHeadingSpacing,
     );
+    const insertSmsContent = () => {
+      const parsedHtml = editor.storage.markdown.parser.parse(
+        fixedHeadingSpacing,
+        { inline: insertMode },
+      );
+      const container = document.createElement("div");
+      container.innerHTML = parsedHtml;
+      const content = DOMParser.fromSchema(editor.schema).parseSlice(
+        container,
+        {
+          preserveWhitespace: true,
+          ...(insertMode ? { context: editor.state.selection.$from } : {}),
+        },
+      ).content;
+      editor.commands.insertContent(content);
+    };
 
     if (insertMode) {
       // For pasting: insert at cursor position
-      if (hasConditionals) {
-        // Use markdown parser for complex content with conditionals
+      if (isSms) {
+        insertSmsContent();
+      } else if (hasConditionals) {
         editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // For simple content without conditionals, convert variables to spans
@@ -694,8 +713,9 @@ const SimpleEditor = ({
     } else {
       // For switching from markdown view: replace all content
       editor.commands.clearContent();
-      if (hasConditionals) {
-        // Use markdown parser
+      if (isSms) {
+        insertSmsContent();
+      } else if (hasConditionals) {
         editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // Convert to spans for efficiency

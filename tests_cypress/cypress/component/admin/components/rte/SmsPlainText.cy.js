@@ -55,6 +55,28 @@ describe("SMS plain text serialization", () => {
 
     RichTextEditor.Components.ViewMarkdownButton().click();
     RichTextEditor.Components.MarkdownEditor().should("have.value", content);
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor().should("contain.text", "<b>raw</b>");
+    storedValue().should("have.value", content);
+  });
+
+  it("preserves literal HTML and entities when pasted", () => {
+    const content = "&amp; <b>raw</b>";
+
+    mountSmsEditor();
+
+    RichTextEditor.Components.Editor().then(($editor) => {
+      cy.wrap($editor).trigger("paste", {
+        force: true,
+        clipboardData: {
+          getData: () => content,
+          types: ["text/plain"],
+        },
+      });
+    });
+
+    RichTextEditor.Components.Editor().should("contain.text", content);
+    storedValue().should("have.value", content);
   });
 
   it("still serializes variables and conditionals", () => {
