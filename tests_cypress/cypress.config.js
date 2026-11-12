@@ -188,6 +188,10 @@ module.exports = defineConfig({
       framework: "react",
       bundler: "vite",
       viteConfig: {
+        server: {
+          port: 5174,
+          strictPort: true,
+        },
         optimizeDeps: {
           esbuildOptions: {
             loader: {
