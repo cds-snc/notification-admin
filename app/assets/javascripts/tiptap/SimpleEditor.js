@@ -135,6 +135,7 @@ const SimpleEditor = ({
   }, [isMarkdownView, modeInputId]);
 
   const editor = useEditor({
+    immediatelyRender: false,
     shouldRerenderOnTransaction: true,
     extensions: [
       // Core extensions - required for basic functionality
@@ -423,7 +424,7 @@ const SimpleEditor = ({
 
   // Set initial content as Markdown after editor is created
   React.useEffect(() => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
     // Convert inbound stored caret markers '^' back to '>' so the RTE
     // renders normal blockquotes. We then set the markdownValue to the
     // original stored content (so Markdown view shows '^').
@@ -732,7 +733,7 @@ const SimpleEditor = ({
   };
 
   const toggleViewMode = () => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
 
     // Track the mode switch in Google Analytics
     if (typeof gtag === "function") {
@@ -818,6 +819,7 @@ const SimpleEditor = ({
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
+  const editorReady = editor && !editor.isDestroyed;
 
   return (
     <EditorProvider lang={lang}>
@@ -825,16 +827,18 @@ const SimpleEditor = ({
         <span id={shortcutHintId} className="sr-only">
           {shortcutHintText}
         </span>
-        <MenuBar
-          editor={editor}
-          openLinkModal={openLinkModal}
-          onToggleMarkdownView={toggleViewMode}
-          isMarkdownView={isMarkdownView}
-          toggleLabel={toggleLabel}
-          useUnifiedConditionalButton={useUnifiedConditionalButton}
-          templateType={templateType}
-        />
-        <div className="editor-content">
+        {editorReady && (
+          <MenuBar
+            editor={editor}
+            openLinkModal={openLinkModal}
+            onToggleMarkdownView={toggleViewMode}
+            isMarkdownView={isMarkdownView}
+            toggleLabel={toggleLabel}
+            useUnifiedConditionalButton={useUnifiedConditionalButton}
+            templateType={templateType}
+          />
+        )}
+        <div className="editor-content" aria-busy={!editorReady}>
           <div
             ref={announcerRef}
             data-testid={`${labelId}-cursor-announcer`}
@@ -844,6 +848,7 @@ const SimpleEditor = ({
           ></div>
           {isMarkdownView ? (
             <textarea
+              disabled={!editorReady}
               value={markdownValue}
               onChange={(event) => {
                 setMarkdownValue(event.target.value);
@@ -866,19 +871,21 @@ const SimpleEditor = ({
               spellCheck="false"
               data-testid="template-content"
             ></textarea>
-          ) : (
+          ) : editorReady ? (
             <EditorContent editor={editor} data-testid="rte-editor" />
-          )}
+          ) : null}
         </div>
-        <LinkModal
-          editor={editor}
-          isVisible={isLinkModalVisible}
-          position={modalPosition}
-          onClose={() => {
-            setLinkModalVisible(false);
-          }}
-          onSavedLink={() => {}}
-        />
+        {editorReady && (
+          <LinkModal
+            editor={editor}
+            isVisible={isLinkModalVisible}
+            position={modalPosition}
+            onClose={() => {
+              setLinkModalVisible(false);
+            }}
+            onSavedLink={() => {}}
+          />
+        )}
       </div>
     </EditorProvider>
   );
