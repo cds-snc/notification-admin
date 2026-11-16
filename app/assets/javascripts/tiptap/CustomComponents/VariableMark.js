@@ -124,9 +124,8 @@ const VariableMark = Mark.create({
     return {
       markdown: {
         serialize: {
-          open: () => "((",
-          close: () => "))",
-          expelEnclosingWhitespace: true,
+          open: "((",
+          close: "))",
         },
         parse: {
           // Update how we set up the markdown parser to use the plugin pattern
