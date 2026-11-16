@@ -343,8 +343,7 @@ describe("Link tests", () => {
     it("preserves multiple variables in a query URL when round-tripping", () => {
       const markdownLink =
         "[View the proposal](((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId)))";
-      const href =
-        "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
+      const href = "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
 
       RichTextEditor.Components.Editor().type(markdownLink);
 
@@ -539,8 +538,7 @@ describe("Link tests", () => {
     it("preserves multiple variables in a query URL when round-tripping", () => {
       const markdownLink =
         "[View the proposal](((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId)))";
-      const href =
-        "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
+      const href = "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
 
       RichTextEditor.Components.Editor().type("View the proposal{selectall}");
       RichTextEditor.Components.LinkButton().click();
