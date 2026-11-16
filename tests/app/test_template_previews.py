@@ -62,7 +62,7 @@ def test_from_database_object_makes_request(
     mock_get_service_letter_template,
 ):
     # This test is calling `current_service` outside a Flask endpoint, so we need to make sure
-    # `service` is in the `_request_ctx_stack` to avoid an error
+    # `service` is in the request context to avoid an error
     load_service_before_request()
     resp = Mock(content="a", status_code="b", headers={"c": "d"})
     request_mock = mocker.patch("app.template_previews.requests.post", return_value=resp)
