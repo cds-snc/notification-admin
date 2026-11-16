@@ -69,6 +69,33 @@ describe("Link tests", () => {
       .and("contain.text", "hello world");
   });
 
+  it("preserves balanced parentheses in a URL when round-tripping", () => {
+    const markdownLink =
+      "[Read the guide](https://example.com/docs/(getting-started)?lang=en)";
+    const serializedMarkdownLink =
+      "[Read the guide](https://example.com/docs/\\(getting-started\\)?lang=en)";
+    const href = "https://example.com/docs/(getting-started)?lang=en";
+
+    RichTextEditor.Components.Editor().type(markdownLink);
+
+    RichTextEditor.Components.Editor()
+      .find(`a[href="${href}"]`)
+      .should("exist")
+      .and("contain.text", "Read the guide");
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should(
+      "contain.value",
+      serializedMarkdownLink,
+    );
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor()
+      .find(`a[href="${href}"]`)
+      .should("exist")
+      .and("contain.text", "Read the guide");
+  });
+
   it("Link modal with no text selected inserts URL as link text with markdown syntax", () => {
     // Position cursor in editor without selecting any text
     // RichTextEditor.Components.Editor().focus().type("start");
@@ -312,6 +339,32 @@ describe("Link tests", () => {
         .should("exist")
         .and("contain.text", "var");
     });
+
+    it("preserves multiple variables in a query URL when round-tripping", () => {
+      const markdownLink =
+        "[View the proposal](((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId)))";
+      const href =
+        "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
+
+      RichTextEditor.Components.Editor().type(markdownLink);
+
+      RichTextEditor.Components.Editor()
+        .find(`a[href="${href}"]`)
+        .should("exist")
+        .and("contain.text", "View the proposal");
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().should(
+        "contain.value",
+        markdownLink,
+      );
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find(`a[href="${href}"]`)
+        .should("exist")
+        .and("contain.text", "View the proposal");
+    });
   });
 
   context("Links with variables (using modal)", () => {
@@ -481,6 +534,37 @@ describe("Link tests", () => {
         .find('a[href="((var2))"]')
         .should("exist")
         .and("contain.text", "var");
+    });
+
+    it("preserves multiple variables in a query URL when round-tripping", () => {
+      const markdownLink =
+        "[View the proposal](((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId)))";
+      const href =
+        "((Url))?GoCTemplateCulture=en-CA&ProposalId=((ProposalId))";
+
+      RichTextEditor.Components.Editor().type("View the proposal{selectall}");
+      RichTextEditor.Components.LinkButton().click();
+
+      cy.scrollTo("top");
+      RichTextEditor.Components.LinkModal.URLInput().clear().type(href);
+      RichTextEditor.Components.LinkModal.Buttons[0].SaveButton().click();
+
+      RichTextEditor.Components.Editor()
+        .find(`a[href="${href}"]`)
+        .should("exist")
+        .and("contain.text", "View the proposal");
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().should(
+        "contain.value",
+        markdownLink,
+      );
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor()
+        .find(`a[href="${href}"]`)
+        .should("exist")
+        .and("contain.text", "View the proposal");
     });
   });
 
