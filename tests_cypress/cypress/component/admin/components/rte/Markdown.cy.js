@@ -4,19 +4,22 @@ import { humanize } from "../../../../support/utils";
 import MARKDOWN from "../../../../fixtures/markdownSamples.js";
 import SimpleEditor from "../../../../../../app/assets/javascripts/tiptap/SimpleEditor";
 
-const mountEditor = (initialContent = "Welcome to the Editor") => {
+const mountEditor = (
+  initialContent = "Welcome to the Editor",
+  initialMode = "rte",
+) => {
   cy.mount(
     <div>
       <label id="rte-label">Template content</label>
       <input type="hidden" id="template-content" value={initialContent} />
-      <input type="hidden" id="template-content_mode" value="rte" />
+      <input type="hidden" id="template-content_mode" value={initialMode} />
       <SimpleEditor
         inputId="template-content"
         labelId="rte-label"
         initialContent={initialContent}
         lang="en"
         modeInputId="template-content_mode"
-        initialMode="rte"
+        initialMode={initialMode}
       />
     </div>,
   );
@@ -35,6 +38,22 @@ describe("Markdown entering and pasting tests", () => {
       .type("{selectall}{del}{del}")
       .should("have.text", "")
       .and("have.attr", "contenteditable", "true");
+  });
+
+  it("Loads in markdown mode on initial render", () => {
+    mountEditor("Welcome to the Editor", "markdown");
+
+    RichTextEditor.Components.MarkdownEditor()
+      .should("be.visible")
+      .and("be.enabled")
+      .and("have.value", "Welcome to the Editor");
+    RichTextEditor.Components.Toolbar().should("be.visible");
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+
+    RichTextEditor.Components.Editor()
+      .should("be.visible")
+      .and("contain.text", "Welcome to the Editor");
   });
 
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {

@@ -17,6 +17,7 @@ from notifications_python_client.errors import HTTPError
 from notifications_utils.url_safe_token import check_token
 
 from app import get_current_locale, user_api_client
+from app.config import get_secret_keys
 from app.main import main
 from app.main.forms import (
     AuthMethodForm,
@@ -116,7 +117,7 @@ def user_profile_email_authenticate():
 def user_profile_email_confirm(token):
     token_data = check_token(
         token=token,
-        secret=current_app.config["SECRET_KEY"],
+        secret=get_secret_keys(current_app.config),
         max_age_seconds=current_app.config["EMAIL_EXPIRY_SECONDS"],
     )
     token_data = json.loads(token_data)
