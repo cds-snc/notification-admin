@@ -39,6 +39,14 @@ describe("SMS toolbar restrictions", () => {
     RichTextEditor.Components.ViewMarkdownButton().should("exist");
   });
 
+  it("shows an SMS-specific message in markdown mode", () => {
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Toolbar().should(
+      "contain.text",
+      "New SMS experience",
+    );
+  });
+
   it("info pane shows only custom content, with no tab navigation", () => {
     RichTextEditor.Components.InfoButton().click();
     RichTextEditor.Components.InfoPaneTabs().should("not.exist");

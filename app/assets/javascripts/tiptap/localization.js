@@ -138,6 +138,7 @@ export const translations = {
     markdownButton: "Back to the markdown editor",
     richTextButton: "Try toolbar formatting",
     markdownEditorMessage: "New email experience",
+    smsMarkdownEditorMessage: "New SMS experience",
 
     // LinkModal
     enterLink: "Enter URL",
@@ -259,6 +260,7 @@ export const translations = {
     markdownButton: "Retour à l'éditeur de markdown",
     richTextButton: "Essayez les outils de mise en forme",
     markdownEditorMessage: "Nouvelle expérience courriel",
+    smsMarkdownEditorMessage: "Nouvelle expérience de message texte",
 
     // LinkModal
     enterLink: "Entrez l'URL",
