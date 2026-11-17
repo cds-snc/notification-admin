@@ -94,7 +94,7 @@
   {% if template %}
     {{ template|string|translate_preview_template }}
     {% include "partials/template-attachments-list.html" %}
-    {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' and not error %}
+    {% if template.template_type == 'sms' and not error %}
       <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
         {% if sms_parts_to_send %}
           <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" data-testid="sms-message-count">
@@ -108,7 +108,7 @@
             </span>
           </div>
         {% endif %}
-        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True, use_billable_units=True) }}
+        {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True) }}
       </div>
     {% endif %}
   {% endif %}
@@ -122,7 +122,7 @@
       )}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       {% if not error %}
-        {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' %}
+        {% if template.template_type == 'sms' %}
           <button type="submit" class="button">{{ _("Send text message") }}</button>
         {% else %}
           <button type="submit" class="button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>

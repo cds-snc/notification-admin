@@ -235,7 +235,7 @@
           )
           }}
         {% endcall %}
-        {% set sms_units = '{} text message parts' if config['FF_USE_BILLABLE_UNITS'] else '{} text messages' %}
+        {% set sms_units = '{} text message parts' %}
         {% call settings_row(if_has_permission='sms') %}
           {% set txt = _('Daily maximum') %}
           {{ text_field(txt)}}
@@ -344,7 +344,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Daily text message parts limit') if config['FF_USE_BILLABLE_UNITS'] else _('Daily text message limit') %}
+            {% set txt = _('Daily text message parts limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_daily_limit | format_number) }}
             {{ edit_field(
@@ -367,7 +367,7 @@
           {% endcall %}
 
           {% call row() %}
-            {% set txt = _('Annual text message parts limit') if config['FF_USE_BILLABLE_UNITS'] else _('Annual text message limit') %}
+            {% set txt = _('Annual text message parts limit') %}
             {{ text_field(txt)}}
             {{ text_field(current_service.sms_annual_limit | format_number) }}
             {{ edit_field(

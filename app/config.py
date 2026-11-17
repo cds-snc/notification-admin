@@ -106,7 +106,6 @@ class Config(object):
 
     # FEATURE FLAGS
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
-    FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
 
     # OTEL Configuration
@@ -256,7 +255,6 @@ class Test(Development):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = None
-    FF_USE_BILLABLE_UNITS = True
     VITE_HMR_ENABLED = False
 
 
@@ -281,7 +279,6 @@ class ProductionFF(Config):
     SYSTEM_STATUS_URL = "https://localhost:3000"
     NO_BRANDING_ID = "0af93cf1-2c49-485f-878f-f3e662e651ef"
     GC_ORGANISATIONS_BUCKET_NAME = None
-    FF_USE_BILLABLE_UNITS = False
     FF_REPORT_API = False
 
 
