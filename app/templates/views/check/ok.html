@@ -112,7 +112,7 @@
     } if preview_row < count_of_recipients + 1
   ) }}
   </section>
-  {% if config['FF_USE_BILLABLE_UNITS'] and template.template_type == 'sms' %}
+  {% if template.template_type == 'sms' %}
     <div class="mb-6 max-w-[464px]" data-testid="sms-sending-info">
       {% if sms_parts_to_send %}
         <div class="flex items-baseline border-b border-gray-300 py-4 gap-4 text-small" data-testid="sms-message-count">
@@ -134,7 +134,7 @@
           </span>
         </div>
       {% endif %}
-      {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True, use_billable_units=True) }}
+      {{ remaining_messages_summary(sms_daily_limit, sms_daily_used, sms_yearly_limit, sms_yearly_used, 'sms', show_links=False, verbose=True) }}
     </div>
   {% endif %}
   <div class="mb-12 clear-both contain-floats">

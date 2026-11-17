@@ -142,19 +142,13 @@ def get_limit_stats(notification_type, template=None):
     daily_remaining = limit_stats[notification_type]["daily"]["remaining"]
     yearly_remaining = limit_stats[notification_type]["annual"]["remaining"]
 
-    # TODO FF_USE_BILLABLE_UNITS removal
     # When using billable units for SMS, a single message may consume multiple billable units
     # (fragments). We need to check whether remaining units can cover a one-off send by comparing
     # against the template's fragment count, not just checking > 0.
     daily_exceeded_by_fragments = False
     yearly_exceeded_by_fragments = False
     fragment_count = None
-    if (
-        current_app.config.get("FF_USE_BILLABLE_UNITS")
-        and notification_type == "sms"
-        and template is not None
-        and hasattr(template, "fragment_count")
-    ):
+    if notification_type == "sms" and template is not None and hasattr(template, "fragment_count"):
         fragment_count = template.fragment_count
         if 0 < daily_remaining < fragment_count:
             daily_remaining = 0

@@ -56,7 +56,7 @@
         <li>{{ _("Use the positive form as much as possible and reserve the negative for when consequences could be grave or fatal. Avoid double negations and exceptions to exceptions, which could confuse readers.") }}</li>
       </div>
     </details>
-  {% elif config['FF_USE_BILLABLE_UNITS'] %}
+  {% else %}
     <details>
       <summary>{{ _("Best practices for text messages") }}</summary>
       <div class="details-body">
@@ -90,9 +90,7 @@
           hint=_('<span id="sms-char-count-current"></span> of {} characters maximum.').format(sms_char_count_limit)|safe,
           initialMode="rte" if current_user.default_editor_is_rte else "markdown") }}
 
-        {% if config['FF_USE_BILLABLE_UNITS'] %}
-          {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name if current_service.prefix_sms else '', sms_char_count_limit) }}
-        {% endif %}
+        {{ sms_character_info(current_service.sms_daily_limit | format_number, current_service.name if current_service.prefix_sms else '', sms_char_count_limit) }}
 
         <h2 class="heading-medium mt-gutter">{{ _('Template category') }}</h2>
         {% call template_category(form.template_category_id, true if template_category_mode == 'expand' else false) %}

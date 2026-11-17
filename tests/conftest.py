@@ -3191,8 +3191,6 @@ def mock_get_template_categories(mocker):
 
 @pytest.fixture(scope="function")
 def mock_get_template_statistics(mocker, service_one, fake_uuid):
-    from flask import current_app
-
     template = template_json(
         service_one["id"],
         fake_uuid,
@@ -3209,10 +3207,8 @@ def mock_get_template_statistics(mocker, service_one, fake_uuid):
             "template_id": template["id"],
             "is_precompiled_letter": False,
             "status": "delivered",
+            "billable_units": 1,
         }
-        # Include billable_units if FF_USE_BILLABLE_UNITS is enabled
-        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-            data["billable_units"] = 1
         return [data]
 
     return mocker.patch(
