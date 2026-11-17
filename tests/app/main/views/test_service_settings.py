@@ -356,7 +356,7 @@ def test_should_show_service_name(
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
     assert (
         normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 255 characters."
+        == "Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more."
     )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
@@ -371,7 +371,7 @@ def test_should_show_service_name_with_no_prefixing(
     assert page.find("h1").text == "Change your service name"
     assert (
         normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 255 characters."
+        == "Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more."
     )
 
 
@@ -394,28 +394,34 @@ def test_should_redirect_after_change_service_name(
     assert mock_service_name_is_unique.called is True
 
 
-def test_should_reject_service_name_change_when_combined_email_header_is_too_long(
+@pytest.mark.parametrize(
+    "name, is_valid",
+    [
+        ("a" * 150, True),
+        ("a" * 151, False),
+        ("é" * 75, True),
+        ("é" * 76, False),
+        ("a" * 140 + "é" * 6, False),
+    ],
+)
+def test_service_name_change_enforces_byte_limit(
     client_request,
     mock_update_service,
     mock_service_name_is_unique,
+    name,
+    is_valid,
 ):
-    """Renaming a service to a very long unicode name should fail validation
-    so we don't end up with an SES `from` header longer than 320 characters."""
-    long_service_name = (
-        "Message de Jimmy Royééééééééé – Gestionnaire principal responsable des urgences "
-        "et des évacuations du BIN // Message from Jimmy Royééééééééé – NPB Lead senior "
-        "manager for emergencies and évacuations"
-    )
-
     page = client_request.post(
         "main.service_name_change",
         service_id=SERVICE_ONE_ID,
-        _data={"name": long_service_name},
-        _expected_status=200,
+        _data={"name": name},
+        _expected_status=302 if is_valid else 200,
     )
 
-    assert "Your service name and email address combined are too long" in page.text
-    assert mock_update_service.called is False
+    if not is_valid:
+        assert "This cannot exceed 150 characters in length. Accented letters and some symbols count as 2 or more." in (
+            normalize_spaces(page.text)
+        )
 
 
 @pytest.mark.parametrize(

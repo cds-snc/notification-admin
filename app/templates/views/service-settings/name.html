@@ -31,9 +31,9 @@
 
   {% call form_wrapper() %}
     {% set save_txt = _('Save') %}
-    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 255 characters.') %}
+    {% set hint_txt = _('Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more.') %}
 
-    {{ textbox(form.name, hint=hint_txt, maxlength=255) }}
+    {{ textbox(form.name, hint=hint_txt, maxlength=150) }}
     {{ page_footer(save_txt) }}
   {% endcall %}
 

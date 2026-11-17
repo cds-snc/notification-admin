@@ -55,7 +55,6 @@ from app.main.validators import (
     ValidEmail,
     ValidGovEmail,
     ValidTeamMemberDomain,
-    validate_combined_email_header_length,
     validate_email_from,
     validate_service_name,
 )
@@ -570,7 +569,6 @@ class RenameServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
-            validate_combined_email_header_length,
         ],
     )
 
@@ -587,7 +585,6 @@ class ChangeEmailFromServiceForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
-            validate_combined_email_header_length,
         ],
     )
 
@@ -670,7 +667,6 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_service_name,
-            validate_combined_email_header_length,
         ],
     )
 
@@ -679,7 +675,6 @@ class CreateServiceStepNameForm(StripWhitespaceForm):
         validators=[
             DataRequired(message=_l("This cannot be empty")),
             validate_email_from,
-            validate_combined_email_header_length,
         ],
     )
 

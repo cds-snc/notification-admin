@@ -1,7 +1,6 @@
 import ipaddress
 import re
 import time
-from email.utils import formataddr
 from urllib.parse import urlparse
 
 import pwnedpasswords
@@ -19,6 +18,9 @@ from wtforms.validators import Email
 from app import current_service, formatted_list, service_api_client
 from app.main._blocked_passwords import blocked_passwords
 from app.utils import Spreadsheet, email_address_ends_with, email_safe, email_safe_name, is_gov_user
+
+# Base64 of 150 UTF-8 bytes keeps the SES From header under 320 chars with a 64-char email_from and a domain up to 35 chars.
+SERVICE_NAME_MAX_BYTES = 150
 
 
 class Blocklist:
@@ -266,8 +268,10 @@ def validate_email_from(form, field):
 
 
 def validate_service_name(form, field):
-    if len(field.data) > 255:
-        raise ValidationError(_l("This cannot exceed 255 characters in length"))
+    if len(field.data.encode("utf-8")) > SERVICE_NAME_MAX_BYTES:
+        raise ValidationError(
+            _l("This cannot exceed 150 characters in length. Accented letters and some symbols count as 2 or more.")
+        )
     if field.data != email_safe_name(field.data):
         raise ValidationError(_l("Make sure we formatted your email address correctly."))
     service_id = getattr(form, "service_id", current_app.config["NOTIFY_BAD_FILLER_UUID"])
@@ -277,52 +281,3 @@ def validate_service_name(form, field):
     )
     if not unique_name:
         raise ValidationError(_l("This service name is already in use"))
-
-
-def validate_combined_email_header_length(form, field):
-    """
-    Validate that the combined email header (service name + email address) doesn't exceed 320 characters.
-    When a service name contains unicode characters, it gets MIME-encoded in the email header,
-    which can significantly increase its length.
-    """
-    # At least one of name or email_from must be on the form for this
-    # validator to be meaningful.
-    if not hasattr(form, "name") and not hasattr(form, "email_from"):
-        return
-
-    if hasattr(form, "name"):
-        service_name = form.name.data if form.name.data else ""
-    else:
-        service_name = getattr(current_service, "name", "") or ""
-
-    # If the form does not include an email_from field (e.g. when renaming an
-    # existing service), fall back to the current service's email_from so we
-    # still validate the combined header length when only the name is being
-    # edited.
-    if hasattr(form, "email_from"):
-        email_from = form.email_from.data if form.email_from.data else ""
-    else:
-        email_from = getattr(current_service, "email_from", "") or ""
-
-    # If either field is empty, skip this validation (let other validators handle it)
-    if not service_name or not email_from:
-        return
-
-    # Construct the full email address: email_from@domain
-    sending_domain = current_app.config["SENDING_DOMAIN"]
-    full_email = f"{email_from}@{sending_domain}"
-
-    # Use formataddr to encode the header as it would be in an actual email
-    # This properly handles unicode characters by MIME-encoding them
-    try:
-        from_header = formataddr((service_name, full_email))
-
-        # Check if the total length exceeds 320 characters
-        if len(from_header) > 320:
-            raise ValidationError(_l("Your service name and email address combined are too long."))
-    except ValidationError:
-        # Re-raise validation errors
-        raise
-    except Exception as e:
-        # If encoding fails for some reason, log it but don't block the user
-        current_app.logger.warning(f"Error validating email header length: {e}")
