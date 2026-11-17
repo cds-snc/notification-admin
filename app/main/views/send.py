@@ -1385,6 +1385,7 @@ def send_notification(service_id, template_id):
             recipient=session["recipient"] or session["placeholders"]["address line 1"],
             personalisation=personalisation,
             sender_id=session["sender_id"] if "sender_id" in session else None,
+            scheduled_for=request.form.get("scheduled_for") or None,
         )
     except HTTPError as exception:
         current_app.logger.info('Service {} could not send notification: "{}"'.format(current_service.id, exception.message))
