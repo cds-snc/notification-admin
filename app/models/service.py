@@ -1,6 +1,7 @@
-from flask import Markup, abort, current_app
+from flask import abort, current_app
 from flask_babel import _
 from flask_babel import lazy_gettext as _l
+from markupsafe import Markup
 from notifications_utils.field import Field
 from notifications_utils.formatters import nl2br
 from notifications_utils.take import Take

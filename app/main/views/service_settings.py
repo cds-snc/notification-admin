@@ -729,7 +729,9 @@ def get_service_verify_reply_to_address_partials(service_id, notification_id):
 def service_edit_email_reply_to(service_id, reply_to_email_id):
     form = ServiceReplyToEmailForm()
     reply_to_email_address = current_service.get_email_reply_to_address(reply_to_email_id)
-    g.team_member_email_domains = set([team_member.email_domain for team_member in current_service.team_members])
+    g.team_member_email_domains = set(
+        [team_member.email_domain for team_member in current_service.team_members if hasattr(team_member, "email_domain")]
+    )
     if request.method == "GET":
         form.email_address.data = reply_to_email_address["email_address"]
         form.is_default.data = reply_to_email_address["is_default"]

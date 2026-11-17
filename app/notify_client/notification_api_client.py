@@ -107,6 +107,16 @@ class NotificationApiClient(NotifyAdminAPIClient):
             data={},
         )
 
+    def get_scheduled_notifications(self, service_id, page_size=None):
+        params = {"page_size": page_size} if page_size else None
+        return self.get(url="/service/{}/notifications/scheduled".format(service_id), params=params)
+
+    def cancel_scheduled_notification(self, service_id, notification_id):
+        return self.post(
+            url="/service/{}/notifications/{}/cancel-scheduled".format(service_id, notification_id),
+            data={},
+        )
+
     def get_notification_status_by_service(self, start_date, end_date):
         return self.get(
             url="service/monthly-data-by-service",

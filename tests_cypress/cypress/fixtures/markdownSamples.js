@@ -505,6 +505,16 @@ Second numbered item
 
 ^ A final quoted paragraph with *italicized text* and a [link](https://example.com)`
         },
+        BLOCKQUOTE_VARIABLES: {
+                before: `^ ((test_center_address_en)), ((room_name))
+((test_center_city_en))
+((test_center_province_en)), ((test_center_postal_code))`,
+                expected: `^ ((test_center_address_en)), ((room_name))
+^
+^ ((test_center_city_en))
+^
+^ ((test_center_province_en)), ((test_center_postal_code))`
+        },
         RTL_BLOCKS: {
                 before: `^ # RTL BLOCKS
 

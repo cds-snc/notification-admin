@@ -17,9 +17,10 @@ from bs4 import BeautifulSoup
 from flask import url_for
 from freezegun import freeze_time
 
-from tests import validate_route_permission, validate_route_permission_with_client
+from tests import job_json, validate_route_permission, validate_route_permission_with_client
 from tests.conftest import (
     SERVICE_ONE_ID,
+    TEMPLATE_ONE_ID,
     ClientRequest,
     a11y_test,
     create_active_caseworking_user,
@@ -628,11 +629,281 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
-    assert "Starting 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
+    assert "Scheduled for 2016-01-01 11:09:00.061258" in table_rows[0].find_all("th")[0].text
     assert table_rows[0].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
     assert "even_later.csv" in table_rows[1].find_all("th")[0].text
-    assert "Starting 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
+    assert "Scheduled for 2016-01-01 23:09:00.061258" in table_rows[1].find_all("th")[0].text
     assert table_rows[1].find_all("td")[0].text.strip() == "Scheduled to send to 30 recipients"
+
+
+@freeze_time("2016-01-01 11:09:00.061258")
+def test_should_show_scheduled_jobs_and_notifications_together_on_dashboard(
+    mocker,
+    api_user_active,
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    mock_get_scheduled_notifications,
+):
+    mocker.patch(
+        "app.job_api_client.get_scheduled_jobs",
+        return_value=[
+            {
+                **job_json(
+                    SERVICE_ONE_ID,
+                    api_user_active,
+                    job_id=job_id,
+                    template_id=TEMPLATE_ONE_ID,
+                    original_file_name=file_name,
+                    notification_count=30,
+                    job_status="scheduled",
+                    scheduled_for=scheduled_for,
+                ),
+                "template_type": "sms",
+            }
+            for job_id, file_name, scheduled_for in (
+                ("33333333-3333-3333-3333-333333333333", "send_me_later.csv", "2016-01-01 11:09:00.061258"),
+                ("44444444-4444-4444-4444-444444444444", "even_later.csv", "2016-01-01 23:09:00.061258"),
+            )
+        ],
+    )
+    mock_get_scheduled_notifications.return_value = {
+        "notifications": [
+            {
+                "id": "11111111-1111-1111-1111-111111111111",
+                "to": "test@example.com",
+                "notification_type": "email",
+                "scheduled_for": "2016-01-01T15:00:00.000000+00:00",
+                "template": {"name": "Email template"},
+            },
+            {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "to": "6502532222",
+                "notification_type": "sms",
+                "scheduled_for": "2016-01-02T15:00:00.000000+00:00",
+                "template": {"name": "SMS template"},
+            },
+        ],
+        "total": 12,
+        "page_size": 10,
+    }
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    mock_get_scheduled_notifications.assert_called_once_with(SERVICE_ONE_ID, page_size=10)
+    headings = [normalize_spaces(h2.text) for h2 in page.select("h2")]
+    assert headings.count("Scheduled sends") == 1
+
+    # Bulk sends (jobs) and individual messages are in the same table, soonest first
+    rows = page.select_one("table:-soup-contains('Scheduled sends')").select("tbody tr")
+    assert normalize_spaces(page.select_one("table:-soup-contains('Scheduled sends') thead").text) == (
+        "List name or recipient Details"
+    )
+    # Bulk sends and individual messages are displayed the same way
+    assert [normalize_spaces(row.select_one("th").text) for row in rows] == [
+        "send_me_later.csv Scheduled for 2016-01-01 11:09:00.061258",
+        "test@example.com Scheduled for 2016-01-01T15:00:00.000000+00:00",
+        "even_later.csv Scheduled for 2016-01-01 23:09:00.061258",
+        "6502532222 Scheduled for 2016-01-02T15:00:00.000000+00:00",
+    ]
+    assert [normalize_spaces(row.select_one("td").text) for row in rows] == [
+        "Text message to 30 recipients Template: sms_template_one",
+        "Email to 1 recipient Template: Email template",
+        "Text message to 30 recipients Template: sms_template_one",
+        "Text message to 1 recipient Template: SMS template",
+    ]
+    assert rows[0].select_one("th a")["href"] == url_for(
+        "main.view_job", service_id=SERVICE_ONE_ID, job_id="33333333-3333-3333-3333-333333333333"
+    )
+    assert rows[1].select_one("th a")["href"] == url_for(
+        "main.view_notification", service_id=SERVICE_ONE_ID, notification_id="11111111-1111-1111-1111-111111111111"
+    )
+    # 2 jobs + 12 individual messages, of which only the 2 returned are shown
+    assert "Showing the next 4 of 14 scheduled sends" in normalize_spaces(page.text)
+    assert (
+        normalize_spaces(page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']").text)
+        == "See all scheduled sends"
+    )
+
+
+def _scheduled_job(api_user_active, job_id, file_name, scheduled_for):
+    return {
+        **job_json(
+            SERVICE_ONE_ID,
+            api_user_active,
+            job_id=job_id,
+            template_id=TEMPLATE_ONE_ID,
+            original_file_name=file_name,
+            notification_count=30,
+            job_status="scheduled",
+            scheduled_for=scheduled_for,
+        ),
+        "template_type": "sms",
+    }
+
+
+def _scheduled_notification(notification_id, to, scheduled_for):
+    return {
+        "id": notification_id,
+        "to": to,
+        "notification_type": "email",
+        "scheduled_for": scheduled_for,
+        "template": {"name": "Email template"},
+    }
+
+
+@pytest.fixture
+def mock_scheduled_sends(mocker, api_user_active, mock_get_scheduled_notifications):
+    mocker.patch(
+        "app.job_api_client.get_scheduled_jobs",
+        return_value=[
+            _scheduled_job(api_user_active, "33333333-3333-3333-3333-333333333333", "send_me_later.csv", "2016-01-01 11:09:00"),
+            _scheduled_job(api_user_active, "44444444-4444-4444-4444-444444444444", "even_later.csv", "2016-01-01 23:09:00"),
+        ],
+    )
+    mock_get_scheduled_notifications.return_value = {
+        "notifications": [
+            _scheduled_notification(
+                "11111111-1111-1111-1111-111111111111", "one@example.com", "2016-01-01T15:00:00.000000+00:00"
+            ),
+            _scheduled_notification(
+                "22222222-2222-2222-2222-222222222222", "two@example.com", "2016-01-02T15:00:00.000000+00:00"
+            ),
+        ],
+        "total": 2,
+        "page_size": 50,
+    }
+    return mock_get_scheduled_notifications
+
+
+def test_dashboard_only_shows_the_next_few_scheduled_sends_of_either_type(
+    mocker,
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    mock_scheduled_sends,
+):
+    mocker.patch("app.main.views.dashboard.SCHEDULED_SENDS_DASHBOARD_LIMIT", 3)
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    mock_scheduled_sends.assert_called_once_with(SERVICE_ONE_ID, page_size=3)
+    rows = page.select_one("table:-soup-contains('Scheduled sends')").select("tbody tr")
+    assert [normalize_spaces(row.select_one("th a").text) for row in rows] == [
+        "send_me_later.csv",
+        "one@example.com",
+        "even_later.csv",
+    ]
+    assert "Showing the next 3 of 4 scheduled sends" in normalize_spaces(page.text)
+    assert page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
+
+
+def test_scheduled_sends_page_shows_jobs_and_notifications_together(
+    client_request,
+    mock_get_service_templates,
+    mock_scheduled_sends,
+):
+    page = client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID)
+
+    mock_scheduled_sends.assert_called_once_with(SERVICE_ONE_ID, page_size=50)
+    assert normalize_spaces(page.select_one("h1").text) == "Scheduled sends"
+    assert [normalize_spaces(row.select_one("th a").text) for row in page.select("tbody tr")] == [
+        "send_me_later.csv",
+        "one@example.com",
+        "even_later.csv",
+        "two@example.com",
+    ]
+    assert "See all scheduled sends" not in page.text
+    assert not page.select("a[rel=previous], a[rel=next]")
+
+
+@pytest.mark.parametrize(
+    "page_number, expected_rows, expected_page_size, has_prev, has_next",
+    [
+        (1, ["send_me_later.csv", "one@example.com", "even_later.csv"], 3, False, True),
+        (2, ["two@example.com"], 6, True, False),
+    ],
+)
+def test_scheduled_sends_page_is_paginated(
+    mocker,
+    client_request,
+    mock_get_service_templates,
+    mock_scheduled_sends,
+    page_number,
+    expected_rows,
+    expected_page_size,
+    has_prev,
+    has_next,
+):
+    mocker.patch("app.main.views.dashboard.SCHEDULED_SENDS_PAGE_SIZE", 3)
+
+    page = client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID, page=page_number)
+
+    mock_scheduled_sends.assert_called_once_with(SERVICE_ONE_ID, page_size=expected_page_size)
+    assert [normalize_spaces(row.select_one("th a").text) for row in page.select("tbody tr")] == expected_rows
+    assert bool(page.select_one("a[rel=previous]")) == has_prev
+    assert bool(page.select_one("a[rel=next]")) == has_next
+
+
+@pytest.mark.parametrize("page_number", ["0", "foo"])
+def test_scheduled_sends_page_404s_for_invalid_page(client_request, page_number):
+    client_request.get("main.view_scheduled_sends", service_id=SERVICE_ONE_ID, page=page_number, _expected_status=404)
+
+
+def test_should_show_scheduled_notifications_on_dashboard_when_there_are_no_jobs(
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_has_no_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    mock_get_scheduled_notifications,
+):
+    mock_get_scheduled_notifications.return_value = {
+        "notifications": [
+            {
+                "id": "11111111-1111-1111-1111-111111111111",
+                "to": "test@example.com",
+                "notification_type": "email",
+                "scheduled_for": "2016-01-01T15:00:00.000000+00:00",
+                "template": {"name": "Email template"},
+            },
+        ],
+        "total": 1,
+        "page_size": 10,
+    }
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    rows = page.select_one("table:-soup-contains('Scheduled sends')").select("tbody tr")
+    assert len(rows) == 1
+    assert "test@example.com" in rows[0].text
+    assert "Showing the next" not in normalize_spaces(page.text)
+    # The link is always shown, for consistency with the rest of the dashboard
+    assert page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
+
+
+def test_should_not_show_scheduled_sends_section_when_there_are_none(
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_has_no_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+):
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    assert "Scheduled sends" not in [normalize_spaces(h2.text) for h2 in page.select("h2")]
 
 
 def test_daily_usage_section_shown(

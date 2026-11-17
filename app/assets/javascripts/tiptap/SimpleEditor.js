@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { DOMParser } from "@tiptap/pm/model";
 import MenuBar from "./MenuBar";
 
 import Document from "@tiptap/extension-document";
@@ -23,7 +24,9 @@ import { RTLBlock } from "./CustomComponents/RTLNode";
 import VariableMark from "./CustomComponents/VariableMark";
 import MarkdownLink from "./CustomComponents/MarkdownLink";
 import BlockquoteMarkdown from "./CustomComponents/BlockquoteMarkdown";
-import SmsPlainTextMarkdown from "./CustomComponents/SmsPlainTextMarkdown";
+import SmsPlainTextMarkdown, {
+  SmsText,
+} from "./CustomComponents/SmsPlainTextMarkdown";
 import { scanConditionalBodyForClose } from "./CustomComponents/Conditional/MarkdownIt";
 import convertVariablesToSpans from "./utils/convertVariablesToSpans";
 import { Markdown } from "tiptap-markdown";
@@ -51,20 +54,6 @@ const isEditorViewMounted = (editor) => {
     return false;
   }
 };
-
-// prosemirror-markdown's serializer backslash-escapes punctuation (`*_~[]#>-+.)
-// that would otherwise be read back as formatting syntax, and tiptap-markdown's
-// own default text-node serializer additionally HTML-entity-escapes < and >
-// (so markdown-to-HTML email rendering doesn't misread them as tags). SMS has
-// no formatting extensions to interpret any of that syntax and no HTML
-// rendering step to decode the entities, so both forms of escaping are pure
-// noise that would otherwise be sent to recipients as literal backslashes or
-// "&lt;"/"&gt;" text.
-const unescapeSmsMarkdown = (markdown) =>
-  markdown
-    .replace(/\\([`*\\~[\]_\-#>+.])/g, "$1")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
 
 const SimpleEditor = ({
   inputId,
@@ -146,12 +135,13 @@ const SimpleEditor = ({
   }, [isMarkdownView, modeInputId]);
 
   const editor = useEditor({
+    immediatelyRender: false,
     shouldRerenderOnTransaction: true,
     extensions: [
       // Core extensions - required for basic functionality
       Document,
       Paragraph,
-      Text,
+      isSms ? SmsText : Text,
       HardBreak,
       History,
 
@@ -434,7 +424,7 @@ const SimpleEditor = ({
 
   // Set initial content as Markdown after editor is created
   React.useEffect(() => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
     // Convert inbound stored caret markers '^' back to '>' so the RTE
     // renders normal blockquotes. We then set the markdownValue to the
     // original stored content (so Markdown view shows '^').
@@ -558,8 +548,6 @@ const SimpleEditor = ({
         // SMS has no blockquote support, so a leading '>' is literal text.
         if (!isSms) {
           markdown = markdown.replace(/^(\s*)>/gm, "$1^");
-        } else {
-          markdown = unescapeSmsMarkdown(markdown);
         }
         updateHiddenInputValue(markdown);
       } catch (error) {
@@ -689,16 +677,34 @@ const SimpleEditor = ({
       );
     }
 
-    // For content with conditionals, use insertContent directly with markdown
-    // (don't convert to HTML spans - let the markdown parser handle everything)
+    // SMS text must always go through its markdown parser so literal HTML and
+    // entities are preserved as text. Conditionals also require markdown
+    // parsing so their custom nodes are created.
     const hasConditionals = /\(\([^?\n)]+\?\?[\s\S]*?\)\)/.test(
       fixedHeadingSpacing,
     );
+    const insertSmsContent = () => {
+      const parsedHtml = editor.storage.markdown.parser.parse(
+        fixedHeadingSpacing,
+        { inline: insertMode },
+      );
+      const container = document.createElement("div");
+      container.innerHTML = parsedHtml;
+      const content = DOMParser.fromSchema(editor.schema).parseSlice(
+        container,
+        {
+          preserveWhitespace: true,
+          ...(insertMode ? { context: editor.state.selection.$from } : {}),
+        },
+      ).content;
+      editor.commands.insertContent(content);
+    };
 
     if (insertMode) {
       // For pasting: insert at cursor position
-      if (hasConditionals) {
-        // Use markdown parser for complex content with conditionals
+      if (isSms) {
+        insertSmsContent();
+      } else if (hasConditionals) {
         editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // For simple content without conditionals, convert variables to spans
@@ -708,8 +714,9 @@ const SimpleEditor = ({
     } else {
       // For switching from markdown view: replace all content
       editor.commands.clearContent();
-      if (hasConditionals) {
-        // Use markdown parser
+      if (isSms) {
+        insertSmsContent();
+      } else if (hasConditionals) {
         editor.commands.insertContent(fixedHeadingSpacing);
       } else {
         // Convert to spans for efficiency
@@ -726,7 +733,7 @@ const SimpleEditor = ({
   };
 
   const toggleViewMode = () => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
 
     // Track the mode switch in Google Analytics
     if (typeof gtag === "function") {
@@ -774,8 +781,6 @@ const SimpleEditor = ({
       // SMS has no blockquote support, so a leading '>' is literal text.
       if (!isSms) {
         markdown = markdown.replace(/^(\s*)>/gm, "$1^");
-      } else {
-        markdown = unescapeSmsMarkdown(markdown);
       }
       setMarkdownValue(markdown);
     }
@@ -814,6 +819,7 @@ const SimpleEditor = ({
   // Feature flag: show a single context-aware conditional button in the toolbar.
   // When false, show separate block/inline conditional buttons.
   const useUnifiedConditionalButton = false;
+  const editorReady = editor && !editor.isDestroyed;
 
   return (
     <EditorProvider lang={lang}>
@@ -821,16 +827,18 @@ const SimpleEditor = ({
         <span id={shortcutHintId} className="sr-only">
           {shortcutHintText}
         </span>
-        <MenuBar
-          editor={editor}
-          openLinkModal={openLinkModal}
-          onToggleMarkdownView={toggleViewMode}
-          isMarkdownView={isMarkdownView}
-          toggleLabel={toggleLabel}
-          useUnifiedConditionalButton={useUnifiedConditionalButton}
-          templateType={templateType}
-        />
-        <div className="editor-content">
+        {editorReady && (
+          <MenuBar
+            editor={editor}
+            openLinkModal={openLinkModal}
+            onToggleMarkdownView={toggleViewMode}
+            isMarkdownView={isMarkdownView}
+            toggleLabel={toggleLabel}
+            useUnifiedConditionalButton={useUnifiedConditionalButton}
+            templateType={templateType}
+          />
+        )}
+        <div className="editor-content" aria-busy={!editorReady}>
           <div
             ref={announcerRef}
             data-testid={`${labelId}-cursor-announcer`}
@@ -840,6 +848,7 @@ const SimpleEditor = ({
           ></div>
           {isMarkdownView ? (
             <textarea
+              disabled={!editorReady}
               value={markdownValue}
               onChange={(event) => {
                 setMarkdownValue(event.target.value);
@@ -862,19 +871,21 @@ const SimpleEditor = ({
               spellCheck="false"
               data-testid="template-content"
             ></textarea>
-          ) : (
+          ) : editorReady ? (
             <EditorContent editor={editor} data-testid="rte-editor" />
-          )}
+          ) : null}
         </div>
-        <LinkModal
-          editor={editor}
-          isVisible={isLinkModalVisible}
-          position={modalPosition}
-          onClose={() => {
-            setLinkModalVisible(false);
-          }}
-          onSavedLink={() => {}}
-        />
+        {editorReady && (
+          <LinkModal
+            editor={editor}
+            isVisible={isLinkModalVisible}
+            position={modalPosition}
+            onClose={() => {
+              setLinkModalVisible(false);
+            }}
+            onSavedLink={() => {}}
+          />
+        )}
       </div>
     </EditorProvider>
   );

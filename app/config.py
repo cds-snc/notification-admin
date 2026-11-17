@@ -1,5 +1,5 @@
 import os
-from typing import Any, List
+from typing import Any, List, Mapping
 
 from dotenv import load_dotenv
 from environs import Env
@@ -11,6 +11,19 @@ from app.enums import NotifyEnv
 env = Env()
 env.read_env()
 load_dotenv()
+
+
+def split_secret_keys(keys: List[str]) -> tuple[str | None, List[str]]:
+    if not keys:
+        return None, []
+    return keys[-1], keys[:-1]
+
+
+def get_secret_keys(config: Mapping[str, Any]) -> List[str]:
+    secret_key = config["SECRET_KEY"]
+    if not secret_key:
+        raise RuntimeError("SECRET_KEY is not configured")
+    return [*config.get("SECRET_KEY_FALLBACKS", []), secret_key]
 
 
 if os.environ.get("VCAP_APPLICATION"):
@@ -94,7 +107,6 @@ class Config(object):
     # FEATURE FLAGS
     FF_CARETAKER = env.bool("FF_CARETAKER", False)
     FF_USE_BILLABLE_UNITS = env.bool("FF_USE_BILLABLE_UNITS", False)
-    FF_ADD_TEMPLATE_PERM = env.bool("FF_ADD_TEMPLATE_PERM", False)
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
 
     # OTEL Configuration
@@ -143,7 +155,7 @@ class Config(object):
     SCANFILES_AUTH_TOKEN = os.environ.get("SCANFILES_AUTH_TOKEN", "")
     SCANFILES_URL = os.environ.get("SCANFILES_URL", "")
 
-    SECRET_KEY = env.list("SECRET_KEY", [])
+    SECRET_KEY, SECRET_KEY_FALLBACKS = split_secret_keys(env.list("SECRET_KEY", []))
     SECURITY_EMAIL = os.environ.get("SECURITY_EMAIL", "security+securite@cds-snc.ca")
     SENDING_DOMAIN = os.environ.get("SENDING_DOMAIN", "notification.alpha.canada.ca")
     SESSION_COOKIE_HTTPONLY = True
@@ -190,6 +202,7 @@ class Config(object):
             "ROUTE_SECRET_KEY_1",
             "ROUTE_SECRET_KEY_2",
             "SECRET_KEY",
+            "SECRET_KEY_FALLBACKS",
             "TEMPLATE_PREVIEW_API_KEY",
             "WAF_SECRET",
             "ZENDESK_API_KEY",
@@ -210,13 +223,12 @@ class Development(Config):
     DEBUG = True
     VITE_HMR_ENABLED = env.bool("VITE_HMR_ENABLED", True)
     DEBUG_KEY = "debug"
-    FF_ADD_TEMPLATE_PERM = True
     FF_REPORT_API = env.bool("FF_REPORT_API", False)
     MOU_BUCKET_NAME = "notify.tools-mou"
     ONE_CLICK_UNSUB_ALL_SERVICES = True
     REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     CACHE_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    SECRET_KEY = env.list("SECRET_KEY", ["dev-notify-secret-key"])
+    SECRET_KEY, SECRET_KEY_FALLBACKS = split_secret_keys(env.list("SECRET_KEY", ["dev-notify-secret-key"]))
     SESSION_COOKIE_SECURE = False
     SESSION_PROTECTION = None
     SYSTEM_STATUS_URL = "https://localhost:3000"
@@ -234,7 +246,8 @@ class Test(Development):
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.TEST.value
-    SECRET_KEY = ["dev-notify-secret-key"]
+    SECRET_KEY = "dev-notify-secret-key"
+    SECRET_KEY_FALLBACKS: List[str] = []
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
@@ -258,7 +271,8 @@ class ProductionFF(Config):
     DEBUG_KEY = "debug"
     MOU_BUCKET_NAME = "test-mou"
     NOTIFY_ENVIRONMENT = NotifyEnv.PRODUCTION_FF.value
-    SECRET_KEY = ["dev-notify-secret-key"]
+    SECRET_KEY = "dev-notify-secret-key"
+    SECRET_KEY_FALLBACKS: List[str] = []
     TEMPLATE_PREVIEW_API_HOST = "http://localhost:9999"
     TEMPLATE_PREVIEW_API_KEY = "dev-notify-secret-key"
     TESTING = True
@@ -281,7 +295,6 @@ class Production(Config):
 
 
 class Staging(Production):
-    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.STAGING.value
     NOTIFY_LOG_LEVEL = "INFO"
     SYSTEM_STATUS_URL = "https://status.staging.notification.cdssandbox.xyz"
@@ -295,7 +308,6 @@ class Scratch(Production):
 
 
 class Dev(Production):
-    FF_ADD_TEMPLATE_PERM = True
     NOTIFY_ENVIRONMENT = NotifyEnv.DEV.value
     NOTIFY_LOG_LEVEL = "INFO"
 

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm@sha256:5ff1ba19e3b9273b24ec101055172d0e75046bc9ec40780643c530d2df2c75e5
 
 RUN rm -f /etc/apt/sources.list.d/yarn.list
 
@@ -52,16 +52,6 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-
-# -- Install CA certificates and update them to disable emSign ECC Root CA - G3 and Comodo AAA Services root --
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates && \
-    rm -rf /var/lib/apt/lists/* && \
-    sed -i \
-      -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
-      -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
-      /etc/ca-certificates.conf && \
-    update-ca-certificates --fresh
 
 RUN case "$(dpkg --print-architecture)" in \
             amd64) AWS_CLI_ARCH="x86_64"; AWS_CLI_SHA256="15daae6cc803984064e3d4be9cfd07c4ae8ea703633c0a0b67acc6e321f706a3" ;; \

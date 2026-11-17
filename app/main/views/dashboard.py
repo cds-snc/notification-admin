@@ -1,9 +1,10 @@
 import calendar
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import partial
 from itertools import groupby
 
+from dateutil import parser
 from flask import (
     abort,
     current_app,
@@ -407,6 +408,86 @@ def aggregate_notifications_stats(template_statistics, use_billable_units=False)
     return notifications
 
 
+SCHEDULED_SENDS_DASHBOARD_LIMIT = 10
+
+
+def _scheduled_for_utc(scheduled_for):
+    scheduled_for = parser.parse(scheduled_for)
+    if scheduled_for.tzinfo:
+        scheduled_for = scheduled_for.astimezone(timezone.utc).replace(tzinfo=None)
+    return scheduled_for
+
+
+def get_scheduled_sends(scheduled_jobs, scheduled_notifications=()):
+    """Scheduled bulk sends and individual messages in one list, soonest first.
+
+    Jobs and notifications are normalised to the same shape so they're displayed consistently.
+    """
+    template_names = {}
+    if scheduled_jobs:
+        # Jobs only reference their template by id; the service's templates are cached
+        template_names = {template["id"]: template["name"] for template in current_service.all_templates}
+
+    scheduled_sends = [
+        {
+            "name": job["original_file_name"],
+            "url": url_for("main.view_job", service_id=current_service.id, job_id=job["id"]),
+            "scheduled_for": job["scheduled_for"],
+            "template_type": job.get("template_type"),
+            "template_name": template_names.get(job.get("template")),
+            "recipient_count": job.get("notification_count", 0),
+            "is_bulk": True,
+        }
+        for job in scheduled_jobs
+    ] + [
+        {
+            "name": notification["to"],
+            "url": url_for("main.view_notification", service_id=current_service.id, notification_id=notification["id"]),
+            "scheduled_for": notification["scheduled_for"],
+            "template_type": notification.get("notification_type"),
+            "template_name": (notification.get("template") or {}).get("name"),
+            "recipient_count": 1,
+            "is_bulk": False,
+        }
+        for notification in scheduled_notifications
+    ]
+    return sorted(scheduled_sends, key=lambda scheduled_send: _scheduled_for_utc(scheduled_send["scheduled_for"]))
+
+
+SCHEDULED_SENDS_PAGE_SIZE = 50
+
+
+@main.route("/services/<service_id>/scheduled-sends")
+@user_has_permissions()
+def view_scheduled_sends(service_id):
+    page = get_page_from_request()
+    if page is None or page < 1:
+        abort(404, "Invalid page argument ({}).".format(request.args.get("page")))
+
+    scheduled_jobs = job_api_client.get_scheduled_jobs(service_id)
+    # Both lists come back soonest first, so the first `page * page size` notifications
+    # are all that's needed to build this page of the combined list
+    scheduled_notifications = notification_api_client.get_scheduled_notifications(
+        service_id, page_size=page * SCHEDULED_SENDS_PAGE_SIZE
+    )
+    scheduled_sends = get_scheduled_sends(scheduled_jobs, scheduled_notifications["notifications"])
+    total = len(scheduled_jobs) + scheduled_notifications["total"]
+
+    start = (page - 1) * SCHEDULED_SENDS_PAGE_SIZE
+    end = start + SCHEDULED_SENDS_PAGE_SIZE
+
+    return render_template(
+        "views/dashboard/scheduled-sends.html",
+        scheduled_sends=render_template(
+            "views/dashboard/_upcoming.html",
+            scheduled_sends=scheduled_sends[start:end],
+            hide_show_more=True,
+        ),
+        prev_page=generate_previous_dict("main.view_scheduled_sends", service_id, page) if page > 1 else None,
+        next_page=generate_next_dict("main.view_scheduled_sends", service_id, page) if total > end else None,
+    )
+
+
 def get_dashboard_partials(service_id):
     timings = {}
 
@@ -434,6 +515,17 @@ def get_dashboard_partials(service_id):
         start = time.time()
         immediate_jobs = [add_rate_to_job(job) for job in immediate_jobs_raw]
         timings["add_rate_to_job"] = (time.time() - start) * 1000
+
+    start = time.time()
+    # The dashboard shows the next few sends of either type, so it never needs more individual messages than that
+    scheduled_notifications = notification_api_client.get_scheduled_notifications(
+        service_id, page_size=SCHEDULED_SENDS_DASHBOARD_LIMIT
+    )
+    timings["get_scheduled_notifications"] = (time.time() - start) * 1000
+    scheduled_sends = get_scheduled_sends(scheduled_jobs, scheduled_notifications["notifications"])[
+        :SCHEDULED_SENDS_DASHBOARD_LIMIT
+    ]
+    total_scheduled_sends = len(scheduled_jobs) + scheduled_notifications["total"]
 
     # get the daily stats
     start = time.time()
@@ -468,7 +560,11 @@ def get_dashboard_partials(service_id):
     current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
     return {
-        "upcoming": render_template("views/dashboard/_upcoming.html", scheduled_jobs=scheduled_jobs),
+        "upcoming": render_template(
+            "views/dashboard/_upcoming.html",
+            scheduled_sends=scheduled_sends,
+            total_scheduled_sends=total_scheduled_sends,
+        ),
         "daily_totals": render_template(
             "views/dashboard/_totals_daily.html",
             service_id=service_id,
@@ -501,7 +597,7 @@ def get_dashboard_partials(service_id):
         "has_template_statistics": bool(template_statistics_weekly),
         "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
         "has_jobs": bool(immediate_jobs),
-        "has_scheduled_jobs": bool(scheduled_jobs),
+        "has_scheduled_sends": bool(scheduled_sends),
         "debug_timings": timings,  # Include timings in the response for debugging
     }
 

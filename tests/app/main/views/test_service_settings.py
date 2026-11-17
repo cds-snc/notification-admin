@@ -2008,6 +2008,29 @@ def test_edit_reply_to_email_address_goes_straight_to_update_if_address_not_chan
     mock_verify.assert_not_called()
 
 
+def test_edit_reply_to_email_address_page_loads_with_pending_invited_team_member(
+    mocker,
+    fake_uuid,
+    client_request,
+    sample_invite,
+):
+    from app.models.user import InvitedUser
+
+    mocker.patch(
+        "app.models.service.Service.team_members",
+        [InvitedUser(sample_invite)],
+    )
+    mocker.patch("app.service_api_client.get_reply_to_email_address", return_value=create_reply_to_email_address())
+
+    page = client_request.get(
+        "main.service_edit_email_reply_to",
+        service_id=SERVICE_ONE_ID,
+        reply_to_email_id=fake_uuid,
+    )
+
+    assert page.select_one("input[name=email_address]")["value"] == "test@example.com"
+
+
 @pytest.mark.parametrize(
     "sender_details",
     [create_reply_to_email_address(is_default=False), create_reply_to_email_address()],

@@ -228,6 +228,7 @@ class HeaderNavigation(Navigation):
             "view_jobs",
             "view_notification",
             "view_notifications",
+            "view_scheduled_sends",
         },
         "support": {
             "set_lang",
@@ -540,6 +541,7 @@ class MainNavigation(Navigation):
             "view_jobs",
             "view_notification",
             "view_notifications",
+            "view_scheduled_sends",
         },
         "templates": {
             "action_blocked",
@@ -972,6 +974,7 @@ class OrgNavigation(Navigation):
         "view_notifications_csv",
         "view_provider",
         "view_providers",
+        "view_scheduled_sends",
         "view_template",
         "view_template_version",
         "view_template_version_preview",
