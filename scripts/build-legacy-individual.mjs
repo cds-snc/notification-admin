@@ -16,6 +16,7 @@ const root = path.resolve(__dirname, "..");
 
 const files = [
   "branding_request",
+  "fipBranding",
   "contactGaTracking",
   "formValidateRequired",
   "sessionRedirect",
