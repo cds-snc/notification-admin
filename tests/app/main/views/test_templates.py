@@ -3455,7 +3455,7 @@ class TestAnnualLimits:
             (2, 2, False),  # Both below fragment_count, buttons hidden
         ],
     )
-    def test_should_hide_send_buttons_when_billable_units_enabled_and_remaining_below_fragment_count(
+    def test_should_hide_send_buttons_when_remaining_below_fragment_count(
         self,
         client_request,
         mock_get_template_folders,
@@ -3465,79 +3465,11 @@ class TestAnnualLimits:
         remaining_annual,
         buttons_shown,
         mocker,
-        app_,
     ):
-        """When FF_USE_BILLABLE_UNITS is enabled and the template is SMS, the send buttons
+        """For SMS templates, the send buttons
         should be hidden if remaining billable units are less than the template's fragment count."""
-        app_.config["FF_USE_BILLABLE_UNITS"] = True
-
         # Create a long SMS template that will produce 3 fragments
         long_content = "A" * 400  # 400 chars → 3 SMS fragments
-        mocker.patch(
-            "app.service_api_client.get_service_template",
-            return_value={
-                "data": template_json(
-                    SERVICE_ONE_ID,
-                    fake_uuid,
-                    name="Long SMS",
-                    type_="sms",
-                    content=long_content,
-                )
-            },
-        )
-        mocker.patch(
-            "app.template_category_api_client.get_all_template_categories",
-            return_value=[],
-        )
-
-        current_user.verified_phonenumber = True
-        mock_notification_counts_client.get_limit_stats.return_value = {
-            "email": {
-                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
-                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
-            },
-            "sms": {
-                "annual": {"limit": 1000, "sent": 0, "remaining": remaining_annual},
-                "daily": {"limit": 1000, "sent": 0, "remaining": remaining_daily},
-            },
-        }
-
-        page = client_request.get(
-            ".view_template",
-            service_id=SERVICE_ONE_ID,
-            template_id=fake_uuid,
-            _test_page_title=False,
-        )
-        if buttons_shown:
-            assert page.find(attrs={"data-testid": "send-buttons"}) is not None
-        else:
-            assert page.find(attrs={"data-testid": "send-buttons"}) is None
-
-    @pytest.mark.parametrize(
-        "remaining_daily, remaining_annual, buttons_shown",
-        [
-            (2, 100, True),  # Daily remaining = 2 > 0, buttons shown (fragment_count not checked)
-            (1, 1, True),  # Both remaining = 1 > 0, buttons shown
-        ],
-    )
-    def test_should_not_check_fragment_count_when_billable_units_disabled(
-        self,
-        client_request,
-        mock_get_template_folders,
-        mock_notification_counts_client,
-        fake_uuid,
-        remaining_daily,
-        remaining_annual,
-        buttons_shown,
-        mocker,
-        app_,
-    ):
-        """When FF_USE_BILLABLE_UNITS is disabled, the send buttons should be shown
-        as long as remaining > 0, regardless of fragment count."""
-        app_.config["FF_USE_BILLABLE_UNITS"] = False
-
-        # Create a long SMS template that will produce 3 fragments
-        long_content = "A" * 400
         mocker.patch(
             "app.service_api_client.get_service_template",
             return_value={
@@ -3606,7 +3538,7 @@ class TestAnnualLimits:
             (0, 2, "This message exceeds your annual limit."),
         ],
     )
-    def test_heading_text_when_billable_units_enabled_and_remaining_below_fragment_count(
+    def test_heading_text_when_remaining_below_fragment_count(
         self,
         client_request,
         mock_get_template_folders,
@@ -3616,13 +3548,10 @@ class TestAnnualLimits:
         remaining_annual,
         expected_heading,
         mocker,
-        app_,
     ):
-        """When FF_USE_BILLABLE_UNITS is enabled and remaining billable units are less than the
+        """When remaining billable units are less than the
         template's fragment count, the heading should indicate the message is too long rather
         than saying sending is paused."""
-        app_.config["FF_USE_BILLABLE_UNITS"] = True
-
         # Create a long SMS template that will produce 3 fragments
         long_content = "A" * 400
         mocker.patch(
@@ -3673,11 +3602,8 @@ def test_heading_text_daily_limit_paused_during_edt(
     mock_notification_counts_client,
     fake_uuid,
     mocker,
-    app_,
 ):
     """When in EDT (summer), the daily limit reset time should show 8PM instead of 7PM."""
-    app_.config["FF_USE_BILLABLE_UNITS"] = True
-
     long_content = "A" * 400
     mocker.patch(
         "app.service_api_client.get_service_template",
@@ -3726,12 +3652,9 @@ def test_heading_text_daily_limit_paused_during_edt(
         mock_notification_counts_client,
         fake_uuid,
         mocker,
-        app_,
     ):
-        """When FF_USE_BILLABLE_UNITS is enabled and the template has no placeholders,
+        """When the template has no placeholders,
         the fragment count should display as plain 'X text messages.'"""
-        app_.config["FF_USE_BILLABLE_UNITS"] = True
-
         mocker.patch(
             "app.service_api_client.get_service_template",
             return_value={
@@ -3772,12 +3695,9 @@ def test_heading_text_daily_limit_paused_during_edt(
         mock_notification_counts_client,
         fake_uuid,
         mocker,
-        app_,
     ):
-        """When FF_USE_BILLABLE_UNITS is enabled and the template has personalisation variables,
+        """When the template has personalisation variables,
         the fragment count should display as 'Estimate: X text messages. Custom content may increase length.'"""
-        app_.config["FF_USE_BILLABLE_UNITS"] = True
-
         mocker.patch(
             "app.service_api_client.get_service_template",
             return_value={

@@ -3393,15 +3393,13 @@ def test_check_notification_sms_shows_limit_rows_without_links(
     mock_get_service_template,
     mock_get_template_statistics,
     mock_get_limit_stats_send,
-    app_,
 ):
-    """Daily and yearly remaining rows appear for SMS without request-increase links when FF is enabled."""
+    """Daily and yearly remaining rows appear for SMS without request-increase links."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
 
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
-        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     sms_info = page.select_one("[data-testid='sms-sending-info']")
     assert sms_info is not None, "sms-sending-info block should be present for SMS templates"
@@ -3415,67 +3413,40 @@ def test_check_notification_sms_shows_limit_rows_without_links(
     assert not sms_info.select("[data-testid='rms-yearly-link']")
 
 
-def test_check_notification_sms_shows_message_count_when_ff_enabled(
+def test_check_notification_sms_shows_message_count(
     client_request,
     service_one,
     fake_uuid,
     mock_get_service_template,
     mock_get_template_statistics,
     mock_get_limit_stats_send,
-    app_,
 ):
-    """Count chip only appears when FF_USE_BILLABLE_UNITS is enabled."""
+    """Count chip appears for SMS templates."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
 
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
-        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     count_el = page.select_one("[data-testid='sms-message-count']")
     assert count_el is not None
     assert "text message" in count_el.text
 
 
-def test_check_notification_sms_hides_message_count_when_ff_disabled(
+def test_check_notification_sms_button_text(
     client_request,
     service_one,
     fake_uuid,
     mock_get_service_template,
     mock_get_template_statistics,
     mock_get_limit_stats_send,
-    app_,
 ):
-    """Count chip and limit rows are hidden when FF_USE_BILLABLE_UNITS is disabled."""
+    """Button says 'Send text message' (no count)."""
     with client_request.session_transaction() as session:
         session["recipient"] = "6502532223"
         session["placeholders"] = {}
 
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
-        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
-
-    assert not page.select("[data-testid='sms-message-count']")
-    assert not page.select("[data-testid='sms-sending-info']")
-    # Button falls back to old label when FF is off
-    assert page.select_one("button[type=submit]").text.strip() == "Send 1 text message"
-
-
-def test_check_notification_sms_button_text_with_ff_enabled(
-    client_request,
-    service_one,
-    fake_uuid,
-    mock_get_service_template,
-    mock_get_template_statistics,
-    mock_get_limit_stats_send,
-    app_,
-):
-    """Button says 'Send text message' (no count) when FF_USE_BILLABLE_UNITS is on."""
-    with client_request.session_transaction() as session:
-        session["recipient"] = "6502532223"
-        session["placeholders"] = {}
-
-    with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
-        page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
 
     assert page.select_one("button[type=submit]").text.strip() == "Send text message"
 
@@ -4078,20 +4049,19 @@ class TestBulkCheckSmsSendingInfo:
         6502532224, Bob
     """
 
-    def _get_page(self, client_request, fake_uuid, mocker, ff_enabled, app_):
+    def _get_page(self, client_request, fake_uuid, mocker):
         mocker.patch("app.main.views.send.s3download", return_value=self.CSV_CONTENT)
         with client_request.session_transaction() as session:
             session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid}}
-        with set_config(app_, "FF_USE_BILLABLE_UNITS", ff_enabled):
-            return client_request.get(
-                "main.check_messages",
-                service_id=SERVICE_ONE_ID,
-                template_id=fake_uuid,
-                upload_id=fake_uuid,
-                original_file_name="test.csv",
-            )
+        return client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="test.csv",
+        )
 
-    def test_sms_sending_info_shown_when_ff_enabled(
+    def test_sms_sending_info_shown(
         self,
         client_request,
         mock_get_live_service,
@@ -4103,13 +4073,12 @@ class TestBulkCheckSmsSendingInfo:
         mock_get_jobs,
         mock_s3_set_metadata,
         fake_uuid,
-        app_,
         mocker,
     ):
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
+        page = self._get_page(client_request, fake_uuid, mocker)
 
         sms_info = page.select_one("[data-testid='sms-sending-info']")
-        assert sms_info is not None, "sms-sending-info block should appear for SMS when FF is on"
+        assert sms_info is not None, "sms-sending-info block should appear for SMS"
 
         # Count chip present
         assert sms_info.select_one("[data-testid='sms-message-count']") is not None
@@ -4120,27 +4089,6 @@ class TestBulkCheckSmsSendingInfo:
         # No request-increase links
         assert not sms_info.select("[data-testid='rms-daily-link']")
         assert not sms_info.select("[data-testid='rms-yearly-link']")
-
-    def test_sms_sending_info_hidden_when_ff_disabled(
-        self,
-        client_request,
-        mock_get_live_service,
-        mock_get_service_template_with_placeholders,
-        mock_get_users_by_service,
-        mock_get_service_statistics,
-        mock_get_template_statistics,
-        mock_get_job_doesnt_exist,
-        mock_get_jobs,
-        mock_s3_set_metadata,
-        fake_uuid,
-        app_,
-        mocker,
-    ):
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=False, app_=app_)
-
-        assert not page.select("[data-testid='sms-sending-info']")
-        assert not page.select("[data-testid='sms-message-count']")
-        assert not page.select("[data-testid='rms-item']")
 
     def test_sms_count_label_says_count_when_exact(
         self,
@@ -4154,11 +4102,10 @@ class TestBulkCheckSmsSendingInfo:
         mock_get_jobs,
         mock_s3_set_metadata,
         fake_uuid,
-        app_,
         mocker,
     ):
         """≤1000 rows → exact count (no 'Estimated')."""
-        page = self._get_page(client_request, fake_uuid, mocker, ff_enabled=True, app_=app_)
+        page = self._get_page(client_request, fake_uuid, mocker)
 
         count_el = page.select_one("[data-testid='sms-message-count']")
         assert count_el is not None
@@ -4607,31 +4554,17 @@ def test_send_test_doesnt_redirect_to_user_profile_if_no_mobile_and_email_and_ff
 
 
 class TestBillableUnitsInSendViews:
-    """Tests for billable units functionality in send views when FF_USE_BILLABLE_UNITS is enabled"""
+    """Tests for billable units functionality in send views"""
 
-    def test_daily_sms_billable_units_count_returns_count_when_ff_enabled(self, mocker, app_):
-        """Test that daily_sms_billable_units_count returns billable units from notification_counts_client when FF is enabled"""
+    def test_daily_sms_billable_units_count_returns_count(self, mocker, app_):
+        """Test that daily_sms_billable_units_count returns billable units from notification_counts_client"""
         from app.main.views.send import daily_sms_billable_units_count
 
         with app_.app_context():
-            with set_config(app_, "FF_USE_BILLABLE_UNITS", True):
-                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
-                mock_notification_counts.get_all_notification_counts_for_today.return_value = {"sms": 150, "email": 100}
+            mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
+            mock_notification_counts.get_all_notification_counts_for_today.return_value = {"sms": 150, "email": 100}
 
-                result = daily_sms_billable_units_count("service-123")
+            result = daily_sms_billable_units_count("service-123")
 
-                assert result == 150
-                mock_notification_counts.get_all_notification_counts_for_today.assert_called_once_with("service-123")
-
-    def test_daily_sms_billable_units_count_returns_zero_when_ff_disabled(self, mocker, app_):
-        """Test that daily_sms_billable_units_count returns 0 when FF is disabled"""
-        from app.main.views.send import daily_sms_billable_units_count
-
-        with app_.app_context():
-            with set_config(app_, "FF_USE_BILLABLE_UNITS", False):
-                mock_notification_counts = mocker.patch("app.main.views.send.notification_counts_client")
-
-                result = daily_sms_billable_units_count("service-123")
-
-                assert result == 0
-                mock_notification_counts.get_all_notification_counts_for_today.assert_not_called()
+            assert result == 150
+            mock_notification_counts.get_all_notification_counts_for_today.assert_called_once_with("service-123")

@@ -26,8 +26,8 @@
     ) }}
   </div>
 
-  {% set sms_header_lower_case = _('text message parts') if config['FF_USE_BILLABLE_UNITS'] else _('text messages') %}
-  {% set sms_header_upper_case = _('Text message parts') if config['FF_USE_BILLABLE_UNITS'] else _('Text messages') %}
+  {% set sms_header_lower_case = _('text message parts') %}
+  {% set sms_header_upper_case = _('Text message parts') %}
 
   <h2 id="annual-usage-label" class="heading-medium mt-12" aria-describedby="annual-usage-desc">
       {% if selected_year == current_financial_year %}
@@ -98,7 +98,7 @@
             (month.sms_counts, 'sms'),
           ] %}
             {% call field(align='left') %}
-              {% if use_billable_units and template_type == 'sms' %}
+              {% if template_type == 'sms' %}
                 {% set display_count = month.sms_billable_units %}
               {% else %}
                 {% set display_count = counts.requested %}
@@ -106,7 +106,7 @@
               <div data-testid="monthly-{{ template_type }}-count">
                 {{ big_number(
                   display_count,
-                  message_count_label(display_count, template_type, suffix='', use_billable_units=config['FF_USE_BILLABLE_UNITS']),
+                  message_count_label(display_count, template_type, suffix='', use_billable_units=True),
                   smallest=True,
                 ) }}
                 </div>

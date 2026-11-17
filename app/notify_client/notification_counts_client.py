@@ -2,7 +2,6 @@ from flask import current_app
 from notifications_utils.clients.redis import (
     billable_units_sms_daily_count_cache_key,
     email_daily_count_cache_key,
-    sms_daily_count_cache_key,
 )
 
 from app import redis_client, service_api_client, template_statistics_client
@@ -14,13 +13,8 @@ from app.utils import get_current_financial_year
 class NotificationCounts:
     def get_all_notification_counts_for_today(self, service_id):
         # try to get today's stats from redis
-        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
-        if current_app.config.get("FF_USE_BILLABLE_UNITS"):
-            todays_sms_val = redis_client.get(billable_units_sms_daily_count_cache_key(service_id))
-            todays_sms = int(todays_sms_val) if todays_sms_val is not None else None
-        else:
-            todays_sms_val = redis_client.get(sms_daily_count_cache_key(service_id))
-            todays_sms = int(todays_sms_val) if todays_sms_val is not None else None
+        todays_sms_val = redis_client.get(billable_units_sms_daily_count_cache_key(service_id))
+        todays_sms = int(todays_sms_val) if todays_sms_val is not None else None
 
         todays_email = redis_client.get(email_daily_count_cache_key(service_id))
         todays_email = int(todays_email) if todays_email is not None else None
@@ -29,10 +23,8 @@ class NotificationCounts:
             return {"sms": todays_sms, "email": todays_email}
         # fallback to the API if the stats are not in redis
         else:
-            use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
             stats = template_statistics_client.get_template_statistics_for_service(service_id, limit_days=1)
-            count_field = "billable_units" if use_billable_units else "count"
-            transformed_stats = _aggregate_notifications_stats(stats, count_field=count_field)
+            transformed_stats = _aggregate_notifications_stats(stats)
 
             return transformed_stats
 
@@ -93,12 +85,10 @@ class NotificationCounts:
         """
 
         current_financial_year = get_current_financial_year()
-        use_billable_units = current_app.config.get("FF_USE_BILLABLE_UNITS", False)
         redis_enabled = current_app.config.get("REDIS_ENABLED", False)
         sent_today = self.get_all_notification_counts_for_today(service.id)
 
-        # TODO FF_USE_BILLABLE_UNITS removal - Use billable units when feature flag is enabled
-        if use_billable_units and redis_enabled:
+        if redis_enabled:
             # Use Redis annual_limit_client for annual stats (same data source as dashboard)
             annual_data_redis = annual_limit_client.get_all_notification_counts(service.id)
             sms_annual_sent = annual_data_redis.get("total_sms_billable_units_fiscal_year_to_yesterday", 0) + sent_today["sms"]
@@ -141,13 +131,12 @@ class NotificationCounts:
 
 
 # TODO: consolidate this function and other functions that transform the results of template_statistics_client calls
-def _aggregate_notifications_stats(template_statistics, count_field="count"):
+def _aggregate_notifications_stats(template_statistics):
     template_statistics = _filter_out_cancelled_stats(template_statistics)
-    # The API returns both 'count' and 'billable_units' fields.
-    # Use 'billable_units' when tracking against limits (FF_USE_BILLABLE_UNITS), otherwise use 'count'.
+    # The API returns both 'count' and 'billable_units' fields. Use 'billable_units' when tracking against limits.
     notifications = {"sms": 0, "email": 0}
     for stat in template_statistics:
-        notifications[stat["template_type"]] += stat[count_field]
+        notifications[stat["template_type"]] += stat["billable_units"]
 
     return notifications
 
