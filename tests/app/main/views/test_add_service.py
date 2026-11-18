@@ -674,9 +674,7 @@ def test_should_return_form_errors_when_service_name_exceeds_byte_limit(
         _expected_status=200,
     )
 
-    assert "This cannot exceed 150 characters in length." in (
-        normalize_spaces(page.text)
-    )
+    assert "This cannot exceed 150 characters in length." in (normalize_spaces(page.text))
 
 
 def test_should_allow_max_length_service_name_with_max_length_email_from(
