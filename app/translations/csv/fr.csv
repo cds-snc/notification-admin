@@ -1089,7 +1089,7 @@
 "Your sending email address helps build trust with recipients. A good email address is relevant and as concise as possible.","Votre adresse courriel d’envoi aide les destinataires à faire confiance à votre service. Une bonne adresse courriel est pertinente et aussi concise que possible."
 "An email address contains two parts: the name and the domain, separated by the at symbol. For your service, you can choose the name part.","Une adresse courriel contien deux sections: le nom et le domaine, séparés par un a commercial. Pour votre service, vous devez choisir le nom."
 "Up to 64 characters. Enter what comes before the at symbol, without spaces.","Jusqu’à 64 caractères. Entrez ce qui précède le a commercial, sans espaces."
-"This cannot exceed 150 characters in length. Accented letters and some symbols count as 2 or more.","Ne doit pas dépasser 150 caractères. Les lettres accentuées et certains symboles comptent pour 2 caractères ou plus."
+"This cannot exceed 150 characters in length.","Ne doit pas dépasser 150 caractères."
 "This cannot exceed 64 characters in length","Ne doit pas dépasser 64 caractères"
 "Make sure we formatted your email address correctly.","Assurez-vous que le formatage automatique de votre adresse vous convient."
 "This email address is already in use","Cette adresse courriel a déjà été utilisée"
