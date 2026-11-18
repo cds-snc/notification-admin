@@ -1253,7 +1253,7 @@
 "Service name: <b><span lang='en-CA'>Renew your license</span>&nbsp;|&nbsp;<span lang='fr-CA'>Renouveler votre permis</span></b>","Nom du service: <b><span lang='fr-CA'>Renouveler votre permis</span>&nbsp;|&nbsp;<span lang='en-CA'>Renew your license</span></b>"
 "Email address: <b>renew</b>@notification.canada.ca","Adresse courriel: <b>renouveler</b>@notification.canada.ca"
 "GC Notify also shows the service name at the start of every text message.","Notification GC indique également le nom du service au début de chaque message texte."
-"Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more.","Utilisez un nom que les destinataires reconnaîtront. 150 caractères au maximum. Les lettres accentuées et certains symboles comptent pour 2 caractères ou plus."
+"Use a name that recipients will recognize. Maximum 150 characters. ","Utilisez un nom que les destinataires reconnaîtront. 150 caractères au maximum."
 "Use a name that recipients will recognize. Maximum 255 characters.","Utilisez un nom que les destinataires reconnaîtront. 255 caractères au maximum."
 "Enter bilingual service name","Saisissez le nom bilingue du service"
 "Maximum 64 characters with no spaces. Characters can include letters, numbers, dots, dashes, and underscores.","64 caractères au maximum, sans espaces. Les caractères peuvent comprendre des lettres, des chiffres, des points, des tirets et des traits de soulignement."
