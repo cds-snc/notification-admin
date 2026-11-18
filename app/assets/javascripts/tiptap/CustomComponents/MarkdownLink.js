@@ -29,65 +29,68 @@ const MarkdownLink = Link.extend({
             return;
           }
 
-          // Find the actual content between [ and ] in the document
-          // This may have marks already applied (like variable marks)
-          const textStart = start + 1; // After the [
-          const textEnd = start + 1 + match[1].length; // Before the ]
+          // Use the matched input to find the Markdown delimiters. It includes
+          // the character that triggered the rule, which is not yet in the doc.
+          // VariableMark may already have replaced ((name)) with marked text,
+          // so offsets within this match reflect the editor's current text.
+          const fullText = match[0];
+          const closingBracket = fullText.indexOf("]");
+          if (closingBracket === -1) return;
 
-          // Get the slice of content that represents the link text
+          // Slice the link text from the document to preserve existing marks,
+          // including variables that were converted before this rule ran.
+          const textStart = start + 1;
+          const textEnd = start + closingBracket;
           const slice = state.doc.slice(textStart, textEnd);
 
-          // The regex matched on input text, but VariableMark may have already
-          // converted ((var)) into a marked node. So the document structure has changed.
-          // We need to examine the slice of content between the parens to find marks.
-          try {
-            const fullText = state.doc.textBetween(start, end, "", "");
-            const firstOpen = fullText.indexOf("(");
-
-            // Instead of looking for lastClose in text, use the range.to which is the
-            // end of the matched markdown syntax
-            if (firstOpen !== -1) {
-              // The URL content is between firstOpen+1 and the end of the match
-              const urlStart = start + firstOpen + 1;
-              const urlEnd = end;
-
-              // Get the slice between the parens
-              const urlSlice = state.doc.slice(urlStart, urlEnd);
-
-              const variableMark = state.schema.marks.variable;
-
-              const parts = [];
-
-              // Iterate through the nodes in the slice
-              urlSlice.content.forEach((node) => {
-                if (node.isText) {
-                  const hasVarMark =
-                    variableMark &&
-                    node.marks &&
-                    node.marks.some((m) => m.type === variableMark);
-
-                  if (hasVarMark) {
-                    parts.push("((" + node.text + "))");
-                  } else {
-                    parts.push(node.text);
-                  }
+          // Find the destination's matching closing parenthesis. Variables in
+          // URLs use nested parentheses, so the first ')' is not the delimiter.
+          const openingParen = fullText.indexOf("(", closingBracket + 1);
+          if (openingParen !== -1) {
+            let depth = 0;
+            let closingParen = -1;
+            for (let i = openingParen; i < fullText.length; i++) {
+              if (fullText[i] === "(") {
+                depth++;
+              } else if (fullText[i] === ")") {
+                depth--;
+                if (depth === 0) {
+                  closingParen = i;
+                  break;
                 }
-              });
-
-              const reconstructed = parts.join("");
-
-              // Only apply the rule if parens are balanced in the reconstructed href
-              const urlOpenParens = (reconstructed.match(/\(/g) || []).length;
-              const urlCloseParens = (reconstructed.match(/\)/g) || []).length;
-
-              if (urlOpenParens !== urlCloseParens) {
-                return;
               }
-
-              href = reconstructed;
             }
-          } catch (e) {
-            // If anything goes wrong, fall back to the original href
+
+            if (closingParen === -1) return;
+
+            const urlStart = start + openingParen + 1;
+            const urlEnd = start + closingParen;
+            const urlSlice = state.doc.slice(urlStart, urlEnd);
+
+            // Variable marks hold only the variable name; restore its template
+            // delimiters while rebuilding the href from the document slice.
+            const variableMark = state.schema.marks.variable;
+            const parts = [];
+
+            urlSlice.content.forEach((node) => {
+              if (!node.isText) return;
+
+              const hasVarMark =
+                variableMark &&
+                node.marks &&
+                node.marks.some((mark) => mark.type === variableMark);
+
+              parts.push(hasVarMark ? `((${node.text}))` : node.text);
+            });
+
+            const reconstructed = parts.join("");
+            // Only create the link once the reconstructed destination is complete.
+            const urlOpenParens = (reconstructed.match(/\(/g) || []).length;
+            const urlCloseParens = (reconstructed.match(/\)/g) || []).length;
+
+            if (urlOpenParens !== urlCloseParens) return;
+
+            href = reconstructed;
           }
 
           // Delete the entire markdown syntax [text](url)
