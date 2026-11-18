@@ -40,4 +40,5 @@ import "./main.js";
 import "./templateCategories.js";
 import "./templateContent.js";
 import "./smsCharacterInfo.js";
+import "./fromHeaderCharacterCount.js";
 import "./reportFooter.js";
