@@ -270,7 +270,7 @@ def validate_email_from(form, field):
 def validate_service_name(form, field):
     if len(field.data.encode("utf-8")) > SERVICE_NAME_MAX_BYTES:
         raise ValidationError(
-            _l("This cannot exceed 150 characters in length. Accented letters and some symbols count as 2 or more.")
+            _l("This cannot exceed 150 characters in length.")
         )
     if field.data != email_safe_name(field.data):
         raise ValidationError(_l("Make sure we formatted your email address correctly."))
