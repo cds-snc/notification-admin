@@ -56,6 +56,74 @@ describe("Markdown entering and pasting tests", () => {
       .and("contain.text", "Welcome to the Editor");
   });
 
+  ["markdown", "rte"].forEach((mode) => {
+    it(`Preserves literal backticks on load and mode switches from ${mode}`, () => {
+      const content = "`backticks` and ``double backticks`` and unmatched `";
+      mountEditor(content, mode);
+
+      RichTextEditor.Components.Toolbar().should("be.visible");
+      cy.get("#template-content").should("have.value", content);
+
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get("#template-content").should("have.value", content);
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      cy.get("#template-content").should("have.value", content);
+
+      if (mode === "markdown") {
+        RichTextEditor.Components.MarkdownEditor().should("have.value", content);
+      } else {
+        RichTextEditor.Components.Editor().should("have.text", content);
+      }
+    });
+  });
+
+  it("Preserves submitted backticks when reopening without editing", () => {
+    mountEditor("", "markdown");
+    RichTextEditor.Components.MarkdownEditor().type("`backticks`");
+    cy.get("#template-content")
+      .should("have.value", "`backticks`")
+      .invoke("val")
+      .then((savedContent) => {
+        mountEditor(savedContent, "markdown");
+      });
+
+    RichTextEditor.Components.MarkdownEditor()
+      .should("be.enabled")
+      .and("have.value", "`backticks`");
+    cy.get("#template-content").should("have.value", "`backticks`");
+  });
+
+  it("Preserves HTML escaping and other markdown syntax alongside backticks", () => {
+    const content =
+      "`backticks` &lt;literal&gt; **bold** *italic* \\*literal stars\\*";
+    mountEditor(content);
+
+    RichTextEditor.Components.Editor().should(
+      "have.text",
+      "`backticks` <literal> bold italic *literal stars*",
+    );
+    RichTextEditor.Components.Editor().find("literal").should("not.exist");
+    RichTextEditor.Components.Editor().find("strong").should("have.text", "bold");
+    RichTextEditor.Components.Editor().find("em").should("have.text", "italic");
+    cy.get("#template-content").should("have.value", content);
+
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.value", content);
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    cy.get("#template-content").should("have.value", content);
+  });
+
+  it("Does not remove backslashes before backticks in link targets", () => {
+    const href = "https://example.com/path\\`part";
+    mountEditor(`<a href="${href}">\`label\`</a>`);
+
+    RichTextEditor.Components.Editor()
+      .find("a")
+      .should("have.attr", "href", href)
+      .and("have.text", "`label`");
+    cy.get("#template-content").should("have.value", `[\`label\`](${href})`);
+  });
+
   Object.entries(MARKDOWN).forEach(([key, { before, expected }]) => {
     it(`Correctly renders markdown for ${humanize(key)}`, () => {
       RichTextEditor.Components.Editor().type(before, {

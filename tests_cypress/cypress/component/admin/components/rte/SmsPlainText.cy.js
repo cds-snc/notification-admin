@@ -46,7 +46,7 @@ describe("SMS plain text serialization", () => {
 
   it("round-trips existing content with literal markdown, backslashes and entities unchanged", () => {
     const content =
-      "# not a heading\n- not a list\n> not a quote\n**not bold** _not italic_\nC:\\#1 \\*star\\* &amp; &gt; <b>raw</b>";
+      "# not a heading\n- not a list\n> not a quote\n**not bold** _not italic_\nC:\\#1 \\*star\\* &amp; &gt; <b>raw</b>\n`backticks` and \\`escaped\\`";
 
     mountSmsEditor(content);
 
