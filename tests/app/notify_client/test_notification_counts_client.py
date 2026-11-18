@@ -59,10 +59,10 @@ class TestNotificationCounts:
         # Setup
         mock_redis.get.side_effect = redis_side_effect
         mock_template_stats.get_template_statistics_for_service.return_value = [
-            {"template_id": "a1", "template_type": "sms", "billable_units": 3, "status": "delivered"},
-            {"template_id": "a2", "template_type": "email", "billable_units": 7, "status": "temporary-failure"},
-            {"template_id": "a3", "template_type": "email", "billable_units": 3, "status": "delivered"},
-            {"template_id": "a4", "template_type": "sms", "billable_units": 7, "status": "delivered"},
+            {"template_id": "a1", "template_type": "sms", "count": 2, "billable_units": 3, "status": "delivered"},
+            {"template_id": "a2", "template_type": "email", "count": 7, "billable_units": 0, "status": "temporary-failure"},
+            {"template_id": "a3", "template_type": "email", "count": 3, "billable_units": 0, "status": "delivered"},
+            {"template_id": "a4", "template_type": "sms", "count": 5, "billable_units": 7, "status": "delivered"},
         ]
 
         wrapper = NotificationCounts()
