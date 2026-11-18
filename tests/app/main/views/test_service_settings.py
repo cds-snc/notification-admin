@@ -371,7 +371,7 @@ def test_should_show_service_name_with_no_prefixing(
     assert page.find("h1").text == "Change your service name"
     assert (
         normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more."
+        == "Use a name that recipients will recognize. Maximum 150 characters."
     )
 
 
