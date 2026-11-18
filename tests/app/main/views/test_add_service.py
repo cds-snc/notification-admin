@@ -659,7 +659,7 @@ def test_should_return_form_errors_when_service_name_exceeds_byte_limit(
     mock_service_name_is_unique,
 ):
     # 100 characters but 200 UTF-8 bytes
-    long_service_name = "é" * 100
+    long_service_name = "é" * 150
 
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
