@@ -41,7 +41,7 @@ gunicorn = "22.0.0"
 itsdangerous = "2.2.0"  # pyup: <1.0.0
 notifications-python-client = "12.1.0"
 # Replace with a release tag after cds-snc/notification-utils#453 is merged.
-notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", branch="fix/rendering-ignore-backticks" }
+notifications-utils = { git = "https://github.com/cds-snc/notifier-utils.git", rev="9abb3fb92c0796609f7fa438baa4d71a9455e02b" }
 pwnedpasswords = "2.0.0"
 pyexcel = "0.7.6"
 pyexcel-io = "0.6.8"

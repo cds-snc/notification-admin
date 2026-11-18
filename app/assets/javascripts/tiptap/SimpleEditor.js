@@ -49,7 +49,8 @@ const EmailText = Text.extend({
           const start = state.out.length;
           // Retain tiptap-markdown's default HTML and Markdown text escaping.
           state.text(node.text.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
-          // Remove only text-node backtick escapes, leaving link targets intact.
+          // state.text doubles literal backslashes before escaping backticks.
+          // Remove only the added backtick escape, leaving those pairs intact.
           state.out =
             state.out.slice(0, start) +
             state.out.slice(start).replace(/\\`/g, "`");

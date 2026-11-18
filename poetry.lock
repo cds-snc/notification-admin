@@ -1711,7 +1711,7 @@ werkzeug = "3.1.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "fix/rendering-ignore-backticks"
+reference = "9abb3fb92c0796609f7fa438baa4d71a9455e02b"
 resolved_reference = "9abb3fb92c0796609f7fa438baa4d71a9455e02b"
 
 [[package]]
@@ -2977,4 +2977,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "367708c464067e0cae418e36a273ae66a672928fc227cf5efaece178b1e14e5c"
+content-hash = "e8c105854a55928631c032072ea20721a3b5fb0ea8ddd6be96c641bcb8409485"

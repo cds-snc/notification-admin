@@ -93,6 +93,42 @@ describe("Markdown entering and pasting tests", () => {
     cy.get("#template-content").should("have.value", "`backticks`");
   });
 
+  [1, 2, 3].forEach((count) => {
+    it(`Preserves ${count} literal backslashes before backticks in email round trips`, () => {
+      const literal = "\\".repeat(count) + "`escaped" + "\\".repeat(count) + "`";
+      const markdown =
+        "\\".repeat(count * 2) + "`escaped" + "\\".repeat(count * 2) + "`";
+      mountEditor(markdown);
+
+      RichTextEditor.Components.Editor().should("have.text", literal);
+      cy.get("#template-content").should("have.value", markdown);
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.MarkdownEditor().should("have.value", markdown);
+      RichTextEditor.Components.ViewMarkdownButton().click();
+      RichTextEditor.Components.Editor().should("have.text", literal);
+      cy.get("#template-content")
+        .should("have.value", markdown)
+        .invoke("val")
+        .then((savedContent) => {
+          mountEditor(savedContent);
+        });
+      RichTextEditor.Components.Editor().should("have.text", literal);
+      cy.get("#template-content").should("have.value", markdown);
+    });
+  });
+
+  it("Treats single backslashes before email backticks as Markdown escapes", () => {
+    mountEditor("\\`escaped\\`");
+
+    RichTextEditor.Components.Editor().should("have.text", "`escaped`");
+    cy.get("#template-content").should("have.value", "`escaped`");
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.MarkdownEditor().should("have.value", "`escaped`");
+    RichTextEditor.Components.ViewMarkdownButton().click();
+    RichTextEditor.Components.Editor().should("have.text", "`escaped`");
+    cy.get("#template-content").should("have.value", "`escaped`");
+  });
+
   it("Preserves HTML escaping and other markdown syntax alongside backticks", () => {
     const content =
       "`backticks` &lt;literal&gt; **bold** *italic* \\*literal stars\\*";
