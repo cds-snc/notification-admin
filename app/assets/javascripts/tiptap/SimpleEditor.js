@@ -36,6 +36,35 @@ import { EditorProvider } from "./EditorContext";
 import { AnnouncerPlugin } from "./AnnouncerPlugin";
 import { shortcuts, translations } from "./localization";
 
+// Preserve literal backticks when loading and saving email templates. The editor
+// has no code mark: parsing backticks would strip them, while the default text
+// serializer would add backslashes. Disable that parsing and remove only backtick
+// escapes on serialization, retaining the default HTML and other Markdown escaping.
+// SMS handles literal text separately through SmsText and SmsPlainTextMarkdown.
+const EmailText = Text.extend({
+  addStorage() {
+    return {
+      markdown: {
+        serialize(state, node) {
+          const start = state.out.length;
+          // Retain tiptap-markdown's default HTML and Markdown text escaping.
+          state.text(node.text.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+          // Remove only text-node backtick escapes, leaving link targets intact.
+          state.out =
+            state.out.slice(0, start) +
+            state.out.slice(start).replace(/\\`/g, "`");
+        },
+        parse: {
+          setup(markdownit) {
+            // Email has no code mark, so backticks must remain literal text.
+            markdownit.disable("backticks");
+          },
+        },
+      },
+    };
+  },
+});
+
 // In TipTap 3, `editor.view` returns a Proxy stub (which is truthy) until the
 // underlying ProseMirror view is actually mounted. Accessing most properties on
 // that stub — e.g. `dom`, `coordsAtPos`, `posAtDOM` — THROWS:
@@ -141,7 +170,7 @@ const SimpleEditor = ({
       // Core extensions - required for basic functionality
       Document,
       Paragraph,
-      isSms ? SmsText : Text,
+      isSms ? SmsText : EmailText,
       HardBreak,
       History,
 
