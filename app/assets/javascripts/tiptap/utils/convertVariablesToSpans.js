@@ -5,14 +5,40 @@ export default function convertVariablesToSpans(text) {
   // Extract and temporarily replace markdown link destinations ](...) to
   // prevent variable conversion inside link hrefs.
   const linkPlaceholders = [];
-  let processedText = text.replace(
-    /\]\(([^)]*(?:\([^)]*\))*[^)]*)\)/g,
-    (match) => {
-      const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
-      linkPlaceholders.push(match);
-      return placeholder;
-    },
-  );
+  let processedText = "";
+  let linkScanCursor = 0;
+  while (linkScanCursor < text.length) {
+    const linkStart = text.indexOf("](", linkScanCursor);
+    if (linkStart === -1) {
+      processedText += text.slice(linkScanCursor);
+      break;
+    }
+
+    let depth = 0;
+    let linkEnd = -1;
+    for (let i = linkStart + 1; i < text.length; i++) {
+      if (text[i] === "(" && text[i - 1] !== "\\") {
+        depth++;
+      } else if (text[i] === ")" && text[i - 1] !== "\\") {
+        depth--;
+        if (depth === 0) {
+          linkEnd = i;
+          break;
+        }
+      }
+    }
+
+    if (linkEnd === -1) {
+      processedText += text.slice(linkScanCursor);
+      break;
+    }
+
+    processedText += text.slice(linkScanCursor, linkStart);
+    const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
+    linkPlaceholders.push(text.slice(linkStart, linkEnd + 1));
+    processedText += placeholder;
+    linkScanCursor = linkEnd + 1;
+  }
 
   let output = "";
   let cursor = 0;
@@ -84,7 +110,7 @@ export default function convertVariablesToSpans(text) {
 
   // Restore the link placeholders.
   linkPlaceholders.forEach((link, idx) => {
-    output = output.replace(`__LINK_PLACEHOLDER_${idx}__`, link);
+    output = output.replace(`__LINK_PLACEHOLDER_${idx}__`, () => link);
   });
 
   return output;

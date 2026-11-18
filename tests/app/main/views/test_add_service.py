@@ -652,17 +652,14 @@ def test_non_safelist_user_cannot_create_service(
     )
 
 
-def test_should_return_form_errors_when_service_name_and_email_combined_too_long(
+def test_should_return_form_errors_when_service_name_exceeds_byte_limit(
     client_request,
     mock_get_organisation_by_domain,
     mock_service_email_from_is_unique,
     mock_service_name_is_unique,
 ):
-    """Test that long unicode service names combined with email addresses are rejected"""
-    # This is the test case from the bug report - 179 character service name with accented characters
-    # which when MIME-encoded in the email header becomes much longer
-    long_service_name = "ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé ééééééééééééééééééééééééééééé"
-    email_from = "abc-1234-12345-1234567-1234567"
+    # 100 characters but 200 UTF-8 bytes
+    long_service_name = "é" * 150
 
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
@@ -671,17 +668,16 @@ def test_should_return_form_errors_when_service_name_and_email_combined_too_long
         "main.add_service",
         _data={
             "name": long_service_name,
-            "email_from": email_from,
+            "email_from": "abc-1234",
         },
         current_step="choose_service_name",
         _expected_status=200,
     )
 
-    # Check that the error message is displayed
-    assert "Your service name and email address combined are too long" in page.text
+    assert "This cannot exceed 150 characters in length." in (normalize_spaces(page.text))
 
 
-def test_should_allow_service_name_and_email_when_combined_length_is_acceptable(
+def test_should_allow_max_length_service_name_with_max_length_email_from(
     client_request,
     mock_get_organisation_by_domain,
     mock_service_email_from_is_unique,
@@ -689,10 +685,9 @@ def test_should_allow_service_name_and_email_when_combined_length_is_acceptable(
     mock_create_service,
     mock_create_or_update_free_sms_fragment_limit,
 ):
-    """Test that reasonable service names with unicode characters are still allowed"""
-    # A shorter service name with unicode characters should pass validation
-    reasonable_service_name = "Service de notification | Notification service"
-    email_from = "notification-service"
+    """Independent max lengths for name and email_from are always accepted together"""
+    reasonable_service_name = "é" * 75
+    email_from = "a" * 64
 
     with client_request.session_transaction() as session:
         session["add_service_form"] = dict(default_branding=FieldWithLanguageOptions.ENGLISH_OPTION_VALUE)
