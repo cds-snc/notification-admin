@@ -1711,8 +1711,8 @@ werkzeug = "3.1.6"
 [package.source]
 type = "git"
 url = "https://github.com/cds-snc/notifier-utils.git"
-reference = "54.1.0"
-resolved_reference = "fde6aa4852f7aaeaf01459b9bf61a941bb5a4e8b"
+reference = "fix/rendering-ignore-backticks"
+resolved_reference = "9abb3fb92c0796609f7fa438baa4d71a9455e02b"
 
 [[package]]
 name = "openpyxl"
@@ -2977,4 +2977,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12.7"
-content-hash = "2779ef3b3e7e84e2b197ed7debc034ccd9ca686778884ba1b45e8f0b3b32244d"
+content-hash = "367708c464067e0cae418e36a273ae66a672928fc227cf5efaece178b1e14e5c"
