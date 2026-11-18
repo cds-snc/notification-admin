@@ -1971,3 +1971,4 @@
 "Scheduled message cancelled","Le message programmé a été annulé"
 "This message has already been sent and can no longer be cancelled.","Ce message a déjà été envoyé et ne peut plus être annulé."
 "Dismiss","Ignorer"
+"by API key","par la clé API"
