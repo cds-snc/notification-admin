@@ -356,7 +356,7 @@ def test_should_show_service_name(
     assert page.find("input", attrs={"type": "text"})["value"] == "service one"
     assert (
         normalize_spaces(page.select_one("div[class~='form-group'] span[id='name-hint']").text)
-        == "Use a name that recipients will recognize. Maximum 150 characters. Accented letters and some symbols count as 2 or more."
+        == "Use a name that recipients will recognize. Maximum 150 characters."
     )
     assert normalize_spaces(page.select_one("main ul").text) == ("as your email sender name. at the start of every text message.")
     app.service_api_client.get_service.assert_called_with(SERVICE_ONE_ID)
