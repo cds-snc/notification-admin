@@ -1177,6 +1177,26 @@ def test_notification_page_shows_scheduled_notification(
     assert page.select_one(".back-link")["href"] == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
 
+def test_notification_page_hides_scheduled_by_when_just_sent(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch("app.notification_api_client.get_notification", return_value=_scheduled_notification("email"))
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
+
+    assert (
+        normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00"
+    )
+
+
 def test_notification_page_shows_api_key_that_scheduled_notification(
     client_request,
     mocker,

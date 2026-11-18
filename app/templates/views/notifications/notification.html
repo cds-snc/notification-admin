@@ -45,7 +45,9 @@
             {{ _('was scheduled') if scheduled_for else _('was sent') }}
           {% endif %}
         {% endif %}
-        {% if scheduled_for and created_by %}
+        {% if scheduled_for and just_sent %}
+          {# The user has just scheduled this themselves, so don't tell them who scheduled it #}
+        {% elif scheduled_for and created_by %}
           {{ _('by') }} {{ created_by.name }}
         {% elif scheduled_for and key_name %}
           {{ _('by API key') }} ‘{{ key_name }}’
