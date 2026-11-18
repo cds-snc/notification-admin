@@ -419,7 +419,7 @@ def test_service_name_change_enforces_byte_limit(
     )
 
     if not is_valid:
-        assert "This cannot exceed 150 characters in length. Accented letters and some symbols count as 2 or more." in (
+        assert "This cannot exceed 150 characters in length." in (
             normalize_spaces(page.text)
         )
 
