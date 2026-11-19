@@ -143,6 +143,7 @@ def view_notification(service_id, notification_id):
         ),
         partials=get_single_notification_partials(notification),
         created_by=notification.get("created_by"),
+        key_name=notification.get("key_name"),
         created_at=notification["created_at"],
         updated_at=notification["updated_at"],
         help=get_help_argument(),

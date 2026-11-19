@@ -44,7 +44,7 @@ class NotificationApiClient(NotifyAdminAPIClient):
                 params["limit_days"] = limit_days
             return self.get(url="/service/{}/notifications".format(service_id), params=params)
 
-    def send_notification(self, service_id, *, template_id, recipient, personalisation, sender_id):
+    def send_notification(self, service_id, *, template_id, recipient, personalisation, sender_id, scheduled_for=None):
         data = {
             "template_id": template_id,
             "to": recipient,
@@ -52,6 +52,8 @@ class NotificationApiClient(NotifyAdminAPIClient):
         }
         if sender_id:
             data["sender_id"] = sender_id
+        if scheduled_for:
+            data["scheduled_for"] = scheduled_for
         data = _attach_current_user(data)
         return self.post(url="/service/{}/send-notification".format(service_id), data=data)
 

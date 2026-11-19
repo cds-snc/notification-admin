@@ -1385,9 +1385,13 @@ def send_notification(service_id, template_id):
             recipient=session["recipient"] or session["placeholders"]["address line 1"],
             personalisation=personalisation,
             sender_id=session["sender_id"] if "sender_id" in session else None,
+            scheduled_for=request.form.get("scheduled_for") or None,
         )
     except HTTPError as exception:
         current_app.logger.info('Service {} could not send notification: "{}"'.format(current_service.id, exception.message))
+        if exception.status_code == 400 and str(exception.message).startswith("scheduled_for"):
+            flash(_("The send time must be in the future. Choose a new time."))
+            return redirect(url_for(".check_notification", service_id=service_id, template_id=template_id))
         return render_template(
             "views/notifications/check.html",
             **_check_notification(service_id, template_id, exception),

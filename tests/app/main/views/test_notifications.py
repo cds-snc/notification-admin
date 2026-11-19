@@ -1166,7 +1166,7 @@ def test_notification_page_shows_scheduled_notification(
     assert normalize_spaces(page.select_one("h1").text) == expected_title
     assert (
         normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
-        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00"
+        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00 by Test User"
     )
     assert normalize_spaces(page.select_one(".notification-status").text) == ("Scheduled for 2099-01-22T20:52:00.000000+00:00")
     assert page.select_one(".notification-status time.local-datetime-short")
@@ -1175,6 +1175,48 @@ def test_notification_page_shows_scheduled_notification(
     assert form["action"] == url_for("main.cancel_scheduled_notification", service_id=SERVICE_ONE_ID, notification_id=fake_uuid)
     assert normalize_spaces(form.select_one("button").text) == expected_button
     assert page.select_one(".back-link")["href"] == url_for("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+
+def test_notification_page_hides_scheduled_by_when_just_sent(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch("app.notification_api_client.get_notification", return_value=_scheduled_notification("email"))
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+        just_sent=True,
+    )
+
+    assert (
+        normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00"
+    )
+
+
+def test_notification_page_shows_api_key_that_scheduled_notification(
+    client_request,
+    mocker,
+    fake_uuid,
+):
+    notification = _scheduled_notification("email")
+    notification["created_by"] = None
+    notification["key_name"] = "my key"
+    mocker.patch("app.notification_api_client.get_notification", return_value=notification)
+
+    page = client_request.get(
+        "main.view_notification",
+        service_id=SERVICE_ONE_ID,
+        notification_id=fake_uuid,
+    )
+
+    assert (
+        normalize_spaces(page.select("main p:nth-of-type(1)")[0].text)
+        == "‘sample template’ is scheduled for 2099-01-22T20:52:00.000000+00:00 by API key ‘my key’"
+    )
 
 
 def test_notification_page_hides_cancel_scheduled_button_without_send_messages_permission(
