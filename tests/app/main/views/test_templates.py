@@ -3385,7 +3385,7 @@ class TestAnnualLimits:
         "remaining_daily, remaining_annual, buttons_shown",
         [
             (10, 100, True),  # Within both limits
-            (0, 100, False),  # Exceeds daily limit
+            (0, 100, True),  # Exceeds daily limit, can still schedule for a later day
             (10, 0, False),  # Exceeds annual limit
             (0, 0, False),  # Exceeds both limits
             (1, 1, True),  # Exactly at both limits
@@ -3446,9 +3446,9 @@ class TestAnnualLimits:
         "remaining_daily, remaining_annual, buttons_shown",
         [
             (3, 100, True),  # Daily remaining >= fragment_count (3), buttons shown
-            (2, 100, False),  # Daily remaining < fragment_count (3), buttons hidden
-            (1, 100, False),  # Daily remaining < fragment_count (3), buttons hidden
-            (0, 100, False),  # Daily remaining = 0, buttons hidden
+            (2, 100, True),  # Daily remaining < fragment_count (3), can still schedule for a later day
+            (1, 100, True),  # Daily remaining < fragment_count (3), can still schedule for a later day
+            (0, 100, True),  # Daily remaining = 0, can still schedule for a later day
             (100, 3, True),  # Annual remaining >= fragment_count (3), buttons shown
             (100, 2, False),  # Annual remaining < fragment_count (3), buttons hidden
             (100, 0, False),  # Annual remaining = 0, buttons hidden
