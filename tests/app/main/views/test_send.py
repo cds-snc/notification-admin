@@ -3326,6 +3326,61 @@ def test_check_notification_shows_preview(
     )
 
 
+@pytest.mark.parametrize(
+    "template_mock, recipient, expected_send_button",
+    [
+        ("mock_get_service_template", "6502532223", "Send text message"),
+        ("mock_get_service_email_template", "test@example.com", "Send 1 email"),
+    ],
+)
+def test_check_notification_shows_scheduler(
+    request,
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_template_statistics,
+    mock_get_limit_stats_send,
+    template_mock,
+    recipient,
+    expected_send_button,
+):
+    request.getfixturevalue(template_mock)
+    with client_request.session_transaction() as session:
+        session["recipient"] = recipient
+        session["placeholders"] = {
+            "name": "Jo",
+            "date": "today",
+            "thing": "car",
+            "phone number": recipient,
+            "email address": recipient,
+        }
+
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    assert page.select_one("input#scheduled_for[type=hidden]")["value"] == ""
+    assert normalize_spaces(page.select_one("#js-send-now-button").text) == expected_send_button
+    assert normalize_spaces(page.select_one("#js-send-later-button").text) == "Schedule for later"
+    # Must not submit the form (and send immediately) if the scheduler JS hasn't loaded
+    assert page.select_one("#js-send-later-button")["type"] == "button"
+    assert page.select_one("#js-schedule-send-at")["data-webpack-loader"] == "Scheduler"
+    assert normalize_spaces(page.select_one("#js-schedule-button").text) == "Schedule"
+    assert page.select_one("script[src*=scheduler]")
+
+
+def test_check_notification_does_not_show_scheduler_during_tour(
+    client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {}
+
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid, help="2")
+
+    assert not page.select("#scheduled_for")
+    assert not page.select("#js-send-later-button")
+    assert not page.select("script[src*=scheduler]")
+
+
 def test_check_notification_email_shows_template_attachments_and_scanning_warning(
     client_request,
     service_one,
@@ -3522,7 +3577,85 @@ def test_send_notification_submits_data(
         recipient=recipient,
         personalisation=expected_personalisation,
         sender_id=None,
+        scheduled_for=None,
     )
+
+
+@pytest.mark.parametrize("scheduled_for, expected_scheduled_for", [("", None), ("2026-11-18T15:00:00", "2026-11-18T15:00:00")])
+def test_send_notification_submits_scheduled_for(
+    client_request,
+    fake_uuid,
+    mock_send_notification,
+    mock_get_service_template,
+    scheduled_for,
+    expected_scheduled_for,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    client_request.post(
+        "main.send_notification",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"scheduled_for": scheduled_for},
+        _expected_redirect=url_for(
+            ".view_notification",
+            service_id=SERVICE_ONE_ID,
+            notification_id=fake_uuid,
+            just_sent=True,
+        ),
+    )
+
+    mock_send_notification.assert_called_once_with(
+        SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        recipient="6502532223",
+        personalisation={"name": "Jo"},
+        sender_id=None,
+        scheduled_for=expected_scheduled_for,
+    )
+
+
+@pytest.mark.parametrize(
+    "api_message",
+    [
+        "scheduled_for datetime cannot be in the past",
+        "scheduled_for datetime can only be up to 96 hours in the future",
+    ],
+)
+def test_send_notification_redirects_back_with_error_if_scheduled_for_is_invalid(
+    client_request,
+    fake_uuid,
+    mocker,
+    mock_get_service_template,
+    api_message,
+):
+    response = mocker.Mock(status_code=400)
+    response.json.return_value = {"result": "error", "message": api_message}
+    mocker.patch("app.notification_api_client.send_notification", side_effect=HTTPError(response=response))
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    client_request.post(
+        "main.send_notification",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"scheduled_for": "2026-11-18T15:00:00"},
+        _expected_redirect=url_for(
+            "main.check_notification",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        ),
+    )
+
+    with client_request.session_transaction() as session:
+        # Kept so the user can pick a new time and try again
+        assert session["recipient"] == "6502532223"
+        assert session["placeholders"] == {"name": "Jo"}
+        assert session["_flashes"] == [("message", "The send time must be in the future. Choose a new time.")]
 
 
 def test_send_notification_includes_template_attachments_in_personalisation(
@@ -3565,6 +3698,7 @@ def test_send_notification_includes_template_attachments_in_personalisation(
             },
         },
         sender_id=None,
+        scheduled_for=None,
     )
 
 
@@ -3605,6 +3739,7 @@ def test_send_notification_includes_template_attachments_for_any_service(
             },
         },
         sender_id=None,
+        scheduled_for=None,
     )
 
 

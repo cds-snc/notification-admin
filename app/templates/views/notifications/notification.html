@@ -45,7 +45,13 @@
             {{ _('was scheduled') if scheduled_for else _('was sent') }}
           {% endif %}
         {% endif %}
-        {% if scheduled_in_future %}
+        {% if scheduled_for and just_sent %}
+          {# The user has just scheduled this themselves, so don't tell them who scheduled it #}
+        {% elif scheduled_for and created_by %}
+          {{ _('by') }} {{ created_by.name }}
+        {% elif scheduled_for and key_name %}
+          {{ _('by API key') }} ‘{{ key_name }}’
+        {% elif scheduled_in_future %}
         {% elif job and job.original_file_name != 'Report' %}
           {% set destination =
             {'letter': _('an address'), 'email': _('an email address'), 'sms': _('a phone number')} %}

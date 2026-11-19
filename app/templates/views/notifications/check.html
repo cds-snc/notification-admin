@@ -113,7 +113,8 @@
     {% endif %}
   {% endif %}
 
-  <div class="js-stick-at-bottom-when-scrolling">
+  {% set can_schedule = not error and not help and template.template_type in ['email', 'sms'] %}
+  <div class="{{ 'mb-12 clear-both contain-floats' if can_schedule else 'js-stick-at-bottom-when-scrolling' }}">
     <form method="post" enctype="multipart/form-data" action="{{url_for(
         'main.send_notification',
         service_id=current_service.id,
@@ -121,12 +122,24 @@
         help='3' if help else 0
       )}}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      {% if can_schedule %}
+        <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
+      {% endif %}
       {% if not error %}
         {% if template.template_type == 'sms' %}
-          <button type="submit" class="button">{{ _("Send text message") }}</button>
+          <button type="submit" class="button" id="js-send-now-button">{{ _("Send text message") }}</button>
         {% else %}
-          <button type="submit" class="button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
+          <button type="submit" class="button" id="js-send-now-button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
         {% endif %}
+      {% endif %}
+      {% if can_schedule %}
+        <button type="button" class="button button-secondary" id="js-send-later-button">
+          {{ _('Schedule for later') }}
+        </button>
+        <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
+        <button type="submit" class="button hidden" id="js-schedule-button">
+          {{ _('Schedule') }}
+        </button>
       {% endif %}
       {% if template.template_type == 'letter' %}
         <a href="{{ url_for('main.check_notification_preview', service_id=current_service.id, template_id=template.id, filetype='pdf') }}" download class="page-footer-right-aligned-link">Download as a PDF</a>
@@ -134,4 +147,11 @@
     </form>
   </div>
 
+{% endblock %}
+
+{% block page_script %}
+  {{ super() }}
+  {% if not error and not help and template and template.template_type in ['email', 'sms'] %}
+    <script nonce="{{ request_nonce }}" type="module" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/scheduler/scheduler.js{% else %}{{ asset_url('javascripts/scheduler.min.js') }}{% endif %}"></script>
+  {% endif %}
 {% endblock %}

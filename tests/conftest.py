@@ -3768,7 +3768,7 @@ def mock_get_notification(
 
 @pytest.fixture
 def mock_send_notification(mocker, fake_uuid):
-    def _send_notification(service_id, *, template_id, recipient, personalisation, sender_id):
+    def _send_notification(service_id, *, template_id, recipient, personalisation, sender_id, scheduled_for=None):
         return {"id": fake_uuid}
 
     return mocker.patch("app.notification_api_client.send_notification", side_effect=_send_notification)

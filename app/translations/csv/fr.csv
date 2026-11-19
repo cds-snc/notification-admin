@@ -1970,3 +1970,5 @@
 "Scheduled message cancelled","Le message programmé a été annulé"
 "This message has already been sent and can no longer be cancelled.","Ce message a déjà été envoyé et ne peut plus être annulé."
 "Dismiss","Ignorer"
+"by API key","par la clé API"
+"The send time must be in the future. Choose a new time.","La date et l’heure d’envoi doivent être dans le futur. Choisissez une nouvelle date et une nouvelle heure."
