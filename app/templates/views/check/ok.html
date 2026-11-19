@@ -35,7 +35,7 @@
           <p>{{ warning }}</p>
         {% endfor %}
         {% if count_of_duplicate_recipients %}
-          <p>
+          <p class="mt-gutterHalf">
             <a href="{{ url_for('.download_duplicate_recipients', service_id=current_service.id, template_id=template.id, upload_id=upload_id, original_file_name=original_file_name) }}" download>
               {{ _('Download the list of duplicate recipients') }}
             </a>
@@ -43,17 +43,6 @@
         {% endif %}
       {% endcall %}
     </div>
-  {% endif %}
-
-  {% if can_only_schedule_for_later_day %}
-    {% set cannot_send_today_title = _('You cannot send all these text messages today') if template.template_type == 'sms' else _('You cannot send all these email messages today') %}
-    <section class="clear-both contain-floats" data-testid="exceeds-daily-schedule-later">
-      <h3 class="heading-small">{{ cannot_send_today_title }}</h3>
-      <p>
-        {{ _("This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
-      </p>
-    </section>
   {% endif %}
 
   {% if not request.args.from_test %}
@@ -150,6 +139,17 @@
     </div>
   {% endif %}
   <div class="mb-12 clear-both contain-floats">
+    {% if can_only_schedule_for_later_day %}
+      {# Sits next to the scheduler because it explains why scheduling is the only option #}
+      {% set cannot_send_today_title = _('You cannot send all these text messages today') if template.template_type == 'sms' else _('You cannot send all these email messages today') %}
+      <section data-testid="exceeds-daily-schedule-later">
+        <h2 class="heading-medium">{{ cannot_send_today_title }}</h2>
+        <p>
+          {{ _("This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+          content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
+        </p>
+      </section>
+    {% endif %}
     <form method="post" enctype="multipart/form-data" action="{{ url_for('main.start_job', service_id=current_service.id, upload_id=upload_id, original_file_name=original_file_name) }}" class='page-footer'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>

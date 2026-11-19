@@ -3421,7 +3421,7 @@ def test_check_notification_opens_scheduler_when_at_daily_limit(
 
     schedule_later_content = page.find(attrs={"data-testid": "exceeds-daily-schedule-later"})
     if expect_schedule_only:
-        assert normalize_spaces(schedule_later_content.select_one("h3").text) == expected_title
+        assert normalize_spaces(schedule_later_content.select_one("h2").text) == expected_title
         assert "Schedule this message for after" in normalize_spaces(schedule_later_content.text)
         assert page.select_one("#js-send-now-button") is None
         assert page.select_one("#js-send-later-button") is None
@@ -4699,7 +4699,7 @@ class TestAnnualLimitsSend:
                 if template_type == "email"
                 else "You cannot send all these text messages today"
             )
-            assert normalize_spaces(schedule_later_notice.select_one("h3").text) == expected_title
+            assert normalize_spaces(schedule_later_notice.select_one("h2").text) == expected_title
             assert not schedule_later_notice.select("[role=alert], .notice")
             assert "Schedule these messages for after" in normalize_spaces(schedule_later_notice.text)
             assert page.select_one("#js-send-now-button") is None

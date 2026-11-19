@@ -92,17 +92,6 @@
   {% set can_schedule = not error and not help and template.template_type in ['email', 'sms'] %}
   {% set schedule_only = can_schedule and can_only_schedule_for_later_day %}
 
-  {% if schedule_only %}
-    {% set cannot_send_today_title = _('You cannot send this text message today') if template.template_type == 'sms' else _('You cannot send this email message today') %}
-    <section class="mb-12 clear-both contain-floats" data-testid="exceeds-daily-schedule-later">
-      <h3 class="heading-small">{{ cannot_send_today_title }}</h3>
-      <p>
-        {{ _("This would go over your daily limit. Schedule this message for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
-      </p>
-    </section>
-  {% endif %}
-
   {% include "partials/template-attachments-warning.html" %}
 
   {% if template %}
@@ -128,6 +117,17 @@
   {% endif %}
 
   <div class="{{ 'mb-12 clear-both contain-floats' if can_schedule else 'js-stick-at-bottom-when-scrolling' }}">
+    {% if schedule_only %}
+      {# Sits next to the scheduler because it explains why scheduling is the only option #}
+      {% set cannot_send_today_title = _('You cannot send this text message today') if template.template_type == 'sms' else _('You cannot send this email message today') %}
+      <section data-testid="exceeds-daily-schedule-later">
+        <h2 class="heading-medium">{{ cannot_send_today_title }}</h2>
+        <p>
+          {{ _("This would go over your daily limit. Schedule this message for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+          content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
+        </p>
+      </section>
+    {% endif %}
     <form method="post" enctype="multipart/form-data" action="{{url_for(
         'main.send_notification',
         service_id=current_service.id,
