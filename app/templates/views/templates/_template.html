@@ -17,7 +17,8 @@
       <h2 class="heading-medium">{{ heading }}</h2>
 
       {{ remaining_messages_summary(dailyLimit, dailyUsed, yearlyLimit, yearlyUsed, notification_type, yearlyRemaining == 0 or dailyRemaining == 0, verbose=True) }}
-      {% if yearlyRemaining > 0 and dailyRemaining > 0 %}
+      {# When today's limit is used up, messages can still be scheduled for a later day #}
+      {% if yearlyRemaining > 0 %}
         <div class="mb-12 mt-12" data-testid="send-buttons">
           <a href="{{ url_for('.add_recipients', service_id=current_service.id, template_id=template.id) }}" class="button" data-testid="add-recipients">
             {{ _('Yes, add recipients') }}

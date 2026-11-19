@@ -34,21 +34,28 @@ export const SetDateTime = () => {
 
   // Click the "Send later" button.
   // Show or hide the scheduler UI and reset the scheduled time if needed
-  document.getElementById("js-send-later-button").onclick = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    document.getElementById("js-schedule-send-at").classList.toggle("hidden");
-    document.getElementById("js-schedule-button").classList.toggle("hidden");
-    document.getElementById("scheduler_instructions").focus();
-    refreshSchedule(selected, time);
-  };
+  // (the button is absent when scheduling is the only option)
+  const sendLaterButton = document.getElementById("js-send-later-button");
+  if (sendLaterButton) {
+    sendLaterButton.onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      document.getElementById("js-schedule-send-at").classList.toggle("hidden");
+      document.getElementById("js-schedule-button").classList.toggle("hidden");
+      document.getElementById("scheduler_instructions").focus();
+      refreshSchedule(selected, time);
+    };
+  }
 
   // Clicking the "Send now" button.
   // Always reset the scheduled time, if set
-  document.getElementById("js-send-now-button").onclick = (e) => {
-    setDateAndTimeValue("");
-    return null;
-  };
+  const sendNowButton = document.getElementById("js-send-now-button");
+  if (sendNowButton) {
+    sendNowButton.onclick = (e) => {
+      setDateAndTimeValue("");
+      return null;
+    };
+  }
 
   refreshSchedule(selected, time);
   return null;
