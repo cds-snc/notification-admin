@@ -770,8 +770,10 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     email_reply_to = None
     sms_sender = None
+    # Only treat the file as un-sendable if it's bigger than a whole day's limit. If it just doesn't fit in what's left
+    # of today's limit, it can still be scheduled for a later day (the API checks the limit for the scheduled day).
     recipients_remaining_messages = (
-        remaining_email_messages_today if db_template["template_type"] == "email" else remaining_sms_messages_today
+        current_service.message_limit if db_template["template_type"] == "email" else current_service.sms_daily_limit
     )
 
     if db_template["template_type"] == "email":
@@ -907,6 +909,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data["send_exceeds_annual_limit"] = False
     data["send_exceeds_daily_limit"] = False
+    data["can_only_schedule_for_later_day"] = False
     # determine the remaining sends for daily + annual
     limit_stats = notification_counts_client.get_limit_stats(current_service)
     remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
@@ -928,9 +931,16 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         data["recipients_remaining_messages"] = remaining_annual
         data["send_exceeds_annual_limit"] = True
     else:
-        # if they arent over their limit, and its sms, check if they are over their daily limit
+        # If they aren't over their annual limit, check the daily limit. A send bigger than a whole day's limit can never
+        # go out, but one that only exceeds what's left of today's limit can be scheduled for a later day.
         if data["template"].template_type == "sms":
-            data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["billable_units_remaining"]
+            data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > current_service.sms_daily_limit
+            exceeds_remaining_today = data["sms_parts_to_send"] > data["billable_units_remaining"]
+        elif data["template"].template_type == "email":
+            exceeds_remaining_today = data["count_of_recipients"] > data["remaining_messages"]
+        else:
+            exceeds_remaining_today = False
+        data["can_only_schedule_for_later_day"] = exceeds_remaining_today and not data["send_exceeds_daily_limit"]
 
     if (
         data["recipients"].too_many_rows

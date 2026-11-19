@@ -4463,7 +4463,7 @@ class TestAnnualLimitsSend:
         [
             (2, 2, 2, "none"),
             (5, 5, 4, "annual"),
-            (5, 4, 5, "daily"),
+            (5, 4, 5, "schedule_later"),
             (5, 4, 4, "annual"),
         ],
     )
@@ -4535,12 +4535,119 @@ class TestAnnualLimitsSend:
         if error_shown == "annual":
             assert page.find(attrs={"data-testid": "exceeds-annual"}) is not None
             assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
-        elif error_shown == "daily":
+        elif error_shown == "schedule_later":
+            # over what's left of today's limit, but within a whole day's limit, so it can be scheduled
             assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
-            assert page.find(attrs={"data-testid": "exceeds-daily"}) is not None
+            assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+            assert page.find(attrs={"data-testid": "exceeds-daily-schedule-later"}) is not None
+            assert page.select_one("#js-send-now-button") is None
+            assert page.select_one("#js-schedule-button") is not None
         elif error_shown == "none":
             assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
             assert page.find(attrs={"data-testid": "exceeds-daily"}) is None
+            assert page.find(attrs={"data-testid": "exceeds-daily-schedule-later"}) is None
+
+    @pytest.mark.parametrize("template_type", ["email", "sms"])
+    @pytest.mark.parametrize(
+        "num_being_sent, num_sent_today, expect_can_schedule, expect_blocked",
+        [
+            # daily limit for mock_get_live_service is 1,000 email / 1,000 sms
+            # nearly at today's limit, but the send fits in a whole day: can schedule it for a later day
+            (999, 990, True, False),
+            # already at today's limit, the send fits in a whole day: can schedule it for a later day
+            (1000, 1000, True, False),
+            # the send is bigger than a whole day's limit: can't send or schedule it
+            (1001, 990, False, True),
+            # fits in what's left of today: send now as normal
+            (10, 990, False, False),
+        ],
+        ids=["over_today_fits_in_a_day", "at_today_limit_fits_in_a_day", "over_a_whole_day", "fits_today"],
+    )
+    def test_send_over_todays_daily_limit_can_be_scheduled_for_a_later_day(
+        self,
+        mocker,
+        client_request,
+        mock_get_live_service,
+        mock_get_users_by_service,
+        mock_get_template_statistics,
+        mock_get_job_doesnt_exist,
+        mock_get_jobs,
+        mock_s3_set_metadata,
+        mock_notification_counts_client,
+        mock_daily_sms_count,
+        mock_daily_email_count,
+        fake_uuid,
+        request,
+        template_type,
+        num_being_sent,
+        num_sent_today,
+        expect_can_schedule,
+        expect_blocked,
+        app_,
+    ):
+        request.getfixturevalue(f"mock_get_service_{template_type}_template_without_placeholders")
+        user = mock_get_users_by_service(None)[0]
+        if template_type == "email":
+            recipient_header, recipient = "email address", user["email_address"]
+        else:
+            recipient_header, recipient = "phone number", user["mobile_number"]
+        mocker.patch(
+            "app.main.views.send.s3download",
+            return_value=",\n".join([recipient_header] + [recipient] * num_being_sent),
+        )
+        mock_notification_counts_client.get_limit_stats.return_value = {
+            template_type: {
+                "annual": {"limit": 100_000, "sent": num_sent_today, "remaining": 100_000 - num_sent_today},
+                "daily": {"limit": 1000, "sent": num_sent_today, "remaining": 1000 - num_sent_today},
+            }
+        }
+        mock_notification_counts_client.get_all_notification_counts_for_today.return_value = {
+            "sms": num_sent_today if template_type == "sms" else 0,
+            "email": num_sent_today if template_type == "email" else 0,
+        }
+        mock_daily_email_count.return_value = num_sent_today if template_type == "email" else 0
+        mock_daily_sms_count.return_value = num_sent_today if template_type == "sms" else 0
+
+        with client_request.session_transaction() as session:
+            session["file_uploads"] = {fake_uuid: {"template_id": fake_uuid, "notification_count": 1, "valid": True}}
+
+        page = client_request.get(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="valid.csv",
+            _test_page_title=False,
+        )
+
+        schedule_later_notice = page.find(attrs={"data-testid": "exceeds-daily-schedule-later"})
+        assert page.find(attrs={"data-testid": "exceeds-annual"}) is None
+        assert (page.find(attrs={"data-testid": "exceeds-daily"}) is not None) == expect_blocked
+
+        if expect_can_schedule:
+            expected_title = (
+                "You cannot send all these email messages today"
+                if template_type == "email"
+                else "You cannot send all these text messages today"
+            )
+            assert expected_title in normalize_spaces(schedule_later_notice.text)
+            assert "Schedule these messages for after" in normalize_spaces(schedule_later_notice.text)
+            assert page.select_one("#js-send-now-button") is None
+            assert page.select_one("#js-send-later-button") is None
+            assert "hidden" not in page.select_one("#js-schedule-send-at").get("class", [])
+            assert "hidden" not in page.select_one("#js-schedule-button").get("class", [])
+            mock_s3_set_metadata.assert_called_once()
+        else:
+            assert schedule_later_notice is None
+
+        if expect_blocked:
+            assert page.select_one("#js-schedule-button") is None
+            assert page.select_one("#js-send-now-button") is None
+            mock_s3_set_metadata.assert_not_called()
+        elif not expect_can_schedule:
+            assert page.select_one("#js-send-now-button") is not None
+            assert page.select_one("#js-send-later-button") is not None
+            assert "hidden" in page.select_one("#js-schedule-send-at")["class"]
 
     @pytest.mark.parametrize(
         "notification_type, exception_msg_api, expected_error_msg_admin",
