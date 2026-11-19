@@ -1389,6 +1389,9 @@ def send_notification(service_id, template_id):
         )
     except HTTPError as exception:
         current_app.logger.info('Service {} could not send notification: "{}"'.format(current_service.id, exception.message))
+        if exception.status_code == 400 and str(exception.message).startswith("scheduled_for"):
+            flash(_("The time you chose to send this message is no longer valid. Choose a new time."))
+            return redirect(url_for(".check_notification", service_id=service_id, template_id=template_id))
         return render_template(
             "views/notifications/check.html",
             **_check_notification(service_id, template_id, exception),

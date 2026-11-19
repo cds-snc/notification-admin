@@ -3360,6 +3360,8 @@ def test_check_notification_shows_scheduler(
     assert page.select_one("input#scheduled_for[type=hidden]")["value"] == ""
     assert normalize_spaces(page.select_one("#js-send-now-button").text) == expected_send_button
     assert normalize_spaces(page.select_one("#js-send-later-button").text) == "Schedule for later"
+    # Must not submit the form (and send immediately) if the scheduler JS hasn't loaded
+    assert page.select_one("#js-send-later-button")["type"] == "button"
     assert page.select_one("#js-schedule-send-at")["data-webpack-loader"] == "Scheduler"
     assert normalize_spaces(page.select_one("#js-schedule-button").text) == "Schedule"
     assert page.select_one("script[src*=scheduler]")
@@ -3613,6 +3615,49 @@ def test_send_notification_submits_scheduled_for(
         sender_id=None,
         scheduled_for=expected_scheduled_for,
     )
+
+
+@pytest.mark.parametrize(
+    "api_message",
+    [
+        "scheduled_for datetime cannot be in the past",
+        "scheduled_for datetime can only be up to 96 hours in the future",
+    ],
+)
+def test_send_notification_redirects_back_with_error_if_scheduled_for_is_invalid(
+    client_request,
+    fake_uuid,
+    mocker,
+    mock_get_service_template,
+    api_message,
+):
+    response = mocker.Mock(status_code=400)
+    response.json.return_value = {"result": "error", "message": api_message}
+    mocker.patch("app.notification_api_client.send_notification", side_effect=HTTPError(response=response))
+
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    client_request.post(
+        "main.send_notification",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"scheduled_for": "2026-11-18T15:00:00"},
+        _expected_redirect=url_for(
+            "main.check_notification",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        ),
+    )
+
+    with client_request.session_transaction() as session:
+        # Kept so the user can pick a new time and try again
+        assert session["recipient"] == "6502532223"
+        assert session["placeholders"] == {"name": "Jo"}
+        assert session["_flashes"] == [
+            ("message", "The time you chose to send this message is no longer valid. Choose a new time.")
+        ]
 
 
 def test_send_notification_includes_template_attachments_in_personalisation(
