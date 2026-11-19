@@ -47,14 +47,13 @@
 
   {% if can_only_schedule_for_later_day %}
     {% set cannot_send_today_title = _('You cannot send all these text messages today') if template.template_type == 'sms' else _('You cannot send all these email messages today') %}
-    <div class="mb-12 clear-both contain-floats" data-testid="exceeds-daily-schedule-later">
-      {% call notice(type="warning", title=cannot_send_today_title, headingLevel=2) %}
-        <p>
-          {{ _("This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
-          content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
-        </p>
-      {% endcall %}
-    </div>
+    <section class="clear-both contain-floats" data-testid="exceeds-daily-schedule-later">
+      <h3 class="heading-small">{{ cannot_send_today_title }}</h3>
+      <p>
+        {{ _("This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+        content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
+      </p>
+    </section>
   {% endif %}
 
   {% if not request.args.from_test %}

@@ -3367,6 +3367,74 @@ def test_check_notification_shows_scheduler(
     assert page.select_one("script[src*=scheduler]")
 
 
+@pytest.mark.parametrize(
+    "template_mock, template_type, recipient, expected_title",
+    [
+        ("mock_get_service_template", "sms", "6502532223", "You cannot send this text message today"),
+        ("mock_get_service_email_template", "email", "test@example.com", "You cannot send this email message today"),
+    ],
+)
+@pytest.mark.parametrize(
+    "daily_remaining, annual_remaining, expect_schedule_only",
+    [
+        (0, 990, True),  # at today's limit: can only schedule for a later day
+        (95, 990, False),  # fits in what's left of today
+        (0, 0, False),  # out of annual limit too: scheduling won't help
+    ],
+    ids=["at_daily_limit", "under_daily_limit", "at_annual_limit"],
+)
+def test_check_notification_opens_scheduler_when_at_daily_limit(
+    request,
+    mocker,
+    client_request,
+    service_one,
+    fake_uuid,
+    mock_get_template_statistics,
+    template_mock,
+    template_type,
+    recipient,
+    expected_title,
+    daily_remaining,
+    annual_remaining,
+    expect_schedule_only,
+):
+    request.getfixturevalue(template_mock)
+    type_stats = {
+        "annual": {"limit": 1000, "sent": 1000 - annual_remaining, "remaining": annual_remaining},
+        "daily": {"limit": 100, "sent": 100 - daily_remaining, "remaining": daily_remaining},
+    }
+    mocker.patch(
+        "app.main.views.send.notification_counts_client.get_limit_stats",
+        return_value={"email": type_stats, "sms": type_stats},
+    )
+    with client_request.session_transaction() as session:
+        session["recipient"] = recipient
+        session["placeholders"] = {
+            "name": "Jo",
+            "date": "today",
+            "thing": "car",
+            "phone number": recipient,
+            "email address": recipient,
+        }
+
+    page = client_request.get("main.check_notification", service_id=service_one["id"], template_id=fake_uuid)
+
+    schedule_later_content = page.find(attrs={"data-testid": "exceeds-daily-schedule-later"})
+    if expect_schedule_only:
+        assert normalize_spaces(schedule_later_content.select_one("h3").text) == expected_title
+        assert "Schedule this message for after" in normalize_spaces(schedule_later_content.text)
+        assert page.select_one("#js-send-now-button") is None
+        assert page.select_one("#js-send-later-button") is None
+        assert "hidden" not in page.select_one("#js-schedule-send-at").get("class", [])
+        assert "hidden" not in page.select_one("#js-schedule-button").get("class", [])
+        assert page.select_one("script[src*=scheduler]")
+    else:
+        assert schedule_later_content is None
+        assert page.select_one("#js-send-now-button") is not None
+        assert page.select_one("#js-send-later-button") is not None
+        assert "hidden" in page.select_one("#js-schedule-send-at")["class"]
+
+
 def test_check_notification_does_not_show_scheduler_during_tour(
     client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
 ):
@@ -3882,6 +3950,7 @@ def test_send_notification_shows_email_error_in_trial_mode(
     mocker,
     mock_get_service_email_template,
     mock_get_template_statistics,
+    mock_get_limit_stats_send,
 ):
     class MockHTTPError(HTTPError):
         message = TRIAL_MODE_MSG
@@ -4630,7 +4699,8 @@ class TestAnnualLimitsSend:
                 if template_type == "email"
                 else "You cannot send all these text messages today"
             )
-            assert expected_title in normalize_spaces(schedule_later_notice.text)
+            assert normalize_spaces(schedule_later_notice.select_one("h3").text) == expected_title
+            assert not schedule_later_notice.select("[role=alert], .notice")
             assert "Schedule these messages for after" in normalize_spaces(schedule_later_notice.text)
             assert page.select_one("#js-send-now-button") is None
             assert page.select_one("#js-send-later-button") is None

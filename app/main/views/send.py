@@ -933,11 +933,12 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
     else:
         # If they aren't over their annual limit, check the daily limit. A send bigger than a whole day's limit can never
         # go out, but one that only exceeds what's left of today's limit can be scheduled for a later day.
+        # Use the same limit stats shown on the page so the scheduler is consistently opened when over today's limit.
         if data["template"].template_type == "sms":
             data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > current_service.sms_daily_limit
-            exceeds_remaining_today = data["sms_parts_to_send"] > data["billable_units_remaining"]
+            exceeds_remaining_today = data["sms_parts_to_send"] > limit_stats["sms"]["daily"]["remaining"]
         elif data["template"].template_type == "email":
-            exceeds_remaining_today = data["count_of_recipients"] > data["remaining_messages"]
+            exceeds_remaining_today = data["count_of_recipients"] > limit_stats["email"]["daily"]["remaining"]
         else:
             exceeds_remaining_today = False
         data["can_only_schedule_for_later_day"] = exceeds_remaining_today and not data["send_exceeds_daily_limit"]
@@ -1307,6 +1308,20 @@ def _check_notification(service_id, template_id, exception=None):
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
     time_to_reset = get_limit_reset_time_et()
 
+    can_only_schedule_for_later_day = False
+    limit_stats = None
+    if db_template["template_type"] in ("email", "sms"):
+        limit_stats = notification_counts_client.get_limit_stats(current_service)
+        # If the message doesn't fit in what's left of today's limit (but does fit in a whole day's and the annual limit),
+        # the only option is to schedule it for a later day.
+        type_limit_stats = limit_stats[db_template["template_type"]]
+        units_to_send = template.fragment_count if db_template["template_type"] == "sms" else 1
+        can_only_schedule_for_later_day = (
+            units_to_send > type_limit_stats["daily"]["remaining"]
+            and units_to_send <= type_limit_stats["daily"]["limit"]
+            and units_to_send <= type_limit_stats["annual"]["remaining"]
+        )
+
     sms_parts_data = {}
     if db_template["template_type"] == "sms":
         sms_parts_data["sms_parts_to_send"] = template.fragment_count
@@ -1315,7 +1330,7 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
 
         # Limit stats for daily/yearly remaining display on the check/review page
-        _sms_limit_stats = notification_counts_client.get_limit_stats(current_service)["sms"]
+        _sms_limit_stats = limit_stats["sms"]
         sms_parts_data["sms_daily_limit"] = _sms_limit_stats["daily"]["limit"]
         sms_parts_data["sms_daily_used"] = _sms_limit_stats["daily"]["sent"]
         sms_parts_data["sms_yearly_limit"] = _sms_limit_stats["annual"]["limit"]
@@ -1335,6 +1350,7 @@ def _check_notification(service_id, template_id, exception=None):
         help=get_help_argument(),
         stats_daily=stats_daily,
         time_to_reset=time_to_reset,
+        can_only_schedule_for_later_day=can_only_schedule_for_later_day,
         **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
