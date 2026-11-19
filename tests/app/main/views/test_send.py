@@ -3655,9 +3655,7 @@ def test_send_notification_redirects_back_with_error_if_scheduled_for_is_invalid
         # Kept so the user can pick a new time and try again
         assert session["recipient"] == "6502532223"
         assert session["placeholders"] == {"name": "Jo"}
-        assert session["_flashes"] == [
-            ("message", "The time you chose to send this message is no longer valid. Choose a new time.")
-        ]
+        assert session["_flashes"] == [("message", "The send time must be in the future. Choose a new time.")]
 
 
 def test_send_notification_includes_template_attachments_in_personalisation(
