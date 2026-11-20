@@ -1,0 +1,42 @@
+{% extends "admin_template.html" %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-header.html" import page_header %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% block service_page_title %}
+  {{ _('Remove an email address from the suppression list') }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  {{ page_header(
+    _('Remove an email address from the suppression list'),
+    back_link=url_for('main.service_settings', service_id=current_service.id)
+  ) }}
+
+  <p>
+    {{ _('Use this if an address was blocked by mistake. You can only remove an address if your service has previously sent to it.') }}
+  </p>
+
+  {% call form_wrapper() %}
+    {{ textbox(
+      form.email_address,
+      width='w-full md:w-2/3',
+      hint=_('Enter the email address exactly as it was used when sending messages.'),
+      safe_error_message=True
+    ) }}
+
+    {{ textbox(
+      form.request_details,
+      width='w-full md:w-2/3',
+      rows=5,
+      required=false,
+      hint=_('Add context for the audit trail (for example, confirmation from the recipient).'),
+      safe_error_message=True
+    ) }}
+
+    {{ page_footer(_('Remove email address')) }}
+  {% endcall %}
+
+{% endblock %}

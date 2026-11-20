@@ -485,6 +485,15 @@ class ServiceAPIClient(NotifyAdminAPIClient):
             data={"email": email_address},
         )
 
+    def remove_email_from_suppression_list(self, service_id, email_address, user_id, request_details=""):
+        data = {
+            "email_address": email_address,
+            "updated_by_id": user_id,
+        }
+        if request_details:
+            data["request_details"] = request_details
+        return self.post("/service/{}/email-suppression/removal".format(service_id), data=data)
+
     @cache.delete("service-{service_id}")
     def add_reply_to_email_address(self, service_id, email_address, is_default=False):
         return self.post(
