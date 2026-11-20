@@ -23,9 +23,56 @@
           <img alt="" src="https://{{ cdn_url }}/{{ logo }}"/>
         </div>
       {% endif %}
-      <p>
-        {{ _('Logos should be PNG files, 108px high') }}
-      </p>
+      <section class="mb-gutter">
+        <h2 class="heading-medium">{{ _('Generate a Government of Canada signature') }}</h2>
+        <p>{{ _('Create a signature and use it as this brand’s logo.') }}</p>
+        <div class="grid-row contain-floats">
+          <div class="md:w-1/2">
+            <div class="form-group">
+              <label class="form-label" for="fip-text-en">{{ _('English text') }}</label>
+              <textarea id="fip-text-en" class="form-control w-full input" rows="3">Government
+of Canada</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fip-text-fr">{{ _('French text') }}</label>
+              <textarea id="fip-text-fr" class="form-control w-full input" rows="3">Gouvernement
+du Canada</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fip-symbol">{{ _('Symbol') }}</label>
+              <select id="fip-symbol" class="form-control w-full input">
+                <option value="flag">{{ _('Flag') }}</option>
+                <option value="arms">{{ _('Coat of arms, left aligned') }}</option>
+                <option value="arms-center">{{ _('Coat of arms, centered') }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fip-lang-order">{{ _('Language order') }}</label>
+              <select id="fip-lang-order" class="form-control w-full input">
+                <option value="en">{{ _('English first') }}</option>
+                <option value="fr">{{ _('French first') }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="md:w-1/2">
+            <p class="form-label">{{ _('Preview') }}</p>
+            <fip-signature
+              id="fip-signature"
+              text-en="Government of Canada"
+              text-fr="Gouvernement du Canada"
+              symbol="flag"
+              lang-order="en"
+              role="img"
+              aria-label="{{ _('FIP signature preview') }}">
+            </fip-signature>
+          </div>
+        </div>
+        <p id="fip-generator-error" role="alert" hidden
+          data-error-message="{{ _('The logo could not be generated.') }}"></p>
+        <button id="fip-generate-logo" class="button" type="button">{{ _('Generate and use logo') }}</button>
+      </section>
+      <p>{{ _('Or upload an existing PNG logo.') }}</p>
+      <p>{{ _('Logos should be PNG files, 108px high') }}</p>
       {{ file_upload(form.file, button_text='{} logo'.format('Update' if email_branding else 'Upload'), testid='upload-branding') }}
       {% call form_wrapper() %}
         <div class="form-group contain-floats box-border mb-gutterHalf md:mb-gutter">
@@ -45,4 +92,10 @@
         </div>
       {% endcall %}
     </div>
+{% endblock %}
+
+{% block page_script %}
+    {{ super() }}
+    <script nonce="{{ request_nonce }}" type="module" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/fip-generator-element.min.js{% else %}{{ asset_url('javascripts/fip-generator-element.min.js') }}{% endif %}"></script>
+    <script nonce="{{ request_nonce }}" src="{% if vite_dev_server %}http://localhost:5173/app/assets/javascripts/fipBranding.js{% else %}{{ asset_url('javascripts/fipBranding.min.js') }}{% endif %}"></script>
 {% endblock %}

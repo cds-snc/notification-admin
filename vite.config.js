@@ -33,6 +33,21 @@ function jsxInJsFiles() {
   };
 }
 
+function localizeFipGeneratorDependencies() {
+  const componentPath = path.resolve(__dirname, "app/assets/javascripts/fip-generator-element.min.js");
+  const cdnImport = "https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/+esm";
+  const remoteFontImport = "@import url('https://rsms.me/inter/inter.css');";
+
+  return {
+    name: "localize-fip-generator-dependencies",
+    enforce: "pre",
+    transform(code, id) {
+      if (id.split("?")[0] !== componentPath) return null;
+      return code.replaceAll(cdnImport, "html-to-image").replaceAll(remoteFontImport, "");
+    },
+  };
+}
+
 /**
  * Vite config for modern React/ES module entries.
  *
@@ -63,6 +78,7 @@ export default defineConfig({
         scheduler: path.resolve(__dirname, "app/assets/javascripts/scheduler/scheduler.js"),
         tiptap: path.resolve(__dirname, "app/assets/javascripts/tiptap/editor.js"),
         attachments: path.resolve(__dirname, "app/assets/javascripts/attachments/attachments.js"),
+        "fip-generator-element": path.resolve(__dirname, "app/assets/javascripts/fip-generator-element.min.js"),
       },
 
       output: {
@@ -80,6 +96,7 @@ export default defineConfig({
   },
 
   plugins: [
+    localizeFipGeneratorDependencies(),
     jsxInJsFiles(),
     react(),
 
@@ -115,4 +132,3 @@ export default defineConfig({
     },
   },
 });
-
