@@ -155,6 +155,7 @@
       <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
       {% if can_only_schedule_for_later_day %}
         {# Over what's left of today's limit, so the only option is to schedule it #}
+        <input type="hidden" name="schedule_only" value="true"/>
         <div id="js-schedule-send-at" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
         <button type="submit" class="button" id="js-schedule-button">
           {{ _('Schedule') }}

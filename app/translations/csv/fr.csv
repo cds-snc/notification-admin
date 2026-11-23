@@ -1974,3 +1974,4 @@
 "The send time must be in the future. Choose a new time.","La date et l’heure d’envoi doivent être dans le futur. Choisissez une nouvelle date et une nouvelle heure."
 "This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.","Cet envoi dépasserait votre limite quotidienne. Programmez ces messages pour après {} heures, heure de l’Est. Comparez {}."
 "This would go over your daily limit. Schedule this message for after {} Eastern Time. Check {}.","Cet envoi dépasserait votre limite quotidienne. Programmez ce message pour après {} heures, heure de l’Est. Comparez {}."
+"Choose a date and time to schedule the send.","Choisissez une date et une heure pour programmer l’envoi."

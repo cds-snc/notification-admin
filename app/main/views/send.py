@@ -1098,6 +1098,24 @@ def start_job(service_id, upload_id):
     # "warning shown" log lines (issue #3319). We read this before creating the
     # job so that a failure here can't block a send.
     upload_metadata = get_csv_metadata(service_id, upload_id)
+
+    scheduled_for = request.form.get("scheduled_for", "")
+    if request.form.get("schedule_only") and not scheduled_for:
+        # The page only offered scheduling, so never fall back to sending now (e.g. if the scheduler didn't load)
+        template_id = upload_metadata.get("template_id")
+        if not template_id:
+            abort(400)
+        flash(_("Choose a date and time to schedule the send."))
+        return redirect(
+            url_for(
+                ".check_messages",
+                service_id=service_id,
+                template_id=template_id,
+                upload_id=upload_id,
+                original_file_name=request.args.get("original_file_name", ""),
+            )
+        )
+
     count_of_duplicate_recipients = int(upload_metadata.get("count_of_duplicate_recipients", 0) or 0)
     if count_of_duplicate_recipients:
         current_app.logger.info(
@@ -1113,7 +1131,7 @@ def start_job(service_id, upload_id):
         )
 
     try:
-        job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
+        job_api_client.create_job(upload_id, service_id, scheduled_for=scheduled_for)
     except HTTPError as exception:
         return render_template(
             "views/notifications/check.html",
@@ -1399,6 +1417,12 @@ def send_notification(service_id, template_id):
 
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    scheduled_for = request.form.get("scheduled_for") or None
+    if request.form.get("schedule_only") and not scheduled_for:
+        # The page only offered scheduling, so never fall back to sending now (e.g. if the scheduler didn't load)
+        flash(_("Choose a date and time to schedule the send."))
+        return redirect(url_for(".check_notification", service_id=service_id, template_id=template_id))
+
     personalisation = {
         **session["placeholders"],
         **build_template_attachment_personalisation(db_template["id"], db_template["template_type"]),
@@ -1411,7 +1435,7 @@ def send_notification(service_id, template_id):
             recipient=session["recipient"] or session["placeholders"]["address line 1"],
             personalisation=personalisation,
             sender_id=session["sender_id"] if "sender_id" in session else None,
-            scheduled_for=request.form.get("scheduled_for") or None,
+            scheduled_for=scheduled_for,
         )
     except HTTPError as exception:
         current_app.logger.info('Service {} could not send notification: "{}"'.format(current_service.id, exception.message))

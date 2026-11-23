@@ -2520,6 +2520,72 @@ def test_can_start_letters_job(platform_admin_client, mock_create_job, service_o
     assert "just_sent=yes" in response.location
 
 
+def test_start_job_does_not_send_now_if_schedule_only_and_no_time_chosen(
+    client_request,
+    mock_create_job,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch("app.main.views.send.get_csv_metadata", return_value={"template_id": fake_uuid})
+
+    client_request.post(
+        "main.start_job",
+        service_id=SERVICE_ONE_ID,
+        upload_id=fake_uuid,
+        original_file_name="example.csv",
+        _data={"scheduled_for": "", "schedule_only": "true"},
+        _expected_redirect=url_for(
+            "main.check_messages",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+            upload_id=fake_uuid,
+            original_file_name="example.csv",
+        ),
+    )
+
+    mock_create_job.assert_not_called()
+    with client_request.session_transaction() as session:
+        assert session["_flashes"] == [("message", "Choose a date and time to schedule the send.")]
+
+
+def test_start_job_returns_400_if_schedule_only_and_no_time_chosen_and_template_unknown(
+    client_request,
+    mock_create_job,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch("app.main.views.send.get_csv_metadata", return_value={})
+
+    client_request.post(
+        "main.start_job",
+        service_id=SERVICE_ONE_ID,
+        upload_id=fake_uuid,
+        _data={"scheduled_for": "", "schedule_only": "true"},
+        _expected_status=400,
+    )
+
+    mock_create_job.assert_not_called()
+
+
+def test_start_job_schedules_if_schedule_only_and_time_chosen(
+    client_request,
+    mock_create_job,
+    mocker,
+    fake_uuid,
+):
+    mocker.patch("app.main.views.send.get_csv_metadata", return_value={"template_id": fake_uuid})
+
+    client_request.post(
+        "main.start_job",
+        service_id=SERVICE_ONE_ID,
+        upload_id=fake_uuid,
+        _data={"scheduled_for": "2026-11-18T15:00:00", "schedule_only": "true"},
+        _expected_status=302,
+    )
+
+    mock_create_job.assert_called_once_with(fake_uuid, SERVICE_ONE_ID, scheduled_for="2026-11-18T15:00:00")
+
+
 @pytest.mark.parametrize(
     "filetype, extra_args, expected_values, expected_page",
     [
@@ -3427,9 +3493,11 @@ def test_check_notification_opens_scheduler_when_at_daily_limit(
         assert page.select_one("#js-send-later-button") is None
         assert "hidden" not in page.select_one("#js-schedule-send-at").get("class", [])
         assert "hidden" not in page.select_one("#js-schedule-button").get("class", [])
+        assert page.select_one("input[name=schedule_only]")["value"] == "true"
         assert page.select_one("script[src*=scheduler]")
     else:
         assert schedule_later_content is None
+        assert page.select_one("input[name=schedule_only]") is None
         assert page.select_one("#js-send-now-button") is not None
         assert page.select_one("#js-send-later-button") is not None
         assert "hidden" in page.select_one("#js-schedule-send-at")["class"]
@@ -3724,6 +3792,57 @@ def test_send_notification_redirects_back_with_error_if_scheduled_for_is_invalid
         assert session["recipient"] == "6502532223"
         assert session["placeholders"] == {"name": "Jo"}
         assert session["_flashes"] == [("message", "The send time must be in the future. Choose a new time.")]
+
+
+def test_send_notification_does_not_send_now_if_schedule_only_and_no_time_chosen(
+    client_request,
+    fake_uuid,
+    mock_send_notification,
+    mock_get_service_template,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    client_request.post(
+        "main.send_notification",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"scheduled_for": "", "schedule_only": "true"},
+        _expected_redirect=url_for(
+            "main.check_notification",
+            service_id=SERVICE_ONE_ID,
+            template_id=fake_uuid,
+        ),
+    )
+
+    mock_send_notification.assert_not_called()
+    with client_request.session_transaction() as session:
+        # Kept so the user can pick a time and try again
+        assert session["recipient"] == "6502532223"
+        assert session["placeholders"] == {"name": "Jo"}
+        assert session["_flashes"] == [("message", "Choose a date and time to schedule the send.")]
+
+
+def test_send_notification_schedules_if_schedule_only_and_time_chosen(
+    client_request,
+    fake_uuid,
+    mock_send_notification,
+    mock_get_service_template,
+):
+    with client_request.session_transaction() as session:
+        session["recipient"] = "6502532223"
+        session["placeholders"] = {"name": "Jo"}
+
+    client_request.post(
+        "main.send_notification",
+        service_id=SERVICE_ONE_ID,
+        template_id=fake_uuid,
+        _data={"scheduled_for": "2026-11-18T15:00:00", "schedule_only": "true"},
+        _expected_status=302,
+    )
+
+    assert mock_send_notification.call_args.kwargs["scheduled_for"] == "2026-11-18T15:00:00"
 
 
 def test_send_notification_includes_template_attachments_in_personalisation(
@@ -4706,9 +4825,11 @@ class TestAnnualLimitsSend:
             assert page.select_one("#js-send-later-button") is None
             assert "hidden" not in page.select_one("#js-schedule-send-at").get("class", [])
             assert "hidden" not in page.select_one("#js-schedule-button").get("class", [])
+            assert page.select_one("input[name=schedule_only]")["value"] == "true"
             mock_s3_set_metadata.assert_called_once()
         else:
             assert schedule_later_notice is None
+            assert page.select_one("input[name=schedule_only]") is None
 
         if expect_blocked:
             assert page.select_one("#js-schedule-button") is None
