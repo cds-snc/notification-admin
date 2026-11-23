@@ -3366,6 +3366,14 @@ def test_check_notification_shows_scheduler(
     assert normalize_spaces(page.select_one("#js-schedule-button").text) == "Schedule"
     assert page.select_one("script[src*=scheduler]")
 
+    new_feature_banner = page.select_one("[data-new-feature=schedule-one-off-send]")
+    assert normalize_spaces(new_feature_banner.select_one("p").text) == (
+        "New: You can now schedule one-off messages to send later."
+    )
+    assert new_feature_banner["data-lifespan"] == "2026-12-14"
+    assert new_feature_banner["data-position"] == "before"
+    assert "[anchor-name:--schedule-one-off-send]" in page.select_one("#js-send-later-button")["class"]
+
 
 def test_check_notification_does_not_show_scheduler_during_tour(
     client_request, service_one, fake_uuid, mock_get_service_template, mock_get_template_statistics, mock_get_limit_stats_send
@@ -3379,6 +3387,7 @@ def test_check_notification_does_not_show_scheduler_during_tour(
     assert not page.select("#scheduled_for")
     assert not page.select("#js-send-later-button")
     assert not page.select("script[src*=scheduler]")
+    assert not page.select("[data-new-feature=schedule-one-off-send]")
 
 
 def test_check_notification_email_shows_template_attachments_and_scanning_warning(

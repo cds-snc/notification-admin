@@ -2,6 +2,7 @@
 {% from "components/banner.html" import banner_wrapper %}
 {% from "components/links.html" import content_link %}
 {% from "components/message-count-label.html" import message_count_label %}
+{% from "components/new-feature.html" import new_feature %}
 {% from "components/page-header.html" import govuk_back_link, page_header %}
 {% from "components/remaining-messages-summary.html" import remaining_messages_summary with context %}
 
@@ -115,6 +116,15 @@
 
   {% set can_schedule = not error and not help and template.template_type in ['email', 'sms'] %}
   <div class="{{ 'mb-12 clear-both contain-floats' if can_schedule else 'js-stick-at-bottom-when-scrolling' }}">
+    {% if can_schedule %}
+      {% call new_feature(
+        title=_("You can now schedule one-off messages to send later."),
+        anchored_to="schedule-one-off-send",
+        lifespan="2026-12-14",
+        position="before"
+      ) %}
+      {% endcall %}
+    {% endif %}
     <form method="post" enctype="multipart/form-data" action="{{url_for(
         'main.send_notification',
         service_id=current_service.id,
@@ -133,7 +143,7 @@
         {% endif %}
       {% endif %}
       {% if can_schedule %}
-        <button type="button" class="button button-secondary" id="js-send-later-button">
+        <button type="button" class="button button-secondary [anchor-name:--schedule-one-off-send]" id="js-send-later-button">
           {{ _('Schedule for later') }}
         </button>
         <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
