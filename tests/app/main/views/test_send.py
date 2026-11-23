@@ -3368,7 +3368,7 @@ def test_check_notification_shows_scheduler(
 
     new_feature_banner = page.select_one("[data-new-feature=schedule-one-off-send]")
     assert normalize_spaces(new_feature_banner.select_one("p").text) == (
-        "New: You can now schedule one-off messages to send later."
+        "New: You can now schedule a message to one recipient for a later time."
     )
     assert new_feature_banner["data-lifespan"] == "2026-12-14"
     assert new_feature_banner["data-position"] == "before"
