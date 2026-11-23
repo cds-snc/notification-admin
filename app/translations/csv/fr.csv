@@ -1975,3 +1975,4 @@
 "This would go over your daily limit. Schedule these messages for after {} Eastern Time. Check {}.","Cet envoi dépasserait votre limite quotidienne. Programmez ces messages après {}&nbsp;h, heure de l’Est. Comparez {}."
 "This would go over your daily limit. Schedule this message for after {} Eastern Time. Check {}.","Cet envoi dépasserait votre limite quotidienne. Programmez ce message après {}&nbsp;h, heure de l’Est. Comparez {}."
 "Choose a date and time to schedule the send.","Choisissez une date et une heure pour programmer l’envoi."
+"You can now schedule a message to one recipient for a later time.","Vous pouvez maintenant programmer l’envoi d’un message à un destinataire pour plus tard."
