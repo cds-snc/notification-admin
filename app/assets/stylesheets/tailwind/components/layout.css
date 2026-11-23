@@ -101,6 +101,10 @@
     position: relative;
     z-index: 0;
   }
+  /* Keep the dismiss link's padding for its focus state, but align its text with the message when there's no CTA */
+  .new-feature-banner [data-dismiss-notice]:first-child {
+    @apply -ml-5;
+  }
   .new-feature-banner[data-position="before"]::after,
   .new-feature-banner[data-position="after"]::after {
     content: "";
