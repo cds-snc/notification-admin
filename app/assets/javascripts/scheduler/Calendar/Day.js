@@ -33,7 +33,14 @@ export const Day = ({ day }) => {
     : labelDate;
 
   useEffect(() => {
-    if (Number(dayNum) === Number(focusedDayNum)) {
+    // Only move focus while the user is using the calendar, so it doesn't
+    // steal focus (and scroll the page down) when it first renders open.
+    const calendar = inputEl.current && inputEl.current.closest(".Calendar");
+    if (
+      Number(dayNum) === Number(focusedDayNum) &&
+      calendar &&
+      calendar.dataset.interacted === "true"
+    ) {
       inputEl.current.focus();
     }
   }, [focusedDayNum]);

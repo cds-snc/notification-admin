@@ -61,6 +61,11 @@ describe("Calendar", function () {
       </I18nProvider>,
     );
 
+    // the calendar doesn't take focus when it first renders
+    expect(document.activeElement).toBe(document.body);
+
+    container.querySelector(`[data-day="29"]`).focus();
+
     fireEvent.keyDown(document.activeElement, {
       key: "ArrowLeft",
       code: 37,

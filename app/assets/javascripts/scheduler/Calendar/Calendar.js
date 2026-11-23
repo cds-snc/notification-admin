@@ -13,7 +13,14 @@ export const Calendar = () => {
   const { translate } = useContext(I18nContext);
   return (
     <div className="date-time">
-      <section className="Calendar" aria-label={translate("calendar")}>
+      <section
+        className="Calendar"
+        aria-label={translate("calendar")}
+        onFocus={(e) => {
+          // Lets days know the user is using the calendar, so they can move focus
+          e.currentTarget.dataset.interacted = "true";
+        }}
+      >
         <YearMonth />
         <div className="Calendar-grid">
           <DaysOfTheWeek />

@@ -770,8 +770,10 @@ def _check_messages(service_id, template_id, upload_id, preview_row, letters_as_
 
     email_reply_to = None
     sms_sender = None
+    # Only treat the file as un-sendable if it's bigger than a whole day's limit. If it just doesn't fit in what's left
+    # of today's limit, it can still be scheduled for a later day (the API checks the limit for the scheduled day).
     recipients_remaining_messages = (
-        remaining_email_messages_today if db_template["template_type"] == "email" else remaining_sms_messages_today
+        current_service.message_limit if db_template["template_type"] == "email" else current_service.sms_daily_limit
     )
 
     if db_template["template_type"] == "email":
@@ -907,6 +909,7 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
 
     data["send_exceeds_annual_limit"] = False
     data["send_exceeds_daily_limit"] = False
+    data["can_only_schedule_for_later_day"] = False
     # determine the remaining sends for daily + annual
     limit_stats = notification_counts_client.get_limit_stats(current_service)
     remaining_annual = limit_stats[data["template"].template_type]["annual"]["remaining"]
@@ -928,9 +931,17 @@ def check_messages(service_id, template_id, upload_id, row_index=2):
         data["recipients_remaining_messages"] = remaining_annual
         data["send_exceeds_annual_limit"] = True
     else:
-        # if they arent over their limit, and its sms, check if they are over their daily limit
+        # If they aren't over their annual limit, check the daily limit. A send bigger than a whole day's limit can never
+        # go out, but one that only exceeds what's left of today's limit can be scheduled for a later day.
+        # Use the same limit stats shown on the page so the scheduler is consistently opened when over today's limit.
         if data["template"].template_type == "sms":
-            data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > data["billable_units_remaining"]
+            data["send_exceeds_daily_limit"] = data["sms_parts_to_send"] > current_service.sms_daily_limit
+            exceeds_remaining_today = data["sms_parts_to_send"] > limit_stats["sms"]["daily"]["remaining"]
+        elif data["template"].template_type == "email":
+            exceeds_remaining_today = data["count_of_recipients"] > limit_stats["email"]["daily"]["remaining"]
+        else:
+            exceeds_remaining_today = False
+        data["can_only_schedule_for_later_day"] = exceeds_remaining_today and not data["send_exceeds_daily_limit"]
 
     if (
         data["recipients"].too_many_rows
@@ -1087,6 +1098,24 @@ def start_job(service_id, upload_id):
     # "warning shown" log lines (issue #3319). We read this before creating the
     # job so that a failure here can't block a send.
     upload_metadata = get_csv_metadata(service_id, upload_id)
+
+    scheduled_for = request.form.get("scheduled_for", "")
+    if request.form.get("schedule_only") and not scheduled_for:
+        # The page only offered scheduling, so never fall back to sending now (e.g. if the scheduler didn't load)
+        template_id = upload_metadata.get("template_id")
+        if not template_id:
+            abort(400)
+        flash(_("Choose a date and time to schedule the send."))
+        return redirect(
+            url_for(
+                ".check_messages",
+                service_id=service_id,
+                template_id=template_id,
+                upload_id=upload_id,
+                original_file_name=request.args.get("original_file_name", ""),
+            )
+        )
+
     count_of_duplicate_recipients = int(upload_metadata.get("count_of_duplicate_recipients", 0) or 0)
     if count_of_duplicate_recipients:
         current_app.logger.info(
@@ -1102,7 +1131,7 @@ def start_job(service_id, upload_id):
         )
 
     try:
-        job_api_client.create_job(upload_id, service_id, scheduled_for=request.form.get("scheduled_for", ""))
+        job_api_client.create_job(upload_id, service_id, scheduled_for=scheduled_for)
     except HTTPError as exception:
         return render_template(
             "views/notifications/check.html",
@@ -1297,6 +1326,20 @@ def _check_notification(service_id, template_id, exception=None):
     template.values = get_recipient_and_placeholders_from_session(template.template_type)
     time_to_reset = get_limit_reset_time_et()
 
+    can_only_schedule_for_later_day = False
+    limit_stats = None
+    if db_template["template_type"] in ("email", "sms"):
+        limit_stats = notification_counts_client.get_limit_stats(current_service)
+        # If the message doesn't fit in what's left of today's limit (but does fit in a whole day's and the annual limit),
+        # the only option is to schedule it for a later day.
+        type_limit_stats = limit_stats[db_template["template_type"]]
+        units_to_send = template.fragment_count if db_template["template_type"] == "sms" else 1
+        can_only_schedule_for_later_day = (
+            units_to_send > type_limit_stats["daily"]["remaining"]
+            and units_to_send <= type_limit_stats["daily"]["limit"]
+            and units_to_send <= type_limit_stats["annual"]["remaining"]
+        )
+
     sms_parts_data = {}
     if db_template["template_type"] == "sms":
         sms_parts_data["sms_parts_to_send"] = template.fragment_count
@@ -1305,7 +1348,7 @@ def _check_notification(service_id, template_id, exception=None):
         sms_parts_data["sms_parts_remaining"] = current_service.sms_daily_limit - daily_sms_count(service_id)
 
         # Limit stats for daily/yearly remaining display on the check/review page
-        _sms_limit_stats = notification_counts_client.get_limit_stats(current_service)["sms"]
+        _sms_limit_stats = limit_stats["sms"]
         sms_parts_data["sms_daily_limit"] = _sms_limit_stats["daily"]["limit"]
         sms_parts_data["sms_daily_used"] = _sms_limit_stats["daily"]["sent"]
         sms_parts_data["sms_yearly_limit"] = _sms_limit_stats["annual"]["limit"]
@@ -1325,6 +1368,7 @@ def _check_notification(service_id, template_id, exception=None):
         help=get_help_argument(),
         stats_daily=stats_daily,
         time_to_reset=time_to_reset,
+        can_only_schedule_for_later_day=can_only_schedule_for_later_day,
         **sms_parts_data,
         **(get_template_error_dict(exception) if exception else {}),
     )
@@ -1373,6 +1417,12 @@ def send_notification(service_id, template_id):
 
     db_template = current_service.get_template_with_user_permission_or_403(template_id, current_user)
 
+    scheduled_for = request.form.get("scheduled_for") or None
+    if request.form.get("schedule_only") and not scheduled_for:
+        # The page only offered scheduling, so never fall back to sending now (e.g. if the scheduler didn't load)
+        flash(_("Choose a date and time to schedule the send."))
+        return redirect(url_for(".check_notification", service_id=service_id, template_id=template_id))
+
     personalisation = {
         **session["placeholders"],
         **build_template_attachment_personalisation(db_template["id"], db_template["template_type"]),
@@ -1385,7 +1435,7 @@ def send_notification(service_id, template_id):
             recipient=session["recipient"] or session["placeholders"]["address line 1"],
             personalisation=personalisation,
             sender_id=session["sender_id"] if "sender_id" in session else None,
-            scheduled_for=request.form.get("scheduled_for") or None,
+            scheduled_for=scheduled_for,
         )
     except HTTPError as exception:
         current_app.logger.info('Service {} could not send notification: "{}"'.format(current_service.id, exception.message))

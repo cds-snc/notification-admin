@@ -90,6 +90,9 @@
     ) }}
   {% endif %}
 
+  {% set can_schedule = not error and not help and template.template_type in ['email', 'sms'] %}
+  {% set schedule_only = can_schedule and can_only_schedule_for_later_day %}
+
   {% include "partials/template-attachments-warning.html" %}
 
   {% if template %}
@@ -114,9 +117,18 @@
     {% endif %}
   {% endif %}
 
-  {% set can_schedule = not error and not help and template.template_type in ['email', 'sms'] %}
   <div class="{{ 'mb-12 clear-both contain-floats' if can_schedule else 'js-stick-at-bottom-when-scrolling' }}">
-    {% if can_schedule %}
+    {% if schedule_only %}
+      {# Sits next to the scheduler because it explains why scheduling is the only option #}
+      {% set cannot_send_today_title = _('You cannot send this text message today') if template.template_type == 'sms' else _('You cannot send this email message today') %}
+      <section data-testid="exceeds-daily-schedule-later">
+        <h2 class="heading-medium">{{ cannot_send_today_title }}</h2>
+        <p>
+          {{ _("This would go over your daily limit. Schedule this message for after {} Eastern Time. Check {}.").format(time_to_reset[current_lang],
+          content_link(_("your current local time"), _('https://nrc.canada.ca/en/web-clock/'), is_external_link=true)) }}
+        </p>
+      </section>
+    {% elif can_schedule %}
       {% call new_feature(
         title=_("You can now schedule a message to one recipient for a later time."),
         anchored_to="schedule-one-off-send",
@@ -135,21 +147,30 @@
       {% if can_schedule %}
         <input type="hidden" id="scheduled_for" name="scheduled_for" value=""/>
       {% endif %}
-      {% if not error %}
-        {% if template.template_type == 'sms' %}
-          <button type="submit" class="button" id="js-send-now-button">{{ _("Send text message") }}</button>
-        {% else %}
-          <button type="submit" class="button" id="js-send-now-button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
-        {% endif %}
-      {% endif %}
-      {% if can_schedule %}
-        <button type="button" class="button button-secondary [anchor-name:--schedule-one-off-send]" id="js-send-later-button">
-          {{ _('Schedule for later') }}
-        </button>
-        <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
-        <button type="submit" class="button hidden" id="js-schedule-button">
+      {% if schedule_only %}
+        {# Over what's left of today's limit, so the only option is to schedule it #}
+        <input type="hidden" name="schedule_only" value="true"/>
+        <div id="js-schedule-send-at" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
+        <button type="submit" class="button" id="js-schedule-button">
           {{ _('Schedule') }}
         </button>
+      {% else %}
+        {% if not error %}
+          {% if template.template_type == 'sms' %}
+            <button type="submit" class="button" id="js-send-now-button">{{ _("Send text message") }}</button>
+          {% else %}
+            <button type="submit" class="button" id="js-send-now-button">{{ _("Send") }} 1 {{ message_count_label(1, template.template_type, suffix='') }}</button>
+          {% endif %}
+        {% endif %}
+        {% if can_schedule %}
+          <button type="button" class="button button-secondary [anchor-name:--schedule-one-off-send]" id="js-send-later-button">
+            {{ _('Schedule for later') }}
+          </button>
+          <div id="js-schedule-send-at" class="hidden mt-12" data-module="webpack-loader" data-webpack-loader="Scheduler"></div>
+          <button type="submit" class="button hidden" id="js-schedule-button">
+            {{ _('Schedule') }}
+          </button>
+        {% endif %}
       {% endif %}
       {% if template.template_type == 'letter' %}
         <a href="{{ url_for('main.check_notification_preview', service_id=current_service.id, template_id=template.id, filetype='pdf') }}" download class="page-footer-right-aligned-link">Download as a PDF</a>
