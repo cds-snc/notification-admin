@@ -2,9 +2,10 @@
 
 from unittest.mock import Mock, patch
 
+import pytest
 from app.navigation import Navigation
 
-from tests.conftest import ORGANISATION_ID, SERVICE_ONE_ID
+from tests.conftest import ORGANISATION_ID, SERVICE_ONE_ID, normalize_spaces
 
 
 class TestNavigationGetNav:
@@ -220,3 +221,59 @@ class TestNavigationGetNav:
         # Assert that the platform_admin item is present with True context
         assert "platform_admin" in result
         assert result["platform_admin"]["context"] is True
+
+
+@pytest.mark.parametrize(
+    "permissions",
+    [
+        ["view_activity", "send_messages", "manage_templates"],
+        ["send_messages"],
+    ],
+)
+@pytest.mark.parametrize("has_jobs", [True, False])
+def test_service_nav_always_shows_sent_messages_and_bulk_sends(
+    client_request,
+    active_user_with_permissions,
+    mock_get_service_templates,
+    mock_get_template_folders,
+    mocker,
+    permissions,
+    has_jobs,
+):
+    mocker.patch("app.job_api_client.has_jobs", return_value=has_jobs)
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
+    client_request.login(active_user_with_permissions)
+
+    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID)
+
+    labels = [normalize_spaces(a.text) for a in page.select("#proposition-links a")]
+    assert labels.index("Templates") < labels.index("Sent messages") < labels.index("Bulk sends")
+    assert ("Dashboard" in labels) is ("view_activity" in permissions)
+
+
+@pytest.mark.parametrize(
+    "endpoint, extra_args, expected_selected",
+    [
+        ("main.service_dashboard", {}, "Dashboard"),
+        ("main.view_notifications", {"message_type": "email"}, "Sent messages"),
+        ("main.view_jobs", {}, "Bulk sends"),
+    ],
+)
+def test_service_nav_highlights_sent_messages_and_bulk_sends(
+    client_request,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_notifications,
+    mock_get_service_data_retention,
+    mock_get_api_keys,
+    mock_get_reports,
+    endpoint,
+    extra_args,
+    expected_selected,
+):
+    page = client_request.get(endpoint, service_id=SERVICE_ONE_ID, **extra_args)
+
+    selected = [normalize_spaces(a.text) for a in page.select("#proposition-links a[aria-current=page]")]
+    assert selected == [expected_selected]

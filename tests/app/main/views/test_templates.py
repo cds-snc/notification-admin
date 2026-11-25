@@ -377,30 +377,20 @@ def test_should_not_show_template_nav_if_only_one_type_of_template(
     assert not page.select(".pill")
 
 
-def test_choose_template_page_with_sending_view(
+@pytest.mark.parametrize("extra_args", [{}, {"view": "sending"}])
+def test_choose_template_page_always_shows_template_management(
     client_request: ClientRequest,
     mock_get_template_folders,
     mock_get_service_templates,
+    extra_args,
 ):
-    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
-    assert "Create template" not in page.text
-    assert "Select template to send" in page.text
-    assert not page.select("input[type=checkbox]")
-    pill_links = [a["href"] for a in page.select(".pill a")]
-    assert all([link.endswith("?view=sending") for link in pill_links])
-
-
-def test_choose_template_page_without_sending_view(
-    client_request: ClientRequest,
-    mock_get_template_folders,
-    mock_get_service_templates,
-):
-    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID)
+    # The old "sending view" (?view=sending) has been removed; the parameter is now ignored
+    page = client_request.get("main.choose_template", service_id=SERVICE_ONE_ID, **extra_args)
     assert "Create template" in page.text
-    assert "Select template to send" not in page.text
     assert page.select("input[type=checkbox]")
-    pill_links = [a["href"] for a in page.select(".pill a")]
-    assert all([not link.endswith("?view=sending") for link in pill_links])
+    links = [a["href"] for a in page.select(".pill a, .folder-heading a, #template-list a")]
+    assert links
+    assert not [link for link in links if "view=sending" in link]
 
 
 def test_should_not_show_live_search_if_list_of_templates_fits_onscreen(

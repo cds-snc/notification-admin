@@ -133,16 +133,15 @@ def test_redirect_caseworkers_to_templates(
 
 
 @pytest.mark.parametrize(
-    "permissions, text_in_page, text_not_in_page",
+    "permissions, expected_choose_label, expect_create",
     [
-        # Choose template, Create template, Explore
-        (["view_activity", "manage_templates", "send_messages"], ["Choose template", "Explore"], ["Create template"]),
-        (["view_activity", "manage_templates"], ["Choose template", "Explore"], ["Create template"]),
-        (["view_activity", "send_messages"], ["Choose template"], ["Create template", "Explore"]),
-        (["view_activity"], [], ["Create template", "Choose template", "Explore"]),
+        (["view_activity", "manage_templates", "send_messages"], "Send a message", True),
+        (["view_activity", "manage_templates"], "Choose template", True),
+        (["view_activity", "send_messages"], "Send a message", False),
+        (["view_activity"], None, False),
     ],
 )
-def test_task_shortcuts_are_visible_based_on_permissions_with_templates(
+def test_dashboard_actions_are_visible_based_on_permissions_with_templates(
     client_request: ClientRequest,
     active_user_with_permissions,
     mock_get_service_templates,
@@ -150,36 +149,47 @@ def test_task_shortcuts_are_visible_based_on_permissions_with_templates(
     mock_get_template_statistics,
     mock_get_service_statistics,
     permissions: list,
-    text_in_page: list,
-    text_not_in_page: list,
+    expected_choose_label,
+    expect_create: bool,
     app_,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
     client_request.login(active_user_with_permissions)
 
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=SERVICE_ONE_ID,
-    )
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
-    for text in text_in_page:
-        assert text in page.text
+    choose = page.select_one("[data-testid='dashboard-action-choose-template']")
+    create = page.select_one("[data-testid='dashboard-action-create-template']")
 
-    for text in text_not_in_page:
-        assert text not in page.text
+    if expected_choose_label:
+        assert normalize_spaces(choose.text) == expected_choose_label
+        # Links to the full templates page; the old "sending view" no longer exists
+        assert choose["href"] == url_for("main.choose_template", service_id=SERVICE_ONE_ID)
+        assert "button-secondary" not in choose["class"]
+    else:
+        assert choose is None
+
+    if expect_create:
+        assert normalize_spaces(create.text) == "Create template"
+        assert create["href"] == url_for("main.create_template", service_id=SERVICE_ONE_ID, source="dashboard")
+        assert "button-secondary" in create["class"]
+    else:
+        assert create is None
+
+    if not expected_choose_label and not expect_create:
+        assert page.select_one("[data-testid='dashboard-actions']") is None
 
 
 @pytest.mark.parametrize(
-    "permissions, text_in_page, text_not_in_page",
+    "permissions, expect_create",
     [
-        # Choose template, Create template, Explore
-        (["view_activity", "manage_templates", "send_messages"], ["Create template", "Explore"], ["Choose template"]),
-        (["view_activity", "manage_templates"], ["Create template", "Explore"], ["Choose template"]),
-        (["view_activity", "send_messages"], [], ["Create template", "Choose template", "Explore"]),
-        (["view_activity"], [], ["Create template", "Choose template", "Explore"]),
+        (["view_activity", "manage_templates", "send_messages"], True),
+        (["view_activity", "manage_templates"], True),
+        (["view_activity", "send_messages"], False),
+        (["view_activity"], False),
     ],
 )
-def test_task_shortcuts_are_visible_based_on_permissions_with_no_templates(
+def test_dashboard_actions_are_visible_based_on_permissions_with_no_templates(
     client_request: ClientRequest,
     active_user_with_permissions,
     mock_get_service_templates_when_no_templates_exist,
@@ -187,55 +197,66 @@ def test_task_shortcuts_are_visible_based_on_permissions_with_no_templates(
     mock_get_template_statistics,
     mock_get_service_statistics,
     permissions: list,
-    text_in_page: list,
-    text_not_in_page: list,
+    expect_create: bool,
     app_,
 ):
     active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
     client_request.login(active_user_with_permissions)
 
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=SERVICE_ONE_ID,
-    )
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
-    for text in text_in_page:
-        assert text in page.text
+    assert page.select_one("[data-testid='dashboard-action-choose-template']") is None
+    create = page.select_one("[data-testid='dashboard-action-create-template']")
+    if expect_create:
+        # With nothing to send yet, creating a template is the primary action
+        assert "button-secondary" not in create["class"]
+    else:
+        assert create is None
 
-    for text in text_not_in_page:
-        assert text not in page.text
 
-
-def test_sending_link_has_query_param(
+@pytest.mark.parametrize(
+    "restricted, has_templates, permissions, expect_getting_started, expect_sample_library",
+    [
+        # Trial services always see the getting started block
+        (True, True, ["view_activity", "manage_templates", "send_messages"], True, True),
+        (True, False, ["view_activity", "manage_templates"], True, True),
+        (True, True, ["view_activity", "send_messages"], True, False),
+        # Live services only see it when they have no templates
+        (False, True, ["view_activity", "manage_templates", "send_messages"], False, False),
+        (False, False, ["view_activity", "manage_templates", "send_messages"], True, True),
+        # Users who can't send or manage templates never see it
+        (True, False, ["view_activity"], False, False),
+    ],
+)
+def test_getting_started_block_only_shown_to_trial_services_or_services_without_templates(
     client_request: ClientRequest,
     active_user_with_permissions,
+    service_one,
+    mocker,
     mock_get_service_templates,
     mock_get_jobs,
     mock_get_template_statistics,
     mock_get_service_statistics,
+    restricted,
+    has_templates,
+    permissions,
+    expect_getting_started,
+    expect_sample_library,
+    app_,
 ):
-    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = ["view_activity", "send_messages"]
+    service_one["restricted"] = restricted
+    mocker.patch(
+        "app.models.service.Service.has_templates",
+        new_callable=mocker.PropertyMock,
+        return_value=has_templates,
+    )
+    active_user_with_permissions["permissions"][SERVICE_ONE_ID] = permissions
     client_request.login(active_user_with_permissions)
 
-    page = client_request.get(
-        "main.service_dashboard",
-        service_id=SERVICE_ONE_ID,
-    )
-    sending_url = url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending")
-    assert sending_url == page.select_one(".dashboard .border a").attrs["href"]
-
-
-def test_no_sending_link_if_no_templates(
-    client_request: ClientRequest,
-    mock_get_service_templates_when_no_templates_exist,
-    mock_get_template_statistics,
-    mock_get_service_statistics,
-    mock_get_jobs,
-):
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
-    assert url_for("main.choose_template", service_id=SERVICE_ONE_ID, view="sending") not in str(page)
-    assert "Reuse a message you’ve already created." not in str(page)
+    assert bool(page.select_one("[data-testid='dashboard-getting-started']")) is expect_getting_started
+    assert bool(page.select("[data-testid='dashboard-sample-library-badge']")) is expect_sample_library
 
 
 def test_should_show_recent_templates_on_dashboard(
@@ -265,7 +286,7 @@ def test_should_show_recent_templates_on_dashboard(
 
     assert "Sent in the last week" in headers
 
-    table_rows = page.find_all("tbody")[1].find_all("tr")
+    table_rows = page.select("[data-testid='dashboard-templates-used'] tbody tr")
 
     assert len(table_rows) == 2
 
@@ -568,7 +589,7 @@ def test_should_show_upcoming_jobs_on_dashboard(
     assert first_call[0] == (SERVICE_ONE_ID,)
     assert first_call[1]["statuses"] == ["scheduled"]
 
-    table_rows = page.find_all("tbody")[0].find_all("tr")
+    table_rows = page.select("[data-testid='dashboard-scheduled-sends'] tbody tr")
     assert len(table_rows) == 2
 
     assert "send_me_later.csv" in table_rows[0].find_all("th")[0].text
@@ -835,18 +856,81 @@ def test_should_show_scheduled_notifications_on_dashboard_when_there_are_no_jobs
     assert page.select_one(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
 
 
-def test_should_not_show_scheduled_sends_section_when_there_are_none(
+def test_dashboard_sections_are_always_shown_with_empty_states(
     client_request,
+    mocker,
     mock_get_service_templates,
-    mock_get_template_statistics,
     mock_get_service_statistics,
     mock_has_no_jobs,
     mock_get_usage,
     mock_get_inbound_sms_summary,
 ):
+    mocker.patch("app.template_statistics_client.get_template_statistics_for_service", return_value=[])
+
     page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
 
-    assert "Scheduled sends" not in [normalize_spaces(h2.text) for h2 in page.select("h2")]
+    # Sections no longer appear and disappear depending on recent activity
+    h2s = [normalize_spaces(h2.text) for h2 in page.select("h2")]
+    assert {"Templates used", "Bulk sends", "Scheduled sends", "Daily usage", "Annual usage"} <= set(h2s)
+
+    assert normalize_spaces(page.select_one("[data-testid='dashboard-templates-used'] p").text) == (
+        "No messages sent in the last 7 days."
+    )
+    assert normalize_spaces(page.select_one("[data-testid='dashboard-bulk-sends'] p").text) == (
+        "No bulk sends in the last 7 days."
+    )
+    scheduled = page.select_one("[data-testid='dashboard-scheduled-sends']")
+    assert "You have no scheduled messages at the moment" in normalize_spaces(scheduled.text)
+    # Compact empty states instead of the full-size illustrated ones
+    assert not page.select("[data-testid='empty-list']")
+    # Nothing to see on the scheduled sends page, so don't link to it
+    assert not scheduled.select(f"a[href='{url_for('main.view_scheduled_sends', service_id=SERVICE_ONE_ID)}']")
+
+    # "See all" links are always available
+    assert page.select_one(f"a[href='{url_for('main.template_usage', service_id=SERVICE_ONE_ID)}']")
+    assert page.select_one(f"a[href='{url_for('main.view_jobs', service_id=SERVICE_ONE_ID)}']")
+
+
+@pytest.mark.parametrize(
+    "bounce_status, below_volume_threshold, expected_notice_class",
+    [
+        ("normal", False, None),
+        ("warning", False, "notice-warning"),
+        ("critical", False, "notice-error"),
+        ("critical", True, None),
+    ],
+)
+def test_dashboard_shows_problem_email_alert_when_bounce_rate_is_high(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_template_statistics,
+    mock_get_service_statistics,
+    mock_get_jobs,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+    bounce_status,
+    below_volume_threshold,
+    expected_notice_class,
+):
+    mocker.patch("app.main.views.dashboard.bounce_rate_client.get_bounce_rate", return_value=0.2)
+    mocker.patch("app.main.views.dashboard.bounce_rate_client.get_total_hard_bounces", return_value=20)
+    mocker.patch("app.main.views.dashboard.bounce_rate_client.check_bounce_rate_status", return_value=bounce_status)
+    mocker.patch(
+        "app.main.views.dashboard.bounce_rate_client.get_total_notifications",
+        return_value=0 if below_volume_threshold else 10_000,
+    )
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    alerts = page.select_one("[data-testid='dashboard-alerts']")
+    notice = alerts.select_one("[data-testid='notice']")
+    if expected_notice_class:
+        assert expected_notice_class in notice["class"]
+        assert "Problem email addresses" in normalize_spaces(notice.text)
+        assert notice.select_one(f"a[href='{url_for('main.problem_emails', service_id=SERVICE_ONE_ID)}']")
+    else:
+        assert notice is None
 
 
 def test_daily_usage_section_shown(
@@ -1050,7 +1134,7 @@ def test_should_show_recent_jobs_on_dashboard(
     assert second_call[1]["limit_days"] == 7
     assert "scheduled" not in second_call[1]["statuses"]
 
-    table_rows = page.find_all("tbody")[2].find_all("tr")
+    table_rows = page.select("[data-testid='dashboard-bulk-sends'] tbody tr")
 
     assert len(table_rows) == 4
 
@@ -1086,8 +1170,9 @@ def test_dashboard_links_are_tagged_for_ga_click_tracking(
 
     sections = {el["data-ga-section"] for el in page.select("[data-ga-section]")}
     assert {
+        "action_choose_template",
+        "action_create_template",
         "shortcut_getting_started",
-        "shortcut_choose_template",
         "shortcut_sample_library",
         "weekly_email",
         "weekly_sms",

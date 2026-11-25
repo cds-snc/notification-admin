@@ -597,8 +597,6 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
     if request.method == "GET" and initial_state:
         templates_and_folders_form.op = initial_state
 
-    sending_view = request.args.get("view") == "sending"
-
     template_category_name_col = "name_en" if get_current_locale(current_app) == "en" else "name_fr"
 
     # Get the full list of template categories, any hidden ones will be called 'Other'
@@ -622,8 +620,7 @@ def choose_template(service_id, template_type="all", template_folder_id=None):
         template_category_name_col=template_category_name_col,
         show_search_box=current_service.count_of_templates_and_folders > 7,
         show_template_nav=(current_service.has_multiple_template_types and (len(current_service.all_templates) > 2)),
-        sending_view=sending_view,
-        template_nav_items=get_template_nav_items(template_folder_id, sending_view),
+        template_nav_items=get_template_nav_items(template_folder_id),
         template_type=template_type,
         search_form=SearchByNameForm(),
         templates_and_folders_form=templates_and_folders_form,
@@ -672,7 +669,7 @@ def get_template_nav_label(value):
     }[value]
 
 
-def get_template_nav_items(template_folder_id, sending_view):
+def get_template_nav_items(template_folder_id):
     return [
         (
             get_template_nav_label(key),
@@ -682,7 +679,6 @@ def get_template_nav_items(template_folder_id, sending_view):
                 service_id=current_service.id,
                 template_type=key,
                 template_folder_id=template_folder_id,
-                view="sending" if sending_view else None,
             ),
             "",
         )

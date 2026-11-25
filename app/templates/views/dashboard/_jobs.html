@@ -7,7 +7,7 @@
     jobs,
     caption=_("Bulk sends"),
     caption_visible=False,
-    empty_message=empty_list(_('Scheduled messages will be sent soon'), _('Come back later to find your delivery reports'), "emptyTruck"),
+    empty_message=compact_empty_message if compact_empty_message is defined and compact_empty_message else empty_list(_('Scheduled messages will be sent soon'), _('Come back later to find your delivery reports'), "emptyTruck"),
     field_headings=[
       _('List name'),
       _('Sending'),
