@@ -2,7 +2,7 @@
 {% from "components/big-number.html" import big_number -%}
 {% from "components/empty-list.html" import empty_list  %}
 
-<div class='dashboard-table ajax-block-container'>
+<div class='dashboard-table ajax-block-container' data-ga-section="bulk_sends_item">
   {% call(item, row_number) list_table(
     jobs,
     caption=_("Bulk sends"),

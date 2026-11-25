@@ -1068,6 +1068,42 @@ def test_should_show_recent_jobs_on_dashboard(
             assert table_rows[index].find_all("td")[column_index].text.strip() == str(count)
 
 
+def test_dashboard_links_are_tagged_for_ga_click_tracking(
+    client_request,
+    mocker,
+    mock_get_service_templates,
+    mock_get_jobs,
+    mock_get_service_statistics,
+    mock_get_usage,
+    mock_get_inbound_sms_summary,
+):
+    mocker.patch(
+        "app.template_statistics_client.get_template_statistics_for_service",
+        return_value=copy.deepcopy(stub_template_stats),
+    )
+
+    page = client_request.get("main.service_dashboard", service_id=SERVICE_ONE_ID)
+
+    sections = {el["data-ga-section"] for el in page.select("[data-ga-section]")}
+    assert {
+        "shortcut_getting_started",
+        "shortcut_choose_template",
+        "shortcut_sample_library",
+        "weekly_email",
+        "weekly_sms",
+        "review_problem_emails",
+        "daily_limit_request",
+        "annual_usage_report",
+        "templates_used_item",
+        "templates_used_see_all",
+        "bulk_sends_item",
+        "bulk_sends_see_all",
+    } <= sections
+
+    script_srcs = [script.get("src", "") for script in page.select("script")]
+    assert any("javascripts/dashboardGaTracking.min.js" in src for src in script_srcs)
+
+
 @freeze_time("2012-03-31 12:12:12")
 @pytest.mark.skip(reason="feature not in use")
 def test_usage_page(

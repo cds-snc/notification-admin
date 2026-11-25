@@ -33,21 +33,30 @@
     {% if partials['has_template_statistics'] %}
       <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>
       {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
-      {{ show_more(
-        url_for('.template_usage', service_id=current_service.id),
-        _('See all templates used')
-      ) }}
+      <div data-ga-section="templates_used_see_all">
+        {{ show_more(
+          url_for('.template_usage', service_id=current_service.id),
+          _('See all templates used')
+        ) }}
+      </div>
     {% endif %}
 
     {% if partials['has_jobs'] %}
       <h2 class="heading-medium mt-8">{{ _("Bulk sends") }}</h2>
       {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
-      {{ show_more(
-        url_for('.view_jobs', service_id=current_service.id),
-        _('See all bulk sends')
-      ) }}
+      <div data-ga-section="bulk_sends_see_all">
+        {{ show_more(
+          url_for('.view_jobs', service_id=current_service.id),
+          _('See all bulk sends')
+        ) }}
+      </div>
     {% endif %}
 
   </div>
 
+{% endblock %}
+
+{% block page_script %}
+  {{ super() }}
+  <script nonce="{{ request_nonce }}" src="{{ asset_url('javascripts/dashboardGaTracking.min.js') }}"></script>
 {% endblock %}

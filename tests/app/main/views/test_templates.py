@@ -3768,13 +3768,10 @@ class TestViewSampleLibrary:
         page = client_request.get(
             "main.view_sample_library",
             service_id=SERVICE_ONE_ID,
-            _test_page_title=False,
         )
 
         assert normalize_spaces(page.select_one("h1").text) == "GC Notify sample library"
-        # Check the actual title is being set correctly - may be different due to translation context
-        title_text = normalize_spaces(page.select_one("title").text)
-        assert "GC Notify sample library" in title_text or title_text.endswith("– Notify")
+        assert normalize_spaces(page.select_one("title").text).startswith("GC Notify sample library")
 
         # Check that sample templates are displayed
         table = page.select_one('[data-testid="sample-templates-table"]')

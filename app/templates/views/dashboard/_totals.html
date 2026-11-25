@@ -13,7 +13,7 @@
     {{ _("Sent in the last week") }}
   </h2>
   <div class="grid-row contain-floats">
-    <div id="total-email" class="{{column_width}}">
+    <div id="total-email" class="{{column_width}}" data-ga-section="weekly_email" data-ga-item="email">
       {{ big_number_with_status(
         statistics['email']['requested'],
         message_count_label(statistics['email']['requested'], 'email', suffix=sent_single, suffix_plural=sent_plural),
@@ -22,10 +22,11 @@
         statistics['email']['show_warning'],
         failure_link=url_for(".view_notifications", service_id=service_id, message_type='email', status='failed') if statistics['email']['failed'] > 0 else None,
         link=url_for(".view_notifications", service_id=service_id, message_type='email', status='sending,delivered,failed'),
-        smaller=smaller_font_size
+        smaller=smaller_font_size,
+        failure_ga_section="weekly_failed"
       ) }}
     </div>
-    <div id="total-sms" class="{{column_width}}">
+    <div id="total-sms" class="{{column_width}}" data-ga-section="weekly_sms" data-ga-item="sms">
       {{ big_number_with_status(
         statistics['sms']['requested'],
         message_count_label(statistics['sms']['requested'], 'sms', suffix=sent_single, suffix_plural=sent_plural),
@@ -34,13 +35,14 @@
         statistics['sms']['show_warning'],
         failure_link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='failed') if statistics['sms']['failed'] > 0 else None,
         link=url_for(".view_notifications", service_id=service_id, message_type='sms', status='sending,delivered,failed'),
-        smaller=smaller_font_size
+        smaller=smaller_font_size,
+        failure_ga_section="weekly_failed"
       ) }}
     </div>
     </div>
     <div class="grid grid-cols-2 auto-rows-min -mx-gutterHalf pb-6">
       {# --- Email column --- #}
-      <div id="problem-email-addresses" class="px-gutterHalf box-border">
+      <div id="problem-email-addresses" class="px-gutterHalf box-border" data-ga-section="review_problem_emails">
         {{ big_number_review_emails_with_status(
           number=bounce_rate["bounce_total"],
           label=problem_email_label(bounce_rate["bounce_total"]),
@@ -54,7 +56,7 @@
           theme="light"
         ) }}
       </div>
-      <div id="problem-email-guide-link" class="px-gutterHalf box-border row-start-2">
+      <div id="problem-email-guide-link" class="px-gutterHalf box-border row-start-2" data-ga-section="guide_problem_emails">
         {{ task_shortcut(
           description=_("GC Notify’s email provider could suspend our services if we send too many problem emails."),
           link_url=gca_url_for('bounce_guidance'),
@@ -84,13 +86,16 @@
           description=_("Text message parts count toward your sending limits."),
           link_url=gca_url_for('counting_text_messages'),
           link_text=_("Guide: Counting text message parts"),
-          icon="arrow-up-right-from-square"
+          icon="arrow-up-right-from-square",
+          ga_section="guide_text_message_parts"
         ) }}
       </div>
     </div>
-  {{ show_more(
-    url_for('.monthly', service_id=current_service.id),
-    _('See all messages sent')
-  ) }}
+  <div data-ga-section="weekly_see_all_messages_sent">
+    {{ show_more(
+      url_for('.monthly', service_id=current_service.id),
+      _('See all messages sent')
+    ) }}
+  </div>
   </div>
 </div>
