@@ -72,6 +72,10 @@ def test_create_email_branding_does_not_show_any_branding_info(
     assert page.select_one("#name").attrs.get("value") == ""
     assert page.select_one("#text").attrs.get("value") == ""
     assert page.select_one("#colour").attrs.get("value") == ""
+    assert page.select_one("#fip-signature") is not None
+    assert page.select_one("#fip-generate-logo") is not None
+    assert page.select_one('[data-module="file-upload"] input[type="file"]') is not None
+    assert sum("fip-generator-element.min.js" in script.get("src", "") for script in page.select("script")) == 1
 
 
 def test_create_new_email_branding_without_logo(
