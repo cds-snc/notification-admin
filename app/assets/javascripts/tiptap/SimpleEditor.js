@@ -35,6 +35,7 @@ import MenubarShortcut from "./MenubarShortcut";
 import { EditorProvider } from "./EditorContext";
 import { AnnouncerPlugin } from "./AnnouncerPlugin";
 import { shortcuts, translations } from "./localization";
+import { wordHtmlToMarkdown } from "./utils/wordPaste";
 
 // Preserve literal backticks when loading and saving email templates. The editor
 // has no code mark: parsing backticks would strip them, while the default text
@@ -276,8 +277,11 @@ const SimpleEditor = ({
       },
       handlePaste: (view, event, slice) => {
         const text = event.clipboardData?.getData("text/plain");
+        const html = event.clipboardData?.getData("text/html");
+        const richText = !isSms && html ? wordHtmlToMarkdown(html) : "";
+        const pastedContent = richText || text;
 
-        if (text) {
+        if (pastedContent) {
           // Prevent default paste behavior
           event.preventDefault();
 
@@ -286,8 +290,8 @@ const SimpleEditor = ({
           // render normal blockquotes via inbound normalization on parse.
           // SMS has no blockquote support, so pasted text is left as-is.
           const normalizedForStorage = isSms
-            ? text
-            : text.replace(/^(\s*)>/gm, "$1^");
+            ? pastedContent
+            : pastedContent.replace(/^(\s*)>/gm, "$1^");
 
           // Use the same markdown conversion logic as the markdown switch handler
           // This ensures pasted markdown is processed consistently
