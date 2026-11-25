@@ -2,7 +2,7 @@ module.exports = {
   "setupFilesAfterEnv": ['./support/setup.js'],
   "testEnvironment": "jsdom",
   "transform": {
-    "^.+/app/assets/javascripts/attachments/.+\\.js$": [
+    "^.+/(?:app/assets/javascripts/attachments/.+|app/assets/javascripts/tiptap/utils/wordPaste|tests/javascripts/wordPaste\\.test)\\.js$": [
       "babel-jest",
       {
         "presets": [
