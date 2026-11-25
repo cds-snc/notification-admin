@@ -405,6 +405,8 @@ def aggregate_notifications_stats(template_statistics, use_billable_units=False)
 
 
 SCHEDULED_SENDS_DASHBOARD_LIMIT = 10
+# Daily and annual usage sit in the dashboard's narrow sidebar, so their email and SMS meters stack
+USAGE_COLUMN_WIDTH = "w-full float-left px-gutterHalf box-border mb-6"
 
 
 def _scheduled_for_utc(scheduled_for):
@@ -553,23 +555,30 @@ def get_dashboard_partials(service_id):
     current_app.logger.info(f"TIMING SUMMARY: {timings}")
 
     return {
+        "alerts": render_template(
+            "views/dashboard/_alerts.html",
+            service_id=service_id,
+            bounce_rate=bounce_rate_data,
+        ),
         "upcoming": render_template(
             "views/dashboard/_upcoming.html",
             scheduled_sends=scheduled_sends,
             total_scheduled_sends=total_scheduled_sends,
+            hide_show_more=not scheduled_sends,
+            compact_empty_message=_("You have no scheduled messages at the moment"),
         ),
         "daily_totals": render_template(
             "views/dashboard/_totals_daily.html",
             service_id=service_id,
             statistics=dashboard_totals_daily,
-            column_width=column_width,
+            column_width=USAGE_COLUMN_WIDTH,
         ),
         "annual_totals": render_template(
             "views/dashboard/_totals_annual.html",
             service_id=service_id,
             statistics=dashboard_totals_daily,
             statistics_annual=annual_data,
-            column_width=column_width,
+            column_width=USAGE_COLUMN_WIDTH,
         ),
         "weekly_totals": render_template(
             "views/dashboard/_totals.html",
@@ -584,9 +593,14 @@ def get_dashboard_partials(service_id):
             "views/dashboard/template-statistics.html",
             template_statistics=template_statistics_weekly,
             most_used_template_count=max([row["count"] for row in template_statistics_weekly] or [0]),
+            compact_empty_message=_("No messages sent in the last 7 days."),
         ),
         "has_template_statistics": bool(template_statistics_weekly),
-        "jobs": render_template("views/dashboard/_jobs.html", jobs=immediate_jobs),
+        "jobs": render_template(
+            "views/dashboard/_jobs.html",
+            jobs=immediate_jobs,
+            compact_empty_message=_("No bulk sends in the last 7 days."),
+        ),
         "has_jobs": bool(immediate_jobs),
         "has_scheduled_sends": bool(scheduled_sends),
         "debug_timings": timings,  # Include timings in the response for debugging

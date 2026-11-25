@@ -1,9 +1,6 @@
 {% extends "admin_template.html" %}
 
-{% from "components/big-number.html" import big_number, big_number_with_status %}
 {% from "components/show-more.html" import show_more %}
-{% from "components/message-count-label.html" import message_count_label %}
-{% from "components/table.html" import list_table, field, right_aligned_field_heading, hidden_field_heading %}
 {% from "components/ajax-block.html" import ajax_block %}
 
 {% block service_page_title %}
@@ -12,45 +9,74 @@
 
 {% block maincolumn_content %}
 
+  {% set can_send = current_user.has_permissions('send_messages') %}
+  {% set can_manage_templates = current_user.has_permissions('manage_templates') %}
+
   <div class="dashboard">
 
-    <h1 class="heading-large">{{ _('Dashboard') }}</h1>
-    {% if current_user.has_permissions('manage_templates') or current_user.has_permissions('send_messages') %}
+    <div class="flex flex-wrap items-center justify-between gap-gutterHalf mb-8">
+      <h1 class="heading-large m-0">{{ _('Dashboard') }}</h1>
+      {% if can_send or can_manage_templates %}
+        <div class="flex flex-wrap gap-gutterHalf" data-testid="dashboard-actions">
+          {% if current_service.has_templates %}
+            <a class="button m-0" href="{{ url_for('.choose_template', service_id=current_service.id) }}" data-ga-section="action_choose_template" data-testid="dashboard-action-choose-template">
+              {{ _('Send a message') if can_send else _('Choose template') }}
+            </a>
+          {% endif %}
+          {% if can_manage_templates %}
+            <a class="button m-0{% if current_service.has_templates %} button-secondary{% endif %}" href="{{ url_for('.create_template', service_id=current_service.id, source='dashboard') }}" data-ga-section="action_create_template" data-testid="dashboard-action-create-template">
+              {{ _('Create template') }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {{ ajax_block(partials, updates_url, 'alerts', interval=5) }}
+
+    {% if (can_send or can_manage_templates) and (current_service.trial_mode or not current_service.has_templates) %}
       {% include 'views/dashboard/task-shortcuts.html' %}
     {% endif %}
 
-    {% if partials['has_scheduled_sends'] %}
-      <h2 class="heading-medium mt-8">{{ _("Scheduled sends") }}</h2>
-      {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
-    {% endif %}
-
     {{ ajax_block(partials, updates_url, 'weekly_totals', interval=5) }}
-    {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
-    {{ ajax_block(partials, updates_url, 'annual_totals', interval=5) }}
 
-    <hr />
+    <div class="lg:grid lg:grid-cols-3 lg:gap-gutter mt-12">
 
-    {% if partials['has_template_statistics'] %}
-      <h2 class="heading-medium mt-8">{{ _("Templates used") }}</h2>
-      {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
-      <div data-ga-section="templates_used_see_all">
-        {{ show_more(
-          url_for('.template_usage', service_id=current_service.id),
-          _('See all templates used')
-        ) }}
+      <div class="lg:col-span-2" data-testid="dashboard-activity">
+        <section aria-labelledby="templates-used-heading" class="mb-12" data-testid="dashboard-templates-used">
+          <div class="flex flex-wrap items-baseline justify-between gap-gutterHalf">
+            <h2 id="templates-used-heading" class="heading-medium mt-0">{{ _("Templates used") }}</h2>
+            <span class="text-small text-gray-700">{{ _("Last 7 days") }}</span>
+          </div>
+          {{ ajax_block(partials, updates_url, 'template-statistics', interval=5) }}
+          <div data-ga-section="templates_used_see_all">
+            {{ show_more(url_for('.template_usage', service_id=current_service.id), _('See all templates used')) }}
+          </div>
+        </section>
+
+        <section aria-labelledby="bulk-sends-heading" class="mb-12" data-testid="dashboard-bulk-sends">
+          <div class="flex flex-wrap items-baseline justify-between gap-gutterHalf">
+            <h2 id="bulk-sends-heading" class="heading-medium mt-0">{{ _("Bulk sends") }}</h2>
+            <span class="text-small text-gray-700">{{ _("Last 7 days") }}</span>
+          </div>
+          {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
+          <div data-ga-section="bulk_sends_see_all">
+            {{ show_more(url_for('.view_jobs', service_id=current_service.id), _('See all bulk sends')) }}
+          </div>
+        </section>
+
+        <section aria-labelledby="scheduled-sends-heading" class="mb-12" data-testid="dashboard-scheduled-sends">
+          <h2 id="scheduled-sends-heading" class="heading-medium mt-0">{{ _("Scheduled sends") }}</h2>
+          {{ ajax_block(partials, updates_url, 'upcoming', interval=5) }}
+        </section>
       </div>
-    {% endif %}
 
-    {% if partials['has_jobs'] %}
-      <h2 class="heading-medium mt-8">{{ _("Bulk sends") }}</h2>
-      {{ ajax_block(partials, updates_url, 'jobs', interval=5) }}
-      <div data-ga-section="bulk_sends_see_all">
-        {{ show_more(
-          url_for('.view_jobs', service_id=current_service.id),
-          _('See all bulk sends')
-        ) }}
+      <div data-testid="dashboard-usage">
+        {{ ajax_block(partials, updates_url, 'daily_totals', interval=5) }}
+        {{ ajax_block(partials, updates_url, 'annual_totals', interval=5) }}
       </div>
-    {% endif %}
+
+    </div>
 
   </div>
 

@@ -29,7 +29,7 @@
     </h1>
     {% if current_user.has_permissions('manage_templates') %}
       {% call empty_list(_('Create or edit templates'), _('To send messages, create a template or work from an existing template. You can also create folders to organize your templates.').format(limit_days), 'emptyFlower') %}
-        {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+        {% if current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
           {% call form_wrapper(
               class='sticky-scroll-area',
               module='template-folder-form',
@@ -59,8 +59,7 @@
           folders=template_folder_path,
           service_id=current_service.id,
           template_type=template_type,
-          current_user=current_user,
-          sending_view=sending_view
+          current_user=current_user
         ) }}
       </div>
       {% if current_user.has_permissions('manage_templates') and current_template_folder_id and user_has_template_folder_permission %}
@@ -78,9 +77,6 @@
     </h1>
   {% endif %}
 
-  {% if sending_view %}
-    <p>{{ _('Select template to send.') }}
-  {% endif %}
   {% if show_template_nav %}
     <div class="mb-12 clear-both contain-floats">
       {{
@@ -94,7 +90,7 @@
 
   {{ live_search(target_selector='#template-list .template-list-item', show=show_search_box, form=search_form) }}
 
-  {% if not sending_view and current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
+  {% if current_user.has_permissions('manage_templates') and user_has_template_folder_permission %}
     {% if template_list|length > 0 or current_template_folder_id %}
       {% call form_wrapper(
           class='sticky-scroll-area',

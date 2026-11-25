@@ -68,13 +68,11 @@ class Navigation:
             "sent-messages": {
                 "label": _l("Sent messages"),
                 "view": "view_notifications",
-                "context": not current_user.has_permissions("view_activity"),
                 "url": url_for("main.view_notifications", service_id=current_service.id, status="sending,delivered,failed"),
             },
             "bulk-sends": {
                 "label": _l("Bulk sends"),
                 "view": "view_jobs",
-                "context": not current_user.has_permissions("view_activity") and current_service.has_jobs,
                 "url": url_for("main.view_jobs", service_id=current_service.id),
             },
             "api-integration": {
@@ -222,12 +220,9 @@ class HeaderNavigation(Navigation):
     mapping = {
         "dashboard": {
             "monthly",
+            "problem_emails",
             "service_dashboard",
             "template_usage",
-            "view_job",
-            "view_jobs",
-            "view_notification",
-            "view_notifications",
             "view_scheduled_sends",
         },
         "support": {

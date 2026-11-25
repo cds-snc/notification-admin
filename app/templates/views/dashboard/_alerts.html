@@ -1,0 +1,12 @@
+{% from "components/notice.html" import notice %}
+
+<div class="ajax-block-container" data-testid="dashboard-alerts">
+  {% if not bounce_rate.below_volume_threshold and bounce_rate.bounce_status in ("warning", "critical") %}
+    <div class="mb-12" data-ga-section="alert_problem_emails">
+      {% call notice(type="error" if bounce_rate.bounce_status == "critical" else "warning", title=_("Problem email addresses"), headingLevel=2) %}
+        <p>{{ _("GC Notify’s email provider could suspend our services if we send too many problem emails.") }}</p>
+        <p><a href="{{ url_for('.problem_emails', service_id=service_id) }}">{{ _("Review email addresses") }}</a></p>
+      {% endcall %}
+    </div>
+  {% endif %}
+</div>
