@@ -34,13 +34,14 @@
   link=None,
   show_failures=True,
   smaller=False,
-  smallest=False
+  smallest=False,
+  failure_ga_section=None
 ) %}
   <div class="big-number-with-status">
     {{ big_number(number, label, link=link, status=True, smaller=smaller, smallest=smallest) }}
     {% if show_failures %}
       {% if failure_link %}
-        <a class="big-number-link" href="{{ failure_link }}">
+        <a class="big-number-link" href="{{ failure_link }}"{% if failure_ga_section %} data-ga-section="{{ failure_ga_section }}"{% endif %}>
       {% endif %}
       <div class="pb-4 big-number-status{% if danger_zone %} bg-red{% endif %}{% if not failures %} p-6{% endif %}">
         {% if failures %}

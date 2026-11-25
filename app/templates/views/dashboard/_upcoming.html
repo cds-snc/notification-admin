@@ -4,7 +4,7 @@
 
 <div class="ajax-block-container">
   
-    <div class='dashboard-table'>
+    <div class='dashboard-table' data-ga-section="scheduled_sends_item">
       {% set has_scheduled_notifications = scheduled_sends|rejectattr("is_bulk")|list|length > 0 %}
       {% call(item, row_number) list_table(
         scheduled_sends,
@@ -44,10 +44,12 @@
         </p>
       {% endif %}
       {% if not hide_show_more %}
-        {{ show_more(
-          url_for('.view_scheduled_sends', service_id=current_service.id),
-          _('See all scheduled sends')
-        ) }}
+        <div data-ga-section="scheduled_sends_see_all">
+          {{ show_more(
+            url_for('.view_scheduled_sends', service_id=current_service.id),
+            _('See all scheduled sends')
+          ) }}
+        </div>
       {% endif %}
     </div>
   

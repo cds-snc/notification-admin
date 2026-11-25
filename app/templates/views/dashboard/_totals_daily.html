@@ -19,5 +19,7 @@
         {{ remaining_messages(header=_('Text message parts'), total=current_service.sms_daily_limit, used=statistics['sms']['requested'], for=_('Daily usage'), muted=true) }}
       </div>
     </div>
-    {{ show_more(url_for('main.contact'), _('Request a daily limit increase')) }}  
+    <div data-ga-section="daily_limit_request">
+      {{ show_more(url_for('main.contact'), _('Request a daily limit increase')) }}
+    </div>  
 </div>
